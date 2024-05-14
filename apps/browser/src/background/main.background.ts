@@ -78,6 +78,9 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
+import { Fido2ClientService as Fido2ClientServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
+import { Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
@@ -97,6 +100,7 @@ import { Message, MessageListener, MessageSender } from "@bitwarden/common/platf
 // eslint-disable-next-line no-restricted-imports -- Used for dependency creation
 import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
 import { Lazy } from "@bitwarden/common/platform/misc/lazy";
+import { clearCaches } from "@bitwarden/common/platform/misc/sequentialize";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
@@ -105,6 +109,8 @@ import { DefaultConfigService } from "@bitwarden/common/platform/services/config
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
+import { Fido2AuthenticatorService } from "@bitwarden/common/platform/services/fido2/fido2-authenticator.service";
+import { Fido2ClientService } from "@bitwarden/common/platform/services/fido2/fido2-client.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
@@ -157,9 +163,6 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/vault/abstractions/collection.service";
-import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/vault/abstractions/fido2/fido2-authenticator.service.abstraction";
-import { Fido2ClientService as Fido2ClientServiceAbstraction } from "@bitwarden/common/vault/abstractions/fido2/fido2-client.service.abstraction";
-import { Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction } from "@bitwarden/common/vault/abstractions/fido2/fido2-user-interface.service.abstraction";
 import { CipherFileUploadService as CipherFileUploadServiceAbstraction } from "@bitwarden/common/vault/abstractions/file-upload/cipher-file-upload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -170,8 +173,6 @@ import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwar
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
-import { Fido2AuthenticatorService } from "@bitwarden/common/vault/services/fido2/fido2-authenticator.service";
-import { Fido2ClientService } from "@bitwarden/common/vault/services/fido2/fido2-client.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
@@ -815,6 +816,7 @@ export default class MainBackground {
       logoutCallback,
       this.billingAccountProfileStateService,
       this.tokenService,
+      this.authService,
     );
     this.eventUploadService = new EventUploadService(
       this.apiService,
@@ -1180,6 +1182,7 @@ export default class MainBackground {
    * Switch accounts to indicated userId -- null is no active user
    */
   async switchAccount(userId: UserId) {
+    let nextAccountStatus: AuthenticationStatus;
     try {
       const currentlyActiveAccount = await firstValueFrom(
         this.accountService.activeAccount$.pipe(map((account) => account?.id)),
@@ -1187,6 +1190,8 @@ export default class MainBackground {
       // can be removed once password generation history is migrated to state providers
       await this.stateService.clearDecryptedData(currentlyActiveAccount);
       await this.accountService.switchAccount(userId);
+      // Clear sequentialized caches
+      clearCaches();
 
       if (userId == null) {
         this.loginEmailService.setRememberEmail(false);
@@ -1194,11 +1199,12 @@ export default class MainBackground {
 
         await this.refreshBadge();
         await this.refreshMenu();
-        await this.overlayBackground.updateOverlayCiphers();
+        await this.overlayBackground?.updateOverlayCiphers(); // null in popup only contexts
+        this.messagingService.send("goHome");
         return;
       }
 
-      const status = await this.authService.getAuthStatus(userId);
+      nextAccountStatus = await this.authService.getAuthStatus(userId);
       const forcePasswordReset =
         (await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$(userId))) !=
         ForceSetPasswordReason.None;
@@ -1206,7 +1212,9 @@ export default class MainBackground {
       await this.systemService.clearPendingClipboard();
       await this.notificationsService.updateConnection(false);
 
-      if (status === AuthenticationStatus.Locked) {
+      if (nextAccountStatus === AuthenticationStatus.LoggedOut) {
+        this.messagingService.send("goHome");
+      } else if (nextAccountStatus === AuthenticationStatus.Locked) {
         this.messagingService.send("locked", { userId: userId });
       } else if (forcePasswordReset) {
         this.messagingService.send("update-temp-password", { userId: userId });
@@ -1214,11 +1222,14 @@ export default class MainBackground {
         this.messagingService.send("unlocked", { userId: userId });
         await this.refreshBadge();
         await this.refreshMenu();
-        await this.overlayBackground.updateOverlayCiphers();
+        await this.overlayBackground?.updateOverlayCiphers(); // null in popup only contexts
         await this.syncService.fullSync(false);
       }
     } finally {
-      this.messagingService.send("switchAccountFinish", { userId: userId });
+      this.messagingService.send("switchAccountFinish", {
+        userId: userId,
+        status: nextAccountStatus,
+      });
     }
   }
 
@@ -1238,6 +1249,13 @@ export default class MainBackground {
     const userBeingLoggedOut = userId ?? activeUserId;
 
     await this.eventUploadService.uploadEvents(userBeingLoggedOut);
+
+    const newActiveUser =
+      userBeingLoggedOut === activeUserId
+        ? await firstValueFrom(this.accountService.nextUpAccount$.pipe(map((a) => a?.id)))
+        : null;
+
+    await this.switchAccount(newActiveUser);
 
     // HACK: We shouldn't wait for the authentication status to change but instead subscribe to the
     // authentication status to do various actions.
@@ -1273,11 +1291,6 @@ export default class MainBackground {
     //Needs to be checked before state is cleaned
     const needStorageReseed = await this.needsStorageReseed(userId);
 
-    const newActiveUser =
-      userBeingLoggedOut === activeUserId
-        ? await firstValueFrom(this.accountService.nextUpAccount$.pipe(map((a) => a?.id)))
-        : null;
-
     await this.stateService.clean({ userId: userBeingLoggedOut });
     await this.accountService.clean(userBeingLoggedOut);
 
@@ -1286,16 +1299,10 @@ export default class MainBackground {
     // HACK: Wait for the user logging outs authentication status to transition to LoggedOut
     await logoutPromise;
 
-    await this.switchAccount(newActiveUser);
-    if (newActiveUser != null) {
-      // we have a new active user, do not continue tearing down application
-      this.messagingService.send("switchAccountFinish");
-    } else {
-      this.messagingService.send("doneLoggingOut", {
-        expired: expired,
-        userId: userBeingLoggedOut,
-      });
-    }
+    this.messagingService.send("doneLoggingOut", {
+      expired: expired,
+      userId: userBeingLoggedOut,
+    });
 
     if (needStorageReseed) {
       await this.reseedStorage();
@@ -1308,9 +1315,7 @@ export default class MainBackground {
     }
     await this.refreshBadge();
     await this.mainContextMenuHandler?.noAccess();
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.notificationsService.updateConnection(false);
+    await this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
     await this.systemService.startProcessReload(this.authService);
   }

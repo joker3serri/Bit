@@ -655,7 +655,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           .sort(Utils.getSortFunction(this.i18nService, "name"))[0].id,
         parentCollectionId: this.filter.collectionId,
         showOrgSelector: true,
-        collectionIds: this.allCollections.map((c) => c.id),
+        limitNestedCollections: true,
       },
     });
     const result = await lastValueFrom(dialog.closed);
@@ -671,7 +671,12 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async editCollection(c: CollectionView, tab: CollectionDialogTabType): Promise<void> {
     const dialog = openCollectionDialog(this.dialogService, {
-      data: { collectionId: c?.id, organizationId: c.organizationId, initialTab: tab },
+      data: {
+        collectionId: c?.id,
+        organizationId: c.organizationId,
+        initialTab: tab,
+        limitNestedCollections: true,
+      },
     });
 
     const result = await lastValueFrom(dialog.closed);
