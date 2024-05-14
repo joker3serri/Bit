@@ -17,6 +17,7 @@ import { VerifyRecoverDeleteProviderComponent } from "./admin-console/providers/
 import { CreateOrganizationComponent } from "./admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "./admin-console/settings/sponsored-families.component";
 import { AcceptOrganizationComponent } from "./auth/accept-organization.component";
+import { AnonLayoutWrapperComponent } from "./auth/anon-layout-wrapper.component";
 import { deepLinkGuard } from "./auth/guards/deep-link.guard";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
@@ -140,12 +141,6 @@ const routes: Routes = [
       },
       { path: "recover", pathMatch: "full", redirectTo: "recover-2fa" },
       {
-        path: "recover-2fa",
-        component: RecoverTwoFactorComponent,
-        canActivate: [UnauthGuard],
-        data: { titleId: "recoverAccountTwoStep" },
-      },
-      {
         path: "recover-delete",
         component: RecoverDeleteComponent,
         canActivate: [UnauthGuard],
@@ -192,6 +187,19 @@ const routes: Routes = [
           import("./auth/migrate-encryption/migrate-legacy-encryption.component").then(
             (mod) => mod.MigrateFromLegacyEncryptionComponent,
           ),
+      },
+    ],
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "recover-2fa",
+        component: RecoverTwoFactorComponent,
+        data: {
+          pageTitle: "recoverAccountTwoStep",
+        },
       },
     ],
   },
