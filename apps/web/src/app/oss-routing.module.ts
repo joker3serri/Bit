@@ -17,6 +17,7 @@ import { VerifyRecoverDeleteProviderComponent } from "./admin-console/providers/
 import { CreateOrganizationComponent } from "./admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "./admin-console/settings/sponsored-families.component";
 import { AcceptOrganizationComponent } from "./auth/accept-organization.component";
+import { AnonLayoutWrapperComponent } from "./auth/anon-layout-wrapper.component";
 import { deepLinkGuard } from "./auth/guards/deep-link.guard";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
@@ -144,12 +145,6 @@ const routes: Routes = [
         component: RecoverTwoFactorComponent,
         canActivate: [UnauthGuard],
         data: { titleId: "recoverAccountTwoStep" },
-      },
-      {
-        path: "recover-delete",
-        component: RecoverDeleteComponent,
-        canActivate: [UnauthGuard],
-        data: { titleId: "deleteAccount" },
       },
       {
         path: "verify-recover-delete",
@@ -294,6 +289,20 @@ const routes: Routes = [
     path: "organizations",
     loadChildren: () =>
       import("./admin-console/organizations/organization.module").then((m) => m.OrganizationModule),
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "recover-delete",
+        component: RecoverDeleteComponent,
+        canActivate: [UnauthGuard],
+        data: {
+          pageTitle: "deleteAccount",
+        },
+      },
+    ],
   },
 ];
 
