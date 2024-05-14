@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
+import { Subject, Observable, combineLatest, firstValueFrom, map } from "rxjs";
 
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -14,6 +14,7 @@ import {
   PREMIUM_BANNER_DISK_LOCAL,
   BANNERS_DISMISSED_DISK,
 } from "@bitwarden/common/platform/state";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 export enum VisibleVaultBanner {
   KDFSettings = "kdf-settings",
@@ -54,6 +55,15 @@ export class VaultBannersService {
   private premiumBannerState: ActiveUserState<PremiumBannerReprompt>;
   private sessionBannerState: ActiveUserState<SessionBanners[]>;
 
+  /**
+   * Emits when the sync service has completed a sync
+   *
+   * This is needed because `hasPremiumFromAnySource$` will emit false until the sync is completed
+   * resulting in the premium banner being shown briefly on startup when the user has access to
+   * premium features.
+   */
+  private syncCompleted$ = new Subject<void>();
+
   constructor(
     private tokenService: TokenService,
     private userVerificationService: UserVerificationService,
@@ -61,13 +71,16 @@ export class VaultBannersService {
     private billingAccountProfileStateService: BillingAccountProfileStateService,
     private platformUtilsService: PlatformUtilsService,
     private kdfConfigService: KdfConfigService,
+    private syncService: SyncService,
   ) {
+    this.pollUntilSynced();
     this.premiumBannerState = this.stateProvider.getActive(PREMIUM_BANNER_REPROMPT_KEY);
     this.sessionBannerState = this.stateProvider.getActive(BANNERS_DISMISSED_DISK_KEY);
 
     this.shouldShowPremiumBanner$ = combineLatest([
       this.billingAccountProfileStateService.hasPremiumFromAnySource$,
       this.premiumBannerState.state$,
+      this.syncCompleted$,
     ]).pipe(
       map(([canAccessPremium, dismissedState]) => {
         const shouldShowPremiumBanner =
@@ -183,5 +196,16 @@ export class VaultBannersService {
       kdfConfig.kdfType === KdfType.PBKDF2_SHA256 &&
       kdfConfig.iterations < PBKDF2_ITERATIONS.defaultValue
     );
+  }
+
+  /** Poll the `syncService` until a sync is completed */
+  private pollUntilSynced() {
+    const interval = setInterval(async () => {
+      const lastSync = await this.syncService.getLastSync();
+      if (lastSync !== null) {
+        clearInterval(interval);
+        this.syncCompleted$.next();
+      }
+    }, 200);
   }
 }

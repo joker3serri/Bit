@@ -10,6 +10,7 @@ import { KdfType } from "@bitwarden/common/platform/enums";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import {
   PREMIUM_BANNER_REPROMPT_KEY,
@@ -27,8 +28,11 @@ describe("VaultBannersService", () => {
   const getKdfConfig = jest
     .fn()
     .mockResolvedValue({ kdfType: KdfType.PBKDF2_SHA256, iterations: 600000 });
+  const getLastSync = jest.fn().mockResolvedValue(null);
 
   beforeEach(() => {
+    jest.useFakeTimers();
+    getLastSync.mockClear().mockResolvedValue(new Date("2024-05-14"));
     isSelfHost.mockClear();
     getEmailVerified.mockClear().mockResolvedValue(true);
 
@@ -63,18 +67,53 @@ describe("VaultBannersService", () => {
           provide: KdfConfigService,
           useValue: { getKdfConfig },
         },
+        {
+          provide: SyncService,
+          useValue: { getLastSync },
+        },
       ],
     });
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   describe("Premium", () => {
-    it("shows premium banner when not self hosted and not already a premium user", async () => {
+    it("waits until sync is completed before showing premium banner", async () => {
+      getLastSync.mockResolvedValue(new Date("2024-05-14"));
       hasPremiumFromAnySource$.next(false);
       isSelfHost.mockReturnValue(false);
 
       service = TestBed.inject(VaultBannersService);
 
+      jest.advanceTimersByTime(201);
+
       expect(await firstValueFrom(service.shouldShowPremiumBanner$)).toBe(true);
+    });
+
+    it("does not show a premium banner for self-hosted users", async () => {
+      getLastSync.mockResolvedValue(new Date("2024-05-14"));
+      hasPremiumFromAnySource$.next(false);
+      isSelfHost.mockReturnValue(true);
+
+      service = TestBed.inject(VaultBannersService);
+
+      jest.advanceTimersByTime(201);
+
+      expect(await firstValueFrom(service.shouldShowPremiumBanner$)).toBe(false);
+    });
+
+    it("does not show a premium banner when they have access to premium", async () => {
+      getLastSync.mockResolvedValue(new Date("2024-05-14"));
+      hasPremiumFromAnySource$.next(true);
+      isSelfHost.mockReturnValue(false);
+
+      service = TestBed.inject(VaultBannersService);
+
+      jest.advanceTimersByTime(201);
+
+      expect(await firstValueFrom(service.shouldShowPremiumBanner$)).toBe(false);
     });
 
     describe("dismissing", () => {
