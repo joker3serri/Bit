@@ -28,8 +28,8 @@ import { devFlagEnabled, devFlagValue } from "../../misc/flags";
 import { ServerConfigData } from "../../models/data/server-config.data";
 import { CONFIG_DISK, KeyDefinition, StateProvider, UserKeyDefinition } from "../../state";
 
-export const RETRIEVAL_INTERVAL = devFlagEnabled("configRetrievalInterval")
-  ? (devFlagValue("configRetrievalInterval") as number)
+export const RETRIEVAL_INTERVAL = devFlagEnabled("configRetrievalIntervalMs")
+  ? (devFlagValue("configRetrievalIntervalMs") as number)
   : 3_600_000; // 1 hour
 
 export type ApiUrl = string;
