@@ -98,13 +98,13 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
     return new OrganizationUserResetPasswordDetailsResponse(r);
   }
 
-  async getManyOrganizationUserResetPasswordDetails(
+  async getManyOrganizationUserAccountRecoveryDetails(
     organizationId: string,
     ids: string[],
   ): Promise<ListResponse<OrganizationUserResetPasswordDetailsResponse>> {
     const r = await this.apiService.send(
       "POST",
-      "/organizations/" + organizationId + "/users/reset-password-details",
+      "/organizations/" + organizationId + "/users/account-recovery-details",
       new OrganizationUserBulkRequest(ids),
       true,
       true,
