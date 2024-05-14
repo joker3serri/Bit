@@ -1,8 +1,8 @@
 import { Subject, filter, firstValueFrom, map, merge, timeout } from "rxjs";
 
 import {
-  PinCryptoServiceAbstraction,
-  PinCryptoService,
+  PinServiceAbstraction,
+  PinService,
   InternalUserDecryptionOptionsServiceAbstraction,
   UserDecryptionOptionsService,
   AuthRequestServiceAbstraction,
@@ -125,6 +125,7 @@ import { DefaultActiveUserStateProvider } from "@bitwarden/common/platform/state
 import { DefaultGlobalStateProvider } from "@bitwarden/common/platform/state/implementations/default-global-state.provider";
 import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state/implementations/default-single-user-state.provider";
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
+import { InlineDerivedStateProvider } from "@bitwarden/common/platform/state/implementations/inline-derived-state";
 import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 /* eslint-enable import/no-restricted-paths */
 import { DefaultThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
@@ -153,6 +154,7 @@ import { SendStateProvider } from "@bitwarden/common/tools/send/services/send-st
 import { SendService } from "@bitwarden/common/tools/send/services/send.service";
 import { InternalSendService as InternalSendServiceAbstraction } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { UserId } from "@bitwarden/common/types/guid";
+import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/vault/abstractions/collection.service";
 import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/vault/abstractions/fido2/fido2-authenticator.service.abstraction";
@@ -224,7 +226,6 @@ import I18nService from "../platform/services/i18n.service";
 import { LocalBackedSessionStorageService } from "../platform/services/local-backed-session-storage.service";
 import { BackgroundPlatformUtilsService } from "../platform/services/platform-utils/background-platform-utils.service";
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
-import { BackgroundDerivedStateProvider } from "../platform/state/background-derived-state.provider";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
 import { BrowserStorageServiceProvider } from "../platform/storage/browser-storage-service.provider";
 import { ForegroundMemoryStorageService } from "../platform/storage/foreground-memory-storage.service";
@@ -318,7 +319,7 @@ export default class MainBackground {
   authRequestService: AuthRequestServiceAbstraction;
   accountService: AccountServiceAbstraction;
   globalStateProvider: GlobalStateProvider;
-  pinCryptoService: PinCryptoServiceAbstraction;
+  pinService: PinServiceAbstraction;
   singleUserStateProvider: SingleUserStateProvider;
   activeUserStateProvider: ActiveUserStateProvider;
   derivedStateProvider: DerivedStateProvider;
@@ -495,7 +496,7 @@ export default class MainBackground {
       this.accountService,
       this.singleUserStateProvider,
     );
-    this.derivedStateProvider = new BackgroundDerivedStateProvider();
+    this.derivedStateProvider = new InlineDerivedStateProvider();
     this.stateProvider = new DefaultStateProvider(
       this.activeUserStateProvider,
       this.singleUserStateProvider,
@@ -542,13 +543,31 @@ export default class MainBackground {
 
     const themeStateService = new DefaultThemeStateService(this.globalStateProvider);
 
-    this.masterPasswordService = new MasterPasswordService(this.stateProvider);
+    this.masterPasswordService = new MasterPasswordService(
+      this.stateProvider,
+      this.stateService,
+      this.keyGenerationService,
+      this.encryptService,
+    );
 
     this.i18nService = new I18nService(BrowserApi.getUILanguage(), this.globalStateProvider);
 
     this.kdfConfigService = new KdfConfigService(this.stateProvider);
 
+    this.pinService = new PinService(
+      this.accountService,
+      this.cryptoFunctionService,
+      this.encryptService,
+      this.kdfConfigService,
+      this.keyGenerationService,
+      this.logService,
+      this.masterPasswordService,
+      this.stateProvider,
+      this.stateService,
+    );
+
     this.cryptoService = new BrowserCryptoService(
+      this.pinService,
       this.masterPasswordService,
       this.keyGenerationService,
       this.cryptoFunctionService,
@@ -563,12 +582,30 @@ export default class MainBackground {
     );
 
     this.appIdService = new AppIdService(this.globalStateProvider);
+
+    this.userDecryptionOptionsService = new UserDecryptionOptionsService(this.stateProvider);
+    this.organizationService = new OrganizationService(this.stateProvider);
+    this.policyService = new PolicyService(this.stateProvider, this.organizationService);
+
+    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.accountService,
+      this.pinService,
+      this.userDecryptionOptionsService,
+      this.cryptoService,
+      this.tokenService,
+      this.policyService,
+      this.biometricStateService,
+      this.stateProvider,
+      this.logService,
+      VaultTimeoutStringType.OnRestart, // default vault timeout
+    );
+
     this.apiService = new ApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
-      this.stateService,
+      this.vaultTimeoutSettingsService,
       (expired: boolean) => this.logout(expired),
     );
     this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
@@ -585,8 +622,7 @@ export default class MainBackground {
       this.stateProvider,
     );
     this.syncNotifierService = new SyncNotifierService();
-    this.organizationService = new OrganizationService(this.stateProvider);
-    this.policyService = new PolicyService(this.stateProvider, this.organizationService);
+
     this.autofillSettingsService = new AutofillSettingsService(
       this.stateProvider,
       this.policyService,
@@ -692,23 +728,6 @@ export default class MainBackground {
     );
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
 
-    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
-      this.userDecryptionOptionsService,
-      this.cryptoService,
-      this.tokenService,
-      this.policyService,
-      this.stateService,
-      this.biometricStateService,
-    );
-
-    this.pinCryptoService = new PinCryptoService(
-      this.stateService,
-      this.cryptoService,
-      this.vaultTimeoutSettingsService,
-      this.logService,
-      this.kdfConfigService,
-    );
-
     this.userVerificationService = new UserVerificationService(
       this.stateService,
       this.cryptoService,
@@ -717,7 +736,7 @@ export default class MainBackground {
       this.i18nService,
       this.userVerificationApiService,
       this.userDecryptionOptionsService,
-      this.pinCryptoService,
+      this.pinService,
       this.logService,
       this.vaultTimeoutSettingsService,
       this.platformUtilsService,
@@ -839,11 +858,13 @@ export default class MainBackground {
       this.i18nService,
       this.collectionService,
       this.cryptoService,
+      this.pinService,
     );
 
     this.individualVaultExportService = new IndividualVaultExportService(
       this.folderService,
       this.cipherService,
+      this.pinService,
       this.cryptoService,
       this.cryptoFunctionService,
       this.kdfConfigService,
@@ -852,6 +873,7 @@ export default class MainBackground {
     this.organizationVaultExportService = new OrganizationVaultExportService(
       this.cipherService,
       this.apiService,
+      this.pinService,
       this.cryptoService,
       this.cryptoFunctionService,
       this.collectionService,
@@ -902,6 +924,7 @@ export default class MainBackground {
     };
 
     this.systemService = new SystemService(
+      this.pinService,
       this.messagingService,
       this.platformUtilsService,
       systemUtilsServiceReloadCallback,
@@ -1040,6 +1063,7 @@ export default class MainBackground {
       this.stateService,
       this.notificationsService,
       this.accountService,
+      this.vaultTimeoutSettingsService,
     );
 
     this.usernameGenerationService = new UsernameGenerationService(
@@ -1247,7 +1271,7 @@ export default class MainBackground {
     ]);
 
     //Needs to be checked before state is cleaned
-    const needStorageReseed = await this.needsStorageReseed();
+    const needStorageReseed = await this.needsStorageReseed(userId);
 
     const newActiveUser =
       userBeingLoggedOut === activeUserId
@@ -1291,9 +1315,11 @@ export default class MainBackground {
     await this.systemService.startProcessReload(this.authService);
   }
 
-  private async needsStorageReseed(): Promise<boolean> {
-    const currentVaultTimeout = await this.stateService.getVaultTimeout();
-    return currentVaultTimeout == null ? false : true;
+  private async needsStorageReseed(userId: UserId): Promise<boolean> {
+    const currentVaultTimeout = await firstValueFrom(
+      this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
+    );
+    return currentVaultTimeout == VaultTimeoutStringType.Never ? false : true;
   }
 
   async collectPageDetailsForContentScript(tab: any, sender: string, frameId: number = null) {
