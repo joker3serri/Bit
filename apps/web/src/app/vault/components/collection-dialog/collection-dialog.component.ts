@@ -374,6 +374,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     ) {
       return true;
     }
+
+    return false;
   }
 
   private handleFormGroupReadonly(readonly: boolean) {
