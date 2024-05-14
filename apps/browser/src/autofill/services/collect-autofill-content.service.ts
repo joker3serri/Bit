@@ -1348,9 +1348,10 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
         continue;
       }
 
-      const cachedAutofillFieldElement = this.autofillFieldElements.get(formFieldElement);
+      let cachedAutofillFieldElement = this.autofillFieldElements.get(formFieldElement);
       if (!cachedAutofillFieldElement) {
-        continue;
+        await this.buildAutofillFieldsData([formFieldElement]);
+        cachedAutofillFieldElement = this.autofillFieldElements.get(formFieldElement);
       }
       cachedAutofillFieldElement.viewable = true;
 
