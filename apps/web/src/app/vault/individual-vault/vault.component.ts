@@ -400,7 +400,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     try {
       if (event.type === "viewAttachments") {
         await this.editCipherAttachments(event.item);
-      } else if (event.type === "viewCollections") {
+      } else if (event.type === "viewCipherCollections") {
         await this.editCipherCollections(event.item);
       } else if (event.type === "clone") {
         await this.cloneCipher(event.item);
@@ -659,7 +659,8 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async deleteCollection(collection: CollectionView): Promise<void> {
     const organization = await this.organizationService.get(collection.organizationId);
-    if (!collection.canDelete(organization)) {
+    const flexibleCollectionsV1Enabled = await firstValueFrom(this.flexibleCollectionsV1Enabled$);
+    if (!collection.canDelete(organization, flexibleCollectionsV1Enabled)) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
