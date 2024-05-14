@@ -72,6 +72,7 @@ import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filt
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
 import { VaultSelectComponent } from "../vault/popup/components/vault/vault-select.component";
 import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
+import { VaultV2SearchComponent } from "../vault/popup/components/vault/vault-v2-search.component";
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
@@ -79,6 +80,7 @@ import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { SyncComponent } from "../vault/popup/settings/sync.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
+import { SearchModule } from "@bitwarden/components";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -124,6 +126,7 @@ import "../platform/popup/locales";
     PopupFooterComponent,
     PopupHeaderComponent,
     UserVerificationDialogComponent,
+    SearchModule,
   ],
   declarations: [
     ActionButtonsComponent,
@@ -189,6 +192,7 @@ import "../platform/popup/locales";
     CurrentAccountComponent,
     AccountSwitcherComponent,
     VaultV2Component,
+    VaultV2SearchComponent,
   ],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],

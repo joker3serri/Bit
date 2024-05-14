@@ -1,0 +1,7 @@
+<h1>Search Component Loaded</h1>
+
+<bit-search
+  [(ngModel)]="searchText"
+  [placeholder]="'search' | i18n"
+  (ngModelChange)="onSearchTextChanged($event)"
+></bit-search>

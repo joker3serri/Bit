@@ -10,4 +10,6 @@ export class VaultV2Component implements OnInit, OnDestroy {
   ngOnInit(): void {}
 
   ngOnDestroy(): void {}
+
+  handleSearchTextChange(searchText: string): void {}
 }
