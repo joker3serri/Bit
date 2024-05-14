@@ -76,7 +76,7 @@ export enum CollectionDialogAction {
 })
 export class CollectionDialogComponent implements OnInit, OnDestroy {
   protected flexibleCollectionsV1Enabled$ = this.configService
-    .getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1, false)
+    .getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1)
     .pipe(first());
 
   private destroy$ = new Subject<void>();
@@ -214,7 +214,9 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
               access: accessSelections,
             });
             this.collection.manage = collection?.manage ?? false; // Get manage flag from sync data collection
-            this.showDeleteButton = !this.dialogReadonly && this.collection.canDelete(organization);
+            this.showDeleteButton =
+              !this.dialogReadonly &&
+              this.collection.canDelete(organization, flexibleCollectionsV1);
           } else {
             this.nestOptions = collections;
             const parent = collections.find((c) => c.id === this.params.parentCollectionId);

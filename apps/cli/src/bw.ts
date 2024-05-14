@@ -3,14 +3,15 @@ import * as path from "path";
 
 import { program } from "commander";
 import * as jsdom from "jsdom";
+import { firstValueFrom } from "rxjs";
 
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
   AuthRequestService,
   LoginStrategyService,
   LoginStrategyServiceAbstraction,
-  PinCryptoService,
-  PinCryptoServiceAbstraction,
+  PinService,
+  PinServiceAbstraction,
   UserDecryptionOptionsService,
 } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -28,14 +29,16 @@ import { ProviderApiService } from "@bitwarden/common/admin-console/services/pro
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/auth/abstractions/avatar.service";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
+import { KdfConfigService as KdfConfigServiceAbstraction } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
-import { DeviceTrustCryptoService } from "@bitwarden/common/auth/services/device-trust-crypto.service.implementation";
+import { DeviceTrustService } from "@bitwarden/common/auth/services/device-trust.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
+import { KdfConfigService } from "@bitwarden/common/auth/services/kdf-config.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { MasterPasswordService } from "@bitwarden/common/auth/services/master-password/master-password.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
@@ -77,6 +80,7 @@ import { MigrationBuilderService } from "@bitwarden/common/platform/services/mig
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
+import { UserAutoUnlockKeyService } from "@bitwarden/common/platform/services/user-auto-unlock-key.service";
 import {
   ActiveUserStateProvider,
   DerivedStateProvider,
@@ -112,6 +116,7 @@ import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.s
 import { SendStateProvider } from "@bitwarden/common/tools/send/services/send-state.provider";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service";
 import { UserId } from "@bitwarden/common/types/guid";
+import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
@@ -204,7 +209,7 @@ export class Main {
   cipherFileUploadService: CipherFileUploadService;
   keyConnectorService: KeyConnectorService;
   userVerificationService: UserVerificationService;
-  pinCryptoService: PinCryptoServiceAbstraction;
+  pinService: PinServiceAbstraction;
   stateService: StateService;
   autofillSettingsService: AutofillSettingsServiceAbstraction;
   domainSettingsService: DomainSettingsService;
@@ -217,7 +222,7 @@ export class Main {
   syncNotifierService: SyncNotifierService;
   sendApiService: SendApiService;
   devicesApiService: DevicesApiServiceAbstraction;
-  deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction;
+  deviceTrustService: DeviceTrustServiceAbstraction;
   authRequestService: AuthRequestService;
   configApiService: ConfigApiServiceAbstraction;
   configService: ConfigService;
@@ -233,6 +238,8 @@ export class Main {
   biometricStateService: BiometricStateService;
   billingAccountProfileStateService: BillingAccountProfileStateService;
   providerApiService: ProviderApiServiceAbstraction;
+  userAutoUnlockKeyService: UserAutoUnlockKeyService;
+  kdfConfigService: KdfConfigServiceAbstraction;
 
   constructor() {
     let p = null;
@@ -266,7 +273,7 @@ export class Main {
     this.secureStorageService = new NodeEnvSecureStorageService(
       this.storageService,
       this.logService,
-      () => this.cryptoService,
+      this.encryptService,
     );
 
     this.memoryStorageService = new MemoryStorageService();
@@ -309,7 +316,7 @@ export class Main {
       this.singleUserStateProvider,
     );
 
-    this.derivedStateProvider = new DefaultDerivedStateProvider(storageServiceProvider);
+    this.derivedStateProvider = new DefaultDerivedStateProvider();
 
     this.stateProvider = new DefaultStateProvider(
       this.activeUserStateProvider,
@@ -339,6 +346,7 @@ export class Main {
       this.storageService,
       this.logService,
       new MigrationBuilderService(),
+      ClientType.Cli,
     );
 
     this.stateService = new StateService(
@@ -353,9 +361,29 @@ export class Main {
       migrationRunner,
     );
 
-    this.masterPasswordService = new MasterPasswordService(this.stateProvider);
+    this.masterPasswordService = new MasterPasswordService(
+      this.stateProvider,
+      this.stateService,
+      this.keyGenerationService,
+      this.encryptService,
+    );
+
+    this.kdfConfigService = new KdfConfigService(this.stateProvider);
+
+    this.pinService = new PinService(
+      this.accountService,
+      this.cryptoFunctionService,
+      this.encryptService,
+      this.kdfConfigService,
+      this.keyGenerationService,
+      this.logService,
+      this.masterPasswordService,
+      this.stateProvider,
+      this.stateService,
+    );
 
     this.cryptoService = new CryptoService(
+      this.pinService,
       this.masterPasswordService,
       this.keyGenerationService,
       this.cryptoFunctionService,
@@ -365,6 +393,7 @@ export class Main {
       this.stateService,
       this.accountService,
       this.stateProvider,
+      this.kdfConfigService,
     );
 
     this.appIdService = new AppIdService(this.globalStateProvider);
@@ -375,12 +404,32 @@ export class Main {
       " (" +
       this.platformUtilsService.getDeviceString().toUpperCase() +
       ")";
+
+    this.biometricStateService = new DefaultBiometricStateService(this.stateProvider);
+    this.userDecryptionOptionsService = new UserDecryptionOptionsService(this.stateProvider);
+
+    this.organizationService = new OrganizationService(this.stateProvider);
+    this.policyService = new PolicyService(this.stateProvider, this.organizationService);
+
+    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
+      this.accountService,
+      this.pinService,
+      this.userDecryptionOptionsService,
+      this.cryptoService,
+      this.tokenService,
+      this.policyService,
+      this.biometricStateService,
+      this.stateProvider,
+      this.logService,
+      VaultTimeoutStringType.Never, // default vault timeout
+    );
+
     this.apiService = new NodeApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
-      this.stateService,
+      this.vaultTimeoutSettingsService,
       async (expired: boolean) => await this.logout(),
       customUserAgent,
     );
@@ -426,11 +475,7 @@ export class Main {
 
     this.providerService = new ProviderService(this.stateProvider);
 
-    this.organizationService = new OrganizationService(this.stateProvider);
-
     this.organizationUserService = new OrganizationUserServiceImplementation(this.apiService);
-
-    this.policyService = new PolicyService(this.stateProvider, this.organizationService);
 
     this.policyApiService = new PolicyApiService(this.policyService, this.apiService);
 
@@ -447,7 +492,11 @@ export class Main {
       this.stateProvider,
     );
 
-    this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
+    this.twoFactorService = new TwoFactorService(
+      this.i18nService,
+      this.platformUtilsService,
+      this.globalStateProvider,
+    );
 
     this.passwordStrengthService = new PasswordStrengthService();
 
@@ -457,10 +506,8 @@ export class Main {
       this.stateService,
     );
 
-    this.userDecryptionOptionsService = new UserDecryptionOptionsService(this.stateProvider);
-
     this.devicesApiService = new DevicesApiServiceImplementation(this.apiService);
-    this.deviceTrustCryptoService = new DeviceTrustCryptoService(
+    this.deviceTrustService = new DeviceTrustService(
       this.keyGenerationService,
       this.cryptoFunctionService,
       this.cryptoService,
@@ -472,6 +519,7 @@ export class Main {
       this.stateProvider,
       this.secureStorageService,
       this.userDecryptionOptionsService,
+      this.logService,
     );
 
     this.authRequestService = new AuthRequestService(
@@ -505,11 +553,13 @@ export class Main {
       this.encryptService,
       this.passwordStrengthService,
       this.policyService,
-      this.deviceTrustCryptoService,
+      this.deviceTrustService,
       this.authRequestService,
       this.userDecryptionOptionsService,
       this.globalStateProvider,
       this.billingAccountProfileStateService,
+      this.vaultTimeoutSettingsService,
+      this.kdfConfigService,
     );
 
     this.authService = new AuthService(
@@ -556,24 +606,6 @@ export class Main {
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
 
-    this.biometricStateService = new DefaultBiometricStateService(this.stateProvider);
-
-    this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
-      this.userDecryptionOptionsService,
-      this.cryptoService,
-      this.tokenService,
-      this.policyService,
-      this.stateService,
-      this.biometricStateService,
-    );
-
-    this.pinCryptoService = new PinCryptoService(
-      this.stateService,
-      this.cryptoService,
-      this.vaultTimeoutSettingsService,
-      this.logService,
-    );
-
     this.userVerificationService = new UserVerificationService(
       this.stateService,
       this.cryptoService,
@@ -582,10 +614,11 @@ export class Main {
       this.i18nService,
       this.userVerificationApiService,
       this.userDecryptionOptionsService,
-      this.pinCryptoService,
+      this.pinService,
       this.logService,
       this.vaultTimeoutSettingsService,
       this.platformUtilsService,
+      this.kdfConfigService,
     );
 
     this.vaultTimeoutService = new VaultTimeoutService(
@@ -594,7 +627,6 @@ export class Main {
       this.cipherService,
       this.folderService,
       this.collectionService,
-      this.cryptoService,
       this.platformUtilsService,
       this.messagingService,
       this.searchService,
@@ -631,6 +663,7 @@ export class Main {
       this.avatarService,
       async (expired: boolean) => await this.logout(),
       this.billingAccountProfileStateService,
+      this.tokenService,
     );
 
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
@@ -644,29 +677,34 @@ export class Main {
       this.i18nService,
       this.collectionService,
       this.cryptoService,
+      this.pinService,
     );
 
     this.individualExportService = new IndividualVaultExportService(
       this.folderService,
       this.cipherService,
+      this.pinService,
       this.cryptoService,
       this.cryptoFunctionService,
-      this.stateService,
+      this.kdfConfigService,
     );
 
     this.organizationExportService = new OrganizationVaultExportService(
       this.cipherService,
       this.apiService,
+      this.pinService,
       this.cryptoService,
       this.cryptoFunctionService,
-      this.stateService,
       this.collectionService,
+      this.kdfConfigService,
     );
 
     this.exportService = new VaultExportService(
       this.individualExportService,
       this.organizationExportService,
     );
+
+    this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
 
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
     this.program = new Program(this);
@@ -711,7 +749,7 @@ export class Main {
     this.authService.logOut(() => {
       /* Do nothing */
     });
-    const userId = await this.stateService.getUserId();
+    const userId = (await this.stateService.getUserId()) as UserId;
     await Promise.all([
       this.eventUploadService.uploadEvents(userId as UserId),
       this.syncService.setLastSync(new Date(0)),
@@ -722,9 +760,10 @@ export class Main {
       this.passwordGenerationService.clear(),
     ]);
 
-    await this.stateEventRunnerService.handleEvent("logout", userId as UserId);
+    await this.stateEventRunnerService.handleEvent("logout", userId);
 
     await this.stateService.clean();
+    await this.accountService.clean(userId);
     process.env.BW_SESSION = null;
   }
 
@@ -734,6 +773,11 @@ export class Main {
     this.containerService.attachToGlobal(global);
     await this.i18nService.init();
     this.twoFactorService.init();
+
+    const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
+    if (activeAccount) {
+      await this.userAutoUnlockKeyService.setUserKeyInMemoryIfAutoUserKeySet(activeAccount.id);
+    }
   }
 }
 
