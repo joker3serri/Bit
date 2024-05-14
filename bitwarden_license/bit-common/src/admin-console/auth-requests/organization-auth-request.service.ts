@@ -28,12 +28,24 @@ export class OrganizationAuthRequestService {
     organizationId: string,
     authRequests: PendingAuthRequestView[],
   ): Promise<void> {
-    const details = await this.organizationUserService.getManyOrganizationUserResetPasswordDetails(
-      organizationId,
-      authRequests.map((r) => r.organizationUserId),
-    );
+    const organizationUserIds = authRequests.map((r) => r.organizationUserId);
+    const details =
+      await this.organizationUserService.getManyOrganizationUserAccountRecoveryDetails(
+        organizationId,
+        organizationUserIds,
+      );
 
-    const items = await Promise.all(
+    if (
+      details == null ||
+      details.data.length == 0 ||
+      details.data.some((d) => d.resetPasswordKey == null)
+    ) {
+      throw new Error(
+        "All users must be enrolled in account recovery (password reset) in order for the requests to be approved.",
+      );
+    }
+
+    const requestsToApprove = await Promise.all(
       authRequests.map(async (r) => {
         const detail = details.data.find((d) => d.organizationUserId === r.organizationUserId);
         const encryptedKey = await this.getEncryptedUserKey(organizationId, r.publicKey, detail);
@@ -42,7 +54,10 @@ export class OrganizationAuthRequestService {
       }),
     );
 
-    await this.organizationAuthRequestApiService.approvePendingRequests(organizationId, items);
+    await this.organizationAuthRequestApiService.approvePendingRequests(
+      organizationId,
+      requestsToApprove,
+    );
   }
 
   async approvePendingRequest(organizationId: string, authRequest: PendingAuthRequestView) {

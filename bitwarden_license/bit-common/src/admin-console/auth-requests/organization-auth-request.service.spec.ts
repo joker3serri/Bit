@@ -2,6 +2,7 @@ import { MockProxy, mock } from "jest-mock-extended";
 
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { OrganizationUserResetPasswordDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-user/responses";
+import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
@@ -99,13 +100,20 @@ describe("OrganizationAuthRequestService", () => {
 
       const organizationId = "organizationId";
 
-      const organizationUserResetPasswordDetailsResponse =
-        new OrganizationUserResetPasswordDetailsResponse({
-          resetPasswordKey: "resetPasswordKey",
-          encryptedPrivateKey: "encryptedPrivateKey",
-        });
+      const organizationUserResetPasswordDetailsResponse = new ListResponse(
+        {
+          Data: [
+            {
+              organizationUserId: "organizationUserId1",
+              resetPasswordKey: "resetPasswordKey",
+              encryptedPrivateKey: "encryptedPrivateKey",
+            },
+          ],
+        },
+        OrganizationUserResetPasswordDetailsResponse,
+      );
 
-      organizationUserService.getOrganizationUserResetPasswordDetails.mockResolvedValue(
+      organizationUserService.getManyOrganizationUserAccountRecoveryDetails.mockResolvedValueOnce(
         organizationUserResetPasswordDetailsResponse,
       );
 
@@ -126,7 +134,7 @@ describe("OrganizationAuthRequestService", () => {
         organizationId,
         [
           new AdminAuthRequestUpdateWithIdRequest(
-            mockPendingAuthRequest.id,
+            "requestId1",
             true,
             encryptedUserKey.encryptedString,
           ),
