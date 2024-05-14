@@ -71,7 +71,7 @@ export abstract class OrganizationUserService {
    * @param organizationId - Identifier for the organization
    * @param ids - A list of organization user identifiers
    */
-  abstract getManyOrganizationUserResetPasswordDetails(
+  abstract getManyOrganizationUserAccountRecoveryDetails(
     organizationId: string,
     ids: string[],
   ): Promise<ListResponse<OrganizationUserResetPasswordDetailsResponse>>;
