@@ -127,6 +127,17 @@ export class VaultPopupItemsService {
    */
   autofillAllowed$: Observable<boolean> = this._currentAutofillTab$.pipe(map((tab) => !!tab));
 
+  /**
+   * Observable that indicates whether the user's vault is empty.
+   */
+  emptyVault$: Observable<boolean> = this._cipherList$.pipe(map((ciphers) => !ciphers.length));
+
+  /**
+   * Observable that indicates whether there are no ciphers to show with the current filter.
+   * @todo Implement filter/search functionality in PM-6824 and PM-6826.
+   */
+  noFilteredResults$: Observable<boolean> = of(true);
+
   constructor(
     private cipherService: CipherService,
     private vaultSettingsService: VaultSettingsService,

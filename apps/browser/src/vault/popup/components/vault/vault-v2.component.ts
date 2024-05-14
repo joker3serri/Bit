@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
+import { Router } from "@angular/router";
 
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { Icons } from "@bitwarden/components";
 
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
 
@@ -10,17 +10,25 @@ import { VaultPopupItemsService } from "../../services/vault-popup-items.service
   templateUrl: "vault-v2.component.html",
 })
 export class VaultV2Component implements OnInit, OnDestroy {
-  autoFillCiphers$: Observable<CipherView[]>;
-  favoriteCiphers$: Observable<CipherView[]>;
-  remainingCiphers$: Observable<CipherView[]>;
+  protected favoriteCiphers$ = this.vaultPopupItemsService.favoriteCiphers$;
+  protected remainingCiphers$ = this.vaultPopupItemsService.remainingCiphers$;
 
-  constructor(private vaultPopupItemsService: VaultPopupItemsService) {}
+  protected showEmptyState$ = this.vaultPopupItemsService.emptyVault$;
+  protected showNoResultsState$ = this.vaultPopupItemsService.noFilteredResults$;
 
-  ngOnInit(): void {
-    this.autoFillCiphers$ = this.vaultPopupItemsService.autoFillCiphers$;
-    this.favoriteCiphers$ = this.vaultPopupItemsService.favoriteCiphers$;
-    this.remainingCiphers$ = this.vaultPopupItemsService.remainingCiphers$;
-  }
+  protected vaultIcon = Icons.Vault;
+
+  constructor(
+    private vaultPopupItemsService: VaultPopupItemsService,
+    private router: Router,
+  ) {}
+
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {}
+
+  addCipher() {
+    // TODO: Add currently filtered organization to query params if available
+    void this.router.navigate(["/add-cipher"], {});
+  }
 }

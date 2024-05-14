@@ -3137,6 +3137,15 @@
   "autofillSuggestionsTip": {
       "message": "Save a login item for this site to auto-fill"
   },
+  "yourVaultIsEmpty": {
+    "message": "Your vault is empty"
+  },
+  "noItemsMatchSearch": {
+    "message": "No items match your search"
+  },
+  "clearFiltersOrTryAnother": {
+    "message": "Clear filters or try another search term"
+  },
   "adminConsole": {
     "message": "Admin Console"
   },

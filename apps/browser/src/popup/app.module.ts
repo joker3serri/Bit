@@ -19,6 +19,7 @@ import {
   AvatarModule,
   ButtonModule,
   IconButtonModule,
+  NoItemsModule,
   SectionComponent,
   ToastModule,
   TypographyModule,
@@ -140,6 +141,7 @@ import "../platform/popup/locales";
     SectionComponent,
     TypographyModule,
     AutofillVaultListItemsComponent,
+    NoItemsModule,
   ],
   declarations: [
     ActionButtonsComponent,
