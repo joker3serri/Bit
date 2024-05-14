@@ -864,17 +864,18 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     const flexibleCollectionsV1Enabled = await this.flexibleCollectionsV1Enabled();
-    if (
-      (flexibleCollectionsV1Enabled &&
-        collections?.some(
-          (c) =>
-            !c.canDelete(
-              organizations.find((o) => o.id == c.organizationId),
-              flexibleCollectionsV1Enabled,
-            ),
-        )) ||
-      ciphers?.some((c) => !c.edit)
-    ) {
+
+    const canDeleteCollections =
+      collections == null ||
+      collections.every((c) =>
+        c.canDelete(
+          organizations.find((o) => o.id == c.organizationId),
+          flexibleCollectionsV1Enabled,
+        ),
+      );
+    const canDeleteCiphers = ciphers == null || ciphers.every((c) => c.edit);
+
+    if (flexibleCollectionsV1Enabled && (!canDeleteCollections || !canDeleteCiphers)) {
       this.showMissingPermissionsError();
       return;
     }

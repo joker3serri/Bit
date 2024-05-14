@@ -1112,11 +1112,15 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      (this.flexibleCollectionsV1Enabled &&
-        collections?.some((c) => !c.canDelete(organization, this.flexibleCollectionsV1Enabled))) ||
-      ciphers?.some((c) => !c.edit && !this.organization.allowAdminAccessToAllCollectionItems)
-    ) {
+    const canDeleteCollections =
+      collections == null ||
+      collections.every((c) => c.canDelete(organization, this.flexibleCollectionsV1Enabled));
+    const canDeleteCiphers =
+      ciphers == null ||
+      this.organization.allowAdminAccessToAllCollectionItems ||
+      ciphers.every((c) => c.edit);
+
+    if (this.flexibleCollectionsV1Enabled && (!canDeleteCiphers || !canDeleteCollections)) {
       this.showMissingPermissionsError();
       return;
     }
