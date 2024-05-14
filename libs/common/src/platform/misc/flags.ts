@@ -10,6 +10,7 @@ export type SharedFlags = {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SharedDevFlags = {
   noopNotifications: boolean;
+  skipWelcomeOnInstall: boolean;
   configRetrievalInterval: number;
 };
 
