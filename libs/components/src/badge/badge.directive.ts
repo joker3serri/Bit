@@ -49,7 +49,7 @@ export class BadgeDirective implements FocusableElement {
     ]
       .concat(styles[this.variant])
       .concat(this.hasHoverEffects ? hoverStyles[this.variant] : [])
-      .concat(this.truncate ? ["tw-truncate", this.maxWidth] : []);
+      .concat(this.truncate ? ["tw-truncate", this.maxWidthClass] : []);
   }
   @HostBinding("attr.title") get title() {
     return this.truncate ? this.el.nativeElement.textContent.trim() : null;
@@ -65,7 +65,7 @@ export class BadgeDirective implements FocusableElement {
    */
   @Input() truncate = true;
 
-  @Input() maxWidth = "tw-max-w-40";
+  @Input() maxWidthClass: `tw-max-w-${string}` = "tw-max-w-40";
 
   getFocusTarget() {
     return this.el.nativeElement;
