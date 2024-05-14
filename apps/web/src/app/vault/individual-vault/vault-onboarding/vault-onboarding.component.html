@@ -1,6 +1,6 @@
 <div
   *ngIf="
-    isNewAccount && showOnboarding && (showOnboardingAccess$ | async) && onboardingTasks$
+    isNewAccount && showOnboarding && onboardingTasks$
       | async as onboardingTasks
   "
   class="tw-mb-6"
