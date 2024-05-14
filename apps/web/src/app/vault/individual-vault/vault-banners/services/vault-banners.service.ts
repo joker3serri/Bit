@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Subject, Observable, combineLatest, firstValueFrom, map } from "rxjs";
+import { Subject, Observable, combineLatest, firstValueFrom, map, ReplaySubject } from "rxjs";
+import { mergeMap, take } from "rxjs/operators";
 
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -77,11 +78,18 @@ export class VaultBannersService {
     this.premiumBannerState = this.stateProvider.getActive(PREMIUM_BANNER_REPROMPT_KEY);
     this.sessionBannerState = this.stateProvider.getActive(BANNERS_DISMISSED_DISK_KEY);
 
-    this.shouldShowPremiumBanner$ = combineLatest([
+    const premiumSources$ = combineLatest([
       this.billingAccountProfileStateService.hasPremiumFromAnySource$,
       this.premiumBannerState.state$,
-      this.syncCompleted$,
-    ]).pipe(
+    ]);
+
+    const replaceSources$ = new ReplaySubject<[boolean, PremiumBannerReprompt]>(1);
+
+    premiumSources$.subscribe(replaceSources$);
+
+    this.shouldShowPremiumBanner$ = this.syncCompleted$.pipe(
+      take(1), // Wait until the first sync is complete before considering the premium status
+      mergeMap(() => replaceSources$),
       map(([canAccessPremium, dismissedState]) => {
         const shouldShowPremiumBanner =
           !canAccessPremium && !this.platformUtilsService.isSelfHost();
