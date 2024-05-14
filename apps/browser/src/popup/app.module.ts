@@ -15,7 +15,14 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
-import { AvatarModule, ButtonModule, IconButtonModule, ToastModule } from "@bitwarden/components";
+import {
+  AvatarModule,
+  ButtonModule,
+  IconButtonModule,
+  SectionComponent,
+  ToastModule,
+  TypographyModule,
+} from "@bitwarden/components";
 import { ExportScopeCalloutComponent } from "@bitwarden/vault-export-ui";
 
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
@@ -64,6 +71,7 @@ import { Fido2Component } from "../vault/popup/components/fido2/fido2.component"
 import { AddEditCustomFieldsComponent } from "../vault/popup/components/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
+import { AutofillVaultListItemsComponent } from "../vault/popup/components/vault/autofill-vault-list-items.component";
 import { CollectionsComponent } from "../vault/popup/components/vault/collections.component";
 import { CurrentTabComponent } from "../vault/popup/components/vault/current-tab.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/password-history.component";
@@ -129,6 +137,9 @@ import "../platform/popup/locales";
     VaultListItemsContainerComponent,
     VaultListItemComponent,
     IconButtonModule,
+    SectionComponent,
+    TypographyModule,
+    AutofillVaultListItemsComponent,
   ],
   declarations: [
     ActionButtonsComponent,

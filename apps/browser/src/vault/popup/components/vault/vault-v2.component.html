@@ -10,11 +10,7 @@
       <app-current-account></app-current-account>
     </ng-container>
   </popup-header>
-  <app-vault-list-items-container
-    title="Auto-fill suggestions"
-    [showAutoFill]="true"
-    [ciphers]="autoFillCiphers$ | async"
-  ></app-vault-list-items-container>
+  <app-autofill-vault-list-items></app-autofill-vault-list-items>
   <app-vault-list-items-container
     title="Favorites"
     [ciphers]="favoriteCiphers$ | async"

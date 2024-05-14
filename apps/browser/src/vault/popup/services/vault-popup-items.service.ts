@@ -115,6 +115,18 @@ export class VaultPopupItemsService {
     shareReplay({ refCount: false, bufferSize: 1 }),
   );
 
+  /**
+   * Observable that indicates whether a filter is currently applied to the ciphers.
+   * @todo Implement filter/search functionality in PM-6824 and PM-6826.
+   */
+  hasFilterApplied$: Observable<boolean> = of(false);
+
+  /**
+   * Observable that indicates whether autofill is allowed in the current context.
+   * Autofill is allowed when there is a current tab and the popup is not in a popout window.
+   */
+  autofillAllowed$: Observable<boolean> = this._currentAutofillTab$.pipe(map((tab) => !!tab));
+
   constructor(
     private cipherService: CipherService,
     private vaultSettingsService: VaultSettingsService,

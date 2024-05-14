@@ -1,0 +1,17 @@
+<app-vault-list-items-container
+  *ngIf="autofillCiphers$ | async as ciphers"
+  [ciphers]="ciphers"
+  [title]="'autofillSuggestions' | i18n"
+  [showAutoFill]="false"
+></app-vault-list-items-container>
+<ng-container *ngIf="showEmptyAutofillTip$ | async">
+  <bit-section>
+    <!-- Temporary will be replaced with popup-section-header -->
+    <h2 bitTypography="h6" class="tw-flex">
+      <span class="tw-flex-grow tw-text-primary-700 tw-font-bold">{{
+        "autofillSuggestions" | i18n
+      }}</span>
+    </h2>
+    <span class="tw-text-muted">{{ "autofillSuggestionsTip" | i18n }}</span>
+  </bit-section>
+</ng-container>
