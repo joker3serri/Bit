@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, Location } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -21,6 +21,7 @@ export class AccountComponent {
 
   constructor(
     private accountSwitcherService: AccountSwitcherService,
+    private location: Location,
     private i18nService: I18nService,
     private logService: LogService,
   ) {}
@@ -31,11 +32,19 @@ export class AccountComponent {
 
   async selectAccount(id: string) {
     this.loading.emit(true);
+    let result;
     try {
-      await this.accountSwitcherService.selectAccount(id);
+      result = await this.accountSwitcherService.selectAccount(id);
     } catch (e) {
       this.logService.error("Error selecting account", e);
     }
+
+    // Navigate out of account switching for unlocked accounts
+    // locked or logged out account statuses are handled by background and app.component
+    if (result?.status === AuthenticationStatus.Unlocked) {
+      this.location.back();
+    }
+    this.loading.emit(false);
   }
 
   get status() {

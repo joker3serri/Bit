@@ -106,7 +106,12 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     });
 
     if (confirmed) {
-      this.messagingService.send("logout", { userId });
+      const result = await this.accountSwitcherService.logoutAccount(userId);
+      // unlocked logout responses need to be navigated out of the account switcher.
+      // other responses will be handled by background and app.component
+      if (result?.status === AuthenticationStatus.Unlocked) {
+        this.location.back();
+      }
     }
     this.loading = false;
   }
