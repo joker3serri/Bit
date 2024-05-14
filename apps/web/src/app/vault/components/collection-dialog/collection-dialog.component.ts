@@ -212,7 +212,9 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
               parent: parentName,
               access: accessSelections,
             });
-            this.showDeleteButton = !this.dialogReadonly && this.collection.canDelete(organization);
+            this.showDeleteButton =
+              !this.dialogReadonly &&
+              this.collection.canDelete(organization, flexibleCollectionsV1);
           } else {
             const parent = this.nestOptions.find((c) => c.id === this.params.parentCollectionId);
             const currentOrgUserId = users.data.find(
