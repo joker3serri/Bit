@@ -1,8 +1,9 @@
 import {
-  AbstractMemoryStorageService,
   AbstractStorageService,
   ObservableStorageService,
 } from "@bitwarden/common/platform/abstractions/storage.service";
+import { Lazy } from "@bitwarden/common/platform/misc/lazy";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
 
 import { BrowserApi } from "../../browser/browser-api";
@@ -17,6 +18,11 @@ import {
   KeyGenerationServiceInitOptions,
   keyGenerationServiceFactory,
 } from "./key-generation-service.factory";
+import { LogServiceInitOptions, logServiceFactory } from "./log-service.factory";
+import {
+  PlatformUtilsServiceInitOptions,
+  platformUtilsServiceFactory,
+} from "./platform-utils-service.factory";
 
 export type DiskStorageServiceInitOptions = FactoryOptions;
 export type SecureStorageServiceInitOptions = FactoryOptions;
@@ -25,7 +31,9 @@ export type MemoryStorageServiceInitOptions = FactoryOptions &
   EncryptServiceInitOptions &
   KeyGenerationServiceInitOptions &
   DiskStorageServiceInitOptions &
-  SessionStorageServiceInitOptions;
+  SessionStorageServiceInitOptions &
+  LogServiceInitOptions &
+  PlatformUtilsServiceInitOptions;
 
 export function diskStorageServiceFactory(
   cache: { diskStorageService?: AbstractStorageService } & CachedServices,
@@ -57,17 +65,29 @@ export function sessionStorageServiceFactory(
 }
 
 export function memoryStorageServiceFactory(
-  cache: { memoryStorageService?: AbstractMemoryStorageService } & CachedServices,
+  cache: { memoryStorageService?: AbstractStorageService } & CachedServices,
   opts: MemoryStorageServiceInitOptions,
-): Promise<AbstractMemoryStorageService> {
+): Promise<AbstractStorageService> {
   return factory(cache, "memoryStorageService", opts, async () => {
     if (BrowserApi.isManifestVersion(3)) {
       return new LocalBackedSessionStorageService(
-        await encryptServiceFactory(cache, opts),
-        await keyGenerationServiceFactory(cache, opts),
+        new Lazy(async () => {
+          const existingKey = await (
+            await sessionStorageServiceFactory(cache, opts)
+          ).get<SymmetricCryptoKey>("session-key");
+          if (existingKey) {
+            return existingKey;
+          }
+          const { derivedKey } = await (
+            await keyGenerationServiceFactory(cache, opts)
+          ).createKeyWithPurpose(128, "ephemeral", "bitwarden-ephemeral");
+          await (await sessionStorageServiceFactory(cache, opts)).save("session-key", derivedKey);
+          return derivedKey;
+        }),
         await diskStorageServiceFactory(cache, opts),
-        await sessionStorageServiceFactory(cache, opts),
-        "serviceFactories",
+        await encryptServiceFactory(cache, opts),
+        await platformUtilsServiceFactory(cache, opts),
+        await logServiceFactory(cache, opts),
       );
     }
     return new MemoryStorageService();
@@ -76,10 +96,10 @@ export function memoryStorageServiceFactory(
 
 export function observableMemoryStorageServiceFactory(
   cache: {
-    memoryStorageService?: AbstractMemoryStorageService & ObservableStorageService;
+    memoryStorageService?: AbstractStorageService & ObservableStorageService;
   } & CachedServices,
   opts: MemoryStorageServiceInitOptions,
-): Promise<AbstractMemoryStorageService & ObservableStorageService> {
+): Promise<AbstractStorageService & ObservableStorageService> {
   return factory(cache, "memoryStorageService", opts, async () => {
     return new BackgroundMemoryStorageService();
   });

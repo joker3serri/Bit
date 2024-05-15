@@ -1,6 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
+import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -21,6 +23,7 @@ import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 
 export class ElectronCryptoService extends CryptoService {
   constructor(
+    pinService: PinServiceAbstraction,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     keyGenerationService: KeyGenerationService,
     cryptoFunctionService: CryptoFunctionService,
@@ -31,8 +34,10 @@ export class ElectronCryptoService extends CryptoService {
     accountService: AccountService,
     stateProvider: StateProvider,
     private biometricStateService: BiometricStateService,
+    kdfConfigService: KdfConfigService,
   ) {
     super(
+      pinService,
       masterPasswordService,
       keyGenerationService,
       cryptoFunctionService,
@@ -42,6 +47,7 @@ export class ElectronCryptoService extends CryptoService {
       stateService,
       accountService,
       stateProvider,
+      kdfConfigService,
     );
   }
 
@@ -171,7 +177,10 @@ export class ElectronCryptoService extends CryptoService {
       if (!encUserKey) {
         throw new Error("No user key found during biometric migration");
       }
-      const userKey = await this.decryptUserKeyWithMasterKey(masterKey, encUserKey);
+      const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(
+        masterKey,
+        encUserKey,
+      );
       // migrate
       await this.storeBiometricKey(userKey, userId);
       await this.stateService.setCryptoMasterKeyBiometric(null, { userId });
