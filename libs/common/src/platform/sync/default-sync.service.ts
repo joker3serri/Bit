@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map, of, switchMap } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
@@ -12,6 +12,7 @@ import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../admin-console/models/response/policy.response";
 import { AccountService } from "../../auth/abstractions/account.service";
+import { AuthService } from "../../auth/abstractions/auth.service";
 import { AvatarService } from "../../auth/abstractions/avatar.service";
 import { KeyConnectorService } from "../../auth/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
@@ -75,6 +76,7 @@ export class DefaultSyncService implements SyncService {
     private logoutCallback: (expired: boolean) => Promise<void>,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
     private tokenService: TokenService,
+    private authService: AuthService,
   ) {}
 
   async getLastSync(): Promise<Date> {
@@ -248,7 +250,19 @@ export class DefaultSyncService implements SyncService {
 
   async syncUpsertSend(notification: SyncSendNotification, isEdit: boolean): Promise<boolean> {
     this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
+    const [activeUserId, status] = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(
+        switchMap((a) => {
+          if (a == null) {
+            of([null, AuthenticationStatus.LoggedOut]);
+          }
+          return this.authService.authStatusFor$(a.id).pipe(map((s) => [a.id, s]));
+        }),
+      ),
+    );
+    // Process only notifications for currently active user when user is not logged out
+    // TODO: once send service allows data manipulation of non-active users, this should process any received notification
+    if (activeUserId === notification.userId && status !== AuthenticationStatus.LoggedOut) {
       try {
         const localSend = await firstValueFrom(this.sendService.get$(notification.id));
         if (
@@ -362,15 +376,14 @@ export class DefaultSyncService implements SyncService {
   private async setForceSetPasswordReasonIfNeeded(profileResponse: ProfileResponse) {
     // The `forcePasswordReset` flag indicates an admin has reset the user's password and must be updated
     if (profileResponse.forcePasswordReset) {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       await this.masterPasswordService.setForceSetPasswordReason(
         ForceSetPasswordReason.AdminForcePasswordReset,
-        userId,
+        profileResponse.id,
       );
     }
 
     const userDecryptionOptions = await firstValueFrom(
-      this.userDecryptionOptionsService.userDecryptionOptions$,
+      this.userDecryptionOptionsService.userDecryptionOptionsById$(profileResponse.id),
     );
 
     if (userDecryptionOptions === null || userDecryptionOptions === undefined) {
