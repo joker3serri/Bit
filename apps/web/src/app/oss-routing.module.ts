@@ -197,8 +197,10 @@ const routes: Routes = [
       {
         path: "recover-2fa",
         component: RecoverTwoFactorComponent,
+        canActivate: [UnauthGuard],
         data: {
           pageTitle: "recoverAccountTwoStep",
+          titleId: "recoverAccountTwoStep",
         },
       },
     ],
