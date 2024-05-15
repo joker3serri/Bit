@@ -1,0 +1,18 @@
+<bit-item>
+  <button bit-item-content (click)="openCipher()">
+    <app-vault-icon slot="start" [cipher]="cipher"></app-vault-icon>
+    {{ cipher.name }}
+    <span slot="secondary">{{ cipher.subTitle }}</span>
+  </button>
+  <ng-container slot="end">
+    <bit-item-action *ngIf="showAutoFill">
+      <button type="button" bitBadge variant="primary">Auto-fill</button>
+    </bit-item-action>
+    <bit-item-action>
+      <button type="button" bitIconButton="bwi-clone"></button>
+    </bit-item-action>
+    <bit-item-action>
+      <button type="button" bitIconButton="bwi-ellipsis-v"></button>
+    </bit-item-action>
+  </ng-container>
+</bit-item>

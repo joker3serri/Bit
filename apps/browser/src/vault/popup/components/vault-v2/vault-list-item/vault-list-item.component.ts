@@ -10,26 +10,7 @@ import { BadgeModule, ButtonModule, IconButtonModule, ItemModule } from "@bitwar
   imports: [CommonModule, JslibModule, ItemModule, ButtonModule, BadgeModule, IconButtonModule],
   standalone: true,
   selector: "app-vault-list-item",
-  template: `
-    <bit-item>
-      <button bit-item-content (click)="openCipher()">
-        <app-vault-icon slot="start" [cipher]="cipher"></app-vault-icon>
-        {{ cipher.name }}
-        <span slot="secondary">{{ cipher.subTitle }}</span>
-      </button>
-      <ng-container slot="end">
-        <bit-item-action *ngIf="showAutoFill">
-          <button type="button" bitBadge variant="primary">Auto-fill</button>
-        </bit-item-action>
-        <bit-item-action>
-          <button type="button" bitIconButton="bwi-clone"></button>
-        </bit-item-action>
-        <bit-item-action>
-          <button type="button" bitIconButton="bwi-ellipsis-v"></button>
-        </bit-item-action>
-      </ng-container>
-    </bit-item>
-  `,
+  templateUrl: "vault-list-item.component.html",
 })
 export class VaultListItemComponent {
   @Input()

@@ -72,19 +72,21 @@ import { Fido2Component } from "../vault/popup/components/fido2/fido2.component"
 import { AddEditCustomFieldsComponent } from "../vault/popup/components/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
-import { AutofillVaultListItemsComponent } from "../vault/popup/components/vault/autofill-vault-list-items.component";
 import { CollectionsComponent } from "../vault/popup/components/vault/collections.component";
 import { CurrentTabComponent } from "../vault/popup/components/vault/current-tab.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/password-history.component";
 import { ShareComponent } from "../vault/popup/components/vault/share.component";
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
-import { VaultListItemComponent } from "../vault/popup/components/vault/vault-list-item.component";
-import { VaultListItemsContainerComponent } from "../vault/popup/components/vault/vault-list-items-container.component";
 import { VaultSelectComponent } from "../vault/popup/components/vault/vault-select.component";
 import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
+import {
+  AutofillVaultListItemsComponent,
+  VaultListItemComponent,
+  VaultListItemsContainerComponent,
+} from "../vault/popup/components/vault-v2";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";

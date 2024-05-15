@@ -12,7 +12,7 @@ import {
   TypographyModule,
 } from "@bitwarden/components";
 
-import { VaultListItemComponent } from "./vault-list-item.component";
+import { VaultListItemComponent } from "../vault-list-item/vault-list-item.component";
 
 @Component({
   imports: [
@@ -27,24 +27,7 @@ import { VaultListItemComponent } from "./vault-list-item.component";
     VaultListItemComponent,
   ],
   selector: "app-vault-list-items-container",
-  template: `
-    <ng-container *ngIf="ciphers">
-      <bit-section *ngIf="ciphers.length > 0">
-        <!-- Temporary will be replaced with popup-section-header -->
-        <h2 bitTypography="h6" class="tw-flex">
-          <span class="tw-flex-grow tw-text-primary-700 tw-font-bold">{{ title }}</span>
-          <span class="tw-text-muted">{{ ciphers.length }}</span>
-        </h2>
-        <bit-item-group>
-          <app-vault-list-item
-            *ngFor="let item of ciphers"
-            [cipher]="item"
-            [showAutoFill]="showAutoFill"
-          ></app-vault-list-item>
-        </bit-item-group>
-      </bit-section>
-    </ng-container>
-  `,
+  templateUrl: "vault-list-items-container.component.html",
   standalone: true,
 })
 export class VaultListItemsContainerComponent implements OnInit {

@@ -6,9 +6,8 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { SectionComponent, TypographyModule } from "@bitwarden/components";
 
-import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
-
-import { VaultListItemsContainerComponent } from "./vault-list-items-container.component";
+import { VaultPopupItemsService } from "../../../services/vault-popup-items.service";
+import { VaultListItemsContainerComponent } from "../vault-list-items-container/vault-list-items-container.component";
 
 @Component({
   standalone: true,
