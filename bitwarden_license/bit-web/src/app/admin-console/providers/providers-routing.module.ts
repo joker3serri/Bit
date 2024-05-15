@@ -7,8 +7,12 @@ import { ProvidersComponent } from "@bitwarden/web-vault/app/admin-console/provi
 import { FrontendLayoutComponent } from "@bitwarden/web-vault/app/layouts/frontend-layout.component";
 import { UserLayoutComponent } from "@bitwarden/web-vault/app/layouts/user-layout.component";
 
-import { ProviderSubscriptionComponent, hasConsolidatedBilling } from "../../billing/providers";
-import { ManageClientOrganizationsComponent } from "../../billing/providers/clients";
+import {
+  ProviderSubscriptionComponent,
+  ProviderPaymentInformationComponent,
+  hasConsolidatedBilling,
+  ManageClientOrganizationsComponent,
+} from "../../billing/providers";
 
 import { ClientsComponent } from "./clients/clients.component";
 import { CreateOrganizationComponent } from "./clients/create-organization.component";
@@ -116,6 +120,13 @@ const routes: Routes = [
                 component: ProviderSubscriptionComponent,
                 data: {
                   titleId: "subscription",
+                },
+              },
+              {
+                path: "payment-information",
+                component: ProviderPaymentInformationComponent,
+                data: {
+                  titleId: "paymentInformation",
                 },
               },
             ],

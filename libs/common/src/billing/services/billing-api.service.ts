@@ -98,6 +98,11 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return new ProviderSubscriptionResponse(r);
   }
 
+  async setupIntent(): Promise<string> {
+    const response = await this.apiService.send("POST", "/setup-payment", null, true, true);
+    return response as string;
+  }
+
   async updateClientOrganization(
     providerId: string,
     organizationId: string,

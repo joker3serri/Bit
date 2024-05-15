@@ -8207,5 +8207,8 @@
         "example": "2"
       }
     }
+  },
+  "payPal": {
+    "message": "PayPal"
   }
 }

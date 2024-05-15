@@ -27,6 +27,7 @@ export abstract class BillingApiServiceAbstraction {
   ) => Promise<OrganizationSubscriptionResponse>;
   getPlans: () => Promise<ListResponse<PlanResponse>>;
   getProviderSubscription: (providerId: string) => Promise<ProviderSubscriptionResponse>;
+  setupIntent: () => Promise<string>;
   updateClientOrganization: (
     providerId: string,
     organizationId: string,
