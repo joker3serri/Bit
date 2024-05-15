@@ -257,6 +257,8 @@ export class ServiceContainer {
       p = path.join(process.env.HOME, ".config/Bitwarden CLI");
     }
 
+    const logoutCallback = async () => await this.logout();
+
     this.platformUtilsService = new CliPlatformUtilsService(ClientType.Cli, packageJson);
     this.logService = new ConsoleLogService(
       this.platformUtilsService.isDev(),
@@ -339,6 +341,7 @@ export class ServiceContainer {
       this.keyGenerationService,
       this.encryptService,
       this.logService,
+      logoutCallback,
     );
 
     const migrationRunner = new MigrationRunner(
@@ -423,13 +426,19 @@ export class ServiceContainer {
       VaultTimeoutStringType.Never, // default vault timeout
     );
 
+    const refreshAccessTokenErrorCallback = () => {
+      throw new Error("Refresh Access token error");
+    };
+
     this.apiService = new NodeApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
+      refreshAccessTokenErrorCallback,
+      this.logService,
+      logoutCallback,
       this.vaultTimeoutSettingsService,
-      async (expired: boolean) => await this.logout(),
       customUserAgent,
     );
 
@@ -487,7 +496,7 @@ export class ServiceContainer {
       this.logService,
       this.organizationService,
       this.keyGenerationService,
-      async (expired: boolean) => await this.logout(),
+      logoutCallback,
       this.stateProvider,
     );
 
@@ -660,7 +669,7 @@ export class ServiceContainer {
       this.sendApiService,
       this.userDecryptionOptionsService,
       this.avatarService,
-      async (expired: boolean) => await this.logout(),
+      logoutCallback,
       this.billingAccountProfileStateService,
       this.tokenService,
       this.authService,
