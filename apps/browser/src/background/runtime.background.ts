@@ -1,12 +1,14 @@
-import { firstValueFrom, mergeMap } from "rxjs";
+import { firstValueFrom, map, mergeMap } from "rxjs";
 
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
+import { devFlagEnabled } from "@bitwarden/common/platform/misc/flags";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums";
 
@@ -19,7 +21,6 @@ import {
 import { LockedVaultPendingNotificationsData } from "../autofill/background/abstractions/notification.background";
 import { AutofillService } from "../autofill/services/abstractions/autofill.service";
 import { BrowserApi } from "../platform/browser/browser-api";
-import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
 import { Fido2Background } from "../vault/fido2/background/abstractions/fido2.background";
@@ -37,7 +38,6 @@ export default class RuntimeBackground {
     private autofillService: AutofillService,
     private platformUtilsService: BrowserPlatformUtilsService,
     private notificationsService: NotificationsService,
-    private stateService: BrowserStateService,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private systemService: SystemService,
     private environmentService: BrowserEnvironmentService,
@@ -46,6 +46,7 @@ export default class RuntimeBackground {
     private configService: ConfigService,
     private fido2Background: Fido2Background,
     private messageListener: MessageListener,
+    private accountService: AccountService,
   ) {
     // onInstalled listener must be wired up before anything else, so we do it in the ctor
     chrome.runtime.onInstalled.addListener((details: any) => {
@@ -76,7 +77,8 @@ export default class RuntimeBackground {
 
       void this.processMessageWithSender(msg, sender).catch((err) =>
         this.logService.error(
-          `Error while processing message in RuntimeBackground '${msg?.command}'. Error: ${err?.message ?? "Unknown Error"}`,
+          `Error while processing message in RuntimeBackground '${msg?.command}'.`,
+          err,
         ),
       );
       return false;
@@ -111,9 +113,10 @@ export default class RuntimeBackground {
         switch (msg.sender) {
           case "autofiller":
           case "autofill_cmd": {
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.stateService.setLastActive(new Date().getTime());
+            const activeUserId = await firstValueFrom(
+              this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+            );
+            await this.accountService.setAccountActivity(activeUserId, new Date());
             const totpCode = await this.autofillService.doAutoFillActiveTab(
               [
                 {
@@ -322,9 +325,10 @@ export default class RuntimeBackground {
 
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
-          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
+          if (!devFlagEnabled("skipWelcomeOnInstall")) {
+            void BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
+          }
+
           await this.autofillSettingsService.setInlineMenuVisibility(
             AutofillOverlayVisibility.OnFieldFocus,
           );
