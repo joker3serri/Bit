@@ -55,7 +55,7 @@ export const TailingIcon: Story = {
     props: args,
     template: `
       <popup-section-header [title]="title">
-        <button bitIconButton="bwi-star" slot="end"></button>
+        <button bitIconButton="bwi-star" size="small" slot="end"></button>
       </popup-section-header>
     `,
   }),
@@ -70,7 +70,7 @@ export const WithSections: Story = {
       <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
           <popup-section-header title="Section 1">
-            <button bitIconButton="bwi-star" slot="end">1</button>
+            <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </popup-section-header>
           <bit-card>
             <h3 bitTypography="h3">Card 1 Content</h3>
@@ -78,7 +78,7 @@ export const WithSections: Story = {
         </bit-section>
         <bit-section>
           <popup-section-header title="Section 2">
-            <button bitIconButton="bwi-star" slot="end">2</button>
+            <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </popup-section-header>
           <bit-card>
             <h3 bitTypography="h3">Card 2 Content</h3>
