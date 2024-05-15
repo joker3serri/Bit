@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { booleanAttribute, Component, Input, OnInit } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -37,7 +37,7 @@ export class VaultListItemsContainerComponent implements OnInit {
   @Input()
   title: string;
 
-  @Input()
+  @Input({ transform: booleanAttribute })
   showAutoFill: boolean;
 
   ngOnInit() {}

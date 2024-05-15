@@ -2,7 +2,7 @@
   *ngIf="autofillCiphers$ | async as ciphers"
   [ciphers]="ciphers"
   [title]="'autofillSuggestions' | i18n"
-  [showAutoFill]="false"
+  showAutoFill
 ></app-vault-list-items-container>
 <ng-container *ngIf="showEmptyAutofillTip$ | async">
   <bit-section>
