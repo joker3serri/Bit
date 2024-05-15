@@ -6,6 +6,7 @@ import { EncryptedOrganizationKeyData } from "../data/encrypted-organization-key
 
 export abstract class BaseEncryptedOrganizationKey {
   decrypt: (cryptoService: CryptoService) => Promise<SymmetricCryptoKey>;
+  abstract get encryptedOrganizationKey(): EncString;
 
   static fromData(data: EncryptedOrganizationKeyData) {
     switch (data.type) {
@@ -35,6 +36,10 @@ export class EncryptedOrganizationKey implements BaseEncryptedOrganizationKey {
     return new SymmetricCryptoKey(decValue) as OrgKey;
   }
 
+  get encryptedOrganizationKey() {
+    return new EncString(this.key);
+  }
+
   toData(): EncryptedOrganizationKeyData {
     return {
       type: "organization",
@@ -53,6 +58,10 @@ export class ProviderEncryptedOrganizationKey implements BaseEncryptedOrganizati
     const providerKey = await cryptoService.getProviderKey(this.providerId);
     const decValue = await cryptoService.decryptToBytes(new EncString(this.key), providerKey);
     return new SymmetricCryptoKey(decValue) as OrgKey;
+  }
+
+  get encryptedOrganizationKey() {
+    return new EncString(this.key);
   }
 
   toData(): EncryptedOrganizationKeyData {
