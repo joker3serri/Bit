@@ -82,11 +82,7 @@ import { VaultSelectComponent } from "../vault/popup/components/vault/vault-sele
 import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
-import {
-  AutofillVaultListItemsComponent,
-  VaultListItemComponent,
-  VaultListItemsContainerComponent,
-} from "../vault/popup/components/vault-v2";
+import { VaultV2Module } from "../vault/popup/components/vault-v2";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
@@ -137,13 +133,11 @@ import "../platform/popup/locales";
     PopupFooterComponent,
     PopupHeaderComponent,
     UserVerificationDialogComponent,
-    VaultListItemsContainerComponent,
-    VaultListItemComponent,
     IconButtonModule,
     SectionComponent,
     TypographyModule,
-    AutofillVaultListItemsComponent,
     NoItemsModule,
+    VaultV2Module,
   ],
   declarations: [
     ActionButtonsComponent,
