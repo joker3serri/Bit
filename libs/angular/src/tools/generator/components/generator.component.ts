@@ -181,21 +181,6 @@ export class GeneratorComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       ),
     );
-
-    // default type policy applies as a result of navigation, so it is necessary to apply this
-    // during UI load.
-    if (
-      this.enforcedPasswordPolicyOptions.inEffect() &&
-      this.enforcedPasswordPolicyOptions.defaultType
-    ) {
-      this.passwordOptions.type = this.enforcedPasswordPolicyOptions.defaultType;
-
-      if (this.regenerateWithoutButtonPress()) {
-        this.regenerate().catch((e) => {
-          this.logService.error(e);
-        });
-      }
-    }
   }
 
   ngOnDestroy() {
