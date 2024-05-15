@@ -100,6 +100,7 @@ import { Message, MessageListener, MessageSender } from "@bitwarden/common/platf
 // eslint-disable-next-line no-restricted-imports -- Used for dependency creation
 import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
 import { Lazy } from "@bitwarden/common/platform/misc/lazy";
+import { clearCaches } from "@bitwarden/common/platform/misc/sequentialize";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
@@ -229,6 +230,8 @@ import { BrowserPlatformUtilsService } from "../platform/services/platform-utils
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
 import { BrowserStorageServiceProvider } from "../platform/storage/browser-storage-service.provider";
 import { ForegroundMemoryStorageService } from "../platform/storage/foreground-memory-storage.service";
+import { ForegroundSyncService } from "../platform/sync/foreground-sync.service";
+import { SyncServiceListener } from "../platform/sync/sync-service.listener";
 import { fromChromeRuntimeMessaging } from "../platform/utils/from-chrome-runtime-messaging";
 import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service";
 import FilelessImporterBackground from "../tools/background/fileless-importer.background";
@@ -338,6 +341,7 @@ export default class MainBackground {
   scriptInjectorService: BrowserScriptInjectorService;
   kdfConfigService: kdfConfigServiceAbstraction;
   offscreenDocumentService: OffscreenDocumentService;
+  syncServiceListener: SyncServiceListener;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -791,31 +795,52 @@ export default class MainBackground {
 
     this.providerService = new ProviderService(this.stateProvider);
 
-    this.syncService = new SyncService(
-      this.masterPasswordService,
-      this.accountService,
-      this.apiService,
-      this.domainSettingsService,
-      this.folderService,
-      this.cipherService,
-      this.cryptoService,
-      this.collectionService,
-      this.messagingService,
-      this.policyService,
-      this.sendService,
-      this.logService,
-      this.keyConnectorService,
-      this.stateService,
-      this.providerService,
-      this.folderApiService,
-      this.organizationService,
-      this.sendApiService,
-      this.userDecryptionOptionsService,
-      this.avatarService,
-      logoutCallback,
-      this.billingAccountProfileStateService,
-      this.tokenService,
-    );
+    if (this.popupOnlyContext) {
+      this.syncService = new ForegroundSyncService(
+        this.stateService,
+        this.folderService,
+        this.folderApiService,
+        this.messagingService,
+        this.logService,
+        this.cipherService,
+        this.collectionService,
+        this.apiService,
+        this.accountService,
+        this.authService,
+        this.sendService,
+        this.sendApiService,
+        messageListener,
+      );
+    } else {
+      this.syncService = new SyncService(
+        this.masterPasswordService,
+        this.accountService,
+        this.apiService,
+        this.domainSettingsService,
+        this.folderService,
+        this.cipherService,
+        this.cryptoService,
+        this.collectionService,
+        this.messagingService,
+        this.policyService,
+        this.sendService,
+        this.logService,
+        this.keyConnectorService,
+        this.stateService,
+        this.providerService,
+        this.folderApiService,
+        this.organizationService,
+        this.sendApiService,
+        this.userDecryptionOptionsService,
+        this.avatarService,
+        logoutCallback,
+        this.billingAccountProfileStateService,
+        this.tokenService,
+        this.authService,
+      );
+
+      this.syncServiceListener = new SyncServiceListener(this.syncService, messageListener);
+    }
     this.eventUploadService = new EventUploadService(
       this.apiService,
       this.stateProvider,
@@ -1139,6 +1164,7 @@ export default class MainBackground {
     this.contextMenusBackground?.init();
     await this.idleBackground.init();
     this.webRequestBackground?.startListening();
+    this.syncServiceListener?.startListening();
 
     return new Promise<void>((resolve) => {
       setTimeout(async () => {
@@ -1180,6 +1206,7 @@ export default class MainBackground {
    * Switch accounts to indicated userId -- null is no active user
    */
   async switchAccount(userId: UserId) {
+    let nextAccountStatus: AuthenticationStatus;
     try {
       const currentlyActiveAccount = await firstValueFrom(
         this.accountService.activeAccount$.pipe(map((account) => account?.id)),
@@ -1187,6 +1214,8 @@ export default class MainBackground {
       // can be removed once password generation history is migrated to state providers
       await this.stateService.clearDecryptedData(currentlyActiveAccount);
       await this.accountService.switchAccount(userId);
+      // Clear sequentialized caches
+      clearCaches();
 
       if (userId == null) {
         this.loginEmailService.setRememberEmail(false);
@@ -1194,11 +1223,12 @@ export default class MainBackground {
 
         await this.refreshBadge();
         await this.refreshMenu();
-        await this.overlayBackground.updateOverlayCiphers();
+        await this.overlayBackground?.updateOverlayCiphers(); // null in popup only contexts
+        this.messagingService.send("goHome");
         return;
       }
 
-      const status = await this.authService.getAuthStatus(userId);
+      nextAccountStatus = await this.authService.getAuthStatus(userId);
       const forcePasswordReset =
         (await firstValueFrom(this.masterPasswordService.forceSetPasswordReason$(userId))) !=
         ForceSetPasswordReason.None;
@@ -1206,7 +1236,9 @@ export default class MainBackground {
       await this.systemService.clearPendingClipboard();
       await this.notificationsService.updateConnection(false);
 
-      if (status === AuthenticationStatus.Locked) {
+      if (nextAccountStatus === AuthenticationStatus.LoggedOut) {
+        this.messagingService.send("goHome");
+      } else if (nextAccountStatus === AuthenticationStatus.Locked) {
         this.messagingService.send("locked", { userId: userId });
       } else if (forcePasswordReset) {
         this.messagingService.send("update-temp-password", { userId: userId });
@@ -1214,11 +1246,14 @@ export default class MainBackground {
         this.messagingService.send("unlocked", { userId: userId });
         await this.refreshBadge();
         await this.refreshMenu();
-        await this.overlayBackground.updateOverlayCiphers();
+        await this.overlayBackground?.updateOverlayCiphers(); // null in popup only contexts
         await this.syncService.fullSync(false);
       }
     } finally {
-      this.messagingService.send("switchAccountFinish", { userId: userId });
+      this.messagingService.send("switchAccountFinish", {
+        userId: userId,
+        status: nextAccountStatus,
+      });
     }
   }
 
@@ -1238,6 +1273,13 @@ export default class MainBackground {
     const userBeingLoggedOut = userId ?? activeUserId;
 
     await this.eventUploadService.uploadEvents(userBeingLoggedOut);
+
+    const newActiveUser =
+      userBeingLoggedOut === activeUserId
+        ? await firstValueFrom(this.accountService.nextUpAccount$.pipe(map((a) => a?.id)))
+        : null;
+
+    await this.switchAccount(newActiveUser);
 
     // HACK: We shouldn't wait for the authentication status to change but instead subscribe to the
     // authentication status to do various actions.
@@ -1273,11 +1315,6 @@ export default class MainBackground {
     //Needs to be checked before state is cleaned
     const needStorageReseed = await this.needsStorageReseed(userId);
 
-    const newActiveUser =
-      userBeingLoggedOut === activeUserId
-        ? await firstValueFrom(this.accountService.nextUpAccount$.pipe(map((a) => a?.id)))
-        : null;
-
     await this.stateService.clean({ userId: userBeingLoggedOut });
     await this.accountService.clean(userBeingLoggedOut);
 
@@ -1286,16 +1323,10 @@ export default class MainBackground {
     // HACK: Wait for the user logging outs authentication status to transition to LoggedOut
     await logoutPromise;
 
-    await this.switchAccount(newActiveUser);
-    if (newActiveUser != null) {
-      // we have a new active user, do not continue tearing down application
-      this.messagingService.send("switchAccountFinish");
-    } else {
-      this.messagingService.send("doneLoggingOut", {
-        expired: expired,
-        userId: userBeingLoggedOut,
-      });
-    }
+    this.messagingService.send("doneLoggingOut", {
+      expired: expired,
+      userId: userBeingLoggedOut,
+    });
 
     if (needStorageReseed) {
       await this.reseedStorage();
@@ -1308,9 +1339,7 @@ export default class MainBackground {
     }
     await this.refreshBadge();
     await this.mainContextMenuHandler?.noAccess();
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.notificationsService.updateConnection(false);
+    await this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
     await this.systemService.startProcessReload(this.authService);
   }
