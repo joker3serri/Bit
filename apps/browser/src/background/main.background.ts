@@ -1164,7 +1164,7 @@ export default class MainBackground {
     this.contextMenusBackground?.init();
     await this.idleBackground.init();
     this.webRequestBackground?.startListening();
-    this.syncServiceListener.startListening();
+    this.syncServiceListener?.startListening();
 
     return new Promise<void>((resolve) => {
       setTimeout(async () => {
