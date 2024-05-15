@@ -1,5 +1,7 @@
 import { Component, Inject, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
@@ -34,7 +36,11 @@ import { TwoFactorOptionsComponent } from "./two-factor-options.component";
 export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDestroy {
   @ViewChild("twoFactorOptions", { read: ViewContainerRef, static: true })
   twoFactorOptionsModal: ViewContainerRef;
-
+  formGroup = this.formBuilder.group({
+    token: ["", [Validators.required]],
+    remember: [false],
+  });
+  private destroy$ = new Subject<void>();
   constructor(
     loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
@@ -54,6 +60,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     configService: ConfigService,
     masterPasswordService: InternalMasterPasswordServiceAbstraction,
     accountService: AccountService,
+    private formBuilder: FormBuilder,
     @Inject(WINDOW) protected win: Window,
   ) {
     super(
@@ -78,6 +85,16 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     );
     this.onSuccessfulLoginNavigate = this.goAfterLogIn;
   }
+  async ngOnInit() {
+    await super.ngOnInit();
+    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.token = value.token;
+      this.remember = value.remember;
+    });
+  }
+  submitForm = async () => {
+    await this.submit();
+  };
 
   async anotherMethod() {
     const [modal] = await this.modalService.openViewRef(
