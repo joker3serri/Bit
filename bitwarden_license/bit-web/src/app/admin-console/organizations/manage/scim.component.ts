@@ -14,7 +14,6 @@ import { OrganizationApiKeyRequest } from "@bitwarden/common/admin-console/model
 import { OrganizationConnectionRequest } from "@bitwarden/common/admin-console/models/request/organization-connection.request";
 import { ScimConfigRequest } from "@bitwarden/common/admin-console/models/request/scim-config.request";
 import { OrganizationConnectionResponse } from "@bitwarden/common/admin-console/models/response/organization-connection.response";
-import { ApiKeyResponse } from "@bitwarden/common/auth/models/response/api-key.response";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -100,19 +99,12 @@ export class ScimComponent implements OnInit {
     request.type = OrganizationApiKeyType.Scim;
     request.masterPasswordHash = "N/A";
 
-    let rotatePromise: Promise<ApiKeyResponse> = this.organizationApiService.rotateApiKey(
-      this.organizationId,
-      request,
-    );
-
-    const response = await rotatePromise;
+    const response = await this.organizationApiService.rotateApiKey(this.organizationId, request);
     this.formData.setValue({
       endpointUrl: await this.getScimEndpointUrl(),
       clientSecret: response.apiKey,
     });
     this.platformUtilsService.showToast("success", null, this.i18nService.t("scimApiKeyRotated"));
-
-    rotatePromise = null;
   };
 
   copyScimKey = async () => {
@@ -126,21 +118,20 @@ export class ScimComponent implements OnInit {
       true,
       new ScimConfigRequest(this.enabled.value),
     );
-    let formPromise: Promise<OrganizationConnectionResponse<ScimConfigApi>>;
+    let response: OrganizationConnectionResponse<ScimConfigApi>;
+
     if (this.existingConnectionId == null) {
-      formPromise = this.apiService.createOrganizationConnection(request, ScimConfigApi);
+      response = await this.apiService.createOrganizationConnection(request, ScimConfigApi);
     } else {
-      formPromise = this.apiService.updateOrganizationConnection(
+      response = await this.apiService.updateOrganizationConnection(
         request,
         ScimConfigApi,
         this.existingConnectionId,
       );
     }
-    const response = (await formPromise) as OrganizationConnectionResponse<ScimConfigApi>;
+
     await this.setConnectionFormValues(response);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("scimSettingsSaved"));
-
-    formPromise = null;
   };
 
   async getScimEndpointUrl() {
