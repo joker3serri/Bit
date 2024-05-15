@@ -396,7 +396,7 @@ export default class MainBackground {
       ),
     );
 
-    this.offscreenDocumentService = new DefaultOffscreenDocumentService();
+    this.offscreenDocumentService = new DefaultOffscreenDocumentService(this.logService);
 
     this.platformUtilsService = new BackgroundPlatformUtilsService(
       this.messagingService,

@@ -286,7 +286,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: OffscreenDocumentService,
     useClass: DefaultOffscreenDocumentService,
-    deps: [],
+    deps: [LogService],
   }),
   safeProvider({
     provide: PlatformUtilsService,
