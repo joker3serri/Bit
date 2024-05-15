@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map, of, switchMap } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
@@ -12,9 +12,12 @@ import { PolicyData } from "../../../admin-console/models/data/policy.data";
 import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { AccountService } from "../../../auth/abstractions/account.service";
+import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AvatarService } from "../../../auth/abstractions/avatar.service";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../../auth/abstractions/master-password.service.abstraction";
+import { TokenService } from "../../../auth/abstractions/token.service";
+import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { ForceSetPasswordReason } from "../../../auth/models/domain/force-set-password-reason";
 import { DomainSettingsService } from "../../../autofill/services/domain-settings.service";
 import { BillingAccountProfileStateService } from "../../../billing/abstractions/account/billing-account-profile-state.service";
@@ -34,7 +37,6 @@ import { SendData } from "../../../tools/send/models/data/send.data";
 import { SendResponse } from "../../../tools/send/models/response/send.response";
 import { SendApiService } from "../../../tools/send/services/send-api.service.abstraction";
 import { InternalSendService } from "../../../tools/send/services/send.service.abstraction";
-import { UserId } from "../../../types/guid";
 import { CipherService } from "../../../vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "../../../vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService } from "../../../vault/abstractions/folder/folder.service.abstraction";
@@ -73,6 +75,8 @@ export class SyncService implements SyncServiceAbstraction {
     private avatarService: AvatarService,
     private logoutCallback: (expired: boolean) => Promise<void>,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
+    private tokenService: TokenService,
+    private authService: AuthService,
   ) {}
 
   async getLastSync(): Promise<Date> {
@@ -246,7 +250,19 @@ export class SyncService implements SyncServiceAbstraction {
 
   async syncUpsertSend(notification: SyncSendNotification, isEdit: boolean): Promise<boolean> {
     this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
+    const [activeUserId, status] = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(
+        switchMap((a) => {
+          if (a == null) {
+            of([null, AuthenticationStatus.LoggedOut]);
+          }
+          return this.authService.authStatusFor$(a.id).pipe(map((s) => [a.id, s]));
+        }),
+      ),
+    );
+    // Process only notifications for currently active user when user is not logged out
+    // TODO: once send service allows data manipulation of non-active users, this should process any received notification
+    if (activeUserId === notification.userId && status !== AuthenticationStatus.LoggedOut) {
       try {
         const localSend = await firstValueFrom(this.sendService.get$(notification.id));
         if (
@@ -309,7 +325,7 @@ export class SyncService implements SyncServiceAbstraction {
   }
 
   private async syncProfile(response: ProfileResponse) {
-    const stamp = await this.stateService.getSecurityStamp();
+    const stamp = await this.tokenService.getSecurityStamp(response.id);
     if (stamp != null && stamp !== response.securityStamp) {
       if (this.logoutCallback != null) {
         await this.logoutCallback(true);
@@ -319,12 +335,16 @@ export class SyncService implements SyncServiceAbstraction {
     }
 
     await this.cryptoService.setMasterKeyEncryptedUserKey(response.key);
-    await this.cryptoService.setPrivateKey(response.privateKey);
-    await this.cryptoService.setProviderKeys(response.providers);
-    await this.cryptoService.setOrgKeys(response.organizations, response.providerOrganizations);
-    await this.avatarService.setSyncAvatarColor(response.id as UserId, response.avatarColor);
-    await this.stateService.setSecurityStamp(response.securityStamp);
-    await this.stateService.setEmailVerified(response.emailVerified);
+    await this.cryptoService.setPrivateKey(response.privateKey, response.id);
+    await this.cryptoService.setProviderKeys(response.providers, response.id);
+    await this.cryptoService.setOrgKeys(
+      response.organizations,
+      response.providerOrganizations,
+      response.id,
+    );
+    await this.avatarService.setSyncAvatarColor(response.id, response.avatarColor);
+    await this.tokenService.setSecurityStamp(response.securityStamp, response.id);
+    await this.accountService.setAccountEmailVerified(response.id, response.emailVerified);
 
     await this.billingAccountProfileStateService.setHasPremium(
       response.premiumPersonally,
@@ -356,15 +376,14 @@ export class SyncService implements SyncServiceAbstraction {
   private async setForceSetPasswordReasonIfNeeded(profileResponse: ProfileResponse) {
     // The `forcePasswordReset` flag indicates an admin has reset the user's password and must be updated
     if (profileResponse.forcePasswordReset) {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       await this.masterPasswordService.setForceSetPasswordReason(
         ForceSetPasswordReason.AdminForcePasswordReset,
-        userId,
+        profileResponse.id,
       );
     }
 
     const userDecryptionOptions = await firstValueFrom(
-      this.userDecryptionOptionsService.userDecryptionOptions$,
+      this.userDecryptionOptionsService.userDecryptionOptionsById$(profileResponse.id),
     );
 
     if (userDecryptionOptions === null || userDecryptionOptions === undefined) {

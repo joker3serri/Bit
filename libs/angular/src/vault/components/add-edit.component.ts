@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { concatMap, Observable, Subject, takeUntil } from "rxjs";
+import { concatMap, firstValueFrom, Observable, Subject, takeUntil } from "rxjs";
 
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -91,6 +91,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   private previousCipherId: string;
 
   protected flexibleCollectionsV1Enabled = false;
+  protected restrictProviderAccess = false;
 
   get fido2CredentialCreationDateValue(): string {
     const dateCreated = this.i18nService.t("dateCreated");
@@ -182,10 +183,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.flexibleCollectionsV1Enabled = await this.configService.getFeatureFlag(
       FeatureFlag.FlexibleCollectionsV1,
-      false,
     );
-    this.writeableCollections = await this.loadCollections();
-    this.canUseReprompt = await this.passwordRepromptService.enabled();
+    this.restrictProviderAccess = await this.configService.getFeatureFlag(
+      FeatureFlag.RestrictProviderAccess,
+    );
 
     this.policyService
       .policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
@@ -197,6 +198,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe();
+
+    this.writeableCollections = await this.loadCollections();
+    this.canUseReprompt = await this.passwordRepromptService.enabled();
   }
 
   ngOnDestroy() {
@@ -287,6 +291,16 @@ export class AddEditComponent implements OnInit, OnDestroy {
             (c as any).checked = true;
           }
         });
+      }
+    }
+    // Only Admins can clone a cipher to different owner
+    if (this.cloneMode && this.cipher.organizationId != null) {
+      const cipherOrg = (await firstValueFrom(this.organizationService.memberOrganizations$)).find(
+        (o) => o.id === this.cipher.organizationId,
+      );
+
+      if (cipherOrg != null && !cipherOrg.isAdmin && !cipherOrg.permissions.editAnyCollection) {
+        this.ownershipOptions = [{ name: cipherOrg.name, value: cipherOrg.id }];
       }
     }
 
@@ -592,7 +606,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.writeableCollections.forEach((c) => ((c as any).checked = false));
     }
     if (this.cipher.organizationId != null) {
-      this.collections = this.writeableCollections.filter(
+      this.collections = this.writeableCollections?.filter(
         (c) => c.organizationId === this.cipher.organizationId,
       );
       const org = await this.organizationService.get(this.cipher.organizationId);
@@ -658,11 +672,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   protected saveCipher(cipher: Cipher) {
     const isNotClone = this.editMode && !this.cloneMode;
-    let orgAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
+    let orgAdmin = this.organization?.canEditAllCiphers(
+      this.flexibleCollectionsV1Enabled,
+      this.restrictProviderAccess,
+    );
 
     // if a cipher is unassigned we want to check if they are an admin or have permission to edit any collection
     if (!cipher.collectionIds) {
-      orgAdmin = this.organization?.canEditUnassignedCiphers();
+      orgAdmin = this.organization?.canEditUnassignedCiphers(this.restrictProviderAccess);
     }
 
     return this.cipher.id == null
@@ -671,14 +688,20 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected deleteCipher() {
-    const asAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
+    const asAdmin = this.organization?.canEditAllCiphers(
+      this.flexibleCollectionsV1Enabled,
+      this.restrictProviderAccess,
+    );
     return this.cipher.isDeleted
       ? this.cipherService.deleteWithServer(this.cipher.id, asAdmin)
       : this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
   }
 
   protected restoreCipher() {
-    const asAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
+    const asAdmin = this.organization?.canEditAllCiphers(
+      this.flexibleCollectionsV1Enabled,
+      this.restrictProviderAccess,
+    );
     return this.cipherService.restoreWithServer(this.cipher.id, asAdmin);
   }
 
@@ -687,7 +710,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async loadAddEditCipherInfo(): Promise<boolean> {
-    const addEditCipherInfo: any = await this.stateService.getAddEditCipherInfo();
+    const addEditCipherInfo: any = await firstValueFrom(this.cipherService.addEditCipherInfo$);
     const loadedSavedInfo = addEditCipherInfo != null;
 
     if (loadedSavedInfo) {
@@ -700,7 +723,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       }
     }
 
-    await this.stateService.setAddEditCipherInfo(null);
+    await this.cipherService.setAddEditCipherInfo(null);
 
     return loadedSavedInfo;
   }
