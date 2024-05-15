@@ -1,5 +1,5 @@
 <bit-item>
-  <button bit-item-content (click)="openCipher()">
+  <button bit-item-content (click)="openCipher()" type="button">
     <app-vault-icon slot="start" [cipher]="cipher"></app-vault-icon>
     {{ cipher.name }}
     <span slot="secondary">{{ cipher.subTitle }}</span>
