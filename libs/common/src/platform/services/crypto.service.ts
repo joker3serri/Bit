@@ -115,20 +115,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     );
     this.activeUserPublicKey$ = this.activeUserPublicKeyState.state$; // may be null
 
-    // Organization keys
-    this.activeUserEncryptedOrgKeysState = stateProvider.getActive(
-      USER_ENCRYPTED_ORGANIZATION_KEYS,
-    );
-    this.activeUserOrgKeysState = stateProvider.getDerived(
-      zip(
-        this.activeUserEncryptedOrgKeysState.state$.pipe(filter((keys) => keys != null)),
-        this.activeUserPrivateKey$,
-      ).pipe(filter(([, privateKey]) => !!privateKey)),
-      USER_ORGANIZATION_KEYS,
-      { encryptService: this.encryptService },
-    );
-    this.activeUserOrgKeys$ = this.activeUserOrgKeysState.state$; // null handled by `derive` function
-
     // Provider keys
     this.activeUserEncryptedProviderKeysState = stateProvider.getActive(
       USER_ENCRYPTED_PROVIDER_KEYS,
@@ -142,6 +128,21 @@ export class CryptoService implements CryptoServiceAbstraction {
       { encryptService: this.encryptService },
     );
     this.activeUserProviderKeys$ = this.activeUserProviderKeysState.state$; // null handled by `derive` function
+
+    // Organization keys
+    this.activeUserEncryptedOrgKeysState = stateProvider.getActive(
+      USER_ENCRYPTED_ORGANIZATION_KEYS,
+    );
+    this.activeUserOrgKeysState = stateProvider.getDerived(
+      zip(
+        this.activeUserEncryptedOrgKeysState.state$.pipe(filter((keys) => keys != null)),
+        this.activeUserPrivateKey$,
+        this.activeUserProviderKeys$,
+      ).pipe(filter(([, privateKey]) => !!privateKey)),
+      USER_ORGANIZATION_KEYS,
+      { encryptService: this.encryptService },
+    );
+    this.activeUserOrgKeys$ = this.activeUserOrgKeysState.state$; // null handled by `derive` function
   }
 
   async setUserKey(key: UserKey, userId?: UserId): Promise<void> {

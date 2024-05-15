@@ -1,7 +1,7 @@
 import { EncryptedOrganizationKeyData } from "../../../admin-console/models/data/encrypted-organization-key.data";
 import { BaseEncryptedOrganizationKey } from "../../../admin-console/models/domain/encrypted-organization-key";
-import { OrganizationId } from "../../../types/guid";
-import { OrgKey, UserPrivateKey } from "../../../types/key";
+import { OrganizationId, ProviderId } from "../../../types/guid";
+import { OrgKey, ProviderKey, UserPrivateKey } from "../../../types/key";
 import { EncryptService } from "../../abstractions/encrypt.service";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { CRYPTO_DISK, CRYPTO_MEMORY, DeriveDefinition, UserKeyDefinition } from "../../state";
@@ -15,7 +15,11 @@ export const USER_ENCRYPTED_ORGANIZATION_KEYS = UserKeyDefinition.record<
 });
 
 export const USER_ORGANIZATION_KEYS = new DeriveDefinition<
-  [Record<OrganizationId, EncryptedOrganizationKeyData>, UserPrivateKey],
+  [
+    Record<OrganizationId, EncryptedOrganizationKeyData>,
+    UserPrivateKey,
+    Record<ProviderId, ProviderKey>,
+  ],
   Record<OrganizationId, OrgKey>,
   { encryptService: EncryptService }
 >(CRYPTO_MEMORY, "organizationKeys", {
@@ -26,7 +30,7 @@ export const USER_ORGANIZATION_KEYS = new DeriveDefinition<
     }
     return result;
   },
-  derive: async ([encryptedOrgKeys, privateKey], { encryptService }) => {
+  derive: async ([encryptedOrgKeys, privateKey, providerKeys], { encryptService }) => {
     const result: Record<OrganizationId, OrgKey> = {};
     for (const orgId of Object.keys(encryptedOrgKeys ?? {}) as OrganizationId[]) {
       if (result[orgId] != null) {
@@ -34,12 +38,15 @@ export const USER_ORGANIZATION_KEYS = new DeriveDefinition<
       }
       const encrypted = BaseEncryptedOrganizationKey.fromData(encryptedOrgKeys[orgId]);
 
-      const decrypted = await encryptService.rsaDecrypt(
-        encrypted.encryptedOrganizationKey,
-        privateKey,
-      );
+      let decrypted: OrgKey;
 
-      result[orgId] = new SymmetricCryptoKey(decrypted) as OrgKey;
+      if (BaseEncryptedOrganizationKey.isProviderEncrypted(encrypted)) {
+        decrypted = await encrypted.decrypt(encryptService, providerKeys);
+      } else {
+        decrypted = await encrypted.decrypt(encryptService, privateKey);
+      }
+
+      result[orgId] = decrypted;
     }
 
     return result;
