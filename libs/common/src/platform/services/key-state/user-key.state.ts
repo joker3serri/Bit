@@ -30,7 +30,7 @@ export const USER_PRIVATE_KEY = new DeriveDefinition<
 >(CRYPTO_MEMORY, "privateKey", {
   deserializer: (obj) => new Uint8Array(Object.values(obj)) as UserPrivateKey,
   derive: async ([encPrivateKeyString, userKey], { encryptService }) => {
-    if (encPrivateKeyString == null) {
+    if (encPrivateKeyString == null || userKey == null) {
       return null;
     }
 
