@@ -136,7 +136,7 @@ export class VaultPopupItemsService {
    * Observable that indicates whether there are no ciphers to show with the current filter.
    * @todo Implement filter/search functionality in PM-6824 and PM-6826.
    */
-  noFilteredResults$: Observable<boolean> = of(true);
+  noFilteredResults$: Observable<boolean> = of(false);
 
   constructor(
     private cipherService: CipherService,
