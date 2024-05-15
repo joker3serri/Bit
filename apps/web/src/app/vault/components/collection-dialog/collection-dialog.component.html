@@ -69,9 +69,13 @@
               <span>{{ "readOnlyCollectionAccess" | i18n }}</span>
             </ng-container>
             <ng-container *ngIf="!dialogReadonly">
-              <bit-callout type="warning" *ngIf="showAddAccessWarning">{{
-                "grantAddAccessCollectionWarning" | i18n
-              }}</bit-callout>
+              <bit-callout
+                title="{{ 'grantAddAccessCollectionWarningTitle' | i18n }}"
+                type="warning"
+                *ngIf="showAddAccessWarning"
+              >
+                {{ "grantAddAccessCollectionWarning" | i18n }}
+              </bit-callout>
               <span *ngIf="organization.useGroups">{{ "grantCollectionAccess" | i18n }}</span>
               <span *ngIf="!organization.useGroups">{{
                 "grantCollectionAccessMembersOnly" | i18n

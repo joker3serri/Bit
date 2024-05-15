@@ -7635,6 +7635,9 @@
   "readOnlyCollectionAccess": {
     "message": "You do not have access to manage this collection."
   },
+  "grantAddAccessCollectionWarningTitle": {
+    "message": "Missing Can Manage Permissions"
+  },
   "grantAddAccessCollectionWarning": {
     "message": "Grant Can manage permissions to allow full collection management including deletion of collection."
   },
