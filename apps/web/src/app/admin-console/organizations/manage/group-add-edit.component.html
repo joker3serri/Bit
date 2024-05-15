@@ -53,7 +53,7 @@
           <p>
             {{ "editGroupCollectionsDesc" | i18n }}
             <span *ngIf="!(allowAdminAccessToAllCollectionItems$ | async)">
-              {{ "editGroupCollectionsRestrictionsDesc" | i18n }}
+              {{ "restrictedCollectionAssignmentDesc" | i18n }}
             </span>
           </p>
           <div *ngIf="!(flexibleCollectionsEnabled$ | async)" class="tw-my-3">
