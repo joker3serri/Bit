@@ -1,0 +1,38 @@
+<div class="tw-max-w-[28rem] tw-min-w-[28rem]">
+  <form [formGroup]="formGroup" (ngSubmit)="submit()">
+    <bit-form-field>
+      <bit-label>{{ "emailAddress" | i18n }}</bit-label>
+      <input
+        id="register-start_form_input_email"
+        bitInput
+        type="email"
+        formControlName="email"
+        [attr.readonly]="queryParamFromOrgInvite ? true : null"
+      />
+    </bit-form-field>
+
+    <bit-form-field>
+      <bit-label>{{ "name" | i18n }}</bit-label>
+      <input id="register-start_form_input_name" bitInput type="text" formControlName="name" />
+    </bit-form-field>
+
+    <bit-form-control>
+      <input
+        id="register-start-form-input-accept-policies"
+        type="checkbox"
+        bitCheckbox
+        formControlName="acceptPolicies"
+      />
+      <bit-label for="register-start-form-input-accept-policies">
+        {{ "acceptPolicies" | i18n }}<br />
+        <a href="https://bitwarden.com/terms/" target="_blank" rel="noreferrer">{{
+          "termsOfService" | i18n
+        }}</a
+        >,
+        <a href="https://bitwarden.com/privacy/" target="_blank" rel="noreferrer">{{
+          "privacyPolicy" | i18n
+        }}</a>
+      </bit-label>
+    </bit-form-control>
+  </form>
+</div>
