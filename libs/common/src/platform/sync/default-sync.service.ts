@@ -17,6 +17,7 @@ import { AvatarService } from "../../auth/abstractions/avatar.service";
 import { KeyConnectorService } from "../../auth/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
 import { TokenService } from "../../auth/abstractions/token.service";
+import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { DomainSettingsService } from "../../autofill/services/domain-settings.service";
 import { BillingAccountProfileStateService } from "../../billing/abstractions/account/billing-account-profile-state.service";
