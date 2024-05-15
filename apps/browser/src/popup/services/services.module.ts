@@ -195,9 +195,11 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: LogService,
-    useFactory: (platformUtilsService: PlatformUtilsService) =>
-      new ConsoleLogService(platformUtilsService.isDev()),
-    deps: [PlatformUtilsService],
+    useFactory: () => {
+      const isDev = process.env.ENV === "development";
+      return new ConsoleLogService(isDev);
+    },
+    deps: [],
   }),
   safeProvider({
     provide: EnvironmentService,
