@@ -14,6 +14,7 @@ import BrowserPopupUtils from "../browser-popup-utils";
 })
 export class PopOutComponent implements OnInit {
   @Input() show = true;
+  @Input() useV2Variant = false;
 
   constructor(private platformUtilsService: PlatformUtilsService) {}
 
