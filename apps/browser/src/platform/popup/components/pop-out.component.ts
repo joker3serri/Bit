@@ -4,13 +4,14 @@ import { Component, Input, OnInit } from "@angular/core";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
+import { IconButtonModule } from "../../../../../../libs/components/src/icon-button";
 import BrowserPopupUtils from "../browser-popup-utils";
 
 @Component({
   selector: "app-pop-out",
   templateUrl: "pop-out.component.html",
   standalone: true,
-  imports: [CommonModule, JslibModule],
+  imports: [CommonModule, JslibModule, IconButtonModule],
 })
 export class PopOutComponent implements OnInit {
   @Input() show = true;
