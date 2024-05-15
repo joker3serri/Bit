@@ -1,5 +1,14 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap } from "rxjs";
+import {
+  combineLatest,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  startWith,
+  Subject,
+  switchMap,
+} from "rxjs";
 
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
@@ -16,7 +25,7 @@ import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
   providedIn: "root",
 })
 export class VaultPopupItemsService {
-  private _refreshCurrentTab$ = new BehaviorSubject<void>(null);
+  private _refreshCurrentTab$ = new Subject<void>();
 
   /**
    * Observable that contains the list of other cipher types that should be shown
@@ -41,6 +50,7 @@ export class VaultPopupItemsService {
    * @private
    */
   private _currentAutofillTab$: Observable<chrome.tabs.Tab | null> = this._refreshCurrentTab$.pipe(
+    startWith(null),
     switchMap(async () => {
       if (BrowserPopupUtils.inPopout(window)) {
         return null;
