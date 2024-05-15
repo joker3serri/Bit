@@ -163,12 +163,12 @@ export class VaultItemsComponent {
       }
     }
 
-    return collection.canDelete(organization);
+    return collection.canDelete(organization, this.flexibleCollectionsV1Enabled);
   }
 
   protected canViewCollectionInfo(collection: CollectionView) {
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
-    return collection.canViewCollectionInfo(organization);
+    return collection.canViewCollectionInfo(organization, this.flexibleCollectionsV1Enabled);
   }
 
   protected toggleAll() {
@@ -245,11 +245,23 @@ export class VaultItemsComponent {
     const items: VaultItem[] = [].concat(collections).concat(ciphers);
 
     this.selection.clear();
-    this.editableItems = items.filter(
-      (item) =>
-        item.cipher !== undefined ||
-        (item.collection !== undefined && this.canDeleteCollection(item.collection)),
-    );
+
+    if (this.flexibleCollectionsV1Enabled) {
+      // Every item except for the Unassigned collection is selectable, individual bulk actions check the user's permission
+      this.editableItems = items.filter(
+        (item) =>
+          item.cipher !== undefined ||
+          (item.collection !== undefined && item.collection.id !== Unassigned),
+      );
+    } else {
+      // only collections the user can delete are selectable
+      this.editableItems = items.filter(
+        (item) =>
+          item.cipher !== undefined ||
+          (item.collection !== undefined && this.canDeleteCollection(item.collection)),
+      );
+    }
+
     this.dataSource.data = items;
   }
 
