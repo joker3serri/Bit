@@ -26,7 +26,7 @@ export const serviceAccountAccessGuard: CanActivateFn = async (route: ActivatedR
     platformUtilsService.showToast(
       "error",
       null,
-      i18nService.t("notFound", i18nService.t("serviceAccount")),
+      i18nService.t("notFound", i18nService.t("machineAccount")),
     );
 
     return createUrlTreeFromSnapshot(route, [

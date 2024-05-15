@@ -7,7 +7,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { ProjectService } from "../project.service";
 
 /**
- * Redirects to service accounts page if the user doesn't have access to service account.
+ * Redirects to projects list if the user doesn't have access to project.
  */
 export const projectAccessGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) => {
   const projectService = inject(ProjectService);
