@@ -390,7 +390,8 @@ export default class MainBackground {
       });
     };
 
-    this.logService = new ConsoleLogService(false);
+    const isDev = process.env.ENV === "development";
+    this.logService = new ConsoleLogService(isDev);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
@@ -409,7 +410,7 @@ export default class MainBackground {
       ),
     );
 
-    this.offscreenDocumentService = new DefaultOffscreenDocumentService();
+    this.offscreenDocumentService = new DefaultOffscreenDocumentService(this.logService);
 
     this.platformUtilsService = new BackgroundPlatformUtilsService(
       this.messagingService,
