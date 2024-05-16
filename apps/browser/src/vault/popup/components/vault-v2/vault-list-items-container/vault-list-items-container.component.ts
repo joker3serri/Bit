@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { booleanAttribute, Component, Input, OnInit } from "@angular/core";
+import { booleanAttribute, Component, Input } from "@angular/core";
+import { RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -13,7 +14,6 @@ import {
 } from "@bitwarden/components";
 
 import { PopupSectionHeaderComponent } from "../../../../../platform/popup/popup-section-header/popup-section-header.component";
-import { VaultListItemComponent } from "../vault-list-item/vault-list-item.component";
 
 @Component({
   imports: [
@@ -25,14 +25,14 @@ import { VaultListItemComponent } from "../vault-list-item/vault-list-item.compo
     SectionComponent,
     TypographyModule,
     JslibModule,
-    VaultListItemComponent,
     PopupSectionHeaderComponent,
+    RouterLink,
   ],
   selector: "app-vault-list-items-container",
   templateUrl: "vault-list-items-container.component.html",
   standalone: true,
 })
-export class VaultListItemsContainerComponent implements OnInit {
+export class VaultListItemsContainerComponent {
   @Input()
   ciphers: CipherView[];
 
@@ -41,6 +41,4 @@ export class VaultListItemsContainerComponent implements OnInit {
 
   @Input({ transform: booleanAttribute })
   showAutoFill: boolean;
-
-  ngOnInit() {}
 }

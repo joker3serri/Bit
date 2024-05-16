@@ -3,10 +3,23 @@
     <span bitTypography="body2" slot="end">{{ ciphers.length }}</span>
   </popup-section-header>
   <bit-item-group>
-    <app-vault-list-item
-      *ngFor="let item of ciphers"
-      [cipher]="item"
-      [showAutoFill]="showAutoFill"
-    ></app-vault-list-item>
+    <bit-item *ngFor="let cipher of ciphers">
+      <a bit-item-content [routerLink]="['/view-cipher']" [queryParams]="{ cipherId: cipher.id }">
+        <app-vault-icon slot="start" [cipher]="cipher"></app-vault-icon>
+        {{ cipher.name }}
+        <span slot="secondary">{{ cipher.subTitle }}</span>
+      </a>
+      <ng-container slot="end">
+        <bit-item-action *ngIf="showAutoFill">
+          <button type="button" bitBadge variant="primary">Auto-fill</button>
+        </bit-item-action>
+        <bit-item-action>
+          <button type="button" bitIconButton="bwi-clone" size="small"></button>
+        </bit-item-action>
+        <bit-item-action>
+          <button type="button" bitIconButton="bwi-ellipsis-v" size="small"></button>
+        </bit-item-action>
+      </ng-container>
+    </bit-item>
   </bit-item-group>
 </bit-section>
