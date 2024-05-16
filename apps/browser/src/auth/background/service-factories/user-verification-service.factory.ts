@@ -32,11 +32,12 @@ import {
 } from "../../../platform/background/service-factories/state-service.factory";
 
 import { accountServiceFactory, AccountServiceInitOptions } from "./account-service.factory";
+import { KdfConfigServiceInitOptions, kdfConfigServiceFactory } from "./kdf-config-service.factory";
 import {
   internalMasterPasswordServiceFactory,
   MasterPasswordServiceInitOptions,
 } from "./master-password-service.factory";
-import { PinCryptoServiceInitOptions, pinCryptoServiceFactory } from "./pin-crypto-service.factory";
+import { PinServiceInitOptions, pinServiceFactory } from "./pin-service.factory";
 import {
   userDecryptionOptionsServiceFactory,
   UserDecryptionOptionsServiceInitOptions,
@@ -56,10 +57,11 @@ export type UserVerificationServiceInitOptions = UserVerificationServiceFactoryO
   I18nServiceInitOptions &
   UserVerificationApiServiceInitOptions &
   UserDecryptionOptionsServiceInitOptions &
-  PinCryptoServiceInitOptions &
+  PinServiceInitOptions &
   LogServiceInitOptions &
   VaultTimeoutSettingsServiceInitOptions &
-  PlatformUtilsServiceInitOptions;
+  PlatformUtilsServiceInitOptions &
+  KdfConfigServiceInitOptions;
 
 export function userVerificationServiceFactory(
   cache: { userVerificationService?: AbstractUserVerificationService } & CachedServices,
@@ -78,10 +80,11 @@ export function userVerificationServiceFactory(
         await i18nServiceFactory(cache, opts),
         await userVerificationApiServiceFactory(cache, opts),
         await userDecryptionOptionsServiceFactory(cache, opts),
-        await pinCryptoServiceFactory(cache, opts),
+        await pinServiceFactory(cache, opts),
         await logServiceFactory(cache, opts),
         await vaultTimeoutSettingsServiceFactory(cache, opts),
         await platformUtilsServiceFactory(cache, opts),
+        await kdfConfigServiceFactory(cache, opts),
       ),
   );
 }

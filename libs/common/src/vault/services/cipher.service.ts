@@ -1,4 +1,4 @@
-import { Observable, firstValueFrom } from "rxjs";
+import { Observable, firstValueFrom, map, share, skipWhile, switchMap } from "rxjs";
 import { SemVer } from "semver";
 
 import { ApiService } from "../../abstractions/api.service";
@@ -21,8 +21,14 @@ import Domain from "../../platform/models/domain/domain-base";
 import { EncArrayBuffer } from "../../platform/models/domain/enc-array-buffer";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
-import { ActiveUserState, StateProvider } from "../../platform/state";
-import { CipherId, CollectionId, OrganizationId } from "../../types/guid";
+import {
+  ActiveUserState,
+  CIPHERS_MEMORY,
+  DeriveDefinition,
+  DerivedState,
+  StateProvider,
+} from "../../platform/state";
+import { CipherId, CollectionId, OrganizationId, UserId } from "../../types/guid";
 import { UserKey, OrgKey } from "../../types/key";
 import { CipherService as CipherServiceAbstraction } from "../abstractions/cipher.service";
 import { CipherFileUploadService } from "../abstractions/file-upload/cipher-file-upload.service";
@@ -71,10 +77,14 @@ export class CipherService implements CipherServiceAbstraction {
   private sortedCiphersCache: SortedCiphersCache = new SortedCiphersCache(
     this.sortCiphersByLastUsed,
   );
+  private ciphersExpectingUpdate: DerivedState<boolean>;
 
   localData$: Observable<Record<CipherId, LocalData>>;
   ciphers$: Observable<Record<CipherId, CipherData>>;
   cipherViews$: Observable<Record<CipherId, CipherView>>;
+  viewFor$(id: CipherId) {
+    return this.cipherViews$.pipe(map((views) => views[id]));
+  }
   addEditCipherInfo$: Observable<AddEditCipherInfo>;
 
   private localDataState: ActiveUserState<Record<CipherId, LocalData>>;
@@ -99,19 +109,39 @@ export class CipherService implements CipherServiceAbstraction {
     this.encryptedCiphersState = this.stateProvider.getActive(ENCRYPTED_CIPHERS);
     this.decryptedCiphersState = this.stateProvider.getActive(DECRYPTED_CIPHERS);
     this.addEditCipherInfoState = this.stateProvider.getActive(ADD_EDIT_CIPHER_INFO_KEY);
+    this.ciphersExpectingUpdate = this.stateProvider.getDerived(
+      this.encryptedCiphersState.state$,
+      new DeriveDefinition(CIPHERS_MEMORY, "ciphersExpectingUpdate", {
+        derive: (_: Record<CipherId, CipherData>) => false,
+        deserializer: (value) => value,
+      }),
+      {},
+    );
 
-    this.localData$ = this.localDataState.state$;
-    this.ciphers$ = this.encryptedCiphersState.state$;
-    this.cipherViews$ = this.decryptedCiphersState.state$;
+    this.localData$ = this.localDataState.state$.pipe(map((data) => data ?? {}));
+    // First wait for ciphersExpectingUpdate to be false before emitting ciphers
+    this.ciphers$ = this.ciphersExpectingUpdate.state$.pipe(
+      skipWhile((expectingUpdate) => expectingUpdate),
+      switchMap(() => this.encryptedCiphersState.state$),
+      map((ciphers) => ciphers ?? {}),
+    );
+    this.cipherViews$ = this.decryptedCiphersState.state$.pipe(
+      map((views) => views ?? {}),
+
+      share({
+        resetOnRefCountZero: true,
+      }),
+    );
     this.addEditCipherInfo$ = this.addEditCipherInfoState.state$;
   }
 
   async setDecryptedCipherCache(value: CipherView[]) {
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
     // Sometimes we might prematurely decrypt the vault and that will result in no ciphers
-    // if we cache it then we may accidentially return it when it's not right, we'd rather try decryption again.
+    // if we cache it then we may accidentally return it when it's not right, we'd rather try decryption again.
     // We still want to set null though, that is the indicator that the cache isn't valid and we should do decryption.
     if (value == null || value.length !== 0) {
-      await this.setDecryptedCiphers(value);
+      await this.setDecryptedCiphers(value, userId);
     }
     if (this.searchService != null) {
       if (value == null) {
@@ -122,15 +152,16 @@ export class CipherService implements CipherServiceAbstraction {
     }
   }
 
-  private async setDecryptedCiphers(value: CipherView[]) {
+  private async setDecryptedCiphers(value: CipherView[], userId: UserId) {
     const cipherViews: { [id: string]: CipherView } = {};
     value?.forEach((c) => {
       cipherViews[c.id] = c;
     });
-    await this.decryptedCiphersState.update(() => cipherViews);
+    await this.stateProvider.setUserState(DECRYPTED_CIPHERS, cipherViews, userId);
   }
 
-  async clearCache(userId?: string): Promise<void> {
+  async clearCache(userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     await this.clearDecryptedCiphersState(userId);
   }
 
@@ -495,6 +526,7 @@ export class CipherService implements CipherServiceAbstraction {
   }
 
   async updateLastUsedDate(id: string): Promise<void> {
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
     let ciphersLocalData = await firstValueFrom(this.localData$);
 
     if (!ciphersLocalData) {
@@ -524,10 +556,11 @@ export class CipherService implements CipherServiceAbstraction {
         break;
       }
     }
-    await this.setDecryptedCiphers(decryptedCipherCache);
+    await this.setDecryptedCiphers(decryptedCipherCache, userId);
   }
 
   async updateLastLaunchedDate(id: string): Promise<void> {
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
     let ciphersLocalData = await firstValueFrom(this.localData$);
 
     if (!ciphersLocalData) {
@@ -557,7 +590,7 @@ export class CipherService implements CipherServiceAbstraction {
         break;
       }
     }
-    await this.setDecryptedCiphers(decryptedCipherCache);
+    await this.setDecryptedCiphers(decryptedCipherCache, userId);
   }
 
   async saveNeverDomain(domain: string): Promise<void> {
@@ -573,7 +606,7 @@ export class CipherService implements CipherServiceAbstraction {
     await this.domainSettingsService.setNeverDomains(domains);
   }
 
-  async createWithServer(cipher: Cipher, orgAdmin?: boolean): Promise<any> {
+  async createWithServer(cipher: Cipher, orgAdmin?: boolean): Promise<Cipher> {
     let response: CipherResponse;
     if (orgAdmin && cipher.organizationId != null) {
       const request = new CipherCreateRequest(cipher);
@@ -588,10 +621,16 @@ export class CipherService implements CipherServiceAbstraction {
     cipher.id = response.id;
 
     const data = new CipherData(response, cipher.collectionIds);
-    await this.upsert(data);
+    const updated = await this.upsert(data);
+    // No local data for new ciphers
+    return new Cipher(updated[cipher.id as CipherId]);
   }
 
-  async updateWithServer(cipher: Cipher, orgAdmin?: boolean, isNotClone?: boolean): Promise<any> {
+  async updateWithServer(
+    cipher: Cipher,
+    orgAdmin?: boolean,
+    isNotClone?: boolean,
+  ): Promise<Cipher> {
     let response: CipherResponse;
     if (orgAdmin && isNotClone) {
       const request = new CipherRequest(cipher);
@@ -605,7 +644,9 @@ export class CipherService implements CipherServiceAbstraction {
     }
 
     const data = new CipherData(response, cipher.collectionIds);
-    await this.upsert(data);
+    const updated = await this.upsert(data);
+    // updating with server does not change local data
+    return new Cipher(updated[cipher.id as CipherId], cipher.localData);
   }
 
   async shareWithServer(
@@ -732,11 +773,13 @@ export class CipherService implements CipherServiceAbstraction {
     return new Cipher(cData);
   }
 
-  async saveCollectionsWithServer(cipher: Cipher): Promise<any> {
+  async saveCollectionsWithServer(cipher: Cipher): Promise<Cipher> {
     const request = new CipherCollectionsRequest(cipher.collectionIds);
     const response = await this.apiService.putCipherCollections(cipher.id, request);
     const data = new CipherData(response);
-    await this.upsert(data);
+    const updated = await this.upsert(data);
+    // Collection updates don't change local data
+    return new Cipher(updated[cipher.id as CipherId], cipher.localData);
   }
 
   /**
@@ -782,10 +825,10 @@ export class CipherService implements CipherServiceAbstraction {
     await this.encryptedCiphersState.update(() => ciphers);
   }
 
-  async upsert(cipher: CipherData | CipherData[]): Promise<any> {
+  async upsert(cipher: CipherData | CipherData[]): Promise<Record<CipherId, CipherData>> {
     const ciphers = cipher instanceof CipherData ? [cipher] : cipher;
-    await this.updateEncryptedCipherState((current) => {
-      ciphers.forEach((c) => current[c.id as CipherId]);
+    return await this.updateEncryptedCipherState((current) => {
+      ciphers.forEach((c) => (current[c.id as CipherId] = c));
       return current;
     });
   }
@@ -794,17 +837,27 @@ export class CipherService implements CipherServiceAbstraction {
     await this.updateEncryptedCipherState(() => ciphers);
   }
 
+  /**
+   * Updates ciphers for the currently active user. Inactive users can only clear all ciphers, for now.
+   * @param update update callback for encrypted cipher data
+   * @returns
+   */
   private async updateEncryptedCipherState(
     update: (current: Record<CipherId, CipherData>) => Record<CipherId, CipherData>,
-  ) {
-    await this.clearDecryptedCiphersState();
-    await this.encryptedCiphersState.update((current) => {
+  ): Promise<Record<CipherId, CipherData>> {
+    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+    // Store that we should wait for an update to return any ciphers
+    await this.ciphersExpectingUpdate.forceValue(true);
+    await this.clearDecryptedCiphersState(userId);
+    const [, updatedCiphers] = await this.encryptedCiphersState.update((current) => {
       const result = update(current ?? {});
       return result;
     });
+    return updatedCiphers;
   }
 
-  async clear(userId?: string): Promise<any> {
+  async clear(userId?: UserId): Promise<any> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     await this.clearEncryptedCiphersState(userId);
     await this.clearCache(userId);
   }
@@ -1093,7 +1146,9 @@ export class CipherService implements CipherServiceAbstraction {
   }
 
   async setAddEditCipherInfo(value: AddEditCipherInfo) {
-    await this.addEditCipherInfoState.update(() => value);
+    await this.addEditCipherInfoState.update(() => value, {
+      shouldUpdate: (current) => !(current == null && value == null),
+    });
   }
 
   // Helpers
@@ -1420,12 +1475,12 @@ export class CipherService implements CipherServiceAbstraction {
     }
   }
 
-  private async clearEncryptedCiphersState(userId?: string) {
-    await this.encryptedCiphersState.update(() => ({}));
+  private async clearEncryptedCiphersState(userId: UserId) {
+    await this.stateProvider.setUserState(ENCRYPTED_CIPHERS, {}, userId);
   }
 
-  private async clearDecryptedCiphersState(userId?: string) {
-    await this.setDecryptedCiphers(null);
+  private async clearDecryptedCiphersState(userId: UserId) {
+    await this.setDecryptedCiphers(null, userId);
     this.clearSortedCiphers();
   }
 
