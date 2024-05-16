@@ -42,7 +42,7 @@ export class BulkRemoveComponent {
     );
   }
 
-  async submit() {
+  submit = async () => {
     this.loading = true;
     try {
       const response = await this.deleteUsers();
@@ -57,7 +57,7 @@ export class BulkRemoveComponent {
     }
 
     this.loading = false;
-  }
+  };
 
   protected async deleteUsers() {
     return await this.organizationUserService.deleteManyOrganizationUsers(
