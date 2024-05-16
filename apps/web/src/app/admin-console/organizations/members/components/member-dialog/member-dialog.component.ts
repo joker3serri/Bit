@@ -107,6 +107,7 @@ export class MemberDialogComponent implements OnDestroy {
 
   protected allowAdminAccessToAllCollectionItems$: Observable<boolean>;
   protected restrictEditingSelf$: Observable<boolean>;
+  protected canEditAnyCollection$: Observable<boolean>;
 
   protected permissionsGroup = this.formBuilder.group({
     manageAssignedCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
@@ -217,14 +218,25 @@ export class MemberDialogComponent implements OnDestroy {
       }
     });
 
+    const flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
+      FeatureFlag.FlexibleCollectionsV1,
+    );
+
+    this.canEditAnyCollection$ = combineLatest([
+      this.organization$,
+      flexibleCollectionsV1Enabled$,
+    ]).pipe(
+      map(([org, flexibleCollectionsV1Enabled]) =>
+        org.canEditAnyCollection(flexibleCollectionsV1Enabled),
+      ),
+    );
+
     combineLatest({
       organization: this.organization$,
       collections: this.collectionAdminService.getAll(this.params.organizationId),
       userDetails: userDetails$,
       groups: groups$,
-      flexibleCollectionsV1Enabled: this.configService.getFeatureFlag$(
-        FeatureFlag.FlexibleCollectionsV1,
-      ),
+      flexibleCollectionsV1Enabled: flexibleCollectionsV1Enabled$,
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe(

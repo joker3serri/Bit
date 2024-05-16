@@ -426,7 +426,7 @@
           </div>
           <div *ngIf="organization.useGroups && !(restrictEditingSelf$ | async)" class="tw-mb-6">
             {{ "userPermissionOverrideHelperDesc" | i18n }}
-            <span *ngIf="!(allowAdminAccessToAllCollectionItems$ | async)">
+            <span *ngIf="!(canEditAnyCollection$ | async)">
               {{ "restrictedCollectionAssignmentDesc" | i18n }}
             </span>
           </div>
