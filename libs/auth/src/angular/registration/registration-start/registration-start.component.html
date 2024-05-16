@@ -17,7 +17,7 @@
         <input id="register-start_form_input_name" bitInput type="text" formControlName="name" />
       </bit-form-field>
 
-      <bit-form-control>
+      <bit-form-control *ngIf="!isSelfHost">
         <input
           id="register-start-form-input-accept-policies"
           type="checkbox"

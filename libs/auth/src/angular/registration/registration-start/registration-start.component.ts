@@ -20,7 +20,6 @@ import {
   FormFieldModule,
   IconModule,
   LinkModule,
-  ToastService,
 } from "@bitwarden/components";
 
 import { RegistrationCheckEmailIcon } from "../../icons/registration-check-email.icon";
@@ -53,7 +52,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
 
   emailReadonly: boolean = false;
 
-  showTerms = true;
+  isSelfHost = false;
   showErrorSummary = false;
 
   formGroup = this.formBuilder.group({
@@ -79,10 +78,9 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private toastService: ToastService,
     private platformUtilsService: PlatformUtilsService,
   ) {
-    this.showTerms = !platformUtilsService.isSelfHost();
+    this.isSelfHost = platformUtilsService.isSelfHost();
   }
 
   async ngOnInit() {
@@ -124,7 +122,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     return (control: AbstractControl) => {
       const ctrlValue = control.value;
 
-      return !ctrlValue && this.showTerms ? { required: true } : null;
+      return !ctrlValue && !this.isSelfHost ? { required: true } : null;
     };
   }
 
