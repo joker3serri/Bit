@@ -18,7 +18,14 @@ import {
   ButtonModule,
   CheckboxModule,
   FormFieldModule,
+  LinkModule,
+  ToastService,
 } from "@bitwarden/components";
+
+enum RegistrationStartState {
+  USER_DATA_ENTRY = "UserDataEntry",
+  CHECK_EMAIL = "CheckEmail",
+}
 
 @Component({
   standalone: true,
@@ -32,12 +39,17 @@ import {
     AsyncActionsModule,
     CheckboxModule,
     ButtonModule,
+    LinkModule,
   ],
 })
 export class RegistrationStartComponent implements OnInit, OnDestroy {
+  state: RegistrationStartState = RegistrationStartState.USER_DATA_ENTRY;
+  RegistrationStartState = RegistrationStartState;
+
   emailReadonly: boolean = false;
 
   showTerms = true;
+  showErrorSummary = false;
 
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
@@ -53,11 +65,16 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     return this.formGroup.get("name") as FormControl;
   }
 
+  get acceptPolicies(): FormControl {
+    return this.formGroup.get("acceptPolicies") as FormControl;
+  }
+
   private destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private toastService: ToastService,
     private platformUtilsService: PlatformUtilsService,
   ) {
     this.showTerms = !platformUtilsService.isSelfHost();
@@ -67,8 +84,6 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.listenForQueryParamChanges();
   }
 
-  submit = async () => {};
-
   private listenForQueryParamChanges() {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((qParams) => {
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
@@ -76,6 +91,28 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
         this.emailReadonly = qParams.emailReadonly === "true";
       }
     });
+  }
+
+  submit = async () => {
+    const valid = this.validateForm();
+
+    if (!valid) {
+      return;
+    }
+
+    // TODO: Implement registration logic
+
+    this.state = RegistrationStartState.CHECK_EMAIL;
+  };
+
+  private validateForm(): boolean {
+    this.formGroup.markAllAsTouched();
+
+    if (this.formGroup.invalid) {
+      this.showErrorSummary = true;
+    }
+
+    return this.formGroup.valid;
   }
 
   private acceptPoliciesValidator(): ValidatorFn {
