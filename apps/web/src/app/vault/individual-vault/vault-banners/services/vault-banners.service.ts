@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Subject, Observable, combineLatest, firstValueFrom, map, ReplaySubject } from "rxjs";
+import { Subject, Observable, combineLatest, firstValueFrom, map } from "rxjs";
 import { mergeMap, take } from "rxjs/operators";
 
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
@@ -83,13 +83,9 @@ export class VaultBannersService {
       this.premiumBannerState.state$,
     ]);
 
-    const replaceSources$ = new ReplaySubject<[boolean, PremiumBannerReprompt]>(1);
-
-    premiumSources$.subscribe(replaceSources$);
-
     this.shouldShowPremiumBanner$ = this.syncCompleted$.pipe(
       take(1), // Wait until the first sync is complete before considering the premium status
-      mergeMap(() => replaceSources$),
+      mergeMap(() => premiumSources$),
       map(([canAccessPremium, dismissedState]) => {
         const shouldShowPremiumBanner =
           !canAccessPremium && !this.platformUtilsService.isSelfHost();
