@@ -13,7 +13,12 @@ import { Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ButtonModule, CheckboxModule, FormFieldModule } from "@bitwarden/components";
+import {
+  AsyncActionsModule,
+  ButtonModule,
+  CheckboxModule,
+  FormFieldModule,
+} from "@bitwarden/components";
 
 @Component({
   standalone: true,
@@ -24,12 +29,13 @@ import { ButtonModule, CheckboxModule, FormFieldModule } from "@bitwarden/compon
     ReactiveFormsModule,
     JslibModule,
     FormFieldModule,
+    AsyncActionsModule,
     CheckboxModule,
     ButtonModule,
   ],
 })
 export class RegistrationStartComponent implements OnInit, OnDestroy {
-  queryParamFromOrgInvite: boolean = false;
+  emailReadonly: boolean = false;
 
   showTerms = true;
 
@@ -67,7 +73,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((qParams) => {
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
         this.email?.setValue(qParams.email);
-        this.queryParamFromOrgInvite = qParams.fromOrgInvite === "true";
+        this.emailReadonly = qParams.emailReadonly === "true";
       }
     });
   }

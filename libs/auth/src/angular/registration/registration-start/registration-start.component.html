@@ -1,5 +1,5 @@
 <div class="tw-max-w-[28rem] tw-min-w-[28rem]">
-  <form [formGroup]="formGroup" (ngSubmit)="submit()">
+  <form [formGroup]="formGroup" [bitSubmit]="submit">
     <bit-form-field>
       <bit-label>{{ "emailAddress" | i18n }}</bit-label>
       <input
@@ -7,7 +7,7 @@
         bitInput
         type="email"
         formControlName="email"
-        [attr.readonly]="queryParamFromOrgInvite ? true : null"
+        [attr.readonly]="emailReadonly ? true : null"
       />
     </bit-form-field>
 
@@ -34,5 +34,9 @@
         }}</a>
       </bit-label>
     </bit-form-control>
+
+    <button [block]="true" type="submit" buttonType="primary" bitButton bitFormButton>
+      {{ "continue" | i18n }}
+    </button>
   </form>
 </div>
