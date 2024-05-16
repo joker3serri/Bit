@@ -5,9 +5,8 @@ import { Router, RouterModule } from "@angular/router";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { ItemModule } from "@bitwarden/components";
+import { ItemModule, ToastOptions, ToastService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
@@ -37,7 +36,7 @@ export class VaultSettingsV2Component implements OnInit {
     public messagingService: MessagingService,
     private router: Router,
     private syncService: SyncService,
-    private platformUtilsService: PlatformUtilsService,
+    private toastService: ToastService,
     private i18nService: I18nService,
   ) {}
 
@@ -53,13 +52,19 @@ export class VaultSettingsV2Component implements OnInit {
   }
 
   async sync() {
+    let toastConfig: ToastOptions;
     const success = await this.syncService.fullSync(true);
     if (success) {
       await this.setLastSync();
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("syncingComplete"));
+      toastConfig = {
+        variant: "success",
+        title: "",
+        message: this.i18nService.t("syncingComplete"),
+      };
     } else {
-      this.platformUtilsService.showToast("error", null, this.i18nService.t("syncingFailed"));
+      toastConfig = { variant: "error", title: "", message: this.i18nService.t("syncingFailed") };
     }
+    this.toastService.showToast(toastConfig);
   }
 
   private async setLastSync() {
