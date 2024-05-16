@@ -1,6 +1,8 @@
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { DeviceType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -24,8 +26,9 @@ const RateUrls = {
 };
 
 @Component({
-  selector: "app-about-page",
   templateUrl: "about-page.component.html",
+  standalone: true,
+  imports: [CommonModule, JslibModule],
 })
 export class AboutPageComponent {
   constructor(

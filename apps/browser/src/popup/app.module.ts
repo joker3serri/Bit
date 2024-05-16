@@ -55,7 +55,6 @@ import { SendListComponent } from "../tools/popup/send/components/send-list.comp
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
-import { AboutPageComponent } from "../tools/popup/settings/about-page/about-page.component";
 import { ExportComponent } from "../tools/popup/settings/export.component";
 import { SettingsComponent } from "../tools/popup/settings/settings.component";
 import { ActionButtonsComponent } from "../vault/popup/components/action-buttons.component";
@@ -185,7 +184,6 @@ import "../platform/popup/locales";
     RemovePasswordComponent,
     VaultSelectComponent,
     Fido2Component,
-    AboutPageComponent,
     AutofillComponent,
     EnvironmentSelectorComponent,
     CurrentAccountComponent,
