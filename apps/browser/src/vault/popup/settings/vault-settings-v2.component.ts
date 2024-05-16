@@ -4,7 +4,6 @@ import { Router, RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ItemModule, ToastOptions, ToastService } from "@bitwarden/components";
 
@@ -33,7 +32,6 @@ export class VaultSettingsV2Component implements OnInit {
   lastSync = "--";
 
   constructor(
-    public messagingService: MessagingService,
     private router: Router,
     private syncService: SyncService,
     private toastService: ToastService,
