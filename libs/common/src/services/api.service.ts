@@ -567,7 +567,13 @@ export class ApiService implements ApiServiceAbstraction {
     id: string,
     request: CipherCollectionsRequest,
   ): Promise<CipherResponse> {
-    const response = await this.send("PUT", "/ciphers/" + id + "/collections", request, true, true);
+    const response = await this.send(
+      "PUT",
+      "/ciphers/" + id + "/collections_v2",
+      request,
+      true,
+      true,
+    );
     // If a Owner/Admin removes the last Can Manage access of a Cipher
     // they will no longer be able to update that Cipher
     // The api will return the updated Cipher with a "unavailable"
