@@ -747,7 +747,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         if (ciphers.length === 1 && collections.length === 0) {
           await this.deleteCipher(ciphers[0]);
         } else if (ciphers.length === 0 && collections.length === 1) {
-          await this.deleteCollection(collections[0]);
+          await this.deleteCollection(collections[0] as CollectionAdminView);
         } else {
           await this.bulkDelete(ciphers, collections, this.organization);
         }
@@ -1062,10 +1062,12 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async deleteCipher(c: CipherView): Promise<boolean> {
     if (
-      !this.organization.permissions.deleteAnyCollection &&
       this.flexibleCollectionsV1Enabled &&
       !c.edit &&
-      !this.organization.allowAdminAccessToAllCollectionItems
+      !this.organization.canEditAllCiphers(
+        this.flexibleCollectionsV1Enabled,
+        this.restrictProviderAccessEnabled,
+      )
     ) {
       this.showMissingPermissionsError();
       return;
@@ -1100,11 +1102,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
-  async deleteCollection(collection: CollectionView): Promise<void> {
-    if (
-      !this.organization.permissions.deleteAnyCollection &&
-      !collection.canDelete(this.organization, this.flexibleCollectionsV1Enabled)
-    ) {
+  async deleteCollection(collection: CollectionAdminView): Promise<void> {
+    if (!collection.canDelete(this.organization, this.flexibleCollectionsV1Enabled)) {
       this.showMissingPermissionsError();
       return;
     }
@@ -1175,9 +1174,12 @@ export class VaultComponent implements OnInit, OnDestroy {
       ciphers.every((c) => c.edit);
 
     if (
-      !this.organization.permissions.deleteAnyCollection &&
       this.flexibleCollectionsV1Enabled &&
-      (!canDeleteCiphers || !canDeleteCollections)
+      (!canDeleteCiphers || !canDeleteCollections) &&
+      !this.organization.canEditAllCiphers(
+        this.flexibleCollectionsV1Enabled,
+        this.restrictProviderAccessEnabled,
+      )
     ) {
       this.showMissingPermissionsError();
       return;
@@ -1323,7 +1325,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     if (
-      !this.organization.permissions.editAnyCollection &&
       this.flexibleCollectionsV1Enabled &&
       collections.some((c) => !c.canEdit(organization, this.flexibleCollectionsV1Enabled))
     ) {
