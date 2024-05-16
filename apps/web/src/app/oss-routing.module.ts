@@ -8,7 +8,10 @@ import {
   tdeDecryptionRequiredGuard,
   UnauthGuard,
 } from "@bitwarden/angular/auth/guards";
-import { RegistrationStartComponent } from "@bitwarden/auth/angular";
+import {
+  RegistrationStartComponent,
+  RegistrationStartSecondaryComponent,
+} from "@bitwarden/auth/angular";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -298,7 +301,17 @@ const routes: Routes = [
     children: [
       {
         path: "start-registration",
-        component: RegistrationStartComponent,
+        children: [
+          {
+            path: "",
+            component: RegistrationStartComponent, // Primary
+          },
+          {
+            path: "",
+            component: RegistrationStartSecondaryComponent, // Secondary
+            outlet: "secondary",
+          },
+        ],
         canActivate: [],
         data: { pageTitle: "createAccount" },
       },
