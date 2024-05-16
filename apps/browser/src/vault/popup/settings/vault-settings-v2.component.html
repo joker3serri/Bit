@@ -7,10 +7,10 @@
 
   <bit-item-group>
     <bit-item>
-      <button type="button" bit-item-content routerLink="/folders">
+      <a bit-item-content routerLink="/folders">
         {{ "folders" | i18n }}
         <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
-      </button>
+      </a>
     </bit-item>
     <bit-item>
       <button type="button" bit-item-content (click)="import()">
@@ -19,10 +19,10 @@
       </button>
     </bit-item>
     <bit-item>
-      <button type="button" bit-item-content routerLink="/export">
+      <a bit-item-content routerLink="/export">
         {{ "exportVault" | i18n }}
         <i slot="end" class="bwi bwi-angle-right" aria-hidden="true"></i>
-      </button>
+      </a>
     </bit-item>
     <bit-item>
       <button type="button" bit-item-content (click)="sync()">
