@@ -9,9 +9,16 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, map, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { ClientType } from "@bitwarden/common/enums";
+import {
+  Environment,
+  EnvironmentService,
+  Region,
+  RegionConfig,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
   AsyncActionsModule,
@@ -20,6 +27,7 @@ import {
   FormFieldModule,
   IconModule,
   LinkModule,
+  SelectModule,
 } from "@bitwarden/components";
 
 import { RegistrationCheckEmailIcon } from "../../icons/registration-check-email.icon";
@@ -43,6 +51,7 @@ enum RegistrationStartState {
     ButtonModule,
     LinkModule,
     IconModule,
+    SelectModule,
   ],
 })
 export class RegistrationStartComponent implements OnInit, OnDestroy {
@@ -50,15 +59,16 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   RegistrationStartState = RegistrationStartState;
   readonly Icons = { RegistrationCheckEmailIcon };
 
-  emailReadonly: boolean = false;
-
   isSelfHost = false;
-  showErrorSummary = false;
+  clientType: ClientType;
+  ClientType = ClientType;
+  isBrowserOrDesktop = false;
 
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
     name: [""],
     acceptPolicies: [false, [this.acceptPoliciesValidator()]],
+    selectedRegion: [null],
   });
 
   get email(): FormControl {
@@ -73,18 +83,40 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     return this.formGroup.get("acceptPolicies") as FormControl;
   }
 
+  get selectedRegion(): FormControl {
+    return this.formGroup.get("selectedRegion") as FormControl;
+  }
+
+  emailReadonly: boolean = false;
+
+  availableRegionConfigs: RegionConfig[] = this.environmentService.availableRegions();
+
+  showErrorSummary = false;
+
   private destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
+    private environmentService: EnvironmentService,
   ) {
     this.isSelfHost = platformUtilsService.isSelfHost();
+    this.clientType = platformUtilsService.getClientType();
+
+    // TODO: remove this.
+    this.clientType = ClientType.Desktop;
+
+    this.isBrowserOrDesktop =
+      this.clientType === ClientType.Desktop || this.clientType === ClientType.Browser;
   }
 
   async ngOnInit() {
     this.listenForQueryParamChanges();
+
+    if (this.isBrowserOrDesktop) {
+      await this.initForBrowserOrDesktop();
+    }
   }
 
   private listenForQueryParamChanges() {
@@ -94,6 +126,38 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
         this.emailReadonly = qParams.emailReadonly === "true";
       }
     });
+  }
+
+  private async initForBrowserOrDesktop() {
+    this.selectedRegion.setValidators(Validators.required);
+
+    // TODO: figure out if observable or promise is better here
+    // this.environmentService.environment$
+    //   .pipe(
+    //     map((env: Environment) => env.getRegion()),
+    //     map((region: Region) =>
+    //       this.availableRegionConfigs.find(
+    //         (availableRegionConfig) => availableRegionConfig.key === region,
+    //       ),
+    //     ),
+    //     takeUntil(this.destroy$),
+    //   )
+    //   .subscribe((regionConfig: RegionConfig | undefined) => {
+    //     this.selectedRegion.setValue(regionConfig);
+    //   });
+
+    const selectedRegionConfig: RegionConfig | undefined = await firstValueFrom(
+      this.environmentService.environment$.pipe(
+        map((env: Environment) => env.getRegion()),
+        map((region: Region) =>
+          this.availableRegionConfigs.find(
+            (availableRegionConfig) => availableRegionConfig.key === region,
+          ),
+        ),
+      ),
+    );
+
+    this.selectedRegion.setValue(selectedRegionConfig);
   }
 
   submit = async () => {
