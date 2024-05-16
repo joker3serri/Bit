@@ -266,7 +266,6 @@ const routes: Routes = [
   },
   ...extensionRefreshSwap(VaultSettingsComponent, VaultSettingsV2Component, {
     path: "vault-settings",
-    component: VaultSettingsComponent,
     canActivate: [AuthGuard],
     data: { state: "vault-settings" },
   }),
