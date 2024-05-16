@@ -5,7 +5,7 @@ import { Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/organization-tax-info-update.request";
+import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/expanded-tax-info-update.request";
 import { TaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/tax-info-update.request";
 import { TaxInfoResponse } from "@bitwarden/common/billing/models/response/tax-info.response";
 import { TaxRateResponse } from "@bitwarden/common/billing/models/response/tax-rate.response";
@@ -48,6 +48,7 @@ export class TaxInfoComponent {
 
   loading = true;
   organizationId: string;
+  providerId: string;
   taxInfo: TaxInfoView = {
     taxId: null,
     line1: null,
@@ -385,6 +386,12 @@ export class TaxInfoComponent {
   }
 
   async ngOnInit() {
+    // Provider setup
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
+    this.route.queryParams.subscribe((params) => {
+      this.providerId = params.providerId;
+    });
+
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organizationId = params.organizationId;
@@ -482,9 +489,25 @@ export class TaxInfoComponent {
     this.taxInfo.state = this.state;
   }
 
+  get showTaxIdCheckbox() {
+    return (
+      (this.organizationId || this.providerId) &&
+      this.country !== "US" &&
+      this.countrySupportsTax(this.taxInfo.country)
+    );
+  }
+
+  get showTaxIdFields() {
+    return (
+      (this.organizationId || this.providerId) &&
+      this.includeTaxId &&
+      this.countrySupportsTax(this.country)
+    );
+  }
+
   getTaxInfoRequest(): TaxInfoUpdateRequest {
-    if (this.organizationId) {
-      const request = new OrganizationTaxInfoUpdateRequest();
+    if (this.organizationId || this.providerId) {
+      const request = new ExpandedTaxInfoUpdateRequest();
       request.country = this.country;
       request.postalCode = this.postalCode;
 
@@ -517,7 +540,7 @@ export class TaxInfoComponent {
     return this.organizationId
       ? this.organizationApiService.updateTaxInfo(
           this.organizationId,
-          request as OrganizationTaxInfoUpdateRequest,
+          request as ExpandedTaxInfoUpdateRequest,
         )
       : this.apiService.putTaxInfo(request);
   }

@@ -19,20 +19,14 @@
         <input bitInput type="text" formControlName="postalCode" autocomplete="postal-code" />
       </bit-form-field>
     </div>
-    <div
-      class="tw-col-span-6"
-      *ngIf="organizationId && taxInfo.country !== 'US' && countrySupportsTax(taxInfo.country)"
-    >
+    <div class="tw-col-span-6" *ngIf="showTaxIdCheckbox">
       <bit-form-control>
         <input bitCheckbox type="checkbox" formControlName="includeTaxId" />
         <bit-label>{{ "includeVAT" | i18n }}</bit-label>
       </bit-form-control>
     </div>
   </div>
-  <div
-    class="tw-grid tw-grid-cols-12 tw-gap-4"
-    *ngIf="organizationId && taxInfo.includeTaxId && countrySupportsTax(taxInfo.country)"
-  >
+  <div class="tw-grid tw-grid-cols-12 tw-gap-4" *ngIf="showTaxIdFields">
     <div class="tw-col-span-6">
       <bit-form-field>
         <bit-label>{{ "taxIdNumber" | i18n }}</bit-label>
@@ -40,10 +34,7 @@
       </bit-form-field>
     </div>
   </div>
-  <div
-    class="tw-grid tw-grid-cols-12 tw-gap-4"
-    *ngIf="organizationId && taxInfo.includeTaxId && countrySupportsTax(taxInfo.country)"
-  >
+  <div class="tw-grid tw-grid-cols-12 tw-gap-4" *ngIf="showTaxIdFields">
     <div class="tw-col-span-6">
       <bit-form-field>
         <bit-label>{{ "address1" | i18n }}</bit-label>
