@@ -37,6 +37,7 @@ import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.componen
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
 import { ExportComponent } from "../tools/popup/settings/export.component";
+import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { ImportBrowserComponent } from "../tools/popup/settings/import/import-browser.component";
 import { SettingsComponent } from "../tools/popup/settings/settings.component";
 import { Fido2Component } from "../vault/popup/components/fido2/fido2.component";
@@ -233,12 +234,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "generator-history" },
   },
-  {
+  ...extensionRefreshSwap(ImportBrowserComponent, ImportBrowserV2Component, {
     path: "import",
-    component: ImportBrowserComponent,
     canActivate: [AuthGuard],
     data: { state: "import" },
-  },
+  }),
   {
     path: "export",
     component: ExportComponent,
