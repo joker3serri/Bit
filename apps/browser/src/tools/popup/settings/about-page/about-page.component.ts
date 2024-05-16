@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -28,7 +29,7 @@ const RateUrls = {
 @Component({
   templateUrl: "about-page.component.html",
   standalone: true,
-  imports: [CommonModule, JslibModule],
+  imports: [CommonModule, JslibModule, RouterModule],
 })
 export class AboutPageComponent {
   constructor(

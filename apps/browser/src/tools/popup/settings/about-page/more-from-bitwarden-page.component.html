@@ -1,0 +1,19 @@
+<header>
+  <div class="left">
+    <button type="button" routerLink="/about">
+      <span class="header-icon"><i class="bwi bwi-angle-left" aria-hidden="true"></i></span>
+      <span>{{ "back" | i18n }}</span>
+    </button>
+  </div>
+  <h1 class="center">
+    <span class="title">{{ "moreFromBitwarden" | i18n }}</span>
+  </h1>
+  <div class="right">
+    <app-pop-out></app-pop-out>
+  </div>
+</header>
+<main tabindex="-1">
+  <div class="box list">
+    <div class="box-content single-line"></div>
+  </div>
+</main>

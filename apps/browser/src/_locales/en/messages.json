@@ -198,6 +198,9 @@
   "about": {
     "message": "About"
   },
+  "moreFromBitwarden": {
+    "message": "More from Bitwarden"
+  },
   "version": {
     "message": "Version"
   },
