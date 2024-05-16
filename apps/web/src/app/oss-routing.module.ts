@@ -7,6 +7,7 @@ import {
   redirectGuard,
   tdeDecryptionRequiredGuard,
   UnauthGuard,
+  unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
 
 import { flagEnabled, Flags } from "../utils/flags";
@@ -203,8 +204,9 @@ const routes: Routes = [
       {
         path: "login",
         component: LoginComponent,
+        canActivate: [unauthGuardFn()],
         data: {
-          pageSubtitle: "loginOrCreateNewAccount",
+          pageTitle: "loginOrCreateNewAccount",
         },
       },
     ],
