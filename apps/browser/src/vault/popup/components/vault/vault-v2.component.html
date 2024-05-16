@@ -2,13 +2,7 @@
   <popup-header slot="header" [pageTitle]="'vault' | i18n">
     <ng-container slot="end">
       <!-- TODO PM-6826: add selectedVault query param -->
-      <a
-        bitButton
-        buttonType="primary"
-        type="button"
-        routerLink="/add-cipher"
-        class="tw-no-underline"
-      >
+      <a bitButton buttonType="primary" type="button" routerLink="/add-cipher">
         <i class="bwi bwi-plus-f" aria-hidden="true"></i>
         {{ "new" | i18n }}
       </a>
