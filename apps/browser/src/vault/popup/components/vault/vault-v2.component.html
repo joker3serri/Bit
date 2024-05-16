@@ -1,10 +1,17 @@
 <popup-page>
   <popup-header slot="header" [pageTitle]="'vault' | i18n">
     <ng-container slot="end">
-      <button bitButton buttonType="primary" type="button" (click)="addCipher()">
+      <a
+        bitButton
+        buttonType="primary"
+        type="button"
+        routerLink="/add-cipher"
+        [queryParams]="{ selectedVault: this.selectedOrgId }"
+        class="tw-no-underline"
+      >
         <i class="bwi bwi-plus-f" aria-hidden="true"></i>
         {{ "new" | i18n }}
-      </button>
+      </a>
       <app-pop-out></app-pop-out>
       <app-current-account></app-current-account>
     </ng-container>
