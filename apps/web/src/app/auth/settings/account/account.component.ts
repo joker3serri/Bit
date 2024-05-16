@@ -1,14 +1,14 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { lastValueFrom } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { DialogService } from "@bitwarden/components";
 
 import { PurgeVaultComponent } from "../../../vault/settings/purge-vault.component";
 
 import { DeauthorizeSessionsComponent } from "./deauthorize-sessions.component";
 import { DeleteAccountComponent } from "./delete-account.component";
-import { DialogService } from "@bitwarden/components";
-import { lastValueFrom } from "rxjs";
 
 @Component({
   selector: "app-account",
