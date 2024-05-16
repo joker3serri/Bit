@@ -1,9 +1,9 @@
 <bit-item>
-  <button bit-item-content (click)="openCipher()" type="button">
+  <a bit-item-content [routerLink]="['/view-cipher']" [queryParams]="{ cipherId: cipher.id }">
     <app-vault-icon slot="start" [cipher]="cipher"></app-vault-icon>
     {{ cipher.name }}
     <span slot="secondary">{{ cipher.subTitle }}</span>
-  </button>
+  </a>
   <ng-container slot="end">
     <bit-item-action *ngIf="showAutoFill">
       <button type="button" bitBadge variant="primary">Auto-fill</button>
