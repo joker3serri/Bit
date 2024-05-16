@@ -18,9 +18,12 @@ import {
   ButtonModule,
   CheckboxModule,
   FormFieldModule,
+  IconModule,
   LinkModule,
   ToastService,
 } from "@bitwarden/components";
+
+import { RegistrationCheckEmailIcon } from "../../icons/registration-check-email.icon";
 
 enum RegistrationStartState {
   USER_DATA_ENTRY = "UserDataEntry",
@@ -40,11 +43,13 @@ enum RegistrationStartState {
     CheckboxModule,
     ButtonModule,
     LinkModule,
+    IconModule,
   ],
 })
 export class RegistrationStartComponent implements OnInit, OnDestroy {
   state: RegistrationStartState = RegistrationStartState.USER_DATA_ENTRY;
   RegistrationStartState = RegistrationStartState;
+  readonly Icons = { RegistrationCheckEmailIcon };
 
   emailReadonly: boolean = false;
 

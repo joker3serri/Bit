@@ -44,10 +44,8 @@
   ></ng-container>
   <ng-container *ngIf="state === RegistrationStartState.CHECK_EMAIL">
     <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
-      <i
-        class="bwi bwi-envelope bwi-fw tw-text-primary-600 tw-text-6xl tw-mb-3"
-        aria-hidden="true"
-      ></i>
+      <bit-icon [icon]="Icons.RegistrationCheckEmailIcon" class="tw-mb-6"></bit-icon>
+
       <h2 bitTypography="h2" class="tw-font-bold tw-mb-3">{{ "checkYourEmail" | i18n }}</h2>
 
       <p bitTypography="body1" class="tw-text-center tw-mb-3">
