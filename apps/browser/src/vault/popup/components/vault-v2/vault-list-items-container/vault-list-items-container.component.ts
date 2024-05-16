@@ -12,6 +12,7 @@ import {
   TypographyModule,
 } from "@bitwarden/components";
 
+import { PopupSectionHeaderComponent } from "../../../../../platform/popup/popup-section-header/popup-section-header.component";
 import { VaultListItemComponent } from "../vault-list-item/vault-list-item.component";
 
 @Component({
@@ -25,6 +26,7 @@ import { VaultListItemComponent } from "../vault-list-item/vault-list-item.compo
     TypographyModule,
     JslibModule,
     VaultListItemComponent,
+    PopupSectionHeaderComponent,
   ],
   selector: "app-vault-list-items-container",
   templateUrl: "vault-list-items-container.component.html",

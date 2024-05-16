@@ -1,9 +1,7 @@
 <bit-section *ngIf="ciphers?.length > 0">
-  <!-- Temporary will be replaced with popup-section-header -->
-  <h2 bitTypography="h6" class="tw-flex">
-    <span class="tw-flex-grow tw-text-primary-700 tw-font-bold">{{ title }}</span>
-    <span class="tw-text-muted">{{ ciphers.length }}</span>
-  </h2>
+  <popup-section-header [title]="title">
+    <span bitTypography="body2" slot="end">{{ ciphers.length }}</span>
+  </popup-section-header>
   <bit-item-group>
     <app-vault-list-item
       *ngFor="let item of ciphers"
