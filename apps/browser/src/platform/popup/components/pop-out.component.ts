@@ -3,8 +3,8 @@ import { Component, Input, OnInit } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { IconButtonModule } from "@bitwarden/components";
 
-import { IconButtonModule } from "../../../../../../libs/components/src/icon-button";
 import BrowserPopupUtils from "../browser-popup-utils";
 
 @Component({
