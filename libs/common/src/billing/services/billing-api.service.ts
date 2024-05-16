@@ -1,3 +1,4 @@
+import { UpdateProviderPaymentInformationRequest } from "@bitwarden/common/billing/models/request/update-provider-payment-information.request";
 import { OrganizationBillingMetadataResponse } from "@bitwarden/common/billing/models/response/organization-billing-metadata.response";
 
 import { ApiService } from "../../abstractions/api.service";
@@ -42,6 +43,11 @@ export class BillingApiService implements BillingApiServiceAbstraction {
       true,
       false,
     );
+  }
+
+  async setupCardIntent(): Promise<string> {
+    const r = await this.apiService.send("POST", "/setup-payment", null, true, true);
+    return r as string;
   }
 
   async getBillingStatus(id: string): Promise<OrganizationBillingStatusResponse> {
@@ -98,9 +104,15 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return new ProviderSubscriptionResponse(r);
   }
 
-  async setupIntent(): Promise<string> {
-    const response = await this.apiService.send("POST", "/setup-payment", null, true, true);
-    return response as string;
+  async setupProviderBankAccountIntent(providerId: string) {
+    const r = await this.apiService.send(
+      "POST",
+      "/providers/" + providerId + "/billing/bank-account",
+      null,
+      true,
+      true,
+    );
+    return r as string;
   }
 
   async updateClientOrganization(
@@ -112,6 +124,29 @@ export class BillingApiService implements BillingApiServiceAbstraction {
       "PUT",
       "/providers/" + providerId + "/clients/" + organizationId,
       request,
+      true,
+      false,
+    );
+  }
+
+  async updateProviderPaymentInformation(
+    providerId: string,
+    request: UpdateProviderPaymentInformationRequest,
+  ): Promise<void> {
+    return await this.apiService.send(
+      "PUT",
+      "/providers/" + providerId + "/billing/payment-information",
+      request,
+      true,
+      false,
+    );
+  }
+
+  async verifyProviderMicroDeposit(providerId: string) {
+    return await this.apiService.send(
+      "POST",
+      "/providers/" + providerId + "/billing/bank-account/verify-microdeposit",
+      null,
       true,
       false,
     );

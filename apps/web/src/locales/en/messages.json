@@ -3499,6 +3499,9 @@
   "accountHolderName": {
     "message": "Account holder name"
   },
+  "accountHolderEmail": {
+    "message": "Account holder email"
+  },
   "bankAccountType": {
     "message": "Account type"
   },

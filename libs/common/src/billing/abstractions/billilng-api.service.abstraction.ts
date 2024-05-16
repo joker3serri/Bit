@@ -1,3 +1,5 @@
+import { UpdateProviderPaymentInformationRequest } from "@bitwarden/common/billing/models/request/update-provider-payment-information.request";
+
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingMetadataResponse } from "../../billing/models/response/organization-billing-metadata.response";
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
@@ -18,6 +20,7 @@ export abstract class BillingApiServiceAbstraction {
     providerId: string,
     request: CreateClientOrganizationRequest,
   ) => Promise<void>;
+  setupCardIntent: () => Promise<string>;
   getBillingStatus: (id: string) => Promise<OrganizationBillingStatusResponse>;
   getOrganizationBillingMetadata: (
     organizationId: string,
@@ -27,10 +30,15 @@ export abstract class BillingApiServiceAbstraction {
   ) => Promise<OrganizationSubscriptionResponse>;
   getPlans: () => Promise<ListResponse<PlanResponse>>;
   getProviderSubscription: (providerId: string) => Promise<ProviderSubscriptionResponse>;
-  setupIntent: () => Promise<string>;
+  setupProviderBankAccountIntent: (providerId: string) => Promise<string>;
   updateClientOrganization: (
     providerId: string,
     organizationId: string,
     request: UpdateClientOrganizationRequest,
   ) => Promise<any>;
+  updateProviderPaymentInformation: (
+    providerId: string,
+    request: UpdateProviderPaymentInformationRequest,
+  ) => Promise<void>;
+  verifyProviderMicroDeposit: (providerId: string) => Promise<void>;
 }
