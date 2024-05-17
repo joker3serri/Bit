@@ -1,6 +1,5 @@
 import { Jsonify } from "type-fest";
 
-import { AdminAuthRequestStorable } from "../../../auth/models/domain/admin-auth-req-storable";
 import { UriMatchStrategySetting } from "../../../models/domain/domain-service";
 import { GeneratorOptions } from "../../../tools/generator/generator-options";
 import {
@@ -9,13 +8,9 @@ import {
 } from "../../../tools/generator/password";
 import { UsernameGeneratorOptions } from "../../../tools/generator/username/username-generation-options";
 import { DeepJsonify } from "../../../types/deep-jsonify";
-import { CipherData } from "../../../vault/models/data/cipher.data";
-import { CipherView } from "../../../vault/models/view/cipher.view";
-import { AddEditCipherInfo } from "../../../vault/types/add-edit-cipher-info";
 import { KdfType } from "../../enums";
 import { Utils } from "../../misc/utils";
 
-import { EncryptedString, EncString } from "./enc-string";
 import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {
@@ -62,28 +57,17 @@ export class DataEncryptionPair<TEncrypted, TDecrypted> {
 }
 
 export class AccountData {
-  ciphers?: DataEncryptionPair<CipherData, CipherView> = new DataEncryptionPair<
-    CipherData,
-    CipherView
-  >();
-  localData?: any;
   passwordGenerationHistory?: EncryptionPair<
     GeneratedPasswordHistory[],
     GeneratedPasswordHistory[]
   > = new EncryptionPair<GeneratedPasswordHistory[], GeneratedPasswordHistory[]>();
-  addEditCipherInfo?: AddEditCipherInfo;
 
   static fromJSON(obj: DeepJsonify<AccountData>): AccountData {
     if (obj == null) {
       return null;
     }
 
-    return Object.assign(new AccountData(), obj, {
-      addEditCipherInfo: {
-        cipher: CipherView.fromJSON(obj?.addEditCipherInfo?.cipher),
-        collectionIds: obj?.addEditCipherInfo?.collectionIds,
-      },
-    });
+    return Object.assign(new AccountData(), obj);
   }
 }
 
@@ -141,7 +125,6 @@ export class AccountProfile {
   name?: string;
   email?: string;
   emailVerified?: boolean;
-  everBeenUnlocked?: boolean;
   lastSync?: string;
   userId?: string;
   kdfIterations?: number;
@@ -164,39 +147,13 @@ export class AccountSettings {
   passwordGenerationOptions?: PasswordGeneratorOptions;
   usernameGenerationOptions?: UsernameGeneratorOptions;
   generatorOptions?: GeneratorOptions;
-  pinKeyEncryptedUserKey?: EncryptedString;
-  pinKeyEncryptedUserKeyEphemeral?: EncryptedString;
-  protectedPin?: string;
-  vaultTimeout?: number;
-  vaultTimeoutAction?: string = "lock";
-  approveLoginRequests?: boolean;
-
-  /** @deprecated July 2023, left for migration purposes*/
-  pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>();
 
   static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
     if (obj == null) {
       return null;
     }
 
-    return Object.assign(new AccountSettings(), obj, {
-      pinProtected: EncryptionPair.fromJSON<string, EncString>(
-        obj?.pinProtected,
-        EncString.fromJSON,
-      ),
-    });
-  }
-}
-
-export class AccountTokens {
-  securityStamp?: string;
-
-  static fromJSON(obj: Jsonify<AccountTokens>): AccountTokens {
-    if (obj == null) {
-      return null;
-    }
-
-    return Object.assign(new AccountTokens(), obj);
+    return Object.assign(new AccountSettings(), obj);
   }
 }
 
@@ -205,8 +162,6 @@ export class Account {
   keys?: AccountKeys = new AccountKeys();
   profile?: AccountProfile = new AccountProfile();
   settings?: AccountSettings = new AccountSettings();
-  tokens?: AccountTokens = new AccountTokens();
-  adminAuthRequest?: Jsonify<AdminAuthRequestStorable> = null;
 
   constructor(init: Partial<Account>) {
     Object.assign(this, {
@@ -226,11 +181,6 @@ export class Account {
         ...new AccountSettings(),
         ...init?.settings,
       },
-      tokens: {
-        ...new AccountTokens(),
-        ...init?.tokens,
-      },
-      adminAuthRequest: init?.adminAuthRequest,
     });
   }
 
@@ -244,8 +194,6 @@ export class Account {
       data: AccountData.fromJSON(json?.data),
       profile: AccountProfile.fromJSON(json?.profile),
       settings: AccountSettings.fromJSON(json?.settings),
-      tokens: AccountTokens.fromJSON(json?.tokens),
-      adminAuthRequest: AdminAuthRequestStorable.fromJSON(json?.adminAuthRequest),
     });
   }
 }

@@ -1,5 +1,13 @@
-import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
-import { firstValueFrom, lastValueFrom } from "rxjs";
+import { Directive, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import {
+  BehaviorSubject,
+  Subject,
+  firstValueFrom,
+  from,
+  lastValueFrom,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -35,8 +43,10 @@ const MaxCheckedCount = 500;
 
 @Directive()
 export abstract class BasePeopleComponent<
-  UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
-> {
+    UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
+  >
+  implements OnInit, OnDestroy
+{
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
 
@@ -91,7 +101,6 @@ export abstract class BasePeopleComponent<
   status: StatusType;
   users: UserType[] = [];
   pagedUsers: UserType[] = [];
-  searchText: string;
   actionPromise: Promise<void>;
 
   protected allUsers: UserType[] = [];
@@ -100,7 +109,19 @@ export abstract class BasePeopleComponent<
   protected didScroll = false;
   protected pageSize = 100;
 
+  protected destroy$ = new Subject<void>();
+
   private pagedUsersCount = 0;
+  private _searchText$ = new BehaviorSubject<string>("");
+  private isSearching: boolean = false;
+
+  get searchText() {
+    return this._searchText$.value;
+  }
+
+  set searchText(value: string) {
+    this._searchText$.next(value);
+  }
 
   constructor(
     protected apiService: ApiService,
@@ -124,6 +145,22 @@ export abstract class BasePeopleComponent<
   abstract restoreUser(id: string): Promise<void>;
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
+
+  ngOnInit(): void {
+    this._searchText$
+      .pipe(
+        switchMap((searchText) => from(this.searchService.isSearchable(searchText))),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((isSearchable) => {
+        this.isSearching = isSearchable;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   async load() {
     const response = await this.getUsers();
@@ -390,12 +427,8 @@ export abstract class BasePeopleComponent<
     }
   }
 
-  isSearching() {
-    return this.searchService.isSearchable(this.searchText);
-  }
-
   isPaging() {
-    const searching = this.isSearching();
+    const searching = this.isSearching;
     if (searching && this.didScroll) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
