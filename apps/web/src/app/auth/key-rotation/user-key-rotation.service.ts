@@ -57,6 +57,15 @@ export class UserKeyRotationService {
       );
     }
 
+    if (
+      (await this.cipherService.getAllDecrypted()).length === 0 &&
+      (await this.cipherService.getAll()).length > 0
+    ) {
+      throw new Error(
+        "The local vaults could not be decrypted and the keys cannot be rotated. Please log out and log back in to resolve this issue.",
+      );
+    }
+
     // Create master key to validate the master password
     const masterKey = await this.cryptoService.makeMasterKey(
       masterPassword,
