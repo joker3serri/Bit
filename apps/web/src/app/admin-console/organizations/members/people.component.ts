@@ -198,7 +198,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
 
           await this.load();
 
-          this.searchText = qParams.search;
+          this.searchControl.setValue(qParams.search);
           if (qParams.viewEvents != null) {
             const user = this.users.filter((u) => u.id === qParams.viewEvents);
             if (user.length > 0 && user[0].status === OrganizationUserStatusType.Confirmed) {

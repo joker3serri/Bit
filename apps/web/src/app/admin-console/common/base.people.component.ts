@@ -1,5 +1,6 @@
 import { Directive, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
-import { BehaviorSubject, Subject, firstValueFrom, from, switchMap, takeUntil } from "rxjs";
+import { FormControl } from "@angular/forms";
+import { Subject, firstValueFrom, concatMap, map } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -101,16 +102,22 @@ export abstract class BasePeopleComponent<
   protected destroy$ = new Subject<void>();
 
   private pagedUsersCount = 0;
-  private _searchText$ = new BehaviorSubject<string>("");
-  private isSearching: boolean = false;
+  protected searchControl = new FormControl("", { nonNullable: true });
 
-  get searchText() {
-    return this._searchText$.value;
-  }
+  protected isSearching$ = this.searchControl.valueChanges.pipe(
+    concatMap((searchText) => this.searchService.isSearchable(searchText)),
+  );
 
-  set searchText(value: string) {
-    this._searchText$.next(value);
-  }
+  protected isPaging$ = this.isSearching$.pipe(
+    map((isSearching) => {
+      if (isSearching && this.didScroll) {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this.resetPaging();
+      }
+      return !isSearching && this.users && this.users.length > this.pageSize;
+    }),
+  );
 
   constructor(
     protected apiService: ApiService,
@@ -135,16 +142,8 @@ export abstract class BasePeopleComponent<
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
 
-  ngOnInit(): void {
-    this._searchText$
-      .pipe(
-        switchMap((searchText) => from(this.searchService.isSearchable(searchText))),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((isSearchable) => {
-        this.isSearching = isSearchable;
-      });
-  }
+  // Empty now??
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -228,7 +227,7 @@ export abstract class BasePeopleComponent<
 
     const filteredUsers = this.searchPipe.transform(
       this.users,
-      this.searchText,
+      this.searchControl.value,
       "name",
       "email",
       "id",
@@ -417,16 +416,6 @@ export abstract class BasePeopleComponent<
     } catch (e) {
       this.logService.error(`Handled exception: ${e}`);
     }
-  }
-
-  isPaging() {
-    const searching = this.isSearching;
-    if (searching && this.didScroll) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.resetPaging();
-    }
-    return !searching && this.users && this.users.length > this.pageSize;
   }
 
   protected revokeWarningMessage(): string {
