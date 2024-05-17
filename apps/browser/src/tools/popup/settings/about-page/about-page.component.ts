@@ -10,6 +10,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
+import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
 import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
 
 const RateUrls = {
@@ -29,7 +30,7 @@ const RateUrls = {
 @Component({
   templateUrl: "about-page.component.html",
   standalone: true,
-  imports: [CommonModule, JslibModule, RouterModule],
+  imports: [CommonModule, JslibModule, RouterModule, PopOutComponent],
 })
 export class AboutPageComponent {
   constructor(
