@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<bit-container>
+<bit-container *ngIf="!isProviderManaged">
   <ng-container *ngIf="!firstLoaded && loading">
     <i class="bwi bwi-spinner bwi-spin text-muted" title="{{ 'loading' | i18n }}"></i>
     <span class="sr-only">{{ "loading" | i18n }}</span>
@@ -175,23 +175,24 @@
       <bit-progress [barWidth]="storagePercentage" bgColor="success"></bit-progress>
       <ng-container *ngIf="subscription && !subscription.cancelled && !subscriptionMarkedForCancel">
         <div class="tw-mt-3">
-          <div class="tw-flex tw-space-x-2" *ngIf="!showAdjustStorage">
-            <button bitButton buttonType="secondary" type="button" (click)="adjustStorage(true)">
+          <div class="tw-flex tw-space-x-2">
+            <button
+              bitButton
+              buttonType="secondary"
+              type="button"
+              [bitAction]="adjustStorage(true)"
+            >
               {{ "addStorage" | i18n }}
             </button>
-            <button bitButton buttonType="secondary" type="button" (click)="adjustStorage(false)">
+            <button
+              bitButton
+              buttonType="secondary"
+              type="button"
+              [bitAction]="adjustStorage(false)"
+            >
               {{ "removeStorage" | i18n }}
             </button>
           </div>
-          <app-adjust-storage
-            [storageGbPrice]="storageGbPrice"
-            [add]="adjustStorageAdd"
-            [organizationId]="organizationId"
-            [interval]="billingInterval"
-            (onAdjusted)="closeStorage(true)"
-            (onCanceled)="closeStorage(false)"
-            *ngIf="showAdjustStorage"
-          ></app-adjust-storage>
         </div>
       </ng-container>
       <ng-container *ngIf="showAdjustSecretsManager">
@@ -254,4 +255,14 @@
       </div>
     </ng-container>
   </ng-container>
+</bit-container>
+<bit-container *ngIf="isProviderManaged">
+  <div
+    class="tw-mx-auto tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-24 tw-text-center tw-font-bold"
+  >
+    <bit-icon [icon]="manageBillingFromProviderPortal"></bit-icon>
+    <ng-container slot="description">{{
+      "manageBillingFromProviderPortalMessage" | i18n
+    }}</ng-container>
+  </div>
 </bit-container>
