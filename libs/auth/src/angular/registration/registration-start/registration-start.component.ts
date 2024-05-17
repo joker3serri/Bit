@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -9,32 +9,23 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { Subject, filter, firstValueFrom, from, map, switchMap, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ClientType } from "@bitwarden/common/enums";
-import {
-  Environment,
-  EnvironmentService,
-  Region,
-  RegionConfig,
-} from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
   AsyncActionsModule,
   ButtonModule,
   CheckboxModule,
-  DialogService,
   FormFieldModule,
   IconModule,
   LinkModule,
   SelectModule,
 } from "@bitwarden/components";
 
-// import { EnvironmentComponent as DesktopEnvironmentComponent } from "../../../../../../apps/desktop/src/auth/environment.component";
 import { RegistrationCheckEmailIcon } from "../../icons/registration-check-email.icon";
 
-enum RegistrationStartState {
+export enum RegistrationStartState {
   USER_DATA_ENTRY = "UserDataEntry",
   CHECK_EMAIL = "CheckEmail",
 }
@@ -57,14 +48,13 @@ enum RegistrationStartState {
   ],
 })
 export class RegistrationStartComponent implements OnInit, OnDestroy {
+  @Output() registrationStartStateChange = new EventEmitter<RegistrationStartState>();
+
   state: RegistrationStartState = RegistrationStartState.USER_DATA_ENTRY;
   RegistrationStartState = RegistrationStartState;
   readonly Icons = { RegistrationCheckEmailIcon };
 
   isSelfHost = false;
-  clientType: ClientType;
-  ClientType = ClientType;
-  isBrowserOrDesktop = false;
 
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
@@ -85,13 +75,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     return this.formGroup.get("acceptPolicies") as FormControl;
   }
 
-  get selectedRegion(): FormControl {
-    return this.formGroup.get("selectedRegion") as FormControl;
-  }
-
   emailReadonly: boolean = false;
-
-  availableRegionConfigs: RegionConfig[] = this.environmentService.availableRegions();
 
   showErrorSummary = false;
 
@@ -101,25 +85,12 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
-    private environmentService: EnvironmentService,
-    private dialogService: DialogService,
   ) {
     this.isSelfHost = platformUtilsService.isSelfHost();
-    this.clientType = platformUtilsService.getClientType();
-
-    // TODO: remove this.
-    // this.clientType = ClientType.Desktop;
-
-    this.isBrowserOrDesktop =
-      this.clientType === ClientType.Desktop || this.clientType === ClientType.Browser;
   }
 
   async ngOnInit() {
     this.listenForQueryParamChanges();
-
-    if (this.isBrowserOrDesktop) {
-      await this.initForBrowserOrDesktop();
-    }
   }
 
   private listenForQueryParamChanges() {
@@ -130,76 +101,6 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  private async initForBrowserOrDesktop() {
-    await this.initializeSelectedRegion();
-  }
-
-  private async initializeSelectedRegion() {
-    this.selectedRegion.setValidators(Validators.required);
-
-    // TODO: figure out if observable or promise is better here
-    // this.environmentService.environment$
-    //   .pipe(
-    //     map((env: Environment) => env.getRegion()),
-    //     map((region: Region) =>
-    //       this.availableRegionConfigs.find(
-    //         (availableRegionConfig) => availableRegionConfig.key === region,
-    //       ),
-    //     ),
-    //     takeUntil(this.destroy$),
-    //   )
-    //   .subscribe((regionConfig: RegionConfig | undefined) => {
-    //     this.selectedRegion.setValue(regionConfig);
-    //   });
-
-    const selectedRegionConfig: RegionConfig | undefined = await firstValueFrom(
-      this.environmentService.environment$.pipe(
-        map((env: Environment) => env.getRegion()),
-        map((region: Region) =>
-          this.availableRegionConfigs.find(
-            (availableRegionConfig) => availableRegionConfig.key === region,
-          ),
-        ),
-      ),
-    );
-
-    this.selectedRegion.setValue(selectedRegionConfig);
-  }
-
-  private listenForSelectedRegionChanges() {
-    this.selectedRegion.valueChanges
-      .pipe(
-        filter((regionConfig: RegionConfig | null) => regionConfig !== null),
-        switchMap((regionConfig: RegionConfig) => {
-          if (regionConfig.key === Region.SelfHosted) {
-            // Open self-hosted settings modal based on client type
-
-            // if (this.clientType === ClientType.Desktop) {
-            //   this.openDesktopSelfHostedSettingsDialog();
-            // }
-
-            // if (this.clientType === ClientType.Browser) {
-            //   this.openBrowserExtensionSelfHostedSettingsDialog();
-            // }
-
-            return;
-          }
-
-          return from(this.environmentService.setEnvironment(regionConfig.key));
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe();
-  }
-
-  // private openDesktopSelfHostedSettingsDialog() {
-  //   this.dialogService.open(DesktopEnvironmentComponent);
-  // }
-
-  // private openBrowserExtensionSelfHostedSettingsDialog() {
-  //   // this.dialogService.open(EnvironmentComponent);
-  // }
 
   submit = async () => {
     const valid = this.validateForm();

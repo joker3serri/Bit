@@ -2,19 +2,6 @@
 <div class="tw-max-w-[28rem] tw-min-w-[28rem]">
   <ng-container *ngIf="state === RegistrationStartState.USER_DATA_ENTRY">
     <form [formGroup]="formGroup" [bitSubmit]="submit">
-      <!-- <ng-container *ngIf="isBrowserOrDesktop">
-        <bit-form-field>
-          <bit-label>{{ "creatingAccountOn" | i18n }}</bit-label>
-          <bit-select formControlName="selectedRegion">
-            <bit-option
-              *ngFor="let regionConfig of availableRegionConfigs"
-              [value]="regionConfig"
-              [label]="regionConfig.domain"
-            ></bit-option>
-          </bit-select>
-        </bit-form-field>
-      </ng-container> -->
-
       <bit-form-field>
         <bit-label>{{ "emailAddress" | i18n }}</bit-label>
         <input
