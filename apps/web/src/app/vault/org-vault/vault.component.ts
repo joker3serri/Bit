@@ -166,6 +166,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     return this._restrictProviderAccessFlagEnabled && this.flexibleCollectionsV1Enabled;
   }
 
+  protected get hideVaultFilters(): boolean {
+    return this.restrictProviderAccessEnabled && this.organization?.isProviderUser;
+  }
+
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
   private destroy$ = new Subject<void>();
@@ -1222,6 +1226,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         organizationId: this.organization?.id,
         initialTab: tab,
         readonly: readonly,
+        isAddAccessCollection: c.addAccess,
         limitNestedCollections: !this.organization.canEditAnyCollection(
           this.flexibleCollectionsV1Enabled,
         ),

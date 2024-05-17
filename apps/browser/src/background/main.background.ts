@@ -109,6 +109,7 @@ import { DefaultConfigService } from "@bitwarden/common/platform/services/config
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
+import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 import { Fido2AuthenticatorService } from "@bitwarden/common/platform/services/fido2/fido2-authenticator.service";
 import { Fido2ClientService } from "@bitwarden/common/platform/services/fido2/fido2-client.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
@@ -220,7 +221,6 @@ import { BrowserCryptoService } from "../platform/services/browser-crypto.servic
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
 import BrowserLocalStorageService from "../platform/services/browser-local-storage.service";
 import BrowserMemoryStorageService from "../platform/services/browser-memory-storage.service";
-import { BrowserMultithreadEncryptServiceImplementation } from "../platform/services/browser-multithread-encrypt.service.implementation";
 import { BrowserScriptInjectorService } from "../platform/services/browser-script-injector.service";
 import { DefaultBrowserStateService } from "../platform/services/default-browser-state.service";
 import I18nService from "../platform/services/i18n.service";
@@ -230,6 +230,8 @@ import { BrowserPlatformUtilsService } from "../platform/services/platform-utils
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
 import { BrowserStorageServiceProvider } from "../platform/storage/browser-storage-service.provider";
 import { ForegroundMemoryStorageService } from "../platform/storage/foreground-memory-storage.service";
+import { ForegroundSyncService } from "../platform/sync/foreground-sync.service";
+import { SyncServiceListener } from "../platform/sync/sync-service.listener";
 import { fromChromeRuntimeMessaging } from "../platform/utils/from-chrome-runtime-messaging";
 import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service";
 import FilelessImporterBackground from "../tools/background/fileless-importer.background";
@@ -339,6 +341,7 @@ export default class MainBackground {
   scriptInjectorService: BrowserScriptInjectorService;
   kdfConfigService: kdfConfigServiceAbstraction;
   offscreenDocumentService: OffscreenDocumentService;
+  syncServiceListener: SyncServiceListener;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -377,7 +380,8 @@ export default class MainBackground {
     const logoutCallback = async (expired: boolean, userId?: UserId) =>
       await this.logout(expired, userId);
 
-    this.logService = new ConsoleLogService(false);
+    const isDev = process.env.ENV === "development";
+    this.logService = new ConsoleLogService(isDev);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
@@ -396,7 +400,7 @@ export default class MainBackground {
       ),
     );
 
-    this.offscreenDocumentService = new DefaultOffscreenDocumentService();
+    this.offscreenDocumentService = new DefaultOffscreenDocumentService(this.logService);
 
     this.platformUtilsService = new BackgroundPlatformUtilsService(
       this.messagingService,
@@ -475,14 +479,14 @@ export default class MainBackground {
       storageServiceProvider,
     );
 
-    this.encryptService = flagEnabled("multithreadDecryption")
-      ? new BrowserMultithreadEncryptServiceImplementation(
-          this.cryptoFunctionService,
-          this.logService,
-          true,
-          this.offscreenDocumentService,
-        )
-      : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
+    this.encryptService =
+      flagEnabled("multithreadDecryption") && BrowserApi.isManifestVersion(2)
+        ? new MultithreadEncryptServiceImplementation(
+            this.cryptoFunctionService,
+            this.logService,
+            true,
+          )
+        : new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true);
 
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
       storageServiceProvider,
@@ -792,32 +796,52 @@ export default class MainBackground {
 
     this.providerService = new ProviderService(this.stateProvider);
 
-    this.syncService = new SyncService(
-      this.masterPasswordService,
-      this.accountService,
-      this.apiService,
-      this.domainSettingsService,
-      this.folderService,
-      this.cipherService,
-      this.cryptoService,
-      this.collectionService,
-      this.messagingService,
-      this.policyService,
-      this.sendService,
-      this.logService,
-      this.keyConnectorService,
-      this.stateService,
-      this.providerService,
-      this.folderApiService,
-      this.organizationService,
-      this.sendApiService,
-      this.userDecryptionOptionsService,
-      this.avatarService,
-      logoutCallback,
-      this.billingAccountProfileStateService,
-      this.tokenService,
-      this.authService,
-    );
+    if (this.popupOnlyContext) {
+      this.syncService = new ForegroundSyncService(
+        this.stateService,
+        this.folderService,
+        this.folderApiService,
+        this.messagingService,
+        this.logService,
+        this.cipherService,
+        this.collectionService,
+        this.apiService,
+        this.accountService,
+        this.authService,
+        this.sendService,
+        this.sendApiService,
+        messageListener,
+      );
+    } else {
+      this.syncService = new SyncService(
+        this.masterPasswordService,
+        this.accountService,
+        this.apiService,
+        this.domainSettingsService,
+        this.folderService,
+        this.cipherService,
+        this.cryptoService,
+        this.collectionService,
+        this.messagingService,
+        this.policyService,
+        this.sendService,
+        this.logService,
+        this.keyConnectorService,
+        this.stateService,
+        this.providerService,
+        this.folderApiService,
+        this.organizationService,
+        this.sendApiService,
+        this.userDecryptionOptionsService,
+        this.avatarService,
+        logoutCallback,
+        this.billingAccountProfileStateService,
+        this.tokenService,
+        this.authService,
+      );
+
+      this.syncServiceListener = new SyncServiceListener(this.syncService, messageListener);
+    }
     this.eventUploadService = new EventUploadService(
       this.apiService,
       this.stateProvider,
@@ -1141,6 +1165,7 @@ export default class MainBackground {
     this.contextMenusBackground?.init();
     await this.idleBackground.init();
     this.webRequestBackground?.startListening();
+    this.syncServiceListener?.startListening();
 
     return new Promise<void>((resolve) => {
       setTimeout(async () => {
