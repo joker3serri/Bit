@@ -2,7 +2,7 @@
 <div class="tw-max-w-[28rem] tw-min-w-[28rem]">
   <ng-container *ngIf="state === RegistrationStartState.USER_DATA_ENTRY">
     <form [formGroup]="formGroup" [bitSubmit]="submit">
-      <ng-container *ngIf="isBrowserOrDesktop">
+      <!-- <ng-container *ngIf="isBrowserOrDesktop">
         <bit-form-field>
           <bit-label>{{ "creatingAccountOn" | i18n }}</bit-label>
           <bit-select formControlName="selectedRegion">
@@ -13,7 +13,7 @@
             ></bit-option>
           </bit-select>
         </bit-form-field>
-      </ng-container>
+      </ng-container> -->
 
       <bit-form-field>
         <bit-label>{{ "emailAddress" | i18n }}</bit-label>
@@ -23,6 +23,7 @@
           type="email"
           formControlName="email"
           [attr.readonly]="emailReadonly ? true : null"
+          appAutofocus
         />
       </bit-form-field>
 
@@ -66,17 +67,18 @@
         class="tw-font-bold tw-mb-3"
         tabindex="0"
         appAutofocus
+        aria-describedby="follow_the_link_body"
       >
         {{ "checkYourEmail" | i18n }}
       </h2>
 
-      <p bitTypography="body1" tabindex="0" class="tw-text-center tw-mb-3">
+      <p bitTypography="body1" class="tw-text-center tw-mb-3" id="follow_the_link_body">
         {{ "followTheLinkInTheEmailSentTo" | i18n }}
         <span class="tw-font-bold">{{ email.value }}</span>
         {{ "andContinueCreatingYourAccount" | i18n }}
       </p>
 
-      <p bitTypography="helper" class="tw-text-center" tabindex="0">
+      <p bitTypography="helper" class="tw-text-center">
         {{ "noEmail" | i18n }}
         <a
           bitLink
