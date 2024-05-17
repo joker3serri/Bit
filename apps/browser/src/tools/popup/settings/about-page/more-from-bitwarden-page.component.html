@@ -14,6 +14,16 @@
 </header>
 <main tabindex="-1">
   <div class="box list">
-    <div class="box-content single-line"></div>
+    <div class="box-content single-line">
+      <button
+        type="button"
+        class="box-content-row box-content-row-flex text-default"
+        appStopClick
+        (click)="openAuthenticatorPage()"
+      >
+        <div class="row-main">{{ "bitwardenAuthenticator" | i18n }}</div>
+        <i class="bwi bwi-external-link bwi-lg row-sub-icon" aria-hidden="true"></i>
+      </button>
+    </div>
   </div>
 </main>

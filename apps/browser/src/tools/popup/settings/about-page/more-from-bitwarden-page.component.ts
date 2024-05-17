@@ -3,7 +3,9 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { DialogService } from "@bitwarden/components";
 
+import { BrowserApi } from "../../../../platform/browser/browser-api";
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
 
 @Component({
@@ -12,5 +14,17 @@ import { PopOutComponent } from "../../../../platform/popup/components/pop-out.c
   imports: [CommonModule, JslibModule, RouterModule, PopOutComponent],
 })
 export class MoreFromBitwardenPageComponent {
-  constructor() {}
+  constructor(private dialogService: DialogService) {}
+
+  async openAuthenticatorPage() {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToBitwardenDotCom" },
+      content: { key: "continueToAuthenticatorPageDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      await BrowserApi.createNewTab("https://bitwarden.com/products/authenticator");
+    }
+  }
 }
