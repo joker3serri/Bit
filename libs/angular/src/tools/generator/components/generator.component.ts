@@ -1,4 +1,4 @@
-import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Directive, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { BehaviorSubject, combineLatest, firstValueFrom, Subject } from "rxjs";
 import { debounceTime, first, map, skipWhile, takeUntil } from "rxjs/operators";
@@ -65,6 +65,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     protected i18nService: I18nService,
     protected logService: LogService,
     protected route: ActivatedRoute,
+    protected ngZone: NgZone,
     private win: Window,
   ) {
     this.typeOptions = [
@@ -107,7 +108,9 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     ].sort((a, b) => a.name.localeCompare(b.name));
 
     this._password.pipe(debounceTime(250)).subscribe((password) => {
-      this.password = password;
+      ngZone.run(() => {
+        this.password = password;
+      });
       this.passwordGenerationService.addHistory(this.password).catch((e) => {
         this.logService.error(e);
       });

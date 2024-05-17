@@ -1,5 +1,5 @@
 import { Location } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, NgZone } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -32,6 +32,7 @@ export class GeneratorComponent extends BaseGeneratorComponent {
     cipherService: CipherService,
     route: ActivatedRoute,
     logService: LogService,
+    ngZone: NgZone,
     private location: Location,
   ) {
     super(
@@ -42,6 +43,7 @@ export class GeneratorComponent extends BaseGeneratorComponent {
       i18nService,
       logService,
       route,
+      ngZone,
       window,
     );
     this.cipherService = cipherService;
