@@ -138,6 +138,7 @@ import {
   CollectionDetailsResponse,
   CollectionResponse,
 } from "../vault/models/response/collection.response";
+import { OptionalCipherResponse } from "../vault/models/response/optional-cipher.response";
 import { SyncResponse } from "../vault/models/response/sync.response";
 
 /**
@@ -566,7 +567,7 @@ export class ApiService implements ApiServiceAbstraction {
   async putCipherCollections(
     id: string,
     request: CipherCollectionsRequest,
-  ): Promise<CipherResponse> {
+  ): Promise<OptionalCipherResponse> {
     const response = await this.send(
       "PUT",
       "/ciphers/" + id + "/collections_v2",
@@ -574,14 +575,7 @@ export class ApiService implements ApiServiceAbstraction {
       true,
       true,
     );
-    // If a Owner/Admin removes the last Can Manage access of a Cipher
-    // they will no longer be able to update that Cipher
-    // The api will return the updated Cipher with a "unavailable"
-    // To let us know the update request has passed and this User can not make any further changes
-    if (response.unavailable) {
-      return null;
-    }
-    return new CipherResponse(response);
+    return new OptionalCipherResponse(response);
   }
 
   putCipherCollectionsAdmin(id: string, request: CipherCollectionsRequest): Promise<any> {

@@ -778,11 +778,11 @@ export class CipherService implements CipherServiceAbstraction {
     const response = await this.apiService.putCipherCollections(cipher.id, request);
     // The response will be null when a Owner/Admin makes a request removing the last Can Manage Access
     // they have for an item. When this occurs we will call delete to remove that cipher from state
-    if (response == null) {
+    if (response.unavailable) {
       await this.delete(cipher.id);
       return;
     }
-    const data = new CipherData(response);
+    const data = new CipherData(response.cipher);
     const updated = await this.upsert(data);
     return new Cipher(updated[cipher.id as CipherId], cipher.localData);
   }
