@@ -1,3 +1,4 @@
+import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { UpdateProviderPaymentInformationRequest } from "@bitwarden/common/billing/models/request/update-provider-payment-information.request";
 import { OrganizationBillingMetadataResponse } from "@bitwarden/common/billing/models/response/organization-billing-metadata.response";
 
@@ -45,8 +46,19 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     );
   }
 
-  async setupCardIntent(): Promise<string> {
-    const r = await this.apiService.send("POST", "/setup-payment", null, true, true);
+  async createSetupIntentForProvider(providerId: string, type: PaymentMethodType) {
+    let path = "/providers/" + providerId + "/billing/setup-intent/";
+    switch (type) {
+      case PaymentMethodType.BankAccount: {
+        path += "bank-account";
+        break;
+      }
+      case PaymentMethodType.Card: {
+        path += "card";
+        break;
+      }
+    }
+    const r = await this.apiService.send("POST", path, null, true, true);
     return r as string;
   }
 
@@ -102,17 +114,6 @@ export class BillingApiService implements BillingApiServiceAbstraction {
       true,
     );
     return new ProviderSubscriptionResponse(r);
-  }
-
-  async setupProviderBankAccountIntent(providerId: string) {
-    const r = await this.apiService.send(
-      "POST",
-      "/providers/" + providerId + "/billing/bank-account",
-      null,
-      true,
-      true,
-    );
-    return r as string;
   }
 
   async updateClientOrganization(

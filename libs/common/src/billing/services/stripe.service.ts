@@ -49,7 +49,7 @@ export class StripeService implements StripeServiceAbstraction {
   async setupBankAccountPaymentMethod(
     clientSecret: string,
     { accountHolderName, routingNumber, accountNumber, accountHolderType }: BankAccount,
-  ): Promise<void> {
+  ): Promise<string> {
     const result = await this.stripe.confirmUsBankAccountSetup(clientSecret, {
       payment_method: {
         us_bank_account: {
@@ -66,6 +66,7 @@ export class StripeService implements StripeServiceAbstraction {
       this.logService.error(result.error);
       throw result.error;
     }
+    return result.setupIntent.payment_method as string;
   }
 
   async setupCardPaymentMethod(clientSecret: string): Promise<string> {

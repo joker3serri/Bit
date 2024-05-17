@@ -3473,6 +3473,9 @@
   "verifyBankAccountFailureWarning": {
     "message": "Failure to verify the bank account will result in a missed payment and your subscription being suspended."
   },
+  "addedBankAccount": {
+    "message": "Added bank account"
+  },
   "verifiedBankAccount": {
     "message": "Bank account verified"
   },

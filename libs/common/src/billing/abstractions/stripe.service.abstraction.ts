@@ -26,7 +26,10 @@ export abstract class StripeServiceAbstraction {
    * thereby creating and storing a Stripe [PaymentMethod]{@link https://docs.stripe.com/api/payment_methods}.
    * @returns The ID of the newly created PaymentMethod.
    */
-  setupBankAccountPaymentMethod: (clientSecret: string, bankAccount: BankAccount) => Promise<void>;
+  setupBankAccountPaymentMethod: (
+    clientSecret: string,
+    bankAccount: BankAccount,
+  ) => Promise<string>;
 
   /**
    * Creates a Stripe [SetupIntent]{@link https://docs.stripe.com/api/setup_intents} and uses the resulting client secret

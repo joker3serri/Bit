@@ -74,36 +74,53 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
-    switch (this.formGroup.value.paymentMethod) {
-      case PaymentMethodType.Card: {
-        const clientSecret = await this.billingApiService.setupCardIntent();
-        const paymentMethodId = await this.stripeService.setupCardPaymentMethod(clientSecret);
-        const request = new UpdateProviderPaymentInformationRequest();
-        request.paymentMethod = {
-          type: this.formGroup.value.paymentMethod,
-          token: paymentMethodId,
-        };
-        await this.billingApiService.updateProviderPaymentInformation(this.providerId, request);
-        this.providerPaymentMethodUpdated.emit();
-        this.toastService.showToast({
-          variant: "success",
-          title: null,
-          message: this.i18nService.t("updatedPaymentMethod"),
-        });
-        break;
-      }
-      case PaymentMethodType.BankAccount: {
-        const clientSecret = await this.billingApiService.setupProviderBankAccountIntent(
-          this.providerId,
-        );
-        await this.stripeService.setupBankAccountPaymentMethod(clientSecret, {
+    const paymentMethodId = await this.createPaymentMethod();
+    const request = new UpdateProviderPaymentInformationRequest();
+    request.paymentMethod = {
+      type: this.formGroup.value.paymentMethod,
+      token: paymentMethodId,
+    };
+    await this.billingApiService.updateProviderPaymentInformation(this.providerId, request);
+    this.providerPaymentMethodUpdated.emit();
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("updatedPaymentMethod"),
+    });
+  };
+
+  async createPaymentMethod() {
+    if (this.usingStripePaymentMethod) {
+      const clientSecret = await this.billingApiService.createSetupIntentForProvider(
+        this.providerId,
+        this.formGroup.value.paymentMethod,
+      );
+
+      if (this.usingCard) {
+        return await this.stripeService.setupCardPaymentMethod(clientSecret);
+      } else if (this.usingBankAccount) {
+        return await this.stripeService.setupBankAccountPaymentMethod(clientSecret, {
           accountHolderName: this.formGroup.value.bankInformation.accountHolderName,
           routingNumber: this.formGroup.value.bankInformation.routingNumber,
           accountNumber: this.formGroup.value.bankInformation.accountNumber,
           accountHolderType: this.formGroup.value.bankInformation.accountHolderType,
         });
-        break;
       }
     }
-  };
+  }
+
+  get usingStripePaymentMethod() {
+    return (
+      this.formGroup.value.paymentMethod === PaymentMethodType.Card ||
+      this.formGroup.value.paymentMethod === PaymentMethodType.BankAccount
+    );
+  }
+
+  get usingCard() {
+    return this.formGroup.value.paymentMethod === PaymentMethodType.Card;
+  }
+
+  get usingBankAccount() {
+    return this.formGroup.value.paymentMethod === PaymentMethodType.BankAccount;
+  }
 }
