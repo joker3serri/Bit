@@ -392,7 +392,7 @@ export const CenteredContent: Story = {
         <popup-tab-navigation>
           <popup-page>
             <popup-header slot="header" pageTitle="Centered Content"></popup-header>
-            <div class="tw-h-full tw-flex tw-items-center tw-justify-center">
+            <div class="tw-h-full tw-flex tw-items-center tw-justify-center tw-text-main">
               <bit-no-items>
                 <ng-container slot="title">Before centering a div</ng-container>
                 <ng-container slot="description">One must first center oneself</ng-container>
