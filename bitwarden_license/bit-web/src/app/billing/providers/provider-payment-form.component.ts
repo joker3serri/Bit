@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { DIALOG_DATA, DialogConfig } from "@angular/cdk/dialog";
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -9,21 +10,40 @@ import { StripeServiceAbstraction } from "@bitwarden/common/billing/abstractions
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { UpdateProviderPaymentInformationRequest } from "@bitwarden/common/billing/models/request/update-provider-payment-information.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ToastService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
+
+import { CreateClientOrganizationResultType } from "./clients";
+
+type ProviderPaymentFormParams = {
+  providerId: string;
+  initialPaymentMethod: PaymentMethodType;
+};
+
+export enum ProviderPaymentFormResultType {
+  Closed = "closed",
+  Submitted = "submitted",
+}
+
+export const openProviderPaymentForm = (
+  dialogService: DialogService,
+  dialogConfig: DialogConfig<ProviderPaymentFormParams>,
+) =>
+  dialogService.open<ProviderPaymentFormResultType, ProviderPaymentFormParams>(
+    ProviderPaymentFormComponent,
+    dialogConfig,
+  );
 
 @Component({
   selector: "app-provider-payment-form",
   templateUrl: "provider-payment-form.component.html",
 })
 export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
-  @Input({ required: true }) providerId: string;
-  @Input() initialPaymentMethod = PaymentMethodType.Card;
   @Output() providerPaymentMethodUpdated = new EventEmitter();
 
   private destroy$ = new Subject<void>();
 
   protected formGroup = this.formBuilder.group({
-    paymentMethod: [this.initialPaymentMethod],
+    paymentMethod: [this.dialogParams.initialPaymentMethod],
     bankInformation: this.formBuilder.group({
       routingNumber: ["", [Validators.required]],
       accountNumber: ["", [Validators.required]],
@@ -32,8 +52,10 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
     }),
   });
   protected readonly PaymentMethodType = PaymentMethodType;
+  protected readonly ResultType = CreateClientOrganizationResultType;
 
   constructor(
+    @Inject(DIALOG_DATA) private dialogParams: ProviderPaymentFormParams,
     private billingApiService: BillingApiServiceAbstraction,
     private braintreeService: BraintreeServiceAbstraction,
     private formBuilder: FormBuilder,
@@ -80,7 +102,10 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
       type: this.formGroup.value.paymentMethod,
       token: paymentMethodId,
     };
-    await this.billingApiService.updateProviderPaymentInformation(this.providerId, request);
+    await this.billingApiService.updateProviderPaymentInformation(
+      this.dialogParams.providerId,
+      request,
+    );
     this.providerPaymentMethodUpdated.emit();
     this.toastService.showToast({
       variant: "success",
@@ -92,7 +117,7 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
   async createPaymentMethod() {
     if (this.usingStripePaymentMethod) {
       const clientSecret = await this.billingApiService.createSetupIntentForProvider(
-        this.providerId,
+        this.dialogParams.providerId,
         this.formGroup.value.paymentMethod,
       );
 
@@ -110,10 +135,7 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
   }
 
   get usingStripePaymentMethod() {
-    return (
-      this.formGroup.value.paymentMethod === PaymentMethodType.Card ||
-      this.formGroup.value.paymentMethod === PaymentMethodType.BankAccount
-    );
+    return this.usingCard || this.usingBankAccount;
   }
 
   get usingCard() {
