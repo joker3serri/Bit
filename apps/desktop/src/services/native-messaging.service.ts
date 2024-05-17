@@ -1,6 +1,8 @@
 import { Injectable, NgZone } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -30,6 +32,7 @@ export class NativeMessagingService {
   private sharedSecrets = new Map<string, SymmetricCryptoKey>();
 
   constructor(
+    private masterPasswordService: MasterPasswordServiceAbstraction,
     private cryptoFunctionService: CryptoFunctionService,
     private cryptoService: CryptoService,
     private platformUtilService: PlatformUtilsService,
@@ -39,6 +42,7 @@ export class NativeMessagingService {
     private biometricStateService: BiometricStateService,
     private nativeMessageHandler: NativeMessageHandlerService,
     private dialogService: DialogService,
+    private accountService: AccountService,
     private ngZone: NgZone,
   ) {}
 
@@ -49,9 +53,7 @@ export class NativeMessagingService {
   private async messageHandler(msg: LegacyMessageWrapper | Message) {
     const outerMessage = msg as Message;
     if (outerMessage.version) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.nativeMessageHandler.handleMessage(outerMessage);
+      await this.nativeMessageHandler.handleMessage(outerMessage);
       return;
     }
 
@@ -62,7 +64,7 @@ export class NativeMessagingService {
       const remotePublicKey = Utils.fromB64ToArray(rawMessage.publicKey);
 
       // Validate the UserId to ensure we are logged into the same account.
-      const accounts = await firstValueFrom(this.stateService.accounts$);
+      const accounts = await firstValueFrom(this.accountService.accounts$);
       const userIds = Object.keys(accounts);
       if (!userIds.includes(rawMessage.userId)) {
         ipc.platform.nativeMessaging.sendMessage({
@@ -79,7 +81,7 @@ export class NativeMessagingService {
         });
 
         const fingerprint = await this.cryptoService.getFingerprint(
-          await this.stateService.getUserId(),
+          rawMessage.userId,
           remotePublicKey,
         );
 
@@ -96,9 +98,7 @@ export class NativeMessagingService {
         }
       }
 
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.secureCommunication(remotePublicKey, appId);
+      await this.secureCommunication(remotePublicKey, appId);
       return;
     }
 
@@ -142,9 +142,7 @@ export class NativeMessagingService {
             ? firstValueFrom(this.biometricStateService.biometricUnlockEnabled$)
             : this.biometricStateService.getBiometricUnlockEnabled(message.userId as UserId);
         if (!(await biometricUnlockPromise)) {
-          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.send({ command: "biometricUnlock", response: "not enabled" }, appId);
+          await this.send({ command: "biometricUnlock", response: "not enabled" }, appId);
 
           return this.ngZone.run(() =>
             this.dialogService.openSimpleDialog({
@@ -162,15 +160,15 @@ export class NativeMessagingService {
             KeySuffixOptions.Biometric,
             message.userId,
           );
-          const masterKey = await this.cryptoService.getMasterKey(message.userId);
+          const masterKey = await firstValueFrom(
+            this.masterPasswordService.masterKey$(message.userId as UserId),
+          );
 
           if (userKey != null) {
             // we send the master key still for backwards compatibility
             // with older browser extensions
             // TODO: Remove after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3472)
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.send(
+            await this.send(
               {
                 command: "biometricUnlock",
                 response: "unlocked",
@@ -180,14 +178,10 @@ export class NativeMessagingService {
               appId,
             );
           } else {
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.send({ command: "biometricUnlock", response: "canceled" }, appId);
+            await this.send({ command: "biometricUnlock", response: "canceled" }, appId);
           }
         } catch (e) {
-          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.send({ command: "biometricUnlock", response: "canceled" }, appId);
+          await this.send({ command: "biometricUnlock", response: "canceled" }, appId);
         }
 
         break;
