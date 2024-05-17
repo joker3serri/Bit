@@ -27,4 +27,16 @@ export class MoreFromBitwardenPageComponent {
       await BrowserApi.createNewTab("https://bitwarden.com/products/authenticator");
     }
   }
+
+  async openSecretsManagerPage() {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToBitwardenDotCom" },
+      content: { key: "continueToSecretsManagerPageDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      await BrowserApi.createNewTab("https://bitwarden.com/products/secrets-manager");
+    }
+  }
 }
