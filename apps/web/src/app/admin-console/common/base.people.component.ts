@@ -100,14 +100,10 @@ export abstract class BasePeopleComponent<
   protected pageSize = 100;
 
   protected destroy$ = new Subject<void>();
-
-  private pagedUsersCount = 0;
   protected searchControl = new FormControl("", { nonNullable: true });
-
   protected isSearching$ = this.searchControl.valueChanges.pipe(
     concatMap((searchText) => this.searchService.isSearchable(searchText)),
   );
-
   protected isPaging$ = this.isSearching$.pipe(
     map((isSearching) => {
       if (isSearching && this.didScroll) {
@@ -118,6 +114,8 @@ export abstract class BasePeopleComponent<
       return !isSearching && this.users && this.users.length > this.pageSize;
     }),
   );
+
+  private pagedUsersCount = 0;
 
   constructor(
     protected apiService: ApiService,
@@ -142,7 +140,6 @@ export abstract class BasePeopleComponent<
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
 
-  // Empty now??
   ngOnInit(): void {}
 
   ngOnDestroy(): void {
