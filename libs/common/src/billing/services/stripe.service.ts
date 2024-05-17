@@ -12,7 +12,10 @@ export class StripeService implements StripeServiceAbstraction {
 
   constructor(private logService: LogService) {}
 
-  loadStripe(elementIds: { cardNumber: string; cardExpiry: string; cardCvc: string }) {
+  loadStripe(
+    elementIds: { cardNumber: string; cardExpiry: string; cardCvc: string },
+    autoMount: boolean,
+  ) {
     this.elementIds = elementIds;
     const script = window.document.createElement("script");
     script.id = "stripe-script";
@@ -21,22 +24,22 @@ export class StripeService implements StripeServiceAbstraction {
       const window$ = window as any;
       this.stripe = window$.Stripe(process.env.STRIPE_KEY);
       this.elements = this.stripe.elements();
-      const options = this.getStripeElementOptions();
-      window.setTimeout(() => {
-        const cardNumber = this.elements.create("cardNumber", options);
-        const cardExpiry = this.elements.create("cardExpiry", options);
-        const cardCvc = this.elements.create("cardCvc", options);
-        cardNumber.mount(this.elementIds.cardNumber);
-        cardExpiry.mount(this.elementIds.cardExpiry);
-        cardCvc.mount(this.elementIds.cardCvc);
+      const options = this.getElementOptions();
+      setTimeout(() => {
+        this.elements.create("cardNumber", options);
+        this.elements.create("cardExpiry", options);
+        this.elements.create("cardCvc", options);
+        if (autoMount) {
+          this.mountElements();
+        }
       }, 50);
     };
 
     window.document.head.appendChild(script);
   }
 
-  remountElements() {
-    window.setTimeout(() => {
+  mountElements() {
+    setTimeout(() => {
       const cardNumber = this.elements.getElement("cardNumber");
       const cardExpiry = this.elements.getElement("cardExpiry");
       const cardCvc = this.elements.getElement("cardCvc");
@@ -100,7 +103,7 @@ export class StripeService implements StripeServiceAbstraction {
     }, 500);
   }
 
-  private getStripeElementOptions(): any {
+  private getElementOptions(): any {
     const options: any = {
       style: {
         base: {

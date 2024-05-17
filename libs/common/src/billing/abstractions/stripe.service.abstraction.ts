@@ -12,13 +12,16 @@ export abstract class StripeServiceAbstraction {
    * We do this to avoid having to load the Stripe JS SDK on every page of the Web Vault given many pages contain sensitive information.
    * @param elementIds - The ID attributes of the HTML elements used to load the Stripe JS credit card elements.
    */
-  loadStripe: (elementIds: { cardNumber: string; cardExpiry: string; cardCvc: string }) => void;
+  loadStripe: (
+    elementIds: { cardNumber: string; cardExpiry: string; cardCvc: string },
+    autoMount: boolean,
+  ) => void;
 
   /**
    * Re-mounts previously created Stripe credit card [elements]{@link https://docs.stripe.com/js/elements_object/create} into the HTML elements
    * specified during the {@link loadStripe} call. This is useful for when those HTML elements are removed from the DOM by Angular.
    */
-  remountElements: () => void;
+  mountElements: () => void;
 
   /**
    * Creates a Stripe [SetupIntent]{@link https://docs.stripe.com/api/setup_intents} and uses the resulting client secret

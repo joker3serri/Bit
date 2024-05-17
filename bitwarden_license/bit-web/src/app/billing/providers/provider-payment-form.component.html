@@ -116,7 +116,10 @@
         </div>
       </ng-container>
       <ng-container *ngIf="formGroup.value.paymentMethod === PaymentMethodType.PayPal">
-        <h1>TODO</h1>
+        <div class="tw-mb-3">
+          <div id="braintree-container" class="tw-mb-1 tw-content-center"></div>
+          <small class="tw-text-muted">{{ "paypalClickSubmit" | i18n }}</small>
+        </div>
       </ng-container>
     </ng-container>
     <ng-container bitDialogFooter>

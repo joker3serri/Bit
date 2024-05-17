@@ -65,12 +65,18 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.stripeService.loadStripe({
-      cardNumber: "#stripe-card-number",
-      cardExpiry: "#stripe-card-expiry",
-      cardCvc: "#stripe-card-cvc",
-    });
-    this.braintreeService.loadBraintree("#braintree-container");
+    this.stripeService.loadStripe(
+      {
+        cardNumber: "#stripe-card-number",
+        cardExpiry: "#stripe-card-expiry",
+        cardCvc: "#stripe-card-cvc",
+      },
+      this.dialogParams.initialPaymentMethod === PaymentMethodType.Card,
+    );
+    this.braintreeService.loadBraintree(
+      "#braintree-container",
+      this.dialogParams.initialPaymentMethod === PaymentMethodType.PayPal,
+    );
 
     this.formGroup
       .get("paymentMethod")
@@ -90,7 +96,12 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
   onPaymentMethodChange(type: PaymentMethodType) {
     switch (type) {
       case PaymentMethodType.Card: {
-        this.stripeService.remountElements();
+        this.stripeService.mountElements();
+        break;
+      }
+      case PaymentMethodType.PayPal: {
+        this.braintreeService.createDropin();
+        break;
       }
     }
   }
@@ -131,6 +142,8 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
           accountHolderType: this.formGroup.value.bankInformation.accountHolderType,
         });
       }
+    } else {
+      return this.braintreeService.requestPaymentMethod();
     }
   }
 

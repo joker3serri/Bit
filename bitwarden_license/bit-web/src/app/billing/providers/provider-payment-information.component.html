@@ -1,5 +1,7 @@
 <app-header></app-header>
-<h2 class="spaced-header">{{ "paymentMethod" | i18n }}</h2>
-<button type="button" bitButton buttonType="secondary" [bitAction]="changePaymentMethod">
-  {{ "addPaymentMethod" | i18n }}
-</button>
+<ng-container>
+  <h2 class="spaced-header">{{ "paymentMethod" | i18n }}</h2>
+  <button type="button" bitButton buttonType="secondary" [bitAction]="changePaymentMethod">
+    {{ "addPaymentMethod" | i18n }}
+  </button>
+</ng-container>

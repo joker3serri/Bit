@@ -1,4 +1,6 @@
 export abstract class BraintreeServiceAbstraction {
-  loadBraintree: (containerId: string) => void;
+  createDropin: () => void;
+  loadBraintree: (containerId: string, autoCreateDropin: boolean) => void;
+  requestPaymentMethod: () => string;
   unloadBraintree: () => void;
 }
