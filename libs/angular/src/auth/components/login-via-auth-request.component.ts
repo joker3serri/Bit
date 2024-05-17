@@ -1,6 +1,6 @@
 import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { IsActiveMatchOptions, Router } from "@angular/router";
-import { Subject, firstValueFrom, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, map, takeUntil } from "rxjs";
 
 import {
   AuthRequestLoginCredentials,
@@ -12,7 +12,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
@@ -29,7 +29,6 @@ import { EnvironmentService } from "@bitwarden/common/platform/abstractions/envi
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
@@ -84,12 +83,11 @@ export class LoginViaAuthRequestComponent
     platformUtilsService: PlatformUtilsService,
     private anonymousHubService: AnonymousHubService,
     private validationService: ValidationService,
-    private stateService: StateService,
+    private accountService: AccountService,
     private loginEmailService: LoginEmailServiceAbstraction,
-    private deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    private deviceTrustService: DeviceTrustServiceAbstraction,
     private authRequestService: AuthRequestServiceAbstraction,
     private loginStrategyService: LoginStrategyServiceAbstraction,
-    private accountService: AccountService,
   ) {
     super(environmentService, i18nService, platformUtilsService);
 
@@ -131,7 +129,9 @@ export class LoginViaAuthRequestComponent
       // Pull email from state for admin auth reqs b/c it is available
       // This also prevents it from being lost on refresh as the
       // login service email does not persist.
-      this.email = await this.stateService.getEmail();
+      this.email = await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((a) => a?.email)),
+      );
       const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
 
       if (!this.email) {
@@ -221,7 +221,8 @@ export class LoginViaAuthRequestComponent
     }
 
     // Request still pending response from admin
-    // So, create hub connection so that any approvals will be received via push notification
+    // set keypair and create hub connection so that any approvals will be received via push notification
+    this.authRequestKeyPair = { privateKey: adminAuthReqStorable.privateKey, publicKey: null };
     await this.anonymousHubService.createHubConnection(adminAuthReqStorable.id);
   }
 
@@ -401,7 +402,7 @@ export class LoginViaAuthRequestComponent
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device
     const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
-    await this.deviceTrustCryptoService.trustDeviceIfRequired(activeAccount.id);
+    await this.deviceTrustService.trustDeviceIfRequired(activeAccount.id);
 
     // TODO: don't forget to use auto enrollment service everywhere we trust device
 
