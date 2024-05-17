@@ -55,6 +55,8 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     debounceTime(500),
   );
 
+  private _password = new BehaviorSubject<string>("-");
+
   constructor(
     protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected usernameGenerationService: UsernameGenerationServiceAbstraction,
@@ -103,6 +105,13 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       { name: "SimpleLogin", value: "simplelogin", validForSelfHosted: true },
       { name: "Forward Email", value: "forwardemail", validForSelfHosted: true },
     ].sort((a, b) => a.name.localeCompare(b.name));
+
+    this._password.pipe(debounceTime(250)).subscribe((password) => {
+      this.password = password;
+      this.passwordGenerationService.addHistory(this.password).catch((e) => {
+        this.logService.error(e);
+      });
+    });
   }
 
   cascadeOptions(navigationType: GeneratorType = undefined, accountEmail: string) {
@@ -161,8 +170,9 @@ export class GeneratorComponent implements OnInit, OnDestroy {
         this.usernameOptions = options.usernameOptions;
 
         this.cascadeOptions(options.navigationType, options.accountEmail);
+        this._passwordOptionsMinLengthForReader.next(this.passwordOptions.minLength);
 
-        if (this.regenerateWithoutButtonPress() && options.passwordOptions.policyUpdated) {
+        if (this.regenerateWithoutButtonPress()) {
           this.regenerate().catch((e) => {
             this.logService.error(e);
           });
@@ -191,9 +201,6 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   }
 
   async typeChanged() {
-    if (this.regenerateWithoutButtonPress()) {
-      await this.regenerate();
-    }
     await this.savePasswordOptions();
   }
 
@@ -208,7 +215,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   async sliderChanged() {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.savePasswordOptions(false);
+    this.savePasswordOptions();
     await this.passwordGenerationService.addHistory(this.password);
   }
 
@@ -252,10 +259,9 @@ export class GeneratorComponent implements OnInit, OnDestroy {
 
   async sliderInput() {
     await this.normalizePasswordOptions();
-    this.password = await this.passwordGenerationService.generatePassword(this.passwordOptions);
   }
 
-  async savePasswordOptions(regenerate = true) {
+  async savePasswordOptions() {
     // map navigation state into generator type
     const restoreType = this.passwordOptions.type;
     if (this.type === "username") {
@@ -268,25 +274,19 @@ export class GeneratorComponent implements OnInit, OnDestroy {
 
     // restore the original format
     this.passwordOptions.type = restoreType;
-
-    if (regenerate && this.regenerateWithoutButtonPress()) {
-      await this.regeneratePassword();
-    }
   }
 
-  async saveUsernameOptions(regenerate = true) {
+  async saveUsernameOptions() {
     await this.usernameGenerationService.saveOptions(this.usernameOptions);
     if (this.usernameOptions.type === "forwarded") {
       this.username = "-";
     }
-    if (regenerate && this.regenerateWithoutButtonPress()) {
-      await this.regenerateUsername();
-    }
   }
 
   async regeneratePassword() {
-    this.password = await this.passwordGenerationService.generatePassword(this.passwordOptions);
-    await this.passwordGenerationService.addHistory(this.password);
+    this._password.next(
+      await this.passwordGenerationService.generatePassword(this.passwordOptions),
+    );
   }
 
   regenerateUsername() {
@@ -355,7 +355,5 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     await this.passwordGenerationService.enforcePasswordGeneratorPoliciesOnOptions(
       this.passwordOptions,
     );
-
-    this._passwordOptionsMinLengthForReader.next(this.passwordOptions.minLength);
   }
 }
