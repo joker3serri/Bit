@@ -1170,7 +1170,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       collections.every((c) => c.canDelete(organization, this.flexibleCollectionsV1Enabled));
     const canDeleteCiphers =
       ciphers == null ||
-      this.organization.allowAdminAccessToAllCollectionItems ||
       ciphers.every((c) => c.edit) ||
       this.organization.canEditAllCiphers(
         this.flexibleCollectionsV1Enabled,
