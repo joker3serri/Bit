@@ -9,7 +9,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { Subject, firstValueFrom, map, takeUntil } from "rxjs";
+import { Subject, filter, firstValueFrom, from, map, switchMap, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ClientType } from "@bitwarden/common/enums";
@@ -24,12 +24,14 @@ import {
   AsyncActionsModule,
   ButtonModule,
   CheckboxModule,
+  DialogService,
   FormFieldModule,
   IconModule,
   LinkModule,
   SelectModule,
 } from "@bitwarden/components";
 
+// import { EnvironmentComponent as DesktopEnvironmentComponent } from "../../../../../../apps/desktop/src/auth/environment.component";
 import { RegistrationCheckEmailIcon } from "../../icons/registration-check-email.icon";
 
 enum RegistrationStartState {
@@ -100,12 +102,13 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
     private environmentService: EnvironmentService,
+    private dialogService: DialogService,
   ) {
     this.isSelfHost = platformUtilsService.isSelfHost();
     this.clientType = platformUtilsService.getClientType();
 
     // TODO: remove this.
-    this.clientType = ClientType.Desktop;
+    // this.clientType = ClientType.Desktop;
 
     this.isBrowserOrDesktop =
       this.clientType === ClientType.Desktop || this.clientType === ClientType.Browser;
@@ -129,6 +132,10 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   }
 
   private async initForBrowserOrDesktop() {
+    await this.initializeSelectedRegion();
+  }
+
+  private async initializeSelectedRegion() {
     this.selectedRegion.setValidators(Validators.required);
 
     // TODO: figure out if observable or promise is better here
@@ -160,6 +167,40 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.selectedRegion.setValue(selectedRegionConfig);
   }
 
+  private listenForSelectedRegionChanges() {
+    this.selectedRegion.valueChanges
+      .pipe(
+        filter((regionConfig: RegionConfig | null) => regionConfig !== null),
+        switchMap((regionConfig: RegionConfig) => {
+          if (regionConfig.key === Region.SelfHosted) {
+            // Open self-hosted settings modal based on client type
+
+            // if (this.clientType === ClientType.Desktop) {
+            //   this.openDesktopSelfHostedSettingsDialog();
+            // }
+
+            // if (this.clientType === ClientType.Browser) {
+            //   this.openBrowserExtensionSelfHostedSettingsDialog();
+            // }
+
+            return;
+          }
+
+          return from(this.environmentService.setEnvironment(regionConfig.key));
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
+  }
+
+  // private openDesktopSelfHostedSettingsDialog() {
+  //   this.dialogService.open(DesktopEnvironmentComponent);
+  // }
+
+  // private openBrowserExtensionSelfHostedSettingsDialog() {
+  //   // this.dialogService.open(EnvironmentComponent);
+  // }
+
   submit = async () => {
     const valid = this.validateForm();
 
@@ -170,6 +211,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     // TODO: Implement registration logic
 
     this.state = RegistrationStartState.CHECK_EMAIL;
+    document.getElementById("check_your_email_heading")?.focus();
   };
 
   private validateForm(): boolean {

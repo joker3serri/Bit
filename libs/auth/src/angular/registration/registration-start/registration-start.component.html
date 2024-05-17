@@ -60,20 +60,29 @@
     <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
       <bit-icon [icon]="Icons.RegistrationCheckEmailIcon" class="tw-mb-6"></bit-icon>
 
-      <h2 bitTypography="h2" class="tw-font-bold tw-mb-3">{{ "checkYourEmail" | i18n }}</h2>
+      <h2
+        bitTypography="h2"
+        id="check_your_email_heading"
+        class="tw-font-bold tw-mb-3"
+        tabindex="0"
+        appAutofocus
+      >
+        {{ "checkYourEmail" | i18n }}
+      </h2>
 
-      <p bitTypography="body1" class="tw-text-center tw-mb-3">
+      <p bitTypography="body1" tabindex="0" class="tw-text-center tw-mb-3">
         {{ "followTheLinkInTheEmailSentTo" | i18n }}
         <span class="tw-font-bold">{{ email.value }}</span>
         {{ "andContinueCreatingYourAccount" | i18n }}
       </p>
 
-      <p bitTypography="helper" class="tw-text-center">
+      <p bitTypography="helper" class="tw-text-center" tabindex="0">
         {{ "noEmail" | i18n }}
         <a
           bitLink
           linkType="primary"
           class="tw-cursor-pointer"
+          tabindex="0"
           (click)="state = RegistrationStartState.USER_DATA_ENTRY"
         >
           {{ "goBack" | i18n }}
