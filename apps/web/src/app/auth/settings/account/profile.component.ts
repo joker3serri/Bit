@@ -42,8 +42,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.profile = await this.apiService.getProfile();
     this.loading = false;
     this.fingerprintMaterial = await this.stateService.getUserId();
-    this.name = this.profile.name;
-    this.email = this.profile.email;
+    this.formGroup.get("name").setValue(this.profile.name);
+    this.formGroup.get("email").setValue(this.profile.email);
 
     this.formGroup
       .get("name")
@@ -56,22 +56,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   async ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  get name(): string {
-    return this.formGroup.value.name;
-  }
-
-  set name(profileName: string) {
-    this.formGroup.get("name").setValue(profileName);
-  }
-
-  get email(): string {
-    return this.formGroup.value.email;
-  }
-
-  set email(profileEmail: string) {
-    this.formGroup.get("email").setValue(profileEmail);
   }
 
   openChangeAvatar = async () => {
@@ -88,7 +72,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   };
 
   submit = async () => {
-    const request = new UpdateProfileRequest(this.name, this.profile.masterPasswordHint);
+    const request = new UpdateProfileRequest(
+      this.formGroup.get("name").value,
+      this.profile.masterPasswordHint,
+    );
     await this.apiService.putProfile(request);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("accountUpdated"));
   };
