@@ -1,10 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Observable } from "rxjs";
+import { Observable, firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../../platform/browser/browser-api";
@@ -20,9 +21,24 @@ export class MoreFromBitwardenPageComponent {
 
   constructor(
     private dialogService: DialogService,
-    billingAccountProfileStateService: BillingAccountProfileStateService,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
+    private environmentService: EnvironmentService,
   ) {
     this.canAccessPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
+  }
+
+  async openFreeBitwardenFamiliesPage() {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToWebApp" },
+      content: { key: "freeBitwardenFamiliesPageDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      const env = await firstValueFrom(this.environmentService.environment$);
+      const url = env.getWebVaultUrl();
+      await BrowserApi.createNewTab(url + "/#/settings/sponsored-families");
+    }
   }
 
   async openBitwardenForBusinessPage() {
