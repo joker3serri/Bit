@@ -88,7 +88,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
             return;
           }
 
-          // Must lock active (first) account first, then order doesn't matter
+          // Must lock active (first) account first, then order doesn't matter. Test.
           await this.vaultTimeoutService.lock(accountIds.shift());
           await Promise.all(accountIds.map((id) => this.vaultTimeoutService.lock(id)));
         }),

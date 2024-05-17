@@ -466,7 +466,7 @@
     "message": "4 hours"
   },
   "onLocked": {
-    "message": "On system lock - test"
+    "message": "On system lock"
   },
   "onRestart": {
     "message": "On browser restart"
