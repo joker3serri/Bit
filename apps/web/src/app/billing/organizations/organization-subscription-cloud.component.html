@@ -142,7 +142,7 @@
 
     <ng-container *ngIf="userOrg.canEditSubscription">
       <h2 bitTypography="h2" class="tw-mt-7">{{ "manageSubscription" | i18n }}</h2>
-      <p bitTypography="body1">
+      <p bitTypography="body1" *ngIf="customerDiscount?.id === 'sm-standalone'">
         {{ "smStandaloneTrialSeatCountUpdateMessageFragment1" | i18n }}
         {{ "passwordManager" | i18n }}
         {{ "smStandaloneTrialSeatCountUpdateMessageFragment2" | i18n }}
