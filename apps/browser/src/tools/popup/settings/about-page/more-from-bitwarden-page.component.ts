@@ -39,4 +39,16 @@ export class MoreFromBitwardenPageComponent {
       await BrowserApi.createNewTab("https://bitwarden.com/products/secrets-manager");
     }
   }
+
+  async openPasswordlessDotDevPage() {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToBitwardenDotCom" },
+      content: { key: "continueToPasswordlessDotDevPageDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      await BrowserApi.createNewTab("https://bitwarden.com/products/passwordless");
+    }
+  }
 }
