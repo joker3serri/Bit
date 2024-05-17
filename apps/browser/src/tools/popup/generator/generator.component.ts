@@ -32,6 +32,7 @@ export class GeneratorComponent extends BaseGeneratorComponent {
     cipherService: CipherService,
     route: ActivatedRoute,
     logService: LogService,
+    accountService: AccountService,
     private location: Location,
   ) {
     super(
@@ -42,6 +43,7 @@ export class GeneratorComponent extends BaseGeneratorComponent {
       i18nService,
       logService,
       route,
+      accountService,
       window,
     );
     this.cipherService = cipherService;
