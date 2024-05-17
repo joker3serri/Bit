@@ -1,0 +1,10 @@
+<div class="tw-mb-6">
+  <bit-select [placeholder]="'types' | i18n" class="tw-max-w-32">
+    <bit-option
+      *ngFor="let type of cipherTypes"
+      [value]="type.value"
+      [label]="type.label | i18n"
+      [icon]="type.icon"
+    ></bit-option>
+  </bit-select>
+</div>

@@ -22,7 +22,8 @@
   </div>
 
   <ng-container *ngIf="!(showEmptyState$ | async)">
-    <!-- TODO: Filter/search Section in PM-6824 and PM-6826.-->
+    <!-- TODO: Filter/search Section in PM-6824.-->
+    <app-vault-list-filters></app-vault-list-filters>
 
     <div
       *ngIf="showNoResultsState$ | async"
