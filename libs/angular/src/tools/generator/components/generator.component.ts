@@ -63,7 +63,6 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     protected i18nService: I18nService,
     protected logService: LogService,
     protected route: ActivatedRoute,
-    protected accountService: AccountService,
     private win: Window,
   ) {
     this.typeOptions = [
