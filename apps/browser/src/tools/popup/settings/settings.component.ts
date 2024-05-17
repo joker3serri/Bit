@@ -32,19 +32,6 @@ export class SettingsComponent implements OnInit {
 
   async ngOnInit() {}
 
-  async share() {
-    const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "learnOrg" },
-      content: { key: "learnOrgConfirmation" },
-      type: "info",
-    });
-    if (confirmed) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      BrowserApi.createNewTab("https://bitwarden.com/help/about-organizations/");
-    }
-  }
-
   async import() {
     await this.router.navigate(["/import"]);
     if (await BrowserApi.isPopupOpen()) {

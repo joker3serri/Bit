@@ -16,6 +16,18 @@ import { PopOutComponent } from "../../../../platform/popup/components/pop-out.c
 export class MoreFromBitwardenPageComponent {
   constructor(private dialogService: DialogService) {}
 
+  async openBitwardenForBusinessPage() {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToBitwardenDotCom" },
+      content: { key: "bitwardenForBusinessPageDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      await BrowserApi.createNewTab("https://bitwarden.com/products/business/");
+    }
+  }
+
   async openAuthenticatorPage() {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "continueToBitwardenDotCom" },
