@@ -43,13 +43,29 @@ export class AboutPageComponent {
   }
 
   async launchHelp() {
-    await BrowserApi.createNewTab("https://bitwarden.com/help/");
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToHelpCenter" },
+      content: { key: "continueToHelpCenterDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      await BrowserApi.createNewTab("https://bitwarden.com/help/");
+    }
   }
 
   async openWebVault() {
-    const env = await firstValueFrom(this.environmentService.environment$);
-    const url = env.getWebVaultUrl();
-    await BrowserApi.createNewTab(url);
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToWebApp" },
+      content: { key: "continueToWebAppDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      const env = await firstValueFrom(this.environmentService.environment$);
+      const url = env.getWebVaultUrl();
+      await BrowserApi.createNewTab(url);
+    }
   }
 
   async launchContactForm() {
