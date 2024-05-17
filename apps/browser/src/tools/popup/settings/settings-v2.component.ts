@@ -5,6 +5,7 @@ import { RouterModule } from "@angular/router";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ItemModule } from "@bitwarden/components";
 
+import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
@@ -20,6 +21,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
     PopupHeaderComponent,
     PopOutComponent,
     ItemModule,
+    CurrentAccountComponent,
   ],
 })
 export class SettingsV2Component {}
