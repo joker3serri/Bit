@@ -1,7 +1,9 @@
-import { Directive, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
-import { UntypedFormBuilder, Validators } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
+import { ReactiveFormsModule, UntypedFormBuilder, Validators } from "@angular/forms";
 import { map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PasswordStrengthComponent } from "@bitwarden/angular/tools/password-strength/password-strength.component";
 import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -16,10 +18,39 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
-import { DialogService } from "@bitwarden/components";
+import {
+  AsyncActionsModule,
+  ButtonModule,
+  CalloutModule,
+  DialogService,
+  FormFieldModule,
+  IconButtonModule,
+  RadioButtonModule,
+  SelectModule,
+} from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
-@Directive()
+import { ExportScopeCalloutComponent } from "./export-scope-callout.component";
+
+@Component({
+  selector: "tools-export",
+  templateUrl: "export.component.html",
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JslibModule,
+    FormFieldModule,
+    AsyncActionsModule,
+    ButtonModule,
+    IconButtonModule,
+    SelectModule,
+    CalloutModule,
+    RadioButtonModule,
+    ExportScopeCalloutComponent,
+    UserVerificationDialogComponent,
+  ],
+})
 export class ExportComponent implements OnInit, OnDestroy {
   @Output() onSaved = new EventEmitter();
   @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
@@ -88,8 +119,8 @@ export class ExportComponent implements OnInit, OnDestroy {
       this.exportForm.get("format").valueChanges,
       this.exportForm.get("fileEncryptionType").valueChanges,
     )
-      .pipe(takeUntil(this.destroy$))
       .pipe(startWith(0))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.adjustValidators());
 
     if (this.organizationId) {
