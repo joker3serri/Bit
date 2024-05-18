@@ -7,6 +7,8 @@ import { Directive, ElementRef, HostBinding } from "@angular/core";
 export class MenuItemDirective implements FocusableOption {
   @HostBinding("class") classList = [
     "tw-block",
+    "tw-w-full",
+    "tw-truncate",
     "tw-py-1",
     "tw-px-4",
     "!tw-text-main",

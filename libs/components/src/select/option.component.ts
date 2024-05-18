@@ -11,8 +11,8 @@ export class OptionComponent<T = unknown> implements Option<T> {
   @Input()
   icon?: string;
 
-  @Input()
-  value?: T = undefined;
+  @Input({ required: true })
+  value: T;
 
   @Input()
   label?: string;

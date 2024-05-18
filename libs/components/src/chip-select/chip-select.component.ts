@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 import { ButtonModule } from "../button";
 import { IconButtonModule } from "../icon-button";
@@ -8,257 +9,39 @@ import { Option } from "../select/option";
 
 export type OptionTree<T> = Option<T> & {
   children?: OptionTree<T>[];
-  parent?: OptionTree<T>;
-};
 
-const testData: OptionTree<any>[] = [
-  {
-    label: "Foo",
-    value: "foo-1-2-3",
-    icon: "bwi-key",
-  },
-  {
-    label: "Bar",
-    children: [
-      {
-        label: "Foo1",
-      },
-      {
-        label: "Bar1",
-        children: [
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-          {
-            label: "Foooooooooooooooo00000000000000000000000000000000000002",
-          },
-          {
-            label: "Bar2",
-            children: [
-              {
-                label: "Foo3",
-              },
-            ],
-          },
-          {
-            label: "Baz2",
-          },
-          {
-            label: "Baf2",
-          },
-        ],
-      },
-    ],
-  },
-];
+  /** Internal */
+  _parent?: OptionTree<T>;
+};
 
 @Component({
   selector: "bit-chip-select",
   templateUrl: "chip-select.component.html",
   standalone: true,
   imports: [CommonModule, ButtonModule, IconButtonModule, MenuModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ChipSelectComponent,
+      multi: true,
+    },
+  ],
 })
-export class ChipSelectComponent<T = unknown> implements OnInit {
-  // private i18nService = inject(I18nService);
+export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAccessor {
+  @Input({ required: true }) placeholderText: string;
+  @Input() placeholderIcon: string;
 
-  protected selected: OptionTree<T>;
+  @Input({ required: true }) options: OptionTree<T>[];
 
-  @Input() placeholder = "Placeholder";
-
-  // name placeholder icon?
-  @Input() icon: string;
-
-  /** Optional: Options can be provided using an  input or using `bit-option` */
-  @Input() items: OptionTree<T>[] = testData;
-
+  private rootTree: OptionTree<T>;
   protected renderedOptions: OptionTree<T>;
+  protected selectedOption: OptionTree<T>;
+  protected selectedValue: T;
 
-  protected selectOption(option: OptionTree<T>, event: MouseEvent) {
-    this.selected = option;
+  protected selectOption(option: OptionTree<T>, _event: MouseEvent) {
+    this.selectedOption = option;
+    this.selectedValue = option.value;
+    this.onChange(option);
   }
 
   protected viewOption(option: OptionTree<T>, event: MouseEvent) {
@@ -268,18 +51,81 @@ export class ChipSelectComponent<T = unknown> implements OnInit {
     event.stopImmediatePropagation();
   }
 
+  private findSelectedOption(tree: OptionTree<T>, value: T): OptionTree<T> | null {
+    let result = null;
+    if (tree.value === value) {
+      return tree;
+    }
+
+    if (Array.isArray(tree.children) && tree.children.length > 0) {
+      tree.children.some((node) => {
+        result = this.findSelectedOption(node, value);
+        return result;
+      });
+    }
+    return result;
+  }
+
+  /** For each descendant in the provided `tree`, update `_parent` to be a refrence to the parent node. This allows us to navigate back in the menu. */
   private markParents(tree: OptionTree<T>) {
     tree.children?.forEach((child) => {
-      child.parent = tree;
+      child._parent = tree;
       this.markParents(child);
     });
   }
 
   ngOnInit(): void {
     const root: OptionTree<T> = {
-      children: this.items,
+      children: this.options,
+      value: null,
     };
     this.markParents(root);
-    this.renderedOptions = root;
+    this.rootTree = root;
+    this.renderedOptions = this.rootTree;
+  }
+
+  /** Control Value Accessor */
+
+  private notifyOnChange?: (value: T) => void;
+  private notifyOnTouched?: () => void;
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  writeValue(obj: T): void {
+    this.selectedValue = obj;
+    this.selectedOption = this.findSelectedOption(this.rootTree, this.selectedValue);
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  registerOnChange(fn: (value: T) => void): void {
+    this.notifyOnChange = fn;
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  registerOnTouched(fn: any): void {
+    this.notifyOnTouched = fn;
+  }
+
+  /** TODO */
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  setDisabledState(isDisabled: boolean): void {
+    // this.disabled = isDisabled;
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  protected onChange(option: Option<T> | null) {
+    if (!this.notifyOnChange) {
+      return;
+    }
+
+    this.notifyOnChange(option?.value);
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  protected onBlur() {
+    if (!this.notifyOnTouched) {
+      return;
+    }
+
+    this.notifyOnTouched();
   }
 }
