@@ -290,6 +290,10 @@ export class ExportComponent implements OnInit, OnDestroy {
   }
 
   protected getFileName(prefix?: string) {
+    if (this.organizationId) {
+      prefix = "org";
+    }
+
     let extension = this.format;
     if (this.format === "encrypted_json") {
       if (prefix == null) {
