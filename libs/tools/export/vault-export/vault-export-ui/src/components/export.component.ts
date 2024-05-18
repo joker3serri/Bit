@@ -307,7 +307,15 @@ export class ExportComponent implements OnInit, OnDestroy {
   }
 
   protected async collectEvent(): Promise<void> {
-    await this.eventCollectionService.collect(EventType.User_ClientExportedVault);
+    if (this.organizationId) {
+      return await this.eventCollectionService.collect(
+        EventType.Organization_ClientExportedVault,
+        null,
+        false,
+        this.organizationId,
+      );
+    }
+    return await this.eventCollectionService.collect(EventType.User_ClientExportedVault);
   }
 
   get format() {
