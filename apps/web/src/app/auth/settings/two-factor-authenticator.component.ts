@@ -92,6 +92,7 @@ export class TwoFactorAuthenticatorComponent
   submit = async () => {
     if (this.enabled) {
       await this.disableAuthentication(this.formPromise);
+      this.close();
     } else {
       await this.enable();
     }
@@ -134,7 +135,7 @@ export class TwoFactorAuthenticatorComponent
     }, 100);
   }
 
-  onClose = () => {
+  close = () => {
     this.dialogRef.close(this.enabled);
   };
 
