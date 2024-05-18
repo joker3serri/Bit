@@ -20,6 +20,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
 import {
   AsyncActionsModule,
+  BitSubmitDirective,
   ButtonModule,
   CalloutModule,
   DialogService,
@@ -52,6 +53,18 @@ import { ExportScopeCalloutComponent } from "./export-scope-callout.component";
   ],
 })
 export class ExportComponent implements OnInit, OnDestroy {
+  @ViewChild(BitSubmitDirective)
+  private bitSubmit: BitSubmitDirective;
+
+  @Output()
+  formLoading = new EventEmitter<boolean>();
+
+  @Output()
+  formDisabled = new EventEmitter<boolean>();
+
+  @Output()
+  onSuccessfulExport = new EventEmitter<string>();
+
   @Output() onSaved = new EventEmitter();
   @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
@@ -149,6 +162,16 @@ export class ExportComponent implements OnInit, OnDestroy {
     this.exportForm.controls.vaultSelector.setValue("myVault");
   }
 
+  ngAfterViewInit(): void {
+    this.bitSubmit.loading$.pipe(takeUntil(this.destroy$)).subscribe((loading) => {
+      this.formLoading.emit(loading);
+    });
+
+    this.bitSubmit.disabled$.pipe(takeUntil(this.destroy$)).subscribe((disabled) => {
+      this.formDisabled.emit(disabled);
+    });
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
   }
@@ -218,6 +241,7 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   protected saved() {
     this.onSaved.emit();
+    this.onSuccessfulExport.emit(this.organizationId);
   }
 
   private async verifyUser(): Promise<boolean> {

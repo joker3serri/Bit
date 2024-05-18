@@ -6,7 +6,7 @@
   *ngIf="!disabledByPolicy"
 ></tools-export-scope-callout>
 
-<form [formGroup]="exportForm" [bitSubmit]="submit">
+<form [formGroup]="exportForm" [bitSubmit]="submit" id="export_form_exportForm">
   <ng-container *ngIf="organizations$ | async as organizations">
     <bit-form-field *ngIf="organizations.length > 0">
       <bit-label>{{ "exportFrom" | i18n }}</bit-label>
