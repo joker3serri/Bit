@@ -97,6 +97,24 @@ export class DeviceApprovalsComponent implements OnInit, OnDestroy {
     });
   }
 
+  async approveAllRequests() {
+    if (this.tableDataSource.data.length === 0) {
+      return;
+    }
+
+    await this.performAsyncAction(async () => {
+      await this.organizationAuthRequestService.approvePendingRequests(
+        this.organizationId,
+        this.tableDataSource.data,
+      );
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("allLoginRequestsApproved"),
+      );
+    });
+  }
+
   async denyRequest(requestId: string) {
     await this.performAsyncAction(async () => {
       await this.organizationAuthRequestService.denyPendingRequests(this.organizationId, requestId);
