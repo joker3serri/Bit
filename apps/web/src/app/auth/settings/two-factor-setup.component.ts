@@ -1,3 +1,4 @@
+import { DialogRef } from "@angular/cdk/dialog";
 import { Component, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from "@angular/core";
 import { firstValueFrom, lastValueFrom, Observable, Subject, takeUntil } from "rxjs";
 
@@ -136,11 +137,13 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
         if (!result) {
           return;
         }
-        const authComp = TwoFactorAuthenticatorComponent.open(this.dialogService, { data: result });
-        const response: boolean = await lastValueFrom(authComp.closed);
-        if (response !== null) {
-          this.updateStatus(response, TwoFactorProviderType.Authenticator);
-        }
+        const authComp: DialogRef<boolean, any> = TwoFactorAuthenticatorComponent.open(
+          this.dialogService,
+          { data: result },
+        );
+        authComp.componentInstance.onChangeStatus.subscribe((enabled: boolean) => {
+          this.updateStatus(enabled, TwoFactorProviderType.Authenticator);
+        });
         break;
       }
       case TwoFactorProviderType.Yubikey: {

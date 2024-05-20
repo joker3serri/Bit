@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { firstValueFrom, map } from "rxjs";
 
@@ -40,6 +40,7 @@ export class TwoFactorAuthenticatorComponent
   extends TwoFactorBaseComponent
   implements OnInit, OnDestroy
 {
+  @Output() onChangeStatus = new EventEmitter<boolean>();
   type = TwoFactorProviderType.Authenticator;
   key: string;
   formPromise: Promise<TwoFactorAuthenticatorResponse>;
@@ -92,9 +93,11 @@ export class TwoFactorAuthenticatorComponent
   submit = async () => {
     if (this.enabled) {
       await this.disableAuthentication(this.formPromise);
+      this.onChangeStatus.emit(this.enabled);
       this.close();
     } else {
       await this.enable();
+      this.onChangeStatus.emit(this.enabled);
     }
   };
 
