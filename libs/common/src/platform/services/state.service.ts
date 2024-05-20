@@ -347,27 +347,6 @@ export class StateService<
       : await this.secureStorageService.save(DDG_SHARED_KEY, value, options);
   }
 
-  async getEnableBrowserIntegrationFingerprint(options?: StorageOptions): Promise<boolean> {
-    return (
-      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.enableBrowserIntegrationFingerprint ?? false
-    );
-  }
-
-  async setEnableBrowserIntegrationFingerprint(
-    value: boolean,
-    options?: StorageOptions,
-  ): Promise<void> {
-    const globals = await this.getGlobals(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-    globals.enableBrowserIntegrationFingerprint = value;
-    await this.saveGlobals(
-      globals,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions()),
-    );
-  }
-
   async setEnableDuckDuckGoBrowserIntegration(
     value: boolean,
     options?: StorageOptions,

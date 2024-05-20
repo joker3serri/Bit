@@ -58,6 +58,14 @@ const BROWSER_INTEGRATION_ENABLED = new KeyDefinition<boolean>(
   },
 );
 
+const BROWSER_INTEGRATION_FINGERPRINT_ENABLED = new KeyDefinition<boolean>(
+  DESKTOP_SETTINGS_DISK,
+  "browserIntegrationFingerprintEnabled",
+  {
+    deserializer: (b) => b,
+  },
+);
+
 const MINIMIZE_ON_COPY = new UserKeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "minimizeOnCopy", {
   deserializer: (b) => b,
   clearOn: [], // User setting, no need to clear
@@ -122,6 +130,16 @@ export class DesktopSettingsService {
   browserIntegrationEnabled$ = this.browserIntegrationEnabledState.state$.pipe(
     map((value) => value ?? false),
   );
+
+  private readonly browserIntegrationFingerprintEnabledState = this.stateProvider.getGlobal(
+    BROWSER_INTEGRATION_FINGERPRINT_ENABLED,
+  );
+
+  /**
+   * The application setting for whether or not the fingerprint should be verified before browser communication.
+   */
+  browserIntegrationFingerprintEnabled$ =
+    this.browserIntegrationFingerprintEnabledState.state$.pipe(map((value) => value ?? false));
 
   private readonly minimizeOnCopyState = this.stateProvider.getActive(MINIMIZE_ON_COPY);
 
@@ -219,6 +237,15 @@ export class DesktopSettingsService {
    */
   async setBrowserIntegrationEnabled(value: boolean) {
     await this.browserIntegrationEnabledState.update(() => value);
+  }
+
+  /**
+   * Sets a setting for whether or not the browser fingerprint should be verified before
+   * communication with the browser integration should be done.
+   * @param value `true` if the fingerprint should be validated before use, `false` if it should not.
+   */
+  async setBrowserIntegrationFingerprintEnabled(value: boolean) {
+    await this.browserIntegrationFingerprintEnabledState.update(() => value);
   }
 
   /**

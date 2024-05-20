@@ -289,8 +289,9 @@ export class SettingsComponent implements OnInit {
       enableBrowserIntegration: await firstValueFrom(
         this.desktopSettingsService.browserIntegrationEnabled$,
       ),
-      enableBrowserIntegrationFingerprint:
-        await this.stateService.getEnableBrowserIntegrationFingerprint(),
+      enableBrowserIntegrationFingerprint: await firstValueFrom(
+        this.desktopSettingsService.browserIntegrationFingerprintEnabled$,
+      ),
       enableDuckDuckGoBrowserIntegration: await firstValueFrom(
         this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
       ),
@@ -710,7 +711,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveBrowserIntegrationFingerprint() {
-    await this.stateService.setEnableBrowserIntegrationFingerprint(
+    await this.desktopAutofillSettingsService.setEnableBrowserIntegrationFingerprint(
       this.form.value.enableBrowserIntegrationFingerprint,
     );
   }
