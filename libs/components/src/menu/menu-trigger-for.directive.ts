@@ -23,7 +23,9 @@ export class MenuTriggerForDirective implements OnDestroy {
   @HostBinding("attr.aria-haspopup") get hasPopup(): "menu" | "dialog" {
     return this.menu?.ariaRole || "menu";
   }
-  @HostBinding("attr.role") role = "button";
+  @HostBinding("attr.role")
+  @Input()
+  role = "button";
 
   @Input("bitMenuTriggerFor") menu: MenuComponent;
 

@@ -1,14 +1,14 @@
 import { FocusableOption } from "@angular/cdk/a11y";
-import { Directive, ElementRef, HostBinding } from "@angular/core";
+import { Component, ElementRef, HostBinding } from "@angular/core";
 
-@Directive({
+@Component({
   selector: "[bitMenuItem]",
+  templateUrl: "menu-item.component.html",
 })
 export class MenuItemDirective implements FocusableOption {
   @HostBinding("class") classList = [
     "tw-block",
     "tw-w-full",
-    "tw-truncate",
     "tw-py-1",
     "tw-px-4",
     "!tw-text-main",
