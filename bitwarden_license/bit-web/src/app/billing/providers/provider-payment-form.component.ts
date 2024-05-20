@@ -143,7 +143,7 @@ export class ProviderPaymentFormComponent implements OnInit, OnDestroy {
         });
       }
     } else {
-      return this.braintreeService.requestPaymentMethod();
+      return await this.braintreeService.requestPaymentMethod();
     }
   }
 

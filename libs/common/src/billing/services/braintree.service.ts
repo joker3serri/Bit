@@ -49,14 +49,16 @@ export class BraintreeService implements BraintreeServiceAbstraction {
     window.document.head.appendChild(script);
   }
 
-  requestPaymentMethod() {
-    return this.braintree.requestPaymentMethod((error: any, payload: any) => {
-      if (error) {
-        this.logService.error(error);
-        throw error;
-      } else {
-        return payload.nonce as string;
-      }
+  requestPaymentMethod(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.braintree.requestPaymentMethod((error: any, payload: any) => {
+        if (error) {
+          this.logService.error(error);
+          reject(error.message);
+        } else {
+          resolve(payload.nonce as string);
+        }
+      });
     });
   }
 
