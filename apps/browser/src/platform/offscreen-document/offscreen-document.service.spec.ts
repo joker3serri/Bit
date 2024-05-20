@@ -50,7 +50,7 @@ describe.each([
   });
 
   describe("offscreenApiSupported", () => {
-    it("returns a boolean indicating whether the offscreen API is supported", () => {
+    it("indicates whether the offscreen API is supported", () => {
       expect(sut.offscreenApiSupported()).toBe(true);
     });
   });
