@@ -26,6 +26,9 @@ export class MenuItemDirective implements FocusableOption {
     "focus-visible:tw-ring-primary-700",
     "active:!tw-ring-0",
     "active:!tw-ring-offset-0",
+    "disabled:!tw-text-muted",
+    "disabled:hover:tw-bg-background",
+    "disabled:tw-cursor-not-allowed",
   ];
   @HostBinding("attr.role") role = "menuitem";
   @HostBinding("tabIndex") tabIndex = "-1";
