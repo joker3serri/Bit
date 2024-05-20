@@ -2,8 +2,9 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CipherType } from "@bitwarden/common/vault/enums";
 import { SelectModule } from "@bitwarden/components";
+
+import { VaultPopupListFilterService } from "../../../services/vault-popup-list-filters.service";
 
 @Component({
   standalone: true,
@@ -12,26 +13,7 @@ import { SelectModule } from "@bitwarden/components";
   imports: [CommonModule, JslibModule, SelectModule],
 })
 export class VaultListFiltersComponent {
-  protected readonly cipherTypes = [
-    {
-      value: CipherType.Login,
-      label: "logins",
-      icon: "bwi-globe",
-    },
-    {
-      value: CipherType.Card,
-      label: "cards",
-      icon: "bwi-credit-card",
-    },
-    {
-      value: CipherType.Identity,
-      label: "identities",
-      icon: "bwi-id-card",
-    },
-    {
-      value: CipherType.SecureNote,
-      label: "notes",
-      icon: "bwi-sticky-note",
-    },
-  ];
+  protected cipherTypes$ = this.vaultPopupListFilterService.cipherTypes$;
+
+  constructor(private vaultPopupListFilterService: VaultPopupListFilterService) {}
 }
