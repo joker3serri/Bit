@@ -457,7 +457,7 @@ jobs:
         uses: bitwarden/gh-actions/report-upcoming-release-version@task/BRE-40
         with:
           version: ${{ steps.set-final-version-output.outputs.version_browser }}
-          project: ${{ steps.create-branch.outputs.client }}
+          project: browser
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Report upcoming cli release version to Slack
@@ -465,7 +465,7 @@ jobs:
         uses: bitwarden/gh-actions/report-upcoming-release-version@task/BRE-40
         with:
           version: ${{ steps.set-final-version-output.outputs.version_cli }}
-          project: ${{ steps.create-branch.outputs.client }}
+          project: cli
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Report upcoming desktop release version to Slack
@@ -473,7 +473,7 @@ jobs:
         uses: bitwarden/gh-actions/report-upcoming-release-version@task/BRE-40
         with:
           version: ${{ steps.set-final-version-output.outputs.version_desktop }}
-          project: ${{ steps.create-branch.outputs.client }}
+          project: desktop
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Report upcoming web release version to Slack
@@ -481,7 +481,7 @@ jobs:
         uses: bitwarden/gh-actions/report-upcoming-release-version@task/BRE-40
         with:
           version: ${{ steps.set-final-version-output.outputs.version_web }}
-          project: ${{ steps.create-branch.outputs.client }}
+          project: web
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
   cut_rc:
