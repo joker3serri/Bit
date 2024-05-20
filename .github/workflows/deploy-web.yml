@@ -215,7 +215,6 @@ jobs:
     runs-on: ubuntu-22.04
     if: ${{ always() && contains( inputs.environment , 'QA' ) }}
     outputs:
-      channel_id: ${{ steps.slack-message.outputs.channel_id }}
       ts: ${{ steps.slack-message.outputs.ts }}
     steps:
       - uses: bitwarden/gh-actions/report-deployment-status-to-slack@main
@@ -224,7 +223,6 @@ jobs:
           project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ inputs.branch-or-tag }}
-          slack-channel: team-eng-qa-devops
           event: 'start'
           commit-sha: ${{ needs.artifact-check.outputs.artifact-build-commit }}
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
@@ -376,7 +374,6 @@ jobs:
           project: Clients
           environment: ${{ needs.setup.outputs.environment-name }}
           tag: ${{ inputs.branch-or-tag }}
-          slack-channel: ${{ needs.notify-start.outputs.channel_id }}
           event: ${{ needs.azure-deploy.result }}
           url: https://github.com/bitwarden/clients/actions/runs/${{ github.run_id }}
           commit-sha: ${{ needs.artifact-check.outputs.artifact-build-commit }}
