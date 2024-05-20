@@ -193,6 +193,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async getUserKeyFromStorage(keySuffix: KeySuffixOptions, userId?: UserId): Promise<UserKey> {
+    userId ??= await firstValueFrom(this.stateProvider.activeUserId$);
     const userKey = await this.getKeyFromStorage(keySuffix, userId);
     if (userKey) {
       if (!(await this.validateUserKey(userKey, userId))) {
