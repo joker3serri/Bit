@@ -1,6 +1,6 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MoveDesktopSettingsMigrator } from "./63-move-desktop-settings";
+import { MoveDesktopSettingsMigrator } from "./66-move-desktop-settings";
 
 describe("MoveDesktopSettings", () => {
   const sut = new MoveDesktopSettingsMigrator(62, 63);

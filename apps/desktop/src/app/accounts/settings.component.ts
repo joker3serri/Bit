@@ -600,7 +600,10 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveMinOnCopyToClipboard() {
-    await this.desktopSettingsService.setMinimizeOnCopy(this.form.value.minimizeOnCopyToClipboard);
+    await this.desktopSettingsService.setMinimizeOnCopy(
+      this.form.value.minimizeOnCopyToClipboard,
+      this.currentUserId,
+    );
   }
 
   async saveClearClipboard() {
