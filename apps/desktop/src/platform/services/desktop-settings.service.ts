@@ -4,7 +4,9 @@ import {
   DESKTOP_SETTINGS_DISK,
   KeyDefinition,
   StateProvider,
+  UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { WindowState } from "../models/domain/window-state";
 
@@ -46,6 +48,19 @@ const ALWAYS_SHOW_DOCK_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "
 
 const ALWAYS_ON_TOP_KEY = new KeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "alwaysOnTop", {
   deserializer: (b) => b,
+});
+
+const BROWSER_INTEGRATION_ENABLED = new KeyDefinition<boolean>(
+  DESKTOP_SETTINGS_DISK,
+  "browserIntegrationEnabled",
+  {
+    deserializer: (b) => b,
+  },
+);
+
+const MINIMIZE_ON_COPY = new UserKeyDefinition<boolean>(DESKTOP_SETTINGS_DISK, "minimizeOnCopy", {
+  deserializer: (b) => b,
+  clearOn: [], // User setting, no need to clear
 });
 
 /**
@@ -96,6 +111,25 @@ export class DesktopSettingsService {
   private readonly alwaysOnTopState = this.stateProvider.getGlobal(ALWAYS_ON_TOP_KEY);
 
   alwaysOnTop$ = this.alwaysOnTopState.state$.pipe(map((value) => value ?? false));
+
+  private readonly browserIntegrationEnabledState = this.stateProvider.getGlobal(
+    BROWSER_INTEGRATION_ENABLED,
+  );
+
+  /**
+   * The application setting for whether or not the browser integration is enabled.
+   */
+  browserIntegrationEnabled$ = this.browserIntegrationEnabledState.state$.pipe(
+    map((value) => value ?? false),
+  );
+
+  private readonly minimizeOnCopyState = this.stateProvider.getActive(MINIMIZE_ON_COPY);
+
+  /**
+   * The active users setting for whether or not the application should minimize itself
+   * when a value is copied to the clipboard.
+   */
+  minimizeOnCopy$ = this.minimizeOnCopyState.state$.pipe(map((value) => value ?? false));
 
   constructor(private stateProvider: StateProvider) {
     this.window$ = this.windowState.state$.pipe(
@@ -176,5 +210,24 @@ export class DesktopSettingsService {
    */
   async setAlwaysOnTop(value: boolean) {
     await this.alwaysOnTopState.update(() => value);
+  }
+
+  /**
+   * Sets a setting for whether or not the browser integration has been enabled.
+   * @param value `true` if the integration with the browser extension is enabled,
+   * `false` if it is not.
+   */
+  async setBrowserIntegrationEnabled(value: boolean) {
+    await this.browserIntegrationEnabledState.update(() => value);
+  }
+
+  /**
+   * Sets the minimize on copy value for the current user.
+   * @param value `true` if the application should minimize when a value is copied,
+   * `false` if it should not.
+   * @param userId The user id of the user to update the setting for.
+   */
+  async setMinimizeOnCopy(value: boolean, userId: UserId) {
+    await this.stateProvider.getUser(userId, MINIMIZE_ON_COPY).update(() => value);
   }
 }

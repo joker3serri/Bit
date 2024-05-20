@@ -2,8 +2,9 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { app, ipcMain } from "electron";
+import { firstValueFrom } from "rxjs";
 
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 import { Main } from "../main";
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
@@ -17,8 +18,8 @@ export class MessagingMain {
 
   constructor(
     private main: Main,
-    private stateService: StateService,
     private desktopSettingsService: DesktopSettingsService,
+    private readonly logService: LogService,
   ) {}
 
   async init() {
@@ -44,13 +45,16 @@ export class MessagingMain {
         this.updateTrayMenu(message.updateRequest);
         break;
       case "minimizeOnCopy":
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.stateService.getMinimizeOnCopyToClipboard().then((shouldMinimize) => {
-          if (shouldMinimize && this.main.windowMain.win !== null) {
-            this.main.windowMain.win.minimize();
-          }
-        });
+        firstValueFrom(this.desktopSettingsService.minimizeOnCopy$).then(
+          (shouldMinimize) => {
+            if (shouldMinimize && this.main.windowMain.win !== null) {
+              this.main.windowMain.win.minimize();
+            }
+          },
+          (error) => {
+            this.logService.error("Error while retrieving minimize on copy setting", error);
+          },
+        );
         break;
       case "showTray":
         this.main.trayMain.showTray();
