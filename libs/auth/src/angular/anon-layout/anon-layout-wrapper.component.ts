@@ -9,6 +9,7 @@ export interface AnonLayoutWrapperData {
   pageTitle?: string;
   pageSubtitle?: string;
   pageIcon?: Icon;
+  [key: string]: any; // Index signature to allow additional properties
 }
 
 @Component({
