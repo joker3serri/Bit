@@ -11,13 +11,23 @@
       </a>
       <ng-container slot="end">
         <bit-item-action *ngIf="showAutoFill">
-          <button type="button" bitBadge variant="primary">Auto-fill</button>
+          <button type="button" bitBadge variant="primary">{{ "autoFill" | i18n }}</button>
         </bit-item-action>
         <bit-item-action>
-          <button type="button" bitIconButton="bwi-clone" size="small"></button>
+          <button
+            type="button"
+            bitIconButton="bwi-clone"
+            size="small"
+            [attr.aria-label]="'copyInfo' | i18n: cipher.name"
+          ></button>
         </bit-item-action>
         <bit-item-action>
-          <button type="button" bitIconButton="bwi-ellipsis-v" size="small"></button>
+          <button
+            type="button"
+            bitIconButton="bwi-ellipsis-v"
+            size="small"
+            [attr.aria-label]="'moreOptions' | i18n: cipher.name"
+          ></button>
         </bit-item-action>
       </ng-container>
     </bit-item>

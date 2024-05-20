@@ -37,11 +37,11 @@
     <ng-container *ngIf="!(showNoResultsState$ | async)">
       <app-autofill-vault-list-items></app-autofill-vault-list-items>
       <app-vault-list-items-container
-        title="Favorites"
+        title="{{ 'favorites' | i18n }}"
         [ciphers]="favoriteCiphers$ | async"
       ></app-vault-list-items-container>
       <app-vault-list-items-container
-        title="All items"
+        title="{{ 'allItems' | i18n }}"
         [ciphers]="remainingCiphers$ | async"
       ></app-vault-list-items-container>
     </ng-container>
