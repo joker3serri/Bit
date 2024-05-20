@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { Component, Inject } from "@angular/core";
+import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -23,6 +23,7 @@ import { TwoFactorBaseComponent } from "./two-factor-base.component";
   outputs: ["onUpdated"],
 })
 export class TwoFactorEmailComponent extends TwoFactorBaseComponent {
+  @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
   type = TwoFactorProviderType.Email;
   sentEmail: string;
   formPromise: Promise<TwoFactorEmailResponse>;
@@ -79,8 +80,10 @@ export class TwoFactorEmailComponent extends TwoFactorBaseComponent {
   submit = async () => {
     if (this.enabled) {
       await this.disableEmail();
+      this.onChangeStatus.emit(false);
     } else {
       await this.enable();
+      this.onChangeStatus.emit(true);
     }
   };
 
