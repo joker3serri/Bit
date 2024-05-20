@@ -56,7 +56,7 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
     throw new Error("2FA not supported yet for WebAuthn Login.");
   }
 
-  protected override async setMasterKey() {
+  protected override async setMasterKey(response: IdentityTokenResponse, userId: UserId) {
     return Promise.resolve();
   }
 
@@ -65,7 +65,7 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
 
     if (masterKeyEncryptedUserKey) {
       // set the master key encrypted user key if it exists
-      await this.cryptoService.setMasterKeyEncryptedUserKey(masterKeyEncryptedUserKey);
+      await this.cryptoService.setMasterKeyEncryptedUserKey(masterKeyEncryptedUserKey, userId);
     }
 
     const userDecryptionOptions = idTokenResponse?.userDecryptionOptions;
@@ -92,14 +92,18 @@ export class WebAuthnLoginStrategy extends LoginStrategy {
       );
 
       if (userKey) {
-        await this.cryptoService.setUserKey(new SymmetricCryptoKey(userKey) as UserKey);
+        await this.cryptoService.setUserKey(new SymmetricCryptoKey(userKey) as UserKey, userId);
       }
     }
   }
 
-  protected override async setPrivateKey(response: IdentityTokenResponse): Promise<void> {
+  protected override async setPrivateKey(
+    response: IdentityTokenResponse,
+    userId: UserId,
+  ): Promise<void> {
     await this.cryptoService.setPrivateKey(
-      response.privateKey ?? (await this.createKeyPairForOldAccount()),
+      response.privateKey ?? (await this.createKeyPairForOldAccount(userId)),
+      userId,
     );
   }
 

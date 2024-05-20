@@ -7,8 +7,8 @@
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.",
-    "description": "Extension description"
+    "message": "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information",
+    "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
     "message": "Пријавите се или креирајте нови налог за приступ сефу."
@@ -173,10 +173,10 @@
     "message": "Промени главну лозинку"
   },
   "continueToWebApp": {
-    "message": "Continue to web app?"
+    "message": "Ићи на веб апликацију?"
   },
   "changeMasterPasswordOnWebConfirmation": {
-    "message": "You can change your master password on the Bitwarden web app."
+    "message": "Можете променити главну лозинку на Bitwarden веб апликацији."
   },
   "fingerprintPhrase": {
     "message": "Сигурносна Фраза Сефа",
@@ -374,11 +374,20 @@
   "other": {
     "message": "Остало"
   },
+  "unlockMethods": {
+    "message": "Опције деблокирања"
+  },
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Подесите метод откључавања да бисте променили радњу временског ограничења сефа."
   },
   "unlockMethodNeeded": {
     "message": "Подесите метод откључавања у подешавањима"
+  },
+  "sessionTimeoutHeader": {
+    "message": "Истек сесије"
+  },
+  "otherOptions": {
+    "message": "Остале опције"
   },
   "rateExtension": {
     "message": "Оцени овај додатак"
@@ -1120,9 +1129,6 @@
   "commandLockVaultDesc": {
     "message": "Закључај сеф"
   },
-  "privateModeWarning": {
-    "message": "Подршка за приватни режим је експериментална и неке функције су ограничене."
-  },
   "customFields": {
     "message": "Прилагођена Поља"
   },
@@ -1708,6 +1714,12 @@
   "biometricsNotSupportedDesc": {
     "message": "Биометрија прегледача није подржана на овом уређају."
   },
+  "biometricsNotUnlockedTitle": {
+    "message": "Корисник је закључан или одјављен"
+  },
+  "biometricsNotUnlockedDesc": {
+    "message": "Откључајте овог корисника у десктоп апликацији и покушајте поново."
+  },
   "biometricsFailedTitle": {
     "message": "Биометрија није успела"
   },
@@ -2170,6 +2182,108 @@
   },
   "forwardedEmailDesc": {
     "message": "Генеришите псеудоним е-поште помоћу екстерне услуге прослеђивања."
+  },
+  "forwarderError": {
+    "message": "$SERVICENAME$ грешка: $ERRORMESSAGE$",
+    "description": "Reports an error returned by a forwarding service to the user.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Invalid characters in domain name."
+      }
+    }
+  },
+  "forwarderGeneratedBy": {
+    "message": "Генерисао Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen."
+  },
+  "forwarderGeneratedByWithWebsite": {
+    "message": "Вебсајт: $WEBSITE$. Генерисао Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen.",
+    "placeholders": {
+      "WEBSITE": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
+  "forwaderInvalidToken": {
+    "message": "Погрешан АПИ токен $SERVICENAME$",
+    "description": "Displayed when the user's API token is empty or rejected by the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwaderInvalidTokenWithMessage": {
+    "message": "Погрешан АПИ токен $SERVICENAME$: $ERRORMESSAGE$",
+    "description": "Displayed when the user's API token is rejected by the forwarding service with an error message.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Please verify your email address to continue."
+      }
+    }
+  },
+  "forwarderNoAccountId": {
+    "message": "Није могуће добити ИД налога маскираног имејла $SERVICENAME$.",
+    "description": "Displayed when the forwarding service fails to return an account ID.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoDomain": {
+    "message": "Погрешан домен $SERVICENAME$.",
+    "description": "Displayed when the domain is empty or domain authorization failed at the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoUrl": {
+    "message": "Погрешан УРЛ $SERVICENAME$.",
+    "description": "Displayed when the url of the forwarding service wasn't supplied.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownError": {
+    "message": "Непозната грешка $SERVICENAME$-а.",
+    "description": "Displayed when the forwarding service failed due to an unknown error.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownForwarder": {
+    "message": "Непознати шпедитер: '$SERVICENAME$'.",
+    "description": "Displayed when the forwarding service is not supported.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "JustTrust.us"
+      }
+    }
   },
   "hostname": {
     "message": "Име домаћина",
@@ -3001,7 +3115,7 @@
     "description": "Notification message for when saving credentials has failed."
   },
   "success": {
-    "message": "Success"
+    "message": "Успех"
   },
   "removePasskey": {
     "message": "Уклонити приступачни кључ"
@@ -3010,10 +3124,10 @@
     "message": "Приступачни кључ је уклоњен"
   },
   "unassignedItemsBannerNotice": {
-    "message": "Notice: Unassigned organization items are no longer visible in the All Vaults view and only accessible via the Admin Console."
+    "message": "Напомена: Недодељене ставке организације више нису видљиве у приказу Сви сефови и доступне су само преко Админ конзоле."
   },
   "unassignedItemsBannerSelfHostNotice": {
-    "message": "Notice: On May 16, 2024, unassigned organization items will no longer be visible in the All Vaults view and will only be accessible via the Admin Console."
+    "message": "Напомена: од 16 Маја 2024м недодељене ставке организације више нису видљиве у приказу Сви сефови и доступне су само преко Админ конзоле."
   },
   "unassignedItemsBannerCTAPartOne": {
     "message": "Assign these items to a collection from the",
@@ -3024,12 +3138,24 @@
     "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
   },
   "adminConsole": {
-    "message": "Admin Console"
+    "message": "Администраторска конзола"
+  },
+  "accountSecurity": {
+    "message": "Безбедност налога"
+  },
+  "notifications": {
+    "message": "Обавештења"
+  },
+  "appearance": {
+    "message": "Изглед"
   },
   "errorAssigningTargetCollection": {
-    "message": "Error assigning target collection."
+    "message": "Грешка при додељивању циљне колекције."
   },
   "errorAssigningTargetFolder": {
-    "message": "Error assigning target folder."
+    "message": "Грешка при додељивању циљне фасцикле."
+  },
+  "new": {
+    "message": "Ново"
   }
 }
