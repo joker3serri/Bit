@@ -209,7 +209,12 @@ describe("AutofillInit", () => {
 
           expect(autofillInit["collectAutofillContentService"].getPageDetails).toHaveBeenCalled();
           expect(sendResponse).toBeCalledWith(pageDetails);
-          expect(chrome.runtime.sendMessage).not.toHaveBeenCalled();
+          expect(chrome.runtime.sendMessage).not.toHaveBeenCalledWith({
+            command: "collectPageDetailsResponse",
+            tab: message.tab,
+            details: pageDetails,
+            sender: message.sender,
+          });
         });
       });
 
