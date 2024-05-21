@@ -83,6 +83,7 @@ describe("AutofillService", () => {
     scriptInjectorService = new BrowserScriptInjectorService(platformUtilsService, logService);
     inlineMenuVisibilityMock$ = new BehaviorSubject(AutofillOverlayVisibility.OnFieldFocus);
     autofillSettingsService = mock<AutofillSettingsService>();
+    (autofillSettingsService as any).inlineMenuVisibility$ = inlineMenuVisibilityMock$;
     autofillService = new AutofillService(
       cipherService,
       autofillSettingsService,
@@ -98,44 +99,11 @@ describe("AutofillService", () => {
 
     domainSettingsService = new DefaultDomainSettingsService(fakeStateProvider);
     domainSettingsService.equivalentDomains$ = of(mockEquivalentDomains);
-    (autofillSettingsService as any).inlineMenuVisibility$ = inlineMenuVisibilityMock$;
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     mockReset(cipherService);
-  });
-
-  describe("reloadAutofillScripts", () => {
-    it("disconnects and removes all autofill script ports", () => {
-      const port1 = mock<chrome.runtime.Port>({
-        disconnect: jest.fn(),
-      });
-      const port2 = mock<chrome.runtime.Port>({
-        disconnect: jest.fn(),
-      });
-      autofillService["autofillScriptPortsSet"] = new Set([port1, port2]);
-
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      autofillService.reloadAutofillScripts();
-
-      expect(port1.disconnect).toHaveBeenCalled();
-      expect(port2.disconnect).toHaveBeenCalled();
-      expect(autofillService["autofillScriptPortsSet"].size).toBe(0);
-    });
-
-    it("re-injects the autofill scripts in all tabs", () => {
-      autofillService["autofillScriptPortsSet"] = new Set([mock<chrome.runtime.Port>()]);
-      jest.spyOn(autofillService as any, "injectAutofillScriptsInAllTabs");
-      jest.spyOn(autofillService, "getAutofillOnPageLoad").mockResolvedValue(true);
-
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      autofillService.reloadAutofillScripts();
-
-      expect(autofillService["injectAutofillScriptsInAllTabs"]).toHaveBeenCalled();
-    });
   });
 
   describe("loadAutofillScriptsOnInstall", () => {
@@ -255,6 +223,25 @@ describe("AutofillService", () => {
           expect(autofillService.reloadAutofillScripts).toHaveBeenCalled();
         });
       });
+    });
+  });
+
+  describe("reloadAutofillScripts", () => {
+    it("re-injects the autofill scripts in all tabs and disconnects all connected ports", () => {
+      const port1 = mock<chrome.runtime.Port>();
+      const port2 = mock<chrome.runtime.Port>();
+      autofillService["autofillScriptPortsSet"] = new Set([port1, port2]);
+      jest.spyOn(autofillService as any, "injectAutofillScriptsInAllTabs");
+      jest.spyOn(autofillService, "getAutofillOnPageLoad").mockResolvedValue(true);
+
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      autofillService.reloadAutofillScripts();
+
+      expect(port1.disconnect).toHaveBeenCalled();
+      expect(port2.disconnect).toHaveBeenCalled();
+      expect(autofillService["autofillScriptPortsSet"].size).toBe(0);
+      expect(autofillService["injectAutofillScriptsInAllTabs"]).toHaveBeenCalled();
     });
   });
 
