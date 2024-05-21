@@ -3,13 +3,13 @@ import { ActivatedRoute, RouterModule } from "@angular/router";
 
 import { AnonLayoutComponent } from "@bitwarden/auth/angular";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { DataProperties } from "@bitwarden/common/platform/interfaces/data-properties.interface";
 import { Icon } from "@bitwarden/components";
 
-export interface AnonLayoutWrapperData {
+export interface AnonLayoutWrapperData extends DataProperties {
   pageTitle?: string;
   pageSubtitle?: string;
   pageIcon?: Icon;
-  [key: string]: any; // Index signature to allow additional properties
 }
 
 @Component({
