@@ -1,21 +1,23 @@
+import { BehaviorSubject, map, pipe } from "rxjs";
+
 import { GeneratorStrategy } from "..";
 import { PolicyType } from "../../../admin-console/enums";
-// FIXME: use index.ts imports once policy abstractions and models
-// implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
+import { PasswordGenerationServiceAbstraction } from "../abstractions/password-generation.service.abstraction";
 import { PASSPHRASE_SETTINGS } from "../key-definitions";
-import { PasswordGenerationServiceAbstraction } from "../password/password-generation.service.abstraction";
+import { distinctIfShallowMatch, reduceCollection } from "../rx-operators";
 
-import { PassphraseGenerationOptions } from "./passphrase-generation-options";
+import {
+  PassphraseGenerationOptions,
+  DefaultPassphraseGenerationOptions,
+} from "./passphrase-generation-options";
 import { PassphraseGeneratorOptionsEvaluator } from "./passphrase-generator-options-evaluator";
 import {
   DisabledPassphraseGeneratorPolicy,
   PassphraseGeneratorPolicy,
+  leastPrivilege,
 } from "./passphrase-generator-policy";
-
-const ONE_MINUTE = 60 * 1000;
 
 /** {@link GeneratorStrategy} */
 export class PassphraseGeneratorStrategy
@@ -23,6 +25,7 @@ export class PassphraseGeneratorStrategy
 {
   /** instantiates the password generator strategy.
    *  @param legacy generates the passphrase
+   *  @param stateProvider provides durable state
    */
   constructor(
     private legacy: PasswordGenerationServiceAbstraction,
@@ -34,31 +37,23 @@ export class PassphraseGeneratorStrategy
     return this.stateProvider.getUser(id, PASSPHRASE_SETTINGS);
   }
 
+  /** Gets the default options. */
+  defaults$(_: UserId) {
+    return new BehaviorSubject({ ...DefaultPassphraseGenerationOptions }).asObservable();
+  }
+
   /** {@link GeneratorStrategy.policy} */
   get policy() {
     return PolicyType.PasswordGenerator;
   }
 
-  get cache_ms() {
-    return ONE_MINUTE;
-  }
-
-  /** {@link GeneratorStrategy.evaluator} */
-  evaluator(policy: Policy): PassphraseGeneratorOptionsEvaluator {
-    if (!policy) {
-      return new PassphraseGeneratorOptionsEvaluator(DisabledPassphraseGeneratorPolicy);
-    }
-
-    if (policy.type !== this.policy) {
-      const details = `Expected: ${this.policy}. Received: ${policy.type}`;
-      throw Error("Mismatched policy type. " + details);
-    }
-
-    return new PassphraseGeneratorOptionsEvaluator({
-      minNumberWords: policy.data.minNumberWords,
-      capitalize: policy.data.capitalize,
-      includeNumber: policy.data.includeNumber,
-    });
+  /** {@link GeneratorStrategy.toEvaluator} */
+  toEvaluator() {
+    return pipe(
+      reduceCollection(leastPrivilege, DisabledPassphraseGeneratorPolicy),
+      distinctIfShallowMatch(),
+      map((policy) => new PassphraseGeneratorOptionsEvaluator(policy)),
+    );
   }
 
   /** {@link GeneratorStrategy.generate} */

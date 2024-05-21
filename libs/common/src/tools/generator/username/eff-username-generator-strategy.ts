@@ -1,16 +1,18 @@
+import { BehaviorSubject, map, pipe } from "rxjs";
+
 import { PolicyType } from "../../../admin-console/enums";
-import { Policy } from "../../../admin-console/models/domain/policy";
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
 import { GeneratorStrategy } from "../abstractions";
+import { UsernameGenerationServiceAbstraction } from "../abstractions/username-generation.service.abstraction";
 import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
 import { EFF_USERNAME_SETTINGS } from "../key-definitions";
 import { NoPolicy } from "../no-policy";
 
-import { EffUsernameGenerationOptions } from "./eff-username-generator-options";
-import { UsernameGenerationServiceAbstraction } from "./username-generation.service.abstraction";
-
-const ONE_MINUTE = 60 * 1000;
+import {
+  DefaultEffUsernameOptions,
+  EffUsernameGenerationOptions,
+} from "./eff-username-generator-options";
 
 /** Strategy for creating usernames from the EFF wordlist */
 export class EffUsernameGeneratorStrategy
@@ -29,6 +31,11 @@ export class EffUsernameGeneratorStrategy
     return this.stateProvider.getUser(id, EFF_USERNAME_SETTINGS);
   }
 
+  /** {@link GeneratorStrategy.defaults$} */
+  defaults$(userId: UserId) {
+    return new BehaviorSubject({ ...DefaultEffUsernameOptions }).asObservable();
+  }
+
   /** {@link GeneratorStrategy.policy} */
   get policy() {
     // Uses password generator since there aren't policies
@@ -36,23 +43,9 @@ export class EffUsernameGeneratorStrategy
     return PolicyType.PasswordGenerator;
   }
 
-  /** {@link GeneratorStrategy.cache_ms} */
-  get cache_ms() {
-    return ONE_MINUTE;
-  }
-
-  /** {@link GeneratorStrategy.evaluator} */
-  evaluator(policy: Policy) {
-    if (!policy) {
-      return new DefaultPolicyEvaluator<EffUsernameGenerationOptions>();
-    }
-
-    if (policy.type !== this.policy) {
-      const details = `Expected: ${this.policy}. Received: ${policy.type}`;
-      throw Error("Mismatched policy type. " + details);
-    }
-
-    return new DefaultPolicyEvaluator<EffUsernameGenerationOptions>();
+  /** {@link GeneratorStrategy.toEvaluator} */
+  toEvaluator() {
+    return pipe(map((_) => new DefaultPolicyEvaluator<EffUsernameGenerationOptions>()));
   }
 
   /** {@link GeneratorStrategy.generate} */

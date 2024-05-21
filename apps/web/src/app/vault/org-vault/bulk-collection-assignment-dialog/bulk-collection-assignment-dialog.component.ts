@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
@@ -65,18 +65,25 @@ export class BulkCollectionAssignmentDialogComponent implements OnDestroy, OnIni
     private cipherService: CipherService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private configService: ConfigServiceAbstraction,
+    private configService: ConfigService,
     private organizationService: OrganizationService,
   ) {}
 
   async ngOnInit() {
-    const v1FCEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollectionsV1,
-      false,
+    // If no ciphers are passed in, close the dialog
+    if (this.params.ciphers == null || this.params.ciphers.length < 1) {
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("nothingSelected"));
+      this.dialogRef.close(BulkCollectionAssignmentDialogResult.Canceled);
+      return;
+    }
+
+    const v1FCEnabled = await this.configService.getFeatureFlag(FeatureFlag.FlexibleCollectionsV1);
+    const restrictProviderAccess = await this.configService.getFeatureFlag(
+      FeatureFlag.RestrictProviderAccess,
     );
     const org = await this.organizationService.get(this.params.organizationId);
 
-    if (org.canEditAllCiphers(v1FCEnabled)) {
+    if (org.canEditAllCiphers(v1FCEnabled, restrictProviderAccess)) {
       this.editableItems = this.params.ciphers;
     } else {
       this.editableItems = this.params.ciphers.filter((c) => c.edit);
@@ -86,12 +93,9 @@ export class BulkCollectionAssignmentDialogComponent implements OnDestroy, OnIni
 
     // If no ciphers are editable, close the dialog
     if (this.editableItemCount == 0) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("nothingSelected"),
-      );
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("missingPermissions"));
       this.dialogRef.close(BulkCollectionAssignmentDialogResult.Canceled);
+      return;
     }
 
     this.totalItemCount = this.params.ciphers.length;
