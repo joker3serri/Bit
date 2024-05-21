@@ -112,7 +112,6 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     // TODO: Implement registration logic
 
     this.state = RegistrationStartState.CHECK_EMAIL;
-    document.getElementById("check_your_email_heading")?.focus();
   };
 
   private validateForm(): boolean {
