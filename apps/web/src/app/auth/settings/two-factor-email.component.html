@@ -27,14 +27,8 @@
           />
         </bit-form-field>
         <div class="tw-mb-3 tw-flex">
-          <button
-            bitButton
-            type="button"
-            buttonType="primary"
-            [bitAction]="sendEmail"
-            [appApiAction]="emailPromise"
-          >
-            <span>{{ "sendEmail" | i18n }}</span>
+          <button bitButton type="button" buttonType="primary" [bitAction]="sendEmail">
+            {{ "sendEmail" | i18n }}
           </button>
           <span class="tw-text-success tw-ml-3" *ngIf="sentEmail">
             {{ "verificationCodeEmailSent" | i18n: sentEmail }}
