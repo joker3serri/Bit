@@ -14,8 +14,8 @@ import { FormFieldModule } from "@bitwarden/components";
 
 @Component({
   standalone: true,
-  selector: "auth-environment-selector",
-  templateUrl: "environment-selector.component.html",
+  selector: "auth-registration-env-selector",
+  templateUrl: "registration-env-selector.component.html",
   imports: [CommonModule, JslibModule, ReactiveFormsModule, FormFieldModule],
 })
 export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
