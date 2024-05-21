@@ -1,4 +1,3 @@
-import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-user/responses";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionAccessDetailsResponse } from "@bitwarden/common/src/vault/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
@@ -39,39 +38,13 @@ export class CollectionAdminView extends CollectionView {
     this.assigned = response.assigned;
   }
 
-  groupsCanManage() {
-    if (this.groups.length === 0) {
-      return this.groups;
-    }
-
-    const returnedGroups = this.groups.filter((group) => {
-      if (group.manage) {
-        return group;
-      }
-    });
-    return returnedGroups;
-  }
-
-  usersCanManage(revokedUsers: OrganizationUserUserDetailsResponse[]) {
-    if (this.users.length === 0) {
-      return this.users;
-    }
-
-    const returnedUsers = this.users.filter((user) => {
-      const isRevoked = revokedUsers.some((revoked) => revoked.id === user.id);
-      if (user.manage && !isRevoked) {
-        return user;
-      }
-    });
-    return returnedUsers;
-  }
-
   /**
    * Returns true if the user can edit a collection (including user and group access) from the Admin Console.
    */
   override canEdit(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     return (
       org?.canEditAnyCollection(flexibleCollectionsV1Enabled) ||
+      (flexibleCollectionsV1Enabled && this.unmanaged && org?.canEditUnmanagedCollections()) ||
       super.canEdit(org, flexibleCollectionsV1Enabled)
     );
   }
@@ -94,7 +67,7 @@ export class CollectionAdminView extends CollectionView {
       !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
 
     return (
-      (org.permissions.manageUsers && allowAdminAccessToAllCollectionItems) ||
+      (org.permissions.manageUsers && (allowAdminAccessToAllCollectionItems || this.unmanaged)) ||
       this.canEdit(org, flexibleCollectionsV1Enabled)
     );
   }
@@ -107,7 +80,7 @@ export class CollectionAdminView extends CollectionView {
       !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
 
     return (
-      (org.permissions.manageGroups && allowAdminAccessToAllCollectionItems) ||
+      (org.permissions.manageGroups && (allowAdminAccessToAllCollectionItems || this.unmanaged)) ||
       this.canEdit(org, flexibleCollectionsV1Enabled)
     );
   }
@@ -130,6 +103,10 @@ export class CollectionAdminView extends CollectionView {
     return this.manage || org?.isAdmin || org?.permissions.editAnyCollection;
   }
 
+  /**
+   * True if this collection represents the pseudo "Unassigned" collection
+   * This is different from the "unmanaged" flag, which indicates that no users or groups have access to the collection
+   */
   get isUnassignedCollection() {
     return this.id === Unassigned;
   }
