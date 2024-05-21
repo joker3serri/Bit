@@ -1,20 +1,41 @@
-<button
-  type="button"
-  bitButton
-  buttonType="secondary"
-  [bitMenuTriggerFor]="menu"
-  class="tw-max-w-full tw-truncate"
-  #menuTrigger="menuTrigger"
+<div
+  class="tw-inline-flex tw-rounded-full tw-max-w-52 tw-border-solid tw-border tw-border-secondary-600"
+  [ngClass]="
+    selectedOption
+      ? 'tw-bg-text-muted tw-text-contrast tw-gap-1'
+      : 'tw-bg-transparent tw-text-muted tw-gap-1.5'
+  "
 >
-  <i class="bwi {{ selectedOption?.icon || placeholderIcon }}"></i>
-  {{ selectedOption?.label || placeholderText }}
-  <i
-    *ngIf="!selectedOption?.label"
-    class="bwi"
-    [ngClass]="menuTrigger.isOpen ? 'bwi-angle-up' : 'bwi-angle-down'"
-  ></i>
-  <i *ngIf="selectedOption?.label" class="bwi bwi-close"></i>
-</button>
+  <!-- Primary button -->
+  <button
+    type="button"
+    class="tw-inline-flex tw-gap-1.5 tw-items-center tw-bg-transparent hover:tw-bg-transparent tw-border-none tw-outline-none tw-max-w-full tw-py-1 tw-pl-3 tw-truncate tw-text-[inherit]"
+    [ngClass]="!this.selectedOption && 'tw-pr-3'"
+    [bitMenuTriggerFor]="menu"
+    [title]="selectedOption?.label || placeholderText"
+    #menuTrigger="menuTrigger"
+  >
+    <i class="bwi !tw-text-[inherit] {{ selectedOption?.icon || placeholderIcon }}"></i>
+    <span class="tw-truncate">{{ selectedOption?.label || placeholderText }}</span>
+    <i
+      *ngIf="!selectedOption"
+      class="bwi"
+      [ngClass]="menuTrigger.isOpen ? 'bwi-angle-up' : 'bwi-angle-down'"
+    ></i>
+  </button>
+
+  <!-- Close button -->
+  <button
+    *ngIf="selectedOption"
+    type="button"
+    [attr.aria-label]="'clear'"
+    class="tw-bg-transparent hover:tw-bg-transparent tw-outline-none tw-rounded-full tw-p-1 tw-my-1 tw-mr-1 tw-text-[inherit] tw-border-solid tw-border tw-border-text-muted hover:tw-border-text-contrast tw-aspect-square tw-flex tw-items-center tw-justify-center tw-h-fit focus-visible:tw-ring-2 tw-ring-text-contrast focus-visible:hover:tw-border-transparent"
+    (click)="clear()"
+  >
+    <i class="bwi bwi-close bwi-fw tw-text-xs"></i>
+  </button>
+</div>
+
 <bit-menu #menu>
   <div class="tw-max-h-80 tw-min-w-52">
     <ng-container *ngIf="renderedOptions._parent">
@@ -24,8 +45,8 @@
         *ngIf="renderedOptions._parent"
         (click)="viewOption(renderedOptions._parent, $event)"
       >
-        <i class="bwi bwi-angle-left"></i>
-        Back
+        <i slot="start" class="bwi bwi-angle-left"></i>
+        Back{{ renderedOptions._parent.label ? " to " + renderedOptions._parent.label : "" }}
       </button>
 
       <button
@@ -33,8 +54,10 @@
         bitMenuItem
         *ngIf="renderedOptions._parent"
         (click)="selectOption(renderedOptions, $event)"
+        [title]="'todo'"
       >
-        {{ renderedOptions.label }}
+        <i slot="start" class="bwi bwi-list"></i>
+        View items in {{ renderedOptions.label }}
       </button>
     </ng-container>
 
@@ -42,14 +65,13 @@
       type="button"
       bitMenuItem
       *ngFor="let option of renderedOptions.children"
-      (click)="option.children ? viewOption(option, $event) : selectOption(option, $event)"
-      class="tw-flex tw-justify-between tw-items-center"
+      (click)="option.children?.length ? viewOption(option, $event) : selectOption(option, $event)"
+      [disabled]="option.disabled"
+      [title]="option.label"
     >
-      <span class="tw-w-full tw-truncate">
-        <i *ngIf="option.icon" class="bwi {{ option.icon }}"></i>
-        <span [title]="option.label">{{ option.label }}</span>
-      </span>
-      <i *ngIf="option.children" class="bwi bwi-angle-right"></i>
+      <i *ngIf="option.icon" slot="start" class="bwi {{ option.icon }}"></i>
+      {{ option.label }}
+      <i *ngIf="option.children?.length" slot="end" class="bwi bwi-angle-right"></i>
     </button>
   </div>
 </bit-menu>

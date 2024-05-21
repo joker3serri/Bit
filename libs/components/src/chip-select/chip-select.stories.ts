@@ -4,7 +4,7 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { BadgeModule } from "../badge";
 import { MenuModule } from "../menu";
 
-import { ChipSelectComponent, OptionTree } from "./chip-select.component";
+import { ChipSelectComponent } from "./chip-select.component";
 
 export default {
   title: "Component Library/Chip Select",
@@ -19,49 +19,98 @@ export default {
 
 type Story = StoryObj<ChipSelectComponent>;
 
-const testData: OptionTree<any>[] = [
-  {
-    label: "Foo",
-    value: "foo",
-  },
-  {
-    label: "Bar",
-    value: "bar",
-    children: [
-      {
-        label:
-          "Bazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
-        value: "BazLong",
-        children: [
-          {
-            label: "Hi",
-            value: "hi",
-          },
-        ],
-      },
-      ...Array.from(Array(100).keys()).map((i) => ({
-        label: `Baz ${i}`,
-        value: i,
-      })),
-    ],
-  },
-];
-
 export const Default: Story = {
   render: (args) => ({
     props: {
       ...args,
-      options: testData,
     },
     template: /* html */ `
-      <p class="tw-text-main">Selected: {{ select.value }}</p>
       <bit-chip-select 
         placeholderText="Folder"
         placeholderIcon="bwi-folder"
         [options]="options"
-        ngModel
-        #select="ngModel"
       ></bit-chip-select>
     `,
   }),
+  args: {
+    options: [
+      {
+        label: "Foo",
+        value: "foo",
+        icon: "bwi-folder",
+      },
+      {
+        label: "Bar",
+        value: "bar",
+        icon: "bwi-exclamation-triangle tw-text-danger",
+      },
+      {
+        label: "Baz",
+        value: "baz",
+        disabled: true,
+      },
+    ],
+  },
+};
+
+export const NestedOptions: Story = {
+  ...Default,
+  args: {
+    options: [
+      {
+        label: "Foo0",
+        value: "foo0",
+        icon: "bwi-folder",
+        children: [
+          {
+            label: "Foo1",
+            value: "foo1",
+            icon: "bwi-folder",
+            children: [
+              {
+                label: "Foo2",
+                value: "foo2",
+                icon: "bwi-folder",
+                children: [
+                  {
+                    label: "Foo3",
+                    value: "foo3",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        label: "Bar",
+        value: "bar",
+        icon: "bwi-folder",
+      },
+      {
+        label: "Baz",
+        value: "baz",
+        icon: "bwi-folder",
+      },
+    ],
+  },
+};
+
+export const TextOverflow: Story = {
+  ...Default,
+  args: {
+    options: [
+      {
+        label: "Fooooooooooooooooooooooooooooooooooooooooooooo",
+        value: "foo",
+      },
+    ],
+  },
+};
+
+export const Empty: Story = {
+  ...Default,
+  args: {
+    options: [],
+  },
 };

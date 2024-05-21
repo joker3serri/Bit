@@ -7,11 +7,11 @@ import { IconButtonModule } from "../icon-button";
 import { MenuModule } from "../menu";
 import { Option } from "../select/option";
 
-export type OptionTree<T> = Option<T> & {
-  children?: OptionTree<T>[];
+export type ChipSelectOption<T> = Option<T> & {
+  children?: ChipSelectOption<T>[];
 
-  /** Internal */
-  _parent?: OptionTree<T>;
+  /** @internal populated by `ChipSelectComponent` */
+  _parent?: ChipSelectOption<T>;
 };
 
 @Component({
@@ -31,27 +31,31 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
   @Input({ required: true }) placeholderText: string;
   @Input() placeholderIcon: string;
 
-  @Input({ required: true }) options: OptionTree<T>[];
+  @Input({ required: true }) options: ChipSelectOption<T>[];
 
-  private rootTree: OptionTree<T>;
-  protected renderedOptions: OptionTree<T>;
-  protected selectedOption: OptionTree<T>;
-  protected selectedValue: T;
+  private rootTree: ChipSelectOption<T>;
+  protected renderedOptions: ChipSelectOption<T>;
+  protected selectedOption: ChipSelectOption<T>;
 
-  protected selectOption(option: OptionTree<T>, _event: MouseEvent) {
+  protected selectOption(option: ChipSelectOption<T>, _event: MouseEvent) {
     this.selectedOption = option;
-    this.selectedValue = option.value;
     this.onChange(option);
   }
 
-  protected viewOption(option: OptionTree<T>, event: MouseEvent) {
+  protected viewOption(option: ChipSelectOption<T>, event: MouseEvent) {
     this.renderedOptions = option;
 
     event.preventDefault();
     event.stopImmediatePropagation();
   }
 
-  private findSelectedOption(tree: OptionTree<T>, value: T): OptionTree<T> | null {
+  protected clear() {
+    this.renderedOptions = this.rootTree;
+    this.selectedOption = null;
+    this.onChange(null);
+  }
+
+  private findSelectedOption(tree: ChipSelectOption<T>, value: T): ChipSelectOption<T> | null {
     let result = null;
     if (tree.value === value) {
       return tree;
@@ -67,7 +71,7 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
   }
 
   /** For each descendant in the provided `tree`, update `_parent` to be a refrence to the parent node. This allows us to navigate back in the menu. */
-  private markParents(tree: OptionTree<T>) {
+  private markParents(tree: ChipSelectOption<T>) {
     tree.children?.forEach((child) => {
       child._parent = tree;
       this.markParents(child);
@@ -75,7 +79,7 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
   }
 
   ngOnInit(): void {
-    const root: OptionTree<T> = {
+    const root: ChipSelectOption<T> = {
       children: this.options,
       value: null,
     };
@@ -91,8 +95,7 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
 
   /**Implemented as part of NG_VALUE_ACCESSOR */
   writeValue(obj: T): void {
-    this.selectedValue = obj;
-    this.selectedOption = this.findSelectedOption(this.rootTree, this.selectedValue);
+    this.selectedOption = this.findSelectedOption(this.rootTree, obj);
   }
 
   /**Implemented as part of NG_VALUE_ACCESSOR */
