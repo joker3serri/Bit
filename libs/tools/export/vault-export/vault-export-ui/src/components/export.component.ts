@@ -143,8 +143,7 @@ export class ExportComponent implements OnInit, OnDestroy {
       this.exportForm.get("format").valueChanges,
       this.exportForm.get("fileEncryptionType").valueChanges,
     )
-      .pipe(startWith(0))
-      .pipe(takeUntil(this.destroy$))
+      .pipe(startWith(0), takeUntil(this.destroy$))
       .subscribe(() => this.adjustValidators());
 
     if (this.organizationId) {
