@@ -37,7 +37,7 @@ export class AutofillVaultListItemsComponent {
    * the current context (e.g. not in a popout).
    * @protected
    */
-  protected showEmptyAutofillTip$ = combineLatest([
+  protected showEmptyAutofillTip$: Observable<boolean> = combineLatest([
     this.vaultPopupItemsService.hasFilterApplied$,
     this.autofillCiphers$,
     this.vaultPopupItemsService.autofillAllowed$,
