@@ -21,6 +21,7 @@ export abstract class BillingApiServiceAbstraction {
     providerId: string,
     request: CreateClientOrganizationRequest,
   ) => Promise<void>;
+  createSetupIntent: (paymentMethodType: PaymentMethodType) => Promise<string>;
   createSetupIntentForProvider: (providerId: string, type: PaymentMethodType) => Promise<string>;
   getBillingStatus: (id: string) => Promise<OrganizationBillingStatusResponse>;
   getOrganizationBillingMetadata: (

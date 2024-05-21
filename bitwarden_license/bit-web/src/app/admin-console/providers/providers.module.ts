@@ -11,8 +11,9 @@ import { OssModule } from "@bitwarden/web-vault/app/oss.module";
 
 import {
   ProviderSubscriptionComponent,
-  ProviderPaymentFormComponent,
-  ProviderPaymentInformationComponent,
+  ProviderPaymentComponent,
+  ProviderPaymentMethodDialogComponent,
+  ProviderTaxInformationComponent,
   CreateClientOrganizationComponent,
   ManageClientOrganizationsComponent,
   ManageClientOrganizationNameComponent,
@@ -68,8 +69,9 @@ import { SetupComponent } from "./setup/setup.component";
     ManageClientOrganizationNameComponent,
     ManageClientOrganizationSubscriptionComponent,
     ProviderSubscriptionComponent,
-    ProviderPaymentFormComponent,
-    ProviderPaymentInformationComponent,
+    ProviderPaymentComponent,
+    ProviderPaymentMethodDialogComponent,
+    ProviderTaxInformationComponent,
   ],
   providers: [WebProviderService, ProviderPermissionsGuard],
 })

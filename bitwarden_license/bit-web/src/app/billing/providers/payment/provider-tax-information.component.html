@@ -1,4 +1,4 @@
-<ng-container>
+<bit-container>
   <h2 class="spaced-header">{{ "taxInformation" | i18n }}</h2>
   <p>{{ "taxInformationDesc" | i18n }}</p>
   <form [formGroup]="formGroup" [bitSubmit]="submit">
@@ -16,7 +16,7 @@
           </bit-select>
         </bit-form-field>
       </div>
-      <div class="tw-col-span-3">
+      <div class="tw-col-span-6">
         <bit-form-field>
           <bit-label>{{ "zipPostalCode" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="postalCode" autocomplete="postal-code" />
@@ -39,29 +39,29 @@
     </div>
     <div class="tw-grid tw-grid-cols-12 tw-gap-4">
       <div class="tw-col-span-6">
-        <bit-form-field>
+        <bit-form-field disableMargin>
           <bit-label>{{ "address1" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="line1" autocomplete="address-line1" />
         </bit-form-field>
       </div>
       <div class="tw-col-span-6">
-        <bit-form-field>
+        <bit-form-field disableMargin>
           <bit-label>{{ "address2" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="line2" autocomplete="address-line2" />
         </bit-form-field>
       </div>
       <div class="tw-col-span-6">
-        <bit-form-field>
+        <bit-form-field disableMargin>
           <bit-label>{{ "cityTown" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="city" autocomplete="address-level2" />
         </bit-form-field>
       </div>
       <div class="tw-col-span-6">
-        <bit-form-field>
+        <bit-form-field disableMargin>
           <bit-label>{{ "stateProvince" | i18n }}</bit-label>
           <input bitInput type="text" formControlName="state" autocomplete="address-level1" />
         </bit-form-field>
       </div>
     </div>
   </form>
-</ng-container>
+</bit-container>

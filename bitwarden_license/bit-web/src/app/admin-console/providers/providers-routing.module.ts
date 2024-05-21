@@ -9,7 +9,7 @@ import { UserLayoutComponent } from "@bitwarden/web-vault/app/layouts/user-layou
 
 import {
   ProviderSubscriptionComponent,
-  ProviderPaymentInformationComponent,
+  ProviderPaymentComponent,
   hasConsolidatedBilling,
   ManageClientOrganizationsComponent,
 } from "../../billing/providers";
@@ -123,10 +123,10 @@ const routes: Routes = [
                 },
               },
               {
-                path: "payment-information",
-                component: ProviderPaymentInformationComponent,
+                path: "payment",
+                component: ProviderPaymentComponent,
                 data: {
-                  titleId: "paymentInformation",
+                  titleId: "payment",
                 },
               },
             ],

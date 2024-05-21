@@ -5,19 +5,18 @@ import { takeUntil } from "rxjs/operators";
 
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
-import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { DialogService } from "@bitwarden/components";
 
 import {
-  openProviderPaymentForm,
-  ProviderPaymentFormResultType,
-} from "./provider-payment-form.component";
+  openProviderPaymentDialog,
+  ProviderPaymentMethodDialogResultType,
+} from "./provider-payment-method-dialog.component";
 
 @Component({
-  selector: "app-provider-payment-information",
-  templateUrl: "./provider-payment-information.component.html",
+  selector: "app-provider-payment",
+  templateUrl: "./provider-payment.component.html",
 })
-export class ProviderPaymentInformationComponent implements OnInit, OnDestroy {
+export class ProviderPaymentComponent implements OnInit, OnDestroy {
   protected providerId: string;
   protected provider: Provider;
 
@@ -30,16 +29,15 @@ export class ProviderPaymentInformationComponent implements OnInit, OnDestroy {
   ) {}
 
   changePaymentMethod = async () => {
-    const dialogRef = openProviderPaymentForm(this.dialogService, {
+    const dialogRef = openProviderPaymentDialog(this.dialogService, {
       data: {
         providerId: this.providerId,
-        initialPaymentMethod: PaymentMethodType.Card,
       },
     });
 
     const result = await lastValueFrom(dialogRef.closed);
 
-    if (result == ProviderPaymentFormResultType.Submitted) {
+    if (result == ProviderPaymentMethodDialogResultType.Submitted) {
       await this.load();
     }
   };

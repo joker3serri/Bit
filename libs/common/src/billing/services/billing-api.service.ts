@@ -46,6 +46,21 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     );
   }
 
+  async createSetupIntent(type: PaymentMethodType) {
+    const getPath = () => {
+      switch (type) {
+        case PaymentMethodType.BankAccount: {
+          return "/setup-intent/bank-account";
+        }
+        case PaymentMethodType.Card: {
+          return "/setup-intent/card";
+        }
+      }
+    };
+    const response = await this.apiService.send("POST", getPath(), null, true, true);
+    return response as string;
+  }
+
   async createSetupIntentForProvider(providerId: string, type: PaymentMethodType) {
     let path = "/providers/" + providerId + "/billing/setup-intent/";
     switch (type) {
