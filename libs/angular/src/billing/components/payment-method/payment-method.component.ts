@@ -14,10 +14,10 @@ export type TokenizedPaymentMethod = {
 };
 
 @Component({
-  selector: "app-select-payment-method",
-  templateUrl: "./select-payment-method.component.html",
+  selector: "app-payment-method",
+  templateUrl: "./payment-method.component.html",
 })
-export class SelectPaymentMethodComponent implements OnInit, OnDestroy {
+export class PaymentMethodComponent implements OnInit, OnDestroy {
   @Input() protected showAccountCredit: boolean = true;
   @Input() protected showBankAccount: boolean = true;
   @Input() protected showPayPal: boolean = true;

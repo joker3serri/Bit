@@ -2,7 +2,7 @@ import { DIALOG_DATA, DialogConfig } from "@angular/cdk/dialog";
 import { Component, EventEmitter, Inject, Output, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 
-import { SelectPaymentMethodComponent } from "@bitwarden/angular/billing/components";
+import { PaymentMethodComponent } from "@bitwarden/angular/billing/components";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { UpdateProviderPaymentInformationRequest } from "@bitwarden/common/billing/models/request/update-provider-payment-information.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -31,8 +31,8 @@ export const openProviderPaymentDialog = (
   templateUrl: "provider-payment-method-dialog.component.html",
 })
 export class ProviderPaymentMethodDialogComponent {
-  @ViewChild(SelectPaymentMethodComponent)
-  selectPaymentMethodComponent: SelectPaymentMethodComponent;
+  @ViewChild(PaymentMethodComponent)
+  selectPaymentMethodComponent: PaymentMethodComponent;
   @Output() providerPaymentMethodUpdated = new EventEmitter();
 
   protected readonly formGroup = new FormGroup({});
