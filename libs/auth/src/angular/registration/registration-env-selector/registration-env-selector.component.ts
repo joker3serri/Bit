@@ -18,7 +18,7 @@ import { FormFieldModule } from "@bitwarden/components";
   templateUrl: "registration-env-selector.component.html",
   imports: [CommonModule, JslibModule, ReactiveFormsModule, FormFieldModule],
 })
-export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
+export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
   @Output() onOpenSelfHostedSettings = new EventEmitter();
 
   formGroup = this.formBuilder.group({
