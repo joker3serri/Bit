@@ -1,7 +1,7 @@
 <app-header>
   <bit-search
     class="tw-grow"
-    [(ngModel)]="searchControl"
+    [formControl]="searchControl"
     [placeholder]="'search' | i18n"
   ></bit-search>
   <button type="button" bitButton buttonType="primary" (click)="invite()">
