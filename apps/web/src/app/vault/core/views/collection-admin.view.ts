@@ -4,6 +4,7 @@ import { CollectionAccessDetailsResponse } from "@bitwarden/common/src/vault/mod
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
 import { CollectionAccessSelectionView } from "../../../admin-console/organizations/core/views/collection-access-selection.view";
+import { Unassigned } from "../../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
 
 export class CollectionAdminView extends CollectionView {
   groups: CollectionAccessSelectionView[] = [];
@@ -61,32 +62,70 @@ export class CollectionAdminView extends CollectionView {
   }
 
   /**
-   * Whether the current user can edit the collection, including user and group access
+   * Returns true if the user can edit a collection (including user and group access) from the Admin Console.
    */
   override canEdit(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
-    return org?.flexibleCollections
-      ? org?.canEditAnyCollection(flexibleCollectionsV1Enabled) || this.manage
-      : org?.canEditAnyCollection(flexibleCollectionsV1Enabled) ||
-          (org?.canEditAssignedCollections && this.assigned);
+    return (
+      org?.canEditAnyCollection(flexibleCollectionsV1Enabled) ||
+      super.canEdit(org, flexibleCollectionsV1Enabled)
+    );
   }
 
-  override canDelete(org: Organization): boolean {
-    return org?.flexibleCollections
-      ? org?.canDeleteAnyCollection || (!org?.limitCollectionCreationDeletion && this.manage)
-      : org?.canDeleteAnyCollection || (org?.canDeleteAssignedCollections && this.assigned);
+  /**
+   * Returns true if the user can delete a collection from the Admin Console.
+   */
+  override canDelete(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+    return (
+      org?.canDeleteAnyCollection(flexibleCollectionsV1Enabled) ||
+      super.canDelete(org, flexibleCollectionsV1Enabled)
+    );
   }
 
   /**
    * Whether the user can modify user access to this collection
    */
   canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
-    return this.canEdit(org, flexibleCollectionsV1Enabled) || org.permissions.manageUsers;
+    const allowAdminAccessToAllCollectionItems =
+      !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
+
+    return (
+      (org.permissions.manageUsers && allowAdminAccessToAllCollectionItems) ||
+      this.canEdit(org, flexibleCollectionsV1Enabled)
+    );
   }
 
   /**
    * Whether the user can modify group access to this collection
    */
   canEditGroupAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
-    return this.canEdit(org, flexibleCollectionsV1Enabled) || org.permissions.manageGroups;
+    const allowAdminAccessToAllCollectionItems =
+      !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
+
+    return (
+      (org.permissions.manageGroups && allowAdminAccessToAllCollectionItems) ||
+      this.canEdit(org, flexibleCollectionsV1Enabled)
+    );
+  }
+
+  /**
+   * Returns true if the user can view collection info and access in a read-only state from the Admin Console
+   */
+  override canViewCollectionInfo(
+    org: Organization | undefined,
+    flexibleCollectionsV1Enabled: boolean,
+  ): boolean {
+    if (!flexibleCollectionsV1Enabled) {
+      return false;
+    }
+
+    if (this.isUnassignedCollection) {
+      return false;
+    }
+
+    return this.manage || org?.isAdmin || org?.permissions.editAnyCollection;
+  }
+
+  get isUnassignedCollection() {
+    return this.id === Unassigned;
   }
 }

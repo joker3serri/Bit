@@ -163,6 +163,10 @@ export abstract class BrowserPlatformUtilsService implements PlatformUtilsServic
    * the view is open.
    */
   async isViewOpen(): Promise<boolean> {
+    if (this.isSafari()) {
+      // Query views on safari since chrome.runtime.sendMessage does not timeout and will hang.
+      return BrowserApi.isPopupOpen();
+    }
     return Boolean(await BrowserApi.sendMessageWithResponse("checkVaultPopupHeartbeat"));
   }
 
@@ -239,7 +243,7 @@ export abstract class BrowserPlatformUtilsService implements PlatformUtilsServic
       text = "\u0000";
     }
 
-    if (this.isChrome() && BrowserApi.isManifestVersion(3)) {
+    if (BrowserApi.isManifestVersion(3) && this.offscreenDocumentService.offscreenApiSupported()) {
       void this.triggerOffscreenCopyToClipboard(text).then(handleClipboardWriteCallback);
 
       return;
@@ -264,7 +268,7 @@ export abstract class BrowserPlatformUtilsService implements PlatformUtilsServic
       return await SafariApp.sendMessageToApp("readFromClipboard");
     }
 
-    if (this.isChrome() && BrowserApi.isManifestVersion(3)) {
+    if (BrowserApi.isManifestVersion(3) && this.offscreenDocumentService.offscreenApiSupported()) {
       return await this.triggerOffscreenReadFromClipboard();
     }
 
