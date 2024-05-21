@@ -1,9 +1,4 @@
-<form
-  [bitSubmit]="submitForm"
-  [appApiAction]="formPromise"
-  [formGroup]="formGroup"
-  autocomplete="off"
->
+<form [bitSubmit]="submitForm" [formGroup]="formGroup" autocomplete="off">
   <div class="tw-min-w-96">
     <ng-container
       *ngIf="
@@ -26,7 +21,6 @@
             href="#"
             appStopClick
             (click)="sendEmail(true)"
-            [appApiAction]="emailPromise"
             *ngIf="selectedProviderType === providerType.Email"
           >
             {{ "sendVerificationCodeEmailAgain" | i18n }}
