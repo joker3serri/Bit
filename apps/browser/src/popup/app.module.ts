@@ -15,15 +15,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
-import {
-  AvatarModule,
-  ButtonModule,
-  IconButtonModule,
-  NoItemsModule,
-  SectionComponent,
-  ToastModule,
-  TypographyModule,
-} from "@bitwarden/components";
+import { AvatarModule, ButtonModule, ToastModule } from "@bitwarden/components";
 import { ExportScopeCalloutComponent } from "@bitwarden/vault-export-ui";
 
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
@@ -80,10 +72,8 @@ import { ShareComponent } from "../vault/popup/components/vault/share.component"
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
 import { VaultSelectComponent } from "../vault/popup/components/vault/vault-select.component";
-import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
-import { VaultV2Module } from "../vault/popup/components/vault-v2";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
@@ -136,11 +126,6 @@ import "../platform/popup/locales";
     UserVerificationDialogComponent,
     PopupSectionHeaderComponent,
     CurrentAccountComponent,
-    IconButtonModule,
-    SectionComponent,
-    TypographyModule,
-    NoItemsModule,
-    VaultV2Module,
   ],
   declarations: [
     ActionButtonsComponent,
@@ -204,7 +189,6 @@ import "../platform/popup/locales";
     AutofillComponent,
     EnvironmentSelectorComponent,
     AccountSwitcherComponent,
-    VaultV2Component,
   ],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],

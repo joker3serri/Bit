@@ -1,13 +1,34 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 
-import { Icons } from "@bitwarden/components";
+import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { ButtonModule, Icons, NoItemsModule } from "@bitwarden/components";
 
+import { CurrentAccountComponent } from "../../../../auth/popup/account-switching/current-account.component";
+import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
+import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
+import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
+import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } from "../vault-v2";
 
 @Component({
   selector: "app-vault",
   templateUrl: "vault-v2.component.html",
+  standalone: true,
+  imports: [
+    PopupPageComponent,
+    PopupHeaderComponent,
+    PopOutComponent,
+    CurrentAccountComponent,
+    NoItemsModule,
+    JslibModule,
+    CommonModule,
+    AutofillVaultListItemsComponent,
+    VaultListItemsContainerComponent,
+    ButtonModule,
+    RouterLink,
+  ],
 })
 export class VaultV2Component implements OnInit, OnDestroy {
   protected favoriteCiphers$ = this.vaultPopupItemsService.favoriteCiphers$;
