@@ -1,7 +1,7 @@
 import { FormsModule } from "@angular/forms";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
+import { getAllByRole, userEvent } from "@storybook/testing-library";
 
-import { BadgeModule } from "../badge";
 import { MenuModule } from "../menu";
 
 import { ChipSelectComponent } from "./chip-select.component";
@@ -11,13 +11,13 @@ export default {
   component: ChipSelectComponent,
   decorators: [
     moduleMetadata({
-      imports: [MenuModule, FormsModule, BadgeModule],
+      imports: [MenuModule, FormsModule],
       providers: [],
     }),
   ],
 } as Meta;
 
-type Story = StoryObj<ChipSelectComponent>;
+type Story = StoryObj<ChipSelectComponent & { value: any }>;
 
 export const Default: Story = {
   render: (args) => ({
@@ -29,6 +29,7 @@ export const Default: Story = {
         placeholderText="Folder"
         placeholderIcon="bwi-folder"
         [options]="options"
+        [ngModel]="value"
       ></bit-chip-select>
     `,
   }),
@@ -51,6 +52,11 @@ export const Default: Story = {
       },
     ],
   },
+  play: async (context) => {
+    const canvas = context.canvasElement;
+    const buttons = getAllByRole(canvas, "button");
+    await userEvent.click(buttons[0]);
+  },
 };
 
 export const NestedOptions: Story = {
@@ -58,8 +64,8 @@ export const NestedOptions: Story = {
   args: {
     options: [
       {
-        label: "Foo0",
-        value: "foo0",
+        label: "Foo",
+        value: "foo",
         icon: "bwi-folder",
         children: [
           {
@@ -93,6 +99,7 @@ export const NestedOptions: Story = {
         icon: "bwi-folder",
       },
     ],
+    value: "foo1",
   },
 };
 
@@ -105,5 +112,6 @@ export const TextOverflow: Story = {
         value: "foo",
       },
     ],
+    value: "foo",
   },
 };
