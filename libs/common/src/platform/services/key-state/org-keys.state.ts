@@ -1,23 +1,28 @@
 import { EncryptedOrganizationKeyData } from "../../../admin-console/models/data/encrypted-organization-key.data";
 import { BaseEncryptedOrganizationKey } from "../../../admin-console/models/domain/encrypted-organization-key";
-import { OrganizationId } from "../../../types/guid";
-import { OrgKey } from "../../../types/key";
-import { CryptoService } from "../../abstractions/crypto.service";
+import { OrganizationId, ProviderId } from "../../../types/guid";
+import { OrgKey, ProviderKey, UserPrivateKey } from "../../../types/key";
+import { EncryptService } from "../../abstractions/encrypt.service";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
-import { KeyDefinition, CRYPTO_DISK, DeriveDefinition } from "../../state";
+import { CRYPTO_DISK, CRYPTO_MEMORY, DeriveDefinition, UserKeyDefinition } from "../../state";
 
-export const USER_ENCRYPTED_ORGANIZATION_KEYS = KeyDefinition.record<
+export const USER_ENCRYPTED_ORGANIZATION_KEYS = UserKeyDefinition.record<
   EncryptedOrganizationKeyData,
   OrganizationId
 >(CRYPTO_DISK, "organizationKeys", {
   deserializer: (obj) => obj,
+  clearOn: ["logout"],
 });
 
-export const USER_ORGANIZATION_KEYS = DeriveDefinition.from<
-  Record<OrganizationId, EncryptedOrganizationKeyData>,
+export const USER_ORGANIZATION_KEYS = new DeriveDefinition<
+  [
+    Record<OrganizationId, EncryptedOrganizationKeyData>,
+    UserPrivateKey,
+    Record<ProviderId, ProviderKey>,
+  ],
   Record<OrganizationId, OrgKey>,
-  { cryptoService: CryptoService }
->(USER_ENCRYPTED_ORGANIZATION_KEYS, {
+  { encryptService: EncryptService }
+>(CRYPTO_MEMORY, "organizationKeys", {
   deserializer: (obj) => {
     const result: Record<OrganizationId, OrgKey> = {};
     for (const orgId of Object.keys(obj ?? {}) as OrganizationId[]) {
@@ -25,14 +30,21 @@ export const USER_ORGANIZATION_KEYS = DeriveDefinition.from<
     }
     return result;
   },
-  derive: async (from, { cryptoService }) => {
+  derive: async ([encryptedOrgKeys, privateKey, providerKeys], { encryptService }) => {
     const result: Record<OrganizationId, OrgKey> = {};
-    for (const orgId of Object.keys(from ?? {}) as OrganizationId[]) {
+    for (const orgId of Object.keys(encryptedOrgKeys ?? {}) as OrganizationId[]) {
       if (result[orgId] != null) {
         continue;
       }
-      const encrypted = BaseEncryptedOrganizationKey.fromData(from[orgId]);
-      const decrypted = await encrypted.decrypt(cryptoService);
+      const encrypted = BaseEncryptedOrganizationKey.fromData(encryptedOrgKeys[orgId]);
+
+      let decrypted: OrgKey;
+
+      if (BaseEncryptedOrganizationKey.isProviderEncrypted(encrypted)) {
+        decrypted = await encrypted.decrypt(encryptService, providerKeys);
+      } else {
+        decrypted = await encrypted.decrypt(encryptService, privateKey);
+      }
 
       result[orgId] = decrypted;
     }
