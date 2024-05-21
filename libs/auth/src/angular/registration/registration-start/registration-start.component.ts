@@ -20,7 +20,6 @@ import {
   FormFieldModule,
   IconModule,
   LinkModule,
-  SelectModule,
 } from "@bitwarden/components";
 
 import { RegistrationCheckEmailIcon } from "../../icons/registration-check-email.icon";
@@ -44,7 +43,6 @@ export enum RegistrationStartState {
     ButtonModule,
     LinkModule,
     IconModule,
-    SelectModule,
   ],
 })
 export class RegistrationStartComponent implements OnInit, OnDestroy {

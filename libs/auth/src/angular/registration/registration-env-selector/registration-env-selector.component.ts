@@ -10,13 +10,13 @@ import {
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
-import { FormFieldModule } from "@bitwarden/components";
+import { FormFieldModule, SelectModule } from "@bitwarden/components";
 
 @Component({
   standalone: true,
   selector: "auth-registration-env-selector",
   templateUrl: "registration-env-selector.component.html",
-  imports: [CommonModule, JslibModule, ReactiveFormsModule, FormFieldModule],
+  imports: [CommonModule, JslibModule, ReactiveFormsModule, FormFieldModule, SelectModule],
 })
 export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
   @Output() onOpenSelfHostedSettings = new EventEmitter();
