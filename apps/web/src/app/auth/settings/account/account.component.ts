@@ -17,8 +17,6 @@ import { DeleteAccountDialogComponent } from "./delete-account-dialog.component"
 export class AccountComponent {
   @ViewChild("deauthorizeSessionsTemplate", { read: ViewContainerRef, static: true })
   deauthModalRef: ViewContainerRef;
-  @ViewChild("purgeVaultTemplate", { read: ViewContainerRef, static: true })
-  purgeModalRef: ViewContainerRef;
 
   showChangeEmail = true;
 
@@ -36,9 +34,10 @@ export class AccountComponent {
     await this.modalService.openViewRef(DeauthorizeSessionsComponent, this.deauthModalRef);
   }
 
-  async purgeVault() {
-    await this.modalService.openViewRef(PurgeVaultComponent, this.purgeModalRef);
-  }
+  purgeVault = async () => {
+    const dialogRef = PurgeVaultComponent.open(this.dialogService);
+    await lastValueFrom(dialogRef.closed);
+  };
 
   deleteAccount = async () => {
     const dialogRef = DeleteAccountDialogComponent.open(this.dialogService);
