@@ -776,8 +776,8 @@ export class CipherService implements CipherServiceAbstraction {
   async saveCollectionsWithServer(cipher: Cipher): Promise<Cipher> {
     const request = new CipherCollectionsRequest(cipher.collectionIds);
     const response = await this.apiService.putCipherCollections(cipher.id, request);
-    // The response will be null when a Owner/Admin makes a request removing the last Can Manage Access
-    // they have for an item. When this occurs we will call delete to remove that cipher from state
+    // The response will now check for an unavailable value. This value determines whether
+    // the user still has Can Manage access to the item after updating.
     if (response.unavailable) {
       await this.delete(cipher.id);
       return;
