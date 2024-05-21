@@ -13,7 +13,6 @@ import {
   ProviderSubscriptionComponent,
   ProviderPaymentComponent,
   ProviderPaymentMethodDialogComponent,
-  ProviderTaxInformationComponent,
   CreateClientOrganizationComponent,
   ManageClientOrganizationsComponent,
   ManageClientOrganizationNameComponent,
@@ -71,7 +70,6 @@ import { SetupComponent } from "./setup/setup.component";
     ProviderSubscriptionComponent,
     ProviderPaymentComponent,
     ProviderPaymentMethodDialogComponent,
-    ProviderTaxInformationComponent,
   ],
   providers: [WebProviderService, ProviderPermissionsGuard],
 })

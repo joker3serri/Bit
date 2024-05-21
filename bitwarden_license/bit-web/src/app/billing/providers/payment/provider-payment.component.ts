@@ -5,7 +5,15 @@ import { takeUntil } from "rxjs/operators";
 
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
-import { DialogService } from "@bitwarden/components";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import {
+  fromTaxInfoResponse,
+  TaxInformation,
+} from "@bitwarden/common/billing/models/domain/tax-information";
+import { UpdateProviderPaymentRequest } from "@bitwarden/common/billing/models/request/update-provider-payment.request";
+import { TaxInfoResponse } from "@bitwarden/common/billing/models/response/tax-info.response";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 import {
   openProviderPaymentDialog,
@@ -19,13 +27,17 @@ import {
 export class ProviderPaymentComponent implements OnInit, OnDestroy {
   protected providerId: string;
   protected provider: Provider;
+  protected taxInformation: TaxInformation;
 
   private destroy$ = new Subject<void>();
 
   constructor(
+    private billingApiService: BillingApiServiceAbstraction,
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService,
+    private i18nService: I18nService,
     private providerService: ProviderService,
+    private toastService: ToastService,
   ) {}
 
   changePaymentMethod = async () => {
@@ -44,7 +56,26 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
 
   async load() {
     this.provider = await this.providerService.get(this.providerId);
+    const taxInfoResponse = new TaxInfoResponse({
+      Country: "US",
+      PostalCode: "12345",
+    });
+    this.taxInformation = fromTaxInfoResponse(taxInfoResponse);
   }
+
+  updateTaxInformation = async (taxInformation: TaxInformation) => {
+    const updateProviderPaymentRequest = new UpdateProviderPaymentRequest();
+    updateProviderPaymentRequest.taxInformation = taxInformation;
+    await this.billingApiService.updateProviderPayment(
+      this.providerId,
+      updateProviderPaymentRequest,
+    );
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("updatedTaxInformation"),
+    });
+  };
 
   ngOnInit() {
     this.activatedRoute.params

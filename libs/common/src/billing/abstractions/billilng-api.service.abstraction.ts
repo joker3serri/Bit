@@ -1,5 +1,5 @@
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
-import { UpdateProviderPaymentInformationRequest } from "@bitwarden/common/billing/models/request/update-provider-payment-information.request";
+import { UpdateProviderPaymentRequest } from "@bitwarden/common/billing/models/request/update-provider-payment.request";
 
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingMetadataResponse } from "../../billing/models/response/organization-billing-metadata.response";
@@ -37,9 +37,9 @@ export abstract class BillingApiServiceAbstraction {
     organizationId: string,
     request: UpdateClientOrganizationRequest,
   ) => Promise<any>;
-  updateProviderPaymentInformation: (
+  updateProviderPayment: (
     providerId: string,
-    request: UpdateProviderPaymentInformationRequest,
+    request: UpdateProviderPaymentRequest,
   ) => Promise<void>;
   verifyProviderMicroDeposit: (providerId: string) => Promise<void>;
 }

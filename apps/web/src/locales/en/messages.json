@@ -8249,5 +8249,8 @@
   },
   "payment": {
     "message": "Payment"
+  },
+  "updatedTaxInformation": {
+    "message": "Updated tax information"
   }
 }

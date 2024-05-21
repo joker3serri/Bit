@@ -7,7 +7,9 @@ import {
   TaxInformationComponent,
 } from "@bitwarden/angular/billing/components";
 import {
+  AsyncActionsModule,
   AutofocusDirective,
+  ButtonModule,
   CheckboxModule,
   FormFieldModule,
   RadioButtonModule,
@@ -56,6 +58,8 @@ import { IconComponent } from "./vault/components/icon.component";
     FormFieldModule,
     SelectModule,
     CheckboxModule,
+    AsyncActionsModule,
+    ButtonModule,
   ],
   declarations: [
     A11yInvalidDirective,

@@ -1,4 +1,4 @@
-<div [formGroup]="formGroup">
+<form [formGroup]="formGroup">
   <div class="tw-mb-4 tw-text-lg">
     <bit-radio-group formControlName="paymentMethod">
       <bit-radio-button id="card-payment-method" [value]="PaymentMethodType.Card">
@@ -50,8 +50,7 @@
         <img
           src="../../images/cards.png"
           alt="Visa, MasterCard, Discover, AmEx, JCB, Diners Club, UnionPay"
-          width="323"
-          height="32"
+          class="tw-max-w-full"
         />
       </div>
       <div class="tw-col-span-2">
@@ -146,4 +145,7 @@
       {{ "makeSureEnoughCredit" | i18n }}
     </app-callout>
   </ng-container>
-</div>
+  <button *ngIf="!!onSubmit" bitButton bitFormButton buttonType="primary" type="submit">
+    {{ "submit" | i18n }}
+  </button>
+</form>

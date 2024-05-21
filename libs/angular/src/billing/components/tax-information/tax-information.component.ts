@@ -15,6 +15,7 @@ type Country = {
 })
 export class TaxInformationComponent {
   @Input({ required: true }) taxInformation: TaxInformation;
+  @Input() onSubmit?: (taxInformation: TaxInformation) => Promise<void>;
 
   protected formGroup = this.formBuilder.group({
     country: ["", Validators.required],
@@ -34,6 +35,12 @@ export class TaxInformationComponent {
         includeTaxId: !!this.taxInformation.taxId,
       });
     }
+  }
+
+  submit = async () => await this.onSubmit(this.taxInformation);
+
+  protected get showTaxIdInputs() {
+    return this.formGroup.value.includeTaxId;
   }
 
   protected countries: Country[] = [

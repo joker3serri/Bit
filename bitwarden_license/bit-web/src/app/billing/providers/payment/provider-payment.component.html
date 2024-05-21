@@ -1,10 +1,14 @@
 <app-header></app-header>
-<ng-container>
-  <h2 class="spaced-header">{{ "paymentMethod" | i18n }}</h2>
-  <button type="button" bitButton buttonType="secondary" [bitAction]="changePaymentMethod">
-    {{ "addPaymentMethod" | i18n }}
-  </button>
-</ng-container>
-<ng-container>
-  <app-provider-tax-information [providerId]="providerId" />
-</ng-container>
+<bit-container>
+  <ng-container>
+    <h2 class="spaced-header">{{ "paymentMethod" | i18n }}</h2>
+    <button type="button" bitButton buttonType="secondary" [bitAction]="changePaymentMethod">
+      {{ "addPaymentMethod" | i18n }}
+    </button>
+  </ng-container>
+  <ng-container>
+    <h2 class="spaced-header">{{ "taxInformation" | i18n }}</h2>
+    <p>{{ "taxInformationDesc" | i18n }}</p>
+    <app-tax-information [taxInformation]="taxInformation" [onSubmit]="updateTaxInformation" />
+  </ng-container>
+</bit-container>

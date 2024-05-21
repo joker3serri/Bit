@@ -1,4 +1,4 @@
-<div [formGroup]="formGroup">
+<form [formGroup]="formGroup" [bitSubmit]="submit">
   <div class="tw-grid tw-grid-cols-12 tw-gap-4">
     <div class="tw-col-span-6">
       <bit-form-field>
@@ -26,7 +26,7 @@
       </bit-form-control>
     </div>
   </div>
-  <div class="tw-grid tw-grid-cols-12 tw-gap-4">
+  <div class="tw-grid tw-grid-cols-12 tw-gap-4" *ngIf="showTaxIdInputs">
     <div class="tw-col-span-6">
       <bit-form-field>
         <bit-label>{{ "taxIdNumber" | i18n }}</bit-label>
@@ -34,7 +34,7 @@
       </bit-form-field>
     </div>
   </div>
-  <div class="tw-grid tw-grid-cols-12 tw-gap-4">
+  <div class="tw-grid tw-grid-cols-12 tw-gap-4" *ngIf="showTaxIdInputs">
     <div class="tw-col-span-6">
       <bit-form-field disableMargin>
         <bit-label>{{ "address1" | i18n }}</bit-label>
@@ -48,16 +48,19 @@
       </bit-form-field>
     </div>
     <div class="tw-col-span-6">
-      <bit-form-field disableMargin>
+      <bit-form-field>
         <bit-label>{{ "cityTown" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="city" autocomplete="address-level2" />
       </bit-form-field>
     </div>
     <div class="tw-col-span-6">
-      <bit-form-field disableMargin>
+      <bit-form-field>
         <bit-label>{{ "stateProvince" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="state" autocomplete="address-level1" />
       </bit-form-field>
     </div>
   </div>
-</div>
+  <button *ngIf="!!onSubmit" bitButton bitFormButton buttonType="primary" type="submit">
+    {{ "submit" | i18n }}
+  </button>
+</form>

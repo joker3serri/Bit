@@ -1,5 +1,5 @@
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
-import { UpdateProviderPaymentInformationRequest } from "@bitwarden/common/billing/models/request/update-provider-payment-information.request";
+import { UpdateProviderPaymentRequest } from "@bitwarden/common/billing/models/request/update-provider-payment.request";
 import { OrganizationBillingMetadataResponse } from "@bitwarden/common/billing/models/response/organization-billing-metadata.response";
 
 import { ApiService } from "../../abstractions/api.service";
@@ -145,13 +145,13 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     );
   }
 
-  async updateProviderPaymentInformation(
+  async updateProviderPayment(
     providerId: string,
-    request: UpdateProviderPaymentInformationRequest,
+    request: UpdateProviderPaymentRequest,
   ): Promise<void> {
     return await this.apiService.send(
       "PUT",
-      "/providers/" + providerId + "/billing/payment-information",
+      "/providers/" + providerId + "/billing/payment",
       request,
       true,
       false,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -7,11 +7,7 @@ import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstract
 import { BraintreeServiceAbstraction } from "@bitwarden/common/billing/abstractions/braintree.service.abstraction";
 import { StripeServiceAbstraction } from "@bitwarden/common/billing/abstractions/stripe.service.abstraction";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
-
-export type TokenizedPaymentMethod = {
-  type: PaymentMethodType;
-  token: string;
-};
+import { TokenizedPaymentMethod } from "@bitwarden/common/billing/models/domain/tokenized-payment-method";
 
 @Component({
   selector: "app-payment-method",
@@ -22,7 +18,7 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
   @Input() protected showBankAccount: boolean = true;
   @Input() protected showPayPal: boolean = true;
   @Input() private startWith: PaymentMethodType = PaymentMethodType.Card;
-  @Output() private paymentMethodSelected = new EventEmitter<PaymentMethodType>();
+  @Input() protected onSubmit: (tokenizedPaymentMethod: TokenizedPaymentMethod) => Promise<void>;
 
   private destroy$ = new Subject<void>();
 
@@ -83,6 +79,11 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
     return null;
   }
 
+  submit = async () => {
+    const tokenizedPaymentMethod = await this.tokenizePaymentMethod();
+    await this.onSubmit(tokenizedPaymentMethod);
+  };
+
   ngOnInit(): void {
     this.stripeService.loadStripe(
       {
@@ -128,7 +129,6 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
         break;
       }
     }
-    this.paymentMethodSelected.emit(type);
   }
 
   private get selected(): PaymentMethodType {
