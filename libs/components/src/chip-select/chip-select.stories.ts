@@ -107,10 +107,3 @@ export const TextOverflow: Story = {
     ],
   },
 };
-
-export const Empty: Story = {
-  ...Default,
-  args: {
-    options: [],
-  },
-};
