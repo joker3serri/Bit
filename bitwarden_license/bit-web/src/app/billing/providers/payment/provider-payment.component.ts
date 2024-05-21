@@ -3,8 +3,6 @@ import { ActivatedRoute } from "@angular/router";
 import { from, lastValueFrom, Subject, switchMap } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
-import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
-import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import {
   fromTaxInfoResponse,
@@ -26,7 +24,6 @@ import {
 })
 export class ProviderPaymentComponent implements OnInit, OnDestroy {
   protected providerId: string;
-  protected provider: Provider;
   protected taxInformation: TaxInformation;
 
   private destroy$ = new Subject<void>();
@@ -36,7 +33,6 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService,
     private i18nService: I18nService,
-    private providerService: ProviderService,
     private toastService: ToastService,
   ) {}
 
@@ -55,7 +51,7 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
   };
 
   async load() {
-    this.provider = await this.providerService.get(this.providerId);
+    // TODO: Retrieve tax information
     const taxInfoResponse = new TaxInfoResponse({
       Country: "US",
       PostalCode: "12345",
