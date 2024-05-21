@@ -136,7 +136,8 @@ class OverlayBackground implements OverlayBackgroundInterface {
    * list of ciphers if the extension is not unlocked.
    */
   async updateOverlayCiphers() {
-    if ((await this.getAuthStatus()) !== AuthenticationStatus.Unlocked) {
+    const authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
+    if (authStatus !== AuthenticationStatus.Unlocked) {
       return;
     }
 
