@@ -529,7 +529,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: MessageListener,
-    useFactory: (subject: Subject<Message<object>>, ngZone: NgZone) =>
+    useFactory: (subject: Subject<Message<Record<string, unknown>>>, ngZone: NgZone) =>
       new MessageListener(
         merge(
           subject.asObservable(), // For messages in the same context
@@ -540,7 +540,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: MessageSender,
-    useFactory: (subject: Subject<Message<object>>, logService: LogService) =>
+    useFactory: (subject: Subject<Message<Record<string, unknown>>>, logService: LogService) =>
       MessageSender.combine(
         new SubjectMessageSender(subject), // For sending messages in the same context
         new ChromeMessageSender(logService), // For sending messages to different contexts
