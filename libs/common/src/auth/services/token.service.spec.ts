@@ -1,18 +1,22 @@
-import { mock } from "jest-mock-extended";
+import { MockProxy, mock } from "jest-mock-extended";
+import { firstValueFrom } from "rxjs";
 
 import { FakeSingleUserStateProvider, FakeGlobalStateProvider } from "../../../spec";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
+import { EncryptService } from "../../platform/abstractions/encrypt.service";
+import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
+import { LogService } from "../../platform/abstractions/log.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
 import { UserId } from "../../types/guid";
+import { VaultTimeout, VaultTimeoutStringType } from "../../types/vault-timeout.type";
 
 import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
-import { DecodedAccessToken, TokenService } from "./token.service";
+import { DecodedAccessToken, TokenService, TokenStorageLocation } from "./token.service";
 import {
   ACCESS_TOKEN_DISK,
   ACCESS_TOKEN_MEMORY,
-  ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
   API_KEY_CLIENT_ID_DISK,
   API_KEY_CLIENT_ID_MEMORY,
   API_KEY_CLIENT_SECRET_DISK,
@@ -20,7 +24,7 @@ import {
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
-  REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
+  SECURITY_STAMP_MEMORY,
 } from "./token.state";
 
 describe("TokenService", () => {
@@ -28,13 +32,16 @@ describe("TokenService", () => {
   let singleUserStateProvider: FakeSingleUserStateProvider;
   let globalStateProvider: FakeGlobalStateProvider;
 
-  const secureStorageService = mock<AbstractStorageService>();
+  let secureStorageService: MockProxy<AbstractStorageService>;
+  let keyGenerationService: MockProxy<KeyGenerationService>;
+  let encryptService: MockProxy<EncryptService>;
+  let logService: MockProxy<LogService>;
 
   const memoryVaultTimeoutAction = VaultTimeoutAction.LogOut;
-  const memoryVaultTimeout = 30;
+  const memoryVaultTimeout: VaultTimeout = 30;
 
   const diskVaultTimeoutAction = VaultTimeoutAction.Lock;
-  const diskVaultTimeout: number = null;
+  const diskVaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
 
   const accessTokenJwt =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0IiwibmJmIjoxNzA5MzI0MTExLCJpYXQiOjE3MDkzMjQxMTEsImV4cCI6MTcwOTMyNzcxMSwic2NvcGUiOlsiYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbIkFwcGxpY2F0aW9uIl0sImNsaWVudF9pZCI6IndlYiIsInN1YiI6ImVjZTcwYTEzLTcyMTYtNDNjNC05OTc3LWIxMDMwMTQ2ZTFlNyIsImF1dGhfdGltZSI6MTcwOTMyNDEwNCwiaWRwIjoiYml0d2FyZGVuIiwicHJlbWl1bSI6ZmFsc2UsImVtYWlsIjoiZXhhbXBsZUBiaXR3YXJkZW4uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJzc3RhbXAiOiJHWTdKQU82NENLS1RLQkI2WkVBVVlMMldPUVU3QVNUMiIsIm5hbWUiOiJUZXN0IFVzZXIiLCJvcmdvd25lciI6WyI5MmI0OTkwOC1iNTE0LTQ1YTgtYmFkYi1iMTAzMDE0OGZlNTMiLCIzOGVkZTMyMi1iNGI0LTRiZDgtOWUwOS1iMTA3MDExMmRjMTEiLCJiMmQwNzAyOC1hNTgzLTRjM2UtOGQ2MC1iMTA3MDExOThjMjkiLCJiZjkzNGJhMi0wZmQ0LTQ5ZjItYTk1ZS1iMTA3MDExZmM5ZTYiLCJjMGI3Zjc1ZC0wMTVmLTQyYzktYjNhNi1iMTA4MDE3NjA3Y2EiXSwiZGV2aWNlIjoiNGI4NzIzNjctMGRhNi00MWEwLWFkY2ItNzdmMmZlZWZjNGY0IiwianRpIjoiNzUxNjFCRTQxMzFGRjVBMkRFNTExQjhDNEUyRkY4OUEifQ.n7roP8sSbfwcYdvRxZNZds27IK32TW6anorE6BORx_Q";
@@ -74,11 +81,18 @@ describe("TokenService", () => {
     userId: userIdFromAccessToken,
   };
 
+  const accessTokenKeyB64 = { keyB64: "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8" };
+
   beforeEach(() => {
     jest.clearAllMocks();
 
     singleUserStateProvider = new FakeSingleUserStateProvider();
     globalStateProvider = new FakeGlobalStateProvider();
+
+    secureStorageService = mock<AbstractStorageService>();
+    keyGenerationService = mock<KeyGenerationService>();
+    encryptService = mock<EncryptService>();
+    logService = mock<LogService>();
 
     const supportsSecureStorage = false; // default to false; tests will override as needed
     tokenService = createTokenService(supportsSecureStorage);
@@ -89,27 +103,114 @@ describe("TokenService", () => {
   });
 
   describe("Access Token methods", () => {
-    const accessTokenPartialSecureStorageKey = `_accessToken`;
-    const accessTokenSecureStorageKey = `${userIdFromAccessToken}${accessTokenPartialSecureStorageKey}`;
+    const accessTokenKeyPartialSecureStorageKey = `_accessTokenKey`;
+    const accessTokenKeySecureStorageKey = `${userIdFromAccessToken}${accessTokenKeyPartialSecureStorageKey}`;
+
+    describe("hasAccessToken$", () => {
+      it("returns true when an access token exists in memory", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // Act
+        const result = await firstValueFrom(tokenService.hasAccessToken$(userIdFromAccessToken));
+
+        // Assert
+        expect(result).toEqual(true);
+      });
+
+      it("returns true when an access token exists in disk", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, undefined]);
+
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+        // Act
+        const result = await firstValueFrom(tokenService.hasAccessToken$(userIdFromAccessToken));
+
+        // Assert
+        expect(result).toEqual(true);
+      });
+
+      it("returns true when an access token exists in secure storage", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
+          .stateSubject.next([userIdFromAccessToken, "encryptedAccessToken"]);
+
+        secureStorageService.get.mockResolvedValue(accessTokenKeyB64);
+
+        // Act
+        const result = await firstValueFrom(tokenService.hasAccessToken$(userIdFromAccessToken));
+
+        // Assert
+        expect(result).toEqual(true);
+      });
+
+      it("should return false if no access token exists in memory, disk, or secure storage", async () => {
+        // Act
+        const result = await firstValueFrom(tokenService.hasAccessToken$(userIdFromAccessToken));
+
+        // Assert
+        expect(result).toEqual(false);
+      });
+    });
 
     describe("setAccessToken", () => {
       it("should throw an error if the access token is null", async () => {
         // Act
-        const result = tokenService.setAccessToken(null, VaultTimeoutAction.Lock, null);
+        const result = tokenService.setAccessToken(
+          null,
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).rejects.toThrow("Access token is required.");
       });
 
       it("should throw an error if an invalid token is passed in", async () => {
         // Act
-        const result = tokenService.setAccessToken("invalidToken", VaultTimeoutAction.Lock, null);
+        const result = tokenService.setAccessToken(
+          "invalidToken",
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).rejects.toThrow("JWT must have 3 parts");
       });
 
-      it("should not throw an error as long as the token is valid", async () => {
+      it("should throw an error if the vault timeout is missing", async () => {
         // Act
         const result = tokenService.setAccessToken(accessTokenJwt, VaultTimeoutAction.Lock, null);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Act
+        const result = tokenService.setAccessToken(
+          accessTokenJwt,
+          null,
+          VaultTimeoutStringType.Never,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
+      });
+
+      it("should not throw an error as long as the token is valid", async () => {
+        // Act
+        const result = tokenService.setAccessToken(
+          accessTokenJwt,
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).resolves.not.toThrow();
       });
@@ -150,17 +251,21 @@ describe("TokenService", () => {
           tokenService = createTokenService(supportsSecureStorage);
         });
 
-        it("should set the access token in secure storage, null out data on disk or in memory, and set a flag to indicate the token has been migrated", async () => {
+        it("should set an access token key in secure storage, the encrypted access token in disk, and clear out the token in memory", async () => {
           // Arrange:
 
-          // For testing purposes, let's assume that the access token is already in disk and memory
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
-
+          // For testing purposes, let's assume that the access token is already in memory
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+          keyGenerationService.createKey.mockResolvedValue("accessTokenKey" as any);
+
+          const mockEncryptedAccessToken = "encryptedAccessToken";
+
+          encryptService.encrypt.mockResolvedValue({
+            encryptedString: mockEncryptedAccessToken,
+          } as any);
 
           // Act
           await tokenService.setAccessToken(
@@ -170,27 +275,22 @@ describe("TokenService", () => {
           );
           // Assert
 
-          // assert that the access token was set in secure storage
+          // assert that the AccessTokenKey was set in secure storage
           expect(secureStorageService.save).toHaveBeenCalledWith(
-            accessTokenSecureStorageKey,
-            accessTokenJwt,
+            accessTokenKeySecureStorageKey,
+            "accessTokenKey",
             secureStorageOptions,
           );
 
-          // assert data was migrated out of disk and memory + flag was set
+          // assert that the access token was encrypted and set in disk
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
-          ).toHaveBeenCalledWith(null);
+          ).toHaveBeenCalledWith(mockEncryptedAccessToken);
+
+          // assert data was migrated out of memory
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
           ).toHaveBeenCalledWith(null);
-
-          expect(
-            singleUserStateProvider.getFake(
-              userIdFromAccessToken,
-              ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-            ).nextMock,
-          ).toHaveBeenCalledWith(true);
         });
       });
     });
@@ -216,7 +316,13 @@ describe("TokenService", () => {
       });
 
       describe("Memory storage tests", () => {
-        it("should get the access token from memory with no user id specified (uses global active user)", async () => {
+        test.each([
+          [
+            "should get the access token from memory for the provided user id",
+            userIdFromAccessToken,
+          ],
+          ["should get the access token from memory with no user id provided", undefined],
+        ])("%s", async (_, userId) => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
@@ -228,37 +334,28 @@ describe("TokenService", () => {
             .stateSubject.next([userIdFromAccessToken, undefined]);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          if (!userId) {
+            globalStateProvider
+              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+              .stateSubject.next(userIdFromAccessToken);
+          }
 
           // Act
-          const result = await tokenService.getAccessToken();
+          const result = await tokenService.getAccessToken(userId);
 
-          // Assert
-          expect(result).toEqual(accessTokenJwt);
-        });
-
-        it("should get the access token from memory for the specified user id", async () => {
-          // Arrange
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
-
-          // set disk to undefined
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
-
-          // Act
-          const result = await tokenService.getAccessToken(userIdFromAccessToken);
           // Assert
           expect(result).toEqual(accessTokenJwt);
         });
       });
 
       describe("Disk storage tests (secure storage not supported on platform)", () => {
-        it("should get the access token from disk with no user id specified", async () => {
+        test.each([
+          [
+            "should get the access token from disk for the specified user id",
+            userIdFromAccessToken,
+          ],
+          ["should get the access token from disk with no user id specified", undefined],
+        ])("%s", async (_, userId) => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
@@ -269,28 +366,14 @@ describe("TokenService", () => {
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          if (!userId) {
+            globalStateProvider
+              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+              .stateSubject.next(userIdFromAccessToken);
+          }
 
           // Act
-          const result = await tokenService.getAccessToken();
-          // Assert
-          expect(result).toEqual(accessTokenJwt);
-        });
-
-        it("should get the access token from disk for the specified user id", async () => {
-          // Arrange
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
-
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
-
-          // Act
-          const result = await tokenService.getAccessToken(userIdFromAccessToken);
+          const result = await tokenService.getAccessToken(userId);
           // Assert
           expect(result).toEqual(accessTokenJwt);
         });
@@ -302,7 +385,16 @@ describe("TokenService", () => {
           tokenService = createTokenService(supportsSecureStorage);
         });
 
-        it("should get the access token from secure storage when no user id is specified and the migration flag is set to true", async () => {
+        test.each([
+          [
+            "should get the encrypted access token from disk, decrypt it, and return it when user id is provided",
+            userIdFromAccessToken,
+          ],
+          [
+            "should get the encrypted access token from disk, decrypt it, and return it when no user id is provided",
+            undefined,
+          ],
+        ])("%s", async (_, userId) => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
@@ -310,76 +402,35 @@ describe("TokenService", () => {
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .stateSubject.next([userIdFromAccessToken, "encryptedAccessToken"]);
 
-          secureStorageService.get.mockResolvedValue(accessTokenJwt);
+          secureStorageService.get.mockResolvedValue(accessTokenKeyB64);
+          encryptService.decryptToUtf8.mockResolvedValue("decryptedAccessToken");
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
-
-          // set access token migration flag to true
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, true]);
+          if (!userId) {
+            globalStateProvider
+              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+              .stateSubject.next(userIdFromAccessToken);
+          }
 
           // Act
-          const result = await tokenService.getAccessToken();
-          // Assert
-          expect(result).toEqual(accessTokenJwt);
-        });
-
-        it("should get the access token from secure storage when user id is specified and the migration flag set to true", async () => {
-          // Arrange
-
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
-
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
-
-          secureStorageService.get.mockResolvedValue(accessTokenJwt);
-
-          // set access token migration flag to true
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, true]);
-
-          // Act
-          const result = await tokenService.getAccessToken(userIdFromAccessToken);
-          // Assert
-          expect(result).toEqual(accessTokenJwt);
-        });
-
-        it("should fallback and get the access token from disk when user id is specified and the migration flag is set to false even if the platform supports secure storage", async () => {
-          // Arrange
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
-
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
-
-          // set access token migration flag to false
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, false]);
-
-          // Act
-          const result = await tokenService.getAccessToken(userIdFromAccessToken);
+          const result = await tokenService.getAccessToken(userId);
 
           // Assert
-          expect(result).toEqual(accessTokenJwt);
-
-          // assert that secure storage was not called
-          expect(secureStorageService.get).not.toHaveBeenCalled();
+          expect(result).toEqual("decryptedAccessToken");
         });
 
-        it("should fallback and get the access token from disk when no user id is specified and the migration flag is set to false even if the platform supports secure storage", async () => {
+        test.each([
+          [
+            "should fallback and get the unencrypted access token from disk when there isn't an access token key in secure storage and a user id is provided",
+            userIdFromAccessToken,
+          ],
+          [
+            "should fallback and get the unencrypted access token from disk when there isn't an access token key in secure storage and no user id is provided",
+            undefined,
+          ],
+        ])("%s", async (_, userId) => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
@@ -390,23 +441,19 @@ describe("TokenService", () => {
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          if (!userId) {
+            globalStateProvider
+              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+              .stateSubject.next(userIdFromAccessToken);
+          }
 
-          // set access token migration flag to false
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, false]);
+          // No access token key set
 
           // Act
-          const result = await tokenService.getAccessToken();
+          const result = await tokenService.getAccessToken(userId);
 
           // Assert
           expect(result).toEqual(accessTokenJwt);
-
-          // assert that secure storage was not called
-          expect(secureStorageService.get).not.toHaveBeenCalled();
         });
       });
     });
@@ -426,7 +473,16 @@ describe("TokenService", () => {
           tokenService = createTokenService(supportsSecureStorage);
         });
 
-        it("should clear the access token from all storage locations for the specified user id", async () => {
+        test.each([
+          [
+            "should clear the access token from all storage locations for the provided user id",
+            userIdFromAccessToken,
+          ],
+          [
+            "should clear the access token from all storage locations for the global active user",
+            undefined,
+          ],
+        ])("%s", async (_, userId) => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
@@ -435,6 +491,13 @@ describe("TokenService", () => {
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
             .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+
+          // Need to have global active id set to the user id
+          if (!userId) {
+            globalStateProvider
+              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+              .stateSubject.next(userIdFromAccessToken);
+          }
 
           // Act
           await tokenService.clearAccessToken(userIdFromAccessToken);
@@ -448,39 +511,7 @@ describe("TokenService", () => {
           ).toHaveBeenCalledWith(null);
 
           expect(secureStorageService.remove).toHaveBeenCalledWith(
-            accessTokenSecureStorageKey,
-            secureStorageOptions,
-          );
-        });
-
-        it("should clear the access token from all storage locations for the global active user", async () => {
-          // Arrange
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
-
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
-
-          // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
-
-          // Act
-          await tokenService.clearAccessToken();
-
-          // Assert
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
-          ).toHaveBeenCalledWith(null);
-          expect(
-            singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
-          ).toHaveBeenCalledWith(null);
-
-          expect(secureStorageService.remove).toHaveBeenCalledWith(
-            accessTokenSecureStorageKey,
+            accessTokenKeySecureStorageKey,
             secureStorageOptions,
           );
         });
@@ -1049,9 +1080,36 @@ describe("TokenService", () => {
           refreshToken,
           VaultTimeoutAction.Lock,
           null,
+          null,
         );
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot save refresh token.");
+      });
+
+      it("should throw an error if the vault timeout is missing", async () => {
+        // Act
+        const result = (tokenService as any).setRefreshToken(
+          refreshToken,
+          VaultTimeoutAction.Lock,
+          null,
+          userIdFromAccessToken,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Act
+        const result = (tokenService as any).setRefreshToken(
+          refreshToken,
+          null,
+          VaultTimeoutStringType.Never,
+          userIdFromAccessToken,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
       });
 
       describe("Memory storage tests", () => {
@@ -1121,20 +1179,13 @@ describe("TokenService", () => {
             secureStorageOptions,
           );
 
-          // assert data was migrated out of disk and memory + flag was set
+          // assert data was migrated out of disk and memory
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK).nextMock,
           ).toHaveBeenCalledWith(null);
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY).nextMock,
           ).toHaveBeenCalledWith(null);
-
-          expect(
-            singleUserStateProvider.getFake(
-              userIdFromAccessToken,
-              REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE,
-            ).nextMock,
-          ).toHaveBeenCalledWith(true);
         });
       });
     });
@@ -1261,11 +1312,6 @@ describe("TokenService", () => {
             .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
             .stateSubject.next(userIdFromAccessToken);
 
-          // set access token migration flag to true
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, true]);
-
           // Act
           const result = await tokenService.getRefreshToken();
           // Assert
@@ -1285,11 +1331,6 @@ describe("TokenService", () => {
 
           secureStorageService.get.mockResolvedValue(refreshToken);
 
-          // set access token migration flag to true
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, true]);
-
           // Act
           const result = await tokenService.getRefreshToken(userIdFromAccessToken);
           // Assert
@@ -1305,11 +1346,6 @@ describe("TokenService", () => {
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
             .stateSubject.next([userIdFromAccessToken, refreshToken]);
-
-          // set refresh token migration flag to false
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, false]);
 
           // Act
           const result = await tokenService.getRefreshToken(userIdFromAccessToken);
@@ -1335,11 +1371,6 @@ describe("TokenService", () => {
           globalStateProvider
             .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
             .stateSubject.next(userIdFromAccessToken);
-
-          // set access token migration flag to false
-          singleUserStateProvider
-            .getFake(userIdFromAccessToken, REFRESH_TOKEN_MIGRATED_TO_SECURE_STORAGE)
-            .stateSubject.next([userIdFromAccessToken, false]);
 
           // Act
           const result = await tokenService.getRefreshToken();
@@ -1408,6 +1439,34 @@ describe("TokenService", () => {
         const result = tokenService.setClientId(clientId, VaultTimeoutAction.Lock, null);
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot save client id.");
+      });
+
+      it("should throw an error if the vault timeout is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientId(clientId, VaultTimeoutAction.Lock, null);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientId(clientId, null, VaultTimeoutStringType.Never);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
       });
 
       describe("Memory storage tests", () => {
@@ -1646,9 +1705,45 @@ describe("TokenService", () => {
       it("should throw an error if no user id is provided and there is no active user in global state", async () => {
         // Act
         // note: don't await here because we want to test the error
-        const result = tokenService.setClientSecret(clientSecret, VaultTimeoutAction.Lock, null);
+        const result = tokenService.setClientSecret(
+          clientSecret,
+          VaultTimeoutAction.Lock,
+          VaultTimeoutStringType.Never,
+        );
         // Assert
         await expect(result).rejects.toThrow("User id not found. Cannot save client secret.");
+      });
+
+      it("should throw an error if the vault timeout is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientSecret(clientSecret, VaultTimeoutAction.Lock, null);
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout is required.");
+      });
+
+      it("should throw an error if the vault timeout action is missing", async () => {
+        // Arrange
+
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        const result = tokenService.setClientSecret(
+          clientSecret,
+          null,
+          VaultTimeoutStringType.Never,
+        );
+
+        // Assert
+        await expect(result).rejects.toThrow("Vault Timeout Action is required.");
       });
 
       describe("Memory storage tests", () => {
@@ -1912,7 +2007,7 @@ describe("TokenService", () => {
 
       // Act
       // Note: passing a valid access token so that a valid user id can be determined from the access token
-      await tokenService.setTokens(accessTokenJwt, refreshToken, vaultTimeoutAction, vaultTimeout, [
+      await tokenService.setTokens(accessTokenJwt, vaultTimeoutAction, vaultTimeout, refreshToken, [
         clientId,
         clientSecret,
       ]);
@@ -1959,7 +2054,7 @@ describe("TokenService", () => {
       tokenService.setClientSecret = jest.fn();
 
       // Act
-      await tokenService.setTokens(accessTokenJwt, refreshToken, vaultTimeoutAction, vaultTimeout);
+      await tokenService.setTokens(accessTokenJwt, vaultTimeoutAction, vaultTimeout, refreshToken);
 
       // Assert
       expect((tokenService as any)._setAccessToken).toHaveBeenCalledWith(
@@ -1991,9 +2086,9 @@ describe("TokenService", () => {
       // Act
       const result = tokenService.setTokens(
         accessToken,
-        refreshToken,
         vaultTimeoutAction,
         vaultTimeout,
+        refreshToken,
       );
 
       // Assert
@@ -2010,32 +2105,63 @@ describe("TokenService", () => {
       // Act
       const result = tokenService.setTokens(
         accessToken,
-        refreshToken,
         vaultTimeoutAction,
         vaultTimeout,
+        refreshToken,
       );
 
       // Assert
-      await expect(result).rejects.toThrow("Access token and refresh token are required.");
+      await expect(result).rejects.toThrow("Access token is required.");
     });
 
-    it("should throw an error if the refresh token is missing", async () => {
+    it("should throw an error if the vault timeout is missing", async () => {
       // Arrange
-      const accessToken = "accessToken";
-      const refreshToken: string = null;
+      const refreshToken = "refreshToken";
       const vaultTimeoutAction = VaultTimeoutAction.Lock;
-      const vaultTimeout = 30;
+      const vaultTimeout: VaultTimeout = null;
 
       // Act
       const result = tokenService.setTokens(
-        accessToken,
-        refreshToken,
+        accessTokenJwt,
         vaultTimeoutAction,
         vaultTimeout,
+        refreshToken,
       );
 
       // Assert
-      await expect(result).rejects.toThrow("Access token and refresh token are required.");
+      await expect(result).rejects.toThrow("Vault Timeout is required.");
+    });
+
+    it("should throw an error if the vault timeout action is missing", async () => {
+      // Arrange
+      const refreshToken = "refreshToken";
+      const vaultTimeoutAction: VaultTimeoutAction = null;
+      const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+
+      // Act
+      const result = tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        refreshToken,
+      );
+
+      // Assert
+      await expect(result).rejects.toThrow("Vault Timeout Action is required.");
+    });
+
+    it("should not throw an error if the refresh token is missing and it should just not set it", async () => {
+      // Arrange
+      const refreshToken: string = null;
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+      (tokenService as any).setRefreshToken = jest.fn();
+
+      // Act
+      await tokenService.setTokens(accessTokenJwt, vaultTimeoutAction, vaultTimeout, refreshToken);
+
+      // Assert
+      expect((tokenService as any).setRefreshToken).not.toHaveBeenCalled();
     });
   });
 
@@ -2225,6 +2351,246 @@ describe("TokenService", () => {
     });
   });
 
+  describe("Security Stamp methods", () => {
+    const mockSecurityStamp = "securityStamp";
+
+    describe("setSecurityStamp", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        // note: don't await here because we want to test the error
+        const result = tokenService.setSecurityStamp(mockSecurityStamp);
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot set security stamp.");
+      });
+
+      it("should set the security stamp in memory when there is an active user in global state", async () => {
+        // Arrange
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        // Act
+        await tokenService.setSecurityStamp(mockSecurityStamp);
+
+        // Assert
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, SECURITY_STAMP_MEMORY).nextMock,
+        ).toHaveBeenCalledWith(mockSecurityStamp);
+      });
+
+      it("should set the security stamp in memory for the specified user id", async () => {
+        // Act
+        await tokenService.setSecurityStamp(mockSecurityStamp, userIdFromAccessToken);
+
+        // Assert
+        expect(
+          singleUserStateProvider.getFake(userIdFromAccessToken, SECURITY_STAMP_MEMORY).nextMock,
+        ).toHaveBeenCalledWith(mockSecurityStamp);
+      });
+    });
+
+    describe("getSecurityStamp", () => {
+      it("should throw an error if no user id is provided and there is no active user in global state", async () => {
+        // Act
+        // note: don't await here because we want to test the error
+        const result = tokenService.getSecurityStamp();
+        // Assert
+        await expect(result).rejects.toThrow("User id not found. Cannot get security stamp.");
+      });
+
+      it("should return the security stamp from memory with no user id specified (uses global active user)", async () => {
+        // Arrange
+        globalStateProvider
+          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
+          .stateSubject.next(userIdFromAccessToken);
+
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, SECURITY_STAMP_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, mockSecurityStamp]);
+
+        // Act
+        const result = await tokenService.getSecurityStamp();
+
+        // Assert
+        expect(result).toEqual(mockSecurityStamp);
+      });
+
+      it("should return the security stamp from memory for the specified user id", async () => {
+        // Arrange
+        singleUserStateProvider
+          .getFake(userIdFromAccessToken, SECURITY_STAMP_MEMORY)
+          .stateSubject.next([userIdFromAccessToken, mockSecurityStamp]);
+
+        // Act
+        const result = await tokenService.getSecurityStamp(userIdFromAccessToken);
+        // Assert
+        expect(result).toEqual(mockSecurityStamp);
+      });
+    });
+  });
+
+  describe("determineStorageLocation", () => {
+    it("should throw an error if the vault timeout is null", async () => {
+      // Arrange
+      const vaultTimeoutAction: VaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout: VaultTimeout = null;
+      // Act
+      const result = (tokenService as any).determineStorageLocation(
+        vaultTimeoutAction,
+        vaultTimeout,
+        false,
+      );
+      // Assert
+      await expect(result).rejects.toThrow(
+        "TokenService - determineStorageLocation: We expect the vault timeout to always exist at this point.",
+      );
+    });
+
+    it("should throw an error if the vault timeout action is null", async () => {
+      // Arrange
+      const vaultTimeoutAction: VaultTimeoutAction = null;
+      const vaultTimeout: VaultTimeout = 0;
+      // Act
+      const result = (tokenService as any).determineStorageLocation(
+        vaultTimeoutAction,
+        vaultTimeout,
+        false,
+      );
+      // Assert
+      await expect(result).rejects.toThrow(
+        "TokenService - determineStorageLocation: We expect the vault timeout action to always exist at this point.",
+      );
+    });
+
+    describe("Secure storage disabled", () => {
+      beforeEach(() => {
+        const supportsSecureStorage = false;
+        tokenService = createTokenService(supportsSecureStorage);
+      });
+
+      it.each([
+        [VaultTimeoutStringType.OnRestart],
+        [VaultTimeoutStringType.OnLocked],
+        [VaultTimeoutStringType.OnSleep],
+        [VaultTimeoutStringType.OnIdle],
+        [0],
+        [30],
+        [60],
+        [90],
+        [120],
+      ])(
+        "returns memory when the vault timeout action is logout and the vault timeout is defined %s (not Never)",
+        async (vaultTimeout: VaultTimeout) => {
+          // Arrange
+          const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+          const useSecureStorage = false;
+          // Act
+          const result = await (tokenService as any).determineStorageLocation(
+            vaultTimeoutAction,
+            vaultTimeout,
+            useSecureStorage,
+          );
+          // Assert
+          expect(result).toEqual(TokenStorageLocation.Memory);
+        },
+      );
+
+      it("returns disk when the vault timeout action is logout and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = false;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.Disk);
+      });
+
+      it("returns disk when the vault timeout action is lock and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.Lock;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = false;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.Disk);
+      });
+    });
+
+    describe("Secure storage enabled", () => {
+      beforeEach(() => {
+        const supportsSecureStorage = true;
+        tokenService = createTokenService(supportsSecureStorage);
+      });
+
+      it.each([
+        [VaultTimeoutStringType.OnRestart],
+        [VaultTimeoutStringType.OnLocked],
+        [VaultTimeoutStringType.OnSleep],
+        [VaultTimeoutStringType.OnIdle],
+        [0],
+        [30],
+        [60],
+        [90],
+        [120],
+      ])(
+        "returns memory when the vault timeout action is logout and the vault timeout is defined %s (not Never)",
+        async (vaultTimeout: VaultTimeout) => {
+          // Arrange
+          const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+          const useSecureStorage = true;
+          // Act
+          const result = await (tokenService as any).determineStorageLocation(
+            vaultTimeoutAction,
+            vaultTimeout,
+            useSecureStorage,
+          );
+          // Assert
+          expect(result).toEqual(TokenStorageLocation.Memory);
+        },
+      );
+
+      it("returns secure storage when the vault timeout action is logout and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.LogOut;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = true;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.SecureStorage);
+      });
+
+      it("returns secure storage when the vault timeout action is lock and the vault timeout is never", async () => {
+        // Arrange
+        const vaultTimeoutAction = VaultTimeoutAction.Lock;
+        const vaultTimeout: VaultTimeout = VaultTimeoutStringType.Never;
+        const useSecureStorage = true;
+        // Act
+        const result = await (tokenService as any).determineStorageLocation(
+          vaultTimeoutAction,
+          vaultTimeout,
+          useSecureStorage,
+        );
+        // Assert
+        expect(result).toEqual(TokenStorageLocation.SecureStorage);
+      });
+    });
+  });
+
   // Helpers
   function createTokenService(supportsSecureStorage: boolean) {
     return new TokenService(
@@ -2232,6 +2598,9 @@ describe("TokenService", () => {
       globalStateProvider,
       supportsSecureStorage,
       secureStorageService,
+      keyGenerationService,
+      encryptService,
+      logService,
     );
   }
 });
