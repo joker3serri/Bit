@@ -461,7 +461,7 @@ jobs:
           AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Report upcoming cli release version to Slack
-        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }} && ${{ steps.set-final-version-output.outputs.version_cli }} != ''
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }} && ${{ steps.set-final-version-output.outputs.version_cli != '' }}
         uses: bitwarden/gh-actions/report-upcoming-release-version@main
         with:
           version: ${{ steps.set-final-version-output.outputs.version_cli }}
