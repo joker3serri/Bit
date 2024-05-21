@@ -1,4 +1,4 @@
-import { Directive, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Directive, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { Subject, firstValueFrom, concatMap, map } from "rxjs";
 
@@ -33,9 +33,8 @@ const MaxCheckedCount = 500;
 
 @Directive()
 export abstract class BasePeopleComponent<
-    UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
-  >
-  implements OnInit, OnDestroy
+  UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
+> implements OnDestroy
 {
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
@@ -139,8 +138,6 @@ export abstract class BasePeopleComponent<
   abstract restoreUser(id: string): Promise<void>;
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
-
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.destroy$.next();
