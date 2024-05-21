@@ -4,13 +4,14 @@ import { lastValueFrom } from "rxjs";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { ModalService } from "@bitwarden/angular/services/modal.service";
 import {
   LoginStrategyServiceAbstraction,
   LoginEmailServiceAbstraction,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
@@ -46,7 +47,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     platformUtilsService: PlatformUtilsService,
     stateService: StateService,
     environmentService: EnvironmentService,
-    private modalService: ModalService,
+    private dialogService: DialogService,
     route: ActivatedRoute,
     logService: LogService,
     twoFactorService: TwoFactorService,
@@ -55,7 +56,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     ssoLoginService: SsoLoginServiceAbstraction,
     configService: ConfigService,
-    private dialogService: DialogService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    accountService: AccountService,
     @Inject(WINDOW) protected win: Window,
   ) {
     super(
@@ -75,6 +77,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
       userDecryptionOptionsService,
       ssoLoginService,
       configService,
+      masterPasswordService,
+      accountService,
     );
     this.onSuccessfulLoginNavigate = this.goAfterLogIn;
   }

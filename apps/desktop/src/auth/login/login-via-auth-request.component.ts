@@ -10,9 +10,10 @@ import {
   LoginEmailServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -20,7 +21,6 @@ import { EnvironmentService } from "@bitwarden/common/platform/abstractions/envi
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -52,11 +52,11 @@ export class LoginViaAuthRequestComponent extends BaseLoginWithDeviceComponent {
     validationService: ValidationService,
     private modalService: ModalService,
     syncService: SyncService,
-    stateService: StateService,
     loginEmailService: LoginEmailServiceAbstraction,
-    deviceTrustCryptoService: DeviceTrustCryptoServiceAbstraction,
+    deviceTrustService: DeviceTrustServiceAbstraction,
     authRequestService: AuthRequestServiceAbstraction,
     loginStrategyService: LoginStrategyServiceAbstraction,
+    accountService: AccountService,
     private location: Location,
   ) {
     super(
@@ -73,9 +73,9 @@ export class LoginViaAuthRequestComponent extends BaseLoginWithDeviceComponent {
       platformUtilsService,
       anonymousHubService,
       validationService,
-      stateService,
+      accountService,
       loginEmailService,
-      deviceTrustCryptoService,
+      deviceTrustService,
       authRequestService,
       loginStrategyService,
     );

@@ -1,6 +1,9 @@
 import { NgModule } from "@angular/core";
 
-import { PasswordCalloutComponent } from "@bitwarden/auth/angular";
+import {
+  PasswordCalloutComponent,
+  UserVerificationFormInputComponent,
+} from "@bitwarden/auth/angular";
 import { LayoutComponent, NavigationModule } from "@bitwarden/components";
 
 import { OrganizationLayoutComponent } from "../admin-console/organizations/layouts/organization-layout.component";
@@ -13,6 +16,7 @@ import { ReusedPasswordsReportComponent as OrgReusedPasswordsReportComponent } f
 import { UnsecuredWebsitesReportComponent as OrgUnsecuredWebsitesReportComponent } from "../admin-console/organizations/tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from "../admin-console/organizations/tools/weak-passwords-report.component";
 import { ProvidersComponent } from "../admin-console/providers/providers.component";
+import { VerifyRecoverDeleteProviderComponent } from "../admin-console/providers/verify-recover-delete-provider.component";
 import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../admin-console/settings/sponsoring-org-row.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
@@ -49,7 +53,6 @@ import { TwoFactorSetupComponent } from "../auth/settings/two-factor-setup.compo
 import { TwoFactorVerifyComponent } from "../auth/settings/two-factor-verify.component";
 import { TwoFactorWebAuthnComponent } from "../auth/settings/two-factor-webauthn.component";
 import { TwoFactorYubiKeyComponent } from "../auth/settings/two-factor-yubikey.component";
-import { VerifyEmailComponent } from "../auth/settings/verify-email.component";
 import { UserVerificationModule } from "../auth/shared/components/user-verification";
 import { SsoComponent } from "../auth/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/two-factor-options.component";
@@ -66,7 +69,6 @@ import { HeaderModule } from "../layouts/header/header.module";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { DomainRulesComponent } from "../settings/domain-rules.component";
-import { LowKdfComponent } from "../settings/low-kdf.component";
 import { PreferencesComponent } from "../settings/preferences.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { GeneratorComponent } from "../tools/generator.component";
@@ -105,6 +107,7 @@ import { SharedModule } from "./shared.module";
     OrganizationBadgeModule,
     PipesModule,
     PasswordCalloutComponent,
+    UserVerificationFormInputComponent,
     DangerZoneComponent,
     LayoutComponent,
     NavigationModule,
@@ -181,10 +184,9 @@ import { SharedModule } from "./shared.module";
     UpdatePasswordComponent,
     UpdateTempPasswordComponent,
     VaultTimeoutInputComponent,
-    VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
-    LowKdfComponent,
+    VerifyRecoverDeleteProviderComponent,
   ],
   exports: [
     UserVerificationModule,
@@ -258,10 +260,9 @@ import { SharedModule } from "./shared.module";
     UpdateTempPasswordComponent,
     UserLayoutComponent,
     VaultTimeoutInputComponent,
-    VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
-    LowKdfComponent,
+    VerifyRecoverDeleteProviderComponent,
     HeaderModule,
     DangerZoneComponent,
   ],

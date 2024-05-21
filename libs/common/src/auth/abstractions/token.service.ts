@@ -1,8 +1,16 @@
+import { Observable } from "rxjs";
+
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { UserId } from "../../types/guid";
+import { VaultTimeout } from "../../types/vault-timeout.type";
 import { DecodedAccessToken } from "../services/token.service";
 
 export abstract class TokenService {
+  /**
+   * Returns an observable that emits a boolean indicating whether the user has an access token.
+   * @param userId The user id to check for an access token.
+   */
+  abstract hasAccessToken$(userId: UserId): Observable<boolean>;
   /**
    * Sets the access token, refresh token, API Key Client ID, and API Key Client Secret in memory or disk
    * based on the given vaultTimeoutAction and vaultTimeout and the derived access token user id.
@@ -20,7 +28,7 @@ export abstract class TokenService {
   setTokens: (
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     refreshToken?: string,
     clientIdClientSecret?: [string, string],
   ) => Promise<void>;
@@ -44,7 +52,7 @@ export abstract class TokenService {
   setAccessToken: (
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
   ) => Promise<void>;
 
   // TODO: revisit having this public clear method approach once the state service is fully deprecated.
@@ -83,7 +91,7 @@ export abstract class TokenService {
   setClientId: (
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ) => Promise<void>;
 
@@ -103,7 +111,7 @@ export abstract class TokenService {
   setClientSecret: (
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ) => Promise<void>;
 
@@ -206,4 +214,10 @@ export abstract class TokenService {
    * @returns A promise that resolves with a boolean representing the user's external authN status.
    */
   getIsExternal: () => Promise<boolean>;
+
+  /** Gets the active or passed in user's security stamp */
+  getSecurityStamp: (userId?: UserId) => Promise<string | null>;
+
+  /** Sets the security stamp for the active or passed in user */
+  setSecurityStamp: (securityStamp: string, userId?: UserId) => Promise<void>;
 }
