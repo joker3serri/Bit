@@ -107,17 +107,16 @@ export default class AutofillService implements AutofillServiceInterface {
     frameId = 0,
     triggeringOnPageLoad = true,
   ): Promise<void> {
-    // Autofill settings loaded from state can await the active account state indefinitely if
-    // not guarded by an active account check (e.g. the user is logged in)
+    // Autofill user settings loaded from state can await the active account state indefinitely
+    // if not guarded by an active account check (e.g. the user is logged in)
     const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
-
-    // These settings are not available until the user logs in
     let overlayVisibility: InlineMenuVisibilitySetting = AutofillOverlayVisibility.Off;
     let autoFillOnPageLoadIsEnabled = false;
 
     if (activeAccount) {
       overlayVisibility = await this.getOverlayVisibility();
     }
+
     const mainAutofillScript = overlayVisibility
       ? "bootstrap-autofill-overlay.js"
       : "bootstrap-autofill.js";
@@ -130,7 +129,9 @@ export default class AutofillService implements AutofillServiceInterface {
 
     if (triggeringOnPageLoad && autoFillOnPageLoadIsEnabled) {
       injectedScripts.push("autofiller.js");
-    } else {
+    }
+
+    if (!triggeringOnPageLoad) {
       await this.scriptInjectorService.inject({
         tabId: tab.id,
         injectDetails: { file: "content/content-message-handler.js", runAt: "document_start" },
@@ -2085,9 +2086,7 @@ export default class AutofillService implements AutofillServiceInterface {
     for (let index = 0; index < tabs.length; index++) {
       const tab = tabs[index];
       if (tab.url?.startsWith("http")) {
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.injectAutofillScripts(tab, 0, false);
+        void this.injectAutofillScripts(tab, 0, false);
       }
     }
   }
