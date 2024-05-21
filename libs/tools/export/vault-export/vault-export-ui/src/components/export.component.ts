@@ -56,12 +56,23 @@ export class ExportComponent implements OnInit, OnDestroy {
   @ViewChild(BitSubmitDirective)
   private bitSubmit: BitSubmitDirective;
 
+  /**
+   * Passes the forms loading state out to the hosting component
+   * Example: Used to show the loading state of other controls present on the hosting component
+   * */
   @Output()
   formLoading = new EventEmitter<boolean>();
 
+  /**
+   * Passes the forms disabled state out to the hosting component
+   * Example: Used to disable the submit button, which is present on the hosting component
+   * */
   @Output()
   formDisabled = new EventEmitter<boolean>();
 
+  /**
+   * Emits when the creation and download of the export-file have succeeded
+   * */
   @Output()
   onSuccessfulExport = new EventEmitter<string>();
 
