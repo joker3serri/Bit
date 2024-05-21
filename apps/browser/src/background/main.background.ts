@@ -334,7 +334,7 @@ export default class MainBackground {
   ssoLoginService: SsoLoginServiceAbstraction;
   billingAccountProfileStateService: BillingAccountProfileStateService;
   // eslint-disable-next-line rxjs/no-exposed-subjects -- Needed to give access to services module
-  intraprocessMessagingSubject: Subject<Message<object>>;
+  intraprocessMessagingSubject: Subject<Message<Record<string, unknown>>>;
   userAutoUnlockKeyService: UserAutoUnlockKeyService;
   scriptInjectorService: BrowserScriptInjectorService;
   kdfConfigService: kdfConfigServiceAbstraction;
@@ -384,7 +384,7 @@ export default class MainBackground {
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
 
-    this.intraprocessMessagingSubject = new Subject<Message<object>>();
+    this.intraprocessMessagingSubject = new Subject<Message<Record<string, unknown>>>();
 
     this.messagingService = MessageSender.combine(
       new SubjectMessageSender(this.intraprocessMessagingSubject),
