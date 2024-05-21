@@ -9,7 +9,12 @@ import { Unassigned } from "../../individual-vault/vault-filter/shared/models/ro
 export class CollectionAdminView extends CollectionView {
   groups: CollectionAccessSelectionView[] = [];
   users: CollectionAccessSelectionView[] = [];
-  addAccess: boolean;
+
+  /**
+   * Flag indicating the collection has no active user or group assigned to it with CanManage permissions
+   * In this case, the collection can be managed by admins/owners or custom users with appropriate permissions
+   */
+  unmanaged: boolean;
 
   /**
    * Flag indicating the user has been explicitly assigned to this Collection
