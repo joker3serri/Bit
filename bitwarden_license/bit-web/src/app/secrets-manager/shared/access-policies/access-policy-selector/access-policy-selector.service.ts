@@ -47,6 +47,67 @@ export class AccessPolicySelectorService {
     return false;
   }
 
+  async showSecretAccessRemovalWarning(
+    organizationId: string,
+    current: ApItemViewType[],
+    selectedPoliciesValues: ApItemValueType[],
+  ): Promise<boolean> {
+    const organization = await this.organizationService.get(organizationId);
+    if (organization.isOwner || organization.isAdmin) {
+      return false;
+    }
+
+    if (current.length === 0) {
+      return false;
+    }
+
+    const currentUserReadWritePolicy = current.find(
+      (s) =>
+        s.type === ApItemEnum.User &&
+        s.currentUser &&
+        s.permission === ApPermissionEnum.CanReadWrite,
+    );
+
+    const currentGroupReadWritePolicies = current.filter(
+      (s) =>
+        s.type === ApItemEnum.Group &&
+        s.permission == ApPermissionEnum.CanReadWrite &&
+        s.currentUserInGroup,
+    );
+
+    if (
+      (currentGroupReadWritePolicies == null || currentGroupReadWritePolicies.length == 0) &&
+      currentUserReadWritePolicy == null
+    ) {
+      return false;
+    }
+
+    //TODO DRY this up
+    const selectedUserReadWritePolicy = selectedPoliciesValues.find(
+      (s) =>
+        s.type === ApItemEnum.User &&
+        s.currentUser &&
+        s.permission === ApPermissionEnum.CanReadWrite,
+    );
+
+    const selectedGroupReadWritePolicies = selectedPoliciesValues.filter(
+      (s) =>
+        s.type === ApItemEnum.Group &&
+        s.permission == ApPermissionEnum.CanReadWrite &&
+        s.currentUserInGroup,
+    );
+
+    if (selectedGroupReadWritePolicies == null || selectedGroupReadWritePolicies.length == 0) {
+      if (selectedUserReadWritePolicy == null) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return false;
+  }
+
   isAccessRemoval(current: ApItemViewType[], selected: ApItemValueType[]): boolean {
     if (current?.length === 0) {
       return false;

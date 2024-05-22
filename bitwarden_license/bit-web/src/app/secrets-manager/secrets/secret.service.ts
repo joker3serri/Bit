@@ -7,11 +7,19 @@ import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
+import {
+  GroupSecretAccessPolicyView,
+  ServiceAccountSecretAccessPolicyView,
+  UserSecretAccessPolicyView,
+} from "../models/view/access-policies/access-policy.view";
+import { SecretAccessPoliciesView } from "../models/view/access-policies/secret-access-policies.view";
 import { SecretListView } from "../models/view/secret-list.view";
 import { SecretProjectView } from "../models/view/secret-project.view";
 import { SecretView } from "../models/view/secret.view";
+import { AccessPolicyRequest } from "../shared/access-policies/models/requests/access-policy.request";
 import { BulkOperationStatus } from "../shared/dialogs/bulk-status-dialog.component";
 
+import { SecretAccessPoliciesRequest } from "./requests/secret-access-policies.request";
 import { SecretRequest } from "./requests/secret.request";
 import { SecretListItemResponse } from "./responses/secret-list-item.response";
 import { SecretProjectResponse } from "./responses/secret-project.response";
@@ -65,8 +73,16 @@ export class SecretService {
     return await this.createSecretsListView(organizationId, results);
   }
 
-  async create(organizationId: string, secretView: SecretView) {
-    const request = await this.getSecretRequest(organizationId, secretView);
+  async create(
+    organizationId: string,
+    secretView: SecretView,
+    secretAccessPoliciesView: SecretAccessPoliciesView,
+  ) {
+    const request = await this.getSecretRequest(
+      organizationId,
+      secretView,
+      secretAccessPoliciesView,
+    );
     const r = await this.apiService.send(
       "POST",
       "/organizations/" + organizationId + "/secrets",
@@ -77,8 +93,16 @@ export class SecretService {
     this._secret.next(await this.createSecretView(new SecretResponse(r)));
   }
 
-  async update(organizationId: string, secretView: SecretView) {
-    const request = await this.getSecretRequest(organizationId, secretView);
+  async update(
+    organizationId: string,
+    secretView: SecretView,
+    secretAccessPoliciesView: SecretAccessPoliciesView,
+  ) {
+    const request = await this.getSecretRequest(
+      organizationId,
+      secretView,
+      secretAccessPoliciesView,
+    );
     const r = await this.apiService.send("PUT", "/secrets/" + secretView.id, request, true, true);
     this._secret.next(await this.createSecretView(new SecretResponse(r)));
   }
@@ -140,6 +164,7 @@ export class SecretService {
   private async getSecretRequest(
     organizationId: string,
     secretView: SecretView,
+    secretAccessPoliciesView: SecretAccessPoliciesView,
   ): Promise<SecretRequest> {
     const orgKey = await this.getOrganizationKey(organizationId);
     const request = new SecretRequest();
@@ -155,6 +180,43 @@ export class SecretService {
 
     secretView.projects?.forEach((e) => request.projectIds.push(e.id));
 
+    if (secretAccessPoliciesView) {
+      request.accessPoliciesRequests =
+        this.getSecretAccessPoliciesRequest(secretAccessPoliciesView);
+    }
+
+    return request;
+  }
+
+  private getSecretAccessPoliciesRequest(
+    view: SecretAccessPoliciesView,
+  ): SecretAccessPoliciesRequest {
+    const request = new SecretAccessPoliciesRequest();
+
+    request.userAccessPolicyRequests = view.userAccessPolicies.map((ap) => {
+      return this.getAccessPolicyRequest(ap.organizationUserId, ap);
+    });
+    request.groupAccessPolicyRequests = view.groupAccessPolicies.map((ap) => {
+      return this.getAccessPolicyRequest(ap.groupId, ap);
+    });
+    request.serviceAccountAccessPolicyRequests = view.serviceAccountAccessPolicies.map((ap) => {
+      return this.getAccessPolicyRequest(ap.serviceAccountId, ap);
+    });
+
+    return request;
+  }
+
+  private getAccessPolicyRequest(
+    granteeId: string,
+    view:
+      | UserSecretAccessPolicyView
+      | GroupSecretAccessPolicyView
+      | ServiceAccountSecretAccessPolicyView,
+  ) {
+    const request = new AccessPolicyRequest();
+    request.granteeId = granteeId;
+    request.read = view.read;
+    request.write = view.write;
     return request;
   }
 
