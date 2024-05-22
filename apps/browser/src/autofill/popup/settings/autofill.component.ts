@@ -10,6 +10,7 @@ import {
   UriMatchStrategySetting,
 } from "@bitwarden/common/models/domain/domain-service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
@@ -30,6 +31,7 @@ export class AutofillComponent implements OnInit {
   enableAutoFillOnPageLoad = false;
   autoFillOnPageLoadDefault = false;
   autoFillOnPageLoadOptions: any[];
+  enableContextMenuItem = false;
   defaultUriMatch: UriMatchStrategySetting = UriMatchStrategy.Domain;
   uriMatchOptions: any[];
   autofillKeyboardHelperText: string;
@@ -42,6 +44,7 @@ export class AutofillComponent implements OnInit {
     private autofillService: AutofillService,
     private dialogService: DialogService,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
+    private messagingService: MessagingService,
   ) {
     this.autoFillOverlayVisibilityOptions = [
       {
@@ -93,6 +96,10 @@ export class AutofillComponent implements OnInit {
 
     this.autoFillOnPageLoadDefault = await firstValueFrom(
       this.autofillSettingsService.autofillOnPageLoadDefault$,
+    );
+
+    this.enableContextMenuItem = await firstValueFrom(
+      this.autofillSettingsService.enableContextMenu$,
     );
 
     const defaultUriMatch = await firstValueFrom(
@@ -240,5 +247,10 @@ export class AutofillComponent implements OnInit {
 
   async privacyPermissionGranted(): Promise<boolean> {
     return await BrowserApi.permissionsGranted(["privacy"]);
+  }
+
+  async updateContextMenuItem() {
+    await this.autofillSettingsService.setEnableContextMenu(this.enableContextMenuItem);
+    this.messagingService.send("bgUpdateContextMenu");
   }
 }

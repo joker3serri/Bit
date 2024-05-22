@@ -124,6 +124,23 @@
   <div class="box">
     <h2 class="box-header">{{ "additionalOptions" | i18n }}</h2>
     <div class="box-content">
+      <div class="box-content-row box-content-row-checkbox" appBoxRow>
+        <label for="context-menu">{{ "enableContextMenuItem" | i18n }}</label>
+        <input
+          id="context-menu"
+          type="checkbox"
+          aria-describedby="context-menuHelp"
+          (change)="updateContextMenuItem()"
+          [(ngModel)]="enableContextMenuItem"
+        />
+      </div>
+    </div>
+    <div id="context-menuHelp" class="box-footer">
+      {{
+        accountSwitcherEnabled ? ("contextMenuItemDescAlt" | i18n) : ("contextMenuItemDesc" | i18n)
+      }}
+    </div>
+    <div class="box-content">
       <div class="box-content-row" appBoxRow>
         <label for="defaultUriMatch">{{ "defaultUriMatchDetection" | i18n }}</label>
         <select
