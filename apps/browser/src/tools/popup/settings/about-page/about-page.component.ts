@@ -69,10 +69,6 @@ export class AboutPageComponent {
     }
   }
 
-  async launchForums() {
-    await BrowserApi.createNewTab("https://bitwarden.com/getinvolved/");
-  }
-
   async rate() {
     const deviceType = this.platformUtilsService.getDevice();
     await BrowserApi.createNewTab((RateUrls as any)[deviceType]);
