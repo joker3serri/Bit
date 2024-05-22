@@ -5,7 +5,7 @@ import { map } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SelectModule } from "@bitwarden/components";
 
-import { VaultPopupListFilterService } from "../../../services/vault-popup-list-filters.service";
+import { VaultPopupListFiltersService } from "../../../services/vault-popup-list-filters.service";
 
 @Component({
   standalone: true,
@@ -14,17 +14,17 @@ import { VaultPopupListFilterService } from "../../../services/vault-popup-list-
   imports: [CommonModule, JslibModule, SelectModule],
 })
 export class VaultListFiltersComponent {
-  protected cipherTypes$ = this.vaultPopupListFilterService.cipherTypes$;
-  protected organizations$ = this.vaultPopupListFilterService.organizations$;
-  protected collections$ = this.vaultPopupListFilterService.collections$.pipe(
+  protected cipherTypes$ = this.vaultPopupListFiltersService.cipherTypes$;
+  protected organizations$ = this.vaultPopupListFiltersService.organizations$;
+  protected collections$ = this.vaultPopupListFiltersService.collections$.pipe(
     map((collections) => collections.fullList),
   );
 
-  protected allFolders$ = this.vaultPopupListFilterService.folders$.pipe(
+  protected allFolders$ = this.vaultPopupListFiltersService.folders$.pipe(
     map((nestedFolders) => {
       return nestedFolders.fullList.filter((folder) => folder.id !== null);
     }),
   );
 
-  constructor(private vaultPopupListFilterService: VaultPopupListFilterService) {}
+  constructor(private vaultPopupListFiltersService: VaultPopupListFiltersService) {}
 }

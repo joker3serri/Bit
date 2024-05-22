@@ -8,10 +8,10 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 
-import { VaultPopupListFilterService } from "./vault-popup-list-filters.service";
+import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
-describe("VaultPopupListFilterService", () => {
-  let service: VaultPopupListFilterService;
+describe("VaultPopupListFiltersService", () => {
+  let service: VaultPopupListFiltersService;
   const showCardsCurrentTab$ = new BehaviorSubject<boolean>(true);
   const showIdentitiesCurrentTab$ = new BehaviorSubject<boolean>(true);
   const memberOrganizations$ = new BehaviorSubject<{ name: string; id: string }[]>([]);
@@ -47,7 +47,7 @@ describe("VaultPopupListFilterService", () => {
       getAllNested: () => Promise.resolve([]),
     } as unknown as CollectionService;
 
-    service = new VaultPopupListFilterService(
+    service = new VaultPopupListFiltersService(
       vaultSettingsService,
       folderService,
       cipherService,

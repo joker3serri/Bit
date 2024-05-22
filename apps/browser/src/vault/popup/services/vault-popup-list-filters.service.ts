@@ -26,8 +26,9 @@ import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 
 type PopupListFilter = {
   organizationId: string | null;
-  cipherType: CipherType | null;
+  collectionId: string | null;
   folderId: string | null;
+  cipherType: CipherType | null;
 };
 
 /** All cipher types */
@@ -62,9 +63,10 @@ const MyVaultId = "MyVault";
 @Injectable({
   providedIn: "root",
 })
-export class VaultPopupListFilterService {
+export class VaultPopupListFiltersService {
   private _filters$ = new BehaviorSubject<PopupListFilter>({
     organizationId: null,
+    collectionId: null,
     cipherType: null,
     folderId: null,
   });
