@@ -15,6 +15,7 @@ import {
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
@@ -40,6 +41,7 @@ export class AutofillComponent implements OnInit {
   clearClipboardOptions: any[];
   defaultUriMatch: UriMatchStrategySetting = UriMatchStrategy.Domain;
   uriMatchOptions: any[];
+  showCardsCurrentTab = false;
   autofillKeyboardHelperText: string;
   accountSwitcherEnabled = false;
 
@@ -51,6 +53,7 @@ export class AutofillComponent implements OnInit {
     private dialogService: DialogService,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private messagingService: MessagingService,
+    private vaultSettingsService: VaultSettingsService,
   ) {
     this.autoFillOverlayVisibilityOptions = [
       {
@@ -128,6 +131,8 @@ export class AutofillComponent implements OnInit {
 
     const command = await this.platformUtilsService.getAutofillKeyboardShortcut();
     await this.setAutofillKeyboardHelperText(command);
+
+    this.showCardsCurrentTab = await firstValueFrom(this.vaultSettingsService.showCardsCurrentTab$);
   }
 
   async updateAutoFillOverlayVisibility() {
@@ -279,5 +284,9 @@ export class AutofillComponent implements OnInit {
 
   async saveClearClipboard() {
     await this.autofillSettingsService.setClearClipboardDelay(this.clearClipboard);
+  }
+
+  async updateShowCardsCurrentTab() {
+    await this.vaultSettingsService.setShowCardsCurrentTab(this.showCardsCurrentTab);
   }
 }

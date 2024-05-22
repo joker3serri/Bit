@@ -187,5 +187,20 @@
     <div id="defaultUriMatchHelp" class="box-footer">
       {{ "defaultUriMatchDetectionDesc" | i18n }}
     </div>
+    <div class="box-content">
+      <div class="box-content-row box-content-row-checkbox" appBoxRow>
+        <label for="showCardsCurrentTab">{{ "showCardsCurrentTab" | i18n }}</label>
+        <input
+          id="showCardsCurrentTab"
+          type="checkbox"
+          aria-describedby="showCardsCurrentTabHelp"
+          (change)="updateShowCardsCurrentTab()"
+          [(ngModel)]="showCardsCurrentTab"
+        />
+      </div>
+    </div>
+    <div id="showCardsCurrentTabHelp" class="box-footer">
+      {{ "showCardsCurrentTabDesc" | i18n }}
+    </div>
   </div>
 </main>
