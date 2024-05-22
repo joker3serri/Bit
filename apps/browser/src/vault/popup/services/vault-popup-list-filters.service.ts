@@ -1,14 +1,32 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject, combineLatest, from, map, mergeMap, of, switchMap } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  distinctUntilChanged,
+  from,
+  map,
+  of,
+  switchMap,
+} from "rxjs";
 
+import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dynamic-tree-node.model";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dynamic-tree-node.model";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+
+type PopupListFilter = {
+  organizationId: string | null;
+  cipherType: CipherType | null;
+  folderId: string | null;
+} | null;
 
 /** All cipher types */
 const allCipherTypes: { value: CipherType; label: string; icon: string }[] = [
@@ -37,14 +55,21 @@ const allCipherTypes: { value: CipherType; label: string; icon: string }[] = [
 /** Delimiter that denotes a level of nesting  */
 const NestingDelimiter = "/";
 
+const MyVaultId = "MyVault";
+
 @Injectable({
   providedIn: "root",
 })
 export class VaultPopupListFilterService {
+  private _filters$ = new BehaviorSubject<PopupListFilter>(null);
+  filters$ = this._filters$.asObservable();
+
   constructor(
     private vaultSettingsService: VaultSettingsService,
     private folderService: FolderService,
     private cipherService: CipherService,
+    private organizationService: OrganizationService,
+    private i18nService: I18nService,
   ) {}
 
   /** Available cipher types */
@@ -66,13 +91,36 @@ export class VaultPopupListFilterService {
     }),
   );
 
-  // vaults$ = this.organizationService.organizations$.pipe(
+  organizations$ = this.organizationService.memberOrganizations$.pipe(
+    map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+    map((orgs) => {
+      // When the user is a member of an organization, make  the "My Vault" option available
+      if (orgs.length) {
+        return [
+          {
+            id: MyVaultId,
+            name: this.i18nService.t("myVault"),
+          },
+          ...orgs,
+        ];
+      }
+      return orgs;
+    }),
+  );
 
-  nestedFolders$: Observable<DynamicTreeNode<FolderView>> = this.folderService.folderViews$.pipe(
-    switchMap((folders) => {
-      let organizationId = null;
+  folders$: Observable<DynamicTreeNode<FolderView>> = combineLatest([
+    this.filters$.pipe(
+      distinctUntilChanged(
+        (previousFilter, currentFilter) =>
+          previousFilter?.organizationId === currentFilter?.organizationId,
+      ),
+    ),
+    this.folderService.folderViews$,
+  ]).pipe(
+    switchMap(([filters, folders]) => {
+      const organizationId = filters.organizationId;
 
-      if (organizationId === null || organizationId === "MyVault") {
+      if (organizationId === null || organizationId === MyVaultId) {
         return of(folders);
       }
 

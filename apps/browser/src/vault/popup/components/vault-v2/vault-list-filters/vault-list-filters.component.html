@@ -1,12 +1,23 @@
 <div class="tw-flex tw-flex-wrap tw-gap-2 tw-mb-6">
-  <bit-select *ngIf="hasFolders$ | async" [placeholder]="'folders' | i18n" class="tw-max-w-32">
-    <bit-option
-      *ngFor="let folder of allFolders$ | async"
-      [value]="folder.id"
-      [label]="folder.name"
-      icon="bwi-folder"
-    ></bit-option>
-  </bit-select>
+  <ng-container *ngIf="organizations$ | async as organizations">
+    <bit-select *ngIf="organizations.length" [placeholder]="'vault' | i18n" class="tw-max-w-32">
+      <bit-option
+        *ngFor="let organization of organizations"
+        [value]="organization.id"
+        [label]="organization.name"
+      ></bit-option>
+    </bit-select>
+  </ng-container>
+  <ng-container *ngIf="allFolders$ | async as folders">
+    <bit-select *ngIf="folders.length" [placeholder]="'folders' | i18n" class="tw-max-w-32">
+      <bit-option
+        *ngFor="let folder of folders"
+        [value]="folder.id"
+        [label]="folder.name"
+        icon="bwi-folder"
+      ></bit-option>
+    </bit-select>
+  </ng-container>
   <bit-select [placeholder]="'types' | i18n" class="tw-max-w-32">
     <bit-option
       *ngFor="let type of cipherTypes$ | async"
