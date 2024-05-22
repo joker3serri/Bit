@@ -452,6 +452,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         // Add access toggle is only shown if allowAdminAccessToAllCollectionItems is false and there are unmanaged collections the user can edit
         this.showAddAccessToggle =
+          this.flexibleCollectionsV1Enabled &&
           !this.organization.allowAdminAccessToAllCollectionItems &&
           this.organization.canEditUnmanagedCollections() &&
           collectionsToReturn.some((c) => c.unmanaged);

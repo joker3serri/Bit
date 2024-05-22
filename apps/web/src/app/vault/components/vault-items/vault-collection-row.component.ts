@@ -57,6 +57,10 @@ export class VaultCollectionRowComponent {
   }
 
   get showAddAccess() {
+    if (!this.flexibleCollectionsV1Enabled) {
+      return false;
+    }
+
     if (this.collection.id == Unassigned) {
       return false;
     }
