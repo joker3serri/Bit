@@ -4,8 +4,8 @@ import { Subject } from "rxjs";
 import {
   AuthRequestServiceAbstraction,
   AuthRequestService,
-  PinCryptoServiceAbstraction,
-  PinCryptoService,
+  PinServiceAbstraction,
+  PinService,
   LoginStrategyServiceAbstraction,
   LoginStrategyService,
   LoginEmailServiceAbstraction,
@@ -193,13 +193,11 @@ import { SearchService } from "@bitwarden/common/services/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
 import {
-  PasswordGenerationService,
-  PasswordGenerationServiceAbstraction,
-} from "@bitwarden/common/tools/generator/password";
-import {
-  UsernameGenerationService,
-  UsernameGenerationServiceAbstraction,
-} from "@bitwarden/common/tools/generator/username";
+  legacyPasswordGenerationServiceFactory,
+  legacyUsernameGenerationServiceFactory,
+} from "@bitwarden/common/tools/generator";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
 import {
   PasswordStrengthService,
   PasswordStrengthServiceAbstraction,
@@ -274,6 +272,7 @@ import {
   SYSTEM_LANGUAGE,
   SYSTEM_THEME_OBSERVABLE,
   WINDOW,
+  DEFAULT_VAULT_TIMEOUT,
   INTRAPROCESS_MESSAGING_SUBJECT,
   CLIENT_TYPE,
 } from "./injection-tokens";
@@ -392,6 +391,7 @@ const safeProviders: SafeProvider[] = [
       InternalUserDecryptionOptionsServiceAbstraction,
       GlobalStateProvider,
       BillingAccountProfileStateService,
+      VaultTimeoutSettingsServiceAbstraction,
       KdfConfigServiceAbstraction,
     ],
   }),
@@ -537,6 +537,7 @@ const safeProviders: SafeProvider[] = [
     provide: CryptoServiceAbstraction,
     useClass: CryptoService,
     deps: [
+      PinServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,
       KeyGenerationServiceAbstraction,
       CryptoFunctionServiceAbstraction,
@@ -556,13 +557,27 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: PasswordGenerationServiceAbstraction,
-    useClass: PasswordGenerationService,
-    deps: [CryptoServiceAbstraction, PolicyServiceAbstraction, StateServiceAbstraction],
+    useFactory: legacyPasswordGenerationServiceFactory,
+    deps: [
+      EncryptService,
+      CryptoServiceAbstraction,
+      PolicyServiceAbstraction,
+      AccountServiceAbstraction,
+      StateProvider,
+    ],
   }),
   safeProvider({
     provide: UsernameGenerationServiceAbstraction,
-    useClass: UsernameGenerationService,
-    deps: [CryptoServiceAbstraction, StateServiceAbstraction, ApiServiceAbstraction],
+    useFactory: legacyUsernameGenerationServiceFactory,
+    deps: [
+      ApiServiceAbstraction,
+      I18nServiceAbstraction,
+      CryptoServiceAbstraction,
+      EncryptService,
+      PolicyServiceAbstraction,
+      AccountServiceAbstraction,
+      StateProvider,
+    ],
   }),
   safeProvider({
     provide: ApiServiceAbstraction,
@@ -572,7 +587,7 @@ const safeProviders: SafeProvider[] = [
       PlatformUtilsServiceAbstraction,
       EnvironmentService,
       AppIdServiceAbstraction,
-      StateServiceAbstraction,
+      VaultTimeoutSettingsServiceAbstraction,
       LOGOUT_CALLBACK,
     ],
   }),
@@ -628,6 +643,7 @@ const safeProviders: SafeProvider[] = [
       LOGOUT_CALLBACK,
       BillingAccountProfileStateService,
       TokenServiceAbstraction,
+      AuthServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -639,12 +655,16 @@ const safeProviders: SafeProvider[] = [
     provide: VaultTimeoutSettingsServiceAbstraction,
     useClass: VaultTimeoutSettingsService,
     deps: [
+      AccountServiceAbstraction,
+      PinServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
       CryptoServiceAbstraction,
       TokenServiceAbstraction,
       PolicyServiceAbstraction,
-      StateServiceAbstraction,
       BiometricStateService,
+      StateProvider,
+      LogService,
+      DEFAULT_VAULT_TIMEOUT,
     ],
   }),
   safeProvider({
@@ -706,6 +726,7 @@ const safeProviders: SafeProvider[] = [
       I18nServiceAbstraction,
       CollectionServiceAbstraction,
       CryptoServiceAbstraction,
+      PinServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -714,6 +735,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       FolderServiceAbstraction,
       CipherServiceAbstraction,
+      PinServiceAbstraction,
       CryptoServiceAbstraction,
       CryptoFunctionServiceAbstraction,
       KdfConfigServiceAbstraction,
@@ -725,6 +747,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       CipherServiceAbstraction,
       ApiServiceAbstraction,
+      PinServiceAbstraction,
       CryptoServiceAbstraction,
       CryptoFunctionServiceAbstraction,
       CollectionServiceAbstraction,
@@ -800,7 +823,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: InternalMasterPasswordServiceAbstraction,
     useClass: MasterPasswordService,
-    deps: [StateProvider],
+    deps: [StateProvider, StateServiceAbstraction, KeyGenerationServiceAbstraction, EncryptService],
   }),
   safeProvider({
     provide: MasterPasswordServiceAbstraction,
@@ -833,7 +856,7 @@ const safeProviders: SafeProvider[] = [
       I18nServiceAbstraction,
       UserVerificationApiServiceAbstraction,
       UserDecryptionOptionsServiceAbstraction,
-      PinCryptoServiceAbstraction,
+      PinServiceAbstraction,
       LogService,
       VaultTimeoutSettingsServiceAbstraction,
       PlatformUtilsServiceAbstraction,
@@ -967,6 +990,7 @@ const safeProviders: SafeProvider[] = [
       StateProvider,
       SECURE_STORAGE,
       UserDecryptionOptionsServiceAbstraction,
+      LogService,
     ],
   }),
   safeProvider({
@@ -982,14 +1006,18 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
-    provide: PinCryptoServiceAbstraction,
-    useClass: PinCryptoService,
+    provide: PinServiceAbstraction,
+    useClass: PinService,
     deps: [
-      StateServiceAbstraction,
-      CryptoServiceAbstraction,
-      VaultTimeoutSettingsServiceAbstraction,
-      LogService,
+      AccountServiceAbstraction,
+      CryptoFunctionServiceAbstraction,
+      EncryptService,
       KdfConfigServiceAbstraction,
+      KeyGenerationServiceAbstraction,
+      LogService,
+      MasterPasswordServiceAbstraction,
+      StateProvider,
+      StateServiceAbstraction,
     ],
   }),
   safeProvider({
