@@ -155,6 +155,23 @@
     <div id="totpHelp" class="box-footer">{{ "disableAutoTotpCopyDesc" | i18n }}</div>
     <div class="box-content">
       <div class="box-content-row" appBoxRow>
+        <label for="clearClipboard">{{ "clearClipboard" | i18n }}</label>
+        <select
+          id="clearClipboard"
+          name="ClearClipboard"
+          aria-describedby="clearClipboardHelp"
+          [(ngModel)]="clearClipboard"
+          (change)="saveClearClipboard()"
+        >
+          <option *ngFor="let o of clearClipboardOptions" [ngValue]="o.value">
+            {{ o.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div id="clearClipboardHelp" class="box-footer">{{ "clearClipboardDesc" | i18n }}</div>
+    <div class="box-content">
+      <div class="box-content-row" appBoxRow>
         <label for="defaultUriMatch">{{ "defaultUriMatchDetection" | i18n }}</label>
         <select
           id="defaultUriMatch"

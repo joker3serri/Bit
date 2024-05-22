@@ -4,7 +4,10 @@ import { firstValueFrom } from "rxjs";
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
-import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
+import {
+  InlineMenuVisibilitySetting,
+  ClearClipboardDelaySetting,
+} from "@bitwarden/common/autofill/types";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
@@ -33,6 +36,8 @@ export class AutofillComponent implements OnInit {
   autoFillOnPageLoadOptions: any[];
   enableContextMenuItem = false;
   enableAutoTotpCopy = false; // TODO: Does it matter if this is set to false or true?
+  clearClipboard: ClearClipboardDelaySetting;
+  clearClipboardOptions: any[];
   defaultUriMatch: UriMatchStrategySetting = UriMatchStrategy.Domain;
   uriMatchOptions: any[];
   autofillKeyboardHelperText: string;
@@ -64,6 +69,15 @@ export class AutofillComponent implements OnInit {
     this.autoFillOnPageLoadOptions = [
       { name: i18nService.t("autoFillOnPageLoadYes"), value: true },
       { name: i18nService.t("autoFillOnPageLoadNo"), value: false },
+    ];
+    this.clearClipboardOptions = [
+      { name: i18nService.t("never"), value: null },
+      { name: i18nService.t("tenSeconds"), value: 10 },
+      { name: i18nService.t("twentySeconds"), value: 20 },
+      { name: i18nService.t("thirtySeconds"), value: 30 },
+      { name: i18nService.t("oneMinute"), value: 60 },
+      { name: i18nService.t("twoMinutes"), value: 120 },
+      { name: i18nService.t("fiveMinutes"), value: 300 },
     ];
     this.uriMatchOptions = [
       { name: i18nService.t("baseDomain"), value: UriMatchStrategy.Domain },
@@ -104,6 +118,8 @@ export class AutofillComponent implements OnInit {
     );
 
     this.enableAutoTotpCopy = await firstValueFrom(this.autofillSettingsService.autoCopyTotp$);
+
+    this.clearClipboard = await firstValueFrom(this.autofillSettingsService.clearClipboardDelay$);
 
     const defaultUriMatch = await firstValueFrom(
       this.domainSettingsService.defaultUriMatchStrategy$,
@@ -259,5 +275,9 @@ export class AutofillComponent implements OnInit {
 
   async updateAutoTotpCopy() {
     await this.autofillSettingsService.setAutoCopyTotp(this.enableAutoTotpCopy);
+  }
+
+  async saveClearClipboard() {
+    await this.autofillSettingsService.setClearClipboardDelay(this.clearClipboard);
   }
 }
