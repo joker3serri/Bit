@@ -54,7 +54,6 @@ import { TwoFactorSetupComponent } from "../auth/settings/two-factor-setup.compo
 import { TwoFactorVerifyComponent } from "../auth/settings/two-factor-verify.component";
 import { TwoFactorWebAuthnComponent } from "../auth/settings/two-factor-webauthn.component";
 import { TwoFactorYubiKeyComponent } from "../auth/settings/two-factor-yubikey.component";
-import { VerifyEmailComponent } from "../auth/settings/verify-email.component";
 import { UserVerificationModule } from "../auth/shared/components/user-verification";
 import { SsoComponent } from "../auth/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/two-factor-options.component";
@@ -71,7 +70,6 @@ import { HeaderModule } from "../layouts/header/header.module";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { DomainRulesComponent } from "../settings/domain-rules.component";
-import { LowKdfComponent } from "../settings/low-kdf.component";
 import { PreferencesComponent } from "../settings/preferences.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { GeneratorComponent } from "../tools/generator.component";
@@ -188,11 +186,9 @@ import { SharedModule } from "./shared.module";
     UpdatePasswordComponent,
     UpdateTempPasswordComponent,
     VaultTimeoutInputComponent,
-    VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     VerifyRecoverDeleteProviderComponent,
-    LowKdfComponent,
   ],
   exports: [
     UserVerificationModule,
@@ -266,11 +262,9 @@ import { SharedModule } from "./shared.module";
     UpdateTempPasswordComponent,
     UserLayoutComponent,
     VaultTimeoutInputComponent,
-    VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     VerifyRecoverDeleteProviderComponent,
-    LowKdfComponent,
     HeaderModule,
     DangerZoneComponent,
   ],
