@@ -126,6 +126,11 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     return this.formGroup.valid;
   }
 
+  goBack() {
+    this.state = RegistrationStartState.USER_DATA_ENTRY;
+    this.registrationStartStateChange.emit(this.state);
+  }
+
   private acceptPoliciesValidator(): ValidatorFn {
     return (control: AbstractControl) => {
       const ctrlValue = control.value;

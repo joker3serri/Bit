@@ -66,13 +66,7 @@
 
     <p bitTypography="helper" class="tw-text-center">
       {{ "noEmail" | i18n }}
-      <a
-        bitLink
-        linkType="primary"
-        class="tw-cursor-pointer"
-        tabindex="0"
-        (click)="state = RegistrationStartState.USER_DATA_ENTRY"
-      >
+      <a bitLink linkType="primary" class="tw-cursor-pointer" tabindex="0" (click)="goBack()">
         {{ "goBack" | i18n }}
       </a>
       {{ "toEditYourEmailAddress" | i18n }}
