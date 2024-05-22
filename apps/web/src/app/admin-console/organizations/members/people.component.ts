@@ -477,16 +477,13 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
       return;
     }
 
-    const [modal] = await this.modalService.openViewRef(
-      BulkRemoveComponent,
-      this.bulkRemoveModalRef,
-      (comp) => {
-        comp.organizationId = this.organization.id;
-        comp.users = this.getCheckedUsers();
+    const dialogRef = BulkRemoveComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organization.id,
+        users: this.getCheckedUsers(),
       },
-    );
-
-    await modal.onClosedPromise();
+    });
+    await lastValueFrom(dialogRef.closed);
     await this.load();
   }
 
@@ -559,16 +556,14 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
       return;
     }
 
-    const [modal] = await this.modalService.openViewRef(
-      BulkConfirmComponent,
-      this.bulkConfirmModalRef,
-      (comp) => {
-        comp.organizationId = this.organization.id;
-        comp.users = this.getCheckedUsers();
+    const dialogRef = BulkConfirmComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organization.id,
+        users: this.getCheckedUsers(),
       },
-    );
+    });
 
-    await modal.onClosedPromise();
+    await lastValueFrom(dialogRef.closed);
     await this.load();
   }
 
