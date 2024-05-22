@@ -21,6 +21,8 @@ import { FormFieldModule, SelectModule } from "@bitwarden/components";
 export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
   @Output() onOpenSelfHostedSettings = new EventEmitter();
 
+  ServerEnvironmentType = Region;
+
   formGroup = this.formBuilder.group({
     selectedRegion: [null, Validators.required],
   });
@@ -44,44 +46,36 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
   }
 
   private async initializeSelectedRegionValue() {
-    // TODO: figure out if observable or promise is better here
-    // this.environmentService.environment$
-    //   .pipe(
-    //     map((env: Environment) => env.getRegion()),
-    //     map((region: Region) =>
-    //       this.availableRegionConfigs.find(
-    //         (availableRegionConfig) => availableRegionConfig.key === region,
-    //       ),
-    //     ),
-    //     takeUntil(this.destroy$),
-    //   )
-    //   .subscribe((regionConfig: RegionConfig | undefined) => {
-    //     this.selectedRegion.setValue(regionConfig);
-    //   });
-
-    const selectedRegionConfig: RegionConfig | undefined = await firstValueFrom(
+    const selectedRegionInitialValue: RegionConfig | Region = await firstValueFrom(
       this.environmentService.environment$.pipe(
-        map((env: Environment) => env.getRegion()),
-        map((region: Region) =>
-          this.availableRegionConfigs.find(
+        map((env: Environment) => {
+          const region: Region = env.getRegion();
+          const regionConfig: RegionConfig = this.availableRegionConfigs.find(
             (availableRegionConfig) => availableRegionConfig.key === region,
-          ),
-        ),
+          );
+
+          if (regionConfig === undefined) {
+            // Self hosted does not have a region config.
+            return Region.SelfHosted;
+          }
+
+          return regionConfig;
+        }),
       ),
     );
 
-    this.selectedRegion.setValue(selectedRegionConfig);
+    this.selectedRegion.setValue(selectedRegionInitialValue);
   }
 
   private listenForSelectedRegionChanges() {
     this.selectedRegion.valueChanges
       .pipe(
-        switchMap((selectedRegionConfig: RegionConfig | null) => {
+        switchMap((selectedRegionConfig: RegionConfig | Region.SelfHosted | null) => {
           if (selectedRegionConfig === null) {
             return of(null);
           }
 
-          if (selectedRegionConfig.key === Region.SelfHosted) {
+          if (selectedRegionConfig === Region.SelfHosted) {
             this.onOpenSelfHostedSettings.emit();
             return EMPTY;
           }
