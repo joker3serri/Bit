@@ -18,6 +18,10 @@ import {
   SecretDialogComponent,
   SecretOperation,
 } from "../../secrets/dialog/secret-dialog.component";
+import {
+  SecretViewDialogComponent,
+  SecretViewDialogParams,
+} from "../../secrets/dialog/secret-view-dialog.component";
 import { SecretService } from "../../secrets/secret.service";
 import { SecretsListComponent } from "../../shared/secrets-list.component";
 import { ProjectService } from "../project.service";
@@ -75,15 +79,24 @@ export class ProjectSecretsComponent {
     return await this.secretService.getSecretsByProject(this.organizationId, this.projectId);
   }
 
-  openEditSecret(secretId: string) {
-    this.dialogService.open<unknown, SecretOperation>(SecretDialogComponent, {
-      data: {
-        organizationId: this.organizationId,
-        operation: OperationType.Edit,
-        secretId: secretId,
-        organizationEnabled: this.organizationEnabled,
-      },
-    });
+  openEditSecret(secret: SecretListView) {
+    if (secret.write) {
+      this.dialogService.open<unknown, SecretOperation>(SecretDialogComponent, {
+        data: {
+          organizationId: this.organizationId,
+          operation: OperationType.Edit,
+          secretId: secret.id,
+          organizationEnabled: this.organizationEnabled,
+        },
+      });
+    } else {
+      this.dialogService.open<unknown, SecretViewDialogParams>(SecretViewDialogComponent, {
+        data: {
+          organizationId: this.organizationId,
+          secretId: secret.id,
+        },
+      });
+    }
   }
 
   openDeleteSecret(event: SecretListView[]) {

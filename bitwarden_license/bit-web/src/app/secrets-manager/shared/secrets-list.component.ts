@@ -35,7 +35,7 @@ export class SecretsListComponent implements OnDestroy {
 
   @Input() trash: boolean;
 
-  @Output() editSecretEvent = new EventEmitter<string>();
+  @Output() editSecretEvent = new EventEmitter<SecretListView>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
   @Output() copySecretValueEvent = new EventEmitter<string>();
   @Output() copySecretUuidEvent = new EventEmitter<string>();
