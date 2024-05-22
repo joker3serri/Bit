@@ -756,6 +756,9 @@
   "notificationUnlock": {
     "message": "Unlock"
   },
+  "additionalOptions": {
+    "message": "Additional options"
+  },
   "enableContextMenuItem": {
     "message": "Show context menu options"
   },
