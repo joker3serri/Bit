@@ -246,6 +246,28 @@
           }
         ]
       }
+    },
+    {
+      "files": ["**/*.ts"],
+      "excludedFiles": ["**/platform/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              "**/platform/**/internal", // General internal pattern
+              // All features that have been converted to barrel files
+              "**/platform/messaging/**"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["bitwarden_license/bit-common/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/bit-common/*", "src/**/*"] }]
+      }
     }
   ]
 }

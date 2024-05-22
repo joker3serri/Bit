@@ -28,8 +28,6 @@ import { DeleteOrganizationDialogResult, openDeleteOrganizationDialog } from "./
   templateUrl: "account.component.html",
 })
 export class AccountComponent {
-  @ViewChild("purgeOrganizationTemplate", { read: ViewContainerRef, static: true })
-  purgeModalRef: ViewContainerRef;
   @ViewChild("apiKeyTemplate", { read: ViewContainerRef, static: true })
   apiKeyModalRef: ViewContainerRef;
   @ViewChild("rotateApiKeyTemplate", { read: ViewContainerRef, static: true })
@@ -44,12 +42,10 @@ export class AccountComponent {
 
   protected flexibleCollectionsMigrationEnabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsMigration,
-    false,
   );
 
   flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsV1,
-    false,
   );
 
   // FormGroup validators taken from server Organization domain object
@@ -64,10 +60,6 @@ export class AccountComponent {
     billingEmail: this.formBuilder.control(
       { value: "", disabled: true },
       { validators: [Validators.required, Validators.email, Validators.maxLength(256)] },
-    ),
-    businessName: this.formBuilder.control(
-      { value: "", disabled: true },
-      { validators: [Validators.maxLength(50)] },
     ),
   });
 
@@ -124,7 +116,6 @@ export class AccountComponent {
         // Update disabled states - reactive forms prefers not using disabled attribute
         if (!this.selfHosted) {
           this.formGroup.get("orgName").enable();
-          this.formGroup.get("businessName").enable();
           this.collectionManagementFormGroup.get("limitCollectionCreationDeletion").enable();
           this.collectionManagementFormGroup.get("allowAdminAccessToAllCollectionItems").enable();
         }
@@ -143,7 +134,6 @@ export class AccountComponent {
         this.formGroup.patchValue({
           orgName: this.org.name,
           billingEmail: this.org.billingEmail,
-          businessName: this.org.businessName,
         });
         this.collectionManagementFormGroup.patchValue({
           limitCollectionCreationDeletion: this.org.limitCollectionCreationDeletion,
@@ -168,7 +158,6 @@ export class AccountComponent {
 
     const request = new OrganizationUpdateRequest();
     request.name = this.formGroup.value.orgName;
-    request.businessName = this.formGroup.value.businessName;
     request.billingEmail = this.formGroup.value.billingEmail;
 
     // Backfill pub/priv key if necessary
@@ -241,11 +230,14 @@ export class AccountComponent {
     }
   }
 
-  async purgeVault() {
-    await this.modalService.openViewRef(PurgeVaultComponent, this.purgeModalRef, (comp) => {
-      comp.organizationId = this.organizationId;
+  purgeVault = async () => {
+    const dialogRef = PurgeVaultComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organizationId,
+      },
     });
-  }
+    await lastValueFrom(dialogRef.closed);
+  };
 
   async viewApiKey() {
     await this.modalService.openViewRef(ApiKeyComponent, this.apiKeyModalRef, (comp) => {

@@ -167,6 +167,11 @@ export class NativeMessagingBackground {
               cancelButtonText: null,
               type: "danger",
             });
+
+            if (this.resolver) {
+              this.resolver(message);
+            }
+
             break;
           case "verifyFingerprint": {
             if (this.sharedSecret == null) {
@@ -203,6 +208,8 @@ export class NativeMessagingBackground {
         this.sharedSecret = null;
         this.privateKey = null;
         this.connected = false;
+
+        this.logService.error("NativeMessaging port disconnected because of error: " + error);
 
         const reason = error != null ? "desktopIntegrationDisabled" : null;
         reject(new Error(reason));
@@ -314,6 +321,15 @@ export class NativeMessagingBackground {
             type: "danger",
           });
           break;
+        } else if (message.response === "not unlocked") {
+          this.messagingService.send("showDialog", {
+            title: { key: "biometricsNotUnlockedTitle" },
+            content: { key: "biometricsNotUnlockedDesc" },
+            acceptButtonText: { key: "ok" },
+            cancelButtonText: null,
+            type: "danger",
+          });
+          break;
         } else if (message.response === "canceled") {
           break;
         }
@@ -354,7 +370,7 @@ export class NativeMessagingBackground {
               const masterKey = new SymmetricCryptoKey(
                 Utils.fromB64ToArray(message.keyB64),
               ) as MasterKey;
-              const userKey = await this.cryptoService.decryptUserKeyWithMasterKey(
+              const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(
                 masterKey,
                 encUserKey,
               );
@@ -397,7 +413,7 @@ export class NativeMessagingBackground {
 
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.runtimeBackground.processMessage({ command: "unlocked" }, null);
+          this.runtimeBackground.processMessage({ command: "unlocked" });
         }
         break;
       }
