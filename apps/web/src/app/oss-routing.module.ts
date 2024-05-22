@@ -8,7 +8,6 @@ import {
   tdeDecryptionRequiredGuard,
   UnauthGuard,
 } from "@bitwarden/angular/auth/guards";
-import { DataProperties } from "@bitwarden/common/platform/interfaces/data-properties.interface";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -40,6 +39,7 @@ import { UpdatePasswordComponent } from "./auth/update-password.component";
 import { UpdateTempPasswordComponent } from "./auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "./auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "./auth/verify-recover-delete.component";
+import { DataProperties } from "./core";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
 import { DomainRulesComponent } from "./settings/domain-rules.component";

@@ -12,6 +12,11 @@ import {
   GlobalState,
 } from "@bitwarden/common/platform/state";
 
+export interface DataProperties {
+  titleId?: string;
+  doNotSaveUrl?: boolean;
+}
+
 const DEEP_LINK_REDIRECT_URL = new KeyDefinition(ROUTER_DISK, "deepLinkRedirectUrl", {
   deserializer: (value: string) => value,
 });
