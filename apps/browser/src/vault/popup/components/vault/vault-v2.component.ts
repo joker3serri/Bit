@@ -11,6 +11,7 @@ import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-he
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
 import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } from "../vault-v2";
+import { VaultListFiltersComponent } from "../vault-v2/vault-list-filters/vault-list-filters.component";
 
 @Component({
   selector: "app-vault",
@@ -26,6 +27,7 @@ import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } fro
     CommonModule,
     AutofillVaultListItemsComponent,
     VaultListItemsContainerComponent,
+    VaultListFiltersComponent,
     ButtonModule,
     RouterLink,
   ],
