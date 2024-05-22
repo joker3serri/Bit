@@ -9,6 +9,7 @@ import {
   UnauthGuard,
 } from "@bitwarden/angular/auth/guards";
 
+import { AnonLayoutWrapperComponent } from "../../../../libs/auth/src/angular/anon-layout/anon-layout-wrapper.component";
 import { flagEnabled, Flags } from "../utils/flags";
 
 import { AcceptFamilySponsorshipComponent } from "./admin-console/organizations/sponsorships/accept-family-sponsorship.component";
@@ -181,17 +182,26 @@ const routes: Routes = [
         data: { titleId: "updatePassword" },
       },
       {
-        path: "remove-password",
-        component: RemovePasswordComponent,
-        canActivate: [AuthGuard],
-        data: { titleId: "removeMasterPassword" },
-      },
-      {
         path: "migrate-legacy-encryption",
         loadComponent: () =>
           import("./auth/migrate-encryption/migrate-legacy-encryption.component").then(
             (mod) => mod.MigrateFromLegacyEncryptionComponent,
           ),
+      },
+    ],
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "remove-password",
+        component: RemovePasswordComponent,
+        canActivate: [AuthGuard],
+        data: {
+          pageTitle: "removeMasterPassword",
+          titleId: "removeMasterPassword",
+        },
       },
     ],
   },
