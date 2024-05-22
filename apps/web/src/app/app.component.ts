@@ -328,7 +328,6 @@ export class AppComponent implements OnDestroy, OnInit {
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
       this.collectionService.clear(userId),
-      this.passwordGenerationService.clear(),
       this.biometricStateService.logout(userId),
       this.paymentMethodWarningService.clear(),
     ]);
