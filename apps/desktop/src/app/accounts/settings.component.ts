@@ -711,7 +711,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveBrowserIntegrationFingerprint() {
-    await this.desktopAutofillSettingsService.setEnableBrowserIntegrationFingerprint(
+    await this.desktopSettingsService.setBrowserIntegrationFingerprintEnabled(
       this.form.value.enableBrowserIntegrationFingerprint,
     );
   }

@@ -1,9 +1,9 @@
 import { runMigrator } from "../migration-helper.spec";
 
-import { MoveDesktopSettingsMigrator } from "./66-move-desktop-settings";
+import { MoveFinalDesktopSettingsMigrator } from "./66-move-final-desktop-settings";
 
 describe("MoveDesktopSettings", () => {
-  const sut = new MoveDesktopSettingsMigrator(62, 63);
+  const sut = new MoveFinalDesktopSettingsMigrator(65, 66);
 
   const cases: {
     it: string;
@@ -29,6 +29,7 @@ describe("MoveDesktopSettings", () => {
         },
         global: {
           enableBrowserIntegration: true,
+          enableBrowserIntegrationFingerprint: true,
         },
       },
       postMigration: {
@@ -47,6 +48,7 @@ describe("MoveDesktopSettings", () => {
         },
         global_desktopSettings_browserIntegrationEnabled: true,
         user_user1_desktopSettings_minimizeOnCopy: true,
+        global_desktopSettings_browserIntegrationFingerprintEnabled: true,
       },
     },
     {
@@ -68,6 +70,7 @@ describe("MoveDesktopSettings", () => {
         },
         global: {
           enableBrowserIntegration: false,
+          enableBrowserIntegrationFingerprint: false,
         },
       },
       postMigration: {
@@ -86,6 +89,7 @@ describe("MoveDesktopSettings", () => {
         },
         global_desktopSettings_browserIntegrationEnabled: false,
         user_user1_desktopSettings_minimizeOnCopy: false,
+        global_desktopSettings_browserIntegrationFingerprintEnabled: false,
       },
     },
     {
