@@ -188,6 +188,7 @@ export default class RuntimeBackground {
 
         if (msg.command === "loggedIn") {
           await this.sendBwInstalledMessageToVault();
+          await this.autofillService.reloadAutofillScripts();
         }
 
         if (this.lockedVaultPendingNotifications?.length > 0) {
@@ -196,8 +197,6 @@ export default class RuntimeBackground {
         }
 
         await this.notificationsService.updateConnection(msg.command === "loggedIn");
-        await this.main.refreshBadge();
-        await this.main.refreshMenu(false);
         this.systemService.cancelProcessReload();
 
         if (item) {
@@ -209,6 +208,13 @@ export default class RuntimeBackground {
             item,
           );
         }
+
+        // @TODO these need to happen last to avoid blocking `tabSendMessageData` above
+        // The underlying cause exists within `cipherService.getAllDecrypted` via
+        // `getAllDecryptedForUrl` and is anticipated to be refactored
+        await this.main.refreshBadge();
+        await this.main.refreshMenu(false);
+
         break;
       }
       case "addToLockedVaultPendingNotifications":

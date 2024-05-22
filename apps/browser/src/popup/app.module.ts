@@ -72,7 +72,6 @@ import { ShareComponent } from "../vault/popup/components/vault/share.component"
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
 import { VaultSelectComponent } from "../vault/popup/components/vault/vault-select.component";
-import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewCustomFieldsComponent } from "../vault/popup/components/vault/view-custom-fields.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
@@ -126,6 +125,7 @@ import "../platform/popup/locales";
     PopupHeaderComponent,
     UserVerificationDialogComponent,
     PopupSectionHeaderComponent,
+    CurrentAccountComponent,
   ],
   declarations: [
     ActionButtonsComponent,
@@ -188,9 +188,7 @@ import "../platform/popup/locales";
     HelpAndFeedbackComponent,
     AutofillComponent,
     EnvironmentSelectorComponent,
-    CurrentAccountComponent,
     AccountSwitcherComponent,
-    VaultV2Component,
   ],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],
