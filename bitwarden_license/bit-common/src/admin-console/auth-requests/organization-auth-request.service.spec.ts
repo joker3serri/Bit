@@ -130,7 +130,7 @@ describe("OrganizationAuthRequestService", () => {
         mockPendingAuthRequest,
       ]);
 
-      expect(organizationAuthRequestApiService.approvePendingRequests).toHaveBeenCalledWith(
+      expect(organizationAuthRequestApiService.bulkUpdatePendingRequests).toHaveBeenCalledWith(
         organizationId,
         [
           new AdminAuthRequestUpdateWithIdRequest(

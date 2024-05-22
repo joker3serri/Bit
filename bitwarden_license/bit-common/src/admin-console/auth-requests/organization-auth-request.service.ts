@@ -54,7 +54,7 @@ export class OrganizationAuthRequestService {
       }),
     );
 
-    await this.organizationAuthRequestApiService.approvePendingRequests(
+    await this.organizationAuthRequestApiService.bulkUpdatePendingRequests(
       organizationId,
       requestsToApprove,
     );
