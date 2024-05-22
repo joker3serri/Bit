@@ -80,7 +80,15 @@ export class AboutPageV2Component {
   }
 
   async rate() {
-    const deviceType = this.platformUtilsService.getDevice();
-    await BrowserApi.createNewTab((RateUrls as any)[deviceType]);
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "continueToBrowserExtensionStore" },
+      content: { key: "continueToBrowserExtensionStoreDesc" },
+      type: "info",
+      acceptButtonText: { key: "continue" },
+    });
+    if (confirmed) {
+      const deviceType = this.platformUtilsService.getDevice();
+      await BrowserApi.createNewTab((RateUrls as any)[deviceType]);
+    }
   }
 }
