@@ -418,19 +418,19 @@ jobs:
         run: |
           MESSAGE=""
           if [[ "${{ inputs.bump_browser }}" == "true" ]]; then
-            MESSAGE+="Browser version bump to ${{ steps.set-final-version-output.outputs.version_browser }}\n"
+            MESSAGE+=$'Browser version bump to ${{ steps.set-final-version-output.outputs.version_browser }}\n'
           fi
 
           if [[ "${{ inputs.bump_cli }}" == "true" ]]; then
-            MESSAGE+="CLI version bump to ${{ steps.set-final-version-output.outputs.version_cli }}\n"
+            MESSAGE+=$'CLI version bump to ${{ steps.set-final-version-output.outputs.version_cli }}\n'
           fi
 
           if [[ "${{ inputs.bump_desktop }}" == "true" ]]; then
-            MESSAGE+="Desktop version bump to ${{ steps.set-final-version-output.outputs.version_desktop }}\n"
+            MESSAGE+=$'Desktop version bump to ${{ steps.set-final-version-output.outputs.version_desktop }}\n'
           fi
 
           if [[ "${{ inputs.bump_web }}" == "true" ]]; then
-            MESSAGE+="Web version bump to ${{ steps.set-final-version-output.outputs.version_web }}\n"
+            MESSAGE+=$'Web version bump to ${{ steps.set-final-version-output.outputs.version_web }}\n'
           fi
 
           echo "message=$MESSAGE" >> $GITHUB_OUTPUT
