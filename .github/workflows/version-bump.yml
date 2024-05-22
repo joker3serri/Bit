@@ -411,6 +411,7 @@ jobs:
         run: git push -u origin $PR_BRANCH
 
       - name: Generate PR message
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
         id: pr-message
         run: |
           MESSAGE=""
@@ -459,9 +460,6 @@ jobs:
           $MESSAGE")
 
           echo "pr_number=${PR_URL##*/}" >> $GITHUB_OUTPUT
-
-      - name: TEST FAIL
-        run: exit 1
 
       - name: Approve PR
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
