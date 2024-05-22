@@ -2050,6 +2050,9 @@
   "switchAccount": {
     "message": "Switch account"
   },
+  "alreadyHaveAccount": {
+    "message": "Already have an account?"
+  },
   "options": {
     "message": "Options"
   },
