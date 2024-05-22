@@ -6,7 +6,7 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
-import { AdminAuthRequestUpdateWithIdRequest } from "./admin-auth-request-update.request";
+import { AdminAuthRequestUpdateWithIdRequest } from "./bulk-approve-auth-requests.request";
 import { OrganizationAuthRequestApiService } from "./organization-auth-request-api.service";
 import { OrganizationAuthRequestService } from "./organization-auth-request.service";
 import { PendingAuthRequestView } from "./pending-auth-request.view";
@@ -130,7 +130,7 @@ describe("OrganizationAuthRequestService", () => {
         mockPendingAuthRequest,
       ]);
 
-      expect(organizationAuthRequestApiService.approvePendingRequests).toHaveBeenCalledWith(
+      expect(organizationAuthRequestApiService.bulkUpdatePendingRequests).toHaveBeenCalledWith(
         organizationId,
         [
           new AdminAuthRequestUpdateWithIdRequest(
