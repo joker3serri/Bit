@@ -67,7 +67,7 @@ export class CollectionAdminView extends CollectionView {
       !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
 
     return (
-      (org.permissions.manageUsers && (allowAdminAccessToAllCollectionItems || this.unmanaged)) ||
+      (org.permissions.manageUsers && allowAdminAccessToAllCollectionItems) ||
       this.canEdit(org, flexibleCollectionsV1Enabled)
     );
   }
@@ -80,7 +80,7 @@ export class CollectionAdminView extends CollectionView {
       !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
 
     return (
-      (org.permissions.manageGroups && (allowAdminAccessToAllCollectionItems || this.unmanaged)) ||
+      (org.permissions.manageGroups && allowAdminAccessToAllCollectionItems) ||
       this.canEdit(org, flexibleCollectionsV1Enabled)
     );
   }
