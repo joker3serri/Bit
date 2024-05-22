@@ -202,5 +202,20 @@
     <div id="showCardsCurrentTabHelp" class="box-footer">
       {{ "showCardsCurrentTabDesc" | i18n }}
     </div>
+    <div class="box-content">
+      <div class="box-content-row box-content-row-checkbox" appBoxRow>
+        <label for="showIdentitiesCurrentTab">{{ "showIdentitiesCurrentTab" | i18n }}</label>
+        <input
+          id="showIdentitiesCurrentTab"
+          type="checkbox"
+          aria-describedby="showIdentitiesCurrentTabHelp"
+          (change)="updateShowIdentitiesCurrentTab()"
+          [(ngModel)]="showIdentitiesCurrentTab"
+        />
+      </div>
+    </div>
+    <div id="showIdentitiesCurrentTabHelp" class="box-footer">
+      {{ "showIdentitiesCurrentTabDesc" | i18n }}
+    </div>
   </div>
 </main>

@@ -42,6 +42,7 @@ export class AutofillComponent implements OnInit {
   defaultUriMatch: UriMatchStrategySetting = UriMatchStrategy.Domain;
   uriMatchOptions: any[];
   showCardsCurrentTab = false;
+  showIdentitiesCurrentTab = false;
   autofillKeyboardHelperText: string;
   accountSwitcherEnabled = false;
 
@@ -133,6 +134,10 @@ export class AutofillComponent implements OnInit {
     await this.setAutofillKeyboardHelperText(command);
 
     this.showCardsCurrentTab = await firstValueFrom(this.vaultSettingsService.showCardsCurrentTab$);
+
+    this.showIdentitiesCurrentTab = await firstValueFrom(
+      this.vaultSettingsService.showIdentitiesCurrentTab$,
+    );
   }
 
   async updateAutoFillOverlayVisibility() {
@@ -288,5 +293,9 @@ export class AutofillComponent implements OnInit {
 
   async updateShowCardsCurrentTab() {
     await this.vaultSettingsService.setShowCardsCurrentTab(this.showCardsCurrentTab);
+  }
+
+  async updateShowIdentitiesCurrentTab() {
+    await this.vaultSettingsService.setShowIdentitiesCurrentTab(this.showIdentitiesCurrentTab);
   }
 }
