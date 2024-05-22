@@ -458,7 +458,7 @@ jobs:
               - [X] Other
 
               ## Objective
-              $MESSAGE"
+              $MESSAGE")
 
           echo "pr_number=${PR_URL##*/}" >> $GITHUB_OUTPUT
 
