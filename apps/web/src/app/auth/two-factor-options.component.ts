@@ -36,8 +36,8 @@ export class TwoFactorOptionsComponent extends BaseTwoFactorOptionsComponent {
     super(twoFactorService, router, i18nService, platformUtilsService, window, environmentService);
   }
 
-  choose(p: any): void {
-    super.choose(p);
+  async choose(p: any) {
+    await super.choose(p);
     this.dialogRef.close({ result: TwoFactorOptionsDialogResult.Provider, type: p.type });
   }
 
