@@ -16,6 +16,9 @@ import { VaultPopupListFilterService } from "../../../services/vault-popup-list-
 export class VaultListFiltersComponent {
   protected cipherTypes$ = this.vaultPopupListFilterService.cipherTypes$;
   protected organizations$ = this.vaultPopupListFilterService.organizations$;
+  protected collections$ = this.vaultPopupListFilterService.collections$.pipe(
+    map((collections) => collections.fullList),
+  );
 
   protected allFolders$ = this.vaultPopupListFilterService.folders$.pipe(
     map((nestedFolders) => {

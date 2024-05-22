@@ -15,10 +15,12 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 
@@ -26,7 +28,7 @@ type PopupListFilter = {
   organizationId: string | null;
   cipherType: CipherType | null;
   folderId: string | null;
-} | null;
+};
 
 /** All cipher types */
 const allCipherTypes: { value: CipherType; label: string; icon: string }[] = [
@@ -61,7 +63,11 @@ const MyVaultId = "MyVault";
   providedIn: "root",
 })
 export class VaultPopupListFilterService {
-  private _filters$ = new BehaviorSubject<PopupListFilter>(null);
+  private _filters$ = new BehaviorSubject<PopupListFilter>({
+    organizationId: null,
+    cipherType: null,
+    folderId: null,
+  });
   filters$ = this._filters$.asObservable();
 
   constructor(
@@ -70,6 +76,7 @@ export class VaultPopupListFilterService {
     private cipherService: CipherService,
     private organizationService: OrganizationService,
     private i18nService: I18nService,
+    private collectionService: CollectionService,
   ) {}
 
   /** Available cipher types */
@@ -138,6 +145,36 @@ export class VaultPopupListFilterService {
       return new DynamicTreeNode<FolderView>({
         fullList: folders,
         nestedList: nestedFolders,
+      });
+    }),
+  );
+
+  collections$: Observable<DynamicTreeNode<CollectionView>> = this.filters$.pipe(
+    distinctUntilChanged(
+      // Only update the collections when the organizationId filter changes
+      (previousFilter, currentFilter) =>
+        previousFilter?.organizationId === currentFilter?.organizationId,
+    ),
+    switchMap(async (filters) => {
+      const organizationId = filters.organizationId;
+
+      // Get all stored collections
+      const allCollections = await this.collectionService.getAllDecrypted();
+
+      // When the organization filter is selected, filter out collections that do not belong to the selected organization
+      const collections =
+        organizationId === null
+          ? allCollections
+          : allCollections.filter((c) => c.organizationId === organizationId);
+
+      return collections;
+    }),
+    switchMap(async (collections) => {
+      const nestedCollections = await this.collectionService.getAllNested(collections);
+
+      return new DynamicTreeNode<CollectionView>({
+        fullList: collections,
+        nestedList: nestedCollections,
       });
     }),
   );

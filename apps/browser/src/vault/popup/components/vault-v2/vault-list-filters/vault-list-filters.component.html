@@ -8,6 +8,16 @@
       ></bit-option>
     </bit-select>
   </ng-container>
+  <ng-container *ngIf="collections$ | async as collections">
+    <bit-select *ngIf="collections.length" [placeholder]="'collections' | i18n" class="tw-max-w-32">
+      <bit-option
+        *ngFor="let collection of collections"
+        [value]="collection.id"
+        [label]="collection.name"
+        icon="bwi-folder"
+      ></bit-option>
+    </bit-select>
+  </ng-container>
   <ng-container *ngIf="allFolders$ | async as folders">
     <bit-select *ngIf="folders.length" [placeholder]="'folders' | i18n" class="tw-max-w-32">
       <bit-option

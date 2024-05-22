@@ -3,6 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -41,12 +42,18 @@ describe("VaultPopupListFilterService", () => {
       t: (key: string) => key,
     } as I18nService;
 
+    const collectionService = {
+      getAllDecrypted: Promise.resolve(),
+      getAllNested: () => Promise.resolve([]),
+    } as unknown as CollectionService;
+
     service = new VaultPopupListFilterService(
       vaultSettingsService,
       folderService,
       cipherService,
       organizationService,
       i18nService,
+      collectionService,
     );
   });
 
@@ -119,4 +126,6 @@ describe("VaultPopupListFilterService", () => {
       });
     });
   });
+
+  describe("collections$", () => {});
 });
