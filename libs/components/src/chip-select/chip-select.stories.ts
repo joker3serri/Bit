@@ -23,6 +23,7 @@ export default {
               viewItemsIn: (name) => `View items in ${name}`,
               back: "Back",
               backTo: (name) => `Back to ${name}`,
+              removeItem: (name) => `Remove ${name}`,
             });
           },
         },

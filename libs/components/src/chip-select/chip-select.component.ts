@@ -50,6 +50,16 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
   /** The option that is currently selected by the user */
   protected selectedOption: ChipSelectOption<T>;
 
+  /** The label to show in the chip button */
+  protected get label(): string {
+    return this.selectedOption?.label || this.placeholderText;
+  }
+
+  /** The icon to show in the chip button */
+  protected get icon(): string {
+    return this.selectedOption?.icon || this.placeholderIcon;
+  }
+
   protected selectOption(option: ChipSelectOption<T>, _event: MouseEvent) {
     this.selectedOption = option;
     this.onChange(option);
