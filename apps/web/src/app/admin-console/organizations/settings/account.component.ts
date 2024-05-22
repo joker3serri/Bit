@@ -28,8 +28,6 @@ import { DeleteOrganizationDialogResult, openDeleteOrganizationDialog } from "./
   templateUrl: "account.component.html",
 })
 export class AccountComponent {
-  @ViewChild("purgeOrganizationTemplate", { read: ViewContainerRef, static: true })
-  purgeModalRef: ViewContainerRef;
   @ViewChild("apiKeyTemplate", { read: ViewContainerRef, static: true })
   apiKeyModalRef: ViewContainerRef;
   @ViewChild("rotateApiKeyTemplate", { read: ViewContainerRef, static: true })
@@ -44,12 +42,10 @@ export class AccountComponent {
 
   protected flexibleCollectionsMigrationEnabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsMigration,
-    false,
   );
 
   flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsV1,
-    false,
   );
 
   // FormGroup validators taken from server Organization domain object
@@ -234,11 +230,14 @@ export class AccountComponent {
     }
   }
 
-  async purgeVault() {
-    await this.modalService.openViewRef(PurgeVaultComponent, this.purgeModalRef, (comp) => {
-      comp.organizationId = this.organizationId;
+  purgeVault = async () => {
+    const dialogRef = PurgeVaultComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organizationId,
+      },
     });
-  }
+    await lastValueFrom(dialogRef.closed);
+  };
 
   async viewApiKey() {
     await this.modalService.openViewRef(ApiKeyComponent, this.apiKeyModalRef, (comp) => {
