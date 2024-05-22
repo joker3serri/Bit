@@ -9,6 +9,7 @@ import {
   map,
   Observable,
   shareReplay,
+  Subject,
   switchMap,
   takeUntil,
 } from "rxjs";
@@ -97,6 +98,8 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
   orgIsOnSecretsManagerStandalone = false;
 
   protected canUseSecretsManager$: Observable<boolean>;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     apiService: ApiService,
@@ -214,7 +217,8 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
   }
 
   ngOnDestroy(): void {
-    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   async load() {

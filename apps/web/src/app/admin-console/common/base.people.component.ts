@@ -1,6 +1,6 @@
-import { Directive, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
+import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { Subject, firstValueFrom, concatMap, map } from "rxjs";
+import { firstValueFrom, concatMap, map } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -34,8 +34,7 @@ const MaxCheckedCount = 500;
 @Directive()
 export abstract class BasePeopleComponent<
   UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
-> implements OnDestroy
-{
+> {
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
 
@@ -98,7 +97,6 @@ export abstract class BasePeopleComponent<
   protected didScroll = false;
   protected pageSize = 100;
 
-  protected destroy$ = new Subject<void>();
   protected searchControl = new FormControl("", { nonNullable: true });
   protected isSearching$ = this.searchControl.valueChanges.pipe(
     concatMap((searchText) => this.searchService.isSearchable(searchText)),
@@ -136,11 +134,6 @@ export abstract class BasePeopleComponent<
   abstract restoreUser(id: string): Promise<void>;
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 
   async load() {
     const response = await this.getUsers();
