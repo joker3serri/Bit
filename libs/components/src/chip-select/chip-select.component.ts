@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, booleanAttribute } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 import { ButtonModule } from "../button";
@@ -37,6 +37,9 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
 
   /** The select options to render */
   @Input({ required: true }) options: ChipSelectOption<T>[];
+
+  /** Disables the entire chip */
+  @Input({ transform: booleanAttribute }) disabled = false;
 
   /** Tree constructed from `this.options` */
   private rootTree: ChipSelectOption<T>;
@@ -115,7 +118,7 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
   /** Implemented as part of NG_VALUE_ACCESSOR */
   writeValue(obj: T): void {
     this.selectedOption = this.findOption(this.rootTree, obj);
-    this.renderedOptions = this.selectedOption;
+    this.renderedOptions = this.selectedOption || this.rootTree;
   }
 
   /** Implemented as part of NG_VALUE_ACCESSOR */
@@ -128,10 +131,9 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
     this.notifyOnTouched = fn;
   }
 
-  /** TODO */
   /** Implemented as part of NG_VALUE_ACCESSOR */
   setDisabledState(isDisabled: boolean): void {
-    // this.disabled = isDisabled;
+    this.disabled = isDisabled;
   }
 
   /** Implemented as part of NG_VALUE_ACCESSOR */

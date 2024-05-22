@@ -129,3 +129,31 @@ export const TextOverflow: Story = {
     value: "foo",
   },
 };
+
+export const Disabled: Story = {
+  ...Default,
+  render: (args) => ({
+    props: {
+      ...args,
+    },
+    template: /* html */ `
+      <bit-chip-select 
+        placeholderText="Folder"
+        placeholderIcon="bwi-folder"
+        [options]="options"
+        [ngModel]="value"
+        disabled
+      ></bit-chip-select>
+    `,
+  }),
+  args: {
+    options: [
+      {
+        label: "Foo",
+        value: "foo",
+        icon: "bwi-folder",
+      },
+    ],
+    value: "foo",
+  },
+};
