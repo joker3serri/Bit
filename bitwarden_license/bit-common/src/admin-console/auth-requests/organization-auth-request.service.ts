@@ -5,7 +5,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
-import { AdminAuthRequestUpdateWithIdRequest } from "./admin-auth-request-update.request";
+import { AdminAuthRequestUpdateWithIdRequest } from "./bulk-approve-auth-requests.request";
 import { OrganizationAuthRequestApiService } from "./organization-auth-request-api.service";
 import { PendingAuthRequestView } from "./pending-auth-request.view";
 
