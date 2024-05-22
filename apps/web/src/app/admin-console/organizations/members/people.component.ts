@@ -37,6 +37,7 @@ import {
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { ProductType } from "@bitwarden/common/enums";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -93,6 +94,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
   organization: Organization;
   status: OrganizationUserStatusType = null;
   orgResetPasswordPolicyEnabled = false;
+  orgIsOnSecretsManagerStandalone = false;
 
   protected canUseSecretsManager$: Observable<boolean>;
 
@@ -119,6 +121,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
     private groupService: GroupService,
     private collectionService: CollectionService,
     organizationManagementPreferencesService: OrganizationManagementPreferencesService,
+    private billingApiService: BillingApiServiceAbstraction,
   ) {
     super(
       apiService,
@@ -186,6 +189,12 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
             .filter((policy) => policy.type === PolicyType.ResetPassword)
             .find((p) => p.organizationId === this.organization.id);
           this.orgResetPasswordPolicyEnabled = resetPasswordPolicy?.enabled;
+
+          const billingMetadata = await this.billingApiService.getOrganizationBillingMetadata(
+            this.organization.id,
+          );
+
+          this.orgIsOnSecretsManagerStandalone = billingMetadata.isOnSecretsManagerStandalone;
 
           await this.load();
 
@@ -446,6 +455,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
         organizationUserId: user != null ? user.id : null,
         allOrganizationUserEmails: this.allUsers?.map((user) => user.email) ?? [],
         usesKeyConnector: user?.usesKeyConnector,
+        isOnSecretsManagerStandalone: this.orgIsOnSecretsManagerStandalone,
         initialTab: initialTab,
         numConfirmedMembers: this.confirmedCount,
       },
@@ -471,16 +481,13 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
       return;
     }
 
-    const [modal] = await this.modalService.openViewRef(
-      BulkRemoveComponent,
-      this.bulkRemoveModalRef,
-      (comp) => {
-        comp.organizationId = this.organization.id;
-        comp.users = this.getCheckedUsers();
+    const dialogRef = BulkRemoveComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organization.id,
+        users: this.getCheckedUsers(),
       },
-    );
-
-    await modal.onClosedPromise();
+    });
+    await lastValueFrom(dialogRef.closed);
     await this.load();
   }
 
@@ -548,16 +555,14 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
       return;
     }
 
-    const [modal] = await this.modalService.openViewRef(
-      BulkConfirmComponent,
-      this.bulkConfirmModalRef,
-      (comp) => {
-        comp.organizationId = this.organization.id;
-        comp.users = this.getCheckedUsers();
+    const dialogRef = BulkConfirmComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organization.id,
+        users: this.getCheckedUsers(),
       },
-    );
+    });
 
-    await modal.onClosedPromise();
+    await lastValueFrom(dialogRef.closed);
     await this.load();
   }
 
