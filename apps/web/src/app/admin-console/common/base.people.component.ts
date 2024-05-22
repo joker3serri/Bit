@@ -32,10 +32,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
 
 import { OrganizationUserView } from "../organizations/core/views/organization-user.view";
-import {
-  UserConfirmComponent,
-  UserConfirmDialogResult,
-} from "../organizations/manage/user-confirm.component";
+import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
 
 type StatusType = OrganizationUserStatusType | ProviderUserStatusType;
 
@@ -401,17 +398,11 @@ export abstract class BasePeopleComponent<
             name: this.userNamePipe.transform(user),
             userId: user != null ? user.userId : null,
             publicKey: publicKey,
+            confirmUser: () => confirmUser(publicKey),
           },
         });
-        const result = await lastValueFrom(dialogRef.closed);
-        if (result === UserConfirmDialogResult.Confirmed) {
-          try {
-            const response = confirmUser(publicKey);
-            await response;
-          } catch (e) {
-            this.logService.error(e);
-          }
-        }
+        await lastValueFrom(dialogRef.closed);
+
         return;
       }
 

@@ -11,12 +11,8 @@ export type UserConfirmDialogData = {
   name: string;
   userId: string;
   publicKey: Uint8Array;
+  confirmUser: (publicKey: Uint8Array) => Promise<void>;
 };
-
-export enum UserConfirmDialogResult {
-  Confirmed = "confirmed",
-  Cancelled = "cancelled",
-}
 
 @Component({
   selector: "app-user-confirm",
@@ -26,7 +22,6 @@ export class UserConfirmComponent implements OnInit {
   name: string;
   userId: string;
   publicKey: Uint8Array;
-  dialogResult = UserConfirmDialogResult;
 
   loading = true;
   fingerprint: string;
@@ -38,7 +33,7 @@ export class UserConfirmComponent implements OnInit {
 
   constructor(
     @Inject(DIALOG_DATA) protected data: UserConfirmDialogData,
-    private dialogRef: DialogRef<UserConfirmDialogResult>,
+    private dialogRef: DialogRef,
     private cryptoService: CryptoService,
     private logService: LogService,
     private organizationManagementPreferencesService: OrganizationManagementPreferencesService,
@@ -71,10 +66,12 @@ export class UserConfirmComponent implements OnInit {
       await this.organizationManagementPreferencesService.autoConfirmFingerPrints.set(true);
     }
 
-    this.dialogRef.close(UserConfirmDialogResult.Confirmed);
+    await this.data.confirmUser(this.publicKey);
+
+    this.dialogRef.close();
   };
 
   static open(dialogService: DialogService, config: DialogConfig<UserConfirmDialogData>) {
-    return dialogService.open<UserConfirmDialogResult>(UserConfirmComponent, config);
+    return dialogService.open(UserConfirmComponent, config);
   }
 }

@@ -28,13 +28,7 @@
       <button bitButton bitFormButton type="submit" buttonType="primary">
         {{ "confirm" | i18n }}
       </button>
-      <button
-        bitButton
-        bitFormButton
-        type="button"
-        buttonType="secondary"
-        [bitDialogClose]="dialogResult.Cancelled"
-      >
+      <button bitButton bitFormButton type="button" buttonType="secondary" bitDialogClose>
         {{ "cancel" | i18n }}
       </button>
     </ng-container>
