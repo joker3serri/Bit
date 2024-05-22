@@ -6,6 +6,7 @@ import { IconButtonModule } from "../icon-button";
 import { MenuModule } from "../menu";
 import { Option } from "../select/option";
 import { SharedModule } from "../shared";
+import { TypographyModule } from "../typography";
 
 export type ChipSelectOption<T> = Option<T> & {
   /** The options that will be nested under this option */
@@ -19,7 +20,7 @@ export type ChipSelectOption<T> = Option<T> & {
   selector: "bit-chip-select",
   templateUrl: "chip-select.component.html",
   standalone: true,
-  imports: [SharedModule, ButtonModule, IconButtonModule, MenuModule],
+  imports: [SharedModule, ButtonModule, IconButtonModule, MenuModule, TypographyModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

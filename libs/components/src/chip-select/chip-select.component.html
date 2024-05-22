@@ -1,5 +1,6 @@
 <div
-  class="tw-inline-flex tw-rounded-full tw-max-w-52 tw-border-solid tw-border tw-border-secondary-600"
+  bitTypography="body2"
+  class="tw-inline-flex tw-items-center tw-rounded-full tw-max-w-52 tw-border-solid tw-border tw-border-secondary-600"
   [ngClass]="
     selectedOption
       ? 'tw-bg-text-muted tw-text-contrast tw-gap-1'
@@ -9,9 +10,8 @@
   <!-- Primary button -->
   <button
     type="button"
-    class="tw-inline-flex tw-gap-1.5 tw-items-center tw-bg-transparent hover:tw-bg-transparent tw-border-none tw-outline-none tw-max-w-full tw-py-1 tw-pl-3 tw-truncate tw-text-[inherit]"
+    class="tw-inline-flex tw-gap-1.5 tw-items-center tw-bg-transparent hover:tw-bg-transparent tw-border-none tw-outline-none tw-max-w-full tw-py-1 tw-pl-3 last:tw-pr-3 tw-truncate tw-text-[inherit]"
     [ngClass]="{
-      'tw-pr-3': !this.selectedOption,
       'tw-cursor-not-allowed': disabled
     }"
     [bitMenuTriggerFor]="menu"
@@ -34,13 +34,13 @@
     type="button"
     [attr.aria-label]="'removeItem' | i18n: label"
     [disabled]="disabled"
-    class="tw-bg-transparent hover:tw-bg-transparent tw-outline-none tw-rounded-full tw-p-1 tw-my-1 tw-mr-1 tw-text-[inherit] tw-border-solid tw-border tw-border-text-muted hover:tw-border-text-contrast hover:disabled:tw-border-transparent tw-aspect-square tw-flex tw-items-center tw-justify-center tw-h-fit focus-visible:tw-ring-2 tw-ring-text-contrast focus-visible:hover:tw-border-transparent"
+    class="tw-bg-transparent hover:tw-bg-transparent tw-outline-none tw-rounded-full tw-p-1 tw-my-0.5 tw-mr-0.5 tw-text-[inherit] tw-border-solid tw-border tw-border-text-muted hover:tw-border-text-contrast hover:disabled:tw-border-transparent tw-aspect-square tw-flex tw-items-center tw-justify-center tw-h-fit focus-visible:tw-ring-2 tw-ring-text-contrast focus-visible:hover:tw-border-transparent"
     [ngClass]="{
       'tw-cursor-not-allowed': disabled
     }"
     (click)="clear()"
   >
-    <i class="bwi bwi-close bwi-fw tw-text-xs"></i>
+    <i class="bwi bwi-close tw-text-xs"></i>
   </button>
 </div>
 
