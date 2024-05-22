@@ -18,6 +18,7 @@ import {
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { AuthRequestServiceAbstraction, PinServiceAbstraction } from "@bitwarden/auth/common";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -178,8 +179,15 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: AuthServiceAbstraction,
-    useFactory: getBgService<AuthService>("authService"),
-    deps: [],
+    useClass: AuthService,
+    deps: [
+      AccountServiceAbstraction,
+      MessageSender,
+      CryptoService,
+      ApiService,
+      StateServiceAbstraction,
+      TokenService,
+    ],
   }),
   safeProvider({
     provide: SsoLoginServiceAbstraction,
