@@ -80,6 +80,11 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
     this.onChange(null);
   }
 
+  protected debug() {
+    // console.log(this.rootTree);
+    // console.log(this.renderedOptions);
+  }
+
   /**
    * Find a `ChipSelectOption` by its value
    * @param tree the root tree to search
@@ -128,7 +133,9 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
   /** Implemented as part of NG_VALUE_ACCESSOR */
   writeValue(obj: T): void {
     this.selectedOption = this.findOption(this.rootTree, obj);
-    this.renderedOptions = this.selectedOption || this.rootTree;
+
+    /** Update the rendered options for next time the menu is opened */
+    this.renderedOptions = this.selectedOption._parent || this.rootTree;
   }
 
   /** Implemented as part of NG_VALUE_ACCESSOR */
