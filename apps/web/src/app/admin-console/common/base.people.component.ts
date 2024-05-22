@@ -1,6 +1,6 @@
 import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { firstValueFrom, concatMap, map } from "rxjs";
+import { firstValueFrom, concatMap, map, lastValueFrom } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -367,25 +367,16 @@ export abstract class BasePeopleComponent<
         this.organizationManagementPreferencesService.autoConfirmFingerPrints.state$,
       );
       if (autoConfirm == null || !autoConfirm) {
-        const [modal] = await this.modalService.openViewRef(
-          UserConfirmComponent,
-          this.confirmModalRef,
-          (comp) => {
-            comp.name = this.userNamePipe.transform(user);
-            comp.userId = user != null ? user.userId : null;
-            comp.publicKey = publicKey;
-            // eslint-disable-next-line rxjs/no-async-subscribe
-            comp.onConfirmedUser.subscribe(async () => {
-              try {
-                comp.formPromise = confirmUser(publicKey);
-                await comp.formPromise;
-                modal.close();
-              } catch (e) {
-                this.logService.error(e);
-              }
-            });
+        const dialogRef = UserConfirmComponent.open(this.dialogService, {
+          data: {
+            name: this.userNamePipe.transform(user),
+            userId: user != null ? user.userId : null,
+            publicKey: publicKey,
+            confirmUser: () => confirmUser(publicKey),
           },
-        );
+        });
+        await lastValueFrom(dialogRef.closed);
+
         return;
       }
 
