@@ -1,6 +1,18 @@
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SelectItemView } from "@bitwarden/components";
 
+import {
+  GroupProjectAccessPolicyView,
+  GroupSecretAccessPolicyView,
+  GroupServiceAccountAccessPolicyView,
+  ServiceAccountProjectAccessPolicyView,
+  ServiceAccountSecretAccessPolicyView,
+  UserProjectAccessPolicyView,
+  UserSecretAccessPolicyView,
+  UserServiceAccountAccessPolicyView,
+} from "src/app/secrets-manager/models/view/access-policies/access-policy.view";
+import { SecretAccessPoliciesView } from "src/app/secrets-manager/models/view/access-policies/secret-access-policies.view";
+
 import { PotentialGranteeView } from "../../../../models/view/access-policies/potential-grantee.view";
 import { ProjectPeopleAccessPoliciesView } from "../../../../models/view/access-policies/project-people-access-policies.view";
 import { ProjectServiceAccountsAccessPoliciesView } from "../../../../models/view/access-policies/project-service-accounts-access-policies.view";
@@ -43,32 +55,11 @@ export function convertToAccessPolicyItemViews(
   const accessPolicies: ApItemViewType[] = [];
 
   value.userAccessPolicies.forEach((policy) => {
-    accessPolicies.push({
-      type: ApItemEnum.User,
-      icon: ApItemEnumUtil.itemIcon(ApItemEnum.User),
-      id: policy.organizationUserId,
-      accessPolicyId: policy.id,
-      labelName: policy.organizationUserName,
-      listName: policy.organizationUserName,
-      permission: ApPermissionEnumUtil.toApPermissionEnum(policy.read, policy.write),
-      userId: policy.userId,
-      currentUser: policy.currentUser,
-      readOnly: false,
-    });
+    accessPolicies.push(toUserApItemView(policy));
   });
 
   value.groupAccessPolicies.forEach((policy) => {
-    accessPolicies.push({
-      type: ApItemEnum.Group,
-      icon: ApItemEnumUtil.itemIcon(ApItemEnum.Group),
-      id: policy.groupId,
-      accessPolicyId: policy.id,
-      labelName: policy.groupName,
-      listName: policy.groupName,
-      permission: ApPermissionEnumUtil.toApPermissionEnum(policy.read, policy.write),
-      currentUserInGroup: policy.currentUserInGroup,
-      readOnly: false,
-    });
+    accessPolicies.push(toGroupApItemView(policy));
   });
 
   return accessPolicies;
@@ -102,20 +93,27 @@ export function convertProjectServiceAccountsViewToApItemViews(
 ): ApItemViewType[] {
   const accessPolicies: ApItemViewType[] = [];
 
-  value.serviceAccountAccessPolicies.forEach((accessPolicyView) => {
-    accessPolicies.push({
-      type: ApItemEnum.ServiceAccount,
-      icon: ApItemEnumUtil.itemIcon(ApItemEnum.ServiceAccount),
-      id: accessPolicyView.serviceAccountId,
-      accessPolicyId: accessPolicyView.id,
-      labelName: accessPolicyView.serviceAccountName,
-      listName: accessPolicyView.serviceAccountName,
-      permission: ApPermissionEnumUtil.toApPermissionEnum(
-        accessPolicyView.read,
-        accessPolicyView.write,
-      ),
-      readOnly: false,
-    });
+  value.serviceAccountAccessPolicies.forEach((policy) => {
+    accessPolicies.push(toServiceAccountApItemView(policy));
+  });
+  return accessPolicies;
+}
+
+export function convertSecretAccessPoliciesToApItemViews(
+  value: SecretAccessPoliciesView,
+): ApItemViewType[] {
+  const accessPolicies: ApItemViewType[] = [];
+
+  value.userAccessPolicies.forEach((policy) => {
+    accessPolicies.push(toUserApItemView(policy));
+  });
+
+  value.groupAccessPolicies.forEach((policy) => {
+    accessPolicies.push(toGroupApItemView(policy));
+  });
+
+  value.serviceAccountAccessPolicies.forEach((policy) => {
+    accessPolicies.push(toServiceAccountApItemView(policy));
   });
   return accessPolicies;
 }
@@ -165,4 +163,58 @@ export function convertPotentialGranteesToApItemViewType(
       readOnly: false,
     };
   });
+}
+
+function toUserApItemView(
+  policy:
+    | UserSecretAccessPolicyView
+    | UserProjectAccessPolicyView
+    | UserServiceAccountAccessPolicyView,
+): ApItemViewType {
+  return {
+    type: ApItemEnum.User,
+    icon: ApItemEnumUtil.itemIcon(ApItemEnum.User),
+    id: policy.organizationUserId,
+    accessPolicyId: policy.id,
+    labelName: policy.organizationUserName,
+    listName: policy.organizationUserName,
+    permission: ApPermissionEnumUtil.toApPermissionEnum(policy.read, policy.write),
+    userId: policy.userId,
+    currentUser: policy.currentUser,
+    readOnly: false,
+  };
+}
+
+function toGroupApItemView(
+  policy:
+    | GroupSecretAccessPolicyView
+    | GroupProjectAccessPolicyView
+    | GroupServiceAccountAccessPolicyView,
+): ApItemViewType {
+  return {
+    type: ApItemEnum.Group,
+    icon: ApItemEnumUtil.itemIcon(ApItemEnum.Group),
+    id: policy.groupId,
+    accessPolicyId: policy.id,
+    labelName: policy.groupName,
+    listName: policy.groupName,
+    permission: ApPermissionEnumUtil.toApPermissionEnum(policy.read, policy.write),
+    currentUserInGroup: policy.currentUserInGroup,
+    readOnly: false,
+  };
+}
+
+function toServiceAccountApItemView(
+  policy: ServiceAccountSecretAccessPolicyView | ServiceAccountProjectAccessPolicyView,
+): ApItemViewType {
+  return {
+    type: ApItemEnum.ServiceAccount,
+    icon: ApItemEnumUtil.itemIcon(ApItemEnum.ServiceAccount),
+    id: policy.serviceAccountId,
+    accessPolicyId: policy.id,
+    labelName: policy.serviceAccountName,
+    listName: policy.serviceAccountName,
+    permission: ApPermissionEnumUtil.toApPermissionEnum(policy.read, policy.write),
+    readOnly: false,
+  };
 }

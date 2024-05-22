@@ -34,6 +34,23 @@ export class UserProjectAccessPolicyResponse extends BaseAccessPolicyResponse {
   }
 }
 
+export class UserSecretAccessPolicyResponse extends BaseAccessPolicyResponse {
+  organizationUserId: string;
+  organizationUserName: string;
+  grantedSecretId: string;
+  userId: string;
+  currentUser: boolean;
+
+  constructor(response: any) {
+    super(response);
+    this.organizationUserId = this.getResponseProperty("OrganizationUserId");
+    this.organizationUserName = this.getResponseProperty("OrganizationUserName");
+    this.grantedSecretId = this.getResponseProperty("GrantedSecretId");
+    this.userId = this.getResponseProperty("UserId");
+    this.currentUser = this.getResponseProperty("CurrentUser");
+  }
+}
+
 export class UserServiceAccountAccessPolicyResponse extends BaseAccessPolicyResponse {
   organizationUserId: string;
   organizationUserName: string;
@@ -66,6 +83,21 @@ export class GroupProjectAccessPolicyResponse extends BaseAccessPolicyResponse {
   }
 }
 
+export class GroupSecretAccessPolicyResponse extends BaseAccessPolicyResponse {
+  groupId: string;
+  groupName: string;
+  grantedSecretId: string;
+  currentUserInGroup: boolean;
+
+  constructor(response: any) {
+    super(response);
+    this.groupId = this.getResponseProperty("GroupId");
+    this.groupName = this.getResponseProperty("GroupName");
+    this.grantedSecretId = this.getResponseProperty("GrantedSecretId");
+    this.currentUserInGroup = this.getResponseProperty("CurrentUserInGroup");
+  }
+}
+
 export class GroupServiceAccountAccessPolicyResponse extends BaseAccessPolicyResponse {
   groupId: string;
   groupName: string;
@@ -93,5 +125,18 @@ export class ServiceAccountProjectAccessPolicyResponse extends BaseAccessPolicyR
     this.serviceAccountName = this.getResponseProperty("ServiceAccountName");
     this.grantedProjectId = this.getResponseProperty("GrantedProjectId");
     this.grantedProjectName = this.getResponseProperty("GrantedProjectName");
+  }
+}
+
+export class ServiceAccountSecretAccessPolicyResponse extends BaseAccessPolicyResponse {
+  serviceAccountId: string;
+  serviceAccountName: string;
+  grantedSecretId: string;
+
+  constructor(response: any) {
+    super(response);
+    this.serviceAccountId = this.getResponseProperty("ServiceAccountId");
+    this.serviceAccountName = this.getResponseProperty("ServiceAccountName");
+    this.grantedSecretId = this.getResponseProperty("GrantedSecretId");
   }
 }

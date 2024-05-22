@@ -4,9 +4,13 @@ import {
   UserServiceAccountAccessPolicyView,
   GroupServiceAccountAccessPolicyView,
   ServiceAccountProjectAccessPolicyView,
+  ServiceAccountSecretAccessPolicyView,
+  UserSecretAccessPolicyView,
+  GroupSecretAccessPolicyView,
 } from "../../../../models/view/access-policies/access-policy.view";
 import { ProjectPeopleAccessPoliciesView } from "../../../../models/view/access-policies/project-people-access-policies.view";
 import { ProjectServiceAccountsAccessPoliciesView } from "../../../../models/view/access-policies/project-service-accounts-access-policies.view";
+import { SecretAccessPoliciesView } from "../../../../models/view/access-policies/secret-access-policies.view";
 import {
   ServiceAccountGrantedPoliciesView,
   ServiceAccountProjectPolicyPermissionDetailsView,
@@ -118,6 +122,45 @@ export function convertToProjectServiceAccountsAccessPoliciesView(
       const policyView = new ServiceAccountProjectAccessPolicyView();
       policyView.serviceAccountId = filtered.id;
       policyView.grantedProjectId = projectId;
+      policyView.read = ApPermissionEnumUtil.toRead(filtered.permission);
+      policyView.write = ApPermissionEnumUtil.toWrite(filtered.permission);
+      return policyView;
+    });
+
+  return view;
+}
+
+export function convertToSecretAccessPoliciesView(
+  selectedPeoplePolicyValues: ApItemValueType[],
+  selectedServiceAccountPolicyValues: ApItemValueType[],
+): SecretAccessPoliciesView {
+  const view = new SecretAccessPoliciesView();
+
+  view.userAccessPolicies = selectedPeoplePolicyValues
+    .filter((x) => x.type == ApItemEnum.User)
+    .map((filtered) => {
+      const policyView = new UserSecretAccessPolicyView();
+      policyView.organizationUserId = filtered.id;
+      policyView.read = ApPermissionEnumUtil.toRead(filtered.permission);
+      policyView.write = ApPermissionEnumUtil.toWrite(filtered.permission);
+      return policyView;
+    });
+
+  view.groupAccessPolicies = selectedPeoplePolicyValues
+    .filter((x) => x.type == ApItemEnum.Group)
+    .map((filtered) => {
+      const policyView = new GroupSecretAccessPolicyView();
+      policyView.groupId = filtered.id;
+      policyView.read = ApPermissionEnumUtil.toRead(filtered.permission);
+      policyView.write = ApPermissionEnumUtil.toWrite(filtered.permission);
+      return policyView;
+    });
+
+  view.serviceAccountAccessPolicies = selectedServiceAccountPolicyValues
+    .filter((x) => x.type == ApItemEnum.ServiceAccount)
+    .map((filtered) => {
+      const policyView = new ServiceAccountSecretAccessPolicyView();
+      policyView.serviceAccountId = filtered.id;
       policyView.read = ApPermissionEnumUtil.toRead(filtered.permission);
       policyView.write = ApPermissionEnumUtil.toWrite(filtered.permission);
       return policyView;
