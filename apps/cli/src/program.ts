@@ -30,6 +30,12 @@ export class Program {
   constructor(protected serviceContainer: ServiceContainer) {}
 
   async register() {
+    program.description(
+      chalk.yellowBright(
+        "Tip: Managing and retrieving secrets for dev environments is easier with Bitwarden Secrets Manager. Learn more under https://bitwarden.com/products/secrets-manager/",
+      ),
+    );
+
     program
       .option("--pretty", "Format output. JSON is tabbed with two spaces.")
       .option("--raw", "Return raw output instead of a descriptive message.")
