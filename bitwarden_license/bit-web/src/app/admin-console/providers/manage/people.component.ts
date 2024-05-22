@@ -116,10 +116,6 @@ export class PeopleComponent extends BasePeopleComponent<ProviderUserUserDetails
     });
   }
 
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
-
   getUsers(): Promise<ListResponse<ProviderUserUserDetailsResponse>> {
     return this.apiService.getProviderUsers(this.providerId);
   }
