@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, booleanAttribute } from "@angular/core";
+import { Component, HostListener, Input, OnInit, booleanAttribute, signal } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 import { ButtonModule } from "../button";
@@ -41,6 +41,19 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
 
   /** Disables the entire chip */
   @Input({ transform: booleanAttribute }) disabled = false;
+
+  /**
+   * We have `:focus-within` and `:focus-visible` but no `:focus-visible-within`
+   */
+  protected focusVisibleWithin = signal(false);
+  @HostListener("focusin", ["$event.target"])
+  onFocusIn(target: HTMLElement) {
+    this.focusVisibleWithin.set(target.matches(".fvw-target:focus-visible"));
+  }
+  @HostListener("focusout")
+  onFocusOut() {
+    this.focusVisibleWithin.set(false);
+  }
 
   /** Tree constructed from `this.options` */
   private rootTree: ChipSelectOption<T>;
