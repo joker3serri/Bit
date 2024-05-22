@@ -402,10 +402,7 @@ jobs:
 
       - name: Commit files
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
-        env:
-          CLIENT: ${{ steps.create-branch.outputs.client }}
-          VERSION: ${{ steps.set-final-version-output.outputs.version }}
-        run: git commit -m "Bumped ${CLIENT} version to ${VERSION}" -a
+        run: git commit -m "Bumped client version(s)" -a
 
       - name: Push changes
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
