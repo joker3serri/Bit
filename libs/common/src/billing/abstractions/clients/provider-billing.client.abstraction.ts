@@ -1,9 +1,11 @@
 import {
+  VerifyBankAccountRequest,
   CreateClientOrganizationRequest,
   ExpandedTaxInfoUpdateRequest,
   TokenizedPaymentMethodRequest,
   UpdateClientOrganizationRequest,
-} from "../../models/request";
+} from "@bitwarden/common/billing/models/request";
+
 import {
   ProviderSubscriptionResponse,
   PaymentMethodResponse,
@@ -31,4 +33,5 @@ export abstract class ProviderBillingClientAbstraction {
     providerId: string,
     request: ExpandedTaxInfoUpdateRequest,
   ) => Promise<void>;
+  verifyBankAccount: (providerId: string, request: VerifyBankAccountRequest) => Promise<void>;
 }

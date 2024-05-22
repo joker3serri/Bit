@@ -11,6 +11,11 @@
   <ng-container>
     <h2 class="spaced-header">{{ "paymentMethod" | i18n }}</h2>
     <p *ngIf="!hasPaymentMethod">{{ "noPaymentMethod" | i18n }}</p>
+    <app-verify-bank-account
+      [onSubmit]="verifyBankAccount"
+      (verificationSubmitted)="onDataUpdated()"
+      *ngIf="hasUnverifiedPaymentMethod"
+    />
     <ng-container *ngIf="hasPaymentMethod">
       <p>
         <i class="bwi bwi-fw" [ngClass]="paymentMethodClass"></i>
@@ -28,7 +33,7 @@
       *ngIf="taxInformation"
       [taxInformation]="taxInformation"
       [onSubmit]="updateTaxInformation"
-      (taxInformationUpdated)="onTaxInformationUpdated()"
+      (taxInformationUpdated)="onDataUpdated()"
     />
   </ng-container>
 </bit-container>

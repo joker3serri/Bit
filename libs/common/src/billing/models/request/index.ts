@@ -10,3 +10,4 @@ export * from "./tax-info-update.request";
 export * from "./update-client-organization.request";
 export * from "./update-provider-payment.request";
 export * from "./tokenized-payment-method.request";
+export * from "./verify-bank-account.request";

@@ -5,6 +5,7 @@ import {
   ExpandedTaxInfoUpdateRequest,
   TokenizedPaymentMethodRequest,
   UpdateClientOrganizationRequest,
+  VerifyBankAccountRequest,
 } from "@bitwarden/common/billing/models/request";
 import {
   PaymentMethodResponse,
@@ -103,6 +104,16 @@ export class ProviderBillingClient implements ProviderBillingClientAbstraction {
     return await this.apiService.send(
       "PUT",
       "/providers/" + providerId + "/billing/tax-information",
+      request,
+      true,
+      false,
+    );
+  }
+
+  async verifyBankAccount(providerId: string, request: VerifyBankAccountRequest) {
+    return await this.apiService.send(
+      "POST",
+      "/providers/" + providerId + "/billing/payment-method/verify-bank-account",
       request,
       true,
       false,

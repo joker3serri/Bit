@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   PaymentMethodComponent,
   TaxInformationComponent,
+  VerifyBankAccountComponent,
 } from "@bitwarden/angular/billing/components";
 import {
   AsyncActionsModule,
@@ -91,6 +92,7 @@ import { IconComponent } from "./vault/components/icon.component";
     FingerprintPipe,
     PaymentMethodComponent,
     TaxInformationComponent,
+    VerifyBankAccountComponent,
   ],
   exports: [
     A11yInvalidDirective,
@@ -123,6 +125,7 @@ import { IconComponent } from "./vault/components/icon.component";
     FingerprintPipe,
     PaymentMethodComponent,
     TaxInformationComponent,
+    VerifyBankAccountComponent,
   ],
   providers: [
     CreditCardNumberPipe,

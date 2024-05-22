@@ -7,7 +7,10 @@ import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abst
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { PaymentMethod } from "@bitwarden/common/billing/models/domain/payment-method";
 import { TaxInformation } from "@bitwarden/common/billing/models/domain/tax-information";
-import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request";
+import {
+  ExpandedTaxInfoUpdateRequest,
+  VerifyBankAccountRequest,
+} from "@bitwarden/common/billing/models/request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
@@ -65,7 +68,7 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  onTaxInformationUpdated = async () => await this.load();
+  onDataUpdated = async () => await this.load();
 
   updateTaxInformation = async (taxInformation: TaxInformation) => {
     const request = ExpandedTaxInfoUpdateRequest.From(taxInformation);
@@ -75,6 +78,11 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
       title: null,
       message: this.i18nService.t("updatedTaxInformation"),
     });
+  };
+
+  verifyBankAccount = async (amount1: number, amount2: number) => {
+    const request = new VerifyBankAccountRequest(amount1, amount2);
+    await this.providerBillingClient.verifyBankAccount(this.providerId, request);
   };
 
   ngOnInit() {
@@ -96,6 +104,10 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
 
   protected get hasPaymentMethod(): boolean {
     return !!this.paymentMethod;
+  }
+
+  protected get hasUnverifiedPaymentMethod(): boolean {
+    return !!this.paymentMethod && this.paymentMethod.needsVerification;
   }
 
   protected get paymentMethodClass(): string[] {
