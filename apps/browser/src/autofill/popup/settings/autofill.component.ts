@@ -32,6 +32,7 @@ export class AutofillComponent implements OnInit {
   autoFillOnPageLoadDefault = false;
   autoFillOnPageLoadOptions: any[];
   enableContextMenuItem = false;
+  enableAutoTotpCopy = false; // TODO: Does it matter if this is set to false or true?
   defaultUriMatch: UriMatchStrategySetting = UriMatchStrategy.Domain;
   uriMatchOptions: any[];
   autofillKeyboardHelperText: string;
@@ -101,6 +102,8 @@ export class AutofillComponent implements OnInit {
     this.enableContextMenuItem = await firstValueFrom(
       this.autofillSettingsService.enableContextMenu$,
     );
+
+    this.enableAutoTotpCopy = await firstValueFrom(this.autofillSettingsService.autoCopyTotp$);
 
     const defaultUriMatch = await firstValueFrom(
       this.domainSettingsService.defaultUriMatchStrategy$,
@@ -252,5 +255,9 @@ export class AutofillComponent implements OnInit {
   async updateContextMenuItem() {
     await this.autofillSettingsService.setEnableContextMenu(this.enableContextMenuItem);
     this.messagingService.send("bgUpdateContextMenu");
+  }
+
+  async updateAutoTotpCopy() {
+    await this.autofillSettingsService.setAutoCopyTotp(this.enableAutoTotpCopy);
   }
 }

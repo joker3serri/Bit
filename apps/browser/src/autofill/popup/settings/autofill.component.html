@@ -141,6 +141,19 @@
       }}
     </div>
     <div class="box-content">
+      <div class="box-content-row box-content-row-checkbox" appBoxRow>
+        <label for="totp">{{ "enableAutoTotpCopy" | i18n }}</label>
+        <input
+          id="totp"
+          type="checkbox"
+          aria-describedby="totpHelp"
+          (change)="updateAutoTotpCopy()"
+          [(ngModel)]="enableAutoTotpCopy"
+        />
+      </div>
+    </div>
+    <div id="totpHelp" class="box-footer">{{ "disableAutoTotpCopyDesc" | i18n }}</div>
+    <div class="box-content">
       <div class="box-content-row" appBoxRow>
         <label for="defaultUriMatch">{{ "defaultUriMatchDetection" | i18n }}</label>
         <select
