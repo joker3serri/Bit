@@ -12,8 +12,11 @@ import {
   GlobalState,
 } from "@bitwarden/common/platform/state";
 
+/**
+ * Data properties acceptable for use in route objects (see usage in oss-routing.module.ts for example)
+ */
 export interface DataProperties {
-  titleId?: string;
+  titleId?: string; // sets the title of the current HTML document (shows in browser tab)
   doNotSaveUrl?: boolean;
 }
 
