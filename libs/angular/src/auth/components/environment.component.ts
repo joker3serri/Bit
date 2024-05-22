@@ -13,6 +13,7 @@ import { ModalService } from "../../services/modal.service";
 @Directive()
 export class EnvironmentComponent {
   @Output() onSaved = new EventEmitter();
+  @Output() onClose = new EventEmitter();
 
   iconsUrl: string;
   identityUrl: string;
@@ -69,6 +70,11 @@ export class EnvironmentComponent {
 
   protected saved() {
     this.onSaved.emit();
+    this.modalService.closeAll();
+  }
+
+  protected close() {
+    this.onClose.emit();
     this.modalService.closeAll();
   }
 }

@@ -43,7 +43,9 @@ export class RegistrationPage implements OnInit, OnDestroy {
       envDialogRef.close();
     });
 
-    // TODO: figure out issues with getting env to close on close / backdrop click
+    envDialogRef.componentRef.instance.onClose.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      envDialogRef.close();
+    });
   }
 
   ngOnDestroy() {
