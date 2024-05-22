@@ -1,10 +1,12 @@
-<bit-form-field>
-  <bit-label>{{ "creatingAccountOn" | i18n }}</bit-label>
-  <bit-select formControlName="selectedRegion">
-    <bit-option
-      *ngFor="let regionConfig of availableRegionConfigs"
-      [value]="regionConfig"
-      [label]="regionConfig.domain"
-    ></bit-option>
-  </bit-select>
-</bit-form-field>
+<form [formGroup]="formGroup">
+  <bit-form-field>
+    <bit-label>{{ "creatingAccountOn" | i18n }}</bit-label>
+    <bit-select formControlName="selectedRegion">
+      <bit-option
+        *ngFor="let regionConfig of availableRegionConfigs"
+        [value]="regionConfig"
+        [label]="regionConfig.domain"
+      ></bit-option>
+    </bit-select>
+  </bit-form-field>
+</form>
