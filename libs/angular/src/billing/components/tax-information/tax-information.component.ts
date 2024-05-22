@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 import { TaxInformation } from "@bitwarden/common/billing/models/domain/tax-information";
@@ -13,9 +13,10 @@ type Country = {
   selector: "app-tax-information",
   templateUrl: "./tax-information.component.html",
 })
-export class TaxInformationComponent {
+export class TaxInformationComponent implements OnInit {
   @Input({ required: true }) taxInformation: TaxInformation;
   @Input() onSubmit?: (taxInformation: TaxInformation) => Promise<void>;
+  @Output() taxInformationUpdated = new EventEmitter();
 
   protected formGroup = this.formBuilder.group({
     country: ["", Validators.required],
@@ -28,19 +29,49 @@ export class TaxInformationComponent {
     state: "",
   });
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder) {}
+
+  submit = async () => {
+    await this.onSubmit({
+      country: this.formGroup.value.country,
+      postalCode: this.formGroup.value.postalCode,
+      taxId: this.formGroup.value.taxId,
+      line1: this.formGroup.value.line1,
+      line2: this.formGroup.value.line2,
+      city: this.formGroup.value.city,
+      state: this.formGroup.value.state,
+    });
+
+    this.taxInformationUpdated.emit();
+  };
+
+  async ngOnInit() {
     if (this.taxInformation) {
-      this.formGroup.setValue({
+      this.formGroup.patchValue({
         ...this.taxInformation,
-        includeTaxId: !!this.taxInformation.taxId,
+        includeTaxId:
+          this.countrySupportsTax(this.taxInformation.country) &&
+          (!!this.taxInformation.taxId ||
+            !!this.taxInformation.line1 ||
+            !!this.taxInformation.line2 ||
+            !!this.taxInformation.city ||
+            !!this.taxInformation.state),
       });
     }
   }
 
-  submit = async () => await this.onSubmit(this.taxInformation);
+  protected countrySupportsTax(countryCode: string) {
+    return this.taxSupportedCountryCodes.includes(countryCode);
+  }
 
-  protected get showTaxIdInputs() {
+  protected get includeTaxIdIsSelected() {
     return this.formGroup.value.includeTaxId;
+  }
+
+  protected get showTaxIdCheckbox() {
+    return (
+      this.formGroup.value.country !== "US" && this.countrySupportsTax(this.formGroup.value.country)
+    );
   }
 
   protected countries: Country[] = [
@@ -295,5 +326,81 @@ export class TaxInformationComponent {
     { name: "Yemen", value: "YE", disabled: false },
     { name: "Zambia", value: "ZM", disabled: false },
     { name: "Zimbabwe", value: "ZW", disabled: false },
+  ];
+
+  private taxSupportedCountryCodes: string[] = [
+    "CN",
+    "FR",
+    "DE",
+    "CA",
+    "GB",
+    "AU",
+    "IN",
+    "AD",
+    "AR",
+    "AT",
+    "BE",
+    "BO",
+    "BR",
+    "BG",
+    "CL",
+    "CO",
+    "CR",
+    "HR",
+    "CY",
+    "CZ",
+    "DK",
+    "DO",
+    "EC",
+    "EG",
+    "SV",
+    "EE",
+    "FI",
+    "GE",
+    "GR",
+    "HK",
+    "HU",
+    "IS",
+    "ID",
+    "IQ",
+    "IE",
+    "IL",
+    "IT",
+    "JP",
+    "KE",
+    "KR",
+    "LV",
+    "LI",
+    "LT",
+    "LU",
+    "MY",
+    "MT",
+    "MX",
+    "NL",
+    "NZ",
+    "NO",
+    "PE",
+    "PH",
+    "PL",
+    "PT",
+    "RO",
+    "RU",
+    "SA",
+    "RS",
+    "SG",
+    "SK",
+    "SI",
+    "ZA",
+    "ES",
+    "SE",
+    "CH",
+    "TW",
+    "TH",
+    "TR",
+    "UA",
+    "AE",
+    "UY",
+    "VE",
+    "VN",
   ];
 }

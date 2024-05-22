@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, concatMap, takeUntil } from "rxjs";
 
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abstractions/clients/provider-billing.client.abstraction";
 import {
   Plans,
   ProviderSubscriptionResponse,
@@ -22,7 +22,7 @@ export class ProviderSubscriptionComponent {
   currentDate = new Date();
 
   constructor(
-    private billingApiService: BillingApiServiceAbstraction,
+    private providerBillingClient: ProviderBillingClientAbstraction,
     private route: ActivatedRoute,
   ) {}
 
@@ -48,7 +48,7 @@ export class ProviderSubscriptionComponent {
       return;
     }
     this.loading = true;
-    this.subscription = await this.billingApiService.getProviderSubscription(this.providerId);
+    this.subscription = await this.providerBillingClient.getSubscription(this.providerId);
     this.totalCost =
       ((100 - this.subscription.discountPercentage) / 100) * this.sumCost(this.subscription.plans);
     this.loading = false;

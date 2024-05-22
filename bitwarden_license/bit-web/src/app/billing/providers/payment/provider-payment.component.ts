@@ -3,13 +3,11 @@ import { ActivatedRoute } from "@angular/router";
 import { from, lastValueFrom, Subject, switchMap } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
-import {
-  fromTaxInfoResponse,
-  TaxInformation,
-} from "@bitwarden/common/billing/models/domain/tax-information";
-import { UpdateProviderPaymentRequest } from "@bitwarden/common/billing/models/request/update-provider-payment.request";
-import { TaxInfoResponse } from "@bitwarden/common/billing/models/response/tax-info.response";
+import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abstractions/clients/provider-billing.client.abstraction";
+import { PaymentMethodType } from "@bitwarden/common/billing/enums";
+import { PaymentMethod } from "@bitwarden/common/billing/models/domain/payment-method";
+import { TaxInformation } from "@bitwarden/common/billing/models/domain/tax-information";
+import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
@@ -24,15 +22,18 @@ import {
 })
 export class ProviderPaymentComponent implements OnInit, OnDestroy {
   protected providerId: string;
+  protected loading: boolean;
+
+  protected paymentMethod: PaymentMethod;
   protected taxInformation: TaxInformation;
 
   private destroy$ = new Subject<void>();
 
   constructor(
-    private billingApiService: BillingApiServiceAbstraction,
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService,
     private i18nService: I18nService,
+    private providerBillingClient: ProviderBillingClientAbstraction,
     private toastService: ToastService,
   ) {}
 
@@ -51,21 +52,24 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
   };
 
   async load() {
-    // TODO: Retrieve tax information
-    const taxInfoResponse = new TaxInfoResponse({
-      Country: "US",
-      PostalCode: "12345",
-    });
-    this.taxInformation = fromTaxInfoResponse(taxInfoResponse);
+    this.loading = true;
+    this.paymentMethod = PaymentMethod.from(
+      await this.providerBillingClient.getPaymentMethod(this.providerId),
+    );
+    this.taxInformation = TaxInformation.from(
+      await this.providerBillingClient.getTaxInformation(this.providerId),
+    );
+    if (this.taxInformation === null) {
+      this.taxInformation = TaxInformation.empty();
+    }
+    this.loading = false;
   }
 
+  onTaxInformationUpdated = async () => await this.load();
+
   updateTaxInformation = async (taxInformation: TaxInformation) => {
-    const updateProviderPaymentRequest = new UpdateProviderPaymentRequest();
-    updateProviderPaymentRequest.taxInformation = taxInformation;
-    await this.billingApiService.updateProviderPayment(
-      this.providerId,
-      updateProviderPaymentRequest,
-    );
+    const request = ExpandedTaxInfoUpdateRequest.From(taxInformation);
+    await this.providerBillingClient.updateTaxInformation(this.providerId, request);
     this.toastService.showToast({
       variant: "success",
       title: null,
@@ -88,5 +92,22 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  protected get hasPaymentMethod(): boolean {
+    return !!this.paymentMethod;
+  }
+
+  protected get paymentMethodClass(): string[] {
+    switch (this.paymentMethod.type) {
+      case PaymentMethodType.Card:
+        return ["bwi-credit-card"];
+      case PaymentMethodType.BankAccount:
+        return ["bwi-bank"];
+      case PaymentMethodType.PayPal:
+        return ["bwi-paypal tw-text-primary"];
+      default:
+        return [];
+    }
   }
 }

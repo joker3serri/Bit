@@ -1,6 +1,6 @@
 import { TaxInfoResponse } from "@bitwarden/common/billing/models/response/tax-info.response";
 
-export type TaxInformation = {
+export class TaxInformation {
   country: string;
   postalCode: string;
   taxId: string;
@@ -8,8 +8,25 @@ export type TaxInformation = {
   line2: string;
   city: string;
   state: string;
-};
 
-export const fromTaxInfoResponse = (response: TaxInfoResponse): TaxInformation => ({
-  ...response,
-});
+  static empty(): TaxInformation {
+    return {
+      country: null,
+      postalCode: null,
+      taxId: null,
+      line1: null,
+      line2: null,
+      city: null,
+      state: null,
+    };
+  }
+
+  static from(response: TaxInfoResponse | null): TaxInformation {
+    if (response === null) {
+      return null;
+    }
+    return {
+      ...response,
+    };
+  }
+}

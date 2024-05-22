@@ -2,7 +2,7 @@ import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abstractions/clients/provider-billing.client.abstraction";
 import { UpdateClientOrganizationRequest } from "@bitwarden/common/billing/models/request/update-client-organization.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { DialogService, ToastService } from "@bitwarden/components";
@@ -42,10 +42,10 @@ export class ManageClientOrganizationNameComponent {
 
   constructor(
     @Inject(DIALOG_DATA) protected dialogParams: ManageClientOrganizationNameParams,
-    private billingApiService: BillingApiServiceAbstraction,
     private dialogRef: DialogRef<ManageClientOrganizationNameResultType>,
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
+    private providerBillingClient: ProviderBillingClientAbstraction,
     private toastService: ToastService,
   ) {}
 
@@ -60,7 +60,7 @@ export class ManageClientOrganizationNameComponent {
     request.assignedSeats = this.dialogParams.organization.seats;
     request.name = this.formGroup.value.name;
 
-    await this.billingApiService.updateClientOrganization(
+    await this.providerBillingClient.updateClientOrganization(
       this.dialogParams.providerId,
       this.dialogParams.organization.id,
       request,

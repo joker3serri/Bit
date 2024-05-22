@@ -1,14 +1,34 @@
 <app-header></app-header>
-<bit-container>
+<ng-container *ngIf="loading">
+  <i
+    class="bwi bwi-spinner bwi-spin text-muted"
+    title="{{ 'loading' | i18n }}"
+    aria-hidden="true"
+  ></i>
+  <span class="sr-only">{{ "loading" | i18n }}</span>
+</ng-container>
+<bit-container *ngIf="!loading">
   <ng-container>
     <h2 class="spaced-header">{{ "paymentMethod" | i18n }}</h2>
+    <p *ngIf="!hasPaymentMethod">{{ "noPaymentMethod" | i18n }}</p>
+    <ng-container *ngIf="hasPaymentMethod">
+      <p>
+        <i class="bwi bwi-fw" [ngClass]="paymentMethodClass"></i>
+        {{ paymentMethod.description }}
+      </p>
+    </ng-container>
     <button type="button" bitButton buttonType="secondary" [bitAction]="changePaymentMethod">
-      {{ "addPaymentMethod" | i18n }}
+      {{ (hasPaymentMethod ? "changePaymentMethod" : "addPaymentMethod") | i18n }}
     </button>
   </ng-container>
   <ng-container>
     <h2 class="spaced-header">{{ "taxInformation" | i18n }}</h2>
     <p>{{ "taxInformationDesc" | i18n }}</p>
-    <app-tax-information [taxInformation]="taxInformation" [onSubmit]="updateTaxInformation" />
+    <app-tax-information
+      *ngIf="taxInformation"
+      [taxInformation]="taxInformation"
+      [onSubmit]="updateTaxInformation"
+      (taxInformationUpdated)="onTaxInformationUpdated()"
+    />
   </ng-container>
 </bit-container>

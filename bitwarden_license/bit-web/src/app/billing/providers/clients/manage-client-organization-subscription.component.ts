@@ -2,7 +2,7 @@ import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
-import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abstractions/clients/provider-billing.client.abstraction";
 import { UpdateClientOrganizationRequest } from "@bitwarden/common/billing/models/request/update-client-organization.request";
 import { Plans } from "@bitwarden/common/billing/models/response/provider-subscription-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -32,9 +32,9 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) protected data: ManageClientOrganizationDialogParams,
-    private billingApiService: BillingApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
+    private providerBillingClient: ProviderBillingClientAbstraction,
   ) {
     this.providerOrganizationId = data.organization.id;
     this.providerId = data.organization.providerId;
@@ -45,7 +45,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      const response = await this.billingApiService.getProviderSubscription(this.providerId);
+      const response = await this.providerBillingClient.getSubscription(this.providerId);
       this.AdditionalSeatPurchased = this.getPurchasedSeatsByPlan(this.planName, response.plans);
       const seatMinimum = this.getProviderSeatMinimumByPlan(this.planName, response.plans);
       const assignedByPlan = this.getAssignedByPlan(this.planName, response.plans);
@@ -73,7 +73,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     request.assignedSeats = assignedSeats;
     request.name = this.clientName;
 
-    await this.billingApiService.updateClientOrganization(
+    await this.providerBillingClient.updateClientOrganization(
       this.providerId,
       this.providerOrganizationId,
       request,

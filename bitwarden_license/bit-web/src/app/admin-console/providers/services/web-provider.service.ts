@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { ProviderAddOrganizationRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-add-organization.request";
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abstractions/clients/provider-billing.client.abstraction";
 import { PlanType } from "@bitwarden/common/billing/enums";
 import { CreateClientOrganizationRequest } from "@bitwarden/common/billing/models/request/create-client-organization.request";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -20,7 +20,7 @@ export class WebProviderService {
     private apiService: ApiService,
     private i18nService: I18nService,
     private encryptService: EncryptService,
-    private billingApiService: BillingApiServiceAbstraction,
+    private providerBillingClient: ProviderBillingClientAbstraction,
   ) {}
 
   async addOrganizationToProvider(providerId: string, organizationId: string) {
@@ -71,7 +71,7 @@ export class WebProviderService {
     request.keyPair = new OrganizationKeysRequest(publicKey, encryptedPrivateKey.encryptedString);
     request.collectionName = encryptedCollectionName.encryptedString;
 
-    await this.billingApiService.createClientOrganization(providerId, request);
+    await this.providerBillingClient.createClientOrganization(providerId, request);
 
     await this.apiService.refreshIdentityToken();
 

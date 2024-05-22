@@ -1,10 +1,10 @@
-import { DIALOG_DATA, DialogConfig } from "@angular/cdk/dialog";
+import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, EventEmitter, Inject, Output, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 
 import { PaymentMethodComponent } from "@bitwarden/angular/billing/components";
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
-import { UpdateProviderPaymentRequest } from "@bitwarden/common/billing/models/request/update-provider-payment.request";
+import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abstractions/clients/provider-billing.client.abstraction";
+import { TokenizedPaymentMethodRequest } from "@bitwarden/common/billing/models/request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
@@ -40,21 +40,22 @@ export class ProviderPaymentMethodDialogComponent {
 
   constructor(
     @Inject(DIALOG_DATA) private dialogParams: ProviderPaymentMethodDialogParams,
-    private billingApiService: BillingApiServiceAbstraction,
+    private dialogRef: DialogRef<ProviderPaymentMethodDialogResultType>,
     private i18nService: I18nService,
+    private providerBillingClient: ProviderBillingClientAbstraction,
     private toastService: ToastService,
   ) {}
 
   submit = async () => {
     const tokenizedPaymentMethod = await this.selectPaymentMethodComponent.tokenizePaymentMethod();
-    const request = new UpdateProviderPaymentRequest();
-    request.paymentMethod = tokenizedPaymentMethod;
-    await this.billingApiService.updateProviderPayment(this.dialogParams.providerId, request);
+    const request = TokenizedPaymentMethodRequest.From(tokenizedPaymentMethod);
+    await this.providerBillingClient.updatePaymentMethod(this.dialogParams.providerId, request);
     this.providerPaymentMethodUpdated.emit();
     this.toastService.showToast({
       variant: "success",
       title: null,
       message: this.i18nService.t("updatedPaymentMethod"),
     });
+    this.dialogRef.close(this.ResultType.Submitted);
   };
 }
