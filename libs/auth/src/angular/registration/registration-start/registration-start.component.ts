@@ -88,6 +88,9 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    // Emit the initial state
+    this.registrationStartStateChange.emit(this.state);
+
     this.listenForQueryParamChanges();
   }
 
@@ -110,6 +113,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     // TODO: Implement registration logic
 
     this.state = RegistrationStartState.CHECK_EMAIL;
+    this.registrationStartStateChange.emit(this.state);
   };
 
   private validateForm(): boolean {
