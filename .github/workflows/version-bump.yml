@@ -415,7 +415,7 @@ jobs:
 
       - name: Generate PR message
         id: pr-message
-        run:
+        run: |
           MESSAGE=""
           if [[ "${{ inputs.bump_browser }}" == "true" ]]; then
             MESSAGE+="Browser version bump to ${{ steps.set-final-version-output.outputs.version_browser }}\n"
