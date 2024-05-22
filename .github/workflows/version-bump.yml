@@ -433,14 +433,15 @@ jobs:
             MESSAGE+=$'Web version bump to ${{ steps.set-final-version-output.outputs.version_web }}\n'
           fi
 
-          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "MESSAGE<<EOF" >> $GITHUB_ENV
+          echo "$MESSAGE" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create Version PR
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
         id: create-pr
         env:
           GH_TOKEN: ${{ steps.retrieve-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
-          MESSAGE: ${{ steps.pr-message.outputs.message }}
           PR_BRANCH: ${{ steps.create-branch.outputs.name }}
           TITLE: "Bump client(s) version"
         run: |
