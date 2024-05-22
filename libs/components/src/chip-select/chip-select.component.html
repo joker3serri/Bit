@@ -15,7 +15,7 @@
     [title]="selectedOption?.label || placeholderText"
     #menuTrigger="menuTrigger"
   >
-    <i class="bwi !tw-text-[inherit] {{ selectedOption?.icon || placeholderIcon }}"></i>
+    <i class="bwi !tw-text-[inherit]" [ngClass]="selectedOption?.icon || placeholderIcon"></i>
     <span class="tw-truncate">{{ selectedOption?.label || placeholderText }}</span>
     <i
       *ngIf="!selectedOption"
@@ -44,9 +44,18 @@
         bitMenuItem
         *ngIf="renderedOptions._parent"
         (click)="viewOption(renderedOptions._parent, $event)"
+        [title]="
+          renderedOptions._parent.label
+            ? ('backTo' | i18n: renderedOptions._parent.label)
+            : ('back' | i18n)
+        "
       >
-        <i slot="start" class="bwi bwi-angle-left"></i>
-        Back{{ renderedOptions._parent.label ? " to " + renderedOptions._parent.label : "" }}
+        <i slot="start" class="bwi bwi-angle-left" aria-hidden="true"></i>
+        {{
+          renderedOptions._parent.label
+            ? ("backTo" | i18n: renderedOptions._parent.label)
+            : ("back" | i18n)
+        }}
       </button>
 
       <button
@@ -54,10 +63,10 @@
         bitMenuItem
         *ngIf="renderedOptions._parent"
         (click)="selectOption(renderedOptions, $event)"
-        [title]="'todo'"
+        [title]="'viewItemsIn' | i18n: renderedOptions.label"
       >
-        <i slot="start" class="bwi bwi-list"></i>
-        View items in {{ renderedOptions.label }}
+        <i slot="start" class="bwi bwi-list" aria-hidden="true"></i>
+        {{ "viewItemsIn" | i18n: renderedOptions.label }}
       </button>
     </ng-container>
 
@@ -69,7 +78,13 @@
       [disabled]="option.disabled"
       [title]="option.label"
     >
-      <i *ngIf="option.icon" slot="start" class="bwi {{ option.icon }}"></i>
+      <i
+        *ngIf="option.icon"
+        slot="start"
+        class="bwi"
+        [ngClass]="option.icon"
+        aria-hidden="true"
+      ></i>
       {{ option.label }}
       <i *ngIf="option.children?.length" slot="end" class="bwi bwi-angle-right"></i>
     </button>

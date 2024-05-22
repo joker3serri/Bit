@@ -2,7 +2,10 @@ import { FormsModule } from "@angular/forms";
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { getAllByRole, userEvent } from "@storybook/testing-library";
 
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+
 import { MenuModule } from "../menu";
+import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { ChipSelectComponent } from "./chip-select.component";
 
@@ -12,7 +15,18 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [MenuModule, FormsModule],
-      providers: [],
+      providers: [
+        {
+          provide: I18nService,
+          useFactory: () => {
+            return new I18nMockService({
+              viewItemsIn: (name) => `View items in ${name}`,
+              back: "Back",
+              backTo: (name) => `Back to ${name}`,
+            });
+          },
+        },
+      ],
     }),
   ],
 } as Meta;

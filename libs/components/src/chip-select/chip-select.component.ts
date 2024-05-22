@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
@@ -6,6 +5,7 @@ import { ButtonModule } from "../button";
 import { IconButtonModule } from "../icon-button";
 import { MenuModule } from "../menu";
 import { Option } from "../select/option";
+import { SharedModule } from "../shared";
 
 export type ChipSelectOption<T> = Option<T> & {
   children?: ChipSelectOption<T>[];
@@ -18,7 +18,7 @@ export type ChipSelectOption<T> = Option<T> & {
   selector: "bit-chip-select",
   templateUrl: "chip-select.component.html",
   standalone: true,
-  imports: [CommonModule, ButtonModule, IconButtonModule, MenuModule],
+  imports: [SharedModule, ButtonModule, IconButtonModule, MenuModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
