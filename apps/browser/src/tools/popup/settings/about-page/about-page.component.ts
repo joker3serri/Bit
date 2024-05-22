@@ -69,10 +69,6 @@ export class AboutPageComponent {
     }
   }
 
-  async launchContactForm() {
-    await BrowserApi.createNewTab("https://bitwarden.com/contact/");
-  }
-
   async launchForums() {
     await BrowserApi.createNewTab("https://bitwarden.com/getinvolved/");
   }
