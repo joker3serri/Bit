@@ -1,4 +1,4 @@
-import { mergeMap } from "rxjs";
+import { filter, mergeMap } from "rxjs";
 
 import {
   AbstractStorageService,
@@ -34,6 +34,11 @@ export default abstract class AbstractChromeStorageService
 
   constructor(protected chromeStorageApi: chrome.storage.StorageArea) {
     this.updates$ = fromChromeEvent(this.chromeStorageApi.onChanged).pipe(
+      filter(([changes]) => {
+        // Our storage services support changing only one key at a time. If more are changed, it's due to
+        // reseeding storage and we should ignore the changes.
+        return Object.keys(changes).length === 1;
+      }),
       mergeMap(([changes]) => {
         return Object.entries(changes).map(([key, change]) => {
           // The `newValue` property isn't on the StorageChange object
@@ -77,6 +82,11 @@ export default abstract class AbstractChromeStorageService
 
   async save(key: string, obj: any): Promise<void> {
     obj = objToStore(obj);
+
+    if (obj == null) {
+      // Safari does not support set of null values
+      return this.remove(key);
+    }
 
     const keyedObj = { [key]: obj };
     return new Promise<void>((resolve) => {

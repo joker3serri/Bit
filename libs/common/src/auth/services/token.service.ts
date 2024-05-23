@@ -19,6 +19,7 @@ import {
   UserKeyDefinition,
 } from "../../platform/state";
 import { UserId } from "../../types/guid";
+import { VaultTimeout, VaultTimeoutStringType } from "../../types/vault-timeout.type";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
 
 import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
@@ -32,6 +33,7 @@ import {
   EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL,
   REFRESH_TOKEN_DISK,
   REFRESH_TOKEN_MEMORY,
+  SECURITY_STAMP_MEMORY,
 } from "./token.state";
 
 export enum TokenStorageLocation {
@@ -158,12 +160,21 @@ export class TokenService implements TokenServiceAbstraction {
   async setTokens(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     refreshToken?: string,
     clientIdClientSecret?: [string, string],
   ): Promise<void> {
     if (!accessToken) {
       throw new Error("Access token is required.");
+    }
+
+    // Can't check for falsey b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     // get user id the access token
@@ -251,7 +262,7 @@ export class TokenService implements TokenServiceAbstraction {
 
     if (!accessTokenKey) {
       // If we don't have an accessTokenKey, then that means we don't have an access token as it hasn't been set yet
-      // and we have to return null here to properly indicate the the user isn't logged in.
+      // and we have to return null here to properly indicate the user isn't logged in.
       return null;
     }
 
@@ -271,7 +282,7 @@ export class TokenService implements TokenServiceAbstraction {
   private async _setAccessToken(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     userId: UserId,
   ): Promise<void> {
     const storageLocation = await this.determineStorageLocation(
@@ -318,7 +329,7 @@ export class TokenService implements TokenServiceAbstraction {
   async setAccessToken(
     accessToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
   ): Promise<void> {
     if (!accessToken) {
       throw new Error("Access token is required.");
@@ -328,6 +339,15 @@ export class TokenService implements TokenServiceAbstraction {
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save access token.");
+    }
+
+    // Can't check for falsey b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     await this._setAccessToken(accessToken, vaultTimeoutAction, vaultTimeout, userId);
@@ -412,12 +432,21 @@ export class TokenService implements TokenServiceAbstraction {
   private async setRefreshToken(
     refreshToken: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     userId: UserId,
   ): Promise<void> {
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save refresh token.");
+    }
+
+    // Can't check for falsey b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     const storageLocation = await this.determineStorageLocation(
@@ -520,7 +549,7 @@ export class TokenService implements TokenServiceAbstraction {
   async setClientId(
     clientId: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
@@ -528,6 +557,15 @@ export class TokenService implements TokenServiceAbstraction {
     // If we don't have a user id, we can't save the value
     if (!userId) {
       throw new Error("User id not found. Cannot save client id.");
+    }
+
+    // Can't check for falsey b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     const storageLocation = await this.determineStorageLocation(
@@ -588,13 +626,22 @@ export class TokenService implements TokenServiceAbstraction {
   async setClientSecret(
     clientSecret: string,
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     userId?: UserId,
   ): Promise<void> {
     userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
 
     if (!userId) {
       throw new Error("User id not found. Cannot save client secret.");
+    }
+
+    // Can't check for falsey b/c 0 is a valid value
+    if (vaultTimeout == null) {
+      throw new Error("Vault Timeout is required.");
+    }
+
+    if (vaultTimeoutAction == null) {
+      throw new Error("Vault Timeout Action is required.");
     }
 
     const storageLocation = await this.determineStorageLocation(
@@ -850,6 +897,30 @@ export class TokenService implements TokenServiceAbstraction {
     return Array.isArray(decoded.amr) && decoded.amr.includes("external");
   }
 
+  async getSecurityStamp(userId?: UserId): Promise<string | null> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    if (!userId) {
+      throw new Error("User id not found. Cannot get security stamp.");
+    }
+
+    const securityStamp = await this.getStateValueByUserIdAndKeyDef(userId, SECURITY_STAMP_MEMORY);
+
+    return securityStamp;
+  }
+
+  async setSecurityStamp(securityStamp: string, userId?: UserId): Promise<void> {
+    userId ??= await firstValueFrom(this.activeUserIdGlobalState.state$);
+
+    if (!userId) {
+      throw new Error("User id not found. Cannot set security stamp.");
+    }
+
+    await this.singleUserStateProvider
+      .get(userId, SECURITY_STAMP_MEMORY)
+      .update((_) => securityStamp);
+  }
+
   private async getStateValueByUserIdAndKeyDef(
     userId: UserId,
     storageLocation: UserKeyDefinition<string>,
@@ -860,10 +931,25 @@ export class TokenService implements TokenServiceAbstraction {
 
   private async determineStorageLocation(
     vaultTimeoutAction: VaultTimeoutAction,
-    vaultTimeout: number | null,
+    vaultTimeout: VaultTimeout,
     useSecureStorage: boolean,
   ): Promise<TokenStorageLocation> {
-    if (vaultTimeoutAction === VaultTimeoutAction.LogOut && vaultTimeout != null) {
+    if (vaultTimeoutAction == null) {
+      throw new Error(
+        "TokenService - determineStorageLocation: We expect the vault timeout action to always exist at this point.",
+      );
+    }
+
+    if (vaultTimeout == null) {
+      throw new Error(
+        "TokenService - determineStorageLocation: We expect the vault timeout to always exist at this point.",
+      );
+    }
+
+    if (
+      vaultTimeoutAction === VaultTimeoutAction.LogOut &&
+      vaultTimeout !== VaultTimeoutStringType.Never
+    ) {
       return TokenStorageLocation.Memory;
     } else {
       if (useSecureStorage && this.platformSupportsSecureStorage) {

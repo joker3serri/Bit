@@ -1,8 +1,8 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
-import { PinCryptoServiceAbstraction } from "../../../../../auth/src/common/abstractions/pin-crypto.service.abstraction";
+import { PinServiceAbstraction } from "../../../../../auth/src/common/abstractions/pin.service.abstraction";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
@@ -13,6 +13,7 @@ import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enu
 import { UserId } from "../../../types/guid";
 import { UserKey } from "../../../types/key";
 import { AccountService } from "../../abstractions/account.service";
+import { KdfConfigService } from "../../abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";
@@ -43,20 +44,22 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     private i18nService: I18nService,
     private userVerificationApiService: UserVerificationApiServiceAbstraction,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
-    private pinCryptoService: PinCryptoServiceAbstraction,
+    private pinService: PinServiceAbstraction,
     private logService: LogService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
+    private kdfConfigService: KdfConfigService,
   ) {}
 
   async getAvailableVerificationOptions(
     verificationType: keyof UserVerificationOptions,
   ): Promise<UserVerificationOptions> {
     if (verificationType === "client") {
+      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       const [userHasMasterPassword, pinLockType, biometricsLockSet, biometricsUserKeyStored] =
         await Promise.all([
           this.hasMasterPasswordAndMasterKeyHash(),
-          this.vaultTimeoutSettingsService.isPinLockSet(),
+          this.pinService.getPinLockType(userId),
           this.vaultTimeoutSettingsService.isBiometricLockSet(),
           this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric),
         ]);
@@ -112,14 +115,15 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     if (verification.type === VerificationType.OTP) {
       request.otp = verification.secret;
     } else {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+      const [userId, email] = await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((a) => [a?.id, a?.email])),
+      );
       let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
       if (!masterKey && !alreadyHashed) {
         masterKey = await this.cryptoService.makeMasterKey(
           verification.secret,
-          await this.stateService.getEmail(),
-          await this.stateService.getKdfType(),
-          await this.stateService.getKdfConfig(),
+          email,
+          await this.kdfConfigService.getKdfConfig(),
         );
       }
       request.masterPasswordHash = alreadyHashed
@@ -136,6 +140,10 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
    * @param verification User-supplied verification data (OTP, MP, PIN, or biometrics)
    */
   async verifyUser(verification: Verification): Promise<boolean> {
+    const [userId, email] = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => [a?.id, a?.email])),
+    );
+
     if (verificationHasSecret(verification)) {
       this.validateSecretInput(verification);
     }
@@ -144,9 +152,9 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
       case VerificationType.OTP:
         return this.verifyUserByOTP(verification);
       case VerificationType.MasterPassword:
-        return this.verifyUserByMasterPassword(verification);
+        return this.verifyUserByMasterPassword(verification, userId, email);
       case VerificationType.PIN:
-        return this.verifyUserByPIN(verification);
+        return this.verifyUserByPIN(verification, userId);
       case VerificationType.Biometrics:
         return this.verifyUserByBiometrics();
       default: {
@@ -169,15 +177,19 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
 
   private async verifyUserByMasterPassword(
     verification: MasterPasswordVerification,
+    userId: UserId,
+    email: string,
   ): Promise<boolean> {
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+    if (!userId) {
+      throw new Error("User ID is required. Cannot verify user by master password.");
+    }
+
     let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     if (!masterKey) {
       masterKey = await this.cryptoService.makeMasterKey(
         verification.secret,
-        await this.stateService.getEmail(),
-        await this.stateService.getKdfType(),
-        await this.stateService.getKdfConfig(),
+        email,
+        await this.kdfConfigService.getKdfConfig(),
       );
     }
     const passwordValid = await this.cryptoService.compareAndUpdateKeyHash(
@@ -192,8 +204,12 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     return true;
   }
 
-  private async verifyUserByPIN(verification: PinVerification): Promise<boolean> {
-    const userKey = await this.pinCryptoService.decryptUserKeyWithPin(verification.secret);
+  private async verifyUserByPIN(verification: PinVerification, userId: UserId): Promise<boolean> {
+    if (!userId) {
+      throw new Error("User ID is required. Cannot verify user by PIN.");
+    }
+
+    const userKey = await this.pinService.decryptUserKeyWithPin(verification.secret, userId);
 
     return userKey != null;
   }

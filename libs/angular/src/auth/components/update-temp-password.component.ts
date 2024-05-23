@@ -1,11 +1,12 @@
 import { Directive } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
@@ -59,8 +60,9 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     private userVerificationService: UserVerificationService,
     protected router: Router,
     dialogService: DialogService,
-    private accountService: AccountService,
-    private masterPasswordService: InternalMasterPasswordServiceAbstraction,
+    kdfConfigService: KdfConfigService,
+    accountService: AccountService,
+    masterPasswordService: InternalMasterPasswordServiceAbstraction,
   ) {
     super(
       i18nService,
@@ -71,6 +73,9 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
       policyService,
       stateService,
       dialogService,
+      kdfConfigService,
+      masterPasswordService,
+      accountService,
     );
   }
 
@@ -103,9 +108,10 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   }
 
   async setupSubmitActions(): Promise<boolean> {
-    this.email = await this.stateService.getEmail();
-    this.kdf = await this.stateService.getKdfType();
-    this.kdfConfig = await this.stateService.getKdfConfig();
+    this.email = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.email)),
+    );
+    this.kdfConfig = await this.kdfConfigService.getKdfConfig();
     return true;
   }
 
@@ -124,7 +130,6 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
       const newMasterKey = await this.cryptoService.makeMasterKey(
         this.masterPassword,
         this.email.trim().toLowerCase(),
-        this.kdf,
         this.kdfConfig,
       );
       const newPasswordHash = await this.cryptoService.hashMasterKey(

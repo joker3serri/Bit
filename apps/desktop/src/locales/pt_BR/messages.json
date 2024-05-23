@@ -561,10 +561,10 @@
     "message": "A sua nova conta foi criada! Agora você pode iniciar a sessão."
   },
   "youSuccessfullyLoggedIn": {
-    "message": "You successfully logged in"
+    "message": "Você logou na sua conta com sucesso"
   },
   "youMayCloseThisWindow": {
-    "message": "You may close this window"
+    "message": "Você pode fechar esta janela"
   },
   "masterPassSent": {
     "message": "Enviamos um e-mail com a dica da sua senha mestra."
@@ -801,10 +801,10 @@
     "message": "Alterar Senha Mestra"
   },
   "continueToWebApp": {
-    "message": "Continue to web app?"
+    "message": "Continuar no aplicativo web?"
   },
   "changeMasterPasswordOnWebConfirmation": {
-    "message": "You can change your master password on the Bitwarden web app."
+    "message": "Você pode alterar a sua senha mestra no aplicativo web Bitwarden."
   },
   "fingerprintPhrase": {
     "message": "Frase biométrica",
@@ -1402,7 +1402,7 @@
     "message": "Código PIN inválido."
   },
   "tooManyInvalidPinEntryAttemptsLoggingOut": {
-    "message": "Too many invalid PIN entry attempts. Logging out."
+    "message": "Muitas tentativas de entrada de PIN inválidas. Desconectando."
   },
   "unlockWithWindowsHello": {
     "message": "Desbloquear com o Windows Hello"
@@ -1557,7 +1557,7 @@
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
   "verificationRequired": {
-    "message": "Verification required",
+    "message": "Verificação necessária",
     "description": "Default title for the user verification dialog."
   },
   "currentMasterPass": {
@@ -1633,10 +1633,10 @@
     "message": "Integração com o navegador não suportado"
   },
   "browserIntegrationErrorTitle": {
-    "message": "Error enabling browser integration"
+    "message": "Erro ao ativar a integração do navegador"
   },
   "browserIntegrationErrorDesc": {
-    "message": "An error has occurred while enabling browser integration."
+    "message": "Ocorreu um erro ao permitir a integração do navegador."
   },
   "browserIntegrationMasOnlyDesc": {
     "message": "Infelizmente, por ora, a integração do navegador só é suportada na versão da Mac App Store."
@@ -1654,10 +1654,10 @@
     "message": "Ative uma camada adicional de segurança, exigindo validação de frase de impressão digital ao estabelecer uma ligação entre o computador e o navegador. Quando ativado, isto requer intervenção do usuário e verificação cada vez que uma conexão é estabelecida."
   },
   "enableHardwareAcceleration": {
-    "message": "Use hardware acceleration"
+    "message": "Utilizar aceleração de hardware"
   },
   "enableHardwareAccelerationDesc": {
-    "message": "By default this setting is ON. Turn OFF only if you experience graphical issues. Restart is required."
+    "message": "Por padrão esta configuração está ativada. Desligar apenas se tiver problemas gráficos. Reiniciar é necessário."
   },
   "approve": {
     "message": "Aprovar"
@@ -1898,40 +1898,40 @@
     "message": "A sua senha mestra não atende a uma ou mais das políticas da sua organização. Para acessar o cofre, você deve atualizar a sua senha mestra agora. O processo desconectará você da sessão atual, exigindo que você inicie a sessão novamente. Sessões ativas em outros dispositivos podem continuar ativas por até uma hora."
   },
   "tryAgain": {
-    "message": "Try again"
+    "message": "Tentar novamente"
   },
   "verificationRequiredForActionSetPinToContinue": {
-    "message": "Verification required for this action. Set a PIN to continue."
+    "message": "Verificação necessária para esta ação. Defina um PIN para continuar."
   },
   "setPin": {
-    "message": "Set PIN"
+    "message": "Definir PIN"
   },
   "verifyWithBiometrics": {
-    "message": "Verify with biometrics"
+    "message": "Verificiar com biometria"
   },
   "awaitingConfirmation": {
-    "message": "Awaiting confirmation"
+    "message": "Aguardando confirmação"
   },
   "couldNotCompleteBiometrics": {
-    "message": "Could not complete biometrics."
+    "message": "Não foi possível completar a biometria."
   },
   "needADifferentMethod": {
-    "message": "Need a different method?"
+    "message": "Precisa de um método diferente?"
   },
   "useMasterPassword": {
-    "message": "Use master password"
+    "message": "Usar a senha mestra"
   },
   "usePin": {
-    "message": "Use PIN"
+    "message": "Usar PIN"
   },
   "useBiometrics": {
-    "message": "Use biometrics"
+    "message": "Usar biometria"
   },
   "enterVerificationCodeSentToEmail": {
-    "message": "Enter the verification code that was sent to your email."
+    "message": "Digite o código de verificação que foi enviado para o seu e-mail."
   },
   "resendCode": {
-    "message": "Resend code"
+    "message": "Reenviar código"
   },
   "hours": {
     "message": "Horas"
@@ -2131,6 +2131,108 @@
   },
   "forwardedEmailDesc": {
     "message": "Gere um alias de e-mail com um serviço externo de encaminhamento."
+  },
+  "forwarderError": {
+    "message": "Erro $SERVICENAME$: $ERRORMESSAGE$",
+    "description": "Reports an error returned by a forwarding service to the user.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Invalid characters in domain name."
+      }
+    }
+  },
+  "forwarderGeneratedBy": {
+    "message": "Gerado pelo Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen."
+  },
+  "forwarderGeneratedByWithWebsite": {
+    "message": "Site: $WEBSITE$. Gerado pelo Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen.",
+    "placeholders": {
+      "WEBSITE": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
+  "forwaderInvalidToken": {
+    "message": "Token de API $SERVICENAME$ inválido",
+    "description": "Displayed when the user's API token is empty or rejected by the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwaderInvalidTokenWithMessage": {
+    "message": "Token de API $SERVICENAME$ inválido: $ERRORMESSAGE$",
+    "description": "Displayed when the user's API token is rejected by the forwarding service with an error message.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Please verify your email address to continue."
+      }
+    }
+  },
+  "forwarderNoAccountId": {
+    "message": "Não foi possível obter a máscara do ID da conta de email $SERVICENAME$.",
+    "description": "Displayed when the forwarding service fails to return an account ID.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoDomain": {
+    "message": "Domínio $SERVICENAME$ inválido.",
+    "description": "Displayed when the domain is empty or domain authorization failed at the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoUrl": {
+    "message": "URL $SERVICENAME$ inválida.",
+    "description": "Displayed when the url of the forwarding service wasn't supplied.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownError": {
+    "message": "Ocorreu um erro $SERVICENAME$ desconhecido.",
+    "description": "Displayed when the forwarding service failed due to an unknown error.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownForwarder": {
+    "message": "Encaminhador desconhecido: '$SERVICENAME$'.",
+    "description": "Displayed when the forwarding service is not supported.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "JustTrust.us"
+      }
+    }
   },
   "hostname": {
     "message": "Nome do host",
@@ -2541,13 +2643,13 @@
     }
   },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
-    "message": "Launch Duo and follow the steps to finish logging in."
+    "message": "Inicie o Duo e siga os passos para finalizar o login."
   },
   "duoRequiredByOrgForAccount": {
-    "message": "Duo two-step login is required for your account."
+    "message": "A autenticação em duas etapas do Duo é necessária para sua conta."
   },
   "launchDuo": {
-    "message": "Launch Duo in Browser"
+    "message": "Iniciar o Duo no navegador"
   },
   "importFormatError": {
     "message": "Os dados não estão formatados corretamente. Por favor, verifique o seu arquivo de importação e tente novamente."
@@ -2630,13 +2732,13 @@
     "message": "Nome de usuário ou senha incorretos"
   },
   "incorrectPassword": {
-    "message": "Incorrect password"
+    "message": "Senha incorreta"
   },
   "incorrectCode": {
-    "message": "Incorrect code"
+    "message": "Código incorreto"
   },
   "incorrectPin": {
-    "message": "Incorrect PIN"
+    "message": "PIN incorreto"
   },
   "multifactorAuthenticationFailed": {
     "message": "Falha na autenticação de múltiplos fatores"
@@ -2697,25 +2799,28 @@
     "message": "Formatos comuns",
     "description": "Label indicating the most common import formats"
   },
+  "success": {
+    "message": "Sucesso"
+  },
   "troubleshooting": {
-    "message": "Troubleshooting"
+    "message": "Solução de problemas"
   },
   "disableHardwareAccelerationRestart": {
-    "message": "Disable hardware acceleration and restart"
+    "message": "Desativar aceleração de hardware e reiniciar"
   },
   "enableHardwareAccelerationRestart": {
-    "message": "Enable hardware acceleration and restart"
+    "message": "Ativar aceleração de hardware e reiniciar"
   },
   "removePasskey": {
-    "message": "Remove passkey"
+    "message": "Remover senha"
   },
   "passkeyRemoved": {
-    "message": "Passkey removed"
+    "message": "Chave de acesso removida"
   },
   "errorAssigningTargetCollection": {
-    "message": "Error assigning target collection."
+    "message": "Erro ao atribuir coleção de destino."
   },
   "errorAssigningTargetFolder": {
-    "message": "Error assigning target folder."
+    "message": "Erro ao atribuir pasta de destino."
   }
 }

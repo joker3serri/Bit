@@ -3,12 +3,12 @@
     "message": "Bitwarden"
   },
   "extName": {
-    "message": "Bitwarden Password Manager",
+    "message": "Bitwarden Gerenciador de Senhas",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.",
-    "description": "Extension description"
+    "message": "Em qual lugar for, o Bitwarden protege suas senhas, chaves de acesso, e informações confidenciais",
+    "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
     "message": "Inicie a sessão ou crie uma nova conta para acessar seu cofre seguro."
@@ -173,10 +173,10 @@
     "message": "Alterar Senha Mestra"
   },
   "continueToWebApp": {
-    "message": "Continue to web app?"
+    "message": "Continuar no aplicativo web?"
   },
   "changeMasterPasswordOnWebConfirmation": {
-    "message": "You can change your master password on the Bitwarden web app."
+    "message": "Você pode alterar a sua senha mestra no aplicativo web Bitwarden."
   },
   "fingerprintPhrase": {
     "message": "Frase Biométrica",
@@ -374,11 +374,20 @@
   "other": {
     "message": "Outros"
   },
+  "unlockMethods": {
+    "message": "Opções de desbloqueio"
+  },
   "unlockMethodNeededToChangeTimeoutActionDesc": {
     "message": "Configure um método de desbloqueio para alterar o tempo limite do cofre."
   },
   "unlockMethodNeeded": {
     "message": "Configure um método de desbloqueio nas Configurações"
+  },
+  "sessionTimeoutHeader": {
+    "message": "Tempo limite da sessão"
+  },
+  "otherOptions": {
+    "message": "Outras opções"
   },
   "rateExtension": {
     "message": "Avaliar a Extensão"
@@ -500,10 +509,10 @@
     "message": "A sua nova conta foi criada! Agora você pode iniciar a sessão."
   },
   "youSuccessfullyLoggedIn": {
-    "message": "You successfully logged in"
+    "message": "Você logou na sua conta com sucesso"
   },
   "youMayCloseThisWindow": {
-    "message": "You may close this window"
+    "message": "Você pode fechar esta janela"
   },
   "masterPassSent": {
     "message": "Enviamos um e-mail com a dica da sua senha mestra."
@@ -688,10 +697,10 @@
     "message": "Pedir para atualizar a senha de uma credencial quando uma alteração for detectada em um site. Aplica-se a todas as contas conectadas."
   },
   "enableUsePasskeys": {
-    "message": "Pedir para salvar e usar as senhas"
+    "message": "Pedir para salvar e usar chaves de acesso"
   },
   "usePasskeysDesc": {
-    "message": "Pedir para salvar novas senhas ou entrar com as senhas armazenadas no seu cofre. Aplica-se a todas as contas conectadas."
+    "message": "Pedir para salvar novas chaves de acesso ou entrar com as mesmas armazenadas no seu cofre. Aplica-se a todas as contas conectadas."
   },
   "notificationChangeDesc": {
     "message": "Você quer atualizar esta senha no Bitwarden?"
@@ -1120,9 +1129,6 @@
   "commandLockVaultDesc": {
     "message": "Bloquear o cofre"
   },
-  "privateModeWarning": {
-    "message": "O suporte para modo privado é experimental e alguns recursos são limitados."
-  },
   "customFields": {
     "message": "Campos Personalizados"
   },
@@ -1500,7 +1506,7 @@
     "message": "Código PIN inválido."
   },
   "tooManyInvalidPinEntryAttemptsLoggingOut": {
-    "message": "Too many invalid PIN entry attempts. Logging out."
+    "message": "Muitas tentativas de entrada de PIN inválidas. Desconectando."
   },
   "unlockWithBiometrics": {
     "message": "Desbloquear com a biometria"
@@ -1707,6 +1713,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "A biometria com o navegador não é suportada neste dispositivo."
+  },
+  "biometricsNotUnlockedTitle": {
+    "message": "User locked or logged out"
+  },
+  "biometricsNotUnlockedDesc": {
+    "message": "Please unlock this user in the desktop application and try again."
   },
   "biometricsFailedTitle": {
     "message": "Biometria falhou"
@@ -2005,7 +2017,7 @@
     "message": "Selecionar pasta..."
   },
   "noFoldersFound": {
-    "message": "No folders found",
+    "message": "Nenhuma pasta encontrada",
     "description": "Used as a message within the notification bar when no folders are found"
   },
   "orgPermissionsUpdatedMustSetPassword": {
@@ -2017,7 +2029,7 @@
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
   "verificationRequired": {
-    "message": "Verification required",
+    "message": "Verificação necessária",
     "description": "Default title for the user verification dialog."
   },
   "hours": {
@@ -2170,6 +2182,108 @@
   },
   "forwardedEmailDesc": {
     "message": "Gere um apelido de e-mail com um serviço de encaminhamento externo."
+  },
+  "forwarderError": {
+    "message": "Erro $SERVICENAME$: $ERRORMESSAGE$",
+    "description": "Reports an error returned by a forwarding service to the user.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Invalid characters in domain name."
+      }
+    }
+  },
+  "forwarderGeneratedBy": {
+    "message": "Gerado pelo Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen."
+  },
+  "forwarderGeneratedByWithWebsite": {
+    "message": "Site: $WEBSITE$. Gerado pelo Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen.",
+    "placeholders": {
+      "WEBSITE": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
+  "forwaderInvalidToken": {
+    "message": "Token de API $SERVICENAME$ inválido",
+    "description": "Displayed when the user's API token is empty or rejected by the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwaderInvalidTokenWithMessage": {
+    "message": "Token de API $SERVICENAME$ inválido: $ERRORMESSAGE$",
+    "description": "Displayed when the user's API token is rejected by the forwarding service with an error message.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Please verify your email address to continue."
+      }
+    }
+  },
+  "forwarderNoAccountId": {
+    "message": "Não foi possível obter a máscara do ID da conta de email $SERVICENAME$.",
+    "description": "Displayed when the forwarding service fails to return an account ID.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoDomain": {
+    "message": "Domínio $SERVICENAME$ inválido.",
+    "description": "Displayed when the domain is empty or domain authorization failed at the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoUrl": {
+    "message": "URL $SERVICENAME$ inválida.",
+    "description": "Displayed when the url of the forwarding service wasn't supplied.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownError": {
+    "message": "Ocorreu um erro $SERVICENAME$ desconhecido.",
+    "description": "Displayed when the forwarding service failed due to an unknown error.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownForwarder": {
+    "message": "Encaminhador desconhecido: '$SERVICENAME$'.",
+    "description": "Displayed when the forwarding service is not supported.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "JustTrust.us"
+      }
+    }
   },
   "hostname": {
     "message": "Nome do host",
@@ -2652,40 +2766,40 @@
     }
   },
   "tryAgain": {
-    "message": "Try again"
+    "message": "Tentar novamente"
   },
   "verificationRequiredForActionSetPinToContinue": {
-    "message": "Verification required for this action. Set a PIN to continue."
+    "message": "Verificação necessária para esta ação. Defina um PIN para continuar."
   },
   "setPin": {
-    "message": "Set PIN"
+    "message": "Definir PIN"
   },
   "verifyWithBiometrics": {
-    "message": "Verify with biometrics"
+    "message": "Verificiar com biometria"
   },
   "awaitingConfirmation": {
-    "message": "Awaiting confirmation"
+    "message": "Aguardando confirmação"
   },
   "couldNotCompleteBiometrics": {
-    "message": "Could not complete biometrics."
+    "message": "Não foi possível completar a biometria."
   },
   "needADifferentMethod": {
-    "message": "Need a different method?"
+    "message": "Precisa de um método diferente?"
   },
   "useMasterPassword": {
-    "message": "Use master password"
+    "message": "Usar a senha mestra"
   },
   "usePin": {
-    "message": "Use PIN"
+    "message": "Usar PIN"
   },
   "useBiometrics": {
-    "message": "Use biometrics"
+    "message": "Usar biometria"
   },
   "enterVerificationCodeSentToEmail": {
-    "message": "Enter the verification code that was sent to your email."
+    "message": "Digite o código de verificação que foi enviado para o seu e-mail."
   },
   "resendCode": {
-    "message": "Resend code"
+    "message": "Reenviar código"
   },
   "total": {
     "message": "Total"
@@ -2700,19 +2814,19 @@
     }
   },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
-    "message": "Launch Duo and follow the steps to finish logging in."
+    "message": "Inicie o Duo e siga os passos para finalizar o login."
   },
   "duoRequiredForAccount": {
-    "message": "Duo two-step login is required for your account."
+    "message": "A autenticação em duas etapas do Duo é necessária para sua conta."
   },
   "popoutTheExtensionToCompleteLogin": {
-    "message": "Popout the extension to complete login."
+    "message": "Abra a extensão para concluir o login."
   },
   "popoutExtension": {
-    "message": "Popout extension"
+    "message": "Extensão pop-out"
   },
   "launchDuo": {
-    "message": "Launch Duo"
+    "message": "Abrir o Duo"
   },
   "importFormatError": {
     "message": "Os dados não estão formatados corretamente. Por favor, verifique o seu arquivo de importação e tente novamente."
@@ -2789,22 +2903,22 @@
     "message": "Chave de acesso"
   },
   "passkeyNotCopied": {
-    "message": "A senha não será copiada"
+    "message": "A chave de acesso não será copiada"
   },
   "passkeyNotCopiedAlert": {
-    "message": "A senha não será copiada para o item clonado. Deseja continuar clonando este item?"
+    "message": "A chave de acesso não será copiada para o item clonado. Deseja continuar clonando este item?"
   },
   "passkeyFeatureIsNotImplementedForAccountsWithoutMasterPassword": {
-    "message": "Verificação exigida pelo site inicial. Esse recurso ainda não está implementado para contas sem senha mestra."
+    "message": "Verificação requerida pelo site que a iniciou. Esse recurso ainda não está implementado para contas sem senha mestra."
   },
   "logInWithPasskey": {
-    "message": "Fazer login com a senha?"
+    "message": "Fazer login com chave de acesso?"
   },
   "passkeyAlreadyExists": {
-    "message": "Uma senha já existe para este aplicativo."
+    "message": "Uma chave de acesso já existe para este aplicativo."
   },
   "noPasskeysFoundForThisApplication": {
-    "message": "Nenhuma senha encontrada para este aplicativo."
+    "message": "Nenhuma chave de acesso encontrada para este aplicativo."
   },
   "noMatchingPasskeyLogin": {
     "message": "Você não tem um login correspondente para este site."
@@ -2813,22 +2927,22 @@
     "message": "Confirmar"
   },
   "savePasskey": {
-    "message": "Salvar senha"
+    "message": "Salvar chave de acesso"
   },
   "savePasskeyNewLogin": {
-    "message": "Salvar senha como novo login"
+    "message": "Salvar chave de acesso como um novo login"
   },
   "choosePasskey": {
     "message": "Escolha um login para salvar esta chave de acesso"
   },
   "passkeyItem": {
-    "message": "Passkey Item"
+    "message": "Item de chave de acesso"
   },
   "overwritePasskey": {
-    "message": "Sobrescrever senha?"
+    "message": "Sobrescrever chave de acesso?"
   },
   "overwritePasskeyAlert": {
-    "message": "Este item já contém uma senha. Tem certeza que deseja substituir a senha de acesso atual?"
+    "message": "Este item já contém uma chave de acesso. Tem certeza que deseja substituir a atual?"
   },
   "featureNotSupported": {
     "message": "Recurso ainda não suportado"
@@ -2846,13 +2960,13 @@
     "message": "Nome de usuário ou senha incorretos"
   },
   "incorrectPassword": {
-    "message": "Incorrect password"
+    "message": "Senha incorreta"
   },
   "incorrectCode": {
-    "message": "Incorrect code"
+    "message": "Código incorreto"
   },
   "incorrectPin": {
-    "message": "Incorrect PIN"
+    "message": "PIN incorreto"
   },
   "multifactorAuthenticationFailed": {
     "message": "Falha na autenticação de múltiplos fatores"
@@ -2965,71 +3079,83 @@
     "description": "Label indicating the most common import formats"
   },
   "overrideDefaultBrowserAutofillTitle": {
-    "message": "Make Bitwarden your default password manager?",
+    "message": "Tornar o Bitwarden seu gerenciador de senhas padrão?",
     "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillDescription": {
-    "message": "Ignoring this option may cause conflicts between the Bitwarden auto-fill menu and your browser's.",
+    "message": "Ignorar esta opção pode causar conflitos entre o menu de autopreenchimento do Bitwarden e o do seu navegador.",
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutoFillSettings": {
-    "message": "Make Bitwarden your default password manager",
+    "message": "Faça do Bitwarden seu gerenciador de senhas padrão",
     "description": "Label for the setting that allows overriding the default browser autofill settings"
   },
   "privacyPermissionAdditionNotGrantedTitle": {
-    "message": "Unable to set Bitwarden as the default password manager",
+    "message": "Não é possível definir o Bitwarden como o gerenciador de senhas padrão",
     "description": "Title for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "privacyPermissionAdditionNotGrantedDescription": {
-    "message": "You must grant browser privacy permissions to Bitwarden to set it as the default password manager.",
+    "message": "Você deve conceder permissões de privacidade do navegador ao Bitwarden para defini-lo como o Gerenciador de Senhas padrão.",
     "description": "Description for the dialog that appears when the user has not granted the extension permission to set privacy settings"
   },
   "makeDefault": {
-    "message": "Make default",
+    "message": "Tornar padrão",
     "description": "Button text for the setting that allows overriding the default browser autofill settings"
   },
   "saveCipherAttemptSuccess": {
-    "message": "Credentials saved successfully!",
+    "message": "Credenciais salvas com sucesso!",
     "description": "Notification message for when saving credentials has succeeded."
   },
   "updateCipherAttemptSuccess": {
-    "message": "Credentials updated successfully!",
+    "message": "Credenciais atualizadas com sucesso!",
     "description": "Notification message for when updating credentials has succeeded."
   },
   "saveCipherAttemptFailed": {
-    "message": "Error saving credentials. Check console for details.",
+    "message": "Erro ao salvar credenciais. Verifique o console para detalhes.",
     "description": "Notification message for when saving credentials has failed."
   },
   "success": {
-    "message": "Success"
+    "message": "Sucesso"
   },
   "removePasskey": {
-    "message": "Remove passkey"
+    "message": "Remover chave de acesso"
   },
   "passkeyRemoved": {
-    "message": "Passkey removed"
+    "message": "Chave de acesso removida"
   },
   "unassignedItemsBannerNotice": {
-    "message": "Notice: Unassigned organization items are no longer visible in the All Vaults view and only accessible via the Admin Console."
+    "message": "Aviso: Itens da organização não atribuídos não estão mais visíveis na visualização Todos os Cofres e só são acessíveis por meio do painel de administração."
   },
   "unassignedItemsBannerSelfHostNotice": {
-    "message": "Notice: On May 16, 2024, unassigned organization items will no longer be visible in the All Vaults view and will only be accessible via the Admin Console."
+    "message": "Aviso: Em 16 de maio, 2024, itens da organização não serão mais visíveis na visualização Todos os Cofres e só serão acessíveis por meio do painel de administração."
   },
   "unassignedItemsBannerCTAPartOne": {
-    "message": "Assign these items to a collection from the",
+    "message": "Atribua estes itens a uma coleção da",
     "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
   },
   "unassignedItemsBannerCTAPartTwo": {
-    "message": "to make them visible.",
+    "message": "para torná-los visíveis.",
     "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
   },
   "adminConsole": {
-    "message": "Admin Console"
+    "message": "Painel de administração"
+  },
+  "accountSecurity": {
+    "message": "Segurança da conta"
+  },
+  "notifications": {
+    "message": "Notificações"
+  },
+  "appearance": {
+    "message": "Aparência"
   },
   "errorAssigningTargetCollection": {
-    "message": "Error assigning target collection."
+    "message": "Erro ao atribuir coleção de destino."
   },
   "errorAssigningTargetFolder": {
-    "message": "Error assigning target folder."
+    "message": "Erro ao atribuir pasta de destino."
+  },
+  "new": {
+    "message": "New"
   }
 }

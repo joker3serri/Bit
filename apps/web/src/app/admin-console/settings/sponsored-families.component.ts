@@ -8,15 +8,15 @@ import {
   AsyncValidatorFn,
   ValidationErrors,
 } from "@angular/forms";
-import { map, Observable, Subject, takeUntil } from "rxjs";
+import { firstValueFrom, map, Observable, Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { PlanSponsorshipType } from "@bitwarden/common/billing/enums/";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 interface RequestSponsorshipForm {
@@ -50,7 +50,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
     private syncService: SyncService,
     private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
-    private stateService: StateService,
+    private accountService: AccountService,
   ) {
     this.sponsorshipForm = this.formBuilder.group<RequestSponsorshipForm>({
       selectedSponsorshipOrgId: new FormControl("", {
@@ -59,7 +59,10 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
       sponsorshipEmail: new FormControl("", {
         validators: [Validators.email, Validators.required],
         asyncValidators: [
-          this.notAllowedValueAsync(async () => await this.stateService.getEmail(), true),
+          this.notAllowedValueAsync(
+            () => firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.email))),
+            true,
+          ),
         ],
         updateOn: "blur",
       }),

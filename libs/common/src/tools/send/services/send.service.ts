@@ -1,10 +1,10 @@
 import { Observable, concatMap, distinctUntilChanged, firstValueFrom, map } from "rxjs";
 
+import { PBKDF2KdfConfig } from "../../../auth/models/domain/kdf-config";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../../platform/abstractions/key-generation.service";
-import { KdfType } from "../../../platform/enums";
 import { Utils } from "../../../platform/misc/utils";
 import { EncArrayBuffer } from "../../../platform/models/domain/enc-array-buffer";
 import { EncString } from "../../../platform/models/domain/enc-string";
@@ -69,8 +69,7 @@ export class SendService implements InternalSendServiceAbstraction {
       const passwordKey = await this.keyGenerationService.deriveKeyFromPassword(
         password,
         model.key,
-        KdfType.PBKDF2_SHA256,
-        { iterations: SEND_KDF_ITERATIONS },
+        new PBKDF2KdfConfig(SEND_KDF_ITERATIONS),
       );
       send.password = passwordKey.keyB64;
     }
@@ -264,18 +263,26 @@ export class SendService implements InternalSendServiceAbstraction {
       throw new Error("New user key is required for rotation.");
     }
 
+    const originalUserKey = await this.cryptoService.getUserKey();
+
     const req = await firstValueFrom(
-      this.sends$.pipe(concatMap(async (sends) => this.toRotatedKeyRequestMap(sends, newUserKey))),
+      this.sends$.pipe(
+        concatMap(async (sends) => this.toRotatedKeyRequestMap(sends, originalUserKey, newUserKey)),
+      ),
     );
     // separate return for easier debugging
     return req;
   }
 
-  private async toRotatedKeyRequestMap(sends: Send[], newUserKey: UserKey) {
+  private async toRotatedKeyRequestMap(
+    sends: Send[],
+    originalUserKey: UserKey,
+    rotateUserKey: UserKey,
+  ) {
     const requests = await Promise.all(
       sends.map(async (send) => {
-        const sendKey = await this.encryptService.decryptToBytes(send.key, newUserKey);
-        send.key = await this.encryptService.encrypt(sendKey, newUserKey);
+        const sendKey = await this.encryptService.decryptToBytes(send.key, originalUserKey);
+        send.key = await this.encryptService.encrypt(sendKey, rotateUserKey);
         return new SendWithIdRequest(send);
       }),
     );
