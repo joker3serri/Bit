@@ -18,6 +18,8 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 
+import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
+
 /**
  * Service for managing the various item lists on the new Vault tab in the browser popup.
  */
@@ -127,9 +129,10 @@ export class VaultPopupItemsService {
 
   /**
    * Observable that indicates whether a filter is currently applied to the ciphers.
-   * @todo Implement filter/search functionality in PM-6824 and PM-6826.
    */
-  hasFilterApplied$: Observable<boolean> = of(false);
+  hasFilterApplied$ = this.vaultPopupListFiltersService.filters$.pipe(
+    map((filters) => Object.values(filters).some((filter) => filter !== null)),
+  );
 
   /**
    * Observable that indicates whether autofill is allowed in the current context.
@@ -151,6 +154,7 @@ export class VaultPopupItemsService {
   constructor(
     private cipherService: CipherService,
     private vaultSettingsService: VaultSettingsService,
+    private vaultPopupListFiltersService: VaultPopupListFiltersService,
   ) {}
 
   /**
