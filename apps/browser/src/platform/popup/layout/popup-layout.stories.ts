@@ -6,9 +6,12 @@ import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/an
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import {
   AvatarModule,
+  BadgeModule,
   ButtonModule,
   I18nMockService,
   IconButtonModule,
+  ItemModule,
+  NoItemsModule,
 } from "@bitwarden/components";
 
 import { PopupFooterComponent } from "./popup-footer.component";
@@ -30,23 +33,34 @@ class ExtensionContainerComponent {}
 @Component({
   selector: "vault-placeholder",
   template: `
-    <div class="tw-mb-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item</div>
-    <div class="tw-my-8 tw-text-main">vault item last item</div>
+    <bit-item-group aria-label="Mock Vault Items">
+      <bit-item *ngFor="let item of data; index as i">
+        <button bit-item-content>
+          <i slot="start" class="bwi bwi-globe tw-text-3xl tw-text-muted" aria-hidden="true"></i>
+          {{ i }} of {{ data.length - 1 }}
+          <span slot="secondary">Bar</span>
+        </button>
+
+        <ng-container slot="end">
+          <bit-item-action>
+            <button type="button" bitBadge variant="primary">Auto-fill</button>
+          </bit-item-action>
+          <bit-item-action>
+            <button type="button" bitIconButton="bwi-clone" aria-label="Copy item"></button>
+          </bit-item-action>
+          <bit-item-action>
+            <button type="button" bitIconButton="bwi-ellipsis-v" aria-label="More options"></button>
+          </bit-item-action>
+        </ng-container>
+      </bit-item>
+    </bit-item-group>
   `,
   standalone: true,
+  imports: [CommonModule, ItemModule, BadgeModule, IconButtonModule],
 })
-class VaultComponent {}
+class VaultComponent {
+  protected data = Array.from(Array(20).keys());
+}
 
 @Component({
   selector: "generator-placeholder",
@@ -276,6 +290,9 @@ export default {
     moduleMetadata({
       imports: [
         PopupTabNavigationComponent,
+        PopupHeaderComponent,
+        PopupPageComponent,
+        PopupFooterComponent,
         CommonModule,
         RouterModule,
         ExtensionContainerComponent,
@@ -285,6 +302,7 @@ export default {
         MockGeneratorPageComponent,
         MockSettingsPageComponent,
         MockVaultPagePoppedComponent,
+        NoItemsModule,
       ],
       providers: [
         {
@@ -302,13 +320,13 @@ export default {
         importProvidersFrom(
           RouterModule.forRoot(
             [
-              { path: "", redirectTo: "vault", pathMatch: "full" },
-              { path: "vault", component: MockVaultPageComponent },
-              { path: "generator", component: MockGeneratorPageComponent },
-              { path: "send", component: MockSendPageComponent },
-              { path: "settings", component: MockSettingsPageComponent },
+              { path: "", redirectTo: "tabs/vault", pathMatch: "full" },
+              { path: "tabs/vault", component: MockVaultPageComponent },
+              { path: "tabs/generator", component: MockGeneratorPageComponent },
+              { path: "tabs/send", component: MockSendPageComponent },
+              { path: "tabs/settings", component: MockSettingsPageComponent },
               // in case you are coming from a story that also uses the router
-              { path: "**", redirectTo: "vault" },
+              { path: "**", redirectTo: "tabs/vault" },
             ],
             { useHash: true },
           ),
@@ -362,6 +380,27 @@ export const PoppedOut: Story = {
       <div class="tw-h-[640px] tw-w-[900px] tw-border tw-border-solid tw-border-secondary-300">
         <mock-vault-page-popped></mock-vault-page-popped>
       </div>
+    `,
+  }),
+};
+
+export const CenteredContent: Story = {
+  render: (args) => ({
+    props: args,
+    template: /* HTML */ `
+      <extension-container>
+        <popup-tab-navigation>
+          <popup-page>
+            <popup-header slot="header" pageTitle="Centered Content"></popup-header>
+            <div class="tw-h-full tw-flex tw-items-center tw-justify-center tw-text-main">
+              <bit-no-items>
+                <ng-container slot="title">Before centering a div</ng-container>
+                <ng-container slot="description">One must first center oneself</ng-container>
+              </bit-no-items>
+            </div>
+          </popup-page>
+        </popup-tab-navigation>
+      </extension-container>
     `,
   }),
 };
