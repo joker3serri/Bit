@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
-import { EMPTY, Subject, firstValueFrom, from, map, of, switchMap, takeUntil } from "rxjs";
+import { EMPTY, Subject, from, map, of, switchMap, takeUntil, tap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -41,13 +41,13 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    await this.initializeSelectedRegionValue();
+    await this.initSelectedRegionAndListenForEnvChanges();
     this.listenForSelectedRegionChanges();
   }
 
-  private async initializeSelectedRegionValue() {
-    const selectedRegionInitialValue: RegionConfig | Region = await firstValueFrom(
-      this.environmentService.environment$.pipe(
+  private async initSelectedRegionAndListenForEnvChanges() {
+    this.environmentService.environment$
+      .pipe(
         map((env: Environment) => {
           const region: Region = env.getRegion();
           const regionConfig: RegionConfig = this.availableRegionConfigs.find(
@@ -61,10 +61,17 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
 
           return regionConfig;
         }),
-      ),
-    );
-
-    this.selectedRegion.setValue(selectedRegionInitialValue);
+        tap((selectedRegionInitialValue: RegionConfig | Region.SelfHosted) => {
+          // This inits the form control with the selected region, but
+          // it also sets the value to self hosted if the self hosted settings are saved successfully
+          // in the client specific implementation managed by the parent component.
+          // It also resets the value to the previously selected region if the self hosted
+          // settings are closed without saving. We don't emit the event to avoid a loop.
+          this.selectedRegion.setValue(selectedRegionInitialValue, { emitEvent: false });
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
   }
 
   private listenForSelectedRegionChanges() {
