@@ -1,6 +1,6 @@
 import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { firstValueFrom, concatMap, map, lastValueFrom } from "rxjs";
+import { firstValueFrom, concatMap, map, lastValueFrom, startWith, debounceTime } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -99,7 +99,9 @@ export abstract class BasePeopleComponent<
 
   protected searchControl = new FormControl("", { nonNullable: true });
   protected isSearching$ = this.searchControl.valueChanges.pipe(
+    debounceTime(500),
     concatMap((searchText) => this.searchService.isSearchable(searchText)),
+    startWith(false),
   );
   protected isPaging$ = this.isSearching$.pipe(
     map((isSearching) => {
