@@ -1,8 +1,0 @@
-<auth-registration-env-selector
-  *ngIf="registrationStartState === RegistrationStartState.USER_DATA_ENTRY"
-  (onOpenSelfHostedSettings)="openSelfHostedSettings()"
-></auth-registration-env-selector>
-
-<auth-registration-start
-  (registrationStartStateChange)="registrationStartState = $event"
-></auth-registration-start>
