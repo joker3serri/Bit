@@ -1,6 +1,5 @@
 import { Directive, EventEmitter, Output } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { firstValueFrom } from "rxjs";
 
 import {
   EnvironmentService,
@@ -14,7 +13,6 @@ import { ModalService } from "../../services/modal.service";
 @Directive()
 export class EnvironmentComponent {
   @Output() onSaved = new EventEmitter();
-  @Output() onClose = new EventEmitter();
 
   iconsUrl: string;
   identityUrl: string;
@@ -71,15 +69,6 @@ export class EnvironmentComponent {
 
   protected saved() {
     this.onSaved.emit();
-    this.modalService.closeAll();
-  }
-
-  protected async close() {
-    // re-emit current env so that select based env selectors can reset to the current env
-    const env = await firstValueFrom(this.environmentService.environment$);
-    await this.environmentService.setEnvironment(env.getRegion(), env.getUrls());
-
-    this.onClose.emit();
     this.modalService.closeAll();
   }
 }
