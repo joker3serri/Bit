@@ -338,15 +338,4 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     await this.syncService.fullSync(true);
     return data;
   }
-
-  async enableCollectionEnhancements(id: string): Promise<void> {
-    await this.apiService.send(
-      "POST",
-      "/organizations/" + id + "/enable-collection-enhancements",
-      null,
-      true,
-      false,
-    );
-    await this.syncService.fullSync(true);
-  }
 }
