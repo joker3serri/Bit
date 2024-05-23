@@ -46,11 +46,6 @@ export const OpenMenu: Story = {
           Button with icons
           <i class="bwi bwi-angle-right" slot="end"></i>
         </button>
-        <button type="button" bitMenuItem>
-          <i class="bwi bwi-key" slot="start"></i>
-          Long Contentttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
-          <i class="bwi bwi-angle-right" slot="end"></i>
-        </button>
         <button type="button" bitMenuItem disabled>
           <i class="bwi bwi-clone" slot="start"></i>
           Disabled button
@@ -81,11 +76,6 @@ export const ClosedMenu: Story = {
         <button type="button" bitMenuItem>
           <i class="bwi bwi-key" slot="start"></i>
           Button with icons
-          <i class="bwi bwi-angle-right" slot="end"></i>
-        </button>
-        <button type="button" bitMenuItem>
-          <i class="bwi bwi-key" slot="start"></i>
-          Long Contentttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
           <i class="bwi bwi-angle-right" slot="end"></i>
         </button>
         <button type="button" bitMenuItem disabled>
