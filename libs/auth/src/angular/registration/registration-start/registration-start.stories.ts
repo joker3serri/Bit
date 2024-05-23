@@ -1,4 +1,4 @@
-import { importProvidersFrom } from "@angular/core";
+// import { importProvidersFrom } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
@@ -6,7 +6,7 @@ import { of } from "rxjs";
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { PreloadedEnglishI18nModule } from "../../../../../../apps/web/src/app/core/tests";
+// import { PreloadedEnglishI18nModule } from "../../../../../../apps/web/src/app/core/tests";
 
 import { RegistrationStartComponent } from "./registration-start.component";
 
@@ -33,7 +33,7 @@ const decorators = (options: { isSelfHost: boolean; queryParams: Params }) => {
       ],
     }),
     applicationConfig({
-      providers: [importProvidersFrom(PreloadedEnglishI18nModule)],
+      providers: [], //importProvidersFrom(PreloadedEnglishI18nModule)
     }),
   ];
 };
