@@ -12,9 +12,6 @@ import { TypographyModule } from "../typography";
 export type ChipSelectOption<T> = Option<T> & {
   /** The options that will be nested under this option */
   children?: ChipSelectOption<T>[];
-
-  /** @internal populated by `ChipSelectComponent` */
-  _parent?: ChipSelectOption<T>;
 };
 
 @Component({
@@ -124,12 +121,19 @@ export class ChipSelectComponent<T = unknown> implements ControlValueAccessor {
     return result;
   }
 
+  /** Maps child options to their parent, to enable navigating up the tree */
+  private childParentMap = new Map<ChipSelectOption<T>, ChipSelectOption<T>>();
+
   /** For each descendant in the provided `tree`, update `_parent` to be a refrence to the parent node. This allows us to navigate back in the menu. */
   private markParents(tree: ChipSelectOption<T>) {
     tree.children?.forEach((child) => {
-      child._parent = tree;
+      this.childParentMap.set(child, tree);
       this.markParents(child);
     });
+  }
+
+  protected getParent(option: ChipSelectOption<T>): ChipSelectOption<T> | null {
+    return this.childParentMap.get(option);
   }
 
   private initializeRootTree(options: ChipSelectOption<T>[]) {
@@ -153,7 +157,9 @@ export class ChipSelectComponent<T = unknown> implements ControlValueAccessor {
     this.selectedOption = this.findOption(this.rootTree, obj);
 
     /** Update the rendered options for next time the menu is opened */
-    this.renderedOptions = this.selectedOption._parent || this.rootTree;
+    this.renderedOptions = this.selectedOption
+      ? this.getParent(this.selectedOption)
+      : this.rootTree;
   }
 
   /** Implemented as part of NG_VALUE_ACCESSOR */

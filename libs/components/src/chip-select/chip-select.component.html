@@ -46,31 +46,21 @@
 </div>
 
 <bit-menu #menu>
-  <div class="tw-max-h-80 tw-min-w-52 tw-text-sm">
-    <ng-container *ngIf="renderedOptions._parent">
+  <div *ngIf="renderedOptions" class="tw-max-h-80 tw-min-w-52 tw-text-sm">
+    <ng-container *ngIf="getParent(renderedOptions) as parent">
       <button
         type="button"
         bitMenuItem
-        *ngIf="renderedOptions._parent"
-        (click)="viewOption(renderedOptions._parent, $event)"
-        [title]="
-          renderedOptions._parent.label
-            ? ('backTo' | i18n: renderedOptions._parent.label)
-            : ('back' | i18n)
-        "
+        (click)="viewOption(parent, $event)"
+        [title]="parent.label ? ('backTo' | i18n: parent.label) : ('back' | i18n)"
       >
         <i slot="start" class="bwi bwi-angle-left" aria-hidden="true"></i>
-        {{
-          renderedOptions._parent.label
-            ? ("backTo" | i18n: renderedOptions._parent.label)
-            : ("back" | i18n)
-        }}
+        {{ parent.label ? ("backTo" | i18n: parent.label) : ("back" | i18n) }}
       </button>
 
       <button
         type="button"
         bitMenuItem
-        *ngIf="renderedOptions._parent"
         (click)="selectOption(renderedOptions, $event)"
         [title]="'viewItemsIn' | i18n: renderedOptions.label"
       >
