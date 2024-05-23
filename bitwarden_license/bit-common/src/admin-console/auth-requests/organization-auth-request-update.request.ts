@@ -1,4 +1,4 @@
-export class AdminAuthRequestUpdateWithIdRequest {
+export class OrganizationAuthRequestUpdateRequest {
   constructor(
     public id: string,
     public approved: boolean,
