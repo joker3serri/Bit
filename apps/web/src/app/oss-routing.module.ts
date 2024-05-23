@@ -8,11 +8,6 @@ import {
   tdeDecryptionRequiredGuard,
   UnauthGuard,
 } from "@bitwarden/angular/auth/guards";
-import {
-  AnonLayoutWrapperComponent,
-  RegistrationStartComponent,
-  RegistrationStartSecondaryComponent,
-} from "@bitwarden/auth/angular";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -300,28 +295,6 @@ const routes: Routes = [
         loadChildren: () => ReportsModule,
       },
       { path: "setup/families-for-enterprise", component: FamiliesForEnterpriseSetupComponent },
-    ],
-  },
-  {
-    path: "",
-    component: AnonLayoutWrapperComponent,
-    children: [
-      {
-        path: "start-registration",
-        children: [
-          {
-            path: "",
-            component: RegistrationStartComponent, // Primary
-          },
-          {
-            path: "",
-            component: RegistrationStartSecondaryComponent, // Secondary
-            outlet: "secondary",
-          },
-        ],
-        canActivate: [],
-        data: { pageTitle: "createAccount" },
-      },
     ],
   },
   {
