@@ -96,7 +96,7 @@ describe("OrganizationAuthRequestService", () => {
 
   describe("approvePendingRequests", () => {
     it("should approve the specified pending auth requests", async () => {
-      jest.spyOn(organizationAuthRequestApiService, "approvePendingRequests");
+      jest.spyOn(organizationAuthRequestApiService, "bulkUpdatePendingRequests");
 
       const organizationId = "organizationId";
 
