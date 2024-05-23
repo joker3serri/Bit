@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ButtonModule, NoItemsModule, svgIcon } from "@bitwarden/components";
 
 import { SharedModule } from "../../shared";
+import { CollectionDialogTabType } from "../components/collection-dialog";
 
 const icon = svgIcon`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="10 -10 120 140" fill="none">
   <rect class="tw-stroke-secondary-600" width="134" height="86" x="3" y="31.485" stroke-width="6" rx="11"/>
@@ -16,21 +17,36 @@ const icon = svgIcon`<svg xmlns="http://www.w3.org/2000/svg" width="120" height=
   template: `<bit-no-items [icon]="icon" class="tw-mt-2 tw-block">
     <span slot="title" class="tw-mt-4 tw-block">{{ "collectionAccessRestricted" | i18n }}</span>
     <button
-      *ngIf="canEdit"
+      *ngIf="canEditCollection"
       slot="button"
       bitButton
-      (click)="editInfoClicked.emit()"
+      (click)="viewCollectionClicked.emit({ readonly: false, tab: collectionDialogTabType.Info })"
       buttonType="secondary"
       type="button"
     >
-      <i aria-hidden="true" class="bwi bwi-pencil-square"></i> {{ "editInfo" | i18n }}
+      <i aria-hidden="true" class="bwi bwi-pencil-square"></i> {{ "editCollection" | i18n }}
+    </button>
+    <button
+      *ngIf="!canEditCollection && canViewCollectionInfo"
+      slot="button"
+      bitButton
+      (click)="viewCollectionClicked.emit({ readonly: true, tab: collectionDialogTabType.Access })"
+      buttonType="secondary"
+      type="button"
+    >
+      <i aria-hidden="true" class="bwi bwi-users"></i> {{ "viewAccess" | i18n }}
     </button>
   </bit-no-items>`,
 })
 export class CollectionAccessRestrictedComponent {
   protected icon = icon;
+  protected collectionDialogTabType = CollectionDialogTabType;
 
-  @Input() canEdit = false;
+  @Input() canEditCollection = false;
+  @Input() canViewCollectionInfo = false;
 
-  @Output() editInfoClicked = new EventEmitter<void>();
+  @Output() viewCollectionClicked = new EventEmitter<{
+    readonly: boolean;
+    tab: CollectionDialogTabType;
+  }>();
 }

@@ -6,15 +6,19 @@ import { of } from "rxjs";
 
 import { LockComponent as BaseLockComponent } from "@bitwarden/angular/auth/components/lock.component";
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
-import { PinCryptoServiceAbstraction } from "@bitwarden/auth/common";
+import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { DeviceTrustCryptoServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust-crypto.service.abstraction";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
+import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
+import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -47,18 +51,18 @@ describe("LockComponent", () => {
   let component: LockComponent;
   let fixture: ComponentFixture<LockComponent>;
   let stateServiceMock: MockProxy<StateService>;
-  const biometricStateService = mock<BiometricStateService>();
+  let biometricStateService: MockProxy<BiometricStateService>;
   let messagingServiceMock: MockProxy<MessagingService>;
   let broadcasterServiceMock: MockProxy<BroadcasterService>;
   let platformUtilsServiceMock: MockProxy<PlatformUtilsService>;
   let activatedRouteMock: MockProxy<ActivatedRoute>;
+  let mockMasterPasswordService: FakeMasterPasswordService;
 
   const mockUserId = Utils.newGuid() as UserId;
   const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
 
   beforeEach(async () => {
     stateServiceMock = mock<StateService>();
-    stateServiceMock.activeAccount$ = of(null);
 
     messagingServiceMock = mock<MessagingService>();
     broadcasterServiceMock = mock<BroadcasterService>();
@@ -67,6 +71,9 @@ describe("LockComponent", () => {
     activatedRouteMock = mock<ActivatedRoute>();
     activatedRouteMock.queryParams = mock<ActivatedRoute["queryParams"]>();
 
+    mockMasterPasswordService = new FakeMasterPasswordService();
+
+    biometricStateService = mock();
     biometricStateService.dismissedRequirePasswordOnStartCallout$ = of(false);
     biometricStateService.promptAutomatically$ = of(false);
     biometricStateService.promptCancelled$ = of(false);
@@ -74,6 +81,7 @@ describe("LockComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [LockComponent, I18nPipe],
       providers: [
+        { provide: InternalMasterPasswordServiceAbstraction, useValue: mockMasterPasswordService },
         {
           provide: I18nService,
           useValue: mock<I18nService>(),
@@ -139,16 +147,16 @@ describe("LockComponent", () => {
           useValue: mock<DialogService>(),
         },
         {
-          provide: DeviceTrustCryptoServiceAbstraction,
-          useValue: mock<DeviceTrustCryptoServiceAbstraction>(),
+          provide: DeviceTrustServiceAbstraction,
+          useValue: mock<DeviceTrustServiceAbstraction>(),
         },
         {
           provide: UserVerificationService,
           useValue: mock<UserVerificationService>(),
         },
         {
-          provide: PinCryptoServiceAbstraction,
-          useValue: mock<PinCryptoServiceAbstraction>(),
+          provide: PinServiceAbstraction,
+          useValue: mock<PinServiceAbstraction>(),
         },
         {
           provide: BiometricStateService,
@@ -157,6 +165,14 @@ describe("LockComponent", () => {
         {
           provide: AccountService,
           useValue: accountService,
+        },
+        {
+          provide: AuthService,
+          useValue: mock(),
+        },
+        {
+          provide: KdfConfigService,
+          useValue: mock<KdfConfigService>(),
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
