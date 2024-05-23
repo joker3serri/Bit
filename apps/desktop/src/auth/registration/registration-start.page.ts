@@ -35,11 +35,8 @@ export class RegistrationPage implements OnInit, OnDestroy {
 
   openSelfHostedSettings() {
     const envDialogRef = this.dialogService.open(EnvironmentComponent, {
-      disableClose: false,
-      closeOnOverlayDetachments: true,
+      disableClose: true,
     });
-
-    // TODO: figure out if there is a better way to close the dialog.
 
     envDialogRef.componentRef.instance.onSaved.pipe(takeUntil(this.destroy$)).subscribe(() => {
       envDialogRef.close();
