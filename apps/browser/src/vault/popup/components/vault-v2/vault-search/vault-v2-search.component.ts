@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, Output, EventEmitter } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -11,15 +11,9 @@ import { SearchModule } from "@bitwarden/components";
   selector: "app-vault-v2-search",
   templateUrl: "vault-v2-search.component.html",
 })
-export class VaultV2SearchComponent implements OnInit, OnDestroy {
+export class VaultV2SearchComponent {
   searchText: string;
   @Output() searchTextChanged = new EventEmitter<string>();
-
-  constructor() {}
-
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {}
 
   onSearchTextChanged(t: string) {
     this.searchText = t;

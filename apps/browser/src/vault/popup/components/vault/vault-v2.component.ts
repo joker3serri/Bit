@@ -50,7 +50,9 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  handleSearchTextChange(searchText: string): void {}
+  handleSearchTextChange(searchText: string) {
+    this.vaultPopupItemsService.applyFilter(searchText);
+  }
 
   addCipher() {
     // TODO: Add currently filtered organization to query params if available

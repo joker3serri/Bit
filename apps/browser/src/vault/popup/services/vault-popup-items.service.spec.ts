@@ -1,6 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
@@ -19,6 +20,7 @@ describe("VaultPopupItemsService", () => {
 
   const cipherServiceMock = mock<CipherService>();
   const vaultSettingsServiceMock = mock<VaultSettingsService>();
+  const searchService = mock<SearchService>();
 
   beforeEach(() => {
     allCiphers = cipherFactory(10);
@@ -34,6 +36,7 @@ describe("VaultPopupItemsService", () => {
     cipherList[3].favorite = true;
 
     cipherServiceMock.cipherViews$ = new BehaviorSubject(allCiphers).asObservable();
+    searchService.searchCiphers.mockImplementation(async () => cipherList);
     cipherServiceMock.filterCiphersForUrl.mockImplementation(async () => autoFillCiphers);
     vaultSettingsServiceMock.showCardsCurrentTab$ = new BehaviorSubject(false).asObservable();
     vaultSettingsServiceMock.showIdentitiesCurrentTab$ = new BehaviorSubject(false).asObservable();
@@ -41,11 +44,19 @@ describe("VaultPopupItemsService", () => {
     jest
       .spyOn(BrowserApi, "getTabFromCurrentWindow")
       .mockResolvedValue({ url: "https://example.com" } as chrome.tabs.Tab);
-    service = new VaultPopupItemsService(cipherServiceMock, vaultSettingsServiceMock);
+    service = new VaultPopupItemsService(
+      cipherServiceMock,
+      vaultSettingsServiceMock,
+      searchService,
+    );
   });
 
   it("should be created", () => {
-    service = new VaultPopupItemsService(cipherServiceMock, vaultSettingsServiceMock);
+    service = new VaultPopupItemsService(
+      cipherServiceMock,
+      vaultSettingsServiceMock,
+      searchService,
+    );
     expect(service).toBeTruthy();
   });
 
@@ -73,7 +84,11 @@ describe("VaultPopupItemsService", () => {
       vaultSettingsServiceMock.showIdentitiesCurrentTab$ = new BehaviorSubject(true).asObservable();
       jest.spyOn(BrowserApi, "getTabFromCurrentWindow").mockResolvedValue(currentTab);
 
-      service = new VaultPopupItemsService(cipherServiceMock, vaultSettingsServiceMock);
+      service = new VaultPopupItemsService(
+        cipherServiceMock,
+        vaultSettingsServiceMock,
+        searchService,
+      );
 
       service.autoFillCiphers$.subscribe((ciphers) => {
         expect(cipherServiceMock.filterCiphersForUrl.mock.calls.length).toBe(1);
@@ -99,7 +114,11 @@ describe("VaultPopupItemsService", () => {
         Object.values(allCiphers),
       );
 
-      service = new VaultPopupItemsService(cipherServiceMock, vaultSettingsServiceMock);
+      service = new VaultPopupItemsService(
+        cipherServiceMock,
+        vaultSettingsServiceMock,
+        searchService,
+      );
 
       service.autoFillCiphers$.subscribe((ciphers) => {
         expect(ciphers.length).toBe(10);
@@ -153,7 +172,11 @@ describe("VaultPopupItemsService", () => {
   describe("emptyVault$", () => {
     it("should return true if there are no ciphers", (done) => {
       cipherServiceMock.cipherViews$ = new BehaviorSubject({}).asObservable();
-      service = new VaultPopupItemsService(cipherServiceMock, vaultSettingsServiceMock);
+      service = new VaultPopupItemsService(
+        cipherServiceMock,
+        vaultSettingsServiceMock,
+        searchService,
+      );
       service.emptyVault$.subscribe((empty) => {
         expect(empty).toBe(true);
         done();
