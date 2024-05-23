@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit, booleanAttribute, signal } from "@angular/core";
+import { Component, HostListener, Input, booleanAttribute, signal } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 import { ButtonModule } from "../button";
@@ -8,6 +8,7 @@ import { Option } from "../select/option";
 import { SharedModule } from "../shared";
 import { TypographyModule } from "../typography";
 
+/** An option that will be showed in the overlay menu of `ChipSelectComponent` */
 export type ChipSelectOption<T> = Option<T> & {
   /** The options that will be nested under this option */
   children?: ChipSelectOption<T>[];
@@ -29,15 +30,23 @@ export type ChipSelectOption<T> = Option<T> & {
     },
   ],
 })
-export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAccessor {
+export class ChipSelectComponent<T = unknown> implements ControlValueAccessor {
   /** Text to show when there is no selected option */
   @Input({ required: true }) placeholderText: string;
 
   /** Icon to show when there is no selected option or the selected option does not have an icon */
   @Input() placeholderIcon: string;
 
+  private _options: ChipSelectOption<T>[];
   /** The select options to render */
-  @Input({ required: true }) options: ChipSelectOption<T>[];
+  @Input({ required: true })
+  get options(): ChipSelectOption<T>[] {
+    return this._options;
+  }
+  set options(value: ChipSelectOption<T>[]) {
+    this._options = value;
+    this.initializeRootTree(value);
+  }
 
   /** Disables the entire chip */
   @Input({ transform: booleanAttribute }) disabled = false;
@@ -82,7 +91,7 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
   protected viewOption(option: ChipSelectOption<T>, event: MouseEvent) {
     this.renderedOptions = option;
 
-    /** We don't want to the menu to close */
+    /** We don't want the menu to close */
     event.preventDefault();
     event.stopImmediatePropagation();
   }
@@ -92,11 +101,6 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
     this.renderedOptions = this.rootTree;
     this.selectedOption = null;
     this.onChange(null);
-  }
-
-  protected debug() {
-    // console.log(this.rootTree);
-    // console.log(this.renderedOptions);
   }
 
   /**
@@ -128,10 +132,10 @@ export class ChipSelectComponent<T = unknown> implements OnInit, ControlValueAcc
     });
   }
 
-  ngOnInit(): void {
+  private initializeRootTree(options: ChipSelectOption<T>[]) {
     /** Since the component is just initialized with an array of options, we need to construct the root tree. */
     const root: ChipSelectOption<T> = {
-      children: this.options,
+      children: options,
       value: null,
     };
     this.markParents(root);
