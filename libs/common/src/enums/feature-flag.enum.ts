@@ -17,7 +17,7 @@ export enum FeatureFlag {
   EnableDeleteProvider = "AC-1218-delete-provider",
   ExtensionRefresh = "extension-refresh",
   RestrictProviderAccess = "restrict-provider-access",
-  BulkDeviceApproval = "AC-1710-bulk-device-approval",
+  BulkDeviceApproval = "bulk-device-approval",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
