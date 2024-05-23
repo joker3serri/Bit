@@ -10,5 +10,5 @@ import { ServiceContainer } from "./service-container";
  */
 export async function registerBitPrograms(serviceContainer: ServiceContainer) {
   const deviceApprovalProgram = new DeviceApprovalProgram(serviceContainer);
-  deviceApprovalProgram.register();
+  await deviceApprovalProgram.register();
 }
