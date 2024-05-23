@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
+    "resolveJsonModule": true, // allow translations to be imported.
     "paths": {
       "@bitwarden/admin-console": ["../admin-console/src"],
       "@bitwarden/angular/*": ["../angular/src/*"],

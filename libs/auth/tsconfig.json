@@ -1,8 +1,5 @@
 {
   "extends": "../shared/tsconfig.libs",
   "include": ["src", "spec"],
-  "exclude": ["node_modules", "dist"],
-  "compilerOptions": {
-    "resolveJsonModule": true
-  }
+  "exclude": ["node_modules", "dist"]
 }
