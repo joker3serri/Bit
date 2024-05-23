@@ -11,8 +11,6 @@ import { DenyAllCommand } from "./deny-all.command";
 import { DenyCommand } from "./deny.command";
 import { ListCommand } from "./list.command";
 
-
-
 const writeLn = CliUtils.writeLn;
 
 export class DeviceApprovalProgram extends BaseProgram {
