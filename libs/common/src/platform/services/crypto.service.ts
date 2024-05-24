@@ -45,7 +45,7 @@ import { LogService } from "../abstractions/log.service";
 import { PlatformUtilsService } from "../abstractions/platform-utils.service";
 import { StateService } from "../abstractions/state.service";
 import { KeySuffixOptions, HashPurpose, EncryptionType } from "../enums";
-import { convertValues } from "../misc/convertValues";
+import { convertValues } from "../misc/convert-values";
 import { EFFLongWordList } from "../misc/wordlist";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString, EncryptedString } from "../models/domain/enc-string";
