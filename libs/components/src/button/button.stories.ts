@@ -109,21 +109,3 @@ export const Block: Story = {
     block: true,
   },
 };
-
-export const PseudoStates: Story = {
-  render: (args: ButtonComponent) => ({
-    props: args,
-    template: /*html*/ `
-    <div class="tw-flex tw-gap-4">
-      <button bitButton [buttonType]="buttonType">default</button>
-      <button bitButton [buttonType]="buttonType" sb-hover>:hover</button>
-      <button bitButton [buttonType]="buttonType" sb-focus-visible>:focus-visible</button>
-      <button bitButton [buttonType]="buttonType" sb-hover sb-focus-visible>:hover:focus-visible</button>
-      <button bitButton [buttonType]="buttonType" sb-active>:active</button>
-    </div>
-    `,
-  }),
-  args: {
-    buttonType: "primary",
-  },
-};
