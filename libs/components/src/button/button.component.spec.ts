@@ -35,8 +35,8 @@ describe("Button", () => {
 
     testAppComponent.buttonType = "secondary";
     fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
+    expect(buttonDebugElement.nativeElement.classList.contains("tw-border-primary-600")).toBe(true);
+    expect(linkDebugElement.nativeElement.classList.contains("tw-border-primary-600")).toBe(true);
 
     testAppComponent.buttonType = "danger";
     fixture.detectChanges();
@@ -58,8 +58,8 @@ describe("Button", () => {
 
     testAppComponent.buttonType = null;
     fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
+    expect(buttonDebugElement.nativeElement.classList.contains("tw-border-primary-600")).toBe(true);
+    expect(linkDebugElement.nativeElement.classList.contains("tw-border-primary-600")).toBe(true);
   });
 
   it("should apply block when true and inline-block when false", () => {
