@@ -26,7 +26,7 @@
     <app-vault-list-filters></app-vault-list-filters>
 
     <div
-      *ngIf="showNoResultsState$ | async"
+      *ngIf="(showNoResultsState$ | async) && !(showDeactivatedOrg$ | async)"
       class="tw-flex tw-flex-col tw-h-full tw-justify-center"
     >
       <bit-no-items>
@@ -35,7 +35,17 @@
       </bit-no-items>
     </div>
 
-    <ng-container *ngIf="!(showNoResultsState$ | async)">
+    <div
+      *ngIf="showDeactivatedOrg$ | async"
+      class="tw-flex tw-flex-col tw-h-full tw-justify-center"
+    >
+      <bit-no-items [icon]="deactivatedIcon">
+        <ng-container slot="title">{{ "organizationIsDeactivated" | i18n }}</ng-container>
+        <ng-container slot="description">{{ "contactYourOrgAdmin" | i18n }}</ng-container>
+      </bit-no-items>
+    </div>
+
+    <ng-container *ngIf="!(showNoResultsState$ | async) && !(showDeactivatedOrg$ | async)">
       <app-autofill-vault-list-items></app-autofill-vault-list-items>
       <app-vault-list-items-container
         [title]="'favorites' | i18n"

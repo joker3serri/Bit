@@ -1,6 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
@@ -20,6 +21,7 @@ describe("VaultPopupItemsService", () => {
 
   const cipherServiceMock = mock<CipherService>();
   const vaultSettingsServiceMock = mock<VaultSettingsService>();
+  const organizationServiceMock = mock<OrganizationService>();
   const vaultPopupListFiltersServiceMock = mock<VaultPopupListFiltersService>({
     // Return all ciphers, `filterCiphers` will be tested in `VaultPopupListFiltersService`
     filterCiphers: (ciphers: CipherView[], _: PopupListFilter) => ciphers,
@@ -58,6 +60,7 @@ describe("VaultPopupItemsService", () => {
       cipherServiceMock,
       vaultSettingsServiceMock,
       vaultPopupListFiltersServiceMock,
+      organizationServiceMock,
     );
   });
 
@@ -66,6 +69,7 @@ describe("VaultPopupItemsService", () => {
       cipherServiceMock,
       vaultSettingsServiceMock,
       vaultPopupListFiltersServiceMock,
+      organizationServiceMock,
     );
     expect(service).toBeTruthy();
   });
@@ -98,6 +102,7 @@ describe("VaultPopupItemsService", () => {
         cipherServiceMock,
         vaultSettingsServiceMock,
         vaultPopupListFiltersServiceMock,
+        organizationServiceMock,
       );
 
       service.autoFillCiphers$.subscribe((ciphers) => {
@@ -128,6 +133,7 @@ describe("VaultPopupItemsService", () => {
         cipherServiceMock,
         vaultSettingsServiceMock,
         vaultPopupListFiltersServiceMock,
+        organizationServiceMock,
       );
 
       service.autoFillCiphers$.subscribe((ciphers) => {
@@ -186,6 +192,7 @@ describe("VaultPopupItemsService", () => {
         cipherServiceMock,
         vaultSettingsServiceMock,
         vaultPopupListFiltersServiceMock,
+        organizationServiceMock,
       );
       service.emptyVault$.subscribe((empty) => {
         expect(empty).toBe(true);

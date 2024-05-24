@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import {
   combineLatest,
+  distinctUntilKeyChanged,
   map,
   Observable,
   of,
@@ -10,6 +11,7 @@ import {
   switchMap,
 } from "rxjs";
 
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -162,10 +164,26 @@ export class VaultPopupItemsService {
     map((ciphers) => !ciphers.length),
   );
 
+  /** Observable that indicates when the user should see the deactivated org state */
+  showDeactivatedOrg$: Observable<boolean> = combineLatest([
+    this.vaultPopupListFiltersService.filters$.pipe(distinctUntilKeyChanged("organizationId")),
+    this.organizationService.organizations$,
+  ]).pipe(
+    map(([filters, orgs]) => {
+      if (!filters.organizationId) {
+        return false;
+      }
+
+      const org = orgs.find((o) => o.id === filters.organizationId);
+      return org ? !org.enabled : false;
+    }),
+  );
+
   constructor(
     private cipherService: CipherService,
     private vaultSettingsService: VaultSettingsService,
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
+    private organizationService: OrganizationService,
   ) {}
 
   /**

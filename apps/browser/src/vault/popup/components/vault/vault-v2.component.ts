@@ -38,8 +38,10 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   protected showEmptyState$ = this.vaultPopupItemsService.emptyVault$;
   protected showNoResultsState$ = this.vaultPopupItemsService.noFilteredResults$;
+  protected showDeactivatedOrg$ = this.vaultPopupItemsService.showDeactivatedOrg$;
 
   protected vaultIcon = Icons.Vault;
+  protected deactivatedIcon = Icons.DeactivatedOrg;
 
   constructor(
     private vaultPopupItemsService: VaultPopupItemsService,
