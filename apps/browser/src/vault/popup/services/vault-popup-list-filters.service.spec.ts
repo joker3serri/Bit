@@ -7,31 +7,47 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
-import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
+import {
+  MY_VAULT_ID,
+  PopupListFilter,
+  VaultPopupListFiltersService,
+} from "./vault-popup-list-filters.service";
 
 describe("VaultPopupListFiltersService", () => {
   let service: VaultPopupListFiltersService;
   const showCardsCurrentTab$ = new BehaviorSubject<boolean>(true);
   const showIdentitiesCurrentTab$ = new BehaviorSubject<boolean>(true);
   const memberOrganizations$ = new BehaviorSubject<{ name: string; id: string }[]>([]);
+  const folderViews$ = new BehaviorSubject([]);
+  const cipherViews$ = new BehaviorSubject({});
+
+  const collectionService = {
+    getAllDecrypted: Promise.resolve(),
+    getAllNested: () => Promise.resolve([]),
+  } as unknown as CollectionService;
+
+  const folderService = {
+    folderViews$,
+  } as unknown as FolderService;
 
   beforeEach(() => {
     showCardsCurrentTab$.next(true);
     showIdentitiesCurrentTab$.next(true);
     memberOrganizations$.next([]);
 
+    collectionService.getAllDecrypted = () => Promise.resolve([]);
+    collectionService.getAllNested = () => Promise.resolve([]);
+
     const vaultSettingsService = {
       showCardsCurrentTab$,
       showIdentitiesCurrentTab$,
     } as unknown as VaultSettingsService;
 
-    const folderService = {
-      folderViews$: new BehaviorSubject([]),
-    } as unknown as FolderService;
-
     const cipherService = {
-      getAllDecrypted: Promise.resolve(),
+      cipherViews$,
     } as unknown as CipherService;
 
     const organizationService = {
@@ -41,11 +57,6 @@ describe("VaultPopupListFiltersService", () => {
     const i18nService = {
       t: (key: string) => key,
     } as I18nService;
-
-    const collectionService = {
-      getAllDecrypted: Promise.resolve(),
-      getAllNested: () => Promise.resolve([]),
-    } as unknown as CollectionService;
 
     service = new VaultPopupListFiltersService(
       vaultSettingsService,
@@ -100,7 +111,7 @@ describe("VaultPopupListFiltersService", () => {
       memberOrganizations$.next([]);
 
       service.organizations$.subscribe((organizations) => {
-        expect(organizations.map((o) => o.name)).toEqual([]);
+        expect(organizations.map((o) => o.label)).toEqual([]);
         done();
       });
     });
@@ -109,7 +120,7 @@ describe("VaultPopupListFiltersService", () => {
       memberOrganizations$.next([{ name: "bobby's org", id: "1234-3323-23223" }]);
 
       service.organizations$.subscribe((organizations) => {
-        expect(organizations.map((o) => o.name)).toEqual(["myVault", "bobby's org"]);
+        expect(organizations.map((o) => o.label)).toEqual(["myVault", "bobby's org"]);
         done();
       });
     });
@@ -121,11 +132,154 @@ describe("VaultPopupListFiltersService", () => {
       ]);
 
       service.organizations$.subscribe((organizations) => {
-        expect(organizations.map((o) => o.name)).toEqual(["myVault", "alice's org", "bobby's org"]);
+        expect(organizations.map((o) => o.label)).toEqual([
+          "myVault",
+          "alice's org",
+          "bobby's org",
+        ]);
         done();
       });
     });
   });
 
-  describe("collections$", () => {});
+  describe("collections$", () => {
+    const testCollection = {
+      id: "14cbf8e9-7a2a-4105-9bf6-b15c01203cef",
+      name: "Test collection",
+      organizationId: "3f860945-b237-40bc-a51e-b15c01203ccf",
+    } as CollectionView;
+
+    const testCollection2 = {
+      id: "b15c0120-7a2a-4105-9bf6-b15c01203ceg",
+      name: "Test collection 2",
+      organizationId: "1203ccf-2432-123-acdd-b15c01203ccf",
+    } as CollectionView;
+    const testCollections = [testCollection, testCollection2];
+    beforeEach(() => {
+      collectionService.getAllDecrypted = () => Promise.resolve(testCollections);
+
+      collectionService.getAllNested = () =>
+        Promise.resolve(
+          testCollections.map((c) => ({
+            children: [],
+            node: c,
+            parent: null,
+          })),
+        );
+    });
+
+    it("returns all collections", (done) => {
+      service.collections$.subscribe((collections) => {
+        expect(collections.map((c) => c.label)).toEqual(["Test collection", "Test collection 2"]);
+        done();
+      });
+    });
+
+    it("filters out collections that do not belong to an organization", () => {
+      service.updateFilter({
+        organizationId: testCollection2.organizationId,
+      });
+
+      service.collections$.subscribe((collections) => {
+        expect(collections.map((c) => c.label)).toEqual(["Test collection 2"]);
+      });
+    });
+  });
+
+  describe("folders$", () => {
+    it('removes "No Folder" option', (done) => {
+      folderViews$.next([
+        { id: null, name: "No Folder" },
+        { id: "1234", name: "Folder 1" },
+      ]);
+
+      service.folders$.subscribe((folders) => {
+        expect(folders.map((f) => f.label)).not.toContain("No Folder");
+        done();
+      });
+    });
+
+    it("returns all folders when MyVault is selected", (done) => {
+      service.updateFilter({
+        organizationId: MY_VAULT_ID,
+      });
+      folderViews$.next([
+        { id: "1234", name: "Folder 1" },
+        { id: "2345", name: "Folder 2" },
+      ]);
+
+      service.folders$.subscribe((folders) => {
+        expect(folders.map((f) => f.label)).toEqual(["Folder 1", "Folder 2"]);
+        done();
+      });
+    });
+
+    it("returns folders that have ciphers within the selected organization", (done) => {
+      service.updateFilter({
+        organizationId: "1234",
+      });
+      folderViews$.next([
+        { id: "1234", name: "Folder 1" },
+        { id: "2345", name: "Folder 2" },
+      ]);
+
+      cipherViews$.next({
+        "1": { folderId: "1234", organizationId: "1234" },
+        "2": { folderId: "2345", organizationId: "56789" },
+      });
+
+      service.folders$.subscribe((folders) => {
+        expect(folders.map((f) => f.label)).toEqual(["Folder 1"]);
+        done();
+      });
+    });
+  });
+
+  describe("filterCiphers", () => {
+    const ciphers = [
+      { type: CipherType.Login, collectionIds: [], organizationId: null },
+      { type: CipherType.Card, collectionIds: ["1234"], organizationId: "8978" },
+      { type: CipherType.Identity, collectionIds: [], folderId: "5432", organizationId: null },
+      { type: CipherType.SecureNote, collectionIds: [], organizationId: null },
+    ] as CipherView[];
+
+    const filters: PopupListFilter = {
+      cipherType: null,
+      organizationId: null,
+      collectionId: null,
+      folderId: null,
+    };
+
+    it("filters by cipherType", () => {
+      expect(service.filterCiphers(ciphers, { ...filters, cipherType: CipherType.Login })).toEqual([
+        ciphers[0],
+      ]);
+    });
+
+    it("filters by collection", () => {
+      expect(service.filterCiphers(ciphers, { ...filters, collectionId: "1234" })).toEqual([
+        ciphers[1],
+      ]);
+    });
+
+    it("filters by folder", () => {
+      expect(service.filterCiphers(ciphers, { ...filters, folderId: "5432" })).toEqual([
+        ciphers[2],
+      ]);
+    });
+
+    describe("organizationId", () => {
+      it("filters out ciphers that belong to an organization when MyVault is selected", () => {
+        expect(service.filterCiphers(ciphers, { ...filters, organizationId: MY_VAULT_ID })).toEqual(
+          [ciphers[0], ciphers[2], ciphers[3]],
+        );
+      });
+
+      it("filters out ciphers that do not belong to the selected organization", () => {
+        expect(service.filterCiphers(ciphers, { ...filters, organizationId: "8978" })).toEqual([
+          ciphers[1],
+        ]);
+      });
+    });
+  });
 });

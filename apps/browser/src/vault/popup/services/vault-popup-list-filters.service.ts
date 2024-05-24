@@ -17,11 +17,12 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
+import { ChipSelectOption } from "@bitwarden/components";
 
 export type PopupListFilter = {
   organizationId: string | null;
@@ -57,7 +58,8 @@ const allCipherTypes: { value: CipherType; label: string; icon: string }[] = [
 /** Delimiter that denotes a level of nesting  */
 const NestingDelimiter = "/";
 
-const MyVaultId = "MyVault";
+/** Id assigned to the "My vault" organization */
+export const MY_VAULT_ID = "MyVault";
 
 @Injectable({
   providedIn: "root",
@@ -80,44 +82,45 @@ export class VaultPopupListFiltersService {
     private collectionService: CollectionService,
   ) {}
 
-  updateFilter(filter: Partial<PopupListFilter>): void {
+  updateFilter(filters: Partial<PopupListFilter>): void {
     this._filters$.next({
       ...this._filters$.value,
-      ...filter,
+      ...filters,
     });
   }
 
   filterCiphers = (ciphers: CipherView[], filters: PopupListFilter): CipherView[] => {
     return ciphers.filter((cipher) => {
-      let satisfiesFilter = true;
-
       if (filters.cipherType !== null && cipher.type !== filters.cipherType) {
-        satisfiesFilter = satisfiesFilter && false;
+        return false;
       }
 
-      if (
-        filters.organizationId === MyVaultId &&
-        cipher.organizationId !== null &&
-        filters.organizationId !== null &&
-        filters.organizationId !== MyVaultId &&
-        cipher.organizationId !== filters.organizationId
-      ) {
-        satisfiesFilter = satisfiesFilter && false;
+      const isMyVault = filters.organizationId === MY_VAULT_ID;
+
+      if (isMyVault) {
+        if (cipher.organizationId !== null) {
+          return false;
+        }
+      } else if (filters.organizationId !== null) {
+        if (cipher.organizationId !== filters.organizationId) {
+          return false;
+        }
       }
 
       if (filters.collectionId !== null && !cipher.collectionIds.includes(filters.collectionId)) {
-        satisfiesFilter = satisfiesFilter && false;
+        return false;
       }
 
       if (filters.folderId !== null && cipher.folderId !== filters.folderId) {
-        satisfiesFilter = satisfiesFilter && false;
+        return false;
       }
-      return satisfiesFilter;
+
+      return true;
     });
   };
 
   /** Available cipher types */
-  cipherTypes$ = combineLatest([
+  cipherTypes$: Observable<ChipSelectOption<string | CipherType>[]> = combineLatest([
     this.vaultSettingsService.showCardsCurrentTab$,
     this.vaultSettingsService.showIdentitiesCurrentTab$,
   ]).pipe(
@@ -133,26 +136,39 @@ export class VaultPopupListFiltersService {
         return true;
       });
     }),
+    map((cipherTypes) =>
+      cipherTypes.map((cipherType) => ({
+        ...cipherType,
+        label: this.i18nService.t(cipherType.label),
+      })),
+    ),
   );
 
-  organizations$ = this.organizationService.memberOrganizations$.pipe(
-    map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
-    map((orgs) => {
-      // When the user is a member of an organization, make  the "My Vault" option available
-      if (orgs.length) {
-        return [
-          {
-            id: MyVaultId,
-            name: this.i18nService.t("myVault"),
-          },
-          ...orgs,
-        ];
-      }
-      return orgs;
-    }),
-  );
+  organizations$: Observable<ChipSelectOption<string>[]> =
+    this.organizationService.memberOrganizations$.pipe(
+      map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
+      map((orgs) => {
+        // When the user is a member of an organization, make  the "My Vault" option available
+        if (orgs.length) {
+          return [
+            {
+              value: MY_VAULT_ID,
+              label: this.i18nService.t("myVault"),
+              icon: "bwi-user",
+            },
+            ...orgs.map((org) => ({
+              value: org.id,
+              label: org.name,
+              icon: org.planProductType === 1 ? "bwi-family" : "bwi-business",
+            })),
+          ];
+        }
 
-  folders$: Observable<DynamicTreeNode<FolderView>> = combineLatest([
+        return [];
+      }),
+    );
+
+  folders$: Observable<ChipSelectOption<string>[]> = combineLatest([
     this.filters$.pipe(
       distinctUntilChanged(
         (previousFilter, currentFilter) =>
@@ -162,10 +178,12 @@ export class VaultPopupListFiltersService {
     this.folderService.folderViews$,
     this.cipherService.cipherViews$,
   ]).pipe(
-    map(([filters, folders, ciphers]) => {
+    map(([filters, allFolders, ciphers]) => {
       const organizationId = filters.organizationId;
+      // Remove "No Folder" option
+      const folders = allFolders.filter((f) => f.id !== null);
 
-      if (organizationId === null || organizationId === MyVaultId) {
+      if (organizationId === null || organizationId === MY_VAULT_ID) {
         return folders;
       }
 
@@ -180,9 +198,10 @@ export class VaultPopupListFiltersService {
         nestedList: nestedFolders,
       });
     }),
+    map((collections) => collections.nestedList.map(this.convertToChipSelectOption.bind(this))),
   );
 
-  collections$: Observable<DynamicTreeNode<CollectionView>> = this.filters$.pipe(
+  collections$: Observable<ChipSelectOption<string>[]> = this.filters$.pipe(
     distinctUntilChanged(
       // Only update the collections when the organizationId filter changes
       (previousFilter, currentFilter) =>
@@ -210,7 +229,19 @@ export class VaultPopupListFiltersService {
         nestedList: nestedCollections,
       });
     }),
+    map((collections) => collections.nestedList.map(this.convertToChipSelectOption.bind(this))),
   );
+
+  private convertToChipSelectOption<T extends ITreeNodeObject>(
+    item: TreeNode<T>,
+  ): ChipSelectOption<string> {
+    return {
+      value: item.node.id,
+      label: item.node.name,
+      icon: "bwi-folder",
+      children: item.children ? item.children.map(this.convertToChipSelectOption) : undefined,
+    };
+  }
 
   private getAllFoldersNested(folders: FolderView[]): TreeNode<FolderView>[] {
     const nodes: TreeNode<FolderView>[] = [];
