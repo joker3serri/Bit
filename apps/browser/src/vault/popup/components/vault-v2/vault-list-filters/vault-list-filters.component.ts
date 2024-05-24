@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { Subject, map, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { SelectModule } from "@bitwarden/components";
+import { ChipSelectComponent } from "@bitwarden/components";
 
 import {
   PopupListFilter,
@@ -15,7 +15,7 @@ import {
   standalone: true,
   selector: "app-vault-list-filters",
   templateUrl: "./vault-list-filters.component.html",
-  imports: [CommonModule, JslibModule, SelectModule, ReactiveFormsModule],
+  imports: [CommonModule, JslibModule, ChipSelectComponent, ReactiveFormsModule],
 })
 export class VaultListFiltersComponent implements OnInit, OnDestroy {
   protected destroy$ = new Subject<void>();
@@ -27,17 +27,10 @@ export class VaultListFiltersComponent implements OnInit, OnDestroy {
     folderId: null,
   });
 
-  protected cipherTypes$ = this.vaultPopupListFiltersService.cipherTypes$;
   protected organizations$ = this.vaultPopupListFiltersService.organizations$;
-  protected collections$ = this.vaultPopupListFiltersService.collections$.pipe(
-    map((collections) => collections.fullList),
-  );
-
-  protected allFolders$ = this.vaultPopupListFiltersService.folders$.pipe(
-    map((nestedFolders) => {
-      return nestedFolders.fullList.filter((folder) => folder.id !== null);
-    }),
-  );
+  protected collections$ = this.vaultPopupListFiltersService.collections$;
+  protected folders$ = this.vaultPopupListFiltersService.folders$;
+  protected cipherTypes$ = this.vaultPopupListFiltersService.cipherTypes$;
 
   constructor(
     private formBuilder: FormBuilder,

@@ -1,54 +1,39 @@
 <form [formGroup]="filterForm" class="tw-flex tw-flex-wrap tw-gap-2 tw-mb-6">
   <ng-container *ngIf="organizations$ | async as organizations">
-    <bit-select
+    <bit-chip-select
       *ngIf="organizations.length"
-      [placeholder]="'vault' | i18n"
-      class="tw-max-w-32"
       formControlName="organizationId"
+      placeholderIcon="bwi-vault"
+      [placeholderText]="'vault' | i18n"
+      [options]="organizations"
     >
-      <bit-option
-        *ngFor="let organization of organizations"
-        [value]="organization.id"
-        [label]="organization.name"
-      ></bit-option>
-    </bit-select>
+    </bit-chip-select>
   </ng-container>
   <ng-container *ngIf="collections$ | async as collections">
-    <bit-select
+    <bit-chip-select
       *ngIf="collections.length"
-      [placeholder]="'collections' | i18n"
-      class="tw-max-w-32"
       formControlName="collectionId"
+      placeholderIcon="bwi-collection"
+      [placeholderText]="'collections' | i18n"
+      [options]="collections"
     >
-      <bit-option
-        *ngFor="let collection of collections"
-        [value]="collection.id"
-        [label]="collection.name"
-        icon="bwi-folder"
-      ></bit-option>
-    </bit-select>
+    </bit-chip-select>
   </ng-container>
-  <ng-container *ngIf="allFolders$ | async as folders">
-    <bit-select
+  <ng-container *ngIf="folders$ | async as folders">
+    <bit-chip-select
       *ngIf="folders.length"
-      [placeholder]="'folders' | i18n"
-      class="tw-max-w-32"
+      placeholderIcon="bwi-folder"
       formControlName="folderId"
+      [placeholderText]="'folder' | i18n"
+      [options]="folders"
     >
-      <bit-option
-        *ngFor="let folder of folders"
-        [value]="folder.id"
-        [label]="folder.name"
-        icon="bwi-folder"
-      ></bit-option>
-    </bit-select>
+    </bit-chip-select>
   </ng-container>
-  <bit-select [placeholder]="'types' | i18n" class="tw-max-w-32" formControlName="cipherType">
-    <bit-option
-      *ngFor="let type of cipherTypes$ | async"
-      [value]="type.value"
-      [label]="type.label | i18n"
-      [icon]="type.icon"
-    ></bit-option>
-  </bit-select>
+  <bit-chip-select
+    formControlName="cipherType"
+    placeholderIcon="bwi-list"
+    [placeholderText]="'types' | i18n"
+    [options]="cipherTypes$ | async"
+  >
+  </bit-chip-select>
 </form>
