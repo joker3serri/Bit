@@ -2217,7 +2217,7 @@
     "placeholders": {
       "organization": {
         "content": "$1",
-        "example": "My Org Name"
+        "example": "ACME Moving Co."
       }
     }
   },
