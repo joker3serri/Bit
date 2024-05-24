@@ -129,7 +129,6 @@ module.exports = {
       );
     }),
     plugin(function ({ addVariant }) {
-      // addVariant('hover', ['&:hover', '&.pseudo-hover']);
       for (const state of [
         "active",
         "hover",
