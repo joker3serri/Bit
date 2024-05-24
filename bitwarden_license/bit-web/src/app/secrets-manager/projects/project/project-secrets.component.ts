@@ -79,24 +79,24 @@ export class ProjectSecretsComponent {
     return await this.secretService.getSecretsByProject(this.organizationId, this.projectId);
   }
 
-  openEditSecret(secret: SecretListView) {
-    if (secret.write) {
-      this.dialogService.open<unknown, SecretOperation>(SecretDialogComponent, {
-        data: {
-          organizationId: this.organizationId,
-          operation: OperationType.Edit,
-          secretId: secret.id,
-          organizationEnabled: this.organizationEnabled,
-        },
-      });
-    } else {
-      this.dialogService.open<unknown, SecretViewDialogParams>(SecretViewDialogComponent, {
-        data: {
-          organizationId: this.organizationId,
-          secretId: secret.id,
-        },
-      });
-    }
+  openEditSecret(secretId: string) {
+    this.dialogService.open<unknown, SecretOperation>(SecretDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        operation: OperationType.Edit,
+        secretId: secretId,
+        organizationEnabled: this.organizationEnabled,
+      },
+    });
+  }
+
+  openViewSecret(secretId: string) {
+    this.dialogService.open<unknown, SecretViewDialogParams>(SecretViewDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        secretId: secretId,
+      },
+    });
   }
 
   openDeleteSecret(event: SecretListView[]) {

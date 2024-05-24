@@ -35,7 +35,8 @@ export class SecretsListComponent implements OnDestroy {
 
   @Input() trash: boolean;
 
-  @Output() editSecretEvent = new EventEmitter<SecretListView>();
+  @Output() editSecretEvent = new EventEmitter<string>();
+  @Output() viewSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
   @Output() copySecretValueEvent = new EventEmitter<string>();
   @Output() copySecretUuidEvent = new EventEmitter<string>();
@@ -114,6 +115,14 @@ export class SecretsListComponent implements OnDestroy {
 
     return aProjects[0]?.name.localeCompare(bProjects[0].name);
   };
+
+  protected editSecret(secret: SecretListView) {
+    if (secret.write) {
+      this.editSecretEvent.emit(secret.id);
+    } else {
+      this.viewSecretEvent.emit(secret.id);
+    }
+  }
 
   /**
    * TODO: Refactor to smart component and remove

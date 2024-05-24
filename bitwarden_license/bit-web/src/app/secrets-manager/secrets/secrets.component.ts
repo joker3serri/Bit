@@ -68,24 +68,24 @@ export class SecretsComponent implements OnInit {
     return await this.secretService.getSecrets(this.organizationId);
   }
 
-  openEditSecret(secret: SecretListView) {
-    if (secret.write) {
-      this.dialogService.open<unknown, SecretOperation>(SecretDialogComponent, {
-        data: {
-          organizationId: this.organizationId,
-          operation: OperationType.Edit,
-          secretId: secret.id,
-          organizationEnabled: this.organizationEnabled,
-        },
-      });
-    } else {
-      this.dialogService.open<unknown, SecretViewDialogParams>(SecretViewDialogComponent, {
-        data: {
-          organizationId: this.organizationId,
-          secretId: secret.id,
-        },
-      });
-    }
+  openEditSecret(secretId: string) {
+    this.dialogService.open<unknown, SecretOperation>(SecretDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        operation: OperationType.Edit,
+        secretId: secretId,
+        organizationEnabled: this.organizationEnabled,
+      },
+    });
+  }
+
+  openViewSecret(secretId: string) {
+    this.dialogService.open<unknown, SecretViewDialogParams>(SecretViewDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        secretId: secretId,
+      },
+    });
   }
 
   openDeleteSecret(event: SecretListView[]) {
