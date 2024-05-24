@@ -64,10 +64,12 @@ describe("AccessPolicySelectorService", () => {
 
       const selectedPolicyValues: ApItemValueType[] = [];
       selectedPolicyValues.push(
-        createApItemValueType({
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemValueType(
+          {
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       );
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -80,10 +82,12 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUser: true,
-        }),
+        createApItemValueType(
+          {
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          true,
+        ),
       ];
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -96,12 +100,15 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          id: "groupId",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanRead,
-          currentUserInGroup: true,
-        }),
+        createApItemValueType(
+          {
+            id: "groupId",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanRead,
+          },
+          false,
+          true,
+        ),
       ];
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -114,12 +121,15 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          id: "groupId",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUserInGroup: true,
-        }),
+        createApItemValueType(
+          {
+            id: "groupId",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          false,
+          true,
+        ),
       ];
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -132,12 +142,15 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          id: "groupId",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUserInGroup: false,
-        }),
+        createApItemValueType(
+          {
+            id: "groupId",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          false,
+          false,
+        ),
       ];
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -150,16 +163,21 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
-        createApItemValueType({
-          id: "groupId",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUserInGroup: true,
-        }),
+        createApItemValueType(
+          {
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
+        createApItemValueType(
+          {
+            id: "groupId",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          false,
+          true,
+        ),
       ];
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -172,16 +190,21 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
-        createApItemValueType({
-          id: "groupId",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUserInGroup: false,
-        }),
+        createApItemValueType(
+          {
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
+        createApItemValueType(
+          {
+            id: "groupId",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          false,
+          false,
+        ),
       ];
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -194,16 +217,21 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
-        createApItemValueType({
-          id: "groupId",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanRead,
-          currentUserInGroup: true,
-        }),
+        createApItemValueType(
+          {
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
+        createApItemValueType(
+          {
+            id: "groupId",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanRead,
+          },
+          false,
+          true,
+        ),
       ];
 
       const result = await sut.showAccessRemovalWarning(org.id, selectedPolicyValues);
@@ -232,11 +260,13 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [];
 
@@ -254,11 +284,13 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [];
 
@@ -275,11 +307,13 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [];
 
@@ -296,12 +330,15 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanRead,
-          currentUserInGroup: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanRead,
+          },
+          false,
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [];
 
@@ -318,11 +355,13 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [
         createApItemValueType({
@@ -345,19 +384,25 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUserInGroup: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          false,
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanRead,
-          currentUserInGroup: true,
-        }),
+        createApItemValueType(
+          {
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanRead,
+          },
+          false,
+          true,
+        ),
       ];
 
       const result = await sut.showSecretAccessRemovalWarning(
@@ -373,18 +418,22 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          type: ApItemEnum.User,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUser: true,
-        }),
+        createApItemValueType(
+          {
+            type: ApItemEnum.User,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          true,
+        ),
       ];
 
       const result = await sut.showSecretAccessRemovalWarning(
@@ -400,19 +449,25 @@ describe("AccessPolicySelectorService", () => {
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUserInGroup: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          false,
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          type: ApItemEnum.Group,
-          permission: ApPermissionEnum.CanReadWrite,
-          currentUserInGroup: true,
-        }),
+        createApItemValueType(
+          {
+            type: ApItemEnum.Group,
+            permission: ApPermissionEnum.CanReadWrite,
+          },
+          false,
+          true,
+        ),
       ];
 
       const result = await sut.showSecretAccessRemovalWarning(
@@ -436,11 +491,13 @@ describe("AccessPolicySelectorService", () => {
     it("returns false when there are no previous policies", async () => {
       const currentAccessPolicies: ApItemViewType[] = [];
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemValueType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
 
       const result = sut.isAccessRemoval(currentAccessPolicies, selectedPolicyValues);
@@ -449,18 +506,22 @@ describe("AccessPolicySelectorService", () => {
     });
     it("returns false when previous policies and selected policies are the same", async () => {
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemValueType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
 
       const result = sut.isAccessRemoval(currentAccessPolicies, selectedPolicyValues);
@@ -469,23 +530,29 @@ describe("AccessPolicySelectorService", () => {
     });
     it("returns false when previous policies are still selected", async () => {
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
-        createApItemValueType({
-          id: "example-2",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemValueType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
+        createApItemValueType(
+          {
+            id: "example-2",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
 
       const result = sut.isAccessRemoval(currentAccessPolicies, selectedPolicyValues);
@@ -494,23 +561,29 @@ describe("AccessPolicySelectorService", () => {
     });
     it("returns true when previous policies are not selected", async () => {
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          id: "example",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            id: "example",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [
-        createApItemValueType({
-          id: "test",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
-        createApItemValueType({
-          id: "example-2",
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemValueType(
+          {
+            id: "test",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
+        createApItemValueType(
+          {
+            id: "example-2",
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
 
       const result = sut.isAccessRemoval(currentAccessPolicies, selectedPolicyValues);
@@ -519,10 +592,12 @@ describe("AccessPolicySelectorService", () => {
     });
     it("returns true when there are previous policies and nothing was selected", async () => {
       const currentAccessPolicies: ApItemViewType[] = [
-        createApItemViewType({
-          permission: ApPermissionEnum.CanRead,
-          currentUser: true,
-        }),
+        createApItemViewType(
+          {
+            permission: ApPermissionEnum.CanRead,
+          },
+          true,
+        ),
       ];
       const selectedPolicyValues: ApItemValueType[] = [];
 
@@ -544,27 +619,45 @@ const orgFactory = (props: Partial<Organization> = {}) =>
     props,
   );
 
-function createApItemValueType(options: Partial<ApItemValueType> = {}) {
-  return {
+function createApItemValueType(
+  options: Partial<ApItemValueType> = {},
+  currentUser = false,
+  currentUserInGroup = false,
+) {
+  const item: ApItemValueType = {
     id: options?.id ?? "test",
     type: options?.type ?? ApItemEnum.User,
     permission: options?.permission ?? ApPermissionEnum.CanRead,
-    currentUser: options?.currentUser ?? false,
-    currentUserInGroup: options?.currentUserInGroup ?? false,
   };
+  if (item.type === ApItemEnum.User) {
+    item.currentUser = currentUser;
+  }
+  if (item.type === ApItemEnum.Group) {
+    item.currentUserInGroup = currentUserInGroup;
+  }
+  return item;
 }
 
-function createApItemViewType(options: Partial<ApItemViewType> = {}) {
-  return {
+function createApItemViewType(
+  options: Partial<ApItemViewType> = {},
+  currentUser = false,
+  currentUserInGroup = false,
+) {
+  const item: ApItemViewType = {
     id: options?.id ?? "test",
     listName: options?.listName ?? "test",
     labelName: options?.labelName ?? "test",
     type: options?.type ?? ApItemEnum.User,
     permission: options?.permission ?? ApPermissionEnum.CanRead,
     readOnly: options?.readOnly ?? false,
-    currentUser: options?.currentUser ?? false,
-    currentUserInGroup: options?.currentUserInGroup ?? false,
   };
+  if (item.type === ApItemEnum.User) {
+    item.currentUser = currentUser;
+  }
+  if (item.type === ApItemEnum.Group) {
+    item.currentUserInGroup = currentUserInGroup;
+  }
+  return item;
 }
 
 function setupUserOrg() {

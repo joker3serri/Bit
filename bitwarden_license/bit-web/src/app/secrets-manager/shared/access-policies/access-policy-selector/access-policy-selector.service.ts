@@ -75,15 +75,15 @@ export class AccessPolicySelectorService {
     return !currentIds.every((id) => selectedIds.includes(id));
   }
 
-  private userHasReadWriteAccess(policies: ApItemViewType[] | ApItemValueType[]): boolean {
-    const userReadWritePolicy = policies.find(
+  private userHasReadWriteAccess(policies: ApItemValueType[] | ApItemViewType[]): boolean {
+    const userReadWritePolicy = (policies as Array<ApItemValueType | ApItemViewType>).find(
       (s) =>
         s.type === ApItemEnum.User &&
         s.currentUser &&
         s.permission === ApPermissionEnum.CanReadWrite,
     );
 
-    const groupReadWritePolicies = policies.filter(
+    const groupReadWritePolicies = (policies as Array<ApItemValueType | ApItemViewType>).filter(
       (s) =>
         s.type === ApItemEnum.Group &&
         s.permission == ApPermissionEnum.CanReadWrite &&
