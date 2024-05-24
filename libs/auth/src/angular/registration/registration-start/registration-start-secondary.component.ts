@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -10,10 +10,6 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
   templateUrl: "./registration-start-secondary.component.html",
   imports: [CommonModule, JslibModule, RouterModule],
 })
-export class RegistrationStartSecondaryComponent implements OnInit, OnDestroy {
+export class RegistrationStartSecondaryComponent {
   constructor() {}
-
-  ngOnInit() {}
-
-  ngOnDestroy() {}
 }
