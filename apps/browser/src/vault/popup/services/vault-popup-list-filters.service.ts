@@ -58,7 +58,7 @@ const allCipherTypes: { value: CipherType; label: string; icon: string }[] = [
 ];
 
 /** Delimiter that denotes a level of nesting  */
-const NestingDelimiter = "/";
+const NESTING_DELIMITER = "/";
 
 /** Id assigned to the "My vault" organization */
 export const MY_VAULT_ID = "MyVault";
@@ -303,8 +303,8 @@ export class VaultPopupListFiltersService {
 
       // Remove "/" from beginning and end of the folder name
       // then split the folder name by the delimiter
-      const parts = f.name != null ? f.name.replace(/^\/+|\/+$/g, "").split(NestingDelimiter) : [];
-      ServiceUtils.nestedTraverse(nodes, 0, parts, folderCopy, null, NestingDelimiter);
+      const parts = f.name != null ? f.name.replace(/^\/+|\/+$/g, "").split(NESTING_DELIMITER) : [];
+      ServiceUtils.nestedTraverse(nodes, 0, parts, folderCopy, null, NESTING_DELIMITER);
     });
 
     return nodes;
