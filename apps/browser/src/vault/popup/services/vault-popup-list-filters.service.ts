@@ -12,6 +12,7 @@ import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dy
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -178,10 +179,36 @@ export class VaultPopupListFiltersService {
     this.folderService.folderViews$,
     this.cipherService.cipherViews$,
   ]).pipe(
-    map(([filters, allFolders, ciphers]) => {
+    map(
+      ([filters, folders, ciphers]): [
+        PopupListFilter,
+        FolderView[],
+        Record<CipherId, CipherView>,
+      ] => {
+        if (folders.length === 1 && folders[0].id === null) {
+          // Do not display folder selections when only the "no folder" option is available.
+          return [filters, [], ciphers];
+        }
+
+        // Sort folders by alphabetic name
+        folders.sort(Utils.getSortFunction(this.i18nService, "name"));
+        let arrangedFolders = folders;
+
+        const noFolder = folders.find((f) => f.id === null);
+
+        if (noFolder) {
+          // Update `name` of the "no folder" option to "Items with no folder"
+          noFolder.name = this.i18nService.t("itemsWithNoFolder");
+
+          // Move the "no folder" option to the end of the list
+          arrangedFolders = [...folders.filter((f) => f.id !== null), noFolder];
+        }
+
+        return [filters, arrangedFolders, ciphers];
+      },
+    ),
+    map(([filters, folders, ciphers]) => {
       const organizationId = filters.organizationId;
-      // Remove "No Folder" option
-      const folders = allFolders.filter((f) => f.id !== null);
 
       if (organizationId === null || organizationId === MY_VAULT_ID) {
         return folders;

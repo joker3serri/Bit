@@ -224,7 +224,7 @@
   },
   "continueToAuthenticatorPageDesc": {
     "message": "Bitwarden Authenticator allows you to store authenticator keys and generate TOTP codes for 2-step verification flows. Learn more on the bitwarden.com website"
-  },  
+  },
   "bitwardenSecretsManager": {
     "message": "Bitwarden Secrets Manager"
   },
@@ -3291,5 +3291,8 @@
         "example": "Work"
       }
     }
+  },
+  "itemsWithNoFolder": {
+    "message": "Items with no folder"
   }
 }

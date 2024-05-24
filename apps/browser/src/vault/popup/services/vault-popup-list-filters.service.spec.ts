@@ -187,14 +187,24 @@ describe("VaultPopupListFiltersService", () => {
   });
 
   describe("folders$", () => {
-    it('removes "No Folder" option', (done) => {
+    it('returns no folders when "No Folder" is the only option', (done) => {
+      folderViews$.next([{ id: null, name: "No Folder" }]);
+
+      service.folders$.subscribe((folders) => {
+        expect(folders).toEqual([]);
+        done();
+      });
+    });
+
+    it('moves "No Folder" to the end of the list', (done) => {
       folderViews$.next([
         { id: null, name: "No Folder" },
+        { id: "2345", name: "Folder 2" },
         { id: "1234", name: "Folder 1" },
       ]);
 
       service.folders$.subscribe((folders) => {
-        expect(folders.map((f) => f.label)).not.toContain("No Folder");
+        expect(folders.map((f) => f.label)).toEqual(["Folder 1", "Folder 2", "itemsWithNoFolder"]);
         done();
       });
     });
@@ -218,6 +228,7 @@ describe("VaultPopupListFiltersService", () => {
       service.updateFilter({
         organizationId: "1234",
       });
+
       folderViews$.next([
         { id: "1234", name: "Folder 1" },
         { id: "2345", name: "Folder 2" },
