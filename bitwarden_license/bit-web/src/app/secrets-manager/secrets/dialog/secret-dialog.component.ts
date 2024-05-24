@@ -102,6 +102,10 @@ export class SecretDialogComponent implements OnInit {
     }
   }
 
+  get deleteButtonIsVisible(): boolean {
+    return this.data.operation === OperationType.Edit;
+  }
+
   async ngOnInit() {
     this.loading = true;
     if (this.data.operation === OperationType.Edit && this.data.secretId) {
@@ -168,7 +172,6 @@ export class SecretDialogComponent implements OnInit {
       await this.createSecret(secretView, secretAccessPoliciesView);
     } else {
       secretView.id = this.data.secretId;
-
       await this.updateSecret(secretView, secretAccessPoliciesView);
     }
     this.dialogRef.close();
@@ -199,10 +202,9 @@ export class SecretDialogComponent implements OnInit {
       this.data.organizationId,
       this.data.secretId,
     );
-    const currentPeoplePolicies = currentAccessPolicies.filter(
+    this.currentPeopleAccessPolicies = currentAccessPolicies.filter(
       (p) => p.type === ApItemEnum.User || p.type === ApItemEnum.Group,
     );
-    this.currentPeopleAccessPolicies = currentPeoplePolicies;
     const currentServiceAccountPolicies = currentAccessPolicies.filter(
       (p) => p.type === ApItemEnum.ServiceAccount,
     );
@@ -223,7 +225,7 @@ export class SecretDialogComponent implements OnInit {
       notes: secret.note,
       project: secret.projects[0]?.id ?? "",
       newProjectName: "",
-      peopleAccessPolicies: currentPeoplePolicies.map((m) => ({
+      peopleAccessPolicies: this.currentPeopleAccessPolicies.map((m) => ({
         type: m.type,
         id: m.id,
         permission: m.permission,
@@ -286,10 +288,6 @@ export class SecretDialogComponent implements OnInit {
     }
 
     this.formGroup.get("newProjectName").updateValueAndValidity();
-  }
-
-  get deleteButtonIsVisible(): boolean {
-    return this.data.operation === OperationType.Edit;
   }
 
   private async createProject(projectView: ProjectView) {
