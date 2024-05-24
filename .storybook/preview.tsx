@@ -106,6 +106,12 @@ const preview: Preview = {
       },
     },
     docs: { source: { type: "dynamic", excludeDecorators: true } },
+    pseudo: {
+      hover: "[sb-hover]",
+      focusVisible: "[sb-focus-visible]",
+      focusWithin: "[sb-focus-within]",
+      active: "[sb-active]",
+    },
   },
 };
 
