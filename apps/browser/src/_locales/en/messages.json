@@ -1077,6 +1077,12 @@
   "selfHostedEnvironmentFooter": {
     "message": "Specify the base URL of your on-premises hosted Bitwarden installation."
   },
+  "selfHostedBaseUrlHint": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader" :{
+    "message": "For advanced configuration, you can specify the base URL of each service independently."
+  },
   "customEnvironment": {
     "message": "Custom environment"
   },
