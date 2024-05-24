@@ -7,6 +7,7 @@ import {
   redirectGuard,
   tdeDecryptionRequiredGuard,
   UnauthGuard,
+  unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
 import { AnonLayoutWrapperComponent } from "@bitwarden/auth/angular";
 
@@ -304,6 +305,7 @@ const routes: Routes = [
       {
         path: "sso",
         component: SsoComponent,
+        canActivate: [unauthGuardFn()],
         data: {
           pageTitle: "enterpriseSingleSignOn",
           titleId: "enterpriseSingleSignOn",
