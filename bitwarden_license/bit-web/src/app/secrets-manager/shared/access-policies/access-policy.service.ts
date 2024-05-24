@@ -327,6 +327,146 @@ export class AccessPolicyService {
     };
   }
 
+  private createUserAccessPolicyView(
+    response:
+      | UserProjectAccessPolicyResponse
+      | UserSecretAccessPolicyResponse
+      | UserServiceAccountAccessPolicyResponse,
+  ) {
+    return {
+      ...this.createBaseAccessPolicyView(response),
+      organizationUserId: response.organizationUserId,
+      organizationUserName: response.organizationUserName,
+      userId: response.userId,
+      currentUser: response.currentUser,
+    };
+  }
+
+  private createUserProjectAccessPolicyView(
+    response: UserProjectAccessPolicyResponse,
+  ): UserProjectAccessPolicyView {
+    return {
+      ...this.createUserAccessPolicyView(response),
+      grantedProjectId: response.grantedProjectId,
+    };
+  }
+
+  private createUserServiceAccountAccessPolicyView(
+    response: UserServiceAccountAccessPolicyResponse,
+  ): UserServiceAccountAccessPolicyView {
+    return {
+      ...this.createUserAccessPolicyView(response),
+      grantedServiceAccountId: response.grantedServiceAccountId,
+    };
+  }
+
+  private createUserSecretAccessPolicyView(
+    response: UserSecretAccessPolicyResponse,
+  ): UserSecretAccessPolicyView {
+    return {
+      ...this.createUserAccessPolicyView(response),
+      grantedSecretId: response.grantedSecretId,
+    };
+  }
+
+  private createGroupAccessPolicyView(
+    response:
+      | GroupProjectAccessPolicyResponse
+      | GroupSecretAccessPolicyResponse
+      | GroupServiceAccountAccessPolicyResponse,
+  ) {
+    return {
+      ...this.createBaseAccessPolicyView(response),
+      groupId: response.groupId,
+      groupName: response.groupName,
+      currentUserInGroup: response.currentUserInGroup,
+    };
+  }
+
+  private createGroupProjectAccessPolicyView(
+    response: GroupProjectAccessPolicyResponse,
+  ): GroupProjectAccessPolicyView {
+    return {
+      ...this.createGroupAccessPolicyView(response),
+      grantedProjectId: response.grantedProjectId,
+    };
+  }
+
+  private createGroupServiceAccountAccessPolicyView(
+    response: GroupServiceAccountAccessPolicyResponse,
+  ): GroupServiceAccountAccessPolicyView {
+    return {
+      ...this.createGroupAccessPolicyView(response),
+      grantedServiceAccountId: response.grantedServiceAccountId,
+    };
+  }
+
+  private createGroupSecretAccessPolicyView(
+    response: GroupSecretAccessPolicyResponse,
+  ): GroupSecretAccessPolicyView {
+    return {
+      ...this.createGroupAccessPolicyView(response),
+      grantedSecretId: response.grantedSecretId,
+    };
+  }
+
+  private async createServiceAccountAccessPolicyView(
+    organizationKey: SymmetricCryptoKey,
+    response: ServiceAccountProjectAccessPolicyResponse | ServiceAccountSecretAccessPolicyResponse,
+  ) {
+    return {
+      ...this.createBaseAccessPolicyView(response),
+      serviceAccountId: response.serviceAccountId,
+      serviceAccountName: response.serviceAccountName
+        ? await this.encryptService.decryptToUtf8(
+            new EncString(response.serviceAccountName),
+            organizationKey,
+          )
+        : null,
+    };
+  }
+
+  private async createServiceAccountProjectAccessPolicyView(
+    organizationKey: SymmetricCryptoKey,
+    response: ServiceAccountProjectAccessPolicyResponse,
+  ): Promise<ServiceAccountProjectAccessPolicyView> {
+    return {
+      ...(await this.createServiceAccountAccessPolicyView(organizationKey, response)),
+      grantedProjectId: response.grantedProjectId,
+      grantedProjectName: response.grantedProjectName
+        ? await this.encryptService.decryptToUtf8(
+            new EncString(response.grantedProjectName),
+            organizationKey,
+          )
+        : null,
+    };
+  }
+
+  private async createServiceAccountSecretAccessPolicyView(
+    organizationKey: SymmetricCryptoKey,
+    response: ServiceAccountSecretAccessPolicyResponse,
+  ): Promise<ServiceAccountSecretAccessPolicyView> {
+    return {
+      ...(await this.createServiceAccountAccessPolicyView(organizationKey, response)),
+      grantedSecretId: response.grantedSecretId,
+    };
+  }
+
+  private async createProjectServiceAccountsAccessPoliciesView(
+    response: ProjectServiceAccountsAccessPoliciesResponse,
+    organizationId: string,
+  ): Promise<ProjectServiceAccountsAccessPoliciesView> {
+    const orgKey = await this.getOrganizationKey(organizationId);
+
+    const view = new ProjectServiceAccountsAccessPoliciesView();
+    view.serviceAccountAccessPolicies = await Promise.all(
+      response.serviceAccountAccessPolicies.map(async (ap) => {
+        return await this.createServiceAccountProjectAccessPolicyView(orgKey, ap);
+      }),
+    );
+    return view;
+  }
+
   private async createPotentialGranteeViews(
     organizationId: string,
     results: PotentialGranteeResponse[],
@@ -439,136 +579,6 @@ export class AccessPolicyService {
       }),
     );
 
-    return view;
-  }
-
-  private createUserProjectAccessPolicyView(
-    response: UserProjectAccessPolicyResponse,
-  ): UserProjectAccessPolicyView {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedProjectId: response.grantedProjectId,
-      organizationUserId: response.organizationUserId,
-      organizationUserName: response.organizationUserName,
-      userId: response.userId,
-      currentUser: response.currentUser,
-    };
-  }
-
-  private createGroupProjectAccessPolicyView(
-    response: GroupProjectAccessPolicyResponse,
-  ): GroupProjectAccessPolicyView {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedProjectId: response.grantedProjectId,
-      groupId: response.groupId,
-      groupName: response.groupName,
-      currentUserInGroup: response.currentUserInGroup,
-    };
-  }
-
-  private async createServiceAccountProjectAccessPolicyView(
-    organizationKey: SymmetricCryptoKey,
-    response: ServiceAccountProjectAccessPolicyResponse,
-  ): Promise<ServiceAccountProjectAccessPolicyView> {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedProjectId: response.grantedProjectId,
-      serviceAccountId: response.serviceAccountId,
-      grantedProjectName: response.grantedProjectName
-        ? await this.encryptService.decryptToUtf8(
-            new EncString(response.grantedProjectName),
-            organizationKey,
-          )
-        : null,
-      serviceAccountName: response.serviceAccountName
-        ? await this.encryptService.decryptToUtf8(
-            new EncString(response.serviceAccountName),
-            organizationKey,
-          )
-        : null,
-    };
-  }
-
-  private createUserServiceAccountAccessPolicyView(
-    response: UserServiceAccountAccessPolicyResponse,
-  ): UserServiceAccountAccessPolicyView {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedServiceAccountId: response.grantedServiceAccountId,
-      organizationUserId: response.organizationUserId,
-      organizationUserName: response.organizationUserName,
-      userId: response.userId,
-      currentUser: response.currentUser,
-    };
-  }
-
-  private createGroupServiceAccountAccessPolicyView(
-    response: GroupServiceAccountAccessPolicyResponse,
-  ): GroupServiceAccountAccessPolicyView {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedServiceAccountId: response.grantedServiceAccountId,
-      groupId: response.groupId,
-      groupName: response.groupName,
-      currentUserInGroup: response.currentUserInGroup,
-    };
-  }
-
-  private createUserSecretAccessPolicyView(
-    response: UserSecretAccessPolicyResponse,
-  ): UserSecretAccessPolicyView {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedSecretId: response.grantedSecretId,
-      organizationUserId: response.organizationUserId,
-      organizationUserName: response.organizationUserName,
-      userId: response.userId,
-      currentUser: response.currentUser,
-    };
-  }
-
-  private createGroupSecretAccessPolicyView(
-    response: GroupSecretAccessPolicyResponse,
-  ): GroupSecretAccessPolicyView {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedSecretId: response.grantedSecretId,
-      groupId: response.groupId,
-      groupName: response.groupName,
-      currentUserInGroup: response.currentUserInGroup,
-    };
-  }
-
-  private async createServiceAccountSecretAccessPolicyView(
-    organizationKey: SymmetricCryptoKey,
-    response: ServiceAccountSecretAccessPolicyResponse,
-  ): Promise<ServiceAccountSecretAccessPolicyView> {
-    return {
-      ...this.createBaseAccessPolicyView(response),
-      grantedSecretId: response.grantedSecretId,
-      serviceAccountId: response.serviceAccountId,
-      serviceAccountName: response.serviceAccountName
-        ? await this.encryptService.decryptToUtf8(
-            new EncString(response.serviceAccountName),
-            organizationKey,
-          )
-        : null,
-    };
-  }
-
-  private async createProjectServiceAccountsAccessPoliciesView(
-    response: ProjectServiceAccountsAccessPoliciesResponse,
-    organizationId: string,
-  ): Promise<ProjectServiceAccountsAccessPoliciesView> {
-    const orgKey = await this.getOrganizationKey(organizationId);
-
-    const view = new ProjectServiceAccountsAccessPoliciesView();
-    view.serviceAccountAccessPolicies = await Promise.all(
-      response.serviceAccountAccessPolicies.map(async (ap) => {
-        return await this.createServiceAccountProjectAccessPolicyView(orgKey, ap);
-      }),
-    );
     return view;
   }
 }
