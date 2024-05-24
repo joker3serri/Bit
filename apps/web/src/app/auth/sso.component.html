@@ -1,9 +1,9 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit" class="tw-container">
-  <div *ngIf="loggingIn" class="tw-w-[400px]">
+  <div *ngIf="loggingIn">
     <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
     {{ "loading" | i18n }}
   </div>
-  <div *ngIf="!loggingIn" class="tw-w-[400px]">
+  <div *ngIf="!loggingIn">
     <p bitTypography="body1">{{ "ssoLogInWithOrgIdentifier" | i18n }}</p>
     <bit-form-field>
       <bit-label>{{ "ssoIdentifier" | i18n }}</bit-label>
