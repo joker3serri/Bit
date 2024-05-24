@@ -20,7 +20,16 @@ import { ExportComponent } from "@bitwarden/vault-export-ui";
   ],
 })
 export class ExportBrowserComponent {
+  /**
+   * Used to control the disabled state of the Submit button
+   * Gets set indirectly by the disabled state being emitted from the sub-form when thier form gets disabled or the submit button is clicked
+   */
   protected disabled = false;
+
+  /**
+   * Used to control the disabled state of the Submit button
+   * Gets set indirectly by the loading state being emitted from the sub-form when their form is loading or finished loading
+   */
   protected loading = false;
 
   constructor(private router: Router) {}
