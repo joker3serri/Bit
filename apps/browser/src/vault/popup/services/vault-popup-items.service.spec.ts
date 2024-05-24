@@ -133,6 +133,24 @@ describe("VaultPopupItemsService", () => {
         done();
       });
     });
+
+    it("should filter autoFillCiphers$ down to search term", (done) => {
+      const cipherList = Object.values(allCiphers);
+      const searchText = "Login";
+
+      searchService.searchCiphers.mockImplementation(async () => {
+        return cipherList.filter((cipher) => {
+          return cipher.name.includes(searchText);
+        });
+      });
+
+      // there is only 1 Login returned for filteredCiphers. but two results expected because of other autofill types
+      service.autoFillCiphers$.subscribe((ciphers) => {
+        expect(ciphers[0].name.includes(searchText)).toBe(true);
+        expect(ciphers.length).toBe(2);
+        done();
+      });
+    });
   });
 
   describe("favoriteCiphers$", () => {
@@ -150,6 +168,24 @@ describe("VaultPopupItemsService", () => {
         done();
       });
     });
+
+    it("should filter favoriteCiphers$ down to search term", (done) => {
+      const cipherList = Object.values(allCiphers);
+      const searchText = "Card 2";
+
+      searchService.searchCiphers.mockImplementation(async () => {
+        return cipherList.filter((cipher) => {
+          return cipher.name === searchText;
+        });
+      });
+
+      service.favoriteCiphers$.subscribe((ciphers) => {
+        // There are 2 favorite items but only one Card 2
+        expect(ciphers[0].name).toBe(searchText);
+        expect(ciphers.length).toBe(1);
+        done();
+      });
+    });
   });
 
   describe("remainingCiphers$", () => {
@@ -164,6 +200,23 @@ describe("VaultPopupItemsService", () => {
     it("should sort by last used then by name", (done) => {
       service.remainingCiphers$.subscribe((ciphers) => {
         expect(cipherServiceMock.getLocaleSortingFunction).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it("should filter remainingCiphers$ down to search term", (done) => {
+      const cipherList = Object.values(allCiphers);
+      const searchText = "Login";
+
+      searchService.searchCiphers.mockImplementation(async () => {
+        return cipherList.filter((cipher) => {
+          return cipher.name.includes(searchText);
+        });
+      });
+
+      service.remainingCiphers$.subscribe((ciphers) => {
+        // There are 6 remaining ciphers but only 2 with "Login" in the name
+        expect(ciphers.length).toBe(2);
         done();
       });
     });
@@ -211,6 +264,41 @@ describe("VaultPopupItemsService", () => {
       jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true);
       service.autofillAllowed$.subscribe((allowed) => {
         expect(allowed).toBe(false);
+        done();
+      });
+    });
+  });
+
+  describe("noFilteredResults$", () => {
+    it("should return false when filteredResults has values", (done) => {
+      service.noFilteredResults$.subscribe((noResults) => {
+        expect(noResults).toBe(false);
+        done();
+      });
+    });
+
+    it("should return true when there are zero filteredResults", (done) => {
+      searchService.searchCiphers.mockImplementation(async () => []);
+      service.noFilteredResults$.subscribe((noResults) => {
+        expect(noResults).toBe(true);
+        done();
+      });
+    });
+  });
+
+  describe("hasFilterApplied$", () => {
+    it("should return true if the search term provided is searchable", (done) => {
+      searchService.isSearchable.mockImplementation(async () => true);
+      service.hasFilterApplied$.subscribe((canSearch) => {
+        expect(canSearch).toBe(true);
+        done();
+      });
+    });
+
+    it("should return false if the search term provided is not searchable", (done) => {
+      searchService.isSearchable.mockImplementation(async () => false);
+      service.hasFilterApplied$.subscribe((canSearch) => {
+        expect(canSearch).toBe(false);
         done();
       });
     });
