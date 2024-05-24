@@ -1,7 +1,15 @@
 import { DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, ReactiveFormsModule } from "@angular/forms";
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+} from "@angular/forms";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -18,6 +26,24 @@ import {
   LinkModule,
   TypographyModule,
 } from "@bitwarden/components";
+
+function selfHostedEnvSettingsFormValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const formGroup = control as FormGroup;
+    const baseUrl = formGroup.get("baseUrl")?.value;
+    const webVaultUrl = formGroup.get("webVaultUrl")?.value;
+    const apiUrl = formGroup.get("apiUrl")?.value;
+    const identityUrl = formGroup.get("identityUrl")?.value;
+    const iconsUrl = formGroup.get("iconsUrl")?.value;
+    const notificationsUrl = formGroup.get("notificationsUrl")?.value;
+
+    if (baseUrl || webVaultUrl || apiUrl || identityUrl || iconsUrl || notificationsUrl) {
+      return null; // valid
+    } else {
+      return { atLeastOneUrlIsRequired: true }; // invalid
+    }
+  };
+}
 
 @Component({
   standalone: true,
@@ -46,14 +72,17 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
     return dialogResult;
   }
 
-  formGroup = this.formBuilder.group({
-    baseUrl: [null],
-    webVaultUrl: [null],
-    apiUrl: [null],
-    identityUrl: [null],
-    iconsUrl: [null],
-    notificationsUrl: [null],
-  });
+  formGroup = this.formBuilder.group(
+    {
+      baseUrl: [null],
+      webVaultUrl: [null],
+      apiUrl: [null],
+      identityUrl: [null],
+      iconsUrl: [null],
+      notificationsUrl: [null],
+    },
+    { validators: selfHostedEnvSettingsFormValidator() },
+  );
 
   get baseUrl(): FormControl {
     return this.formGroup.get("baseUrl") as FormControl;
@@ -80,6 +109,7 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
   }
 
   showCustomEnv = false;
+  showErrorSummary = false;
 
   private destroy$ = new Subject<void>();
 
@@ -92,7 +122,12 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
   ngOnInit() {}
 
   submit = async () => {
-    // TODO: add validation
+    this.showErrorSummary = false;
+
+    if (this.formGroup.invalid) {
+      this.showErrorSummary = true;
+      return;
+    }
 
     await this.environmentService.setEnvironment(Region.SelfHosted, {
       base: this.baseUrl.value,

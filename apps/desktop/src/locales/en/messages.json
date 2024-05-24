@@ -701,6 +701,9 @@
   "selfHostedCustomEnvHeader" :{
     "message": "For advanced configuration, you can specify the base URL of each service independently."
   },
+  "selfHostedEnvFormInvalid" :{
+    "message": "You must add either the base Server URL or at least one custom environment."
+  },
   "customEnvironment": {
     "message": "Custom environment"
   },
