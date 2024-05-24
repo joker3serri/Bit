@@ -26,13 +26,22 @@
       />
       <bit-label for="register-start-form-input-accept-policies">
         {{ "acceptPolicies" | i18n }}
-        <a href="https://bitwarden.com/terms/" target="_blank" rel="noreferrer">{{
-          "termsOfService" | i18n
-        }}</a
+        <a
+          bitLink
+          linkType="primary"
+          href="https://bitwarden.com/terms/"
+          target="_blank"
+          rel="noreferrer"
+          >{{ "termsOfService" | i18n }}</a
         >,
-        <a href="https://bitwarden.com/privacy/" target="_blank" rel="noreferrer">{{
-          "privacyPolicy" | i18n
-        }}</a>
+        <a
+          bitLink
+          linkType="primary"
+          href="https://bitwarden.com/privacy/"
+          target="_blank"
+          rel="noreferrer"
+          >{{ "privacyPolicy" | i18n }}</a
+        >
       </bit-label>
     </bit-form-control>
 
@@ -49,7 +58,7 @@
     <h2
       bitTypography="h2"
       id="check_your_email_heading"
-      class="tw-font-bold tw-mb-3"
+      class="tw-font-bold tw-mb-3 tw-text-main"
       tabindex="0"
       appAutofocus
       aria-describedby="follow_the_link_body"
@@ -57,13 +66,13 @@
       {{ "checkYourEmail" | i18n }}
     </h2>
 
-    <p bitTypography="body1" class="tw-text-center tw-mb-3" id="follow_the_link_body">
+    <p bitTypography="body1" class="tw-text-center tw-mb-3 tw-text-main" id="follow_the_link_body">
       {{ "followTheLinkInTheEmailSentTo" | i18n }}
       <span class="tw-font-bold">{{ email.value }}</span>
       {{ "andContinueCreatingYourAccount" | i18n }}
     </p>
 
-    <p bitTypography="helper" class="tw-text-center">
+    <p bitTypography="helper" class="tw-text-center tw-text-main">
       {{ "noEmail" | i18n }}
       <a bitLink linkType="primary" class="tw-cursor-pointer" tabindex="0" (click)="goBack()">
         {{ "goBack" | i18n }}
