@@ -157,11 +157,20 @@ export class VaultPopupListFiltersService {
               label: this.i18nService.t("myVault"),
               icon: "bwi-user",
             },
-            ...orgs.map((org) => ({
-              value: org.id,
-              label: org.name,
-              icon: org.planProductType === 1 ? "bwi-family" : "bwi-business",
-            })),
+            ...orgs.map((org) => {
+              let icon = "bwi-business";
+              if (!org.enabled) {
+                icon = "bwi-exclamation-triangle tw-text-danger";
+              } else if (org.planProductType === 1) {
+                icon = "bwi-family";
+              }
+
+              return {
+                value: org.id,
+                label: org.name,
+                icon,
+              };
+            }),
           ];
         }
 
@@ -225,7 +234,7 @@ export class VaultPopupListFiltersService {
         nestedList: nestedFolders,
       });
     }),
-    map((collections) => collections.nestedList.map(this.convertToChipSelectOption.bind(this))),
+    map((folders) => folders.nestedList.map(this.convertToChipSelectOption.bind(this))),
   );
 
   collections$: Observable<ChipSelectOption<string>[]> = this.filters$.pipe(
