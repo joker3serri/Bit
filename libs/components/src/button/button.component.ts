@@ -51,7 +51,7 @@ export class ButtonComponent implements ButtonLikeAbstraction {
       "tw-font-semibold",
       "tw-py-1.5",
       "tw-px-3",
-      "tw-rounded-3xl",
+      "tw-rounded-full",
       "tw-transition",
       "tw-border-2",
       "tw-border-solid",
