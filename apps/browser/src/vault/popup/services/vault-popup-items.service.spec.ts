@@ -303,6 +303,19 @@ describe("VaultPopupItemsService", () => {
       });
     });
   });
+
+  describe("applyFilter", () => {
+    it("should call search Service with the new search term", (done) => {
+      const searchText = "Hello";
+      service.applyFilter(searchText);
+      const searchServiceSpy = jest.spyOn(searchService, "searchCiphers");
+
+      service.favoriteCiphers$.subscribe(() => {
+        expect(searchServiceSpy).toHaveBeenCalledWith(searchText, null, expect.anything());
+        done();
+      });
+    });
+  });
 });
 
 // A function to generate a list of ciphers of different types
