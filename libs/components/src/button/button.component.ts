@@ -59,8 +59,11 @@ export class ButtonComponent implements ButtonLikeAbstraction {
       "hover:tw-underline",
       "focus:tw-outline-none",
       "disabled:tw-bg-secondary-300",
+      "disabled:hover:tw-bg-secondary-300",
       "disabled:tw-border-secondary-300",
+      "disabled:hover:tw-border-secondary-300",
       "disabled:!tw-text-muted",
+      "disabled:hover:!tw-text-muted",
       "disabled:tw-cursor-not-allowed",
       "disabled:hover:tw-no-underline",
     ]
