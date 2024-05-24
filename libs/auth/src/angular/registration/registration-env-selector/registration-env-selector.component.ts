@@ -10,7 +10,8 @@ import {
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
-import { DialogService, FormFieldModule, SelectModule } from "@bitwarden/components";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { DialogService, FormFieldModule, SelectModule, ToastService } from "@bitwarden/components";
 
 import { RegistrationSelfHostedEnvConfigDialogComponent } from "./registration-self-hosted-env-config-dialog.component";
 
@@ -41,6 +42,8 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private environmentService: EnvironmentService,
     private dialogService: DialogService,
+    private i18nService: I18nService,
+    private toastService: ToastService,
   ) {}
 
   async ngOnInit() {
@@ -99,15 +102,9 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
               return from(
                 RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService),
               ).pipe(
-                tap((result: boolean | undefined) => {
-                  // Reset the value to the previously selected region or the current env setting
-                  // if the self hosted env settings dialog is closed without saving.
-                  if ((result === false || result === undefined) && prevSelectedRegion !== null) {
-                    this.selectedRegion.setValue(prevSelectedRegion, { emitEvent: false });
-                  } else {
-                    this.selectedRegion.setValue(this.selectedRegionFromEnv, { emitEvent: false });
-                  }
-                }),
+                tap((result: boolean | undefined) =>
+                  this.handleSelfHostedEnvConfigDialogResult(result, prevSelectedRegion),
+                ),
               );
             }
 
@@ -118,6 +115,32 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe();
+  }
+
+  private handleSelfHostedEnvConfigDialogResult(
+    result: boolean | undefined,
+    prevSelectedRegion: RegionConfig | Region.SelfHosted | null,
+  ) {
+    if (result === true) {
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("environmentSaved"),
+      });
+      return;
+    }
+
+    // Reset the value to the previously selected region or the current env setting
+    // if the self hosted env settings dialog is closed without saving.
+    if (
+      (result === false || result === undefined) &&
+      prevSelectedRegion !== null &&
+      prevSelectedRegion !== Region.SelfHosted
+    ) {
+      this.selectedRegion.setValue(prevSelectedRegion, { emitEvent: false });
+    } else {
+      this.selectedRegion.setValue(this.selectedRegionFromEnv, { emitEvent: false });
+    }
   }
 
   ngOnDestroy() {
