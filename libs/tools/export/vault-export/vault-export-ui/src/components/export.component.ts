@@ -129,6 +129,11 @@ export class ExportComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    // Setup subscription to emit when this form is enabled/disabled
+    this.exportForm.statusChanges.pipe(takeUntil(this.destroy$)).subscribe((c) => {
+      this.formDisabled.emit(c === "DISABLED");
+    });
+
     this.policyService
       .policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
       .pipe(takeUntil(this.destroy$))
@@ -175,10 +180,6 @@ export class ExportComponent implements OnInit, OnDestroy {
   ngAfterViewInit(): void {
     this.bitSubmit.loading$.pipe(takeUntil(this.destroy$)).subscribe((loading) => {
       this.formLoading.emit(loading);
-    });
-
-    this.bitSubmit.disabled$.pipe(takeUntil(this.destroy$)).subscribe((disabled) => {
-      this.formDisabled.emit(disabled);
     });
   }
 
