@@ -183,7 +183,7 @@ export class ChipSelectComponent<T = unknown> implements ControlValueAccessor {
       return;
     }
 
-    this.notifyOnChange(option?.value);
+    this.notifyOnChange(option?.value ?? null);
   }
 
   /** Implemented as part of NG_VALUE_ACCESSOR */
