@@ -2,6 +2,7 @@ import * as chalk from "chalk";
 import { firstValueFrom, map } from "rxjs";
 
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { UnlockCommand } from "./auth/commands/unlock.command";
 import { Response } from "./models/response";
@@ -157,6 +158,16 @@ export abstract class BaseProgram {
       }
     } else {
       this.processResponse(Response.error("Vault is locked."), true);
+    }
+  }
+
+  protected async exitIfFeatureFlagDisabled(featureFlag: FeatureFlag) {
+    const enabled = await firstValueFrom(
+      this.serviceContainer.configService.getFeatureFlag$(featureFlag),
+    );
+
+    if (!enabled) {
+      this.processResponse(Response.error("This command is temporarily unavailable."), true);
     }
   }
 }

@@ -9,6 +9,5 @@ import { ServiceContainer } from "./service-container";
  * @param serviceContainer A class that instantiates services and makes them available for dependency injection
  */
 export async function registerBitPrograms(serviceContainer: ServiceContainer) {
-  const deviceApprovalProgram = new DeviceApprovalProgram(serviceContainer);
-  await deviceApprovalProgram.register();
+  new DeviceApprovalProgram(serviceContainer).register();
 }
