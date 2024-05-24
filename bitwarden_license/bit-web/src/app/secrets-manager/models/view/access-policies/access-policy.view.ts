@@ -1,4 +1,4 @@
-export class BaseAccessPolicyView {
+class BaseAccessPolicyView {
   id: string;
   read: boolean;
   write: boolean;
@@ -6,60 +6,53 @@ export class BaseAccessPolicyView {
   revisionDate: string;
 }
 
-export class UserProjectAccessPolicyView extends BaseAccessPolicyView {
+class BaseUserAccessPolicyView extends BaseAccessPolicyView {
   organizationUserId: string;
   organizationUserName: string;
+  userId: string;
+  currentUser: boolean;
+}
+
+export class UserProjectAccessPolicyView extends BaseUserAccessPolicyView {
   grantedProjectId: string;
-  userId: string;
-  currentUser: boolean;
 }
 
-export class UserSecretAccessPolicyView extends BaseAccessPolicyView {
-  organizationUserId: string;
-  organizationUserName: string;
+export class UserSecretAccessPolicyView extends BaseUserAccessPolicyView {
   grantedSecretId: string;
-  userId: string;
-  currentUser: boolean;
 }
 
-export class UserServiceAccountAccessPolicyView extends BaseAccessPolicyView {
-  organizationUserId: string;
-  organizationUserName: string;
+export class UserServiceAccountAccessPolicyView extends BaseUserAccessPolicyView {
   grantedServiceAccountId: string;
-  userId: string;
-  currentUser: boolean;
 }
 
-export class GroupProjectAccessPolicyView extends BaseAccessPolicyView {
+class BaseGroupAccessPolicyView extends BaseAccessPolicyView {
   groupId: string;
   groupName: string;
+  currentUserInGroup: boolean;
+}
+
+export class GroupProjectAccessPolicyView extends BaseGroupAccessPolicyView {
   grantedProjectId: string;
-  currentUserInGroup: boolean;
 }
 
-export class GroupSecretAccessPolicyView extends BaseAccessPolicyView {
-  groupId: string;
-  groupName: string;
+export class GroupSecretAccessPolicyView extends BaseGroupAccessPolicyView {
   grantedSecretId: string;
-  currentUserInGroup: boolean;
 }
 
-export class GroupServiceAccountAccessPolicyView extends BaseAccessPolicyView {
-  groupId: string;
-  groupName: string;
+export class GroupServiceAccountAccessPolicyView extends BaseGroupAccessPolicyView {
   grantedServiceAccountId: string;
-  currentUserInGroup: boolean;
 }
 
-export class ServiceAccountProjectAccessPolicyView extends BaseAccessPolicyView {
+class BaseServiceAccountAccessPolicyView extends BaseAccessPolicyView {
   serviceAccountId: string;
   serviceAccountName: string;
+}
+
+export class ServiceAccountProjectAccessPolicyView extends BaseServiceAccountAccessPolicyView {
   grantedProjectId: string;
   grantedProjectName: string;
 }
 
-export class ServiceAccountSecretAccessPolicyView extends BaseAccessPolicyView {
-  serviceAccountId: string;
-  serviceAccountName: string;
+export class ServiceAccountSecretAccessPolicyView extends BaseServiceAccountAccessPolicyView {
   grantedSecretId: string;
 }

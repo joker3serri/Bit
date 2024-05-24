@@ -327,7 +327,7 @@ export class AccessPolicyService {
     };
   }
 
-  private createUserAccessPolicyView(
+  private createBaseUserAccessPolicyView(
     response:
       | UserProjectAccessPolicyResponse
       | UserSecretAccessPolicyResponse
@@ -346,7 +346,7 @@ export class AccessPolicyService {
     response: UserProjectAccessPolicyResponse,
   ): UserProjectAccessPolicyView {
     return {
-      ...this.createUserAccessPolicyView(response),
+      ...this.createBaseUserAccessPolicyView(response),
       grantedProjectId: response.grantedProjectId,
     };
   }
@@ -355,7 +355,7 @@ export class AccessPolicyService {
     response: UserServiceAccountAccessPolicyResponse,
   ): UserServiceAccountAccessPolicyView {
     return {
-      ...this.createUserAccessPolicyView(response),
+      ...this.createBaseUserAccessPolicyView(response),
       grantedServiceAccountId: response.grantedServiceAccountId,
     };
   }
@@ -364,12 +364,12 @@ export class AccessPolicyService {
     response: UserSecretAccessPolicyResponse,
   ): UserSecretAccessPolicyView {
     return {
-      ...this.createUserAccessPolicyView(response),
+      ...this.createBaseUserAccessPolicyView(response),
       grantedSecretId: response.grantedSecretId,
     };
   }
 
-  private createGroupAccessPolicyView(
+  private createBaseGroupAccessPolicyView(
     response:
       | GroupProjectAccessPolicyResponse
       | GroupSecretAccessPolicyResponse
@@ -387,7 +387,7 @@ export class AccessPolicyService {
     response: GroupProjectAccessPolicyResponse,
   ): GroupProjectAccessPolicyView {
     return {
-      ...this.createGroupAccessPolicyView(response),
+      ...this.createBaseGroupAccessPolicyView(response),
       grantedProjectId: response.grantedProjectId,
     };
   }
@@ -396,7 +396,7 @@ export class AccessPolicyService {
     response: GroupServiceAccountAccessPolicyResponse,
   ): GroupServiceAccountAccessPolicyView {
     return {
-      ...this.createGroupAccessPolicyView(response),
+      ...this.createBaseGroupAccessPolicyView(response),
       grantedServiceAccountId: response.grantedServiceAccountId,
     };
   }
@@ -405,12 +405,12 @@ export class AccessPolicyService {
     response: GroupSecretAccessPolicyResponse,
   ): GroupSecretAccessPolicyView {
     return {
-      ...this.createGroupAccessPolicyView(response),
+      ...this.createBaseGroupAccessPolicyView(response),
       grantedSecretId: response.grantedSecretId,
     };
   }
 
-  private async createServiceAccountAccessPolicyView(
+  private async createBaseServiceAccountAccessPolicyView(
     organizationKey: SymmetricCryptoKey,
     response: ServiceAccountProjectAccessPolicyResponse | ServiceAccountSecretAccessPolicyResponse,
   ) {
@@ -431,7 +431,7 @@ export class AccessPolicyService {
     response: ServiceAccountProjectAccessPolicyResponse,
   ): Promise<ServiceAccountProjectAccessPolicyView> {
     return {
-      ...(await this.createServiceAccountAccessPolicyView(organizationKey, response)),
+      ...(await this.createBaseServiceAccountAccessPolicyView(organizationKey, response)),
       grantedProjectId: response.grantedProjectId,
       grantedProjectName: response.grantedProjectName
         ? await this.encryptService.decryptToUtf8(
@@ -447,7 +447,7 @@ export class AccessPolicyService {
     response: ServiceAccountSecretAccessPolicyResponse,
   ): Promise<ServiceAccountSecretAccessPolicyView> {
     return {
-      ...(await this.createServiceAccountAccessPolicyView(organizationKey, response)),
+      ...(await this.createBaseServiceAccountAccessPolicyView(organizationKey, response)),
       grantedSecretId: response.grantedSecretId,
     };
   }
