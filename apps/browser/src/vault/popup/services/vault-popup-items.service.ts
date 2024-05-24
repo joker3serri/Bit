@@ -71,6 +71,16 @@ export class VaultPopupItemsService {
     shareReplay({ refCount: false, bufferSize: 1 }),
   );
 
+  private _filteredCipherList$: Observable<CipherView[]> = combineLatest([
+    this._cipherList$,
+    this.vaultPopupListFiltersService.filters$,
+  ]).pipe(
+    map(([ciphers, filters]): CipherView[] =>
+      this.vaultPopupListFiltersService.filterCiphers(ciphers, filters),
+    ),
+    shareReplay({ refCount: true, bufferSize: 1 }),
+  );
+
   /**
    * List of ciphers that can be used for autofill on the current tab. Includes cards and/or identities
    * if enabled in the vault settings. Ciphers are sorted by type, then by last used date, then by name.
@@ -78,7 +88,7 @@ export class VaultPopupItemsService {
    * See {@link refreshCurrentTab} to trigger re-evaluation of the current tab.
    */
   autoFillCiphers$: Observable<CipherView[]> = combineLatest([
-    this._cipherList$,
+    this._filteredCipherList$,
     this._otherAutoFillTypes$,
     this._currentAutofillTab$,
   ]).pipe(
@@ -98,7 +108,7 @@ export class VaultPopupItemsService {
    */
   favoriteCiphers$: Observable<CipherView[]> = combineLatest([
     this.autoFillCiphers$,
-    this._cipherList$,
+    this._filteredCipherList$,
   ]).pipe(
     map(([autoFillCiphers, ciphers]) =>
       ciphers.filter((cipher) => cipher.favorite && !autoFillCiphers.includes(cipher)),
@@ -116,7 +126,7 @@ export class VaultPopupItemsService {
   remainingCiphers$: Observable<CipherView[]> = combineLatest([
     this.autoFillCiphers$,
     this.favoriteCiphers$,
-    this._cipherList$,
+    this._filteredCipherList$,
   ]).pipe(
     map(([autoFillCiphers, favoriteCiphers, ciphers]) =>
       ciphers.filter(
@@ -147,9 +157,10 @@ export class VaultPopupItemsService {
 
   /**
    * Observable that indicates whether there are no ciphers to show with the current filter.
-   * @todo Implement filter/search functionality in PM-6824 and PM-6826.
    */
-  noFilteredResults$: Observable<boolean> = of(false);
+  noFilteredResults$: Observable<boolean> = this._filteredCipherList$.pipe(
+    map((ciphers) => !ciphers.length),
+  );
 
   constructor(
     private cipherService: CipherService,

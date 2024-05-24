@@ -1,19 +1,32 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
-import { map } from "rxjs";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { Subject, map, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SelectModule } from "@bitwarden/components";
 
-import { VaultPopupListFiltersService } from "../../../services/vault-popup-list-filters.service";
+import {
+  PopupListFilter,
+  VaultPopupListFiltersService,
+} from "../../../services/vault-popup-list-filters.service";
 
 @Component({
   standalone: true,
   selector: "app-vault-list-filters",
   templateUrl: "./vault-list-filters.component.html",
-  imports: [CommonModule, JslibModule, SelectModule],
+  imports: [CommonModule, JslibModule, SelectModule, ReactiveFormsModule],
 })
-export class VaultListFiltersComponent {
+export class VaultListFiltersComponent implements OnInit, OnDestroy {
+  protected destroy$ = new Subject<void>();
+
+  filterForm = this.formBuilder.group<PopupListFilter>({
+    cipherType: null,
+    organizationId: null,
+    collectionId: null,
+    folderId: null,
+  });
+
   protected cipherTypes$ = this.vaultPopupListFiltersService.cipherTypes$;
   protected organizations$ = this.vaultPopupListFiltersService.organizations$;
   protected collections$ = this.vaultPopupListFiltersService.collections$.pipe(
@@ -26,5 +39,19 @@ export class VaultListFiltersComponent {
     }),
   );
 
-  constructor(private vaultPopupListFiltersService: VaultPopupListFiltersService) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private vaultPopupListFiltersService: VaultPopupListFiltersService,
+  ) {}
+
+  ngOnInit(): void {
+    this.filterForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((formValue) => {
+      this.vaultPopupListFiltersService.updateFilter(formValue);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

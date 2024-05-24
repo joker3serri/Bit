@@ -4,9 +4,7 @@ import {
   Observable,
   combineLatest,
   distinctUntilChanged,
-  from,
   map,
-  of,
   switchMap,
 } from "rxjs";
 
@@ -20,11 +18,12 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 
-type PopupListFilter = {
+export type PopupListFilter = {
   organizationId: string | null;
   collectionId: string | null;
   folderId: string | null;
@@ -81,6 +80,42 @@ export class VaultPopupListFiltersService {
     private collectionService: CollectionService,
   ) {}
 
+  updateFilter(filter: Partial<PopupListFilter>): void {
+    this._filters$.next({
+      ...this._filters$.value,
+      ...filter,
+    });
+  }
+
+  filterCiphers = (ciphers: CipherView[], filters: PopupListFilter): CipherView[] => {
+    return ciphers.filter((cipher) => {
+      let satisfiesFilter = true;
+
+      if (filters.cipherType !== null && cipher.type !== filters.cipherType) {
+        satisfiesFilter = satisfiesFilter && false;
+      }
+
+      if (
+        filters.organizationId === MyVaultId &&
+        cipher.organizationId !== null &&
+        filters.organizationId !== null &&
+        filters.organizationId !== MyVaultId &&
+        cipher.organizationId !== filters.organizationId
+      ) {
+        satisfiesFilter = satisfiesFilter && false;
+      }
+
+      if (filters.collectionId !== null && !cipher.collectionIds.includes(filters.collectionId)) {
+        satisfiesFilter = satisfiesFilter && false;
+      }
+
+      if (filters.folderId !== null && cipher.folderId !== filters.folderId) {
+        satisfiesFilter = satisfiesFilter && false;
+      }
+      return satisfiesFilter;
+    });
+  };
+
   /** Available cipher types */
   cipherTypes$ = combineLatest([
     this.vaultSettingsService.showCardsCurrentTab$,
@@ -125,22 +160,18 @@ export class VaultPopupListFiltersService {
       ),
     ),
     this.folderService.folderViews$,
+    this.cipherService.cipherViews$,
   ]).pipe(
-    switchMap(([filters, folders]) => {
+    map(([filters, folders, ciphers]) => {
       const organizationId = filters.organizationId;
 
       if (organizationId === null || organizationId === MyVaultId) {
-        return of(folders);
+        return folders;
       }
 
-      return from(this.cipherService.getAllDecrypted()).pipe(
-        map((nodes) => {
-          const orgCiphers = nodes.filter((c) => c.organizationId === organizationId);
-          return folders.filter(
-            (f) => orgCiphers.some((oc) => oc.folderId === f.id) || f.id === null,
-          );
-        }),
-      );
+      const cipherViews = Object.values(ciphers);
+      const orgCiphers = cipherViews.filter((c) => c.organizationId === organizationId);
+      return folders.filter((f) => orgCiphers.some((oc) => oc.folderId === f.id) || f.id === null);
     }),
     map((folders) => {
       const nestedFolders = this.getAllFoldersNested(folders);
