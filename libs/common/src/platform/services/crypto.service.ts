@@ -915,8 +915,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     );
   }
 
-  // Not exposing this until there is a need
-  private userPublicKey$(userId: UserId) {
+  userPublicKey$(userId: UserId) {
     return this.userPrivateKey$(userId).pipe(
       switchMap(async (pk) => await this.derivePublicKey(pk)),
     );
