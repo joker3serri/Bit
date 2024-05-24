@@ -62,6 +62,7 @@ export class ButtonComponent implements ButtonLikeAbstraction {
       "disabled:tw-border-secondary-300",
       "disabled:!tw-text-muted",
       "disabled:tw-cursor-not-allowed",
+      "disabled:hover:tw-no-underline",
     ]
       .concat(this.block ? ["tw-w-full", "tw-block"] : ["tw-inline-block"])
       .concat(buttonStyles[this.buttonType ?? "secondary"]);
