@@ -45,11 +45,11 @@ export class DeviceApprovalProgram extends BaseProgram {
     return new Command("list")
       .description("List all pending requests for an organization")
       .argument("<organizationId>")
-      .action(async () => {
+      .action(async (organizationId: string) => {
         await this.exitIfNotAuthed();
 
         const cmd = new ListCommand();
-        const response = await cmd.run();
+        const response = await cmd.run(organizationId);
         this.processResponse(response);
       });
   }
@@ -58,11 +58,11 @@ export class DeviceApprovalProgram extends BaseProgram {
     return new Command("approve")
       .argument("<id>")
       .description("Approve a pending request")
-      .action(async () => {
+      .action(async (id: string) => {
         await this.exitIfLocked();
 
         const cmd = new ApproveCommand();
-        const response = await cmd.run();
+        const response = await cmd.run(id);
         this.processResponse(response);
       });
   }
@@ -71,11 +71,11 @@ export class DeviceApprovalProgram extends BaseProgram {
     return new Command("approveAll")
       .description("Approve all pending requests for an organization")
       .argument("<organizationId>")
-      .action(async () => {
+      .action(async (organizationId: string) => {
         await this.exitIfLocked();
 
         const cmd = new ApproveAllCommand();
-        const response = await cmd.run();
+        const response = await cmd.run(organizationId);
         this.processResponse(response);
       });
   }
@@ -84,11 +84,11 @@ export class DeviceApprovalProgram extends BaseProgram {
     return new Command("deny")
       .argument("<id>")
       .description("Deny a pending request")
-      .action(async () => {
+      .action(async (id: string) => {
         await this.exitIfLocked();
 
         const cmd = new DenyCommand();
-        const response = await cmd.run();
+        const response = await cmd.run(id);
         this.processResponse(response);
       });
   }
@@ -97,11 +97,11 @@ export class DeviceApprovalProgram extends BaseProgram {
     return new Command("denyAll")
       .description("Deny all pending requests for an organization")
       .argument("<organizationId>")
-      .action(async () => {
+      .action(async (organizationId: string) => {
         await this.exitIfLocked();
 
         const cmd = new DenyAllCommand();
-        const response = await cmd.run();
+        const response = await cmd.run(organizationId);
         this.processResponse(response);
       });
   }
