@@ -53,18 +53,22 @@ import { ExportScopeCalloutComponent } from "./export-scope-callout.component";
   ],
 })
 export class ExportComponent implements OnInit, OnDestroy {
+  /**
+   * The hosting control also needs a bitSubmitDirective (on the Submit button) which calls this components {@link submit}-method.
+   * This components formState (loading/disabled) is emitted back up to the hosting component so for example the Submit button can be enabled/disabled and show loading state.
+   */
   @ViewChild(BitSubmitDirective)
   private bitSubmit: BitSubmitDirective;
 
   /**
-   * Passes the forms loading state out to the hosting component
-   * Example: Used to show the loading state of other controls present on the hosting component
+   * Emits true when the BitSubmitDirective({@link bitSubmit} is executing {@link submit} and false when execution has completed.
+   * Example: Used to show the loading state of the submit button present on the hosting component
    * */
   @Output()
   formLoading = new EventEmitter<boolean>();
 
   /**
-   * Passes the forms disabled state out to the hosting component
+   * Emits true when this form gets disabled and false when enabled.
    * Example: Used to disable the submit button, which is present on the hosting component
    * */
   @Output()
@@ -72,6 +76,8 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   /**
    * Emits when the creation and download of the export-file have succeeded
+   * - Emits an null/empty string when exporting from an individual vault
+   * - Emits the organizationId when exporting from an organizationl vault
    * */
   @Output()
   onSuccessfulExport = new EventEmitter<string>();
