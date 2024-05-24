@@ -8,8 +8,8 @@ import {
   tdeDecryptionRequiredGuard,
   UnauthGuard,
 } from "@bitwarden/angular/auth/guards";
+import { AnonLayoutWrapperComponent } from "@bitwarden/auth/angular";
 
-import { AnonLayoutWrapperComponent } from "../../../../libs/auth/src/angular/anon-layout/anon-layout-wrapper.component";
 import { flagEnabled, Flags } from "../utils/flags";
 
 import { VerifyRecoverDeleteOrgComponent } from "./admin-console/organizations/manage/verify-recover-delete-org.component";
