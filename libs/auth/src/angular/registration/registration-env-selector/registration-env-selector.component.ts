@@ -24,7 +24,7 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
   ServerEnvironmentType = Region;
 
   formGroup = this.formBuilder.group({
-    selectedRegion: [null, Validators.required],
+    selectedRegion: [null as RegionConfig | Region.SelfHosted | null, Validators.required],
   });
 
   get selectedRegion(): FormControl {
