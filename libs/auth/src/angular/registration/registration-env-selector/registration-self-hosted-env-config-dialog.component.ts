@@ -92,6 +92,8 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
   ngOnInit() {}
 
   submit = async () => {
+    // TODO: add validation
+
     await this.environmentService.setEnvironment(Region.SelfHosted, {
       base: this.baseUrl.value,
       api: this.apiUrl.value,
