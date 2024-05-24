@@ -128,5 +128,19 @@ module.exports = {
         {},
       );
     }),
+    plugin(function ({ addVariant }) {
+      // addVariant('hover', ['&:hover', '&.pseudo-hover']);
+      for (const state of [
+        "active",
+        "hover",
+        "focus",
+        "focus-within",
+        "focus-visible",
+        "target",
+        "visited",
+      ]) {
+        addVariant(state, [`&:${state}`, `&.test-${state}`]);
+      }
+    }),
   ],
 };
