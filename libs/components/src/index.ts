@@ -29,6 +29,7 @@ export * from "./progress";
 export * from "./radio-button";
 export * from "./search";
 export * from "./section";
+export * from "./section-header";
 export * from "./select";
 export * from "./table";
 export * from "./tabs";

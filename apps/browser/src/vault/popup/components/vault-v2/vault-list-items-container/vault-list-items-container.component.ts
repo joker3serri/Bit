@@ -10,10 +10,9 @@ import {
   IconButtonModule,
   ItemModule,
   SectionComponent,
+  SectionHeaderComponent,
   TypographyModule,
 } from "@bitwarden/components";
-
-import { PopupSectionHeaderComponent } from "../../../../../platform/popup/popup-section-header/popup-section-header.component";
 
 @Component({
   imports: [
@@ -25,7 +24,7 @@ import { PopupSectionHeaderComponent } from "../../../../../platform/popup/popup
     SectionComponent,
     TypographyModule,
     JslibModule,
-    PopupSectionHeaderComponent,
+    SectionHeaderComponent,
     RouterLink,
   ],
   selector: "app-vault-list-items-container",
