@@ -34,8 +34,9 @@ import { CipherService as CipherServiceAbstraction } from "../abstractions/ciphe
 import { CipherFileUploadService } from "../abstractions/file-upload/cipher-file-upload.service";
 import { FieldType } from "../enums";
 import { CipherType } from "../enums/cipher-type";
-import { CipherData } from "../models/data/cipher.data";
-import { LocalData } from "../models/data/local.data";
+import { CipherDataLatest, LocalDataLatest } from "../models/ciphers/data/latest";
+import { CipherData } from "../models/ciphers/data/version-agnostic/cipher.data";
+import { CipherResponse } from "../models/ciphers/response/version-agnostic/cipher.response";
 import { Attachment } from "../models/domain/attachment";
 import { Card } from "../models/domain/card";
 import { Cipher } from "../models/domain/cipher";
@@ -57,7 +58,6 @@ import { CipherCreateRequest } from "../models/request/cipher-create.request";
 import { CipherPartialRequest } from "../models/request/cipher-partial.request";
 import { CipherShareRequest } from "../models/request/cipher-share.request";
 import { CipherRequest } from "../models/request/cipher.request";
-import { CipherResponse } from "../models/response/cipher.response";
 import { AttachmentView } from "../models/view/attachment.view";
 import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
@@ -79,7 +79,7 @@ export class CipherService implements CipherServiceAbstraction {
   );
   private ciphersExpectingUpdate: DerivedState<boolean>;
 
-  localData$: Observable<Record<CipherId, LocalData>>;
+  localData$: Observable<Record<CipherId, LocalDataLatest>>;
   ciphers$: Observable<Record<CipherId, CipherData>>;
   cipherViews$: Observable<Record<CipherId, CipherView>>;
   viewFor$(id: CipherId) {
@@ -87,7 +87,7 @@ export class CipherService implements CipherServiceAbstraction {
   }
   addEditCipherInfo$: Observable<AddEditCipherInfo>;
 
-  private localDataState: ActiveUserState<Record<CipherId, LocalData>>;
+  private localDataState: ActiveUserState<Record<CipherId, LocalDataLatest>>;
   private encryptedCiphersState: ActiveUserState<Record<CipherId, CipherData>>;
   private decryptedCiphersState: ActiveUserState<Record<CipherId, CipherView>>;
   private addEditCipherInfoState: ActiveUserState<AddEditCipherInfo>;
@@ -342,7 +342,10 @@ export class CipherService implements CipherServiceAbstraction {
     const localData = await firstValueFrom(this.localData$);
     const cipherId = id as CipherId;
 
-    return new Cipher(ciphers[cipherId], localData ? localData[cipherId] : null);
+    return new Cipher(
+      await this.migrate(ciphers[cipherId]),
+      localData ? localData[cipherId] : null,
+    );
   }
 
   async getAll(): Promise<Cipher[]> {
@@ -353,7 +356,9 @@ export class CipherService implements CipherServiceAbstraction {
       // eslint-disable-next-line
       if (ciphers.hasOwnProperty(id)) {
         const cipherId = id as CipherId;
-        response.push(new Cipher(ciphers[cipherId], localData ? localData[cipherId] : null));
+        response.push(
+          new Cipher(await this.migrate(ciphers[cipherId]), localData ? localData[cipherId] : null),
+        );
       }
     }
     return response;
@@ -510,7 +515,9 @@ export class CipherService implements CipherServiceAbstraction {
       return [];
     }
 
-    const ciphers = response.data.map((cr) => new Cipher(new CipherData(cr)));
+    const ciphers = await Promise.all(
+      response.data.map(async (cr) => new Cipher(await this.migrate(new CipherData(cr)))),
+    );
     const key = await this.cryptoService.getOrgKey(organizationId);
     const decCiphers = await this.encryptService.decryptItems(ciphers, key);
 
@@ -632,7 +639,7 @@ export class CipherService implements CipherServiceAbstraction {
     const data = new CipherData(response, cipher.collectionIds);
     const updated = await this.upsert(data);
     // No local data for new ciphers
-    return new Cipher(updated[cipher.id as CipherId]);
+    return new Cipher(await this.migrate(updated[cipher.id as CipherId]));
   }
 
   async updateWithServer(
@@ -655,7 +662,7 @@ export class CipherService implements CipherServiceAbstraction {
     const data = new CipherData(response, cipher.collectionIds);
     const updated = await this.upsert(data);
     // updating with server does not change local data
-    return new Cipher(updated[cipher.id as CipherId], cipher.localData);
+    return new Cipher(await this.migrate(updated[cipher.id as CipherId]), cipher.localData);
   }
 
   async shareWithServer(
@@ -779,7 +786,7 @@ export class CipherService implements CipherServiceAbstraction {
     if (!admin) {
       await this.upsert(cData);
     }
-    return new Cipher(cData);
+    return new Cipher(await this.migrate(cData));
   }
 
   async saveCollectionsWithServer(cipher: Cipher): Promise<Cipher> {
@@ -793,7 +800,7 @@ export class CipherService implements CipherServiceAbstraction {
     }
     const data = new CipherData(response.cipher);
     const updated = await this.upsert(data);
-    return new Cipher(updated[cipher.id as CipherId], cipher.localData);
+    return new Cipher(await this.migrate(updated[cipher.id as CipherId]), cipher.localData);
   }
 
   /**
@@ -1153,7 +1160,9 @@ export class CipherService implements CipherServiceAbstraction {
     await this.restore(restores);
   }
 
-  async getKeyForCipherKeyDecryption(cipher: Cipher): Promise<UserKey | OrgKey> {
+  async getKeyForCipherKeyDecryption(cipher: {
+    organizationId?: string;
+  }): Promise<UserKey | OrgKey> {
     return (
       (await this.cryptoService.getOrgKey(cipher.organizationId)) ||
       ((await this.cryptoService.getUserKeyWithLegacySupport()) as UserKey)
@@ -1565,5 +1574,10 @@ export class CipherService implements CipherServiceAbstraction {
         this.configService.checkServerMeetsVersionRequirement$(CIPHER_KEY_ENC_MIN_SERVER_VER),
       ))
     );
+  }
+
+  private async migrate(data: CipherData): Promise<CipherDataLatest> {
+    const key = await this.getKeyForCipherKeyDecryption(data);
+    return await data.toLatestVersion(key, this.encryptService);
   }
 }
