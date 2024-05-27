@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 
-import { AnonLayoutComponent } from "@bitwarden/auth/angular";
+import { AnonLayoutComponent, ShowEnvironmentOptions } from "@bitwarden/auth/angular";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Icon } from "@bitwarden/components";
 
@@ -9,6 +9,7 @@ export interface AnonLayoutWrapperData {
   pageTitle?: string;
   pageSubtitle?: string;
   pageIcon?: Icon;
+  showEnvironment?: ShowEnvironmentOptions;
 }
 
 @Component({
@@ -20,6 +21,7 @@ export class AnonLayoutWrapperComponent {
   protected pageTitle: string;
   protected pageSubtitle: string;
   protected pageIcon: Icon;
+  protected showEnvironment: ShowEnvironmentOptions;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,6 +29,7 @@ export class AnonLayoutWrapperComponent {
   ) {
     this.pageTitle = this.i18nService.t(this.route.snapshot.firstChild.data["pageTitle"]);
     this.pageSubtitle = this.i18nService.t(this.route.snapshot.firstChild.data["pageSubtitle"]);
-    this.pageIcon = this.route.snapshot.firstChild.data["pageIcon"]; // don't translate
+    this.pageIcon = this.route.snapshot.firstChild.data["pageIcon"];
+    this.showEnvironment = this.route.snapshot.firstChild.data["showEnvironment"];
   }
 }

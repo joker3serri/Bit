@@ -1,6 +1,7 @@
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { BehaviorSubject } from "rxjs";
 
+import { ClientType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -13,6 +14,7 @@ import { AnonLayoutComponent } from "./anon-layout.component";
 
 class MockPlatformUtilsService implements Partial<PlatformUtilsService> {
   getApplicationVersion = () => Promise.resolve("Version 2024.1.1");
+  getClientType = () => ClientType.Web;
 }
 
 export default {

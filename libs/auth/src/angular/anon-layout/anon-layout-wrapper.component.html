@@ -1,4 +1,9 @@
-<auth-anon-layout [title]="pageTitle" [subtitle]="pageSubtitle" [icon]="pageIcon">
+<auth-anon-layout
+  [title]="pageTitle"
+  [subtitle]="pageSubtitle"
+  [icon]="pageIcon"
+  [showEnvironment]="showEnvironment"
+>
   <router-outlet></router-outlet>
   <router-outlet slot="secondary" name="secondary"></router-outlet>
 </auth-anon-layout>
