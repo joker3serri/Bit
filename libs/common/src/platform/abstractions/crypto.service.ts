@@ -259,7 +259,7 @@ export abstract class CryptoService {
 
   /**
    * Gets an observable stream of the given users decrypted private key, will emit null if the user
-   * doesn't have a UserKey to decrypt the encrypted private key or null if the user doesn't have a
+   * doesn't have a UserKey to decrypt the encrypted private key or null if the user doesn't have an
    * encrypted private key at all.
    *
    * @param userId The user id of the user to get the data for.
