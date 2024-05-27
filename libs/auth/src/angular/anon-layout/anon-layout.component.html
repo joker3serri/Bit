@@ -22,6 +22,7 @@
     <ng-content select="[slot=secondary]"></ng-content>
   </div>
   <footer class="tw-text-center">
+    <div>{{ "accessing" | i18n }} {{ hostname }}</div>
     <div>&copy; {{ year }} Bitwarden Inc.</div>
     <div>{{ version }}</div>
   </footer>

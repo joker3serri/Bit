@@ -1,8 +1,12 @@
 import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
+import { BehaviorSubject } from "rxjs";
 
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
 import { ButtonModule } from "../../../../components/src/button";
+import { I18nMockService } from "../../../../components/src/utils/i18n-mock.service";
 import { LockIcon } from "../icons";
 
 import { AnonLayoutComponent } from "./anon-layout.component";
@@ -21,6 +25,24 @@ export default {
         {
           provide: PlatformUtilsService,
           useClass: MockPlatformUtilsService,
+        },
+        {
+          provide: I18nService,
+          useFactory: () => {
+            return new I18nMockService({
+              accessing: "Accessing",
+            });
+          },
+        },
+        {
+          provide: EnvironmentService,
+          useValue: {
+            environment$: new BehaviorSubject({
+              getHostname() {
+                return "bitwarden.com";
+              },
+            }).asObservable(),
+          },
         },
       ],
     }),
