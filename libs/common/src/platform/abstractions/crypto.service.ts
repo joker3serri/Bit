@@ -36,7 +36,8 @@ export type CipherDecryptionKeys = {
 
 export abstract class CryptoService {
   /**
-   * Retrieves a stream of the given users {@see UserKey} values. Can emit null if the user does not have a user key.
+   * Retrieves a stream of the given users {@see UserKey} values. Can emit null if the user does not have a user key, e.g. the user
+   * is in a locked or logged out state.
    * @param userId
    */
   abstract userKey$(userId: UserId): Observable<UserKey>;
@@ -253,6 +254,8 @@ export abstract class CryptoService {
    * from storage and stores it in memory
    * @returns The user's private key
    *
+   * @throws An error if there is no user currently active.
+   *
    * @deprecated Use {@link userPrivateKey$} instead.
    */
   abstract getPrivateKey(): Promise<Uint8Array>;
@@ -325,6 +328,8 @@ export abstract class CryptoService {
    * Initialize all necessary crypto keys needed for a new account.
    * Warning! This completely replaces any existing keys!
    * @returns The user's newly created  public key, private key, and encrypted private key
+   *
+   * @throws An error if there is no user currently active.
    */
   abstract initAccount(): Promise<{
     userKey: UserKey;
@@ -375,7 +380,8 @@ export abstract class CryptoService {
    * Retrieves all the keys needed for decrypting Ciphers
    * @param userId The user id of the keys to retrieve or null if the user is not Unlocked
    * @param legacySupport `true` if you need to support retrieving the legacy version of the users key, `false` if
-   * you do not need legacy support. Use `true` by necessity only. Defaults to `false`.
+   * you do not need legacy support. Use `true` by necessity only. Defaults to `false`. Legacy support is for users
+   * that may not have updated to use the new {@link UserKey} yet.
    */
   abstract cipherDecryptionKeys$(
     userId: UserId,
@@ -385,7 +391,8 @@ export abstract class CryptoService {
   /**
    * Gets an observable of org keys for the given user.
    * @param userId The user id of the user of which to get the keys for.
-   * @return An observable stream of the users key if they are unlocked, or null if the user is not unlocked.
+   * @return An observable stream of the users organization keys if they are unlocked, or null if the user is not unlocked.
+   * The observable will stay alive through locks/unlocks.
    */
   abstract orgKeys$(userId: UserId): Observable<Record<OrganizationId, OrgKey> | null>;
 
