@@ -4,7 +4,7 @@ import { TypographyModule } from "../typography";
 
 @Component({
   standalone: true,
-  selector: "section-header",
+  selector: "bit-section-header",
   templateUrl: "./section-header.component.html",
   imports: [TypographyModule],
   host: {

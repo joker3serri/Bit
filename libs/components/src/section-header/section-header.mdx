@@ -1,0 +1,79 @@
+import { Meta, Story, Primary, Controls, Canvas } from "@storybook/addon-docs";
+
+import * as stories from "./section-header.stories";
+
+<Meta of={stories} />
+
+```ts
+import { SectionHeaderComponent } from "@bitwarden/components";
+```
+
+# Section Header
+
+The `<bit-section-header>` component is meant to be used in combination with the `<bit-section>` and
+`<bit-card>` components.
+
+When placed inside of a section with a card as the immediate next sibling, the section header will
+automatically apply bottom padding.
+
+```html
+<bit-section>
+  <bit-section-header>
+    <h2 bitTypography="h6" noMargin slot="title">I'm a section header</h2>
+    <button bitIconButton="bwi-star" size="small" slot="end"></button>
+  </bit-section-header>
+  <bit-card>
+    <h3 bitTypography="h3">I'm card content</h3>
+  </bit-card>
+</bit-section>
+```
+
+<Canvas>
+  <Story of={stories.InSectionWithCard} />
+</Canvas>
+
+If placed inside of a section without a card, or with a card that is not the immediate next sibling,
+the bottom padding is not applied.
+
+<Canvas>
+  <Story of={stories.InSectionWithoutPadding} />
+</Canvas>
+
+## Content Slots
+
+`bit-section-header` contains the following slots to help position the content:
+
+| Slot                  | Description                     |
+| --------------------- | ------------------------------- |
+| `slot="title"`        | title text of the header        |
+| `slot="title-suffix"` | placed after the title          |
+| `slot="end"`          | placed at the end of the header |
+
+### Title slot
+
+The title should be a `bitTypography` element, usually an `h2` styled as an `h6`. Title text will
+automatically have its bottom margin removed and the `headers` color applied.
+
+<Canvas>
+  <Story of={stories.OnlyTitle} />
+</Canvas>
+
+### Title suffix slot
+
+Title suffixes are typically an icon or icon button.
+
+<Canvas>
+  <Story of={stories.TitleSuffix} />
+</Canvas>
+
+### End slot
+
+The end slot will typically be used for text or an icon button.
+
+<Canvas>
+  <Story of={stories.TrailingText} />
+</Canvas>
+
+<Canvas>
+  <Story of={stories.TrailingIcon} />
+</Canvas>

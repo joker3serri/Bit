@@ -1,5 +1,5 @@
 <bit-section *ngIf="ciphers?.length > 0">
-  <popup-section-header [title]="title">
+  <bit-section-header [title]="title">
     <span bitTypography="body2" slot="end">{{ ciphers.length }}</span>
     <button
       *ngIf="showRefresh"
@@ -10,7 +10,7 @@
       (click)="onRefresh.emit()"
       [appA11yTitle]="'refresh' | i18n"
     ></button>
-  </popup-section-header>
+  </bit-section-header>
   <bit-item-group>
     <bit-item *ngFor="let cipher of ciphers">
       <a bit-item-content [routerLink]="['/view-cipher']" [queryParams]="{ cipherId: cipher.id }">

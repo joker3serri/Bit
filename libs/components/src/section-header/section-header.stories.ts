@@ -26,11 +26,11 @@ export const OnlyTitle: Story = {
   render: (args) => ({
     props: args,
     template: /*html*/ `
-      <section-header>
+      <bit-section-header>
         <h2 bitTypography="h6" noMargin slot="title">
           {{ title }}
         </h2>
-       </section-header>
+       </bit-section-header>
     `,
   }),
   args: {
@@ -42,12 +42,12 @@ export const TrailingText: Story = {
   render: (args) => ({
     props: args,
     template: /*html*/ `
-      <section-header>
+      <bit-section-header>
         <h2 bitTypography="h6" noMargin slot="title">
           {{ title }}
         </h2>
         <span bitTypography="body2" slot="end">13</span>
-      </section-header>
+      </bit-section-header>
     `,
   }),
   args: {
@@ -59,12 +59,12 @@ export const TrailingIcon: Story = {
   render: (args) => ({
     props: args,
     template: /*html*/ `
-      <section-header>
+      <bit-section-header>
         <h2 bitTypography="h6" noMargin slot="title">
           {{ title }}
         </h2>
         <button bitIconButton="bwi-star" size="small" slot="end"></button>
-      </section-header>
+      </bit-section-header>
     `,
   }),
   args: {
@@ -76,12 +76,12 @@ export const TitleSuffix: Story = {
   render: (args) => ({
     props: args,
     template: /*html*/ `
-      <section-header>
+      <bit-section-header>
         <h2 bitTypography="h6" noMargin slot="title">
           {{ title }}
         </h2>
         <button bitIconButton="bwi-refresh" size="small" slot="title-suffix"></button>
-      </section-header>
+      </bit-section-header>
     `,
   }),
   args: {
@@ -89,56 +89,65 @@ export const TitleSuffix: Story = {
   },
 };
 
-export const WithSections: Story = {
+export const InSectionWithCard: Story = {
   render: () => ({
     template: /*html*/ `
       <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
-          <section-header>
+          <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              Section 1, card as immediate sibling
+              I'm a section header
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
-          </section-header>
+          </bit-section-header>
           <bit-card>
-            <h3 bitTypography="h3">section-header has bottom padding</h3>
+            <h3 bitTypography="h3">I'm card content</h3>
           </bit-card>
         </bit-section>
+      </div>
+    `,
+  }),
+};
+
+export const InSectionWithoutPadding: Story = {
+  render: () => ({
+    template: /*html*/ `
+      <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
-          <section-header>
+          <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              Section 2, no card used
+              No card used
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
-          </section-header>
+          </bit-section-header>
           <div class="tw-bg-background">
-            <h3 bitTypography="h3">just a div, so section-header has no bottom padding</h3>
+            <h3 bitTypography="h3">just a div, so bit-section-header has no bottom padding</h3>
           </div>
         </bit-section>
         <bit-section>
-          <section-header>
+          <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              Section 3, card nested in immediate sibling
+              Card nested in immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
-          </section-header>
+          </bit-section-header>
           <div>
             <div>
               some content here
             </div>
             <button>a random button</button>
             <bit-card>
-              <h3 bitTypography="h3">section-header has no bottom padding</h3>
+              <h3 bitTypography="h3">bit-section-header has no bottom padding</h3>
             </bit-card>
           </div>
         </bit-section>
         <bit-section>
-          <section-header>
+          <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              Section 4, card not immediate sibling
+              Card not immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
-          </section-header>
+          </bit-section-header>
           <div>
             <div>
               some content here
@@ -146,7 +155,7 @@ export const WithSections: Story = {
             <button>a random button</button>
           </div>
           <bit-card>
-            <h3 bitTypography="h3">section-header has no bottom padding</h3>
+            <h3 bitTypography="h3">bit-section-header has no bottom padding</h3>
           </bit-card>
         </bit-section>
       </div>
