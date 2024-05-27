@@ -23,6 +23,9 @@ const common = {
         use: [
           {
             loader: "babel-loader",
+            options: {
+              configFile: "../../babel.config.json",
+            },
           },
         ],
       },
