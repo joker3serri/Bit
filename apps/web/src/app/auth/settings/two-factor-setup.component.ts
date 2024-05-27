@@ -182,9 +182,11 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
         const authComp: DialogRef<boolean, any> = TwoFactorEmailComponent.open(this.dialogService, {
           data: result,
         });
-        authComp.componentInstance.onChangeStatus.subscribe((enabled: boolean) => {
-          this.updateStatus(enabled, TwoFactorProviderType.Email);
-        });
+        authComp.componentInstance.onChangeStatus
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((enabled: boolean) => {
+            this.updateStatus(enabled, TwoFactorProviderType.Email);
+          });
         break;
       }
       case TwoFactorProviderType.WebAuthn: {
