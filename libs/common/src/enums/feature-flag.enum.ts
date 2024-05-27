@@ -43,6 +43,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.ExtensionRefresh]: FALSE,
   [FeatureFlag.RestrictProviderAccess]: FALSE,
   [FeatureFlag.UseTreeWalkerApiForPageDetailsCollection]: FALSE,
+  [FeatureFlag.BulkDeviceApproval]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
