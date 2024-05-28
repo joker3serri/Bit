@@ -171,7 +171,13 @@ export class Main {
     );
 
     messageSubject.asObservable().subscribe((message) => {
-      this.messagingMain.onMessage(message);
+      void this.messagingMain.onMessage(message).catch((err) => {
+        this.logService.error(
+          "Error while handling message",
+          message?.command ?? "Unknown command",
+          err,
+        );
+      });
     });
 
     this.powerMonitorMain = new PowerMonitorMain(this.messagingService);
