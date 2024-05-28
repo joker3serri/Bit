@@ -1,4 +1,5 @@
-import { BehaviorSubject } from "rxjs";
+import { FormBuilder } from "@angular/forms";
+import { BehaviorSubject, skipWhile } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -36,6 +37,23 @@ describe("VaultPopupListFiltersService", () => {
     folderViews$,
   } as unknown as FolderService;
 
+  const vaultSettingsService = {
+    showCardsCurrentTab$,
+    showIdentitiesCurrentTab$,
+  } as unknown as VaultSettingsService;
+
+  const cipherService = {
+    cipherViews$,
+  } as unknown as CipherService;
+
+  const organizationService = {
+    memberOrganizations$,
+  } as unknown as OrganizationService;
+
+  const i18nService = {
+    t: (key: string) => key,
+  } as I18nService;
+
   beforeEach(() => {
     showCardsCurrentTab$.next(true);
     showIdentitiesCurrentTab$.next(true);
@@ -44,23 +62,6 @@ describe("VaultPopupListFiltersService", () => {
     collectionService.getAllDecrypted = () => Promise.resolve([]);
     collectionService.getAllNested = () => Promise.resolve([]);
 
-    const vaultSettingsService = {
-      showCardsCurrentTab$,
-      showIdentitiesCurrentTab$,
-    } as unknown as VaultSettingsService;
-
-    const cipherService = {
-      cipherViews$,
-    } as unknown as CipherService;
-
-    const organizationService = {
-      memberOrganizations$,
-    } as unknown as OrganizationService;
-
-    const i18nService = {
-      t: (key: string) => key,
-    } as I18nService;
-
     service = new VaultPopupListFiltersService(
       vaultSettingsService,
       folderService,
@@ -68,6 +69,7 @@ describe("VaultPopupListFiltersService", () => {
       organizationService,
       i18nService,
       collectionService,
+      new FormBuilder(),
     );
   });
 
@@ -179,7 +181,7 @@ describe("VaultPopupListFiltersService", () => {
     });
 
     it("filters out collections that do not belong to an organization", () => {
-      service.updateFilter({
+      service.filterForm.patchValue({
         organization: { id: testCollection2.organizationId } as Organization,
       });
 
@@ -213,9 +215,10 @@ describe("VaultPopupListFiltersService", () => {
     });
 
     it("returns all folders when MyVault is selected", (done) => {
-      service.updateFilter({
+      service.filterForm.patchValue({
         organization: { id: MY_VAULT_ID } as Organization,
       });
+
       folderViews$.next([
         { id: "1234", name: "Folder 1" },
         { id: "2345", name: "Folder 2" },
@@ -228,7 +231,12 @@ describe("VaultPopupListFiltersService", () => {
     });
 
     it("returns folders that have ciphers within the selected organization", (done) => {
-      service.updateFilter({
+      service.folders$.pipe(skipWhile((folders) => folders.length === 2)).subscribe((folders) => {
+        expect(folders.map((f) => f.label)).toEqual(["Folder 1"]);
+        done();
+      });
+
+      service.filterForm.patchValue({
         organization: { id: "1234" } as Organization,
       });
 
@@ -240,11 +248,6 @@ describe("VaultPopupListFiltersService", () => {
       cipherViews$.next({
         "1": { folderId: "1234", organizationId: "1234" },
         "2": { folderId: "2345", organizationId: "56789" },
-      });
-
-      service.folders$.subscribe((folders) => {
-        expect(folders.map((f) => f.label)).toEqual(["Folder 1"]);
-        done();
       });
     });
   });

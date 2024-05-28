@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
 import {
-  BehaviorSubject,
   Observable,
   combineLatest,
   distinctUntilChanged,
   map,
+  startWith,
   switchMap,
   tap,
 } from "rxjs";
@@ -65,17 +66,24 @@ const NESTING_DELIMITER = "/";
 /** Id assigned to the "My vault" organization */
 export const MY_VAULT_ID = "MyVault";
 
+const INITIAL_FILTERS: PopupListFilter = {
+  organization: null,
+  collection: null,
+  folder: null,
+  cipherType: null,
+};
+
 @Injectable({
   providedIn: "root",
 })
 export class VaultPopupListFiltersService {
-  private _filters$ = new BehaviorSubject<PopupListFilter>({
-    organization: null,
-    collection: null,
-    folder: null,
-    cipherType: null,
-  });
-  filters$ = this._filters$.asObservable();
+  /** UI form for all filters */
+  filterForm = this.formBuilder.group<PopupListFilter>(INITIAL_FILTERS);
+
+  /** Observable for `filterForm` value  */
+  filters$ = this.filterForm.valueChanges.pipe(
+    startWith(INITIAL_FILTERS),
+  ) as Observable<PopupListFilter>;
 
   private cipherViews: CipherView[] = [];
 
@@ -93,54 +101,11 @@ export class VaultPopupListFiltersService {
     private organizationService: OrganizationService,
     private i18nService: I18nService,
     private collectionService: CollectionService,
-  ) {}
-
-  /**
-   * Updates the current filters and will reset the collection and folder filters
-   * to ensure that the filters being shown to the user are the filters being used against the
-   * ciphers.
-   */
-  updateFilter(updatedFilters: Partial<PopupListFilter>): void {
-    const currentFilters = this._filters$.value;
-    const newFilters = {
-      ...updatedFilters,
-    };
-
-    // When the organization filter changes and a collection is already selected,
-    // reset the collection filter if the collection does not belong to the new organization filter
-    if (
-      currentFilters.collection &&
-      newFilters.organization &&
-      currentFilters.collection.organizationId !== updatedFilters.organization.id
-    ) {
-      newFilters.collection = null;
-    }
-
-    if (
-      currentFilters.folder &&
-      currentFilters.folder.id !== null &&
-      newFilters.organization?.id !== MY_VAULT_ID
-    ) {
-      // Get all ciphers that belong to the new organization
-      const orgCiphers = this.cipherViews.filter(
-        (c) => c.organizationId === newFilters.organization.id,
-      );
-
-      // Find any ciphers within the organization that belong to the current folder
-      const newOrgContainsFolder = orgCiphers.some(
-        (oc) => oc.folderId === currentFilters.folder.id,
-      );
-
-      // If the new organization does not contain the current folder, reset the folder filter
-      if (!newOrgContainsFolder) {
-        newFilters.folder = null;
-      }
-    }
-
-    this._filters$.next({
-      ...this._filters$.value,
-      ...newFilters,
-    });
+    private formBuilder: FormBuilder,
+  ) {
+    this.filterForm
+      .get("organization")
+      .valueChanges.subscribe(this.validateOrganizationChange.bind(this));
   }
 
   /** Returns the list of ciphers that satisfy the filters */
@@ -351,5 +316,43 @@ export class VaultPopupListFiltersService {
     });
 
     return nodes;
+  }
+
+  /**
+   * Validate collection & folder filters when the organization filter changes
+   */
+  private validateOrganizationChange(organization: Organization | null): void {
+    if (!organization) {
+      return;
+    }
+
+    const currentFilters = this.filterForm.getRawValue();
+
+    // When the organization filter changes and a collection is already selected,
+    // reset the collection filter if the collection does not belong to the new organization filter
+    if (currentFilters.collection && currentFilters.collection.organizationId !== organization.id) {
+      this.filterForm.get("collection").setValue(null);
+    }
+
+    // When the organization filter changes and a folder is already selected,
+    // reset the folder filter if the folder does not belong to the new organization filter
+    if (
+      currentFilters.folder &&
+      currentFilters.folder.id !== null &&
+      organization.id !== MY_VAULT_ID
+    ) {
+      // Get all ciphers that belong to the new organization
+      const orgCiphers = this.cipherViews.filter((c) => c.organizationId === organization.id);
+
+      // Find any ciphers within the organization that belong to the current folder
+      const newOrgContainsFolder = orgCiphers.some(
+        (oc) => oc.folderId === currentFilters.folder.id,
+      );
+
+      // If the new organization does not contain the current folder, reset the folder filter
+      if (!newOrgContainsFolder) {
+        this.filterForm.get("folder").setValue(null);
+      }
+    }
   }
 }
