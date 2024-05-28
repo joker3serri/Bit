@@ -603,7 +603,7 @@ export class TokenService implements TokenServiceAbstraction {
         }
 
         this.logService.error(
-          "Refresh token not found in secure storage. Access token will fail to refresh upon expiration.",
+          "Refresh token not found in secure storage. Access token will fail to refresh upon expiration or manual refresh.",
         );
       } catch (error) {
         // This case will be hit for Linux users who don't have secure storage configured.
