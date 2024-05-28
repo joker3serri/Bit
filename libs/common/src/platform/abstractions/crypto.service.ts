@@ -382,6 +382,8 @@ export abstract class CryptoService {
    * @param legacySupport `true` if you need to support retrieving the legacy version of the users key, `false` if
    * you do not need legacy support. Use `true` by necessity only. Defaults to `false`. Legacy support is for users
    * that may not have updated to use the new {@link UserKey} yet.
+   *
+   * @throws If an invalid user id is passed in.
    */
   abstract cipherDecryptionKeys$(
     userId: UserId,
@@ -393,6 +395,8 @@ export abstract class CryptoService {
    * @param userId The user id of the user of which to get the keys for.
    * @return An observable stream of the users organization keys if they are unlocked, or null if the user is not unlocked.
    * The observable will stay alive through locks/unlocks.
+   *
+   * @throws If an invalid user id is passed in.
    */
   abstract orgKeys$(userId: UserId): Observable<Record<OrganizationId, OrgKey> | null>;
 
@@ -401,6 +405,8 @@ export abstract class CryptoService {
    * a {@link UserKey} or {@link UserPrivateKey} that is decryptable, this will emit null.
    *
    * @param userId The user id of the user of which to get the public key for.
+   *
+   * @throws If an invalid user id is passed in.
    */
   abstract userPublicKey$(userId: UserId): Observable<UserPublicKey>;
 }
