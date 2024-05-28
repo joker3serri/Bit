@@ -7,22 +7,39 @@ import * as stories from "./registration-start.stories";
 # RegistrationStart Component
 
 The Auth-owned RegistrationStartComponent is to be used for the first step in the new email
-verification stagegated registration process. It collects the user's email address (required) and
-optionally their name. On cloud environments, it requires acceptance of the terms of service and the
-privacy policy; the checkbox is hidden on self hosted environments.
+verification stagegated registration process. It collects the environment (required), the user's
+email address (required) and optionally their name. On cloud environments, it requires acceptance of
+the terms of service and the privacy policy; the checkbox is hidden on self hosted environments.
 
-### Cloud Example
+## Web Examples
 
-<Story of={stories.CloudExample} />
+Note that the self hosted option is not present in the environment selector.
 
-### Self Hosted Example
+### US Region
 
-<Story of={stories.SelfHostExample} />
+<Story of={stories.WebUSRegionExample} />
 
-### Query Param Example
+### EU Region
+
+<Story of={stories.WebEURegionExample} />
+
+### US Region + Query Params
 
 The component accepts two query parameters: `email` and `emailReadonly`. If an email is provided, it
 will be pre-filled in the email input field. If `emailReadonly` is set to `true`, the email input
 field will be set to readonly. `emailReadonly` is primarily for the organization invite flow.
 
-<Story of={stories.QueryParamsExample} />
+<Story of={stories.WebUSRegionQueryParamsExample} />
+
+## Self Hosted Examples
+
+Note the fact that the terms of service and privacy policy checkboxes are not present in any of the
+forms.
+
+### Desktop
+
+<Story of={stories.DesktopSelfHostExample} />
+
+### Browser Extension
+
+<Story of={stories.BrowserExtensionSelfHostExample} />

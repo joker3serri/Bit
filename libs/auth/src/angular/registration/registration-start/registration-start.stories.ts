@@ -31,8 +31,8 @@ export default {
 } as Meta;
 
 const decorators = (options: {
-  isSelfHost: boolean;
-  queryParams: Params;
+  isSelfHost?: boolean;
+  queryParams?: Params;
   clientType?: ClientType;
   defaultRegion?: Region;
 }) => {
@@ -48,12 +48,12 @@ const decorators = (options: {
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: { queryParams: of(options.queryParams) },
+          useValue: { queryParams: of(options.queryParams || {}) },
         },
         {
           provide: PlatformUtilsService,
           useValue: {
-            isSelfHost: () => options.isSelfHost,
+            isSelfHost: () => options.isSelfHost || false,
             getClientType: () => options.clientType || ClientType.Web,
           } as Partial<PlatformUtilsService>,
         },
@@ -86,27 +86,9 @@ const decorators = (options: {
 
 type Story = StoryObj<RegistrationStartComponent>;
 
-export const CloudExample: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-      <auth-registration-start></auth-registration-start>
-      `,
-  }),
-  decorators: decorators({ isSelfHost: false, queryParams: {} }),
-};
+// TODO: re-arrange stories to take clients into account (web, desktop, && browser extension)
 
-export const SelfHostExample: Story = {
-  render: (args) => ({
-    props: args,
-    template: `
-      <auth-registration-start></auth-registration-start>
-      `,
-  }),
-  decorators: decorators({ isSelfHost: true, queryParams: {} }),
-};
-
-export const QueryParamsExample: Story = {
+export const WebUSRegionExample: Story = {
   render: (args) => ({
     props: args,
     template: `
@@ -114,7 +96,64 @@ export const QueryParamsExample: Story = {
       `,
   }),
   decorators: decorators({
-    isSelfHost: false,
+    clientType: ClientType.Web,
+    queryParams: {},
+    defaultRegion: Region.US,
+  }),
+};
+
+export const WebEURegionExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Web,
+    queryParams: {},
+    defaultRegion: Region.EU,
+  }),
+};
+
+export const WebUSRegionQueryParamsExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Web,
+    defaultRegion: Region.US,
     queryParams: { email: "jaredWasHere@bitwarden.com", emailReadonly: "true" },
+  }),
+};
+
+export const DesktopSelfHostExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Desktop,
+    isSelfHost: true,
+    defaultRegion: Region.SelfHosted,
+  }),
+};
+
+export const BrowserExtensionSelfHostExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Browser,
+    isSelfHost: true,
+    defaultRegion: Region.SelfHosted,
   }),
 };
