@@ -211,6 +211,9 @@ const routes: Routes = [
         path: "2fa",
         component: TwoFactorComponent,
         canActivate: [unauthGuardFn()],
+        data: {
+          pageTitle: "verifyIdentity",
+        },
       },
     ],
   },

@@ -716,6 +716,9 @@
   "logIn": {
     "message": "Log in"
   },
+  "verifyIdentity": {
+    "message": "Verify your Identity"
+  },
   "logInInitiated": {
     "message": "Log in initiated"
   },
