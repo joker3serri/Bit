@@ -497,7 +497,7 @@ describe("cryptoService", () => {
       });
     }
 
-    it("returns decryption keys when there are not org or provider keys set", async () => {
+    it("returns decryption keys when there are no org or provider keys set", async () => {
       updateKeys({
         userKey: makeSymmetricCryptoKey<UserKey>(64),
         encryptedPrivateKey: makeEncString("privateKey"),
@@ -586,7 +586,7 @@ describe("cryptoService", () => {
     });
 
     it("returns a stream that pays attention to updates of all data", async () => {
-      // Start listening until there have been 5 emissions
+      // Start listening until there have been 6 emissions
       const promise = lastValueFrom(
         cryptoService.cipherDecryptionKeys$(mockUserId).pipe(bufferCount(6), take(1)),
       );
