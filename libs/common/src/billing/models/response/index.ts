@@ -5,6 +5,7 @@ export * from "./organization-billing-metadata.response";
 export * from "./organization-billing-status.response";
 export * from "./organization-risks-subscription-failure.response";
 export * from "./organization-subscription.response";
+export * from "./payment-information.response";
 export * from "./payment.response";
 export * from "./payment-method.response";
 export * from "./plan.response";

@@ -9,6 +9,16 @@
 </ng-container>
 <bit-container *ngIf="!loading">
   <ng-container>
+    <h2 bitTypography="h2">
+      {{ "accountCredit" | i18n }}
+    </h2>
+    <p class="tw-text-lg tw-font-bold">{{ accountCredit | currency: "$" }}</p>
+    <p bitTypography="body1">{{ "creditAppliedDesc" | i18n }}</p>
+    <button type="button" bitButton buttonType="secondary" [bitAction]="addAccountCredit">
+      {{ "addCredit" | i18n }}
+    </button>
+  </ng-container>
+  <ng-container>
     <h2 class="spaced-header">{{ "paymentMethod" | i18n }}</h2>
     <p *ngIf="!hasPaymentMethod">{{ "noPaymentMethod" | i18n }}</p>
     <app-verify-bank-account

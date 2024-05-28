@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { from, lastValueFrom, Subject, switchMap } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
+import { openAddAccountCreditDialog } from "@bitwarden/angular/billing/components";
 import { ProviderBillingClientAbstraction } from "@bitwarden/common/billing/abstractions/clients/provider-billing.client.abstraction";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { PaymentMethod } from "@bitwarden/common/billing/models/domain/payment-method";
@@ -27,6 +28,7 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
   protected providerId: string;
   protected loading: boolean;
 
+  protected accountCredit: number;
   protected paymentMethod: PaymentMethod;
   protected taxInformation: TaxInformation;
 
@@ -39,6 +41,13 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
     private providerBillingClient: ProviderBillingClientAbstraction,
     private toastService: ToastService,
   ) {}
+
+  addAccountCredit = () =>
+    openAddAccountCreditDialog(this.dialogService, {
+      data: {
+        providerId: this.providerId,
+      },
+    });
 
   changePaymentMethod = async () => {
     const dialogRef = openProviderPaymentDialog(this.dialogService, {
@@ -56,12 +65,12 @@ export class ProviderPaymentComponent implements OnInit, OnDestroy {
 
   async load() {
     this.loading = true;
-    this.paymentMethod = PaymentMethod.from(
-      await this.providerBillingClient.getPaymentMethod(this.providerId),
+    const paymentInformation = await this.providerBillingClient.getPaymentInformation(
+      this.providerId,
     );
-    this.taxInformation = TaxInformation.from(
-      await this.providerBillingClient.getTaxInformation(this.providerId),
-    );
+    this.accountCredit = paymentInformation.accountCredit;
+    this.paymentMethod = PaymentMethod.from(paymentInformation.paymentMethod);
+    this.taxInformation = TaxInformation.from(paymentInformation.taxInformation);
     if (this.taxInformation === null) {
       this.taxInformation = TaxInformation.empty();
     }

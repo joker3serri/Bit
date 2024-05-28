@@ -6,20 +6,15 @@ import {
   UpdateClientOrganizationRequest,
 } from "@bitwarden/common/billing/models/request";
 
-import {
-  ProviderSubscriptionResponse,
-  PaymentMethodResponse,
-  TaxInfoResponse,
-} from "../../models/response";
+import { ProviderSubscriptionResponse, PaymentInformationResponse } from "../../models/response";
 
 export abstract class ProviderBillingClientAbstraction {
   createClientOrganization: (
     providerId: string,
     request: CreateClientOrganizationRequest,
   ) => Promise<void>;
-  getPaymentMethod: (providerId: string) => Promise<PaymentMethodResponse | null>;
+  getPaymentInformation: (providerId: string) => Promise<PaymentInformationResponse>;
   getSubscription: (providerId: string) => Promise<ProviderSubscriptionResponse>;
-  getTaxInformation: (providerId: string) => Promise<TaxInfoResponse | null>;
   updateClientOrganization: (
     providerId: string,
     organizationId: string,

@@ -8,9 +8,8 @@ import {
   VerifyBankAccountRequest,
 } from "@bitwarden/common/billing/models/request";
 import {
-  PaymentMethodResponse,
+  PaymentInformationResponse,
   ProviderSubscriptionResponse,
-  TaxInfoResponse,
 } from "@bitwarden/common/billing/models/response";
 
 export class ProviderBillingClient implements ProviderBillingClientAbstraction {
@@ -29,22 +28,15 @@ export class ProviderBillingClient implements ProviderBillingClientAbstraction {
     );
   }
 
-  async getPaymentMethod(providerId: string): Promise<PaymentMethodResponse | null> {
-    try {
-      const response = await this.apiService.send(
-        "GET",
-        "/providers/" + providerId + "/billing/payment-method",
-        null,
-        true,
-        true,
-      );
-      return new PaymentMethodResponse(response);
-    } catch (error: any) {
-      if (error.statusCode === 404) {
-        return null;
-      }
-      throw error;
-    }
+  async getPaymentInformation(providerId: string): Promise<PaymentInformationResponse> {
+    const response = await this.apiService.send(
+      "GET",
+      "/providers/" + providerId + "/billing/payment-information",
+      null,
+      true,
+      true,
+    );
+    return new PaymentInformationResponse(response);
   }
 
   async getSubscription(providerId: string): Promise<ProviderSubscriptionResponse> {
@@ -56,24 +48,6 @@ export class ProviderBillingClient implements ProviderBillingClientAbstraction {
       true,
     );
     return new ProviderSubscriptionResponse(response);
-  }
-
-  async getTaxInformation(providerId: string): Promise<TaxInfoResponse | null> {
-    try {
-      const response = await this.apiService.send(
-        "GET",
-        "/providers/" + providerId + "/billing/tax-information",
-        null,
-        true,
-        true,
-      );
-      return new TaxInfoResponse(response);
-    } catch (error: any) {
-      if (error.statusCode === 404) {
-        return null;
-      }
-      throw error;
-    }
   }
 
   async updateClientOrganization(

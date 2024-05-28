@@ -8306,5 +8306,8 @@
   },
   "updatedTaxInformation": {
     "message": "Updated tax information"
+  },
+  "bitcoin": {
+    "message": "Bitcoin"
   }
 }

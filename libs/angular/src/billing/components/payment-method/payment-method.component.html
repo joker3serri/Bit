@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup" [bitSubmit]="submit">
   <div class="tw-mb-4 tw-text-lg">
     <bit-radio-group formControlName="paymentMethod">
       <bit-radio-button id="card-payment-method" [value]="PaymentMethodType.Card">
