@@ -1,14 +1,3 @@
-<h2 bitTypography="h2">
-  {{ title }}
-  <small *ngIf="firstLoaded && loading">
-    <i
-      class="bwi bwi-spinner bwi-spin tw-text-muted"
-      title="{{ 'loading' | i18n }}"
-      aria-hidden="true"
-    ></i>
-    <span class="tw-sr-only">{{ "loading" | i18n }}</span>
-  </small>
-</h2>
 <ng-container *ngIf="!firstLoaded && loading">
   <i
     class="bwi bwi-spinner bwi-spin tw-text-muted"
