@@ -365,7 +365,7 @@ describe("cryptoService", () => {
       return [fakeUserKey, fakeMasterKey];
     }
 
-    it("will return users decrypted private key when legacy support set to %legacySupport and user hasUserKey = $hasUserKey and user hasMasterKey = $hasMasterKey", async () => {
+    it("will return users decrypted private key when user has a user key and encrypted private key set", async () => {
       const [userKey] = setupKeys({
         makeMasterKey: false,
         makeUserKey: true,
