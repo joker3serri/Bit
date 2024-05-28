@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angu
 import { Subject, from, map, of, pairwise, startWith, switchMap, takeUntil, tap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { ClientType } from "@bitwarden/common/enums";
 import {
   Environment,
   EnvironmentService,
@@ -11,6 +12,7 @@ import {
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, FormFieldModule, SelectModule, ToastService } from "@bitwarden/components";
 
 import { RegistrationSelfHostedEnvConfigDialogComponent } from "./registration-self-hosted-env-config-dialog.component";
@@ -36,6 +38,8 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
 
   private selectedRegionFromEnv: RegionConfig | Region.SelfHosted;
 
+  isDesktopOrBrowserExtension = false;
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -44,7 +48,12 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private i18nService: I18nService,
     private toastService: ToastService,
-  ) {}
+    private platformUtilsService: PlatformUtilsService,
+  ) {
+    const clientType = platformUtilsService.getClientType();
+    this.isDesktopOrBrowserExtension =
+      clientType === ClientType.Desktop || clientType === ClientType.Browser;
+  }
 
   async ngOnInit() {
     await this.initSelectedRegionAndListenForEnvChanges();
