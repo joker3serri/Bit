@@ -8301,8 +8301,14 @@
   "secretPeopleDescription": {
     "message": "Grant groups or people access to this secret. Permissions set for people will override permissions set by  groups."
   },
+  "secretPeopleEmptyMessage": {
+    "message": "Add people or groups to share access to this secret"
+  },
   "secretMachineAccountsDescription": {
-    "message": "Machine accounts that have access to this secret."
+    "message": "Grant machine accounts access to this secret."
+  },
+  "secretMachineAccountsEmptyMessage": {
+    "message": "Add machine accounts to grant access to this secret"
   },
   "smAccessRemovalWarningSecretTitle": {
     "message": "Remove access to this secret"
