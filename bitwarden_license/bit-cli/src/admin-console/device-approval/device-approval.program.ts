@@ -3,13 +3,20 @@ import { program, Command } from "commander";
 import { BaseProgram } from "@bitwarden/cli/base-program";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
+import { ServiceContainer } from "../../service-container";
+
 import { ApproveAllCommand } from "./approve-all.command";
 import { ApproveCommand } from "./approve.command";
 import { DenyAllCommand } from "./deny-all.command";
 import { DenyCommand } from "./deny.command";
 import { ListCommand } from "./list.command";
 
+
 export class DeviceApprovalProgram extends BaseProgram {
+  constructor(serviceContainer: ServiceContainer) {
+    super(serviceContainer);
+  }
+
   register() {
     program.addCommand(this.deviceApprovalCommand());
   }
