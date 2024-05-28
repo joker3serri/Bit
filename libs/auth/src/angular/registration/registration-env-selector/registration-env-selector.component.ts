@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Subject, from, map, of, pairwise, startWith, switchMap, takeUntil, tap } from "rxjs";
 
@@ -24,6 +24,8 @@ import { RegistrationSelfHostedEnvConfigDialogComponent } from "./registration-s
   imports: [CommonModule, JslibModule, ReactiveFormsModule, FormFieldModule, SelectModule],
 })
 export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
+  @Output() selectedRegionChange = new EventEmitter<RegionConfig | Region.SelfHosted | null>();
+
   ServerEnvironmentType = Region;
 
   formGroup = this.formBuilder.group({
@@ -104,6 +106,7 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
             RegionConfig | Region.SelfHosted | null,
           ]) => {
             if (selectedRegion === null) {
+              this.selectedRegionChange.emit(selectedRegion);
               return of(null);
             }
 
@@ -117,7 +120,7 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
               );
             }
 
-            // You have access to previousValue here if needed
+            this.selectedRegionChange.emit(selectedRegion);
             return from(this.environmentService.setEnvironment(selectedRegion.key));
           },
         ),
@@ -131,6 +134,7 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
     prevSelectedRegion: RegionConfig | Region.SelfHosted | null,
   ) {
     if (result === true) {
+      this.selectedRegionChange.emit(Region.SelfHosted);
       this.toastService.showToast({
         variant: "success",
         title: null,
@@ -146,8 +150,10 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
       prevSelectedRegion !== null &&
       prevSelectedRegion !== Region.SelfHosted
     ) {
+      this.selectedRegionChange.emit(prevSelectedRegion);
       this.selectedRegion.setValue(prevSelectedRegion, { emitEvent: false });
     } else {
+      this.selectedRegionChange.emit(this.selectedRegionFromEnv);
       this.selectedRegion.setValue(this.selectedRegionFromEnv, { emitEvent: false });
     }
   }
