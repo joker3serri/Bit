@@ -23,7 +23,7 @@ Note that the self hosted option is not present in the environment selector.
 
 <Story of={stories.WebEURegionExample} />
 
-### US Region + Query Params
+### Query Params
 
 The component accepts two query parameters: `email` and `emailReadonly`. If an email is provided, it
 will be pre-filled in the email input field. If `emailReadonly` is set to `true`, the email input
@@ -31,15 +31,36 @@ field will be set to readonly. `emailReadonly` is primarily for the organization
 
 <Story of={stories.WebUSRegionQueryParamsExample} />
 
-## Self Hosted Examples
+## Desktop
 
-Note the fact that the terms of service and privacy policy checkboxes are not present in any of the
-forms.
+### US Region
 
-### Desktop
+<Story of={stories.DesktopUSRegionExample} />
+
+### EU Region
+
+<Story of={stories.DesktopEURegionExample} />
+
+### Self Hosted
+
+Note the fact that the terms of service and privacy policy checkbox is not present when the
+environment is self hosted.
 
 <Story of={stories.DesktopSelfHostExample} />
 
-### Browser Extension
+## Browser Extension
+
+### US Region
+
+<Story of={stories.BrowserExtensionUSRegionExample} />
+
+### EU Region
+
+<Story of={stories.BrowserExtensionEURegionExample} />
+
+### Self Hosted
+
+Note the fact that the terms of service and privacy policy checkbox is not present when the
+environment is self hosted.
 
 <Story of={stories.BrowserExtensionSelfHostExample} />

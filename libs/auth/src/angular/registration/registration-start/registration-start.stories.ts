@@ -130,6 +130,34 @@ export const WebUSRegionQueryParamsExample: Story = {
   }),
 };
 
+export const DesktopUSRegionExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Desktop,
+    defaultRegion: Region.US,
+    isSelfHost: false,
+  }),
+};
+
+export const DesktopEURegionExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Desktop,
+    defaultRegion: Region.EU,
+    isSelfHost: false,
+  }),
+};
+
 export const DesktopSelfHostExample: Story = {
   render: (args) => ({
     props: args,
@@ -141,6 +169,34 @@ export const DesktopSelfHostExample: Story = {
     clientType: ClientType.Desktop,
     isSelfHost: true,
     defaultRegion: Region.SelfHosted,
+  }),
+};
+
+export const BrowserExtensionUSRegionExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Browser,
+    defaultRegion: Region.US,
+    isSelfHost: false,
+  }),
+};
+
+export const BrowserExtensionEURegionExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <auth-registration-start></auth-registration-start>
+      `,
+  }),
+  decorators: decorators({
+    clientType: ClientType.Browser,
+    defaultRegion: Region.EU,
+    isSelfHost: false,
   }),
 };
 
