@@ -10,6 +10,7 @@ import {
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
 
+import { AnonLayoutWrapperComponent } from "../../../../libs/auth/src/angular/anon-layout/anon-layout-wrapper.component";
 import { flagEnabled, Flags } from "../utils/flags";
 
 import { VerifyRecoverDeleteOrgComponent } from "./admin-console/organizations/manage/verify-recover-delete-org.component";
@@ -19,7 +20,6 @@ import { VerifyRecoverDeleteProviderComponent } from "./admin-console/providers/
 import { CreateOrganizationComponent } from "./admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "./admin-console/settings/sponsored-families.component";
 import { AcceptOrganizationComponent } from "./auth/accept-organization.component";
-import { AnonLayoutWrapperComponent } from "./auth/anon-layout-wrapper.component";
 import { deepLinkGuard } from "./auth/guards/deep-link.guard";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
@@ -64,7 +64,6 @@ const routes: Routes = [
         children: [], // Children lets us have an empty component.
         canActivate: [redirectGuard()], // Redirects either to vault, login, or lock page.
       },
-      // { path: "login", component: LoginComponent, canActivate: [UnauthGuard] },
       {
         path: "login-with-device",
         component: LoginViaAuthRequestComponent,
@@ -213,7 +212,7 @@ const routes: Routes = [
         component: LoginComponent,
         canActivate: [unauthGuardFn()],
         data: {
-          pageTitle: "loginOrCreateNewAccount",
+          pageTitle: "logIn",
         },
       },
     ],
