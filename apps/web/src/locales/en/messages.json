@@ -5583,6 +5583,9 @@
   "rotateBillingSyncTokenTitle": {
     "message": "Rotating the billing sync token will invalidate the previous token."
   },
+  "selfHostedServer": {
+    "message": "self-hosted"
+  },
   "selfHostingTitle": {
     "message": "Self-hosting"
   },
