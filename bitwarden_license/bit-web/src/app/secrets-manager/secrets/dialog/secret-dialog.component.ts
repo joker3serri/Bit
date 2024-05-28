@@ -37,6 +37,12 @@ export enum OperationType {
   Edit,
 }
 
+export enum SecretDialogTabType {
+  NameValuePair = 0,
+  People = 1,
+  ServiceAccounts = 2,
+}
+
 export interface SecretOperation {
   organizationId: string;
   operation: OperationType;
@@ -53,6 +59,7 @@ export class SecretDialogComponent implements OnInit {
   projects: ProjectListView[];
   addNewProject = false;
   newProjectGuid = Utils.newGuid();
+  tabIndex: SecretDialogTabType;
 
   protected formGroup = new FormGroup({
     name: new FormControl("", {
@@ -138,6 +145,13 @@ export class SecretDialogComponent implements OnInit {
 
     this.formGroup.markAllAsTouched();
     if (this.formGroup.invalid) {
+      if (this.tabIndex !== SecretDialogTabType.NameValuePair) {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("nameValuePair")),
+        );
+      }
       return;
     }
 
