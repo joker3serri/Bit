@@ -38,7 +38,7 @@ export abstract class CryptoService {
   /**
    * Retrieves a stream of the given users {@see UserKey} values. Can emit null if the user does not have a user key, e.g. the user
    * is in a locked or logged out state.
-   * @param userId
+   * @param userId The user id of the user to get the {@see UserKey} for.
    */
   abstract userKey$(userId: UserId): Observable<UserKey>;
   /**
