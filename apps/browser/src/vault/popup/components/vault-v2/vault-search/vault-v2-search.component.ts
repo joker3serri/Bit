@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { Component, Output, EventEmitter } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
-import { Subject, debounceTime, takeUntil } from "rxjs";
+import { Subject, debounceTime } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SearchModule } from "@bitwarden/components";
@@ -14,24 +15,18 @@ const SearchTextDebounceInterval = 200;
   selector: "app-vault-v2-search",
   templateUrl: "vault-v2-search.component.html",
 })
-export class VaultV2SearchComponent implements OnDestroy {
+export class VaultV2SearchComponent {
   searchText: string;
   @Output() searchTextChanged = new EventEmitter<string>();
 
   private searchText$ = new Subject<string>();
-  private destroy$ = new Subject<void>();
 
   constructor() {
     this.searchText$
-      .pipe(debounceTime(SearchTextDebounceInterval), takeUntil(this.destroy$))
+      .pipe(debounceTime(SearchTextDebounceInterval), takeUntilDestroyed())
       .subscribe((data) => {
         this.searchTextChanged.emit(data);
       });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   onSearchTextChanged() {
