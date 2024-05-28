@@ -30,10 +30,13 @@ export class MessagingMain {
       const loginSettings = app.getLoginItemSettings();
       await this.desktopSettingsService.setOpenAtLogin(loginSettings.openAtLogin);
     }
-    ipcMain.on("messagingService", async (event: any, message: any) => this.onMessage(message));
+    ipcMain.on(
+      "messagingService",
+      async (event: any, message: any) => await this.onMessage(message),
+    );
   }
 
-  onMessage(message: any) {
+  async onMessage(message: any) {
     switch (message.command) {
       case "scheduleNextSync":
         this.scheduleNextSync();
@@ -45,16 +48,14 @@ export class MessagingMain {
         this.updateTrayMenu(message.updateRequest);
         break;
       case "minimizeOnCopy":
-        firstValueFrom(this.desktopSettingsService.minimizeOnCopy$).then(
-          (shouldMinimize) => {
-            if (shouldMinimize && this.main.windowMain.win !== null) {
-              this.main.windowMain.win.minimize();
-            }
-          },
-          (error) => {
-            this.logService.error("Error while retrieving minimize on copy setting", error);
-          },
-        );
+        {
+          const shouldMinimizeOnCopy = await firstValueFrom(
+            this.desktopSettingsService.minimizeOnCopy$,
+          );
+          if (shouldMinimizeOnCopy && this.main.windowMain.win !== null) {
+            this.main.windowMain.win.minimize();
+          }
+        }
         break;
       case "showTray":
         this.main.trayMain.showTray();
