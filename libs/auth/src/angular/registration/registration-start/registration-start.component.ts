@@ -12,6 +12,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { RegionConfig, Region } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
   AsyncActionsModule,
@@ -86,6 +87,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
   ) {
+    // TODO: this needs to update if user selects self hosted
     this.isSelfHost = platformUtilsService.isSelfHost();
   }
 
@@ -117,6 +119,10 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.state = RegistrationStartState.CHECK_EMAIL;
     this.registrationStartStateChange.emit(this.state);
   };
+
+  handleSelectedRegionChange(region: RegionConfig | Region.SelfHosted | null) {
+    this.isSelfHost = region === Region.SelfHosted;
+  }
 
   private validateForm(): boolean {
     this.formGroup.markAllAsTouched();
