@@ -1,14 +1,17 @@
 import { BehaviorSubject } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
+import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
+import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import {
   MY_VAULT_ID,
@@ -177,7 +180,7 @@ describe("VaultPopupListFiltersService", () => {
 
     it("filters out collections that do not belong to an organization", () => {
       service.updateFilter({
-        organizationId: testCollection2.organizationId,
+        organization: { id: testCollection2.organizationId } as Organization,
       });
 
       service.collections$.subscribe((collections) => {
@@ -211,7 +214,7 @@ describe("VaultPopupListFiltersService", () => {
 
     it("returns all folders when MyVault is selected", (done) => {
       service.updateFilter({
-        organizationId: MY_VAULT_ID,
+        organization: { id: MY_VAULT_ID } as Organization,
       });
       folderViews$.next([
         { id: "1234", name: "Folder 1" },
@@ -226,7 +229,7 @@ describe("VaultPopupListFiltersService", () => {
 
     it("returns folders that have ciphers within the selected organization", (done) => {
       service.updateFilter({
-        organizationId: "1234",
+        organization: { id: "1234" } as Organization,
       });
 
       folderViews$.next([
@@ -256,9 +259,9 @@ describe("VaultPopupListFiltersService", () => {
 
     const filters: PopupListFilter = {
       cipherType: null,
-      organizationId: null,
-      collectionId: null,
-      folderId: null,
+      organization: null,
+      collection: null,
+      folder: null,
     };
 
     it("filters by cipherType", () => {
@@ -268,28 +271,28 @@ describe("VaultPopupListFiltersService", () => {
     });
 
     it("filters by collection", () => {
-      expect(service.filterCiphers(ciphers, { ...filters, collectionId: "1234" })).toEqual([
-        ciphers[1],
-      ]);
+      const collection = { id: "1234" } as Collection;
+      expect(service.filterCiphers(ciphers, { ...filters, collection })).toEqual([ciphers[1]]);
     });
 
     it("filters by folder", () => {
-      expect(service.filterCiphers(ciphers, { ...filters, folderId: "5432" })).toEqual([
-        ciphers[2],
-      ]);
+      const folder = { id: "5432" } as FolderView;
+      expect(service.filterCiphers(ciphers, { ...filters, folder })).toEqual([ciphers[2]]);
     });
 
     describe("organizationId", () => {
       it("filters out ciphers that belong to an organization when MyVault is selected", () => {
-        expect(service.filterCiphers(ciphers, { ...filters, organizationId: MY_VAULT_ID })).toEqual(
-          [ciphers[0], ciphers[2], ciphers[3]],
-        );
+        const organization = { id: MY_VAULT_ID } as Organization;
+        expect(service.filterCiphers(ciphers, { ...filters, organization })).toEqual([
+          ciphers[0],
+          ciphers[2],
+          ciphers[3],
+        ]);
       });
 
       it("filters out ciphers that do not belong to the selected organization", () => {
-        expect(service.filterCiphers(ciphers, { ...filters, organizationId: "8978" })).toEqual([
-          ciphers[1],
-        ]);
+        const organization = { id: "8978" } as Organization;
+        expect(service.filterCiphers(ciphers, { ...filters, organization })).toEqual([ciphers[1]]);
       });
     });
   });

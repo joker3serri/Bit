@@ -2,7 +2,7 @@
   <ng-container *ngIf="organizations$ | async as organizations">
     <bit-chip-select
       *ngIf="organizations.length"
-      formControlName="organizationId"
+      formControlName="organization"
       placeholderIcon="bwi-vault"
       [placeholderText]="'vault' | i18n"
       [options]="organizations"
@@ -12,7 +12,7 @@
   <ng-container *ngIf="collections$ | async as collections">
     <bit-chip-select
       *ngIf="collections.length"
-      formControlName="collectionId"
+      formControlName="collection"
       placeholderIcon="bwi-collection"
       [placeholderText]="'collections' | i18n"
       [options]="collections"
@@ -23,7 +23,7 @@
     <bit-chip-select
       *ngIf="folders.length"
       placeholderIcon="bwi-folder"
-      formControlName="folderId"
+      formControlName="folder"
       [placeholderText]="'folder' | i18n"
       [options]="folders"
     >

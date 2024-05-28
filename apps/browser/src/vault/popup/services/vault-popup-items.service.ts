@@ -20,7 +20,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 
-import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
+import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
 /**
  * Service for managing the various item lists on the new Vault tab in the browser popup.
@@ -166,15 +166,15 @@ export class VaultPopupItemsService {
 
   /** Observable that indicates when the user should see the deactivated org state */
   showDeactivatedOrg$: Observable<boolean> = combineLatest([
-    this.vaultPopupListFiltersService.filters$.pipe(distinctUntilKeyChanged("organizationId")),
+    this.vaultPopupListFiltersService.filters$.pipe(distinctUntilKeyChanged("organization")),
     this.organizationService.organizations$,
   ]).pipe(
     map(([filters, orgs]) => {
-      if (!filters.organizationId) {
+      if (!filters.organization || filters.organization.id === MY_VAULT_ID) {
         return false;
       }
 
-      const org = orgs.find((o) => o.id === filters.organizationId);
+      const org = orgs.find((o) => o.id === filters.organization.id);
       return org ? !org.enabled : false;
     }),
   );

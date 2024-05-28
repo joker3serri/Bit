@@ -22,9 +22,9 @@ export class VaultListFiltersComponent implements OnInit, OnDestroy {
 
   filterForm = this.formBuilder.group<PopupListFilter>({
     cipherType: null,
-    organizationId: null,
-    collectionId: null,
-    folderId: null,
+    organization: null,
+    collection: null,
+    folder: null,
   });
 
   protected organizations$ = this.vaultPopupListFiltersService.organizations$;

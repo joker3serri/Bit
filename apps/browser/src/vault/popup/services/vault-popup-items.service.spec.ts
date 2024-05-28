@@ -46,10 +46,10 @@ describe("VaultPopupItemsService", () => {
     vaultSettingsServiceMock.showIdentitiesCurrentTab$ = new BehaviorSubject(false).asObservable();
 
     vaultPopupListFiltersServiceMock.filters$ = new BehaviorSubject({
-      organizationId: null,
-      collectionId: null,
+      organization: null,
+      collection: null,
       cipherType: null,
-      folderId: null,
+      folder: null,
     });
 
     jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false);
