@@ -86,8 +86,6 @@ const decorators = (options: {
 
 type Story = StoryObj<RegistrationStartComponent>;
 
-// TODO: re-arrange stories to take clients into account (web, desktop, && browser extension)
-
 export const WebUSRegionExample: Story = {
   render: (args) => ({
     props: args,
