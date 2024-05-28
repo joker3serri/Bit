@@ -23,7 +23,12 @@
   </div>
   <footer class="tw-text-center">
     <div *ngIf="showEnvironment === 'hostname'">{{ "accessing" | i18n }} {{ hostname }}</div>
-    <div *ngIf="showEnvironment === 'selector'">{{ "accessing" | i18n }}: [SELECTOR]</div>
+    <div *ngIf="showEnvironment === 'selector'">
+      <div *ngIf="clientType !== 'web'">[LIBS SELECTOR]</div>
+      <ng-container *ngIf="clientType === 'web'">
+        <ng-content select="[slot=web-environment-selector]"></ng-content>
+      </ng-container>
+    </div>
     <ng-container *ngIf="showYearAndVersion">
       <div>&copy; {{ year }} Bitwarden Inc.</div>
       <div>{{ version }}</div>
