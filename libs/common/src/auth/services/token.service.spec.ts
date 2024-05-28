@@ -1722,7 +1722,7 @@ describe("TokenService", () => {
           expect(result).toBeNull();
 
           expect(logService.error).toHaveBeenCalledWith(
-            "Refresh token not found in secure storage. Access token will fail to refresh upon expiration.",
+            "Refresh token not found in secure storage. Access token will fail to refresh upon expiration or manual refresh.",
           );
         });
 
