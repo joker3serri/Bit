@@ -23,7 +23,7 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   protected formGroup = this.formBuilder.group({
-    paymentMethod: [this.startWith],
+    paymentMethod: [this.startWith, Validators.required],
     bankInformation: this.formBuilder.group({
       routingNumber: ["", [Validators.required]],
       accountNumber: ["", [Validators.required]],

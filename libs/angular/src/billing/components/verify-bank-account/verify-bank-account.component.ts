@@ -7,7 +7,7 @@ import { FormBuilder, FormControl, Validators } from "@angular/forms";
 })
 export class VerifyBankAccountComponent {
   @Input() onSubmit?: (amount1: number, amount2: number) => Promise<void>;
-  @Output() verificationSubmitted = new EventEmitter<{ amount1: number; amount2: number }>();
+  @Output() verificationSubmitted = new EventEmitter();
 
   protected formGroup = this.formBuilder.group({
     amount1: new FormControl<number>(null, [
@@ -28,9 +28,6 @@ export class VerifyBankAccountComponent {
     if (this.onSubmit) {
       await this.onSubmit(this.formGroup.value.amount1, this.formGroup.value.amount2);
     }
-    this.verificationSubmitted.emit({
-      amount1: this.formGroup.value.amount1,
-      amount2: this.formGroup.value.amount2,
-    });
+    this.verificationSubmitted.emit();
   };
 }
