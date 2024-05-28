@@ -52,34 +52,40 @@ describe("convertSecretAccessPoliciesToApItemViews", () => {
 
     expect(result).toHaveLength(3);
 
-    expect(result[0].type).toBe(ApItemEnum.User);
-    expect(result[0].icon).toBe("bwi-user");
-    expect(result[0].id).toBe("organizationUserId");
-    expect(result[0].accessPolicyId).toBe("accessPolicyId");
-    expect(result[0].labelName).toBe("organizationUserName");
-    expect(result[0].listName).toBe("organizationUserName");
-    expect(result[0].permission).toBe(ApPermissionEnum.CanReadWrite);
-    expect(result[0].userId).toBe("userId");
-    expect(result[0].currentUser).toBe(true);
-    expect(result[0].readOnly).toBe(false);
+    const userApItem = result.find((item) => item.type === ApItemEnum.User);
+    expect(userApItem.type).toBe(ApItemEnum.User);
+    expect(userApItem.icon).toBe("bwi-user");
+    expect(userApItem.id).toBe("organizationUserId");
+    expect(userApItem.accessPolicyId).toBe("accessPolicyId");
+    expect(userApItem.labelName).toBe("organizationUserName");
+    expect(userApItem.listName).toBe("organizationUserName");
+    expect(userApItem.permission).toBe(ApPermissionEnum.CanReadWrite);
+    expect(userApItem.readOnly).toBe(false);
+    if (userApItem.type === ApItemEnum.User) {
+      expect(userApItem.currentUser).toBe(true);
+    }
 
-    expect(result[1].type).toBe(ApItemEnum.Group);
-    expect(result[1].icon).toBe("bwi-family");
-    expect(result[1].id).toBe("groupId");
-    expect(result[1].accessPolicyId).toBe("accessPolicyId");
-    expect(result[1].labelName).toBe("groupName");
-    expect(result[1].listName).toBe("groupName");
-    expect(result[1].permission).toBe(ApPermissionEnum.CanRead);
-    expect(result[1].currentUserInGroup).toBe(true);
-    expect(result[1].readOnly).toBe(false);
+    const groupApItem = result.find((item) => item.type === ApItemEnum.Group);
+    expect(groupApItem.type).toBe(ApItemEnum.Group);
+    expect(groupApItem.icon).toBe("bwi-family");
+    expect(groupApItem.id).toBe("groupId");
+    expect(groupApItem.accessPolicyId).toBe("accessPolicyId");
+    expect(groupApItem.labelName).toBe("groupName");
+    expect(groupApItem.listName).toBe("groupName");
+    expect(groupApItem.permission).toBe(ApPermissionEnum.CanRead);
+    expect(groupApItem.readOnly).toBe(false);
+    if (groupApItem.type === ApItemEnum.Group) {
+      expect(groupApItem.currentUserInGroup).toBe(true);
+    }
 
-    expect(result[2].type).toBe(ApItemEnum.ServiceAccount);
-    expect(result[2].icon).toBe("bwi-wrench");
-    expect(result[2].id).toBe("serviceAccountId");
-    expect(result[2].accessPolicyId).toBe("accessPolicyId");
-    expect(result[2].labelName).toBe("serviceAccountName");
-    expect(result[2].listName).toBe("serviceAccountName");
-    expect(result[2].permission).toBe(ApPermissionEnum.CanReadWrite);
-    expect(result[2].readOnly).toBe(false);
+    const serviceAccountApItem = result.find((item) => item.type === ApItemEnum.ServiceAccount);
+    expect(serviceAccountApItem.type).toBe(ApItemEnum.ServiceAccount);
+    expect(serviceAccountApItem.icon).toBe("bwi-wrench");
+    expect(serviceAccountApItem.id).toBe("serviceAccountId");
+    expect(serviceAccountApItem.accessPolicyId).toBe("accessPolicyId");
+    expect(serviceAccountApItem.labelName).toBe("serviceAccountName");
+    expect(serviceAccountApItem.listName).toBe("serviceAccountName");
+    expect(serviceAccountApItem.permission).toBe(ApPermissionEnum.CanReadWrite);
+    expect(serviceAccountApItem.readOnly).toBe(false);
   });
 });
