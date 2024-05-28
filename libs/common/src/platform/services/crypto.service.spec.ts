@@ -350,13 +350,12 @@ describe("cryptoService", () => {
   });
 
   describe("userPrivateKey$", () => {
-    const setupKeys = ({
-      makeMasterKey,
-      makeUserKey,
-    }: {
+    type SetupKeysParams = {
       makeMasterKey: boolean;
       makeUserKey: boolean;
-    }): [UserKey, MasterKey] => {
+    };
+
+    function setupKeys({ makeMasterKey, makeUserKey }: SetupKeysParams): [UserKey, MasterKey] {
       const userKeyState = stateProvider.singleUser.getFake(mockUserId, USER_KEY);
       const fakeMasterKey = makeMasterKey ? makeSymmetricCryptoKey<MasterKey>(64) : null;
       masterPasswordService.masterKeySubject.next(fakeMasterKey);
@@ -364,7 +363,7 @@ describe("cryptoService", () => {
       const fakeUserKey = makeUserKey ? makeSymmetricCryptoKey<UserKey>(64) : null;
       userKeyState.stateSubject.next([mockUserId, fakeUserKey]);
       return [fakeUserKey, fakeMasterKey];
-    };
+    }
 
     it("will return users decrypted private key when legacy support set to %legacySupport and user hasUserKey = $hasUserKey and user hasMasterKey = $hasMasterKey", async () => {
       const [userKey] = setupKeys({
@@ -426,7 +425,7 @@ describe("cryptoService", () => {
   });
 
   describe("cipherDecryptionKeys$", () => {
-    const fakePrivateKeyDecryption = (encryptedPrivateKey: Encrypted, key: SymmetricCryptoKey) => {
+    function fakePrivateKeyDecryption(encryptedPrivateKey: Encrypted, key: SymmetricCryptoKey) {
       const output = new Uint8Array(64);
       output.set(encryptedPrivateKey.dataBytes);
       output.set(
@@ -434,9 +433,9 @@ describe("cryptoService", () => {
         encryptedPrivateKey.dataBytes.length,
       );
       return output;
-    };
+    }
 
-    const fakeOrgKeyDecryption = (encryptedString: EncString, userPrivateKey: Uint8Array) => {
+    function fakeOrgKeyDecryption(encryptedString: EncString, userPrivateKey: Uint8Array) {
       const output = new Uint8Array(64);
       output.set(encryptedString.dataBytes);
       output.set(
@@ -444,18 +443,18 @@ describe("cryptoService", () => {
         encryptedString.dataBytes.length,
       );
       return output;
-    };
+    }
 
     const org1Id = "org1" as OrganizationId;
 
-    const updateKeys = (
-      keys: Partial<{
-        userKey: UserKey;
-        encryptedPrivateKey: EncString;
-        orgKeys: Record<string, EncryptedOrganizationKeyData>;
-        providerKeys: Record<string, EncryptedString>;
-      }> = {},
-    ) => {
+    type UpdateKeysParams = {
+      userKey: UserKey;
+      encryptedPrivateKey: EncString;
+      orgKeys: Record<string, EncryptedOrganizationKeyData>;
+      providerKeys: Record<string, EncryptedString>;
+    };
+
+    function updateKeys(keys: Partial<UpdateKeysParams> = {}) {
       if ("userKey" in keys) {
         const userKeyState = stateProvider.singleUser.getFake(mockUserId, USER_KEY);
         userKeyState.stateSubject.next([mockUserId, keys.userKey]);
@@ -496,7 +495,7 @@ describe("cryptoService", () => {
       encryptService.rsaDecrypt.mockImplementation((data, privateKey) => {
         return Promise.resolve(fakeOrgKeyDecryption(data, privateKey));
       });
-    };
+    }
 
     it("returns decryption keys when there are not org or provider keys set", async () => {
       updateKeys({
