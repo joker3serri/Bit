@@ -23,6 +23,7 @@ import {
 } from "@bitwarden/components";
 
 import { RegistrationCheckEmailIcon } from "../../icons/registration-check-email.icon";
+import { RegistrationEnvSelectorComponent } from "../registration-env-selector/registration-env-selector.component";
 
 export enum RegistrationStartState {
   USER_DATA_ENTRY = "UserDataEntry",
@@ -43,6 +44,7 @@ export enum RegistrationStartState {
     ButtonModule,
     LinkModule,
     IconModule,
+    RegistrationEnvSelectorComponent,
   ],
 })
 export class RegistrationStartComponent implements OnInit, OnDestroy {
