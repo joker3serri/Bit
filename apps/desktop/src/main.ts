@@ -234,9 +234,6 @@ export class Main {
       this.messagingMain.onMessage(message);
     });
 
-    this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain);
-    this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.desktopSettingsService);
-
     this.powerMonitorMain = new PowerMonitorMain(this.messagingService);
     this.menuMain = new MenuMain(
       this.i18nService,
