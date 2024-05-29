@@ -43,7 +43,7 @@ export class Parser {
       id = Utils.fromBufferToUtf8(this.readItem(reader));
 
       // 1: name
-      step++;
+      step = 1;
       const name = await this.cryptoUtils.decryptAes256PlainWithDefault(
         this.readItem(reader),
         encryptionKey,
@@ -51,7 +51,7 @@ export class Parser {
       );
 
       // 2: group
-      step++;
+      step = 2;
       const group = await this.cryptoUtils.decryptAes256PlainWithDefault(
         this.readItem(reader),
         encryptionKey,
@@ -59,7 +59,7 @@ export class Parser {
       );
 
       // 3: url
-      step++;
+      step = 3;
       let url = Utils.fromBufferToUtf8(
         this.decodeHexLoose(Utils.fromBufferToUtf8(this.readItem(reader))),
       );
@@ -70,7 +70,7 @@ export class Parser {
       }
 
       // 4: extra (notes)
-      step++;
+      step = 4;
       const notes = await this.cryptoUtils.decryptAes256PlainWithDefault(
         this.readItem(reader),
         encryptionKey,
@@ -78,7 +78,7 @@ export class Parser {
       );
 
       // 5: fav (is favorite)
-      step++;
+      step = 5;
       const isFavorite = Utils.fromBufferToUtf8(this.readItem(reader)) === "1";
 
       // 6: sharedfromaid (?)
@@ -93,7 +93,7 @@ export class Parser {
       );
 
       // 8: password
-      step++;
+      step = 8;
       let password = await this.cryptoUtils.decryptAes256PlainWithDefault(
         this.readItem(reader),
         encryptionKey,
