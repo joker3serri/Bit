@@ -4,8 +4,6 @@ import * as path from "path";
 import { app, ipcMain } from "electron";
 import { firstValueFrom } from "rxjs";
 
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-
 import { Main } from "../main";
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
 
@@ -19,7 +17,6 @@ export class MessagingMain {
   constructor(
     private main: Main,
     private desktopSettingsService: DesktopSettingsService,
-    private readonly logService: LogService,
   ) {}
 
   async init() {
