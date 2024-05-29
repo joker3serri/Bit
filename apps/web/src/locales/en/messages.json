@@ -8294,5 +8294,8 @@
   },
   "allLoginRequestsApproved": {
     "message": "All login requests approved"
+  },
+  "payPal": {
+    "message": "PayPal"
   }
 }

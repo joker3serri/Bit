@@ -1,3 +1,5 @@
+import { PaymentMethodType } from "@bitwarden/common/billing/enums";
+
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingMetadataResponse } from "../../billing/models/response/organization-billing-metadata.response";
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
@@ -18,6 +20,7 @@ export abstract class BillingApiServiceAbstraction {
     providerId: string,
     request: CreateClientOrganizationRequest,
   ) => Promise<void>;
+  createSetupIntent: (paymentMethodType: PaymentMethodType) => Promise<string>;
   getBillingStatus: (id: string) => Promise<OrganizationBillingStatusResponse>;
   getOrganizationBillingMetadata: (
     organizationId: string,
