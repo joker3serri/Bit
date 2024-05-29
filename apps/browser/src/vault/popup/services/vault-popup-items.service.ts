@@ -80,10 +80,10 @@ export class VaultPopupItemsService {
   private _filteredCipherList$: Observable<CipherView[]> = combineLatest([
     this._cipherList$,
     this.searchText$,
-    this.vaultPopupListFiltersService.filters$,
+    this.vaultPopupListFiltersService.filterFunction$,
   ]).pipe(
-    map(([ciphers, searchText, filters]): [CipherView[], string] => [
-      this.vaultPopupListFiltersService.filterCiphers(ciphers, filters),
+    map(([ciphers, searchText, filterFunction]): [CipherView[], string] => [
+      filterFunction(ciphers),
       searchText,
     ]),
     switchMap(([ciphers, searchText]) =>

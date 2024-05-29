@@ -13,11 +13,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import {
-  MY_VAULT_ID,
-  PopupListFilter,
-  VaultPopupListFiltersService,
-} from "./vault-popup-list-filters.service";
+import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
 describe("VaultPopupListFiltersService", () => {
   let service: VaultPopupListFiltersService;
@@ -217,7 +213,7 @@ describe("VaultPopupListFiltersService", () => {
     });
   });
 
-  describe("filterCiphers", () => {
+  describe("filterFunction$", () => {
     const ciphers = [
       { type: CipherType.Login, collectionIds: [], organizationId: null },
       { type: CipherType.Card, collectionIds: ["1234"], organizationId: "8978" },
@@ -225,42 +221,58 @@ describe("VaultPopupListFiltersService", () => {
       { type: CipherType.SecureNote, collectionIds: [], organizationId: null },
     ] as CipherView[];
 
-    const filters: PopupListFilter = {
-      cipherType: null,
-      organization: null,
-      collection: null,
-      folder: null,
-    };
+    it("filters by cipherType", (done) => {
+      service.filterFunction$.subscribe((filterFunction) => {
+        expect(filterFunction(ciphers)).toEqual([ciphers[0]]);
+        done();
+      });
 
-    it("filters by cipherType", () => {
-      expect(service.filterCiphers(ciphers, { ...filters, cipherType: CipherType.Login })).toEqual([
-        ciphers[0],
-      ]);
+      service.filterForm.patchValue({ cipherType: CipherType.Login });
     });
 
-    it("filters by collection", () => {
+    it("filters by collection", (done) => {
       const collection = { id: "1234" } as Collection;
-      expect(service.filterCiphers(ciphers, { ...filters, collection })).toEqual([ciphers[1]]);
+
+      service.filterFunction$.subscribe((filterFunction) => {
+        expect(filterFunction(ciphers)).toEqual([ciphers[1]]);
+        done();
+      });
+
+      service.filterForm.patchValue({ collection });
     });
 
-    it("filters by folder", () => {
+    it("filters by folder", (done) => {
       const folder = { id: "5432" } as FolderView;
-      expect(service.filterCiphers(ciphers, { ...filters, folder })).toEqual([ciphers[2]]);
+
+      service.filterFunction$.subscribe((filterFunction) => {
+        expect(filterFunction(ciphers)).toEqual([ciphers[2]]);
+        done();
+      });
+
+      service.filterForm.patchValue({ folder });
     });
 
     describe("organizationId", () => {
-      it("filters out ciphers that belong to an organization when MyVault is selected", () => {
+      it("filters out ciphers that belong to an organization when MyVault is selected", (done) => {
         const organization = { id: MY_VAULT_ID } as Organization;
-        expect(service.filterCiphers(ciphers, { ...filters, organization })).toEqual([
-          ciphers[0],
-          ciphers[2],
-          ciphers[3],
-        ]);
+
+        service.filterFunction$.subscribe((filterFunction) => {
+          expect(filterFunction(ciphers)).toEqual([ciphers[0], ciphers[2], ciphers[3]]);
+          done();
+        });
+
+        service.filterForm.patchValue({ organization });
       });
 
-      it("filters out ciphers that do not belong to the selected organization", () => {
+      it("filters out ciphers that do not belong to the selected organization", (done) => {
         const organization = { id: "8978" } as Organization;
-        expect(service.filterCiphers(ciphers, { ...filters, organization })).toEqual([ciphers[1]]);
+
+        service.filterFunction$.subscribe((filterFunction) => {
+          expect(filterFunction(ciphers)).toEqual([ciphers[1]]);
+          done();
+        });
+
+        service.filterForm.patchValue({ organization });
       });
     });
   });

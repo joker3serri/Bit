@@ -13,7 +13,7 @@ import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 
 import { VaultPopupItemsService } from "./vault-popup-items.service";
-import { PopupListFilter, VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
+import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
 describe("VaultPopupItemsService", () => {
   let service: VaultPopupItemsService;
@@ -23,10 +23,7 @@ describe("VaultPopupItemsService", () => {
   const cipherServiceMock = mock<CipherService>();
   const vaultSettingsServiceMock = mock<VaultSettingsService>();
   const organizationServiceMock = mock<OrganizationService>();
-  const vaultPopupListFiltersServiceMock = mock<VaultPopupListFiltersService>({
-    // Return all ciphers, `filterCiphers` will be tested in `VaultPopupListFiltersService`
-    filterCiphers: (ciphers: CipherView[], _: PopupListFilter) => ciphers,
-  });
+  const vaultPopupListFiltersServiceMock = mock<VaultPopupListFiltersService>();
   const searchService = mock<SearchService>();
 
   beforeEach(() => {
@@ -54,6 +51,10 @@ describe("VaultPopupItemsService", () => {
       cipherType: null,
       folder: null,
     });
+    // Return all ciphers, `filterFunction$` will be tested in `VaultPopupListFiltersService`
+    vaultPopupListFiltersServiceMock.filterFunction$ = new BehaviorSubject(
+      (ciphers: CipherView[]) => ciphers,
+    );
 
     jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false);
     jest

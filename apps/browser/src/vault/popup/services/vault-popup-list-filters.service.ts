@@ -94,37 +94,43 @@ export class VaultPopupListFiltersService {
   }
 
   /**
-   * Returns the list of ciphers that satisfy the filters
+   * Observable whose value is a function that filters an array of `CipherView` objects based on the current filters
    */
-  filterCiphers = (ciphers: CipherView[], filters: PopupListFilter): CipherView[] => {
-    return ciphers.filter((cipher) => {
-      if (filters.cipherType !== null && cipher.type !== filters.cipherType) {
-        return false;
-      }
+  filterFunction$: Observable<(ciphers: CipherView[]) => CipherView[]> = this.filters$.pipe(
+    map(
+      (filters) => (ciphers: CipherView[]) =>
+        ciphers.filter((cipher) => {
+          if (filters.cipherType !== null && cipher.type !== filters.cipherType) {
+            return false;
+          }
 
-      if (filters.collection !== null && !cipher.collectionIds.includes(filters.collection.id)) {
-        return false;
-      }
+          if (
+            filters.collection !== null &&
+            !cipher.collectionIds.includes(filters.collection.id)
+          ) {
+            return false;
+          }
 
-      if (filters.folder !== null && cipher.folderId !== filters.folder.id) {
-        return false;
-      }
+          if (filters.folder !== null && cipher.folderId !== filters.folder.id) {
+            return false;
+          }
 
-      const isMyVault = filters.organization?.id === MY_VAULT_ID;
+          const isMyVault = filters.organization?.id === MY_VAULT_ID;
 
-      if (isMyVault) {
-        if (cipher.organizationId !== null) {
-          return false;
-        }
-      } else if (filters.organization !== null) {
-        if (cipher.organizationId !== filters.organization.id) {
-          return false;
-        }
-      }
+          if (isMyVault) {
+            if (cipher.organizationId !== null) {
+              return false;
+            }
+          } else if (filters.organization !== null) {
+            if (cipher.organizationId !== filters.organization.id) {
+              return false;
+            }
+          }
 
-      return true;
-    });
-  };
+          return true;
+        }),
+    ),
+  );
 
   /**
    * All available cipher types
