@@ -17,7 +17,7 @@ export enum ProviderSelectPaymentMethodDialogResultType {
   Submitted = "submitted",
 }
 
-export const openProviderPaymentDialog = (
+export const openProviderSelectPaymentMethodDialog = (
   dialogService: DialogService,
   dialogConfig: DialogConfig<ProviderSelectPaymentMethodDialogParams>,
 ) =>

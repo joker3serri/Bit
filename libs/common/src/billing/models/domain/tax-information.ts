@@ -23,7 +23,7 @@ export class TaxInformation {
 
   static from(response: TaxInfoResponse | null): TaxInformation {
     if (response === null) {
-      return null;
+      return TaxInformation.empty();
     }
     return {
       ...response,

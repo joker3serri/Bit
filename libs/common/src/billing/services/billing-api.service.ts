@@ -1,12 +1,14 @@
-import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
-import { PaymentMethodType } from "@bitwarden/common/billing/enums";
-import { TokenizedPaymentMethodRequest } from "@bitwarden/common/billing/models/request/tokenized-payment-method.request";
-import { OrganizationBillingMetadataResponse } from "@bitwarden/common/billing/models/response/organization-billing-metadata.response";
-
 import { ApiService } from "../../abstractions/api.service";
+import { BillingApiServiceAbstraction } from "../../billing/abstractions";
+import { PaymentMethodType } from "../../billing/enums";
+import { ExpandedTaxInfoUpdateRequest } from "../../billing/models/request/expanded-tax-info-update.request";
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
+import { TokenizedPaymentMethodRequest } from "../../billing/models/request/tokenized-payment-method.request";
+import { VerifyBankAccountRequest } from "../../billing/models/request/verify-bank-account.request";
+import { OrganizationBillingMetadataResponse } from "../../billing/models/response/organization-billing-metadata.response";
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
 import { OrganizationSubscriptionResponse } from "../../billing/models/response/organization-subscription.response";
+import { PaymentInformationResponse } from "../../billing/models/response/payment-information.response";
 import { PlanResponse } from "../../billing/models/response/plan.response";
 import { ListResponse } from "../../models/response/list.response";
 import { CreateClientOrganizationRequest } from "../models/request/create-client-organization.request";
@@ -104,6 +106,17 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return new ListResponse(r, PlanResponse);
   }
 
+  async getProviderPaymentInformation(providerId: string): Promise<PaymentInformationResponse> {
+    const response = await this.apiService.send(
+      "GET",
+      "/providers/" + providerId + "/billing/payment-information",
+      null,
+      true,
+      true,
+    );
+    return new PaymentInformationResponse(response);
+  }
+
   async getProviderSubscription(providerId: string): Promise<ProviderSubscriptionResponse> {
     const r = await this.apiService.send(
       "GET",
@@ -136,6 +149,26 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return await this.apiService.send(
       "PUT",
       "/providers/" + providerId + "/billing/payment-method",
+      request,
+      true,
+      false,
+    );
+  }
+
+  async updateProviderTaxInformation(providerId: string, request: ExpandedTaxInfoUpdateRequest) {
+    return await this.apiService.send(
+      "PUT",
+      "/providers/" + providerId + "/billing/tax-information",
+      request,
+      true,
+      false,
+    );
+  }
+
+  async verifyProviderBankAccount(providerId: string, request: VerifyBankAccountRequest) {
+    return await this.apiService.send(
+      "POST",
+      "/providers/" + providerId + "/billing/payment-method/verify-bank-account",
       request,
       true,
       false,
