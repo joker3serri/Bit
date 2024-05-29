@@ -210,7 +210,7 @@ export class SecretDialogComponent implements OnInit {
 
   private async loadEditDialog() {
     const secret = await this.secretService.getBySecretId(this.data.secretId);
-    await this.loadProjects();
+    await this.loadProjects(secret.projects);
 
     const currentAccessPolicies = await this.getCurrentAccessPolicies(
       this.data.organizationId,
@@ -270,12 +270,22 @@ export class SecretDialogComponent implements OnInit {
     }
   }
 
-  private async loadProjects() {
+  private async loadProjects(currentProjects?: SecretProjectView[]) {
     this.projects = await this.projectService
       .getProjects(this.data.organizationId)
-      .then((projects) =>
-        projects.filter((p) => p.write).sort((a, b) => a.name.localeCompare(b.name)),
-      );
+      .then((projects) => projects.filter((p) => p.write));
+
+    if (currentProjects) {
+      const currentProject = currentProjects?.[0];
+      if (this.projects.find((p) => p.id === currentProject.id) == undefined) {
+        const listView = new ProjectListView();
+        listView.id = currentProject.id;
+        listView.name = currentProject.name;
+        this.projects.push(listView);
+      }
+    }
+
+    this.projects = this.projects.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   private addNewProjectOptionToProjectsDropDown() {
