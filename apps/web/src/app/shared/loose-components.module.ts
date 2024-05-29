@@ -267,7 +267,6 @@ import { SharedModule } from "./shared.module";
     VerifyRecoverDeleteProviderComponent,
     HeaderModule,
     DangerZoneComponent,
-    UserVerificationFormInputComponent,
   ],
 })
 export class LooseComponentsModule {}
