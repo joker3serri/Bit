@@ -219,13 +219,12 @@ const routes: Routes = [
           {
             path: "",
             component: EnvironmentSelectorComponent,
-            outlet: "web-environment-selector",
+            outlet: "environment-selector",
           },
         ],
         data: {
           pageTitle: "logIn",
           pageSubtitle: "loginWithMasterPassword",
-          showEnvironment: "selector",
         } satisfies AnonLayoutWrapperData,
       },
     ],

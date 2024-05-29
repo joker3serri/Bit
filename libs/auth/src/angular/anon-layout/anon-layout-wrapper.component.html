@@ -2,9 +2,9 @@
   [title]="pageTitle"
   [subtitle]="pageSubtitle"
   [icon]="pageIcon"
-  [showEnvironment]="showEnvironment"
+  [showReadonlyHostname]="showReadonlyHostname"
 >
   <router-outlet></router-outlet>
   <router-outlet slot="secondary" name="secondary"></router-outlet>
-  <router-outlet slot="web-environment-selector" name="web-environment-selector"></router-outlet>
+  <router-outlet slot="environment-selector" name="environment-selector"></router-outlet>
 </auth-anon-layout>

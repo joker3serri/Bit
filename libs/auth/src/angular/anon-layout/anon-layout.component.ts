@@ -11,12 +11,6 @@ import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
 import { BitwardenLogo } from "../icons/bitwarden-logo.icon";
 
-/**
- * Show either the environment hostname (e.g. bitwarden.com) or the environment selector.
- * Undefined shows neither (default)
- */
-export type ShowEnvironmentOptions = "hostname" | "selector";
-
 @Component({
   standalone: true,
   selector: "auth-anon-layout",
@@ -27,7 +21,7 @@ export class AnonLayoutComponent {
   @Input() title: string;
   @Input() subtitle: string;
   @Input() icon: Icon;
-  @Input() showEnvironment: ShowEnvironmentOptions;
+  @Input() showReadonlyHostname: boolean;
 
   protected logo = BitwardenLogo;
 
