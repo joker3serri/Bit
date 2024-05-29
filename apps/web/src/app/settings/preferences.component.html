@@ -35,7 +35,7 @@
           [value]="VaultTimeoutAction.Lock"
         >
           <bit-label>{{ "lock" | i18n }}</bit-label>
-          <bit-hint class="tw-text-sm">{{ "vaultTimeoutActionLockDesc" | i18n }}</bit-hint>
+          <bit-hint>{{ "vaultTimeoutActionLockDesc" | i18n }}</bit-hint>
         </bit-radio-button>
         <bit-radio-button
           *ngIf="availableVaultTimeoutActions.includes(VaultTimeoutAction.LogOut)"
@@ -43,7 +43,7 @@
           [value]="VaultTimeoutAction.LogOut"
         >
           <bit-label>{{ "logOut" | i18n }}</bit-label>
-          <bit-hint class="tw-text-sm">{{ "vaultTimeoutActionLogOutDesc" | i18n }}</bit-hint>
+          <bit-hint>{{ "vaultTimeoutActionLogOutDesc" | i18n }}</bit-hint>
         </bit-radio-button>
       </bit-radio-group>
     </ng-container>
@@ -64,7 +64,7 @@
       <bit-select formControlName="locale" id="locale">
         <bit-option *ngFor="let o of localeOptions" [value]="o.value" [label]="o.name"></bit-option>
       </bit-select>
-      <bit-hint class="tw-text-sm">{{ "languageDesc" | i18n }}</bit-hint>
+      <bit-hint>{{ "languageDesc" | i18n }}</bit-hint>
     </bit-form-field>
     <bit-form-control>
       <input type="checkbox" bitCheckbox formControlName="enableFavicons" />
@@ -80,14 +80,14 @@
           <i class="bwi bwi-question-circle" aria-hidden="true"></i>
         </a>
       </bit-label>
-      <bit-hint class="tw-text-sm">{{ "faviconDesc" | i18n }}</bit-hint>
+      <bit-hint>{{ "faviconDesc" | i18n }}</bit-hint>
     </bit-form-control>
     <bit-form-field>
       <bit-label>{{ "theme" | i18n }}</bit-label>
       <bit-select formControlName="theme" id="theme">
         <bit-option *ngFor="let o of themeOptions" [value]="o.value" [label]="o.name"></bit-option>
       </bit-select>
-      <bit-hint class="tw-text-sm">{{ "themeDesc" | i18n }}</bit-hint>
+      <bit-hint>{{ "themeDesc" | i18n }}</bit-hint>
     </bit-form-field>
     <button bitButton bitFormButton type="submit" buttonType="primary">{{ "save" | i18n }}</button>
   </form>
