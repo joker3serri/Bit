@@ -389,6 +389,9 @@
   "favorite": {
     "message": "Favorite"
   },
+  "unfavorite": {
+    "message": "Unfavorite"
+  },
   "notes": {
     "message": "Notes"
   },

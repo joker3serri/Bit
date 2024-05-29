@@ -45,6 +45,10 @@ export class ItemMoreOptionsComponent {
     return this.cipher.type === CipherType.Login;
   }
 
+  get favoriteText() {
+    return this.cipher.favorite ? "unfavorite" : "favorite";
+  }
+
   /**
    * Determines if the login cipher can be launched in a new browser tab.
    */
@@ -67,5 +71,14 @@ export class ItemMoreOptionsComponent {
     if (BrowserPopupUtils.inPopup(window)) {
       BrowserApi.closePopup(window);
     }
+  }
+
+  /**
+   * Toggles the favorite status of the cipher and updates it on the server.
+   */
+  async toggleFavorite() {
+    this.cipher.favorite = !this.cipher.favorite;
+    const encryptedCipher = await this.cipherService.encrypt(this.cipher);
+    await this.cipherService.updateWithServer(encryptedCipher);
   }
 }

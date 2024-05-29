@@ -20,8 +20,8 @@
         {{ "launchWebsite" | i18n }}
       </button>
     </ng-container>
-    <button type="button" bitMenuItem>
-      {{ "favorite" | i18n }}
+    <button type="button" bitMenuItem (click)="toggleFavorite()">
+      {{ favoriteText | i18n }}
     </button>
     <ng-container *ngIf="canEdit">
       <button type="button" bitMenuItem>
