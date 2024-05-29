@@ -8,7 +8,6 @@ import {
   tdeDecryptionRequiredGuard,
   UnauthGuard,
 } from "@bitwarden/angular/auth/guards";
-import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -41,7 +40,6 @@ import { UpdatePasswordComponent } from "./auth/update-password.component";
 import { UpdateTempPasswordComponent } from "./auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "./auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "./auth/verify-recover-delete.component";
-import { EnvironmentSelectorComponent } from "./components/environment-selector/environment-selector.component";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
 import { DomainRulesComponent } from "./settings/domain-rules.component";
@@ -204,32 +202,6 @@ const routes: Routes = [
       },
     ],
   },
-  // Sample route
-  {
-    path: "",
-    component: AnonLayoutWrapperComponent,
-    children: [
-      {
-        path: "sample-route",
-        children: [
-          {
-            path: "",
-            component: LoginComponent,
-          },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent,
-            outlet: "environment-selector",
-          },
-        ],
-        data: {
-          pageTitle: "logIn",
-          pageSubtitle: "loginWithMasterPassword",
-        } satisfies AnonLayoutWrapperData,
-      },
-    ],
-  },
-  // End sample route
   {
     path: "",
     component: UserLayoutComponent,
