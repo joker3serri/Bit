@@ -7,7 +7,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -22,8 +21,6 @@ import {
 
 describe("VaultPopupListFiltersService", () => {
   let service: VaultPopupListFiltersService;
-  const showCardsCurrentTab$ = new BehaviorSubject<boolean>(true);
-  const showIdentitiesCurrentTab$ = new BehaviorSubject<boolean>(true);
   const memberOrganizations$ = new BehaviorSubject<{ name: string; id: string }[]>([]);
   const folderViews$ = new BehaviorSubject([]);
   const cipherViews$ = new BehaviorSubject({});
@@ -36,11 +33,6 @@ describe("VaultPopupListFiltersService", () => {
   const folderService = {
     folderViews$,
   } as unknown as FolderService;
-
-  const vaultSettingsService = {
-    showCardsCurrentTab$,
-    showIdentitiesCurrentTab$,
-  } as unknown as VaultSettingsService;
 
   const cipherService = {
     cipherViews$,
@@ -55,15 +47,12 @@ describe("VaultPopupListFiltersService", () => {
   } as I18nService;
 
   beforeEach(() => {
-    showCardsCurrentTab$.next(true);
-    showIdentitiesCurrentTab$.next(true);
     memberOrganizations$.next([]);
 
     collectionService.getAllDecrypted = () => Promise.resolve([]);
     collectionService.getAllNested = () => Promise.resolve([]);
 
     service = new VaultPopupListFiltersService(
-      vaultSettingsService,
       folderService,
       cipherService,
       organizationService,
@@ -73,41 +62,14 @@ describe("VaultPopupListFiltersService", () => {
     );
   });
 
-  describe("cipherTypes$", () => {
-    it("returns all cipher types", (done) => {
-      service.cipherTypes$.subscribe((cipherTypes) => {
-        expect(cipherTypes.map((c) => c.value)).toEqual([
-          CipherType.Login,
-          CipherType.Card,
-          CipherType.Identity,
-          CipherType.SecureNote,
-        ]);
-        done();
-      });
-    });
-
-    it("filters out cards when showCardsCurrentTab$ is false", (done) => {
-      showCardsCurrentTab$.next(false);
-      service.cipherTypes$.subscribe((cipherTypes) => {
-        expect(cipherTypes.map((c) => c.value)).toEqual([
-          CipherType.Login,
-          CipherType.Identity,
-          CipherType.SecureNote,
-        ]);
-        done();
-      });
-    });
-
-    it("filters out identities when showIdentitiesCurrentTab$ is false", (done) => {
-      showIdentitiesCurrentTab$.next(false);
-      service.cipherTypes$.subscribe((cipherTypes) => {
-        expect(cipherTypes.map((c) => c.value)).toEqual([
-          CipherType.Login,
-          CipherType.Card,
-          CipherType.SecureNote,
-        ]);
-        done();
-      });
+  describe("cipherTypes", () => {
+    it("returns all cipher types", () => {
+      expect(service.cipherTypes.map((c) => c.value)).toEqual([
+        CipherType.Login,
+        CipherType.Card,
+        CipherType.Identity,
+        CipherType.SecureNote,
+      ]);
     });
   });
 

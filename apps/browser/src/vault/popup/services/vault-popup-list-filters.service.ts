@@ -18,7 +18,6 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
@@ -35,30 +34,6 @@ export type PopupListFilter = {
   folder: FolderView | null;
   cipherType: CipherType | null;
 };
-
-/** All cipher types */
-const allCipherTypes: { value: CipherType; label: string; icon: string }[] = [
-  {
-    value: CipherType.Login,
-    label: "logins",
-    icon: "bwi-globe",
-  },
-  {
-    value: CipherType.Card,
-    label: "cards",
-    icon: "bwi-credit-card",
-  },
-  {
-    value: CipherType.Identity,
-    label: "identities",
-    icon: "bwi-id-card",
-  },
-  {
-    value: CipherType.SecureNote,
-    label: "notes",
-    icon: "bwi-sticky-note",
-  },
-];
 
 /** Delimiter that denotes a level of nesting  */
 const NESTING_DELIMITER = "/";
@@ -95,7 +70,6 @@ export class VaultPopupListFiltersService {
   );
 
   constructor(
-    private vaultSettingsService: VaultSettingsService,
     private folderService: FolderService,
     private cipherService: CipherService,
     private organizationService: OrganizationService,
@@ -140,29 +114,28 @@ export class VaultPopupListFiltersService {
   };
 
   /** Observable of the available cipher types */
-  cipherTypes$: Observable<ChipSelectOption<string | CipherType>[]> = combineLatest([
-    this.vaultSettingsService.showCardsCurrentTab$,
-    this.vaultSettingsService.showIdentitiesCurrentTab$,
-  ]).pipe(
-    map(([showCards, showIdentities]) => {
-      // Filter out cipher types that are not enabled within the user's settings
-      return allCipherTypes.filter((cipherType) => {
-        if (cipherType.value === CipherType.Card) {
-          return showCards;
-        }
-        if (cipherType.value === CipherType.Identity) {
-          return showIdentities;
-        }
-        return true;
-      });
-    }),
-    map((cipherTypes) =>
-      cipherTypes.map((cipherType) => ({
-        ...cipherType,
-        label: this.i18nService.t(cipherType.label),
-      })),
-    ),
-  );
+  readonly cipherTypes: ChipSelectOption<CipherType>[] = [
+    {
+      value: CipherType.Login,
+      label: this.i18nService.t("logins"),
+      icon: "bwi-globe",
+    },
+    {
+      value: CipherType.Card,
+      label: this.i18nService.t("cards"),
+      icon: "bwi-credit-card",
+    },
+    {
+      value: CipherType.Identity,
+      label: this.i18nService.t("identities"),
+      icon: "bwi-id-card",
+    },
+    {
+      value: CipherType.SecureNote,
+      label: this.i18nService.t("notes"),
+      icon: "bwi-sticky-note",
+    },
+  ];
 
   /** Organization array structured to be directly passed to `ChipSelectComponent` */
   organizations$: Observable<ChipSelectOption<Organization>[]> =

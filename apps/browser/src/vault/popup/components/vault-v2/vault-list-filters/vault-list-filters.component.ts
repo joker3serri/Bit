@@ -18,7 +18,7 @@ export class VaultListFiltersComponent {
   protected organizations$ = this.vaultPopupListFiltersService.organizations$;
   protected collections$ = this.vaultPopupListFiltersService.collections$;
   protected folders$ = this.vaultPopupListFiltersService.folders$;
-  protected cipherTypes$ = this.vaultPopupListFiltersService.cipherTypes$;
+  protected cipherTypes = this.vaultPopupListFiltersService.cipherTypes;
 
   constructor(private vaultPopupListFiltersService: VaultPopupListFiltersService) {}
 }
