@@ -20,7 +20,6 @@ export class ProfileComponent implements OnInit {
   loading = true;
   profile: ProfileResponse;
   fingerprintMaterial: string;
-  formPromise: Promise<any>;
   private destroy$ = new Subject<void>();
 
   protected formGroup = new FormGroup({
