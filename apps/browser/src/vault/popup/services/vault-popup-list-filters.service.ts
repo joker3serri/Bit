@@ -143,35 +143,35 @@ export class VaultPopupListFiltersService {
     this.organizationService.memberOrganizations$.pipe(
       map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
       map((orgs) => {
-        if (orgs.length) {
-          return [
-            // When the user is a member of an organization, make  the "My Vault" option available
-            {
-              value: { id: MY_VAULT_ID } as Organization,
-              label: this.i18nService.t("myVault"),
-              icon: "bwi-user",
-            },
-            ...orgs.map((org) => {
-              let icon = "bwi-business";
-
-              if (!org.enabled) {
-                // Show a warning icon if the organization is deactivated
-                icon = "bwi-exclamation-triangle tw-text-danger";
-              } else if (org.planProductType === ProductType.Families) {
-                // Show a family icon if the organization is a family org
-                icon = "bwi-family";
-              }
-
-              return {
-                value: org,
-                label: org.name,
-                icon,
-              };
-            }),
-          ];
+        if (!orgs.length) {
+          return [];
         }
 
-        return [];
+        return [
+          // When the user is a member of an organization, make  the "My Vault" option available
+          {
+            value: { id: MY_VAULT_ID } as Organization,
+            label: this.i18nService.t("myVault"),
+            icon: "bwi-user",
+          },
+          ...orgs.map((org) => {
+            let icon = "bwi-business";
+
+            if (!org.enabled) {
+              // Show a warning icon if the organization is deactivated
+              icon = "bwi-exclamation-triangle tw-text-danger";
+            } else if (org.planProductType === ProductType.Families) {
+              // Show a family icon if the organization is a family org
+              icon = "bwi-family";
+            }
+
+            return {
+              value: org,
+              label: org.name,
+              icon,
+            };
+          }),
+        ];
       }),
     );
 
