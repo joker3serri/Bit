@@ -50,7 +50,7 @@ export class CopyCipherFieldDirective implements OnChanges {
   private getValueToCopy() {
     switch (this.action) {
       case "username":
-        return this.cipher.login?.username;
+        return this.cipher.login?.username || this.cipher.identity?.username;
       case "password":
         return this.cipher.login?.password;
       case "totp":
