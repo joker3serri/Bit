@@ -5,7 +5,6 @@ import { Response } from "@bitwarden/cli/models/response";
 import { OrganizationService } from "@bitwarden/common/admin-console/services/organization/organization.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-
 export class ApproveAllCommand {
   constructor(
     private organizationAuthRequestService: OrganizationAuthRequestService,
