@@ -11,9 +11,8 @@ import { DenyAllCommand } from "./deny-all.command";
 import { DenyCommand } from "./deny.command";
 import { ListCommand } from "./list.command";
 
-
 export class DeviceApprovalProgram extends BaseProgram {
-  constructor(serviceContainer: ServiceContainer) {
+  constructor(protected serviceContainer: ServiceContainer) {
     super(serviceContainer);
   }
 
@@ -68,7 +67,7 @@ export class DeviceApprovalProgram extends BaseProgram {
         await this.exitIfLocked();
 
         const cmd = new ApproveAllCommand(
-          (this.serviceContainer as ServiceContainer).organizationAuthRequestService,
+          this.serviceContainer.organizationAuthRequestService,
           this.serviceContainer.organizationService,
         );
         const response = await cmd.run(organizationId);
