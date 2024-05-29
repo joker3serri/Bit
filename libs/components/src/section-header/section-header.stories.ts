@@ -4,6 +4,8 @@ import { CardComponent } from "../../src/card";
 import { IconButtonModule } from "../../src/icon-button";
 import { SectionComponent } from "../../src/section";
 import { TypographyModule } from "../../src/typography";
+import { ItemGroupComponent } from "../item/item-group.component";
+import { ItemComponent } from "../item/item.component";
 
 import { SectionHeaderComponent } from "./section-header.component";
 
@@ -15,7 +17,14 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [SectionComponent, CardComponent, TypographyModule, IconButtonModule],
+      imports: [
+        SectionComponent,
+        CardComponent,
+        TypographyModule,
+        IconButtonModule,
+        ItemComponent,
+        ItemGroupComponent,
+      ],
     }),
   ],
 } as Meta<SectionHeaderComponent>;
@@ -91,7 +100,7 @@ export const TitleSuffix: Story = {
   },
 };
 
-export const InSectionWithSiblingCard: Story = {
+export const WithPadding: Story = {
   render: () => ({
     template: /*html*/ `
       <div class="tw-bg-background-alt tw-p-2">
@@ -119,19 +128,43 @@ export const InSectionWithSiblingCard: Story = {
             </bit-card>
           </div>
         </bit-section>
+        <bit-section>
+          <bit-section-header>
+            <h2 bitTypography="h6" noMargin slot="title">
+              Item as immediate sibling
+            </h2>
+            <button bitIconButton="bwi-star" size="small" slot="end"></button>
+          </bit-section-header>
+          <bit-item>
+            <p bitTypography="body1">bit-section-header has bottom padding</p>
+          </bit-item>
+        </bit-section>
+        <bit-section>
+          <bit-section-header>
+            <h2 bitTypography="h6" noMargin slot="title">
+              Item nested in immediate sibling
+            </h2>
+            <button bitIconButton="bwi-star" size="small" slot="end"></button>
+          </bit-section-header>
+          <bit-item-group>
+            <bit-item>
+              <p bitTypography="body1">bit-section-header has bottom padding</p>
+            </bit-item>
+          </bit-item-group>
+        </bit-section>
       </div>
     `,
   }),
 };
 
-export const InSectionWithoutPadding: Story = {
+export const WithoutPadding: Story = {
   render: () => ({
     template: /*html*/ `
       <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
           <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              No card used
+              No card or item used
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
@@ -142,7 +175,7 @@ export const InSectionWithoutPadding: Story = {
         <bit-section>
           <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              Card not nested in immediate sibling
+              Card nested in non-immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
