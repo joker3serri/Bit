@@ -335,7 +335,7 @@ export default class MainBackground {
   ssoLoginService: SsoLoginServiceAbstraction;
   billingAccountProfileStateService: BillingAccountProfileStateService;
   // eslint-disable-next-line rxjs/no-exposed-subjects -- Needed to give access to services module
-  intraprocessMessagingSubject: Subject<Message<object>>;
+  intraprocessMessagingSubject: Subject<Message<Record<string, unknown>>>;
   userAutoUnlockKeyService: UserAutoUnlockKeyService;
   scriptInjectorService: BrowserScriptInjectorService;
   kdfConfigService: kdfConfigServiceAbstraction;
@@ -394,7 +394,7 @@ export default class MainBackground {
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
     this.storageService = new BrowserLocalStorageService();
 
-    this.intraprocessMessagingSubject = new Subject<Message<object>>();
+    this.intraprocessMessagingSubject = new Subject<Message<Record<string, unknown>>>();
 
     this.messagingService = MessageSender.combine(
       new SubjectMessageSender(this.intraprocessMessagingSubject),
@@ -854,7 +854,12 @@ export default class MainBackground {
         this.authService,
       );
 
-      this.syncServiceListener = new SyncServiceListener(this.syncService, messageListener);
+      this.syncServiceListener = new SyncServiceListener(
+        this.syncService,
+        messageListener,
+        this.messagingService,
+        this.logService,
+      );
     }
     this.eventUploadService = new EventUploadService(
       this.apiService,
@@ -886,6 +891,7 @@ export default class MainBackground {
       this.billingAccountProfileStateService,
       this.scriptInjectorService,
       this.accountService,
+      this.authService,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
@@ -1183,7 +1189,7 @@ export default class MainBackground {
     this.contextMenusBackground?.init();
     await this.idleBackground.init();
     this.webRequestBackground?.startListening();
-    this.syncServiceListener?.startListening();
+    this.syncServiceListener?.listener$().subscribe();
 
     return new Promise<void>((resolve) => {
       setTimeout(async () => {
@@ -1346,7 +1352,7 @@ export default class MainBackground {
     ]);
 
     //Needs to be checked before state is cleaned
-    const needStorageReseed = await this.needsStorageReseed(userId);
+    const needStorageReseed = await this.needsStorageReseed(userBeingLoggedOut);
 
     await this.stateService.clean({ userId: userBeingLoggedOut });
     await this.accountService.clean(userBeingLoggedOut);
