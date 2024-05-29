@@ -13,6 +13,7 @@ import {
 import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dynamic-tree-node.model";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { ProductType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -156,7 +157,7 @@ export class VaultPopupListFiltersService {
               if (!org.enabled) {
                 // Show a warning icon if the organization is deactivated
                 icon = "bwi-exclamation-triangle tw-text-danger";
-              } else if (org.planProductType === 1) {
+              } else if (org.planProductType === ProductType.Families) {
                 // Show a family icon if the organization is a family org
                 icon = "bwi-family";
               }
