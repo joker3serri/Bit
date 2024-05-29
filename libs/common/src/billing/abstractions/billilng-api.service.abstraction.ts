@@ -1,4 +1,5 @@
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
+import { TokenizedPaymentMethodRequest } from "@bitwarden/common/billing/models/request/tokenized-payment-method.request";
 
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingMetadataResponse } from "../../billing/models/response/organization-billing-metadata.response";
@@ -15,24 +16,38 @@ export abstract class BillingApiServiceAbstraction {
     organizationId: string,
     request: SubscriptionCancellationRequest,
   ) => Promise<void>;
+
   cancelPremiumUserSubscription: (request: SubscriptionCancellationRequest) => Promise<void>;
+
   createClientOrganization: (
     providerId: string,
     request: CreateClientOrganizationRequest,
   ) => Promise<void>;
+
   createSetupIntent: (paymentMethodType: PaymentMethodType) => Promise<string>;
+
   getBillingStatus: (id: string) => Promise<OrganizationBillingStatusResponse>;
+
   getOrganizationBillingMetadata: (
     organizationId: string,
   ) => Promise<OrganizationBillingMetadataResponse>;
+
   getOrganizationSubscription: (
     organizationId: string,
   ) => Promise<OrganizationSubscriptionResponse>;
+
   getPlans: () => Promise<ListResponse<PlanResponse>>;
+
   getProviderSubscription: (providerId: string) => Promise<ProviderSubscriptionResponse>;
+
   updateClientOrganization: (
     providerId: string,
     organizationId: string,
     request: UpdateClientOrganizationRequest,
   ) => Promise<any>;
+
+  updateProviderPaymentMethod: (
+    providerId: string,
+    request: TokenizedPaymentMethodRequest,
+  ) => Promise<void>;
 }

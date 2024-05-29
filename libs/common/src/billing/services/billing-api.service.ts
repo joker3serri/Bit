@@ -1,8 +1,9 @@
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
+import { TokenizedPaymentMethodRequest } from "@bitwarden/common/billing/models/request/tokenized-payment-method.request";
 import { OrganizationBillingMetadataResponse } from "@bitwarden/common/billing/models/response/organization-billing-metadata.response";
 
 import { ApiService } from "../../abstractions/api.service";
-import { BillingApiServiceAbstraction } from "../../billing/abstractions/billilng-api.service.abstraction";
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
 import { OrganizationSubscriptionResponse } from "../../billing/models/response/organization-subscription.response";
@@ -122,6 +123,19 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return await this.apiService.send(
       "PUT",
       "/providers/" + providerId + "/clients/" + organizationId,
+      request,
+      true,
+      false,
+    );
+  }
+
+  async updateProviderPaymentMethod(
+    providerId: string,
+    request: TokenizedPaymentMethodRequest,
+  ): Promise<void> {
+    return await this.apiService.send(
+      "PUT",
+      "/providers/" + providerId + "/billing/payment-method",
       request,
       true,
       false,
