@@ -4,8 +4,7 @@ import { CardComponent } from "../../src/card";
 import { IconButtonModule } from "../../src/icon-button";
 import { SectionComponent } from "../../src/section";
 import { TypographyModule } from "../../src/typography";
-import { ItemGroupComponent } from "../item/item-group.component";
-import { ItemComponent } from "../item/item.component";
+import { ItemModule } from "../item";
 
 import { SectionHeaderComponent } from "./section-header.component";
 
@@ -17,14 +16,7 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [
-        SectionComponent,
-        CardComponent,
-        TypographyModule,
-        IconButtonModule,
-        ItemComponent,
-        ItemGroupComponent,
-      ],
+      imports: [SectionComponent, CardComponent, TypographyModule, IconButtonModule, ItemModule],
     }),
   ],
 } as Meta<SectionHeaderComponent>;
@@ -36,7 +28,7 @@ export const OnlyTitle: Story = {
     props: args,
     template: /*html*/ `
       <bit-section-header>
-        <h2 bitTypography="h6" noMargin slot="title">
+        <h2 bitTypography="h6" slot="title">
           {{ title }}
         </h2>
        </bit-section-header>
@@ -52,7 +44,7 @@ export const TrailingText: Story = {
     props: args,
     template: /*html*/ `
       <bit-section-header>
-        <h2 bitTypography="h6" noMargin slot="title">
+        <h2 bitTypography="h6" slot="title">
           {{ title }}
         </h2>
         <span bitTypography="body2" slot="end">13</span>
@@ -69,7 +61,7 @@ export const TrailingIcon: Story = {
     props: args,
     template: /*html*/ `
       <bit-section-header>
-        <h2 bitTypography="h6" noMargin slot="title">
+        <h2 bitTypography="h6" slot="title">
           {{ title }}
         </h2>
         <button bitIconButton="bwi-star" size="small" slot="end"></button>
@@ -87,7 +79,7 @@ export const TitleSuffix: Story = {
     template: /*html*/ `
       <bit-section-header>
         <ng-container slot="title">
-          <h2 bitTypography="h6" noMargin slot="title">
+          <h2 bitTypography="h6" slot="title">
             {{ title }}
           </h2>
           <button bitIconButton="bwi-refresh" size="small"></button>
@@ -106,7 +98,7 @@ export const WithPadding: Story = {
       <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
           <bit-section-header>
-            <h2 bitTypography="h6" noMargin slot="title">
+            <h2 bitTypography="h6" slot="title">
               Card as immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
@@ -117,7 +109,7 @@ export const WithPadding: Story = {
         </bit-section>
         <bit-section>
           <bit-section-header>
-            <h2 bitTypography="h6" noMargin slot="title">
+            <h2 bitTypography="h6" slot="title">
               Card nested in immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
@@ -130,25 +122,25 @@ export const WithPadding: Story = {
         </bit-section>
         <bit-section>
           <bit-section-header>
-            <h2 bitTypography="h6" noMargin slot="title">
+            <h2 bitTypography="h6" slot="title">
               Item as immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
           <bit-item>
-            <p bitTypography="body1">bit-section-header has bottom padding</p>
+            <bit-item-content bitTypography="body1">bit-section-header has bottom padding</bit-item-content>
           </bit-item>
         </bit-section>
         <bit-section>
           <bit-section-header>
-            <h2 bitTypography="h6" noMargin slot="title">
+            <h2 bitTypography="h6" slot="title">
               Item nested in immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
           <bit-item-group>
             <bit-item>
-              <p bitTypography="body1">bit-section-header has bottom padding</p>
+              <bit-item-content bitTypography="body1">bit-section-header has bottom padding</bit-item-content>
             </bit-item>
           </bit-item-group>
         </bit-section>
@@ -163,27 +155,24 @@ export const WithoutPadding: Story = {
       <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
           <bit-section-header>
-            <h2 bitTypography="h6" noMargin slot="title">
+            <h2 bitTypography="h6" slot="title">
               No card or item used
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
-          <div class="tw-bg-background">
+          <div>
             <h3 bitTypography="h3">just a div, so bit-section-header has no bottom padding</h3>
           </div>
         </bit-section>
         <bit-section>
           <bit-section-header>
-            <h2 bitTypography="h6" noMargin slot="title">
+            <h2 bitTypography="h6" slot="title">
               Card nested in non-immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
-          <div>
-            <div>
-              some content here
-            </div>
-            <button>a random button</button>
+          <div class="tw-text-main">
+            a div here
           </div>
           <bit-card>
             <h3 bitTypography="h3">bit-section-header has no bottom padding</h3>

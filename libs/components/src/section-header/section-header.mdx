@@ -14,13 +14,12 @@ The `<bit-section-header>` component is meant to be used in combination with the
 component.
 
 When placed inside of a section with a `bit-card` or `bit-item` as the immediate next sibling (or
-nested in the immediate next sibling), the section header will automatically apply bottom and x-axis
-padding.
+nested in the immediate next sibling), the section header will automatically apply bottom padding.
 
 ```html
 <bit-section>
   <bit-section-header>
-    <h2 bitTypography="h6" noMargin slot="title">I'm a section header</h2>
+    <h2 bitTypography="h6" slot="title">I'm a section header</h2>
     <button bitIconButton="bwi-star" size="small" slot="end"></button>
   </bit-section-header>
   <bit-card>
@@ -34,8 +33,7 @@ padding.
 </Canvas>
 
 If placed inside of a section without a `bit-card` or `bit-item`, or with a `bit-card`/`bit-item`
-that is not a descendant of the immediate next sibling, the bottom and x-axis padding is not
-applied.
+that is not a descendant of the immediate next sibling, the bottom padding is not applied.
 
 <Canvas>
   <Story of={stories.WithoutPadding} />
