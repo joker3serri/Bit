@@ -410,6 +410,9 @@
   "launch": {
     "message": "Launch"
   },
+  "launchWebsite": {
+    "message": "Launch website"
+  },
   "website": {
     "message": "Website"
   },
@@ -1617,6 +1620,9 @@
   },
   "autoFillAndSave": {
     "message": "Auto-fill and save"
+  },
+  "fillAndSave": {
+    "message": "Fill and save"
   },
   "autoFillSuccessAndSavedUri": {
     "message": "Item auto-filled and URI saved"
@@ -3290,6 +3296,9 @@
         "example": "Secret Item"
       }
     }
+  },
+  "assignCollections": {
+    "message": "Assign collections"
   },
   "copyEmail": {
     "message": "Copy email"

@@ -28,14 +28,10 @@
           <button type="button" bitBadge variant="primary">{{ "autoFill" | i18n }}</button>
         </bit-item-action>
         <app-item-copy-actions [cipher]="cipher"></app-item-copy-actions>
-        <bit-item-action>
-          <button
-            type="button"
-            bitIconButton="bwi-ellipsis-v"
-            size="small"
-            [attr.aria-label]="'moreOptions' | i18n: cipher.name"
-          ></button>
-        </bit-item-action>
+        <app-item-more-options
+          [cipher]="cipher"
+          [showAutofillOptions]="!showAutoFill"
+        ></app-item-more-options>
       </ng-container>
     </bit-item>
   </bit-item-group>
