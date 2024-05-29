@@ -16,7 +16,7 @@
           {{ "fillAndSave" | i18n }}
         </button>
       </ng-container>
-      <button type="button" bitMenuItem [disabled]="!this.canLaunch" (click)="launchCipher()">
+      <button type="button" bitMenuItem *ngIf="this.canLaunch" (click)="launchCipher()">
         {{ "launchWebsite" | i18n }}
       </button>
     </ng-container>
