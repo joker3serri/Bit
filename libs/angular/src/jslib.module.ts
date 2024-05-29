@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import {
+  AddAccountCreditDialogComponent,
   ManageTaxInformationComponent,
   SelectPaymentMethodComponent,
 } from "@bitwarden/angular/billing/components";
@@ -11,10 +12,12 @@ import {
   AutofocusDirective,
   ButtonModule,
   CheckboxModule,
+  DialogModule,
   FormFieldModule,
   RadioButtonModule,
   SelectModule,
   ToastModule,
+  TypographyModule,
 } from "@bitwarden/components";
 
 import { CalloutComponent } from "./components/callout.component";
@@ -60,6 +63,8 @@ import { IconComponent } from "./vault/components/icon.component";
     SelectModule,
     ButtonModule,
     CheckboxModule,
+    DialogModule,
+    TypographyModule,
   ],
   declarations: [
     A11yInvalidDirective,
@@ -89,6 +94,7 @@ import { IconComponent } from "./vault/components/icon.component";
     UserTypePipe,
     IfFeatureDirective,
     FingerprintPipe,
+    AddAccountCreditDialogComponent,
     ManageTaxInformationComponent,
     SelectPaymentMethodComponent,
   ],
@@ -121,6 +127,7 @@ import { IconComponent } from "./vault/components/icon.component";
     UserTypePipe,
     IfFeatureDirective,
     FingerprintPipe,
+    AddAccountCreditDialogComponent,
     ManageTaxInformationComponent,
     SelectPaymentMethodComponent,
   ],

@@ -8297,5 +8297,8 @@
   },
   "payPal": {
     "message": "PayPal"
+  },
+  "bitcoin": {
+    "message": "Bitcoin"
   }
 }
