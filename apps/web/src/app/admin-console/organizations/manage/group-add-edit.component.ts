@@ -196,7 +196,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
     }),
   );
 
-  protected canAssignAccessToAnyCollection = combineLatest([
+  protected canAssignAccessToAnyCollection$ = combineLatest([
     this.organization$,
     this.flexibleCollectionsV1Enabled$,
     this.allowAdminAccessToAllCollectionItems$,

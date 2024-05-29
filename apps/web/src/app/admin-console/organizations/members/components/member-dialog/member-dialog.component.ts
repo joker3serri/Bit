@@ -107,7 +107,7 @@ export class MemberDialogComponent implements OnDestroy {
 
   protected allowAdminAccessToAllCollectionItems$: Observable<boolean>;
   protected restrictEditingSelf$: Observable<boolean>;
-  protected canAssignAccessToAnyCollection: Observable<boolean>;
+  protected canAssignAccessToAnyCollection$: Observable<boolean>;
 
   protected permissionsGroup = this.formBuilder.group({
     manageAssignedCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
@@ -222,7 +222,7 @@ export class MemberDialogComponent implements OnDestroy {
       FeatureFlag.FlexibleCollectionsV1,
     );
 
-    this.canAssignAccessToAnyCollection = combineLatest([
+    this.canAssignAccessToAnyCollection$ = combineLatest([
       this.organization$,
       flexibleCollectionsV1Enabled$,
       this.allowAdminAccessToAllCollectionItems$,
