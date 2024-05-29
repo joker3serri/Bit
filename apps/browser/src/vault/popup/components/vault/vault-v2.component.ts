@@ -12,6 +12,7 @@ import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
 import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } from "../vault-v2";
 import { VaultListFiltersComponent } from "../vault-v2/vault-list-filters/vault-list-filters.component";
+import { VaultV2SearchComponent } from "../vault-v2/vault-search/vault-v2-search.component";
 
 @Component({
   selector: "app-vault",
@@ -30,6 +31,7 @@ import { VaultListFiltersComponent } from "../vault-v2/vault-list-filters/vault-
     VaultListFiltersComponent,
     ButtonModule,
     RouterLink,
+    VaultV2SearchComponent,
   ],
 })
 export class VaultV2Component implements OnInit, OnDestroy {
@@ -51,6 +53,10 @@ export class VaultV2Component implements OnInit, OnDestroy {
   ngOnInit(): void {}
 
   ngOnDestroy(): void {}
+
+  handleSearchTextChange(searchText: string) {
+    this.vaultPopupItemsService.applyFilter(searchText);
+  }
 
   addCipher() {
     // TODO: Add currently filtered organization to query params if available

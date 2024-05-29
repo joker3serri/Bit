@@ -22,7 +22,9 @@
   </div>
 
   <ng-container *ngIf="!(showEmptyState$ | async)">
-    <!-- TODO: Filter/search Section in PM-6824.-->
+    <app-vault-v2-search (searchTextChanged)="handleSearchTextChange($event)">
+    </app-vault-v2-search>
+
     <app-vault-list-filters></app-vault-list-filters>
 
     <div

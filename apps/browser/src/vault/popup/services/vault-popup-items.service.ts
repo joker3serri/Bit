@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import {
+  BehaviorSubject,
   combineLatest,
   distinctUntilKeyChanged,
+  from,
   map,
   Observable,
   of,
@@ -11,6 +13,7 @@ import {
   switchMap,
 } from "rxjs";
 
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
@@ -30,6 +33,7 @@ import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-fi
 })
 export class VaultPopupItemsService {
   private _refreshCurrentTab$ = new Subject<void>();
+  private searchText$ = new BehaviorSubject<string>("");
 
   /**
    * Observable that contains the list of other cipher types that should be shown
@@ -75,10 +79,15 @@ export class VaultPopupItemsService {
 
   private _filteredCipherList$: Observable<CipherView[]> = combineLatest([
     this._cipherList$,
+    this.searchText$,
     this.vaultPopupListFiltersService.filters$,
   ]).pipe(
-    map(([ciphers, filters]): CipherView[] =>
+    map(([ciphers, searchText, filters]): [CipherView[], string] => [
       this.vaultPopupListFiltersService.filterCiphers(ciphers, filters),
+      searchText,
+    ]),
+    switchMap(([ciphers, searchText]) =>
+      this.searchService.searchCiphers(searchText, null, ciphers),
     ),
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
@@ -142,8 +151,18 @@ export class VaultPopupItemsService {
   /**
    * Observable that indicates whether a filter is currently applied to the ciphers.
    */
-  hasFilterApplied$ = this.vaultPopupListFiltersService.filters$.pipe(
-    map((filters) => Object.values(filters).some((filter) => filter !== null)),
+  hasFilterApplied$ = combineLatest([
+    this.searchText$,
+    this.vaultPopupListFiltersService.filters$,
+  ]).pipe(
+    switchMap(([searchText, filters]) => {
+      return from(this.searchService.isSearchable(searchText)).pipe(
+        map(
+          (isSearchable) =>
+            isSearchable || Object.values(filters).some((filter) => filter !== null),
+        ),
+      );
+    }),
   );
 
   /**
@@ -184,6 +203,7 @@ export class VaultPopupItemsService {
     private vaultSettingsService: VaultSettingsService,
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
     private organizationService: OrganizationService,
+    private searchService: SearchService,
   ) {}
 
   /**
@@ -191,6 +211,10 @@ export class VaultPopupItemsService {
    */
   refreshCurrentTab() {
     this._refreshCurrentTab$.next(null);
+  }
+
+  applyFilter(newSearchText: string) {
+    this.searchText$.next(newSearchText);
   }
 
   /**
