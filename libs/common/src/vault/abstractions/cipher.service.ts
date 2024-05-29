@@ -12,6 +12,7 @@ import { FieldView } from "../models/view/field.view";
 import { AddEditCipherInfo } from "../types/add-edit-cipher-info";
 
 export abstract class CipherService {
+  cipherViews$: Observable<Record<CipherId, CipherView>>;
   /**
    *  An observable monitoring the add/edit cipher info saved to memory.
    */
@@ -34,6 +35,12 @@ export abstract class CipherService {
     includeOtherTypes?: CipherType[],
     defaultMatch?: UriMatchStrategySetting,
   ) => Promise<CipherView[]>;
+  filterCiphersForUrl: (
+    ciphers: CipherView[],
+    url: string,
+    includeOtherTypes?: CipherType[],
+    defaultMatch?: UriMatchStrategySetting,
+  ) => Promise<CipherView[]>;
   getAllFromApiForOrganization: (organizationId: string) => Promise<CipherView[]>;
   /**
    * Gets ciphers belonging to the specified organization that the user has explicit collection level access to.
@@ -47,8 +54,24 @@ export abstract class CipherService {
   updateLastUsedDate: (id: string) => Promise<void>;
   updateLastLaunchedDate: (id: string) => Promise<void>;
   saveNeverDomain: (domain: string) => Promise<void>;
-  createWithServer: (cipher: Cipher, orgAdmin?: boolean) => Promise<any>;
-  updateWithServer: (cipher: Cipher, orgAdmin?: boolean, isNotClone?: boolean) => Promise<any>;
+  /**
+   * Create a cipher with the server
+   *
+   * @param cipher The cipher to create
+   * @param orgAdmin If true, the request is submitted as an organization admin request
+   *
+   * @returns A promise that resolves to the created cipher
+   */
+  createWithServer: (cipher: Cipher, orgAdmin?: boolean) => Promise<Cipher>;
+  /**
+   * Update a cipher with the server
+   * @param cipher The cipher to update
+   * @param orgAdmin If true, the request is submitted as an organization admin request
+   * @param isNotClone If true, the cipher is not a clone and should be treated as a new cipher
+   *
+   * @returns A promise that resolves to the updated cipher
+   */
+  updateWithServer: (cipher: Cipher, orgAdmin?: boolean, isNotClone?: boolean) => Promise<Cipher>;
   shareWithServer: (
     cipher: CipherView,
     organizationId: string,
@@ -70,7 +93,14 @@ export abstract class CipherService {
     data: ArrayBuffer,
     admin?: boolean,
   ) => Promise<Cipher>;
-  saveCollectionsWithServer: (cipher: Cipher) => Promise<any>;
+  /**
+   * Save the collections for a cipher with the server
+   *
+   * @param cipher The cipher to save collections for
+   *
+   * @returns A promise that resolves when the collections have been saved
+   */
+  saveCollectionsWithServer: (cipher: Cipher) => Promise<Cipher>;
   /**
    * Bulk update collections for many ciphers with the server
    * @param orgId
@@ -84,7 +114,13 @@ export abstract class CipherService {
     collectionIds: CollectionId[],
     removeCollections: boolean,
   ) => Promise<void>;
-  upsert: (cipher: CipherData | CipherData[]) => Promise<any>;
+  /**
+   * Update the local store of CipherData with the provided data. Values are upserted into the existing store.
+   *
+   * @param cipher The cipher data to upsert. Can be a single CipherData object or an array of CipherData objects.
+   * @returns A promise that resolves to a record of updated cipher store, keyed by their cipher ID. Returns all ciphers, not just those updated
+   */
+  upsert: (cipher: CipherData | CipherData[]) => Promise<Record<CipherId, CipherData>>;
   replace: (ciphers: { [id: string]: CipherData }) => Promise<any>;
   clear: (userId: string) => Promise<any>;
   moveManyWithServer: (ids: string[], folderId: string) => Promise<any>;
@@ -103,11 +139,7 @@ export abstract class CipherService {
     cipher: { id: string; revisionDate: string } | { id: string; revisionDate: string }[],
   ) => Promise<any>;
   restoreWithServer: (id: string, asAdmin?: boolean) => Promise<any>;
-  restoreManyWithServer: (
-    ids: string[],
-    organizationId?: string,
-    asAdmin?: boolean,
-  ) => Promise<void>;
+  restoreManyWithServer: (ids: string[], orgId?: string) => Promise<void>;
   getKeyForCipherKeyDecryption: (cipher: Cipher) => Promise<any>;
   setAddEditCipherInfo: (value: AddEditCipherInfo) => Promise<void>;
 }

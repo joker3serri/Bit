@@ -103,6 +103,7 @@ import { EventResponse } from "../models/response/event.response";
 import { ListResponse } from "../models/response/list.response";
 import { ProfileResponse } from "../models/response/profile.response";
 import { UserKeyResponse } from "../models/response/user-key.response";
+import { UserId } from "../types/guid";
 import { AttachmentRequest } from "../vault/models/request/attachment.request";
 import { CipherBulkDeleteRequest } from "../vault/models/request/cipher-bulk-delete.request";
 import { CipherBulkMoveRequest } from "../vault/models/request/cipher-bulk-move.request";
@@ -122,6 +123,7 @@ import {
   CollectionDetailsResponse,
   CollectionResponse,
 } from "../vault/models/response/collection.response";
+import { OptionalCipherResponse } from "../vault/models/response/optional-cipher.response";
 import { SyncResponse } from "../vault/models/response/sync.response";
 
 /**
@@ -217,7 +219,10 @@ export abstract class ApiService {
   putMoveCiphers: (request: CipherBulkMoveRequest) => Promise<any>;
   putShareCipher: (id: string, request: CipherShareRequest) => Promise<CipherResponse>;
   putShareCiphers: (request: CipherBulkShareRequest) => Promise<any>;
-  putCipherCollections: (id: string, request: CipherCollectionsRequest) => Promise<CipherResponse>;
+  putCipherCollections: (
+    id: string,
+    request: CipherCollectionsRequest,
+  ) => Promise<OptionalCipherResponse>;
   putCipherCollectionsAdmin: (id: string, request: CipherCollectionsRequest) => Promise<any>;
   postPurgeCiphers: (request: SecretVerificationRequest, organizationId?: string) => Promise<any>;
   putDeleteCipher: (id: string) => Promise<any>;
@@ -451,7 +456,13 @@ export abstract class ApiService {
     end: string,
     token: string,
   ) => Promise<ListResponse<EventResponse>>;
-  postEventsCollect: (request: EventRequest[]) => Promise<any>;
+
+  /**
+   * Posts events for a user
+   * @param request The array of events to upload
+   * @param userId The optional user id the events belong to. If no user id is provided the active user id is used.
+   */
+  postEventsCollect: (request: EventRequest[], userId?: UserId) => Promise<any>;
 
   deleteSsoUser: (organizationId: string) => Promise<void>;
   getSsoUserIdentifier: () => Promise<string>;

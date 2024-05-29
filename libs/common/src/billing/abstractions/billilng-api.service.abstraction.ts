@@ -1,5 +1,7 @@
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
+import { OrganizationBillingMetadataResponse } from "../../billing/models/response/organization-billing-metadata.response";
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
+import { OrganizationSubscriptionResponse } from "../../billing/models/response/organization-subscription.response";
 import { PlanResponse } from "../../billing/models/response/plan.response";
 import { ListResponse } from "../../models/response/list.response";
 import { CreateClientOrganizationRequest } from "../models/request/create-client-organization.request";
@@ -17,6 +19,12 @@ export abstract class BillingApiServiceAbstraction {
     request: CreateClientOrganizationRequest,
   ) => Promise<void>;
   getBillingStatus: (id: string) => Promise<OrganizationBillingStatusResponse>;
+  getOrganizationBillingMetadata: (
+    organizationId: string,
+  ) => Promise<OrganizationBillingMetadataResponse>;
+  getOrganizationSubscription: (
+    organizationId: string,
+  ) => Promise<OrganizationSubscriptionResponse>;
   getPlans: () => Promise<ListResponse<PlanResponse>>;
   getProviderSubscription: (providerId: string) => Promise<ProviderSubscriptionResponse>;
   updateClientOrganization: (

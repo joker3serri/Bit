@@ -1,7 +1,10 @@
+import { OrganizationBillingMetadataResponse } from "@bitwarden/common/billing/models/response/organization-billing-metadata.response";
+
 import { ApiService } from "../../abstractions/api.service";
 import { BillingApiServiceAbstraction } from "../../billing/abstractions/billilng-api.service.abstraction";
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingStatusResponse } from "../../billing/models/response/organization-billing-status.response";
+import { OrganizationSubscriptionResponse } from "../../billing/models/response/organization-subscription.response";
 import { PlanResponse } from "../../billing/models/response/plan.response";
 import { ListResponse } from "../../models/response/list.response";
 import { CreateClientOrganizationRequest } from "../models/request/create-client-organization.request";
@@ -49,8 +52,34 @@ export class BillingApiService implements BillingApiServiceAbstraction {
       true,
       true,
     );
-
     return new OrganizationBillingStatusResponse(r);
+  }
+
+  async getOrganizationBillingMetadata(
+    organizationId: string,
+  ): Promise<OrganizationBillingMetadataResponse> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + organizationId + "/billing/metadata",
+      null,
+      true,
+      true,
+    );
+
+    return new OrganizationBillingMetadataResponse(r);
+  }
+
+  async getOrganizationSubscription(
+    organizationId: string,
+  ): Promise<OrganizationSubscriptionResponse> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + organizationId + "/subscription",
+      null,
+      true,
+      true,
+    );
+    return new OrganizationSubscriptionResponse(r);
   }
 
   async getPlans(): Promise<ListResponse<PlanResponse>> {
