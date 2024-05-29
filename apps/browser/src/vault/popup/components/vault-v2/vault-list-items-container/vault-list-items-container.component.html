@@ -24,13 +24,13 @@
         <span slot="secondary">{{ cipher.subTitle }}</span>
       </a>
       <ng-container slot="end">
-        <bit-item-action *ngIf="showAutoFill">
+        <bit-item-action *ngIf="showAutofillButton">
           <button type="button" bitBadge variant="primary">{{ "autoFill" | i18n }}</button>
         </bit-item-action>
         <app-item-copy-actions [cipher]="cipher"></app-item-copy-actions>
         <app-item-more-options
           [cipher]="cipher"
-          [showAutofillOptions]="!showAutoFill"
+          [hideLoginOptions]="showAutofillButton"
         ></app-item-more-options>
       </ng-container>
     </bit-item>

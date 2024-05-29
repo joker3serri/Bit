@@ -65,5 +65,5 @@ export class VaultListItemsContainerComponent {
    * Option to show the autofill button for each item.
    */
   @Input({ transform: booleanAttribute })
-  showAutoFill: boolean;
+  showAutofillButton: boolean;
 }

@@ -7,14 +7,16 @@
     [bitMenuTriggerFor]="moreOptions"
   ></button>
   <bit-menu #moreOptions>
-    <ng-container *ngIf="isLogin && showAutofillOptions">
-      <button type="button" bitMenuItem>
-        {{ "autofill" | i18n }}
-      </button>
-      <button type="button" bitMenuItem *ngIf="canEdit">
-        {{ "fillAndSave" | i18n }}
-      </button>
-      <button type="button" bitMenuItem>
+    <ng-container *ngIf="isLogin && !hideLoginOptions">
+      <ng-container *ngIf="autofillAllowed$ | async">
+        <button type="button" bitMenuItem>
+          {{ "autofill" | i18n }}
+        </button>
+        <button type="button" bitMenuItem *ngIf="canEdit">
+          {{ "fillAndSave" | i18n }}
+        </button>
+      </ng-container>
+      <button type="button" bitMenuItem [disabled]="!this.canLaunch" (click)="launchCipher()">
         {{ "launchWebsite" | i18n }}
       </button>
     </ng-container>
