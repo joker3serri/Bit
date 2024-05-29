@@ -26,7 +26,6 @@ import { CliUtils } from "../utils";
 import { CipherResponse } from "./models/cipher.response";
 import { FolderResponse } from "./models/folder.response";
 
-
 export class CreateCommand {
   constructor(
     private cipherService: CipherService,
