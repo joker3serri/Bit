@@ -1,11 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { booleanAttribute, Component, Input } from "@angular/core";
+import { Router, RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
+import { DialogService, IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
+import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
@@ -15,7 +17,7 @@ import { VaultPopupItemsService } from "../../../services/vault-popup-items.serv
   standalone: true,
   selector: "app-item-more-options",
   templateUrl: "./item-more-options.component.html",
-  imports: [ItemModule, IconButtonModule, MenuModule, CommonModule, JslibModule],
+  imports: [ItemModule, IconButtonModule, MenuModule, CommonModule, JslibModule, RouterModule],
 })
 export class ItemMoreOptionsComponent {
   @Input({
@@ -35,6 +37,9 @@ export class ItemMoreOptionsComponent {
   constructor(
     private cipherService: CipherService,
     private vaultPopupItemsService: VaultPopupItemsService,
+    private passwordRepromptService: PasswordRepromptService,
+    private dialogService: DialogService,
+    private router: Router,
   ) {}
 
   get canEdit() {
@@ -80,5 +85,38 @@ export class ItemMoreOptionsComponent {
     this.cipher.favorite = !this.cipher.favorite;
     const encryptedCipher = await this.cipherService.encrypt(this.cipher);
     await this.cipherService.updateWithServer(encryptedCipher);
+  }
+
+  /**
+   * Navigate to the clone cipher page with the current cipher as the source.
+   * A password reprompt is attempted if the cipher requires it.
+   * A confirmation dialog is shown if the cipher has FIDO2 credentials.
+   */
+  async clone() {
+    if (
+      this.cipher.reprompt === CipherRepromptType.Password &&
+      !(await this.passwordRepromptService.showPasswordPrompt())
+    ) {
+      return;
+    }
+
+    if (this.cipher.login?.hasFido2Credentials) {
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "passkeyNotCopied" },
+        content: { key: "passkeyNotCopiedAlert" },
+        type: "info",
+      });
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    await this.router.navigate(["/clone-cipher"], {
+      queryParams: {
+        cloneMode: true,
+        cipherId: this.cipher.id,
+      },
+    });
   }
 }
