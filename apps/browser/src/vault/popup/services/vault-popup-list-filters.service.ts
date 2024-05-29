@@ -53,16 +53,26 @@ const INITIAL_FILTERS: PopupListFilter = {
   providedIn: "root",
 })
 export class VaultPopupListFiltersService {
-  /** UI form for all filters */
+  /**
+   * UI form for all filters
+   */
   filterForm = this.formBuilder.group<PopupListFilter>(INITIAL_FILTERS);
 
-  /** Observable for `filterForm` value  */
+  /**
+   * Observable for `filterForm` value
+   */
   filters$ = this.filterForm.valueChanges.pipe(
     startWith(INITIAL_FILTERS),
   ) as Observable<PopupListFilter>;
 
+  /**
+   * Static list of ciphers views used in synchronous context
+   */
   private cipherViews: CipherView[] = [];
 
+  /**
+   * Observable of cipher views
+   */
   private cipherViews$: Observable<CipherView[]> = this.cipherService.cipherViews$.pipe(
     tap((cipherViews) => {
       this.cipherViews = Object.values(cipherViews);
@@ -83,7 +93,9 @@ export class VaultPopupListFiltersService {
       .valueChanges.subscribe(this.validateOrganizationChange.bind(this));
   }
 
-  /** Returns the list of ciphers that satisfy the filters */
+  /**
+   * Returns the list of ciphers that satisfy the filters
+   */
   filterCiphers = (ciphers: CipherView[], filters: PopupListFilter): CipherView[] => {
     return ciphers.filter((cipher) => {
       if (filters.cipherType !== null && cipher.type !== filters.cipherType) {
@@ -114,7 +126,9 @@ export class VaultPopupListFiltersService {
     });
   };
 
-  /** Observable of the available cipher types */
+  /**
+   * All available cipher types
+   */
   readonly cipherTypes: ChipSelectOption<CipherType>[] = [
     {
       value: CipherType.Login,
@@ -138,7 +152,9 @@ export class VaultPopupListFiltersService {
     },
   ];
 
-  /** Organization array structured to be directly passed to `ChipSelectComponent` */
+  /**
+   * Organization array structured to be directly passed to `ChipSelectComponent`
+   */
   organizations$: Observable<ChipSelectOption<Organization>[]> =
     this.organizationService.memberOrganizations$.pipe(
       map((orgs) => orgs.sort(Utils.getSortFunction(this.i18nService, "name"))),
@@ -175,7 +191,9 @@ export class VaultPopupListFiltersService {
       }),
     );
 
-  /** Folder array structured to be directly passed to `ChipSelectComponent` */
+  /**
+   * Folder array structured to be directly passed to `ChipSelectComponent`
+   */
   folders$: Observable<ChipSelectOption<string>[]> = combineLatest([
     this.filters$.pipe(
       distinctUntilChanged(
@@ -231,7 +249,9 @@ export class VaultPopupListFiltersService {
     map((folders) => folders.nestedList.map(this.convertToChipSelectOption.bind(this))),
   );
 
-  /** Collection array structured to be directly passed to `ChipSelectComponent` */
+  /**
+   * Collection array structured to be directly passed to `ChipSelectComponent`
+   */
   collections$: Observable<ChipSelectOption<string>[]> = combineLatest([
     this.filters$.pipe(
       distinctUntilChanged(
@@ -264,7 +284,9 @@ export class VaultPopupListFiltersService {
     map((collections) => collections.nestedList.map(this.convertToChipSelectOption.bind(this))),
   );
 
-  /** Converts the given item into the `ChipSelectOption` structure  */
+  /**
+   * Converts the given item into the `ChipSelectOption` structure
+   */
   private convertToChipSelectOption<T extends ITreeNodeObject>(
     item: TreeNode<T>,
   ): ChipSelectOption<T> {
@@ -276,6 +298,9 @@ export class VaultPopupListFiltersService {
     };
   }
 
+  /**
+   * Returns a nested folder structure based on the input FolderView array
+   */
   private getAllFoldersNested(folders: FolderView[]): TreeNode<FolderView>[] {
     const nodes: TreeNode<FolderView>[] = [];
 
