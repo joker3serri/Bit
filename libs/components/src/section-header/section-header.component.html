@@ -1,10 +1,6 @@
-<!-- if we want to use "section contains bit-card" logic, then apply to the div below: group-has-[bit-card]:tw-pb-1 -->
-<div class="tw-flex tw-justify-between tw-items-end tw-gap-1 tw-px-1">
-  <div class="tw-flex tw-items-center tw-gap-1">
-    <div class="[&>*]:tw-mb-0 [&>*]:tw-text-headers">
-      <ng-content select="[slot=title]"></ng-content>
-    </div>
-    <ng-content select="[slot=title-suffix]"></ng-content>
+<div class="tw-flex tw-justify-between tw-items-end tw-gap-1">
+  <div class="[&>*]:tw-mb-0 tw-flex tw-items-center tw-gap-1">
+    <ng-content select="[slot=title]"></ng-content>
   </div>
   <div class="tw-text-muted has-[button]:-tw-mb-1">
     <ng-content select="[slot=end]"></ng-content>

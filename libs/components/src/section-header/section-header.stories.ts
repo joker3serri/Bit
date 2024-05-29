@@ -77,10 +77,12 @@ export const TitleSuffix: Story = {
     props: args,
     template: /*html*/ `
       <bit-section-header>
-        <h2 bitTypography="h6" noMargin slot="title">
-          {{ title }}
-        </h2>
-        <button bitIconButton="bwi-refresh" size="small" slot="title-suffix"></button>
+        <ng-container slot="title">
+          <h2 bitTypography="h6" noMargin slot="title">
+            {{ title }}
+          </h2>
+          <button bitIconButton="bwi-refresh" size="small"></button>
+        </ng-container>
       </bit-section-header>
     `,
   }),
@@ -89,20 +91,33 @@ export const TitleSuffix: Story = {
   },
 };
 
-export const InSectionWithCard: Story = {
+export const InSectionWithSiblingCard: Story = {
   render: () => ({
     template: /*html*/ `
       <div class="tw-bg-background-alt tw-p-2">
         <bit-section>
           <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              I'm a section header
+              Card as immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
           <bit-card>
-            <h3 bitTypography="h3">I'm card content</h3>
+            <h3 bitTypography="h3">bit-section-header has bottom padding</h3>
           </bit-card>
+        </bit-section>
+        <bit-section>
+          <bit-section-header>
+            <h2 bitTypography="h6" noMargin slot="title">
+              Card nested in immediate sibling
+            </h2>
+            <button bitIconButton="bwi-star" size="small" slot="end"></button>
+          </bit-section-header>
+          <div>
+            <bit-card>
+              <h3 bitTypography="h3">bit-section-header has bottom padding</h3>
+            </bit-card>
+          </div>
         </bit-section>
       </div>
     `,
@@ -127,24 +142,7 @@ export const InSectionWithoutPadding: Story = {
         <bit-section>
           <bit-section-header>
             <h2 bitTypography="h6" noMargin slot="title">
-              Card nested in immediate sibling
-            </h2>
-            <button bitIconButton="bwi-star" size="small" slot="end"></button>
-          </bit-section-header>
-          <div>
-            <div>
-              some content here
-            </div>
-            <button>a random button</button>
-            <bit-card>
-              <h3 bitTypography="h3">bit-section-header has no bottom padding</h3>
-            </bit-card>
-          </div>
-        </bit-section>
-        <bit-section>
-          <bit-section-header>
-            <h2 bitTypography="h6" noMargin slot="title">
-              Card not immediate sibling
+              Card not nested in immediate sibling
             </h2>
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>

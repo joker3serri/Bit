@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component } from "@angular/core";
 
 import { TypographyModule } from "../typography";
 
@@ -8,10 +8,9 @@ import { TypographyModule } from "../typography";
   templateUrl: "./section-header.component.html",
   imports: [TypographyModule],
   host: {
-    // if we want to use "header has immediate sibling card"
-    class: "has-[+_bit-card]:tw-pb-1 tw-block",
+    class:
+      // apply bottom and x-axis padding when a `bit-card` is the immediate sibling, or nested in the immediate sibling
+      "has-[+_*_bit-card]:tw-pb-1 has-[+_*_bit-card]:tw-px-1 has-[+_bit-card]:tw-pb-1 has-[+_bit-card]:tw-px-1 tw-block",
   },
 })
-export class SectionHeaderComponent {
-  @Input() title: string;
-}
+export class SectionHeaderComponent {}

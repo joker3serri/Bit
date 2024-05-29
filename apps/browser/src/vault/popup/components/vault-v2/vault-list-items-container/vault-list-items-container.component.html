@@ -1,15 +1,20 @@
 <bit-section *ngIf="ciphers?.length > 0">
-  <bit-section-header [title]="title">
+  <bit-section-header>
+    <ng-container slot="title">
+      <h2 bitTypography="h6" noMargin>
+        {{ title }}
+      </h2>
+      <button
+        *ngIf="showRefresh"
+        bitIconButton="bwi-refresh"
+        type="button"
+        size="small"
+        slot="title-suffix"
+        (click)="onRefresh.emit()"
+        [appA11yTitle]="'refresh' | i18n"
+      ></button>
+    </ng-container>
     <span bitTypography="body2" slot="end">{{ ciphers.length }}</span>
-    <button
-      *ngIf="showRefresh"
-      bitIconButton="bwi-refresh"
-      type="button"
-      size="small"
-      slot="title-suffix"
-      (click)="onRefresh.emit()"
-      [appA11yTitle]="'refresh' | i18n"
-    ></button>
   </bit-section-header>
   <bit-item-group>
     <bit-item *ngFor="let cipher of ciphers">
