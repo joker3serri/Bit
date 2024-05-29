@@ -10,7 +10,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DialogService } from "@bitwarden/components";
 
-import { ChangeAvatarDialogComponent } from "./change-avatar-dailog.component";
+import { ChangeAvatarDialogComponent } from "./change-avatar-dialog.component";
 
 @Component({
   selector: "app-profile",
