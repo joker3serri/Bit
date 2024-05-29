@@ -24,9 +24,10 @@ describe("VaultPopupListFiltersService", () => {
   const memberOrganizations$ = new BehaviorSubject<{ name: string; id: string }[]>([]);
   const folderViews$ = new BehaviorSubject([]);
   const cipherViews$ = new BehaviorSubject({});
+  const decryptedCollections$ = new BehaviorSubject<CollectionView[]>([]);
 
   const collectionService = {
-    getAllDecrypted: Promise.resolve(),
+    decryptedCollections$,
     getAllNested: () => Promise.resolve([]),
   } as unknown as CollectionService;
 
@@ -48,8 +49,8 @@ describe("VaultPopupListFiltersService", () => {
 
   beforeEach(() => {
     memberOrganizations$.next([]);
+    decryptedCollections$.next([]);
 
-    collectionService.getAllDecrypted = () => Promise.resolve([]);
     collectionService.getAllNested = () => Promise.resolve([]);
 
     service = new VaultPopupListFiltersService(
@@ -121,9 +122,11 @@ describe("VaultPopupListFiltersService", () => {
       name: "Test collection 2",
       organizationId: "1203ccf-2432-123-acdd-b15c01203ccf",
     } as CollectionView;
+
     const testCollections = [testCollection, testCollection2];
+
     beforeEach(() => {
-      collectionService.getAllDecrypted = () => Promise.resolve(testCollections);
+      decryptedCollections$.next(testCollections);
 
       collectionService.getAllNested = () =>
         Promise.resolve(

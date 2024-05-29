@@ -232,17 +232,18 @@ export class VaultPopupListFiltersService {
   );
 
   /** Collection array structured to be directly passed to `ChipSelectComponent` */
-  collections$: Observable<ChipSelectOption<string>[]> = this.filters$.pipe(
-    distinctUntilChanged(
-      (previousFilter, currentFilter) =>
-        // Only update the collections when the organizationId filter changes
-        previousFilter.organization?.id === currentFilter.organization?.id,
+  collections$: Observable<ChipSelectOption<string>[]> = combineLatest([
+    this.filters$.pipe(
+      distinctUntilChanged(
+        (previousFilter, currentFilter) =>
+          // Only update the collections when the organizationId filter changes
+          previousFilter.organization?.id === currentFilter.organization?.id,
+      ),
     ),
-    switchMap(async (filters) => {
+    this.collectionService.decryptedCollections$,
+  ]).pipe(
+    map(([filters, allCollections]) => {
       const organizationId = filters.organization?.id ?? null;
-
-      // Get all stored collections
-      const allCollections = await this.collectionService.getAllDecrypted();
 
       // When the organization filter is selected, filter out collections that do not belong to the selected organization
       const collections =
