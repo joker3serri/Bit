@@ -6,6 +6,7 @@ import {
   AddAccountCreditDialogComponent,
   ManageTaxInformationComponent,
   SelectPaymentMethodComponent,
+  VerifyBankAccountComponent,
 } from "@bitwarden/angular/billing/components";
 import {
   AsyncActionsModule,
@@ -97,6 +98,7 @@ import { IconComponent } from "./vault/components/icon.component";
     AddAccountCreditDialogComponent,
     ManageTaxInformationComponent,
     SelectPaymentMethodComponent,
+    VerifyBankAccountComponent,
   ],
   exports: [
     A11yInvalidDirective,
@@ -130,6 +132,7 @@ import { IconComponent } from "./vault/components/icon.component";
     AddAccountCreditDialogComponent,
     ManageTaxInformationComponent,
     SelectPaymentMethodComponent,
+    VerifyBankAccountComponent,
   ],
   providers: [
     CreditCardNumberPipe,
