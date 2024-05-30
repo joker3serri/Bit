@@ -193,13 +193,11 @@ import { SearchService } from "@bitwarden/common/services/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
 import {
-  PasswordGenerationService,
-  PasswordGenerationServiceAbstraction,
-} from "@bitwarden/common/tools/generator/password";
-import {
-  UsernameGenerationService,
-  UsernameGenerationServiceAbstraction,
-} from "@bitwarden/common/tools/generator/username";
+  legacyPasswordGenerationServiceFactory,
+  legacyUsernameGenerationServiceFactory,
+} from "@bitwarden/common/tools/generator";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
 import {
   PasswordStrengthService,
   PasswordStrengthServiceAbstraction,
@@ -274,6 +272,7 @@ import {
   SYSTEM_LANGUAGE,
   SYSTEM_THEME_OBSERVABLE,
   WINDOW,
+  DEFAULT_VAULT_TIMEOUT,
   INTRAPROCESS_MESSAGING_SUBJECT,
   CLIENT_TYPE,
 } from "./injection-tokens";
@@ -392,6 +391,7 @@ const safeProviders: SafeProvider[] = [
       InternalUserDecryptionOptionsServiceAbstraction,
       GlobalStateProvider,
       BillingAccountProfileStateService,
+      VaultTimeoutSettingsServiceAbstraction,
       KdfConfigServiceAbstraction,
     ],
   }),
@@ -557,13 +557,27 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: PasswordGenerationServiceAbstraction,
-    useClass: PasswordGenerationService,
-    deps: [CryptoServiceAbstraction, PolicyServiceAbstraction, StateServiceAbstraction],
+    useFactory: legacyPasswordGenerationServiceFactory,
+    deps: [
+      EncryptService,
+      CryptoServiceAbstraction,
+      PolicyServiceAbstraction,
+      AccountServiceAbstraction,
+      StateProvider,
+    ],
   }),
   safeProvider({
     provide: UsernameGenerationServiceAbstraction,
-    useClass: UsernameGenerationService,
-    deps: [CryptoServiceAbstraction, StateServiceAbstraction, ApiServiceAbstraction],
+    useFactory: legacyUsernameGenerationServiceFactory,
+    deps: [
+      ApiServiceAbstraction,
+      I18nServiceAbstraction,
+      CryptoServiceAbstraction,
+      EncryptService,
+      PolicyServiceAbstraction,
+      AccountServiceAbstraction,
+      StateProvider,
+    ],
   }),
   safeProvider({
     provide: ApiServiceAbstraction,
@@ -573,7 +587,7 @@ const safeProviders: SafeProvider[] = [
       PlatformUtilsServiceAbstraction,
       EnvironmentService,
       AppIdServiceAbstraction,
-      StateServiceAbstraction,
+      VaultTimeoutSettingsServiceAbstraction,
       LOGOUT_CALLBACK,
     ],
   }),
@@ -629,6 +643,7 @@ const safeProviders: SafeProvider[] = [
       LOGOUT_CALLBACK,
       BillingAccountProfileStateService,
       TokenServiceAbstraction,
+      AuthServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -646,8 +661,10 @@ const safeProviders: SafeProvider[] = [
       CryptoServiceAbstraction,
       TokenServiceAbstraction,
       PolicyServiceAbstraction,
-      StateServiceAbstraction,
       BiometricStateService,
+      StateProvider,
+      LogService,
+      DEFAULT_VAULT_TIMEOUT,
     ],
   }),
   safeProvider({
