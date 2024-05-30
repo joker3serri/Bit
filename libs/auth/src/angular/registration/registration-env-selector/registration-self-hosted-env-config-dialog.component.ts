@@ -1,6 +1,6 @@
 import { DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -26,6 +26,8 @@ import {
   LinkModule,
   TypographyModule,
 } from "@bitwarden/components";
+
+import { DialogComponent } from "../../../../../components/src/dialog/dialog/dialog.component";
 
 function selfHostedEnvSettingsFormValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -62,6 +64,8 @@ function selfHostedEnvSettingsFormValidator(): ValidatorFn {
   ],
 })
 export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, OnDestroy {
+  @ViewChild(DialogComponent) bitDialog: DialogComponent;
+
   static async open(dialogService: DialogService): Promise<boolean> {
     const dialogRef = dialogService.open<boolean>(RegistrationSelfHostedEnvConfigDialogComponent, {
       disableClose: false,
@@ -117,6 +121,7 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
     private dialogRef: DialogRef<boolean>,
     private formBuilder: FormBuilder,
     private environmentService: EnvironmentService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {}
@@ -126,6 +131,9 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
 
     if (this.formGroup.invalid) {
       this.showErrorSummary = true;
+      // ensure that the error summary is shown so the scroll will properly go all the way to the bottom
+      this.cdr.detectChanges();
+      this.bitDialog.scrollToBottom();
       return;
     }
 

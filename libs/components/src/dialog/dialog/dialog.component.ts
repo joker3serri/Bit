@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
-import { Component, HostBinding, Input } from "@angular/core";
+import { Component, ElementRef, HostBinding, Input, ViewChild } from "@angular/core";
 
 import { fadeIn } from "../animations";
 
@@ -9,6 +9,8 @@ import { fadeIn } from "../animations";
   animations: [fadeIn],
 })
 export class DialogComponent {
+  @ViewChild("dialogContentWrapper") dialogContentWrapper: ElementRef;
+
   /**
    * Dialog size, more complex dialogs should use large, otherwise default is fine.
    */
@@ -57,6 +59,13 @@ export class DialogComponent {
       default: {
         return "tw-max-w-xl";
       }
+    }
+  }
+
+  scrollToBottom() {
+    if (this.dialogContentWrapper) {
+      const element = this.dialogContentWrapper.nativeElement;
+      element.scrollTop = element.scrollHeight;
     }
   }
 }
