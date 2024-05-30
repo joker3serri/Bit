@@ -6,7 +6,7 @@ const { compilerOptions } = require("../../../shared/tsconfig.libs");
 module.exports = {
   testMatch: ["**/+(*.)+(spec).+(ts)"],
   preset: "ts-jest",
-  testEnvironment: "../../../shared/test.environment.js",
+  testEnvironment: "../../../shared/test.environment.ts",
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions?.paths || {}, {
     prefix: "<rootDir>/../../../",
   }),
