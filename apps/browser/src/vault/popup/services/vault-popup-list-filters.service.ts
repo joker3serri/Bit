@@ -243,7 +243,7 @@ export class VaultPopupListFiltersService {
       const orgCiphers = cipherViews.filter((c) => c.organizationId === organizationId);
 
       // Return only the folders that have ciphers within the filtered organization
-      return folders.filter((f) => orgCiphers.some((oc) => oc.folderId === f.id) || f.id === null);
+      return folders.filter((f) => orgCiphers.some((oc) => oc.folderId === f.id));
     }),
     map((folders) => {
       const nestedFolders = this.getAllFoldersNested(folders);
@@ -270,7 +270,6 @@ export class VaultPopupListFiltersService {
   ]).pipe(
     map(([filters, allCollections]) => {
       const organizationId = filters.organization?.id ?? null;
-
       // When the organization filter is selected, filter out collections that do not belong to the selected organization
       const collections =
         organizationId === null
