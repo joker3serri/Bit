@@ -50,13 +50,11 @@ const decorators = (options: {
           provide: ActivatedRoute,
           useValue: { queryParams: of(options.queryParams || {}) },
         },
-        {
-          provide: PlatformUtilsService,
-          useValue: {
-            isSelfHost: () => options.isSelfHost || false,
-            getClientType: () => options.clientType || ClientType.Web,
-          } as Partial<PlatformUtilsService>,
-        },
+      ],
+    }),
+    applicationConfig({
+      providers: [
+        importProvidersFrom(PreloadedEnglishI18nModule),
         {
           provide: EnvironmentService,
           useValue: {
@@ -71,15 +69,19 @@ const decorators = (options: {
           } as Partial<EnvironmentService>,
         },
         {
+          provide: PlatformUtilsService,
+          useValue: {
+            isSelfHost: () => options.isSelfHost || false,
+            getClientType: () => options.clientType || ClientType.Web,
+          } as Partial<PlatformUtilsService>,
+        },
+        {
           provide: ToastService,
           useValue: {
             showToast: (options: ToastOptions) => {},
           } as Partial<ToastService>,
         },
       ],
-    }),
-    applicationConfig({
-      providers: [importProvidersFrom(PreloadedEnglishI18nModule)],
     }),
   ];
 };
