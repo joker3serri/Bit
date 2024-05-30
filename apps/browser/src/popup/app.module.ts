@@ -15,13 +15,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
-import {
-  AvatarModule,
-  ButtonModule,
-  SectionHeaderComponent,
-  ToastModule,
-} from "@bitwarden/components";
-import { ExportScopeCalloutComponent } from "@bitwarden/vault-export-ui";
+import { AvatarModule, ButtonModule, ToastModule } from "@bitwarden/components";
 
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
 import { AccountComponent } from "../auth/popup/account-switching/account.component";
@@ -59,7 +53,6 @@ import { SendListComponent } from "../tools/popup/send/components/send-list.comp
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
-import { ExportComponent } from "../tools/popup/settings/export.component";
 import { SettingsComponent } from "../tools/popup/settings/settings.component";
 import { ActionButtonsComponent } from "../vault/popup/components/action-buttons.component";
 import { CipherRowComponent } from "../vault/popup/components/cipher-row.component";
@@ -88,7 +81,6 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { UserVerificationComponent } from "./components/user-verification.component";
 import { ServicesModule } from "./services/services.module";
-import { OptionsComponent } from "./settings/options.component";
 import { TabsV2Component } from "./tabs-v2.component";
 import { TabsComponent } from "./tabs.component";
 
@@ -120,14 +112,12 @@ import "../platform/popup/locales";
     AvatarModule,
     AccountComponent,
     ButtonModule,
-    ExportScopeCalloutComponent,
     PopOutComponent,
     PopupPageComponent,
     PopupTabNavigationComponent,
     PopupFooterComponent,
     PopupHeaderComponent,
     UserVerificationDialogComponent,
-    SectionHeaderComponent,
     CurrentAccountComponent,
   ],
   declarations: [
@@ -144,7 +134,6 @@ import "../platform/popup/locales";
     CurrentTabComponent,
     EnvironmentComponent,
     ExcludedDomainsComponent,
-    ExportComponent,
     Fido2CipherRowComponent,
     Fido2UseBrowserLinkComponent,
     FolderAddEditComponent,
@@ -157,7 +146,6 @@ import "../platform/popup/locales";
     LoginComponent,
     LoginViaAuthRequestComponent,
     LoginDecryptionOptionsComponent,
-    OptionsComponent,
     NotificationsSettingsComponent,
     AppearanceComponent,
     GeneratorComponent,
