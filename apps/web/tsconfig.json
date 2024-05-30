@@ -19,6 +19,7 @@
       "@bitwarden/importer/core": ["../../libs/importer/src"],
       "@bitwarden/importer/ui": ["../../libs/importer/src/components"],
       "@bitwarden/platform": ["../../libs/platform/src"],
+      "@bitwarden/send-ui": ["../../libs/tools/send/send-ui/src"],
       "@bitwarden/vault": ["../../libs/vault/src"],
       "@bitwarden/web-vault/*": ["src/*"]
     }
@@ -27,12 +28,7 @@
     "strictTemplates": true,
     "preserveWhitespaces": true
   },
-  "files": [
-    "src/polyfills.ts",
-    "src/main.ts",
-    "../../bitwarden_license/bit-web/src/main.ts",
-    "src/theme.ts"
-  ],
+  "files": ["src/polyfills.ts", "src/main.ts", "src/theme.ts"],
   "include": [
     "src/connectors/*.ts",
     "src/**/*.stories.ts",
