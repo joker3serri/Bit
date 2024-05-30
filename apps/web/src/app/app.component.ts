@@ -293,7 +293,7 @@ export class AppComponent implements OnDestroy, OnInit {
       }
       default: {
         toastOptions = {
-          variant: "warning",
+          variant: "info",
           title: this.i18nService.t("loggedOut"),
           message: this.i18nService.t("loggedOutDesc"),
         };
