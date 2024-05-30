@@ -5,7 +5,6 @@ import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { CipherExport } from "@bitwarden/common/models/export/cipher.export";
@@ -35,7 +34,6 @@ export class CreateCommand {
     private folderApiService: FolderApiServiceAbstraction,
     private accountProfileService: BillingAccountProfileStateService,
     private organizationService: OrganizationService,
-    private organizationUserService: OrganizationUserService,
   ) {}
 
   async run(
@@ -188,8 +186,7 @@ export class CreateCommand {
         throw new Error("No encryption key for this organization.");
       }
       const organization = await this.organizationService.get(req.organizationId);
-      const users = await this.organizationUserService.getAllUsers(req.organizationId);
-      const currentOrgUserId = users.data.find((u) => u.userId === organization?.userId)?.id;
+      const currentOrgUserId = organization.organizationUserId;
 
       const groups =
         req.groups == null
@@ -197,11 +194,17 @@ export class CreateCommand {
           : req.groups.map(
               (g) => new SelectionReadOnlyRequest(g.id, g.readOnly, g.hidePasswords, g.manage),
             );
+      const users =
+        req.users == null
+          ? [new SelectionReadOnlyRequest(currentOrgUserId, false, false, true)]
+          : req.users.map(
+              (u) => new SelectionReadOnlyRequest(u.id, u.readOnly, u.hidePasswords, u.manage),
+            );
       const request = new CollectionRequest();
       request.name = (await this.cryptoService.encrypt(req.name, orgKey)).encryptedString;
       request.externalId = req.externalId;
       request.groups = groups;
-      request.users = [new SelectionReadOnlyRequest(currentOrgUserId, false, false, true)];
+      request.users = users;
       const response = await this.apiService.postCollection(req.organizationId, request);
       const view = CollectionExport.toView(req);
       view.id = response.id;
