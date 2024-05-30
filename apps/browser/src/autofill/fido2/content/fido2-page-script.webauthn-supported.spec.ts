@@ -5,7 +5,7 @@ import {
   createCredentialRequestOptionsMock,
   setupMockedWebAuthnSupport,
 } from "../../../autofill/spec/fido2-testing-utils";
-import { WebauthnUtils } from "../webauthn-utils";
+import { WebauthnUtils } from "../../../vault/fido2/webauthn-utils";
 
 import { MessageType } from "./messaging/message";
 import { Messenger } from "./messaging/messenger";
@@ -53,7 +53,7 @@ describe("Fido2 page script with native WebAuthn support", () => {
   const mockCredentialAssertResult = createAssertCredentialResultMock();
   setupMockedWebAuthnSupport();
 
-  require("./page-script");
+  require("./fido2-page-script");
 
   afterEach(() => {
     jest.resetModules();
@@ -152,7 +152,7 @@ describe("Fido2 page script with native WebAuthn support", () => {
         contentType: "json/application",
       }));
 
-      require("./content-script");
+      require("./fido2-content-script");
 
       expect(Messenger.forDOMCommunication).not.toHaveBeenCalled();
     });
@@ -170,7 +170,7 @@ describe("Fido2 page script with native WebAuthn support", () => {
         },
       }));
 
-      require("./content-script");
+      require("./fido2-content-script");
 
       expect(Messenger.forDOMCommunication).not.toHaveBeenCalled();
     });
