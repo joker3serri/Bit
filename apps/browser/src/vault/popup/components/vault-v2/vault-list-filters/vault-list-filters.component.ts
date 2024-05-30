@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -13,7 +13,7 @@ import { VaultPopupListFiltersService } from "../../../services/vault-popup-list
   templateUrl: "./vault-list-filters.component.html",
   imports: [CommonModule, JslibModule, ChipSelectComponent, ReactiveFormsModule],
 })
-export class VaultListFiltersComponent {
+export class VaultListFiltersComponent implements OnDestroy {
   protected filterForm = this.vaultPopupListFiltersService.filterForm;
   protected organizations$ = this.vaultPopupListFiltersService.organizations$;
   protected collections$ = this.vaultPopupListFiltersService.collections$;
@@ -21,4 +21,8 @@ export class VaultListFiltersComponent {
   protected cipherTypes = this.vaultPopupListFiltersService.cipherTypes;
 
   constructor(private vaultPopupListFiltersService: VaultPopupListFiltersService) {}
+
+  ngOnDestroy(): void {
+    this.vaultPopupListFiltersService.resetFilterForm();
+  }
 }

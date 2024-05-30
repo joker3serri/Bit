@@ -158,6 +158,11 @@ export class VaultPopupListFiltersService {
     },
   ];
 
+  /** Resets `filterForm` to the original state */
+  resetFilterForm(): void {
+    this.filterForm.reset(INITIAL_FILTERS);
+  }
+
   /**
    * Organization array structured to be directly passed to `ChipSelectComponent`
    */
