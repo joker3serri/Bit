@@ -40,7 +40,7 @@ jest.mock("./messaging/messenger", () => {
     },
   };
 });
-jest.mock("../webauthn-utils");
+jest.mock("../../../vault/fido2/webauthn-utils");
 
 describe("Fido2 page script with native WebAuthn support", () => {
   (jest.spyOn(globalThis, "document", "get") as jest.Mock).mockImplementation(
