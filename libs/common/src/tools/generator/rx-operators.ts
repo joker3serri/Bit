@@ -1,4 +1,7 @@
-import { distinctUntilChanged, map, OperatorFunction } from "rxjs";
+import { distinctUntilChanged, map, OperatorFunction, pipe } from "rxjs";
+
+import { DefaultPolicyEvaluator } from "./default-policy-evaluator";
+import { PolicyMetadata } from "./policies";
 
 /**
  * An observable operator that reduces an emitted collection to a single object,
@@ -35,4 +38,20 @@ export function distinctIfShallowMatch<Item>(): OperatorFunction<Item, Item> {
 
     return isDistinct;
   });
+}
+
+export function mapPolicyToEvaluator<Policy, Evaluator>(
+  metadata: PolicyMetadata<Policy, Evaluator>,
+) {
+  return pipe(
+    reduceCollection(metadata.combine, metadata.disabledValue),
+    distinctIfShallowMatch(),
+    map(metadata.createEvaluator),
+  );
+}
+
+export function newDefaultEvaluator<Target>() {
+  return () => {
+    return pipe(map((_) => new DefaultPolicyEvaluator<Target>()));
+  };
 }

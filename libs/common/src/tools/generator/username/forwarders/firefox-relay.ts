@@ -1,11 +1,8 @@
-import { BehaviorSubject } from "rxjs";
-
 import { ApiService } from "../../../../abstractions/api.service";
 import { CryptoService } from "../../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../../platform/abstractions/i18n.service";
 import { StateProvider } from "../../../../platform/state";
-import { UserId } from "../../../../types/guid";
 import { FIREFOX_RELAY_FORWARDER, FIREFOX_RELAY_BUFFER } from "../../key-definitions";
 import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
 import { Forwarders } from "../options/constants";
@@ -16,6 +13,7 @@ export const DefaultFirefoxRelayOptions: ApiOptions = Object.freeze({
   token: "",
 });
 
+/** Generates a forwarding address for Firefox Relay */
 /** Generates a forwarding address for Firefox Relay */
 export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions> {
   /** Instantiates the forwarder
@@ -32,23 +30,12 @@ export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions
     keyService: CryptoService,
     stateProvider: StateProvider,
   ) {
-    super(encryptService, keyService, stateProvider);
+    super(encryptService, keyService, stateProvider, DefaultFirefoxRelayOptions);
   }
 
-  /** {@link ForwarderGeneratorStrategy.key} */
-  get key() {
-    return FIREFOX_RELAY_FORWARDER;
-  }
-
-  /** {@link ForwarderGeneratorStrategy.rolloverKey} */
-  get rolloverKey() {
-    return FIREFOX_RELAY_BUFFER;
-  }
-
-  /** {@link ForwarderGeneratorStrategy.defaults$} */
-  defaults$ = (userId: UserId) => {
-    return new BehaviorSubject({ ...DefaultFirefoxRelayOptions });
-  };
+  // configuration
+  readonly key = FIREFOX_RELAY_FORWARDER;
+  readonly rolloverKey = FIREFOX_RELAY_BUFFER;
 
   /** {@link ForwarderGeneratorStrategy.generate} */
   generate = async (options: ApiOptions) => {
