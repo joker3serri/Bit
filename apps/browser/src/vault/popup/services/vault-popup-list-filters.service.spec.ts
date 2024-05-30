@@ -1,3 +1,4 @@
+import { DestroyRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject, skipWhile } from "rxjs";
 
@@ -56,6 +57,7 @@ describe("VaultPopupListFiltersService", () => {
       i18nService,
       collectionService,
       new FormBuilder(),
+      {} as DestroyRef,
     );
   });
 
