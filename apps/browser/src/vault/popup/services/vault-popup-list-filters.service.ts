@@ -300,7 +300,9 @@ export class VaultPopupListFiltersService {
       value: item.node,
       label: item.node.name,
       icon: "bwi-folder", // Organization & Folder icons are the same
-      children: item.children ? item.children.map(this.convertToChipSelectOption) : undefined,
+      children: item.children
+        ? item.children.map(this.convertToChipSelectOption.bind(this))
+        : undefined,
     };
   }
 
