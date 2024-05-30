@@ -56,12 +56,10 @@ export const HeaderVariants: Story = {
         </h2>
        </bit-section-header>
       <bit-section-header>
-        <ng-container>
-          <h2 bitTypography="h6">
-            Title with icon button suffix
-          </h2>
-          <button bitIconButton="bwi-refresh" size="small"></button>
-        </ng-container>
+        <h2 bitTypography="h6">
+          Title with icon button suffix
+        </h2>
+        <button bitIconButton="bwi-refresh" size="small"></button>
       </bit-section-header>
     `,
   }),
