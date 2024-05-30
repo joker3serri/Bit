@@ -98,6 +98,7 @@
                   "./libs/node/**/*",
 
                   //Generator
+                  "./libs/tools/generator/components/**/*",
                   "./libs/tools/generator/core/**/*",
                   "./libs/tools/generator/extensions/**/*",
 
@@ -183,6 +184,15 @@
         "no-restricted-imports": [
           "error",
           { "patterns": ["@bitwarden/components/*", "src/**/*", "@bitwarden/angular/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/generator/components/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/generator-components/*", "src/**/*"] }
         ]
       }
     },
