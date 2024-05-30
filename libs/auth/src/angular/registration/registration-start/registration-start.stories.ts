@@ -1,5 +1,6 @@
 import { importProvidersFrom } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute, Params } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
@@ -14,11 +15,15 @@ import {
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
+  AsyncActionsModule,
+  ButtonModule,
   DialogModule,
   FormFieldModule,
+  LinkModule,
   SelectModule,
   ToastOptions,
   ToastService,
+  TypographyModule,
 } from "@bitwarden/components";
 
 import { PreloadedEnglishI18nModule } from "../../../../../../apps/web/src/app/core/tests";
@@ -44,6 +49,11 @@ const decorators = (options: {
         ReactiveFormsModule,
         FormFieldModule,
         SelectModule,
+        ButtonModule,
+        LinkModule,
+        TypographyModule,
+        AsyncActionsModule,
+        BrowserAnimationsModule,
       ],
       providers: [
         {
