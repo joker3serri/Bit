@@ -6,4 +6,5 @@ export type LogoutReason =
   | "keyConnectorError"
   | "sessionExpired"
   | "accessTokenUnableToBeDecrypted"
-  | "refreshTokenSecureStorageRetrievalFailure";
+  | "refreshTokenSecureStorageRetrievalFailure"
+  | "accountDeleted";

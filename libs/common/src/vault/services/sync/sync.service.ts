@@ -148,7 +148,7 @@ export class SyncService extends CoreSyncService {
     const response = await this.apiService.getAccountRevisionDate();
     if (response < 0 && this.logoutCallback) {
       // Account was deleted, log out now
-      await this.logoutCallback(false);
+      await this.logoutCallback("accountDeleted");
     }
 
     if (new Date(response) <= lastSync) {
