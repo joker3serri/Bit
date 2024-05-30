@@ -99,6 +99,7 @@
 
                   //Generator
                   "./libs/tools/generator/core/**/*",
+                  "./libs/tools/generator/extensions/**/*",
 
                   // Import/export
                   "./libs/importer/**/*",
@@ -191,6 +192,15 @@
         "no-restricted-imports": [
           "error",
           { "patterns": ["@bitwarden/generator-core/*", "src/**/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/generator/extensions/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/generator-extensions/*", "src/**/*"] }
         ]
       }
     },
