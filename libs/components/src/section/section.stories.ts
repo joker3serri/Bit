@@ -27,8 +27,7 @@ export default {
 type Story = StoryObj<SectionComponent>;
 
 export const Default: Story = {
-  render: (args) => ({
-    props: args,
+  render: () => ({
     template: /*html*/ `
         <bit-section>
           <bit-section-header>
@@ -47,8 +46,7 @@ export const Default: Story = {
 };
 
 export const HeaderVariants: Story = {
-  render: (args) => ({
-    props: args,
+  render: () => ({
     template: /*html*/ `
       <bit-section-header>
         <h2 bitTypography="h6">
@@ -66,8 +64,7 @@ export const HeaderVariants: Story = {
 };
 
 export const HeaderEndSlotVariants: Story = {
-  render: (args) => ({
-    props: args,
+  render: () => ({
     template: /*html*/ `
       <bit-section-header>
         <h2 bitTypography="h6">
