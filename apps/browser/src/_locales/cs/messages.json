@@ -181,6 +181,12 @@
   "continueToHelpCenterDesc": {
     "message": "Přečtěte si více o tom, jak používat Bitwarden v Centru nápovědy."
   },
+  "continueToBrowserExtensionStore": {
+    "message": "Pokračovat do obchdou s rozšířeními pro prohlížeč?"
+  },
+  "continueToBrowserExtensionStoreDesc": {
+    "message": "Pomozte ostatním zjistit, zda je Bitwarden pro ně správný. Navštivte obchod s rozšířeními pro prohlížeč a zanechte hodnocení."
+  },
   "changeMasterPasswordOnWebConfirmation": {
     "message": "Hlavní heslo můžete změnit ve webové aplikaci Bitwardenu."
   },
@@ -756,6 +762,9 @@
   "notificationUnlock": {
     "message": "Odemknout"
   },
+  "additionalOptions": {
+    "message": "Další volby"
+  },
   "enableContextMenuItem": {
     "message": "Zobrazit volby v kontextovém menu"
   },
@@ -793,11 +802,38 @@
     "message": "Tmavý (solarizovaný)",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
+  "exportFrom": {
+    "message": "Exportovat z"
+  },
   "exportVault": {
     "message": "Exportovat trezor"
   },
   "fileFormat": {
     "message": "Formát souboru"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Tento soubor exportu bude chráněn heslem a k dešifrování bude vyžadovat heslo souboru."
+  },
+  "filePassword": {
+    "message": "Heslo souboru"
+  },
+  "exportPasswordDescription": {
+    "message": "Toto heslo bude použito pro export a import tohoto souboru"
+  },
+  "accountRestrictedOptionDescription": {
+    "message": "Pro zašifrování exportu a omezení importu pouze na aktuální účet Bitwardenu použijte šifrovací klíč Vašeho účtu odvozený z uživatelského jména a hlavního hesla."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Nastavte heslo pro šifrování exportu a importujte ho do libovolného účtu Bitwardenu pomocí hesla pro dešifrování."
+  },
+  "exportTypeHeading": {
+    "message": "Typ exportu"
+  },
+  "accountRestricted": {
+    "message": "Účet je omezený"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "\"Heslo souboru\" a \"Potvrzení hesla souboru\" se neshodují."
   },
   "warning": {
     "message": "VAROVÁNÍ",
@@ -1600,6 +1636,9 @@
   "restoredItem": {
     "message": "Položka byla obnovena"
   },
+  "alreadyHaveAccount": {
+    "message": "Už máte účet?"
+  },
   "vaultTimeoutLogOutConfirmation": {
     "message": "Po vypršení časového limitu dojde k odhlášení. Přístup k trezoru bude odebrán a pro opětovné přihlášení bude vyžadováno online ověření. Opravdu chcete použít toto nastavení?"
   },
@@ -2173,6 +2212,18 @@
       }
     }
   },
+  "exportingOrganizationVaultTitle": {
+    "message": "Exportování trezoru organizace"
+  },
+  "exportingOrganizationVaultDesc": {
+    "message": "Exportován bude jen trezor organizace přidružený k položce $ORGANIZATION$. Osobní položky trezoru a položky z jiných organizací nebudou zahrnuty.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "ACME Moving Co."
+      }
+    }
+  },
   "error": {
     "message": "Chyba"
   },
@@ -2534,6 +2585,27 @@
   },
   "ssoIdentifierRequired": {
     "message": "Je vyžadován SSO identifikátor organizace."
+  },
+  "creatingAccountOn": {
+    "message": "Vytváření účtu na"
+  },
+  "checkYourEmail": {
+    "message": "Zkontrolujte Váš e-mail"
+  },
+  "followTheLinkInTheEmailSentTo": {
+    "message": "Následujte pokyny v e-mailu poslaném na"
+  },
+  "andContinueCreatingYourAccount": {
+    "message": "a pokračujte ve vytváření Vašeho účtu."
+  },
+  "noEmail": {
+    "message": "Žádný e-mail?"
+  },
+  "goBack": {
+    "message": "Zpět"
+  },
+  "toEditYourEmailAddress": {
+    "message": "pro úpravu Vaší e-mailové adresy."
   },
   "eu": {
     "message": "EU",
@@ -3230,7 +3302,7 @@
     "message": "Chyba při přiřazování cílové složky."
   },
   "viewItemsIn": {
-    "message": "View items in $NAME$",
+    "message": "Zobrazit položky v $NAME$",
     "description": "Button to view the contents of a folder or collection",
     "placeholders": {
       "name": {
@@ -3240,7 +3312,7 @@
     }
   },
   "backTo": {
-    "message": "Back to $NAME$",
+    "message": "Zpět do $NAME$",
     "description": "Navigate back to a previous folder or collection",
     "placeholders": {
       "name": {
@@ -3253,7 +3325,7 @@
     "message": "Nové"
   },
   "removeItem": {
-    "message": "Remove $NAME$",
+    "message": "Odebrat $NAME$",
     "description": "Remove a selected option, such as a folder or collection",
     "placeholders": {
       "name": {
