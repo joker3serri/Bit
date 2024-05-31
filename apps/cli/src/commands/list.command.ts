@@ -239,7 +239,7 @@ export class ListCommand {
   }
 
   private async listOrganizations(options: Options) {
-    let organizations = await this.organizationService.getAll();
+    let organizations = (await this.organizationService.getAll()).filter((o) => o.isMember);
 
     if (options.search != null && options.search.trim() !== "") {
       organizations = CliUtils.searchOrganizations(organizations, options.search);
