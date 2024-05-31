@@ -1,5 +1,5 @@
 import { mock, mockReset, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, Subject } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -23,6 +23,7 @@ import {
   FakeStateProvider,
   FakeAccountService,
   mockAccountServiceWith,
+  subscribeTo,
 } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
 import { FieldType, LinkedIdType, LoginLinkedId, CipherType } from "@bitwarden/common/vault/enums";
@@ -38,6 +39,7 @@ import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { BrowserScriptInjectorService } from "../../platform/services/browser-script-injector.service";
+import { AutofillMessageCommand, AutofillMessageSender } from "../enums/autofill-message.enums";
 import { AutofillPort } from "../enums/autofill-port.enums";
 import AutofillField from "../models/autofill-field";
 import AutofillPageDetails from "../models/autofill-page-details";
@@ -53,6 +55,7 @@ import { flushPromises, triggerTestFailure } from "../spec/testing-utils";
 
 import {
   AutoFillOptions,
+  CollectPageDetailsResponseMessage,
   GenerateFillScriptOptions,
   PageDetail,
 } from "./abstractions/autofill.service";
@@ -108,14 +111,73 @@ describe("AutofillService", () => {
       authService,
       messageListener,
     );
-
     domainSettingsService = new DefaultDomainSettingsService(fakeStateProvider);
     domainSettingsService.equivalentDomains$ = of(mockEquivalentDomains);
+    jest.spyOn(BrowserApi, "tabSendMessage");
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     mockReset(cipherService);
+  });
+
+  describe("collectPageDetailsFromTab$", () => {
+    const tab = mock<chrome.tabs.Tab>({ id: 1 });
+    const messages = new Subject<CollectPageDetailsResponseMessage>();
+
+    function mockCollectPageDetailsResponseMessage(
+      tab: chrome.tabs.Tab,
+      webExtSender: chrome.runtime.MessageSender = mock<chrome.runtime.MessageSender>(),
+    ): CollectPageDetailsResponseMessage {
+      return mock<CollectPageDetailsResponseMessage>({
+        tab,
+        webExtSender,
+        sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
+      });
+    }
+
+    beforeEach(() => {
+      messageListener.messages$.mockReturnValue(messages.asObservable());
+    });
+
+    it("sends a `collectPageDetails` message to the passed tab", () => {
+      autofillService.collectPageDetailsFromTab$(tab);
+
+      expect(BrowserApi.tabSendMessage).toHaveBeenCalledWith(tab, {
+        command: AutofillMessageCommand.collectPageDetails,
+        sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
+        tab,
+      });
+    });
+
+    it("builds an array of page details from received `collectPageDetailsResponse` messages", async () => {
+      const topLevelFrameSender = mock<chrome.runtime.MessageSender>({ tab, frameId: 0 });
+      const subFrameSender = mock<chrome.runtime.MessageSender>({ tab, frameId: 1 });
+
+      const tracker = subscribeTo(autofillService.collectPageDetailsFromTab$(tab));
+      const pausePromise = tracker.pauseUntilReceived(2);
+
+      messages.next(mockCollectPageDetailsResponseMessage(tab, topLevelFrameSender));
+      messages.next(mockCollectPageDetailsResponseMessage(tab, subFrameSender));
+
+      await pausePromise;
+
+      expect(tracker.emissions[1].length).toBe(2);
+    });
+
+    it("ignores messages from a different tab", async () => {
+      const otherTab = mock<chrome.tabs.Tab>({ id: 2 });
+
+      const tracker = subscribeTo(autofillService.collectPageDetailsFromTab$(tab));
+      const pausePromise = tracker.pauseUntilReceived(1);
+
+      messages.next(mockCollectPageDetailsResponseMessage(tab));
+      messages.next(mockCollectPageDetailsResponseMessage(otherTab));
+
+      await pausePromise;
+
+      expect(tracker.emissions[1]).toBeUndefined();
+    });
   });
 
   describe("loadAutofillScriptsOnInstall", () => {
