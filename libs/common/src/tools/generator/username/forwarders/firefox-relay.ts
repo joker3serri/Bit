@@ -14,7 +14,6 @@ export const DefaultFirefoxRelayOptions: ApiOptions = Object.freeze({
 });
 
 /** Generates a forwarding address for Firefox Relay */
-/** Generates a forwarding address for Firefox Relay */
 export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions> {
   /** Instantiates the forwarder
    *  @param apiService used for ajax requests to the forwarding service
@@ -37,7 +36,7 @@ export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions
   readonly key = FIREFOX_RELAY_FORWARDER;
   readonly rolloverKey = FIREFOX_RELAY_BUFFER;
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  // request
   generate = async (options: ApiOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.FirefoxRelay.name);

@@ -14,7 +14,7 @@ import {
 } from "./passphrase-generation-options";
 import { PassphraseGeneratorPolicy } from "./passphrase-generator-policy";
 
-/** {@link GeneratorStrategy} */
+/** Generates passphrases composed of random words */
 export class PassphraseGeneratorStrategy
   implements GeneratorStrategy<PassphraseGenerationOptions, PassphraseGeneratorPolicy>
 {
@@ -35,7 +35,7 @@ export class PassphraseGeneratorStrategy
     return mapPolicyToEvaluator(Policies.Passphrase);
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  // algorithm
   async generate(options: PassphraseGenerationOptions): Promise<string> {
     const o = { ...DefaultPassphraseGenerationOptions, ...options };
     if (o.numWords == null || o.numWords <= 2) {

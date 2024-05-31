@@ -13,7 +13,7 @@ import {
 } from "./password-generation-options";
 import { PasswordGeneratorPolicy } from "./password-generator-policy";
 
-/** {@link GeneratorStrategy} */
+/** Generates passwords composed of random characters */
 export class PasswordGeneratorStrategy
   implements GeneratorStrategy<PasswordGenerationOptions, PasswordGeneratorPolicy>
 {
@@ -33,7 +33,7 @@ export class PasswordGeneratorStrategy
     return mapPolicyToEvaluator(Policies.Password);
   }
 
-  /** {@link GeneratorStrategy.generate} */
+  // algorithm
   async generate(options: PasswordGenerationOptions): Promise<string> {
     const o = { ...DefaultPasswordGenerationOptions, ...options };
     let positions: string[] = [];

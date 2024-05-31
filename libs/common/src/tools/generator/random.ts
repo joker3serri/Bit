@@ -3,6 +3,7 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { Randomizer } from "./abstractions/randomizer";
 import { WordOptions } from "./word-options";
 
+/** A randomizer backed by a CryptoService. */
 export class CryptoServiceRandomizer implements Randomizer {
   constructor(private crypto: CryptoService) {}
 

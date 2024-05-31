@@ -37,7 +37,7 @@ export class SimpleLoginForwarder extends ForwarderGeneratorStrategy<SelfHostedA
   readonly key = SIMPLE_LOGIN_FORWARDER;
   readonly rolloverKey = SIMPLE_LOGIN_BUFFER;
 
-  /** Requests a new forwarder from SimpleLogin. */
+  // request
   generate = async (options: SelfHostedApiOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.SimpleLogin.name);

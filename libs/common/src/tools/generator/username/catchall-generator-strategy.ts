@@ -22,12 +22,13 @@ export class CatchallGeneratorStrategy
     private defaultOptions: CatchallGenerationOptions = DefaultCatchallOptions,
   ) {}
 
+  // configuration
   durableState = sharedStateByUserId(CATCHALL_SETTINGS, this.stateProvider);
   defaults$ = clone$PerUserId(this.defaultOptions);
   toEvaluator = newDefaultEvaluator<CatchallGenerationOptions>();
   readonly policy = PolicyType.PasswordGenerator;
 
-  /** {@link GeneratorStrategy.generate} */
+  // algorithm
   async generate(options: CatchallGenerationOptions) {
     const o = Object.assign({}, DefaultCatchallOptions, options);
 

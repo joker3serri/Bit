@@ -38,7 +38,7 @@ export class FastmailForwarder extends ForwarderGeneratorStrategy<ApiOptions & E
   readonly key = FASTMAIL_FORWARDER;
   readonly rolloverKey = FASTMAIL_BUFFER;
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  // request
   generate = async (options: ApiOptions & EmailPrefixOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.Fastmail.name);

@@ -40,7 +40,7 @@ export class ForwardEmailForwarder extends ForwarderGeneratorStrategy<
   readonly key = FORWARD_EMAIL_FORWARDER;
   readonly rolloverKey = FORWARD_EMAIL_BUFFER;
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  // request
   generate = async (options: ApiOptions & EmailDomainOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.ForwardEmail.name);

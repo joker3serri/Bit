@@ -13,6 +13,7 @@ export const DefaultDuckDuckGoOptions: ApiOptions = Object.freeze({
   token: "",
 });
 
+/** Generates a forwarding address for DuckDuckGo */
 export class DuckDuckGoForwarder extends ForwarderGeneratorStrategy<ApiOptions> {
   /** Instantiates the forwarder
    *  @param apiService used for ajax requests to the forwarding service
@@ -35,7 +36,7 @@ export class DuckDuckGoForwarder extends ForwarderGeneratorStrategy<ApiOptions> 
   readonly key = DUCK_DUCK_GO_FORWARDER;
   readonly rolloverKey = DUCK_DUCK_GO_BUFFER;
 
-  /** {@link ForwarderGeneratorStrategy.generate} */
+  // request
   generate = async (options: ApiOptions): Promise<string> => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.DuckDuckGo.name);

@@ -40,7 +40,7 @@ export class AddyIoForwarder extends ForwarderGeneratorStrategy<
   readonly key = ADDY_IO_FORWARDER;
   readonly rolloverKey = ADDY_IO_BUFFER;
 
-  /** Requests a new forwarder from addy.io */
+  // request
   generate = async (options: SelfHostedApiOptions & EmailDomainOptions) => {
     if (!options.token || options.token === "") {
       const error = this.i18nService.t("forwaderInvalidToken", Forwarders.AddyIo.name);
