@@ -89,9 +89,8 @@ export class VaultPopupListFiltersService {
     private collectionService: CollectionService,
     private formBuilder: FormBuilder,
   ) {
-    this.filterForm
-      .get("organization")
-      .valueChanges.pipe(takeUntilDestroyed())
+    this.filterForm.controls.organization.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(this.validateOrganizationChange.bind(this));
   }
 
