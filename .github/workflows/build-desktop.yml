@@ -1174,12 +1174,10 @@ jobs:
           APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
 
-      - name: test for dist content
-        run: ls -la dist/mas-dev-universal
-
       - name: Zip masdev asset
-        working-directory: ./dist/mas-dev-universal
-        run: zip -r Bitwarden-${{ env._PACKAGE_VERSION }}-masdev-universal.zip Bitwarden.app
+        run: |
+          cd dist/mas-dev-universal
+          zip -r Bitwarden-${{ env._PACKAGE_VERSION }}-masdev-universal.zip Bitwarden.app
 
       - name: Upload masdev artifact
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
