@@ -1,7 +1,7 @@
 import { distinctUntilChanged, map, OperatorFunction, pipe } from "rxjs";
 
 import { DefaultPolicyEvaluator } from "./default-policy-evaluator";
-import { PolicyMetadata } from "./policies";
+import { PolicyConfiguration } from "./policies";
 
 /**
  * An observable operator that reduces an emitted collection to a single object,
@@ -40,16 +40,20 @@ export function distinctIfShallowMatch<Item>(): OperatorFunction<Item, Item> {
   });
 }
 
+/** Maps an administrative console policy to a policy evaluator using the provided configuration.
+ *  @param configuration the configuration that constructs the evaluator.
+ */
 export function mapPolicyToEvaluator<Policy, Evaluator>(
-  metadata: PolicyMetadata<Policy, Evaluator>,
+  configuration: PolicyConfiguration<Policy, Evaluator>,
 ) {
   return pipe(
-    reduceCollection(metadata.combine, metadata.disabledValue),
+    reduceCollection(configuration.combine, configuration.disabledValue),
     distinctIfShallowMatch(),
-    map(metadata.createEvaluator),
+    map(configuration.createEvaluator),
   );
 }
 
+/** Constructs a method that maps a policy to the default (no-op) policy. */
 export function newDefaultEvaluator<Target>() {
   return () => {
     return pipe(map((_) => new DefaultPolicyEvaluator<Target>()));
