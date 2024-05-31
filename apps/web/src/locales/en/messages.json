@@ -581,6 +581,9 @@
   "accessLevel": {
     "message": "Access level"
   },
+  "accessing": {
+    "message": "Accessing"
+  },
   "loggedOut": {
     "message": "Logged out"
   },
@@ -2102,7 +2105,7 @@
     "message": "Bitwarden Families plan."
   },
   "addons": {
-    "message": "Addons"
+    "message": "Add-ons"
   },
   "premiumAccess": {
     "message": "Premium access"
@@ -8288,5 +8291,11 @@
   },
   "upgradeOrganizationCloseSecurityGapsDesc": {
     "message": "Stay ahead of security vulnerabilities by upgrading to a paid plan for enhanced monitoring."
+  },
+  "approveAllRequests": {
+    "message": "Approve all requests"
+  },
+  "allLoginRequestsApproved": {
+    "message": "All login requests approved"
   }
 }
