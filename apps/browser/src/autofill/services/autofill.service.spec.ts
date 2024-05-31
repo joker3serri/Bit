@@ -169,7 +169,7 @@ describe("AutofillService", () => {
       const otherTab = mock<chrome.tabs.Tab>({ id: 2 });
 
       const tracker = subscribeTo(autofillService.collectPageDetailsFromTab$(tab));
-      const pausePromise = tracker.pauseUntilReceived(1);
+      const pausePromise = tracker.pauseUntilReceived(2);
 
       messages.next(mockCollectPageDetailsResponseMessage(tab));
       messages.next(mockCollectPageDetailsResponseMessage(otherTab));
