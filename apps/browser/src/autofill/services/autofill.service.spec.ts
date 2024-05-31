@@ -151,13 +151,13 @@ describe("AutofillService", () => {
     });
 
     it("builds an array of page details from received `collectPageDetailsResponse` messages", async () => {
-      const topLevelFrameSender = mock<chrome.runtime.MessageSender>({ tab, frameId: 0 });
+      const topLevelSender = mock<chrome.runtime.MessageSender>({ tab, frameId: 0 });
       const subFrameSender = mock<chrome.runtime.MessageSender>({ tab, frameId: 1 });
 
       const tracker = subscribeTo(autofillService.collectPageDetailsFromTab$(tab));
       const pausePromise = tracker.pauseUntilReceived(2);
 
-      messages.next(mockCollectPageDetailsResponseMessage(tab, topLevelFrameSender));
+      messages.next(mockCollectPageDetailsResponseMessage(tab, topLevelSender));
       messages.next(mockCollectPageDetailsResponseMessage(tab, subFrameSender));
 
       await pausePromise;
