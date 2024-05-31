@@ -251,14 +251,17 @@ export class AppComponent implements OnInit, OnDestroy {
         };
         break;
       }
-      default: {
-        toastOptions = {
-          variant: "info",
-          title: this.i18nService.t("loggedOut"),
-          message: this.i18nService.t("loggedOutDesc"),
-        };
-        break;
-      }
+
+      // Per discussion with product, going to hide default messages for these scenarios
+      // since they are mostly hidden by browser reload.
+      // default: {
+      //   toastOptions = {
+      //     variant: "info",
+      //     title: this.i18nService.t("loggedOut"),
+      //     message: this.i18nService.t("loggedOutDesc"),
+      //   };
+      //   break;
+      // }
     }
 
     this.toastService.showToast(toastOptions);
