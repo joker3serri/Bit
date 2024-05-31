@@ -69,7 +69,6 @@ export class DeviceApprovalProgram extends BaseProgram {
         const cmd = new ApproveAllCommand(
           this.serviceContainer.organizationAuthRequestService,
           this.serviceContainer.organizationService,
-          this.serviceContainer.i18nService,
         );
         const response = await cmd.run(organizationId);
         this.processResponse(response);

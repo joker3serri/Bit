@@ -4,14 +4,12 @@ import { OrganizationAuthRequestService } from "@bitwarden/bit-common/admin-cons
 import { Response } from "@bitwarden/cli/models/response";
 import { MessageResponse } from "@bitwarden/cli/models/response/message.response";
 import { OrganizationService } from "@bitwarden/common/admin-console/services/organization/organization.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 export class ApproveAllCommand {
   constructor(
     private organizationAuthRequestService: OrganizationAuthRequestService,
     private organizationService: OrganizationService,
-    private i18nService: I18nService,
   ) {}
 
   async run(organizationId: string): Promise<Response> {
@@ -20,19 +18,24 @@ export class ApproveAllCommand {
     }
 
     if (!Utils.isGuid(organizationId)) {
-      return Response.badRequest(this.i18nService.t("notAGuid", organizationId));
+      return Response.badRequest("`" + organizationId + "` is not a GUID.");
     }
 
     const organization = await firstValueFrom(this.organizationService.get$(organizationId));
     if (!organization?.canManageUsersPassword) {
-      return Response.error(this.i18nService.t("approveAllDevicesNoPermission"));
+      return Response.error(
+        "You do not have permission to approve pending device authorization requests.",
+      );
     }
 
     try {
       const pendingApprovals =
         await this.organizationAuthRequestService.listPendingRequests(organizationId);
       if (pendingApprovals.length == 0) {
-        const res = new MessageResponse(this.i18nService.t("approveAllNoPendingApprovals"), null);
+        const res = new MessageResponse(
+          "No pending device authorization requests to approve.",
+          null,
+        );
         return Response.success(res);
       }
 

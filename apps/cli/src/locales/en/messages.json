@@ -160,21 +160,5 @@
         "example": "JustTrust.us"
       }
     }
-  },
-  "approveAllDevicesNoPermission": {
-    "message": "You do not have permission to approve pending device authorization requests."
-  },
-  "approveAllNoPendingApprovals": {
-    "message": "No pending device authorization requests to approve."
-  },
-  "notAGuid": {
-    "message": "'$OBJECT$' is not a GUID.",
-    "description": "Displayed when the object passed into the command does not evaulate to a GUID.",
-    "placeholders": {
-      "object": {
-        "content": "$1",
-        "example": "thisobjectisnotaguid"
-      }
-    }
   }
 }
