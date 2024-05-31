@@ -39,6 +39,10 @@ export class CopyCipherFieldDirective implements OnChanges {
   }
 
   async ngOnChanges() {
+    await this.updateDisabledState();
+  }
+
+  private async updateDisabledState() {
     this.disabled =
       !this.cipher ||
       !this.getValueToCopy() ||
