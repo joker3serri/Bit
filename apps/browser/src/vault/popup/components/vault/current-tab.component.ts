@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, firstValueFrom, from } from "rxjs";
+import { Subject, firstValueFrom, from, Subscription } from "rxjs";
 import { debounceTime, switchMap, takeUntil } from "rxjs/operators";
 
 import { UnassignedItemsBannerService } from "@bitwarden/angular/services/unassigned-items-banner.service";
@@ -51,6 +51,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   autofillCalloutText: string;
   protected search$ = new Subject<void>();
   private destroy$ = new Subject<void>();
+  private collectPageDetailsSubscription: Subscription;
 
   private totpCode: string;
   private totpTimeout: number;
@@ -266,7 +267,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     }
 
     this.pageDetails = [];
-    this.autofillService
+    this.collectPageDetailsSubscription?.unsubscribe();
+    this.collectPageDetailsSubscription = this.autofillService
       .collectPageDetailsFromTab$(this.tab)
       .pipe(takeUntil(this.destroy$))
       .subscribe((pageDetails) => (this.pageDetails = pageDetails));
