@@ -92,8 +92,6 @@ export abstract class StateService<T extends Account = Account> {
   getIsAuthenticated: (options?: StorageOptions) => Promise<boolean>;
   getLastSync: (options?: StorageOptions) => Promise<string>;
   setLastSync: (value: string, options?: StorageOptions) => Promise<void>;
-  getOrganizationInvitation: (options?: StorageOptions) => Promise<any>;
-  setOrganizationInvitation: (value: any, options?: StorageOptions) => Promise<void>;
   getPasswordGenerationOptions: (options?: StorageOptions) => Promise<PasswordGeneratorOptions>;
   setPasswordGenerationOptions: (
     value: PasswordGeneratorOptions,
