@@ -59,7 +59,7 @@ export class DeviceApprovalProgram extends BaseProgram {
   }
 
   private approveAllCommand(): Command {
-    return new Command("approveAll")
+    return new Command("approve-all")
       .description("Approve all pending requests for an organization")
       .argument("<organizationId>")
       .action(async (organizationId: string) => {
@@ -90,7 +90,7 @@ export class DeviceApprovalProgram extends BaseProgram {
   }
 
   private denyAllCommand(): Command {
-    return new Command("denyAll")
+    return new Command("deny-all")
       .description("Deny all pending requests for an organization")
       .argument("<organizationId>")
       .action(async (organizationId: string) => {
