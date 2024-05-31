@@ -17,7 +17,7 @@ import {
   UriMatchStrategy,
 } from "@bitwarden/common/models/domain/domain-service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
+import { MessageListener } from "@bitwarden/common/platform/messaging";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
@@ -28,6 +28,7 @@ import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
 import { openVaultItemPasswordRepromptPopout } from "../../vault/popup/utils/vault-popout-window";
+import { AutofillMessageCommand, AutofillMessageSender } from "../enums/autofill-message.enums";
 import { AutofillPort } from "../enums/autofill-port.enums";
 import AutofillField from "../models/autofill-field";
 import AutofillPageDetails from "../models/autofill-page-details";
@@ -36,6 +37,7 @@ import AutofillScript from "../models/autofill-script";
 import {
   AutoFillOptions,
   AutofillService as AutofillServiceInterface,
+  COLLECT_PAGE_DETAILS_RESPONSE_COMMAND,
   FormData,
   GenerateFillScriptOptions,
   PageDetail,
@@ -45,16 +47,6 @@ import {
   CreditCardAutoFillConstants,
   IdentityAutoFillConstants,
 } from "./autofill-constants";
-
-export type CollectPageDetailsResponseMessage = {
-  tab: chrome.tabs.Tab;
-  details: AutofillPageDetails;
-  webExtSender: chrome.runtime.MessageSender;
-  sender?: string;
-};
-
-export const COLLECT_PAGE_DETAILS_RESPONSE =
-  new CommandDefinition<CollectPageDetailsResponseMessage>("collectPageDetailsResponse");
 
 export default class AutofillService implements AutofillServiceInterface {
   private openVaultItemPasswordRepromptPopout = openVaultItemPasswordRepromptPopout;
@@ -79,26 +71,31 @@ export default class AutofillService implements AutofillServiceInterface {
   ) {}
 
   collectPageDetailsFromTab$(tab: chrome.tabs.Tab): Observable<PageDetail[]> {
-    const senderIdentifier = "pageDetailsForTabObservable";
-    const pageDetailsFromTab$ = this.messageListener.messages$(COLLECT_PAGE_DETAILS_RESPONSE).pipe(
-      filter((message) => message.tab.id === tab.id && message.sender === senderIdentifier),
-      scan(
-        (acc, message) => [
-          ...acc,
-          {
-            frameId: message.webExtSender.frameId,
-            tab: message.tab,
-            details: message.details,
-          },
-        ],
-        [] as PageDetail[],
-      ),
-    );
+    const pageDetailsFromTab$ = this.messageListener
+      .messages$(COLLECT_PAGE_DETAILS_RESPONSE_COMMAND)
+      .pipe(
+        filter(
+          (message) =>
+            message.tab.id === tab.id &&
+            message.sender === AutofillMessageSender.collectPageDetailsFromTabObservable,
+        ),
+        scan(
+          (acc, message) => [
+            ...acc,
+            {
+              frameId: message.webExtSender.frameId,
+              tab: message.tab,
+              details: message.details,
+            },
+          ],
+          [] as PageDetail[],
+        ),
+      );
 
     void BrowserApi.tabSendMessage(tab, {
-      command: "collectPageDetails",
       tab: tab,
-      sender: senderIdentifier,
+      command: AutofillMessageCommand.collectPageDetails,
+      sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
     });
 
     return pageDetailsFromTab$;

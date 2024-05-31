@@ -257,11 +257,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   protected async load() {
     this.isLoading = false;
     this.tab = await BrowserApi.getTabFromCurrentWindow();
-    this.pageDetails = [];
-    this.autofillService
-      .collectPageDetailsFromTab$(this.tab)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pageDetails) => (this.pageDetails = pageDetails));
 
     if (this.tab != null) {
       this.url = this.tab.url;
@@ -270,6 +265,12 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       this.isLoading = this.loaded = true;
       return;
     }
+
+    this.pageDetails = [];
+    this.autofillService
+      .collectPageDetailsFromTab$(this.tab)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((pageDetails) => (this.pageDetails = pageDetails));
 
     this.hostname = Utils.getHostname(this.url);
     const otherTypes: CipherType[] = [];
