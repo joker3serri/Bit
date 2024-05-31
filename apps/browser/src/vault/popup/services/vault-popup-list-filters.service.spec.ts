@@ -1,4 +1,4 @@
-import { DestroyRef } from "@angular/core";
+import { TestBed } from "@angular/core/testing";
 import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject, skipWhile } from "rxjs";
 
@@ -49,16 +49,33 @@ describe("VaultPopupListFiltersService", () => {
     decryptedCollections$.next([]);
 
     collectionService.getAllNested = () => Promise.resolve([]);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: FolderService,
+          useValue: folderService,
+        },
+        {
+          provide: CipherService,
+          useValue: cipherService,
+        },
+        {
+          provide: OrganizationService,
+          useValue: organizationService,
+        },
+        {
+          provide: I18nService,
+          useValue: i18nService,
+        },
+        {
+          provide: CollectionService,
+          useValue: collectionService,
+        },
+        { provide: FormBuilder, useClass: FormBuilder },
+      ],
+    });
 
-    service = new VaultPopupListFiltersService(
-      folderService,
-      cipherService,
-      organizationService,
-      i18nService,
-      collectionService,
-      new FormBuilder(),
-      {} as DestroyRef,
-    );
+    service = TestBed.inject(VaultPopupListFiltersService);
   });
 
   describe("cipherTypes", () => {

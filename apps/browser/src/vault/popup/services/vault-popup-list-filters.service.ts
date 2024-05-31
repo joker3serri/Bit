@@ -1,4 +1,4 @@
-import { DestroyRef, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder } from "@angular/forms";
 import {
@@ -88,11 +88,10 @@ export class VaultPopupListFiltersService {
     private i18nService: I18nService,
     private collectionService: CollectionService,
     private formBuilder: FormBuilder,
-    destroyRef: DestroyRef,
   ) {
     this.filterForm
       .get("organization")
-      .valueChanges.pipe(takeUntilDestroyed(destroyRef))
+      .valueChanges.pipe(takeUntilDestroyed())
       .subscribe(this.validateOrganizationChange.bind(this));
   }
 
