@@ -56,7 +56,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   private totpTimeout: number;
   private loadedTimeout: number;
   private searchTimeout: number;
-  private initPageDetailsTimeout: number;
 
   protected unassignedItemsBannerEnabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.UnassignedItemsBanner,
