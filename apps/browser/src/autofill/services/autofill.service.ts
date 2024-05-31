@@ -70,6 +70,13 @@ export default class AutofillService implements AutofillServiceInterface {
     private messageListener: MessageListener,
   ) {}
 
+  /**
+   * Collects page details from the specific tab. This method returns an observable that can
+   * be subscribed to in order to build the results from all collectPageDetailsResponse
+   * messages from the given tab.
+   *
+   * @param tab The tab to collect page details from
+   */
   collectPageDetailsFromTab$(tab: chrome.tabs.Tab): Observable<PageDetail[]> {
     const pageDetailsFromTab$ = this.messageListener
       .messages$(COLLECT_PAGE_DETAILS_RESPONSE_COMMAND)
