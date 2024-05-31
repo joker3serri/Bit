@@ -6,7 +6,7 @@ import { ListResponse } from "@bitwarden/cli/models/response/list.response";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
-import { AuthRequestResponse } from "./auth-request.response";
+import { PendingAuthRequestResponse } from "./pending-auth-request.response";
 
 export class ListCommand {
   constructor(
@@ -31,7 +31,7 @@ export class ListCommand {
     }
 
     const requests = await this.organizationAuthRequestService.listPendingRequests(organizationId);
-    const res = new ListResponse(requests.map((r) => new AuthRequestResponse(r)));
+    const res = new ListResponse(requests.map((r) => new PendingAuthRequestResponse(r)));
     return Response.success(res);
   }
 }

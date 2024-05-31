@@ -1,7 +1,7 @@
 import { PendingAuthRequestView } from "@bitwarden/bit-common/admin-console/auth-requests/";
 import { BaseResponse } from "@bitwarden/cli/models/response/base.response";
 
-export class AuthRequestResponse implements BaseResponse {
+export class PendingAuthRequestResponse implements BaseResponse {
   object = "auth-request";
 
   id: string;
