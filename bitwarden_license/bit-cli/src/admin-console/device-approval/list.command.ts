@@ -8,7 +8,6 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { AuthRequestResponse } from "./auth-request.response";
 
-
 export class ListCommand {
   constructor(
     private organizationAuthRequestService: OrganizationAuthRequestService,
