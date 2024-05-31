@@ -42,8 +42,8 @@ describe("sendExtensionMessage", () => {
       display: "none",
     });
 
-    // Jest doesn't give anyway to select the typed overload of "sendMessage", a cast
-    // is needed to get the correct spy type.
+    // Jest doesn't give anyway to select the typed overload of "sendMessage",
+    // a cast is needed to get the correct spy type.
     const sendMessageSpy = jest.spyOn(chrome.runtime, "sendMessage") as unknown as jest.SpyInstance<
       void,
       [message: string, responseCallback: (response: string) => void],
