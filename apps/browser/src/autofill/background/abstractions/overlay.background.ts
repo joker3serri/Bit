@@ -76,7 +76,9 @@ type OverlayBackgroundExtensionMessageHandlers = {
   updateFocusedFieldData: ({ message }: BackgroundMessageParam) => void;
   collectPageDetailsResponse: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
   unlockCompleted: ({ message }: BackgroundMessageParam) => void;
+  addedCipher: () => void;
   addEditCipherSubmitted: () => void;
+  editedCipher: () => void;
   deletedCipher: () => void;
 };
 
