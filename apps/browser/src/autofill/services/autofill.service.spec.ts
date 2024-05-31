@@ -128,11 +128,12 @@ describe("AutofillService", () => {
     function mockCollectPageDetailsResponseMessage(
       tab: chrome.tabs.Tab,
       webExtSender: chrome.runtime.MessageSender = mock<chrome.runtime.MessageSender>(),
+      sender: string = AutofillMessageSender.collectPageDetailsFromTabObservable,
     ): CollectPageDetailsResponseMessage {
       return mock<CollectPageDetailsResponseMessage>({
         tab,
         webExtSender,
-        sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
+        sender,
       });
     }
 
@@ -173,6 +174,24 @@ describe("AutofillService", () => {
 
       messages.next(mockCollectPageDetailsResponseMessage(tab));
       messages.next(mockCollectPageDetailsResponseMessage(otherTab));
+
+      await pausePromise;
+
+      expect(tracker.emissions[1]).toBeUndefined();
+    });
+
+    it("ignores messages from a different sender", async () => {
+      const tracker = subscribeTo(autofillService.collectPageDetailsFromTab$(tab));
+      const pausePromise = tracker.pauseUntilReceived(2);
+
+      messages.next(mockCollectPageDetailsResponseMessage(tab));
+      messages.next(
+        mockCollectPageDetailsResponseMessage(
+          tab,
+          mock<chrome.runtime.MessageSender>(),
+          "some-other-sender",
+        ),
+      );
 
       await pausePromise;
 
