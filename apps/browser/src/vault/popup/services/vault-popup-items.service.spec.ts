@@ -3,8 +3,10 @@ import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -23,6 +25,8 @@ describe("VaultPopupItemsService", () => {
   const cipherServiceMock = mock<CipherService>();
   const vaultSettingsServiceMock = mock<VaultSettingsService>();
   const searchService = mock<SearchService>();
+  const orgService = mock<OrganizationService>();
+  const collectionService = mock<CollectionService>();
 
   beforeEach(() => {
     allCiphers = cipherFactory(10);
@@ -48,11 +52,16 @@ describe("VaultPopupItemsService", () => {
       .spyOn(BrowserApi, "getTabFromCurrentWindow")
       .mockResolvedValue({ url: "https://example.com" } as chrome.tabs.Tab);
 
+    orgService.organizations$ = new BehaviorSubject([]);
+    collectionService.decryptedCollections$ = new BehaviorSubject([]);
+
     testBed = TestBed.configureTestingModule({
       providers: [
         { provide: CipherService, useValue: cipherServiceMock },
         { provide: VaultSettingsService, useValue: vaultSettingsServiceMock },
         { provide: SearchService, useValue: searchService },
+        { provide: OrganizationService, useValue: orgService },
+        { provide: CollectionService, useValue: collectionService },
       ],
     });
 
@@ -63,6 +72,8 @@ describe("VaultPopupItemsService", () => {
     service = testBed.inject(VaultPopupItemsService);
     expect(service).toBeTruthy();
   });
+
+  it("should merge cipher views with collections and organization", () => {});
 
   describe("autoFillCiphers$", () => {
     it("should return empty array if there is no current tab", (done) => {
