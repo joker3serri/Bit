@@ -1,10 +1,9 @@
 <div class="login-with-device">
-  <app-header>
-    <h1 class="center">
+  <header>
+    <h1 class="login-center">
       <span class="title">{{ "logIn" | i18n }}</span>
     </h1>
-    <div class="right"></div>
-  </app-header>
+  </header>
   <div class="content login-page">
     <ng-container *ngIf="state == StateEnum.StandardAuthRequest">
       <div>
