@@ -30,8 +30,13 @@ export class ListCommand {
       );
     }
 
-    const requests = await this.organizationAuthRequestService.listPendingRequests(organizationId);
-    const res = new ListResponse(requests.map((r) => new PendingAuthRequestResponse(r)));
-    return Response.success(res);
+    try {
+      const requests =
+        await this.organizationAuthRequestService.listPendingRequests(organizationId);
+      const res = new ListResponse(requests.map((r) => new PendingAuthRequestResponse(r)));
+      return Response.success(res);
+    } catch (e) {
+      return Response.error(e);
+    }
   }
 }
