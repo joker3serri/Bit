@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit">
   <bit-dialog dialogSize="default">
     <ng-container bitDialogTitle>
-      <span>{{ title | i18n }}</span>
+      <span>{{ title | i18n | uppercase }}</span>
       <span class="tw-text-sm tw-normal-case tw-text-muted">
         <ng-container *ngIf="data.projects.length == 1">
           {{ data.projects[0].name }}
