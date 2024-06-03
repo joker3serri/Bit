@@ -6,6 +6,8 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { OrganizationAuthRequestService } from "../../../../bit-common/src/admin-console/auth-requests";
 
+import { ServiceContainer } from "../../service-container";
+
 export class ApproveCommand {
   constructor(
     private organizationService: OrganizationService,
@@ -50,5 +52,9 @@ export class ApproveCommand {
     } catch (e) {
       return Response.error(e);
     }
+  }
+
+  static create(serviceContainer: ServiceContainer) {
+    return new ApproveCommand();
   }
 }

@@ -426,7 +426,7 @@ export class ServeCommand {
       });
   }
 
-  private processResponse(res: koa.Response, commandResponse: Response) {
+  protected processResponse(res: koa.Response, commandResponse: Response) {
     if (!commandResponse.success) {
       res.status = 400;
     }
@@ -440,7 +440,7 @@ export class ServeCommand {
     }
   }
 
-  private async errorIfLocked(res: koa.Response) {
+  protected async errorIfLocked(res: koa.Response) {
     const authed = await this.serviceContainer.stateService.getIsAuthenticated();
     if (!authed) {
       this.processResponse(res, Response.error("You are not logged in."));
