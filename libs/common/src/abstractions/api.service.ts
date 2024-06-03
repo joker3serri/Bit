@@ -124,6 +124,7 @@ import {
   CollectionDetailsResponse,
   CollectionResponse,
 } from "../vault/models/response/collection.response";
+import { OptionalCipherResponse } from "../vault/models/response/optional-cipher.response";
 
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
@@ -218,7 +219,10 @@ export abstract class ApiService {
   putMoveCiphers: (request: CipherBulkMoveRequest) => Promise<any>;
   putShareCipher: (id: string, request: CipherShareRequest) => Promise<CipherResponse>;
   putShareCiphers: (request: CipherBulkShareRequest) => Promise<any>;
-  putCipherCollections: (id: string, request: CipherCollectionsRequest) => Promise<CipherResponse>;
+  putCipherCollections: (
+    id: string,
+    request: CipherCollectionsRequest,
+  ) => Promise<OptionalCipherResponse>;
   putCipherCollectionsAdmin: (id: string, request: CipherCollectionsRequest) => Promise<any>;
   postPurgeCiphers: (request: SecretVerificationRequest, organizationId?: string) => Promise<any>;
   putDeleteCipher: (id: string) => Promise<any>;

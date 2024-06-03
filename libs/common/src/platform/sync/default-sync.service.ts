@@ -1,7 +1,7 @@
-import { firstValueFrom, map, of, switchMap } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
-import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-
+import { UserDecryptionOptionsServiceAbstraction } from "../../../../auth/src/common/abstractions";
+import { LogoutReason } from "../../../../auth/src/common/types";
 import { ApiService } from "../../abstractions/api.service";
 import { InternalOrganizationServiceAbstraction } from "../../admin-console/abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
@@ -17,21 +17,16 @@ import { AvatarService } from "../../auth/abstractions/avatar.service";
 import { KeyConnectorService } from "../../auth/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../auth/abstractions/master-password.service.abstraction";
 import { TokenService } from "../../auth/abstractions/token.service";
-import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { ForceSetPasswordReason } from "../../auth/models/domain/force-set-password-reason";
 import { DomainSettingsService } from "../../autofill/services/domain-settings.service";
-import { BillingAccountProfileStateService } from "../../billing/abstractions/account/billing-account-profile-state.service";
+import { BillingAccountProfileStateService } from "../../billing/abstractions";
 import { DomainsResponse } from "../../models/response/domains.response";
-import {
-  SyncCipherNotification,
-  SyncFolderNotification,
-  SyncSendNotification,
-} from "../../models/response/notification.response";
 import { ProfileResponse } from "../../models/response/profile.response";
 import { SendData } from "../../tools/send/models/data/send.data";
 import { SendResponse } from "../../tools/send/models/response/send.response";
 import { SendApiService } from "../../tools/send/services/send-api.service.abstraction";
 import { InternalSendService } from "../../tools/send/services/send.service.abstraction";
+import { UserId } from "../../types/guid";
 import { CipherService } from "../../vault/abstractions/cipher.service";
 import { CollectionService } from "../../vault/abstractions/collection.service";
 import { FolderApiServiceAbstraction } from "../../vault/abstractions/folder/folder-api.service.abstraction";
@@ -44,61 +39,59 @@ import { CollectionDetailsResponse } from "../../vault/models/response/collectio
 import { FolderResponse } from "../../vault/models/response/folder.response";
 import { CryptoService } from "../abstractions/crypto.service";
 import { LogService } from "../abstractions/log.service";
-import { MessagingService } from "../abstractions/messaging.service";
 import { StateService } from "../abstractions/state.service";
+import { MessageSender } from "../messaging";
 import { sequentialize } from "../misc/sequentialize";
 
-import { SyncService } from "./sync.service";
+import { CoreSyncService } from "./core-sync.service";
 
-export class DefaultSyncService implements SyncService {
+export class DefaultSyncService extends CoreSyncService {
   syncInProgress = false;
 
   constructor(
     private masterPasswordService: InternalMasterPasswordServiceAbstraction,
-    private accountService: AccountService,
-    private apiService: ApiService,
+    accountService: AccountService,
+    apiService: ApiService,
     private domainSettingsService: DomainSettingsService,
-    private folderService: InternalFolderService,
-    private cipherService: CipherService,
+    folderService: InternalFolderService,
+    cipherService: CipherService,
     private cryptoService: CryptoService,
-    private collectionService: CollectionService,
-    private messagingService: MessagingService,
+    collectionService: CollectionService,
+    messageSender: MessageSender,
     private policyService: InternalPolicyService,
-    private sendService: InternalSendService,
-    private logService: LogService,
+    sendService: InternalSendService,
+    logService: LogService,
     private keyConnectorService: KeyConnectorService,
-    private stateService: StateService,
+    stateService: StateService,
     private providerService: ProviderService,
-    private folderApiService: FolderApiServiceAbstraction,
+    folderApiService: FolderApiServiceAbstraction,
     private organizationService: InternalOrganizationServiceAbstraction,
-    private sendApiService: SendApiService,
+    sendApiService: SendApiService,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private avatarService: AvatarService,
-    private logoutCallback: (expired: boolean) => Promise<void>,
+    private logoutCallback: (logoutReason: LogoutReason, userId?: UserId) => Promise<void>,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
     private tokenService: TokenService,
-    private authService: AuthService,
-  ) {}
-
-  async getLastSync(): Promise<Date> {
-    if ((await this.stateService.getUserId()) == null) {
-      return null;
-    }
-
-    const lastSync = await this.stateService.getLastSync();
-    if (lastSync) {
-      return new Date(lastSync);
-    }
-
-    return null;
-  }
-
-  async setLastSync(date: Date, userId?: string): Promise<any> {
-    await this.stateService.setLastSync(date.toJSON(), { userId: userId });
+    authService: AuthService,
+  ) {
+    super(
+      stateService,
+      folderService,
+      folderApiService,
+      messageSender,
+      logService,
+      cipherService,
+      collectionService,
+      apiService,
+      accountService,
+      authService,
+      sendService,
+      sendApiService,
+    );
   }
 
   @sequentialize(() => "fullSync")
-  async fullSync(forceSync: boolean, allowThrowOnError = false): Promise<boolean> {
+  override async fullSync(forceSync: boolean, allowThrowOnError = false): Promise<boolean> {
     this.syncStarted();
     const isAuthenticated = await this.stateService.getIsAuthenticated();
     if (!isAuthenticated) {
@@ -111,6 +104,7 @@ export class DefaultSyncService implements SyncService {
       needsSync = await this.needsSyncing(forceSync);
     } catch (e) {
       if (allowThrowOnError) {
+        this.syncCompleted(false);
         throw e;
       }
     }
@@ -136,176 +130,12 @@ export class DefaultSyncService implements SyncService {
       return this.syncCompleted(true);
     } catch (e) {
       if (allowThrowOnError) {
+        this.syncCompleted(false);
         throw e;
       } else {
         return this.syncCompleted(false);
       }
     }
-  }
-
-  async syncUpsertFolder(notification: SyncFolderNotification, isEdit: boolean): Promise<boolean> {
-    this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
-      try {
-        const localFolder = await this.folderService.get(notification.id);
-        if (
-          (!isEdit && localFolder == null) ||
-          (isEdit && localFolder != null && localFolder.revisionDate < notification.revisionDate)
-        ) {
-          const remoteFolder = await this.folderApiService.get(notification.id);
-          if (remoteFolder != null) {
-            await this.folderService.upsert(new FolderData(remoteFolder));
-            this.messagingService.send("syncedUpsertedFolder", { folderId: notification.id });
-            return this.syncCompleted(true);
-          }
-        }
-      } catch (e) {
-        this.logService.error(e);
-      }
-    }
-    return this.syncCompleted(false);
-  }
-
-  async syncDeleteFolder(notification: SyncFolderNotification): Promise<boolean> {
-    this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
-      await this.folderService.delete(notification.id);
-      this.messagingService.send("syncedDeletedFolder", { folderId: notification.id });
-      this.syncCompleted(true);
-      return true;
-    }
-    return this.syncCompleted(false);
-  }
-
-  async syncUpsertCipher(notification: SyncCipherNotification, isEdit: boolean): Promise<boolean> {
-    this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
-      try {
-        let shouldUpdate = true;
-        const localCipher = await this.cipherService.get(notification.id);
-        if (localCipher != null && localCipher.revisionDate >= notification.revisionDate) {
-          shouldUpdate = false;
-        }
-
-        let checkCollections = false;
-        if (shouldUpdate) {
-          if (isEdit) {
-            shouldUpdate = localCipher != null;
-            checkCollections = true;
-          } else {
-            if (notification.collectionIds == null || notification.organizationId == null) {
-              shouldUpdate = localCipher == null;
-            } else {
-              shouldUpdate = false;
-              checkCollections = true;
-            }
-          }
-        }
-
-        if (
-          !shouldUpdate &&
-          checkCollections &&
-          notification.organizationId != null &&
-          notification.collectionIds != null &&
-          notification.collectionIds.length > 0
-        ) {
-          const collections = await this.collectionService.getAll();
-          if (collections != null) {
-            for (let i = 0; i < collections.length; i++) {
-              if (notification.collectionIds.indexOf(collections[i].id) > -1) {
-                shouldUpdate = true;
-                break;
-              }
-            }
-          }
-        }
-
-        if (shouldUpdate) {
-          const remoteCipher = await this.apiService.getFullCipherDetails(notification.id);
-          if (remoteCipher != null) {
-            await this.cipherService.upsert(new CipherData(remoteCipher));
-            this.messagingService.send("syncedUpsertedCipher", { cipherId: notification.id });
-            return this.syncCompleted(true);
-          }
-        }
-      } catch (e) {
-        if (e != null && e.statusCode === 404 && isEdit) {
-          await this.cipherService.delete(notification.id);
-          this.messagingService.send("syncedDeletedCipher", { cipherId: notification.id });
-          return this.syncCompleted(true);
-        }
-      }
-    }
-    return this.syncCompleted(false);
-  }
-
-  async syncDeleteCipher(notification: SyncCipherNotification): Promise<boolean> {
-    this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
-      await this.cipherService.delete(notification.id);
-      this.messagingService.send("syncedDeletedCipher", { cipherId: notification.id });
-      return this.syncCompleted(true);
-    }
-    return this.syncCompleted(false);
-  }
-
-  async syncUpsertSend(notification: SyncSendNotification, isEdit: boolean): Promise<boolean> {
-    this.syncStarted();
-    const [activeUserId, status] = await firstValueFrom(
-      this.accountService.activeAccount$.pipe(
-        switchMap((a) => {
-          if (a == null) {
-            of([null, AuthenticationStatus.LoggedOut]);
-          }
-          return this.authService.authStatusFor$(a.id).pipe(map((s) => [a.id, s]));
-        }),
-      ),
-    );
-    // Process only notifications for currently active user when user is not logged out
-    // TODO: once send service allows data manipulation of non-active users, this should process any received notification
-    if (activeUserId === notification.userId && status !== AuthenticationStatus.LoggedOut) {
-      try {
-        const localSend = await firstValueFrom(this.sendService.get$(notification.id));
-        if (
-          (!isEdit && localSend == null) ||
-          (isEdit && localSend != null && localSend.revisionDate < notification.revisionDate)
-        ) {
-          const remoteSend = await this.sendApiService.getSend(notification.id);
-          if (remoteSend != null) {
-            await this.sendService.upsert(new SendData(remoteSend));
-            this.messagingService.send("syncedUpsertedSend", { sendId: notification.id });
-            return this.syncCompleted(true);
-          }
-        }
-      } catch (e) {
-        this.logService.error(e);
-      }
-    }
-    return this.syncCompleted(false);
-  }
-
-  async syncDeleteSend(notification: SyncSendNotification): Promise<boolean> {
-    this.syncStarted();
-    if (await this.stateService.getIsAuthenticated()) {
-      await this.sendService.delete(notification.id);
-      this.messagingService.send("syncedDeletedSend", { sendId: notification.id });
-      this.syncCompleted(true);
-      return true;
-    }
-    return this.syncCompleted(false);
-  }
-
-  // Helpers
-
-  private syncStarted() {
-    this.syncInProgress = true;
-    this.messagingService.send("syncStarted");
-  }
-
-  private syncCompleted(successfully: boolean): boolean {
-    this.syncInProgress = false;
-    this.messagingService.send("syncCompleted", { successfully: successfully });
-    return successfully;
   }
 
   private async needsSyncing(forceSync: boolean) {
@@ -319,6 +149,11 @@ export class DefaultSyncService implements SyncService {
     }
 
     const response = await this.apiService.getAccountRevisionDate();
+    if (response < 0 && this.logoutCallback) {
+      // Account was deleted, log out now
+      await this.logoutCallback("accountDeleted");
+    }
+
     if (new Date(response) <= lastSync) {
       return false;
     }
@@ -329,7 +164,7 @@ export class DefaultSyncService implements SyncService {
     const stamp = await this.tokenService.getSecurityStamp(response.id);
     if (stamp != null && stamp !== response.securityStamp) {
       if (this.logoutCallback != null) {
-        await this.logoutCallback(true);
+        await this.logoutCallback("invalidSecurityStamp");
       }
 
       throw new Error("Stamp has changed");
@@ -366,7 +201,7 @@ export class DefaultSyncService implements SyncService {
 
     if (await this.keyConnectorService.userNeedsMigration()) {
       await this.keyConnectorService.setConvertAccountRequired(true);
-      this.messagingService.send("convertAccountToKeyConnector");
+      this.messageSender.send("convertAccountToKeyConnector");
     } else {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
