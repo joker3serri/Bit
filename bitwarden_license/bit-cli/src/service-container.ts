@@ -14,7 +14,6 @@ export class ServiceContainer extends OssServiceContainer {
 
   constructor() {
     super();
-
     this.organizationAuthRequestApiService = new OrganizationAuthRequestApiService(this.apiService);
     this.organizationAuthRequestService = new OrganizationAuthRequestService(
       this.organizationAuthRequestApiService,

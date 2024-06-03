@@ -62,14 +62,17 @@ export class DeviceApprovalProgram extends BaseProgram {
   }
 
   private approveAllCommand(): Command {
-    return new Command("approveAll")
+    return new Command("approve-all")
       .description("Approve all pending requests for an organization")
       .argument("<organizationId>")
       .action(async (organizationId: string) => {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
         await this.exitIfLocked();
 
-        const cmd = new ApproveAllCommand();
+        const cmd = new ApproveAllCommand(
+          this.serviceContainer.organizationAuthRequestService,
+          this.serviceContainer.organizationService,
+        );
         const response = await cmd.run(organizationId);
         this.processResponse(response);
       });
@@ -90,7 +93,7 @@ export class DeviceApprovalProgram extends BaseProgram {
   }
 
   private denyAllCommand(): Command {
-    return new Command("denyAll")
+    return new Command("deny-all")
       .description("Deny all pending requests for an organization")
       .argument("<organizationId>")
       .action(async (organizationId: string) => {
