@@ -41,6 +41,9 @@ export class ChangeKdfConfirmationComponent {
   }
 
   submit = async () => {
+    if (this.form.value.masterPassword === null) {
+      return;
+    }
     this.loading = true;
     await this.makeKeyAndSaveAsync();
     this.platformUtilsService.showToast(
