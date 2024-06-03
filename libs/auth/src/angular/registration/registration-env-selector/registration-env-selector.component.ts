@@ -17,6 +17,10 @@ import { DialogService, FormFieldModule, SelectModule, ToastService } from "@bit
 
 import { RegistrationSelfHostedEnvConfigDialogComponent } from "./registration-self-hosted-env-config-dialog.component";
 
+/**
+ * Component for selecting the environment to register with in the email verification registration flow.
+ * Outputs the selected region to the parent component so it can respond as necessary.
+ */
 @Component({
   standalone: true,
   selector: "auth-registration-env-selector",

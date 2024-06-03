@@ -27,6 +27,10 @@ import {
   TypographyModule,
 } from "@bitwarden/components";
 
+/**
+ * Validator for self-hosted environment settings form.
+ * It enforces that at least one URL is provided.
+ */
 function selfHostedEnvSettingsFormValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const formGroup = control as FormGroup;
@@ -45,6 +49,9 @@ function selfHostedEnvSettingsFormValidator(): ValidatorFn {
   };
 }
 
+/**
+ * Dialog for configuring self-hosted environment settings.
+ */
 @Component({
   standalone: true,
   selector: "auth-registration-self-hosted-env-config-dialog",
@@ -62,6 +69,11 @@ function selfHostedEnvSettingsFormValidator(): ValidatorFn {
   ],
 })
 export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, OnDestroy {
+  /**
+   * Opens the dialog.
+   * @param dialogService - Dialog service.
+   * @returns Promise that resolves to true if the dialog was closed with a successful result, false otherwise.
+   */
   static async open(dialogService: DialogService): Promise<boolean> {
     const dialogRef = dialogService.open<boolean>(RegistrationSelfHostedEnvConfigDialogComponent, {
       disableClose: false,
