@@ -2,6 +2,8 @@ import { inject, Injectable, NgZone } from "@angular/core";
 import {
   BehaviorSubject,
   combineLatest,
+  distinctUntilKeyChanged,
+  from,
   map,
   Observable,
   of,
@@ -25,6 +27,8 @@ import { BrowserApi } from "../../../platform/browser/browser-api";
 import { runInsideAngular } from "../../../platform/browser/run-inside-angular.operator";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 import { PopupCipherView } from "../views/popup-cipher.view";
+
+import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
 /**
  * Service for managing the various item lists on the new Vault tab in the browser popup.
@@ -99,7 +103,15 @@ export class VaultPopupItemsService {
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
-  private _filteredCipherList$ = combineLatest([this._cipherList$, this.searchText$]).pipe(
+  private _filteredCipherList$: Observable<PopupCipherView[]> = combineLatest([
+    this._cipherList$,
+    this.searchText$,
+    this.vaultPopupListFiltersService.filterFunction$,
+  ]).pipe(
+    map(([ciphers, searchText, filterFunction]): [CipherView[], string] => [
+      filterFunction(ciphers),
+      searchText,
+    ]),
     switchMap(
       ([ciphers, searchText]) =>
         this.searchService.searchCiphers(searchText, null, ciphers) as Promise<PopupCipherView[]>,
@@ -165,10 +177,19 @@ export class VaultPopupItemsService {
 
   /**
    * Observable that indicates whether a filter is currently applied to the ciphers.
-   * @todo Implement filter/search functionality in PM-6824 and PM-6826.
    */
-  hasFilterApplied$: Observable<boolean> = this.searchText$.pipe(
-    switchMap((text) => this.searchService.isSearchable(text)),
+  hasFilterApplied$ = combineLatest([
+    this.searchText$,
+    this.vaultPopupListFiltersService.filters$,
+  ]).pipe(
+    switchMap(([searchText, filters]) => {
+      return from(this.searchService.isSearchable(searchText)).pipe(
+        map(
+          (isSearchable) =>
+            isSearchable || Object.values(filters).some((filter) => filter !== null),
+        ),
+      );
+    }),
   );
 
   /**
@@ -184,17 +205,32 @@ export class VaultPopupItemsService {
 
   /**
    * Observable that indicates whether there are no ciphers to show with the current filter.
-   * @todo Implement filter/search functionality in PM-6824 and PM-6826.
    */
   noFilteredResults$: Observable<boolean> = this._filteredCipherList$.pipe(
     map((ciphers) => !ciphers.length),
   );
 
+  /** Observable that indicates when the user should see the deactivated org state */
+  showDeactivatedOrg$: Observable<boolean> = combineLatest([
+    this.vaultPopupListFiltersService.filters$.pipe(distinctUntilKeyChanged("organization")),
+    this.organizationService.organizations$,
+  ]).pipe(
+    map(([filters, orgs]) => {
+      if (!filters.organization || filters.organization.id === MY_VAULT_ID) {
+        return false;
+      }
+
+      const org = orgs.find((o) => o.id === filters.organization.id);
+      return org ? !org.enabled : false;
+    }),
+  );
+
   constructor(
     private cipherService: CipherService,
     private vaultSettingsService: VaultSettingsService,
-    private searchService: SearchService,
+    private vaultPopupListFiltersService: VaultPopupListFiltersService,
     private organizationService: OrganizationService,
+    private searchService: SearchService,
     private collectionService: CollectionService,
   ) {}
 

@@ -18,6 +18,7 @@ import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 
 import { VaultPopupItemsService } from "./vault-popup-items.service";
+import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
 describe("VaultPopupItemsService", () => {
   let testBed: TestBed;
@@ -30,8 +31,9 @@ describe("VaultPopupItemsService", () => {
 
   const cipherServiceMock = mock<CipherService>();
   const vaultSettingsServiceMock = mock<VaultSettingsService>();
+  const organizationServiceMock = mock<OrganizationService>();
+  const vaultPopupListFiltersServiceMock = mock<VaultPopupListFiltersService>();
   const searchService = mock<SearchService>();
-  const orgService = mock<OrganizationService>();
   const collectionService = mock<CollectionService>();
 
   beforeEach(() => {
@@ -55,6 +57,17 @@ describe("VaultPopupItemsService", () => {
     );
     vaultSettingsServiceMock.showCardsCurrentTab$ = new BehaviorSubject(false);
     vaultSettingsServiceMock.showIdentitiesCurrentTab$ = new BehaviorSubject(false);
+
+    vaultPopupListFiltersServiceMock.filters$ = new BehaviorSubject({
+      organization: null,
+      collection: null,
+      cipherType: null,
+      folder: null,
+    });
+    // Return all ciphers, `filterFunction$` will be tested in `VaultPopupListFiltersService`
+    vaultPopupListFiltersServiceMock.filterFunction$ = new BehaviorSubject(
+      (ciphers: CipherView[]) => ciphers,
+    );
     jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false);
     jest
       .spyOn(BrowserApi, "getTabFromCurrentWindow")
@@ -71,7 +84,7 @@ describe("VaultPopupItemsService", () => {
       { id: "col2", name: "Collection 2" } as CollectionView,
     ];
 
-    orgService.organizations$ = new BehaviorSubject([mockOrg]);
+    organizationServiceMock.organizations$ = new BehaviorSubject([mockOrg]);
     collectionService.decryptedCollections$ = new BehaviorSubject(mockCollections);
 
     testBed = TestBed.configureTestingModule({
@@ -79,7 +92,8 @@ describe("VaultPopupItemsService", () => {
         { provide: CipherService, useValue: cipherServiceMock },
         { provide: VaultSettingsService, useValue: vaultSettingsServiceMock },
         { provide: SearchService, useValue: searchService },
-        { provide: OrganizationService, useValue: orgService },
+        { provide: OrganizationService, useValue: organizationServiceMock },
+        { provide: VaultPopupListFiltersService, useValue: vaultPopupListFiltersServiceMock },
         { provide: CollectionService, useValue: collectionService },
       ],
     });
