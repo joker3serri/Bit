@@ -42,6 +42,7 @@ import { UpdatePasswordComponent } from "./auth/update-password.component";
 import { UpdateTempPasswordComponent } from "./auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "./auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "./auth/verify-recover-delete.component";
+import { EnvironmentSelectorComponent } from "./components/environment-selector/environment-selector.component";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
 import { DomainRulesComponent } from "./settings/domain-rules.component";
@@ -304,12 +305,22 @@ const routes: Routes = [
     children: [
       {
         path: "sso",
-        component: SsoComponent,
-        canActivate: [unauthGuardFn()],
-        data: {
-          pageTitle: "enterpriseSingleSignOn",
-          titleId: "enterpriseSingleSignOn",
-        },
+        children: [
+          {
+            path: "",
+            component: SsoComponent,
+            canActivate: [unauthGuardFn()],
+            data: {
+              pageTitle: "enterpriseSingleSignOn",
+              titleId: "enterpriseSingleSignOn",
+            },
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent, // use Web or Libs component depending on your client
+            outlet: "environment-selector",
+          },
+        ],
       },
     ],
   },

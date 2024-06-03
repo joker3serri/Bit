@@ -36,6 +36,14 @@ export class SsoComponent extends BaseSsoComponent {
     identifier: new FormControl(null, [Validators.required]),
   });
 
+  get identifierFormControl(): string {
+    return this.formGroup.value.identifier;
+  }
+
+  set identifierFormControl(val: string) {
+    this.formGroup.get("identifier").setValue(val);
+  }
+
   constructor(
     ssoLoginService: SsoLoginServiceAbstraction,
     loginStrategyService: LoginStrategyServiceAbstraction,
@@ -87,7 +95,7 @@ export class SsoComponent extends BaseSsoComponent {
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
       if (qParams.identifier != null) {
         // SSO Org Identifier in query params takes precedence over claimed domains
-        this.formGroup.get("identifier").setValue(qParams.identifier);
+        this.identifierFormControl = qParams.identifier;
       } else {
         // Note: this flow is written for web but both browser and desktop
         // redirect here on SSO button click.
@@ -101,7 +109,7 @@ export class SsoComponent extends BaseSsoComponent {
               await this.orgDomainApiService.getClaimedOrgDomainByEmail(qParams.email);
 
             if (response?.ssoAvailable) {
-              this.formGroup.get("identifier").setValue(response.organizationIdentifier);
+              this.identifierFormControl = response.organizationIdentifier;
               await this.submit();
               return;
             }
@@ -115,7 +123,7 @@ export class SsoComponent extends BaseSsoComponent {
         // Fallback to state svc if domain is unclaimed
         const storedIdentifier = await this.ssoLoginService.getOrganizationSsoIdentifier();
         if (storedIdentifier != null) {
-          this.formGroup.get("identifier").setValue(storedIdentifier);
+          this.identifierFormControl = storedIdentifier;
         }
       }
     });
@@ -137,8 +145,8 @@ export class SsoComponent extends BaseSsoComponent {
   }
 
   submit = async () => {
-    this.identifier = this.formGroup.value.identifier;
-    await this.ssoLoginService.setOrganizationSsoIdentifier(this.formGroup.value.identifier);
+    this.identifier = this.identifierFormControl;
+    await this.ssoLoginService.setOrganizationSsoIdentifier(this.identifier);
     if (this.clientId === "browser") {
       document.cookie = `ssoHandOffMessage=${this.i18nService.t("ssoHandOff")};SameSite=strict`;
     }
