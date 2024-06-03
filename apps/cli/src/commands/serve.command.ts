@@ -55,6 +55,9 @@ export class ServeCommand {
   private sendListCommand: SendListCommand;
   private sendRemovePasswordCommand: SendRemovePasswordCommand;
 
+  protected router: koaRouter;
+  protected server: koa;
+
   constructor(protected serviceContainer: ServiceContainer) {
     this.getCommand = new GetCommand(
       this.serviceContainer.cipherService,
@@ -171,24 +174,19 @@ export class ServeCommand {
     );
   }
 
-  async run(options: OptionValues) {
-    const protectOrigin = !options.disableOriginProtection;
-    const port = options.port || 8087;
-    const hostname = options.hostname || "localhost";
-    this.serviceContainer.logService.info(
-      `Starting server on ${hostname}:${port} with ${
-        protectOrigin ? "origin protection" : "no origin protection"
-      }`,
-    );
-
+  protected configureServer(options: { protectOrigin: boolean; port: number; hostname: string }) {
     const server = new koa();
     const router = new koaRouter();
+
+    this.server = server;
+    this.router = router;
+
     process.env.BW_SERVE = "true";
     process.env.BW_NOINTERACTION = "true";
 
     server
       .use(async (ctx, next) => {
-        if (protectOrigin && ctx.headers.origin != undefined) {
+        if (options.protectOrigin && ctx.headers.origin != undefined) {
           ctx.status = 403;
           this.serviceContainer.logService.warning(
             `Blocking request from "${
@@ -405,10 +403,24 @@ export class ServeCommand {
       this.processResponse(ctx.response, response);
       await next();
     });
+  }
 
-    server
-      .use(router.routes())
-      .use(router.allowedMethods())
+  run(options: OptionValues) {
+    const protectOrigin = !options.disableOriginProtection;
+    const port = options.port || 8087;
+    const hostname = options.hostname || "localhost";
+
+    this.serviceContainer.logService.info(
+      `Starting server on ${options.hostname}:${options.port} with ${
+        options.protectOrigin ? "origin protection" : "no origin protection"
+      }`,
+    );
+
+    this.configureServer({ protectOrigin, port, hostname });
+
+    this.server
+      .use(this.router.routes())
+      .use(this.router.allowedMethods())
       .listen(port, hostname === "all" ? null : hostname, () => {
         this.serviceContainer.logService.info("Listening on " + hostname + ":" + port);
       });
