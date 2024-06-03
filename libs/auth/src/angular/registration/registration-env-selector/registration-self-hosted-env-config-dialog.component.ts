@@ -1,6 +1,6 @@
 import { DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -117,7 +117,6 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
     private dialogRef: DialogRef<boolean>,
     private formBuilder: FormBuilder,
     private environmentService: EnvironmentService,
-    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {}
