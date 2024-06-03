@@ -17,7 +17,7 @@ import {
  */
 export interface DataProperties {
   titleId?: string; // sets the title of the current HTML document (shows in browser tab)
-  doNotSaveUrl?: boolean; // a transient (stored in memory) way to keep track of the previous URL
+  doNotSaveUrl?: boolean; // choose to not keep track of the previous URL in memory
 }
 
 const DEEP_LINK_REDIRECT_URL = new KeyDefinition(ROUTER_DISK, "deepLinkRedirectUrl", {
