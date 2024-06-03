@@ -50,7 +50,7 @@ export class DeviceApprovalProgram extends BaseProgram {
   private approveCommand(): Command {
     return new Command("approve")
       .argument("<organizationId>", "The id of the organization")
-      .argument("<requestId>", "The id of the request to deny")
+      .argument("<requestId>", "The id of the request to approve")
       .description("Approve a pending request")
       .action(async (organizationId: string, id: string) => {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
