@@ -149,7 +149,6 @@ export class Main {
     );
 
     this.desktopSettingsService = new DesktopSettingsService(stateProvider);
-
     const biometricStateService = new DefaultBiometricStateService(stateProvider);
 
     this.windowMain = new WindowMain(
