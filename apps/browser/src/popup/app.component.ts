@@ -89,7 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(
         tap((msg: any) => {
           if (msg.command === "doneLoggingOut") {
-            // TODO: why do we call logout in the popup after receiving the doneLoggingOut message? Hasn't this already completeted logout?
+            // TODO: PM-8544 - why do we call logout in the popup after receiving the doneLoggingOut message? Hasn't this already completeted logout?
             this.authService.logOut(async () => {
               if (msg.logoutReason) {
                 await this.displayLogoutReason(msg.logoutReason);
@@ -251,17 +251,6 @@ export class AppComponent implements OnInit, OnDestroy {
         };
         break;
       }
-
-      // Per discussion with product, going to hide default messages for these scenarios
-      // since they are mostly hidden by browser reload.
-      // default: {
-      //   toastOptions = {
-      //     variant: "info",
-      //     title: this.i18nService.t("loggedOut"),
-      //     message: this.i18nService.t("loggedOutDesc"),
-      //   };
-      //   break;
-      // }
     }
 
     this.toastService.showToast(toastOptions);
