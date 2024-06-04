@@ -314,11 +314,11 @@ const routes: Routes = [
     children: [
       {
         path: "sso",
+        canActivate: [unauthGuardFn()],
         children: [
           {
             path: "",
             component: SsoComponent,
-            canActivate: [unauthGuardFn()],
             data: {
               pageTitle: "enterpriseSingleSignOn",
               titleId: "enterpriseSingleSignOn",
