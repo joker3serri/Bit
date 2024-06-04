@@ -12,6 +12,7 @@ import {
   OBSERVABLE_MEMORY_STORAGE,
   SYSTEM_THEME_OBSERVABLE,
   SafeInjectionToken,
+  DEFAULT_VAULT_TIMEOUT,
   INTRAPROCESS_MESSAGING_SUBJECT,
   CLIENT_TYPE,
 } from "@bitwarden/angular/services/injection-tokens";
@@ -24,7 +25,7 @@ import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeou
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
-import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
@@ -33,7 +34,6 @@ import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import {
   AutofillSettingsService,
   AutofillSettingsServiceAbstraction,
@@ -78,8 +78,9 @@ import {
   GlobalStateProvider,
   StateProvider,
 } from "@bitwarden/common/platform/state";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
-import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
+// eslint-disable-next-line import/no-restricted-paths -- Used for dependency injection
+import { InlineDerivedStateProvider } from "@bitwarden/common/platform/state/implementations/inline-derived-state";
+import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -112,7 +113,6 @@ import { BrowserScriptInjectorService } from "../../platform/services/browser-sc
 import { DefaultBrowserStateService } from "../../platform/services/default-browser-state.service";
 import I18nService from "../../platform/services/i18n.service";
 import { ForegroundPlatformUtilsService } from "../../platform/services/platform-utils/foreground-platform-utils.service";
-import { ForegroundDerivedStateProvider } from "../../platform/state/foreground-derived-state.provider";
 import { BrowserStorageServiceProvider } from "../../platform/storage/browser-storage-service.provider";
 import { ForegroundMemoryStorageService } from "../../platform/storage/foreground-memory-storage.service";
 import { fromChromeRuntimeMessaging } from "../../platform/utils/from-chrome-runtime-messaging";
@@ -161,6 +161,10 @@ const safeProviders: SafeProvider[] = [
   safeProvider(DialogService),
   safeProvider(PopupCloseWarningService),
   safeProvider({
+    provide: DEFAULT_VAULT_TIMEOUT,
+    useValue: VaultTimeoutStringType.OnRestart,
+  }),
+  safeProvider({
     provide: APP_INITIALIZER as SafeInjectionToken<() => Promise<void>>,
     useFactory: (initService: InitService) => initService.init(),
     deps: [InitService],
@@ -169,12 +173,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: BaseUnauthGuardService,
     useClass: UnauthGuardService,
-    deps: [AuthServiceAbstraction, Router],
-  }),
-  safeProvider({
-    provide: AuthServiceAbstraction,
-    useFactory: getBgService<AuthService>("authService"),
-    deps: [],
+    deps: [AuthService, Router],
   }),
   safeProvider({
     provide: SsoLoginServiceAbstraction,
@@ -188,9 +187,11 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: LogService,
-    useFactory: (platformUtilsService: PlatformUtilsService) =>
-      new ConsoleLogService(platformUtilsService.isDev()),
-    deps: [PlatformUtilsService],
+    useFactory: () => {
+      const isDev = process.env.ENV === "development";
+      return new ConsoleLogService(isDev);
+    },
+    deps: [],
   }),
   safeProvider({
     provide: EnvironmentService,
@@ -279,7 +280,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: OffscreenDocumentService,
     useClass: DefaultOffscreenDocumentService,
-    deps: [],
+    deps: [LogService],
   }),
   safeProvider({
     provide: PlatformUtilsService,
@@ -307,11 +308,6 @@ const safeProviders: SafeProvider[] = [
       );
     },
     deps: [ToastService, OffscreenDocumentService],
-  }),
-  safeProvider({
-    provide: PasswordGenerationServiceAbstraction,
-    useFactory: getBgService<PasswordGenerationServiceAbstraction>("passwordGenerationService"),
-    deps: [],
   }),
   safeProvider({
     provide: SyncService,
@@ -345,6 +341,7 @@ const safeProviders: SafeProvider[] = [
       BillingAccountProfileStateService,
       ScriptInjectorService,
       AccountServiceAbstraction,
+      AuthService,
     ],
   }),
   safeProvider({
@@ -474,11 +471,6 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
-    provide: UsernameGenerationServiceAbstraction,
-    useFactory: getBgService<UsernameGenerationServiceAbstraction>("usernameGenerationService"),
-    deps: [],
-  }),
-  safeProvider({
     provide: BaseStateServiceAbstraction,
     useExisting: StateServiceAbstraction,
     deps: [],
@@ -512,8 +504,8 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: DerivedStateProvider,
-    useClass: ForegroundDerivedStateProvider,
-    deps: [NgZone],
+    useClass: InlineDerivedStateProvider,
+    deps: [],
   }),
   safeProvider({
     provide: AutofillSettingsServiceAbstraction,
@@ -532,7 +524,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: MessageListener,
-    useFactory: (subject: Subject<Message<object>>, ngZone: NgZone) =>
+    useFactory: (subject: Subject<Message<Record<string, unknown>>>, ngZone: NgZone) =>
       new MessageListener(
         merge(
           subject.asObservable(), // For messages in the same context
@@ -543,7 +535,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: MessageSender,
-    useFactory: (subject: Subject<Message<object>>, logService: LogService) =>
+    useFactory: (subject: Subject<Message<Record<string, unknown>>>, logService: LogService) =>
       MessageSender.combine(
         new SubjectMessageSender(subject), // For sending messages in the same context
         new ChromeMessageSender(logService), // For sending messages to different contexts
@@ -558,14 +550,14 @@ const safeProviders: SafeProvider[] = [
         // we need the same instance that our in memory background is utilizing.
         return getBgService("intraprocessMessagingSubject")();
       } else {
-        return new Subject<Message<object>>();
+        return new Subject<Message<Record<string, unknown>>>();
       }
     },
     deps: [],
   }),
   safeProvider({
     provide: MessageSender,
-    useFactory: (subject: Subject<Message<object>>, logService: LogService) =>
+    useFactory: (subject: Subject<Message<Record<string, unknown>>>, logService: LogService) =>
       MessageSender.combine(
         new SubjectMessageSender(subject), // For sending messages in the same context
         new ChromeMessageSender(logService), // For sending messages to different contexts
@@ -584,7 +576,7 @@ const safeProviders: SafeProvider[] = [
         // There isn't a locally created background so we will communicate with
         // the true background through chrome apis, in that case, we can just create
         // one for ourself.
-        return new Subject<Message<object>>();
+        return new Subject<Message<Record<string, unknown>>>();
       }
     },
     deps: [],
