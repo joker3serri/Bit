@@ -44,6 +44,7 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   protected vaultIcon = Icons.Vault;
   protected deactivatedIcon = Icons.DeactivatedOrg;
+  protected noResultsIcon = Icons.NoResults;
 
   constructor(
     private vaultPopupItemsService: VaultPopupItemsService,
