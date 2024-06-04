@@ -38,7 +38,7 @@
 
     <div
       *ngIf="showDeactivatedOrg$ | async"
-      class="tw-flex tw-flex-col tw-h-full tw-justify-center"
+      class="tw-flex tw-flex-col tw-justify-center tw-h-auto tw-pt-12"
     >
       <bit-no-items [icon]="deactivatedIcon">
         <ng-container slot="title">{{ "organizationIsDeactivated" | i18n }}</ng-container>
