@@ -8354,5 +8354,8 @@
   },
   "verified": {
     "message": "Verified"
+  },
+  "noClients": {
+    "message": "There are no clients to list"
   }
 }
