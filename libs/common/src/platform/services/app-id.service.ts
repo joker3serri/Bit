@@ -15,21 +15,40 @@ export class AppIdService implements AppIdServiceAbstraction {
   appId$: Observable<string>;
   anonymousAppId$: Observable<string>;
 
+  private updatingAppId = false;
+  private updatingAnonymousAppId = false;
+
   constructor(globalStateProvider: GlobalStateProvider) {
     const appIdState = globalStateProvider.get(APP_ID_KEY);
     const anonymousAppIdState = globalStateProvider.get(ANONYMOUS_APP_ID_KEY);
     this.appId$ = appIdState.state$.pipe(
       tap(async (appId) => {
-        if (!appId) {
-          await appIdState.update(() => Utils.newGuid());
+        if (!appId && !this.updatingAppId) {
+          try {
+            this.updatingAppId = true;
+            await appIdState.update(() => Utils.newGuid(), {
+              shouldUpdate: (v) => {
+                return v == null;
+              },
+            });
+          } finally {
+            this.updatingAppId = false;
+          }
         }
       }),
       filter((appId) => !!appId),
     );
     this.anonymousAppId$ = anonymousAppIdState.state$.pipe(
       tap(async (appId) => {
-        if (!appId) {
-          await anonymousAppIdState.update(() => Utils.newGuid());
+        if (!appId && !this.updatingAnonymousAppId) {
+          try {
+            this.updatingAnonymousAppId = true;
+            await anonymousAppIdState.update(() => Utils.newGuid(), {
+              shouldUpdate: (v) => v == null,
+            });
+          } finally {
+            this.updatingAnonymousAppId = false;
+          }
         }
       }),
       filter((appId) => !!appId),
