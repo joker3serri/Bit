@@ -141,16 +141,6 @@ export class Organization {
   }
 
   /**
-   * Whether a user has Manager permissions or greater
-   *
-   * @deprecated
-   * This is deprecated with the introduction of Flexible Collections.
-   */
-  get isManager() {
-    return this.type === OrganizationUserType.Manager || this.isAdmin;
-  }
-
-  /**
    * Whether a user has Admin permissions or greater
    */
   get isAdmin() {
@@ -177,19 +167,13 @@ export class Organization {
   }
 
   get canCreateNewCollections() {
-    if (this.flexibleCollections) {
-      return (
-        !this.limitCollectionCreationDeletion ||
-        this.isAdmin ||
-        this.permissions.createNewCollections
-      );
-    }
-
-    return this.isManager || this.permissions.createNewCollections;
+    return (
+      !this.limitCollectionCreationDeletion || this.isAdmin || this.permissions.createNewCollections
+    );
   }
 
   canEditAnyCollection(flexibleCollectionsV1Enabled: boolean) {
-    if (!this.flexibleCollections || !flexibleCollectionsV1Enabled) {
+    if (!flexibleCollectionsV1Enabled) {
       // Pre-Flexible Collections v1 logic
       return this.isAdmin || this.permissions.editAnyCollection;
     }
@@ -220,7 +204,7 @@ export class Organization {
     restrictProviderAccessFlagEnabled: boolean,
   ) {
     // Before Flexible Collections, any admin or anyone with editAnyCollection permission could edit all ciphers
-    if (!this.flexibleCollections || !flexibleCollectionsV1Enabled || !this.flexibleCollections) {
+    if (!flexibleCollectionsV1Enabled) {
       return this.isAdmin || this.permissions.editAnyCollection;
     }
 
@@ -265,33 +249,6 @@ export class Organization {
     return (
       this.isAdmin || this.permissions.editAnyCollection || this.permissions.deleteAnyCollection
     );
-  }
-
-  /**
-   * @deprecated
-   * This is deprecated with the introduction of Flexible Collections.
-   * This will always return false if FlexibleCollections flag is on.
-   */
-  get canEditAssignedCollections() {
-    return this.isManager || this.permissions.editAssignedCollections;
-  }
-
-  /**
-   * @deprecated
-   * This is deprecated with the introduction of Flexible Collections.
-   * This will always return false if FlexibleCollections flag is on.
-   */
-  get canDeleteAssignedCollections() {
-    return this.isManager || this.permissions.deleteAssignedCollections;
-  }
-
-  /**
-   * @deprecated
-   * This is deprecated with the introduction of Flexible Collections.
-   * This will always return false if FlexibleCollections flag is on.
-   */
-  get canViewAssignedCollections() {
-    return this.canDeleteAssignedCollections || this.canEditAssignedCollections;
   }
 
   get canManageGroups() {
