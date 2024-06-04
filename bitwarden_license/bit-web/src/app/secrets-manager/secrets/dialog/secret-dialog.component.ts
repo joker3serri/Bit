@@ -275,7 +275,7 @@ export class SecretDialogComponent implements OnInit {
       .getProjects(this.data.organizationId)
       .then((projects) => projects.filter((p) => p.write));
 
-    if (currentProjects) {
+    if (currentProjects?.length > 0) {
       const currentProject = currentProjects?.[0];
       if (this.projects.find((p) => p.id === currentProject.id) == undefined) {
         const listView = new ProjectListView();
