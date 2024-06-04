@@ -36,8 +36,8 @@ export class SsoComponent extends BaseSsoComponent {
     identifier: new FormControl(null, [Validators.required]),
   });
 
-  get identifierFormControl(): FormControl {
-    return this.formGroup.get("identifier") as FormControl;
+  get identifierFormControl() {
+    return this.formGroup.controls.identifier;
   }
 
   constructor(
