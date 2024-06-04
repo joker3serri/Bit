@@ -9,8 +9,8 @@ import { TypographyModule } from "../typography";
   imports: [TypographyModule],
   host: {
     class:
-      // apply bottom padding when a `bit-card` or `bit-item` is the immediate sibling, or nested in the immediate sibling
-      "tw-block tw-px-1 has-[+_*_bit-card]:tw-pb-1 has-[+_bit-card]:tw-pb-1 has-[+_*_bit-item]:tw-pb-1 has-[+_bit-item]:tw-pb-1",
+      // apply bottom and x padding when a `bit-card` or `bit-item` is the immediate sibling, or nested in the immediate sibling
+      "tw-block has-[+_*_bit-card]:tw-pb-1 has-[+_bit-card]:tw-pb-1 has-[+_*_bit-item]:tw-pb-1 has-[+_bit-item]:tw-pb-1 has-[+_*_bit-card]:tw-px-1 has-[+_bit-card]:tw-px-1 has-[+_*_bit-item]:tw-px-1 has-[+_bit-item]:tw-px-1",
   },
 })
 export class SectionHeaderComponent {}
