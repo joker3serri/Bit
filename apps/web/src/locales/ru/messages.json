@@ -581,6 +581,9 @@
   "accessLevel": {
     "message": "Уровень доступа"
   },
+  "accessing": {
+    "message": "Доступ"
+  },
   "loggedOut": {
     "message": "Вы вышли из хранилища"
   },
@@ -3243,6 +3246,27 @@
   },
   "device": {
     "message": "Устройство"
+  },
+  "creatingAccountOn": {
+    "message": "Создание аккаунта"
+  },
+  "checkYourEmail": {
+    "message": "Проверьте свою почту"
+  },
+  "followTheLinkInTheEmailSentTo": {
+    "message": "Перейдите по ссылке из отправленного письма"
+  },
+  "andContinueCreatingYourAccount": {
+    "message": "и продолжите создание аккаунта."
+  },
+  "noEmail": {
+    "message": "Нет письма?"
+  },
+  "goBack": {
+    "message": "Вернуться"
+  },
+  "toEditYourEmailAddress": {
+    "message": "для изменения адреса email."
   },
   "view": {
     "message": "Просмотр"
@@ -8267,5 +8291,11 @@
   },
   "upgradeOrganizationCloseSecurityGapsDesc": {
     "message": "Опережайте уязвимости в системе безопасности, перейдя на платный тарифный план для расширенного мониторинга."
+  },
+  "approveAllRequests": {
+    "message": "Одобрить все запросы"
+  },
+  "allLoginRequestsApproved": {
+    "message": "Все запросы на вход одобрены"
   }
 }
