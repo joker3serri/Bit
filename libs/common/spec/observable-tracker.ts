@@ -35,7 +35,7 @@ export class ObservableTracker<T> {
    * @param count The number of emissions to wait for
    */
   async pauseUntilReceived(count: number, msTimeout = 50): Promise<T[]> {
-    for (; this.emissions.length < count; ) {
+    while (this.emissions.length < count) {
       await this.expectEmission(msTimeout);
     }
     return this.emissions;
