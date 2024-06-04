@@ -1,9 +1,11 @@
 import { program } from "commander";
 
 import { registerOssPrograms } from "@bitwarden/cli/register-oss-programs";
+import { ServeProgram } from "@bitwarden/cli/serve.program";
 
 import { registerBitPrograms } from "./register-bit-programs";
 import { ServiceContainer } from "./service-container";
+import { BitServeConfigurator } from "./bit-serve-configurator";
 
 async function main() {
   const serviceContainer = new ServiceContainer();
@@ -11,6 +13,9 @@ async function main() {
 
   await registerOssPrograms(serviceContainer);
   await registerBitPrograms(serviceContainer);
+
+  const serveConfigurator = new BitServeConfigurator(serviceContainer);
+  new ServeProgram(serviceContainer, serveConfigurator).register();
 
   program.parse(process.argv);
 }

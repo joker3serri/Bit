@@ -2,12 +2,18 @@ import { program } from "commander";
 
 import { registerOssPrograms } from "./register-oss-programs";
 import { ServiceContainer } from "./service-container";
+import { ServeProgram } from "./serve.program";
+import { OssServeConfigurator } from "./oss-serve-configurator";
 
 async function main() {
   const serviceContainer = new ServiceContainer();
   await serviceContainer.init();
 
   await registerOssPrograms(serviceContainer);
+
+  // ServeProgram is registered separately so it can be overridden by bit-cli
+  const serveConfigurator = new OssServeConfigurator(serviceContainer);
+  new ServeProgram(serviceContainer, serveConfigurator).register();
 
   program.parse(process.argv);
 }
