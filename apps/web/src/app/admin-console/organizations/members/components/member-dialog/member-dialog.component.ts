@@ -189,7 +189,7 @@ export class MemberDialogComponent implements OnDestroy {
       this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1),
     ]).pipe(
       map(([organization, flexibleCollectionsV1Enabled]) => {
-        if (!flexibleCollectionsV1Enabled || !organization.flexibleCollections) {
+        if (!flexibleCollectionsV1Enabled) {
           return true;
         }
 
