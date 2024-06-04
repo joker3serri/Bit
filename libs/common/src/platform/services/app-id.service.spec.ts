@@ -1,4 +1,4 @@
-import { FakeGlobalState, FakeGlobalStateProvider } from "../../../spec";
+import { FakeGlobalState, FakeGlobalStateProvider, ObservableTracker } from "../../../spec";
 import { Utils } from "../misc/utils";
 
 import { ANONYMOUS_APP_ID_KEY, APP_ID_KEY, AppIdService } from "./app-id.service";
@@ -55,6 +55,16 @@ describe("AppIdService", () => {
 
       expect(appIdState.nextMock).toHaveBeenCalledWith(appId);
     });
+
+    it("emits only once when creating a new appId", async () => {
+      appIdState.stateSubject.next(null);
+
+      const tracker = new ObservableTracker(sut.appId$);
+      const appId = await sut.getAppId();
+
+      expect(tracker.emissions).toEqual([appId]);
+      await expect(tracker.pauseUntilReceived(2, 50)).rejects.toThrow("Timeout exceeded");
+    });
   });
 
   describe("getAnonymousAppId", () => {
@@ -95,5 +105,15 @@ describe("AppIdService", () => {
         expect(anonymousAppIdState.nextMock).toHaveBeenCalledWith(appId);
       },
     );
+
+    it("emits only once when creating a new anonymousAppId", async () => {
+      anonymousAppIdState.stateSubject.next(null);
+
+      const tracker = new ObservableTracker(sut.anonymousAppId$);
+      const appId = await sut.getAnonymousAppId();
+
+      expect(tracker.emissions).toEqual([appId]);
+      await expect(tracker.pauseUntilReceived(2, 50)).rejects.toThrow("Timeout exceeded");
+    });
   });
 });

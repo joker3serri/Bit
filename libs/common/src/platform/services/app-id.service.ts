@@ -1,4 +1,4 @@
-import { Observable, filter, firstValueFrom, tap } from "rxjs";
+import { Observable, distinctUntilChanged, firstValueFrom, switchMap } from "rxjs";
 
 import { AppIdService as AppIdServiceAbstraction } from "../abstractions/app-id.service";
 import { Utils } from "../misc/utils";
@@ -22,36 +22,26 @@ export class AppIdService implements AppIdServiceAbstraction {
     const appIdState = globalStateProvider.get(APP_ID_KEY);
     const anonymousAppIdState = globalStateProvider.get(ANONYMOUS_APP_ID_KEY);
     this.appId$ = appIdState.state$.pipe(
-      tap(async (appId) => {
-        if (!appId && !this.updatingAppId) {
-          try {
-            this.updatingAppId = true;
-            await appIdState.update(() => Utils.newGuid(), {
-              shouldUpdate: (v) => {
-                return v == null;
-              },
-            });
-          } finally {
-            this.updatingAppId = false;
-          }
+      switchMap(async (appId) => {
+        if (!appId) {
+          return await appIdState.update(() => Utils.newGuid(), {
+            shouldUpdate: (v) => v == null,
+          });
         }
+        return appId;
       }),
-      filter((appId) => !!appId),
+      distinctUntilChanged(),
     );
     this.anonymousAppId$ = anonymousAppIdState.state$.pipe(
-      tap(async (appId) => {
-        if (!appId && !this.updatingAnonymousAppId) {
-          try {
-            this.updatingAnonymousAppId = true;
-            await anonymousAppIdState.update(() => Utils.newGuid(), {
-              shouldUpdate: (v) => v == null,
-            });
-          } finally {
-            this.updatingAnonymousAppId = false;
-          }
+      switchMap(async (appId) => {
+        if (!appId) {
+          return await anonymousAppIdState.update(() => Utils.newGuid(), {
+            shouldUpdate: (v) => v == null,
+          });
         }
+        return appId;
       }),
-      filter((appId) => !!appId),
+      distinctUntilChanged(),
     );
   }
 
