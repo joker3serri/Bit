@@ -27,7 +27,7 @@ export class ServeCommand extends OssServeCommand {
   }
 
   private serveDeviceApprovals() {
-    this.router.get("/device-approvals/:organizationId", async (ctx, next) => {
+    this.router.get("/device-approval/:organizationId", async (ctx, next) => {
       if (await this.errorIfLocked(ctx.response)) {
         await next();
         return;
@@ -40,7 +40,7 @@ export class ServeCommand extends OssServeCommand {
       await next();
     });
 
-    this.router.post("/device-approvals/:organizationId/approve-all", async (ctx, next) => {
+    this.router.post("/device-approval/:organizationId/approve-all", async (ctx, next) => {
       if (await this.errorIfLocked(ctx.response)) {
         await next();
         return;
@@ -53,7 +53,7 @@ export class ServeCommand extends OssServeCommand {
       await next();
     });
 
-    this.router.post("/device-approvals/:organizationId/approve/:requestId", async (ctx, next) => {
+    this.router.post("/device-approval/:organizationId/approve/:requestId", async (ctx, next) => {
       if (await this.errorIfLocked(ctx.response)) {
         await next();
         return;
@@ -67,7 +67,7 @@ export class ServeCommand extends OssServeCommand {
       await next();
     });
 
-    this.router.post("/device-approvals/:organizationId/deny-all", async (ctx, next) => {
+    this.router.post("/device-approval/:organizationId/deny-all", async (ctx, next) => {
       if (await this.errorIfLocked(ctx.response)) {
         await next();
         return;
@@ -80,7 +80,7 @@ export class ServeCommand extends OssServeCommand {
       await next();
     });
 
-    this.router.post("/device-approvals/:organizationId/deny/:requestId", async (ctx, next) => {
+    this.router.post("/device-approval/:organizationId/deny/:requestId", async (ctx, next) => {
       if (await this.errorIfLocked(ctx.response)) {
         await next();
         return;
