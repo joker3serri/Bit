@@ -411,8 +411,8 @@ export class ServeCommand {
     const hostname = options.hostname || "localhost";
 
     this.serviceContainer.logService.info(
-      `Starting server on ${options.hostname}:${options.port} with ${
-        options.protectOrigin ? "origin protection" : "no origin protection"
+      `Starting server on ${hostname}:${port} with ${
+        protectOrigin ? "origin protection" : "no origin protection"
       }`,
     );
 
