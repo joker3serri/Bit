@@ -53,10 +53,7 @@ export class DeviceApprovalProgram extends BaseProgram {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
         await this.exitIfLocked();
 
-        const cmd = new ApproveCommand(
-          this.serviceContainer.organizationService,
-          this.serviceContainer.organizationAuthRequestService,
-        );
+        const cmd = ApproveCommand.create(this.serviceContainer);
         const response = await cmd.run(organizationId, id);
         this.processResponse(response);
       });

@@ -55,6 +55,9 @@ export class ApproveCommand {
   }
 
   static create(serviceContainer: ServiceContainer) {
-    return new ApproveCommand();
+    return new ApproveCommand(
+      serviceContainer.organizationService,
+      serviceContainer.organizationAuthRequestService,
+    );
   }
 }
