@@ -223,7 +223,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
               (u) => u.userId === this.organization?.userId,
             )?.id;
             const initialSelection: AccessItemValue[] =
-              currentOrgUserId !== undefined && organization.flexibleCollections
+              currentOrgUserId !== undefined
                 ? [
                     {
                       id: currentOrgUserId,
@@ -239,11 +239,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
             });
           }
 
-          if (
-            organization.flexibleCollections &&
-            flexibleCollectionsV1 &&
-            !organization.allowAdminAccessToAllCollectionItems
-          ) {
+          if (flexibleCollectionsV1 && !organization.allowAdminAccessToAllCollectionItems) {
             this.formGroup.controls.access.addValidators(validateCanManagePermission);
           } else {
             this.formGroup.controls.access.removeValidators(validateCanManagePermission);
