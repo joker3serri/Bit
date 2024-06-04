@@ -3631,5 +3631,8 @@
   },
   "loading": {
     "message": "Loading"
+  },
+  "onlyOrganizationMembersCanView": {
+    "message": "Only organization members with access to these collections will be able to see the item."
   }
 }
