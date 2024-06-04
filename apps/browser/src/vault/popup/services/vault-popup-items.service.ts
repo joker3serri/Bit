@@ -34,6 +34,7 @@ import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-fi
 export class VaultPopupItemsService {
   private _refreshCurrentTab$ = new Subject<void>();
   private searchText$ = new BehaviorSubject<string>("");
+  latestSearchText$: Observable<string> = this.searchText$.asObservable();
 
   /**
    * Observable that contains the list of other cipher types that should be shown

@@ -22,8 +22,7 @@
   </div>
 
   <ng-container *ngIf="!(showEmptyState$ | async)">
-    <app-vault-v2-search (searchTextChanged)="handleSearchTextChange($event)">
-    </app-vault-v2-search>
+    <app-vault-v2-search> </app-vault-v2-search>
 
     <app-vault-list-filters></app-vault-list-filters>
 
