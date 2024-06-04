@@ -103,10 +103,8 @@ import { EventUploadService } from "@bitwarden/common/services/event/event-uploa
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
-import {
-  PasswordGenerationService,
-  PasswordGenerationServiceAbstraction,
-} from "@bitwarden/common/tools/generator/password";
+import { legacyPasswordGenerationServiceFactory } from "@bitwarden/common/tools/generator";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import {
   PasswordStrengthService,
   PasswordStrengthServiceAbstraction,
@@ -257,6 +255,8 @@ export class ServiceContainer {
       p = path.join(process.env.HOME, ".config/Bitwarden CLI");
     }
 
+    const logoutCallback = async () => await this.logout();
+
     this.platformUtilsService = new CliPlatformUtilsService(ClientType.Cli, packageJson);
     this.logService = new ConsoleLogService(
       this.platformUtilsService.isDev(),
@@ -339,6 +339,7 @@ export class ServiceContainer {
       this.keyGenerationService,
       this.encryptService,
       this.logService,
+      logoutCallback,
     );
 
     const migrationRunner = new MigrationRunner(
@@ -423,13 +424,19 @@ export class ServiceContainer {
       VaultTimeoutStringType.Never, // default vault timeout
     );
 
+    const refreshAccessTokenErrorCallback = () => {
+      throw new Error("Refresh Access token error");
+    };
+
     this.apiService = new NodeApiService(
       this.tokenService,
       this.platformUtilsService,
       this.environmentService,
       this.appIdService,
+      refreshAccessTokenErrorCallback,
+      this.logService,
+      logoutCallback,
       this.vaultTimeoutSettingsService,
-      async (expired: boolean) => await this.logout(),
       customUserAgent,
     );
 
@@ -487,7 +494,7 @@ export class ServiceContainer {
       this.logService,
       this.organizationService,
       this.keyGenerationService,
-      async (expired: boolean) => await this.logout(),
+      logoutCallback,
       this.stateProvider,
     );
 
@@ -499,10 +506,12 @@ export class ServiceContainer {
 
     this.passwordStrengthService = new PasswordStrengthService();
 
-    this.passwordGenerationService = new PasswordGenerationService(
+    this.passwordGenerationService = legacyPasswordGenerationServiceFactory(
+      this.encryptService,
       this.cryptoService,
       this.policyService,
-      this.stateService,
+      this.accountService,
+      this.stateProvider,
     );
 
     this.devicesApiService = new DevicesApiServiceImplementation(this.apiService);
@@ -660,7 +669,7 @@ export class ServiceContainer {
       this.sendApiService,
       this.userDecryptionOptionsService,
       this.avatarService,
-      async (expired: boolean) => await this.logout(),
+      logoutCallback,
       this.billingAccountProfileStateService,
       this.tokenService,
       this.authService,
@@ -740,7 +749,6 @@ export class ServiceContainer {
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
       this.collectionService.clear(userId as UserId),
-      this.passwordGenerationService.clear(),
     ]);
 
     await this.stateEventRunnerService.handleEvent("logout", userId);
