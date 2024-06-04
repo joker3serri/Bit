@@ -738,9 +738,6 @@ export class ServiceContainer {
   }
 
   async logout() {
-    this.authService.logOut(() => {
-      /* Do nothing */
-    });
     const userId = (await this.stateService.getUserId()) as UserId;
     await Promise.all([
       this.eventUploadService.uploadEvents(userId as UserId),
@@ -756,6 +753,9 @@ export class ServiceContainer {
     await this.stateService.clean();
     await this.accountService.clean(userId);
     process.env.BW_SESSION = null;
+    this.authService.logOut(async () => {
+      await this.accountService.switchAccount(null);
+    });
   }
 
   async init() {
