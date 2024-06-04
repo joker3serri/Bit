@@ -82,16 +82,14 @@ export type Permission = {
   labelId: string;
 };
 
-export const getPermissionList = (flexibleCollectionsEnabled: boolean): Permission[] => {
+export const getPermissionList = (): Permission[] => {
   const permissions = [
     { perm: CollectionPermission.View, labelId: "canView" },
     { perm: CollectionPermission.ViewExceptPass, labelId: "canViewExceptPass" },
     { perm: CollectionPermission.Edit, labelId: "canEdit" },
     { perm: CollectionPermission.EditExceptPass, labelId: "canEditExceptPass" },
+    { perm: CollectionPermission.Manage, labelId: "canManage" },
   ];
-  if (flexibleCollectionsEnabled) {
-    permissions.push({ perm: CollectionPermission.Manage, labelId: "canManage" });
-  }
 
   return permissions;
 };
