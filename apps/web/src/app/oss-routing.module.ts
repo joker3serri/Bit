@@ -310,10 +310,10 @@ const routes: Routes = [
     children: [
       {
         path: "accept-emergency",
+        canActivate: [deepLinkGuard()],
         children: [
           {
             path: "",
-            canActivate: [deepLinkGuard()],
             data: {
               pageTitle: "emergencyAccess",
               titleId: "acceptEmergency",
