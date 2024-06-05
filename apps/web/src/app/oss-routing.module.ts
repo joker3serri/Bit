@@ -217,6 +217,25 @@ const routes: Routes = [
           titleId: "recoverAccountTwoStep",
         } satisfies DataProperties & AnonLayoutWrapperData,
       },
+      {
+        path: "sso",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: SsoComponent,
+            data: {
+              pageTitle: "enterpriseSingleSignOn",
+              titleId: "enterpriseSingleSignOn",
+            } satisfies DataProperties & AnonLayoutWrapperData,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent, // use Web or Libs component depending on your client
+            outlet: "environment-selector",
+          },
+        ],
+      },
     ],
   },
   {
@@ -326,31 +345,6 @@ const routes: Routes = [
     path: "organizations",
     loadChildren: () =>
       import("./admin-console/organizations/organization.module").then((m) => m.OrganizationModule),
-  },
-  {
-    path: "",
-    component: AnonLayoutWrapperComponent,
-    children: [
-      {
-        path: "sso",
-        canActivate: [unauthGuardFn()],
-        children: [
-          {
-            path: "",
-            component: SsoComponent,
-            data: {
-              pageTitle: "enterpriseSingleSignOn",
-              titleId: "enterpriseSingleSignOn",
-            } satisfies DataProperties & AnonLayoutWrapperData,
-          },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent, // use Web or Libs component depending on your client
-            outlet: "environment-selector",
-          },
-        ],
-      },
-    ],
   },
 ];
 
