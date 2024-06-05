@@ -35,6 +35,7 @@ export class VaultCollectionRowComponent {
   @Input() groups: GroupView[];
   @Input() showPermissionsColumn: boolean;
   @Input() flexibleCollectionsV1Enabled: boolean;
+  @Input() restrictProviderAccess: boolean;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
@@ -55,15 +56,42 @@ export class VaultCollectionRowComponent {
     return this.organizations.find((o) => o.id === this.collection.organizationId);
   }
 
+  get showAddAccess() {
+    if (!this.flexibleCollectionsV1Enabled) {
+      return false;
+    }
+
+    if (this.collection.id == Unassigned) {
+      return false;
+    }
+
+    // Only show AddAccess when viewing the Org vault (implied by CollectionAdminView)
+    if (this.collection instanceof CollectionAdminView) {
+      // Only show AddAccess if unmanaged and allowAdminAccessToAllCollectionItems is disabled
+      return (
+        !this.organization.allowAdminAccessToAllCollectionItems &&
+        this.collection.unmanaged &&
+        this.organization.canEditUnmanagedCollections()
+      );
+    }
+
+    return false;
+  }
+
   get permissionText() {
-    if (this.collection.id != Unassigned && !(this.collection as CollectionAdminView).assigned) {
-      return this.i18nService.t("noAccess");
-    } else {
+    if (
+      this.collection.id == Unassigned &&
+      this.organization?.canEditUnassignedCiphers(this.restrictProviderAccess)
+    ) {
+      return this.i18nService.t("canEdit");
+    }
+    if ((this.collection as CollectionAdminView).assigned) {
       const permissionList = getPermissionList(this.organization?.flexibleCollections);
       return this.i18nService.t(
         permissionList.find((p) => p.perm === convertToPermission(this.collection))?.labelId,
       );
     }
+    return this.i18nService.t("noAccess");
   }
 
   get permissionTooltip() {
@@ -83,5 +111,13 @@ export class VaultCollectionRowComponent {
 
   protected deleteCollection() {
     this.onEvent.next({ type: "delete", items: [{ collection: this.collection }] });
+  }
+
+  protected get showCheckbox() {
+    if (this.flexibleCollectionsV1Enabled) {
+      return this.collection?.id !== Unassigned;
+    }
+
+    return this.canDeleteCollection;
   }
 }
