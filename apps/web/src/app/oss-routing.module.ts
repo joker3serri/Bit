@@ -139,12 +139,6 @@ const routes: Routes = [
       },
       { path: "recover", pathMatch: "full", redirectTo: "recover-2fa" },
       {
-        path: "recover-2fa",
-        component: RecoverTwoFactorComponent,
-        canActivate: [UnauthGuard],
-        data: { titleId: "recoverAccountTwoStep" } satisfies DataProperties,
-      },
-      {
         path: "recover-delete",
         component: RecoverDeleteComponent,
         canActivate: [UnauthGuard],
@@ -197,6 +191,31 @@ const routes: Routes = [
           import("./auth/migrate-encryption/migrate-legacy-encryption.component").then(
             (mod) => mod.MigrateFromLegacyEncryptionComponent,
           ),
+      },
+    ],
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "recover-2fa",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: RecoverTwoFactorComponent,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+        data: {
+          pageTitle: "recoverAccountTwoStep",
+          titleId: "recoverAccountTwoStep",
+        } satisfies DataProperties & AnonLayoutWrapperData,
       },
     ],
   },
