@@ -71,9 +71,9 @@
               "all" | i18n
             }}</label>
           </th>
-          <th bitCell>{{ "name" | i18n }}</th>
+          <th bitCell bitSortable="displayName" default>{{ "name" | i18n }}</th>
           <th bitCell>{{ (organization.useGroups ? "groups" : "collections") | i18n }}</th>
-          <th bitCell>{{ "role" | i18n }}</th>
+          <th bitCell bitSortable="type">{{ "role" | i18n }}</th>
           <th bitCell>{{ "policies" | i18n }}</th>
           <th bitCell class="tw-w-10">
             <button
