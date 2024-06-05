@@ -104,14 +104,9 @@ export abstract class NewBasePeopleComponent<
   protected allUsers: UserType[] = [];
   protected activeUsers: UserType[] = [];
 
-  protected didScroll = false;
-  protected pageSize = 100;
-
   protected searchControl = new FormControl("", { nonNullable: true });
 
   protected destroy$ = new Subject<void>();
-
-  private pagedUsersCount = 0;
 
   constructor(
     protected apiService: ApiService,
@@ -192,24 +187,6 @@ export abstract class NewBasePeopleComponent<
     this.selectAll(false);
   }
 
-  loadMore() {
-    if (!this.users || this.users.length <= this.pageSize) {
-      return;
-    }
-    const pagedLength = this.pagedUsers.length;
-    let pagedSize = this.pageSize;
-    if (pagedLength === 0 && this.pagedUsersCount > this.pageSize) {
-      pagedSize = this.pagedUsersCount;
-    }
-    if (this.users.length > pagedLength) {
-      this.pagedUsers = this.pagedUsers.concat(
-        this.users.slice(pagedLength, pagedLength + pagedSize),
-      );
-    }
-    this.pagedUsersCount = this.pagedUsers.length;
-    this.didScroll = this.pagedUsers.length > this.pageSize;
-  }
-
   checkUser(user: UserType, select?: boolean) {
     (user as any).checked = select == null ? !(user as any).checked : select;
   }
@@ -232,11 +209,6 @@ export abstract class NewBasePeopleComponent<
     for (let i = 0; i < selectCount; i++) {
       this.checkUser(filteredUsers[i], select);
     }
-  }
-
-  resetPaging() {
-    this.pagedUsers = [];
-    this.loadMore();
   }
 
   invite() {
@@ -415,7 +387,6 @@ export abstract class NewBasePeopleComponent<
     let index = this.users.indexOf(user);
     if (index > -1) {
       this.users.splice(index, 1);
-      this.resetPaging();
     }
 
     index = this.allUsers.indexOf(user);
