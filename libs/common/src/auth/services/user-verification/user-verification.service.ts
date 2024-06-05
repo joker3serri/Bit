@@ -55,14 +55,14 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
   async getAvailableVerificationOptions(
     verificationType: keyof UserVerificationOptions,
   ): Promise<UserVerificationOptions> {
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     if (verificationType === "client") {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       const [userHasMasterPassword, pinLockType, biometricsLockSet, biometricsUserKeyStored] =
         await Promise.all([
-          this.hasMasterPasswordAndMasterKeyHash(),
+          this.hasMasterPasswordAndMasterKeyHash(userId),
           this.pinService.getPinLockType(userId),
-          this.vaultTimeoutSettingsService.isBiometricLockSet(),
-          this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric),
+          this.vaultTimeoutSettingsService.isBiometricLockSet(userId),
+          this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric, userId),
         ]);
 
       // note: we do not need to check this.platformUtilsService.supportsBiometric() because
@@ -84,7 +84,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     } else {
       // server
       // Don't check if have MP hash locally, because we are going to send the secret to the server to be verified.
-      const userHasMasterPassword = await this.hasMasterPassword();
+      const userHasMasterPassword = await this.hasMasterPassword(userId);
 
       return {
         client: {
@@ -175,18 +175,30 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     userId: UserId,
     email: string,
   ): Promise<MasterPasswordVerificationResponse> {
+    if (!verification.secret) {
+      throw new Error("Master Password is required. Cannot verify user without a master password.");
+    }
     if (!userId) {
       throw new Error("User ID is required. Cannot verify user by master password.");
+    }
+    if (!email) {
+      throw new Error("Email is required. Cannot verify user by master password.");
+    }
+
+    const kdfConfig = await this.kdfConfigService.getKdfConfig();
+    if (!kdfConfig) {
+      throw new Error("KDF config is required. Cannot verify user by master password.");
     }
 
     let masterKey = await firstValueFrom(this.masterPasswordService.masterKey$(userId));
     if (!masterKey) {
-      masterKey = await this.cryptoService.makeMasterKey(
-        verification.secret,
-        email,
-        await this.kdfConfigService.getKdfConfig(),
-      );
+      masterKey = await this.cryptoService.makeMasterKey(verification.secret, email, kdfConfig);
     }
+
+    if (!masterKey) {
+      throw new Error("Master key could not be created to verify the master password.");
+    }
+
     let policyOptions: MasterPasswordPolicyResponse | null;
     // Client-side verification
     if (await this.hasMasterPasswordAndMasterKeyHash(userId)) {
@@ -213,6 +225,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
         throw new Error(this.i18nService.t("invalidMasterPassword"));
       }
     }
+
     const localKeyHash = await this.cryptoService.hashMasterKey(
       verification.secret,
       masterKey,
