@@ -98,6 +98,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
   protected dataSource = new TableDataSource<OrganizationUserView>();
   // This does not use super.searchControl because we are replacing that logic
   protected search = new FormControl("");
+  private allUsersNew: OrganizationUserView[] = [];
 
   protected canUseSecretsManager$: Observable<boolean>;
 
@@ -230,8 +231,18 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
 
   async load() {
     this.loading = true;
-    this.dataSource.data = await this.getUsers();
+    this.allUsersNew = await this.getUsers();
+    this.filter(null);
     this.loading = false;
+  }
+
+  filter(status: OrganizationUserStatusType) {
+    if (status == null) {
+      this.dataSource.data = [...this.allUsersNew];
+      return;
+    }
+
+    this.dataSource.data = this.allUsersNew.filter((u) => u.status === status);
   }
 
   async getUsers(): Promise<OrganizationUserView[]> {
