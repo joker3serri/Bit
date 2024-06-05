@@ -214,6 +214,29 @@ const routes: Routes = [
           titleId: "recoverAccountTwoStep",
         } satisfies DataProperties & AnonLayoutWrapperData,
       },
+      {
+        path: "accept-emergency",
+        canActivate: [deepLinkGuard()],
+        children: [
+          {
+            path: "",
+            data: {
+              pageTitle: "emergencyAccess",
+              titleId: "acceptEmergency",
+              doNotSaveUrl: false,
+            } satisfies DataProperties & AnonLayoutWrapperData,
+            loadComponent: () =>
+              import("./auth/emergency-access/accept/accept-emergency.component").then(
+                (mod) => mod.AcceptEmergencyComponent,
+              ),
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+      },
     ],
   },
   {
@@ -323,35 +346,6 @@ const routes: Routes = [
     path: "organizations",
     loadChildren: () =>
       import("./admin-console/organizations/organization.module").then((m) => m.OrganizationModule),
-  },
-  {
-    path: "",
-    component: AnonLayoutWrapperComponent,
-    children: [
-      {
-        path: "accept-emergency",
-        canActivate: [deepLinkGuard()],
-        children: [
-          {
-            path: "",
-            data: {
-              pageTitle: "emergencyAccess",
-              titleId: "acceptEmergency",
-              doNotSaveUrl: false,
-            } satisfies DataProperties & AnonLayoutWrapperData,
-            loadComponent: () =>
-              import("./auth/emergency-access/accept/accept-emergency.component").then(
-                (mod) => mod.AcceptEmergencyComponent,
-              ),
-          },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent,
-            outlet: "environment-selector",
-          },
-        ],
-      },
-    ],
   },
 ];
 
