@@ -17,6 +17,7 @@ import { PlatformUtilsService } from "../../../platform/abstractions/platform-ut
 import { HashPurpose } from "../../../platform/enums";
 import { Utils } from "../../../platform/misc/utils";
 import { UserId } from "../../../types/guid";
+import { MasterKey } from "../../../types/key";
 import { KdfConfigService } from "../../abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
@@ -203,9 +204,9 @@ describe("UserVerificationService", () => {
       i18nService.t.calledWith("invalidMasterPassword").mockReturnValue("Invalid master password");
 
       kdfConfigService.getKdfConfig.mockResolvedValue("kdfConfig" as unknown as KdfConfig);
-      masterPasswordService.masterKey$.mockReturnValue(of("masterKey"));
+      masterPasswordService.masterKey$.mockReturnValue(of("masterKey" as unknown as MasterKey));
       cryptoService.hashMasterKey
-        .calledWith("password", "masterKey", HashPurpose.LocalAuthorization)
+        .calledWith("password", "masterKey" as unknown as MasterKey, HashPurpose.LocalAuthorization)
         .mockResolvedValue("localHash");
     });
 
@@ -265,7 +266,11 @@ describe("UserVerificationService", () => {
 
       it("returns if verification is successful", async () => {
         cryptoService.hashMasterKey
-          .calledWith("password", "masterKey", HashPurpose.ServerAuthorization)
+          .calledWith(
+            "password",
+            "masterKey" as unknown as MasterKey,
+            HashPurpose.ServerAuthorization,
+          )
           .mockResolvedValueOnce("serverHash");
         userVerificationApiService.postAccountVerifyPassword.mockResolvedValueOnce(
           "MasterPasswordPolicyOptions" as unknown as MasterPasswordPolicyResponse,
@@ -294,7 +299,11 @@ describe("UserVerificationService", () => {
 
       it("throws if verification fails", async () => {
         cryptoService.hashMasterKey
-          .calledWith("password", "masterKey", HashPurpose.ServerAuthorization)
+          .calledWith(
+            "password",
+            "masterKey" as unknown as MasterKey,
+            HashPurpose.ServerAuthorization,
+          )
           .mockResolvedValueOnce("serverHash");
         userVerificationApiService.postAccountVerifyPassword.mockRejectedValueOnce(new Error());
 
