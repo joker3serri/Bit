@@ -42,6 +42,7 @@ import { UpdatePasswordComponent } from "./auth/update-password.component";
 import { UpdateTempPasswordComponent } from "./auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "./auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "./auth/verify-recover-delete.component";
+import { EnvironmentSelectorComponent } from "./components/environment-selector/environment-selector.component";
 import { DataProperties } from "./core";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
@@ -205,8 +206,18 @@ const routes: Routes = [
     children: [
       {
         path: "recover-2fa",
-        component: RecoverTwoFactorComponent,
         canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: RecoverTwoFactorComponent,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
         data: {
           pageTitle: "recoverAccountTwoStep",
           titleId: "recoverAccountTwoStep",
