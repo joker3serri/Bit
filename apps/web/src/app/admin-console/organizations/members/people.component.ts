@@ -52,7 +52,7 @@ import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/respon
 import { DialogService, SimpleDialogOptions, TableDataSource } from "@bitwarden/components";
 
 import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
-import { BasePeopleComponent } from "../../common/base.people.component";
+import { NewBasePeopleComponent } from "../../common/new-base.people.component";
 import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 
@@ -72,7 +72,7 @@ import { ResetPasswordComponent } from "./components/reset-password.component";
   selector: "app-org-people",
   templateUrl: "people.component.html",
 })
-export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
+export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView> {
   @ViewChild("groupsTemplate", { read: ViewContainerRef, static: true })
   groupsModalRef: ViewContainerRef;
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
