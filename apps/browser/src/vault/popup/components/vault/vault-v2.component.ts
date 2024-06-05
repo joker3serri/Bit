@@ -11,6 +11,8 @@ import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-he
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
 import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } from "../vault-v2";
+import { VaultListFiltersComponent } from "../vault-v2/vault-list-filters/vault-list-filters.component";
+import { VaultV2SearchComponent } from "../vault-v2/vault-search/vault-v2-search.component";
 
 @Component({
   selector: "app-vault",
@@ -26,8 +28,10 @@ import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } fro
     CommonModule,
     AutofillVaultListItemsComponent,
     VaultListItemsContainerComponent,
+    VaultListFiltersComponent,
     ButtonModule,
     RouterLink,
+    VaultV2SearchComponent,
   ],
 })
 export class VaultV2Component implements OnInit, OnDestroy {
@@ -36,8 +40,11 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   protected showEmptyState$ = this.vaultPopupItemsService.emptyVault$;
   protected showNoResultsState$ = this.vaultPopupItemsService.noFilteredResults$;
+  protected showDeactivatedOrg$ = this.vaultPopupItemsService.showDeactivatedOrg$;
 
   protected vaultIcon = Icons.Vault;
+  protected deactivatedIcon = Icons.DeactivatedOrg;
+  protected noResultsIcon = Icons.NoResults;
 
   constructor(
     private vaultPopupItemsService: VaultPopupItemsService,
