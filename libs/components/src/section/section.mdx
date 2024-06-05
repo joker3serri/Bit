@@ -33,7 +33,8 @@ Sections often contain a heading. Use `bit-section-header` inside of the `bit-se
 ### Section Header Padding
 
 When placed inside of a section with a `bit-card` or `bit-item` as the immediate next sibling (or
-nested in the immediate next sibling), the section header will automatically apply bottom padding.
+nested in the immediate next sibling), the section header will automatically apply bottom and x-axis
+padding to align the header with the border radius of the card/item.
 
 ```html
 <bit-section>
@@ -52,7 +53,7 @@ nested in the immediate next sibling), the section header will automatically app
 </Canvas>
 
 If placed inside of a section without a `bit-card` or `bit-item`, or with a `bit-card`/`bit-item`
-that is not a descendant of the immediate next sibling, the bottom padding is not applied.
+that is not a descendant of the immediate next sibling, the padding is not applied.
 
 <Canvas>
   <Story of={stories.HeaderWithoutPadding} />
