@@ -1,9 +1,9 @@
 import { program } from "commander";
 
-import { registerOssPrograms } from "./register-oss-programs";
-import { ServiceContainer } from "./service-container";
-import { ServeProgram } from "./serve.program";
 import { OssServeConfigurator } from "./oss-serve-configurator";
+import { registerOssPrograms } from "./register-oss-programs";
+import { ServeProgram } from "./serve.program";
+import { ServiceContainer } from "./service-container";
 
 async function main() {
   const serviceContainer = new ServiceContainer();
