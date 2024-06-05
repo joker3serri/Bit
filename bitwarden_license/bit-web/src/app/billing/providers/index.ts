@@ -1,3 +1,4 @@
+export * from "./billing-history/provider-billing-history.component";
 export * from "./clients/create-client-organization.component";
 export * from "./clients/manage-client-organization-name.component";
 export * from "./clients/manage-client-organization-subscription.component";

@@ -8354,5 +8354,15 @@
   },
   "verified": {
     "message": "Verified"
+  },
+  "date": {
+    "message": "Date"
+  },
+  "exportClientReport": {
+    "message": "Export client report"
+  },
+  "invoiceNumberHeader": {
+    "message": "Invoice number",
+    "description": "A table header for an invoice's number"
   }
 }

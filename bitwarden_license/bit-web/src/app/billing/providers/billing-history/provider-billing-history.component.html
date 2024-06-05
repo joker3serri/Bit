@@ -1,0 +1,8 @@
+<app-header></app-header>
+<bit-container>
+  <h3 bitTypography="h3">{{ "invoices" | i18n }}</h3>
+  <app-invoices
+    [getInvoices]="getInvoices"
+    [exportClientReport]="exportClientReport"
+  ></app-invoices>
+</bit-container>
