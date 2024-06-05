@@ -45,16 +45,9 @@
   ></i>
   <span class="sr-only">{{ "loading" | i18n }}</span>
 </ng-container>
-<ng-container
-  *ngIf="
-    !loading &&
-    ((isPaging$ | async)
-      ? pagedUsers
-      : (users | search: searchControl.value : 'name' : 'email' : 'id')) as searchedUsers
-  "
->
-  <p *ngIf="!searchedUsers.length">{{ "noMembersInList" | i18n }}</p>
-  <ng-container *ngIf="searchedUsers.length">
+<ng-container *ngIf="!loading">
+  <p *ngIf="!dataSource.data.length">{{ "noMembersInList" | i18n }}</p>
+  <ng-container *ngIf="dataSource.data.length">
     <app-callout
       type="info"
       title="{{ 'confirmUsers' | i18n }}"
@@ -63,12 +56,7 @@
     >
       {{ "usersNeedConfirmed" | i18n }}
     </app-callout>
-    <bit-table
-      infinite-scroll
-      [infiniteScrollDistance]="1"
-      [infiniteScrollDisabled]="!(isPaging$ | async)"
-      (scrolled)="loadMore()"
-    >
+    <bit-table [dataSource]="dataSource">
       <ng-container header>
         <tr>
           <th bitCell class="tw-w-20">
@@ -136,8 +124,8 @@
           </th>
         </tr>
       </ng-container>
-      <ng-template body>
-        <tr bitRow *ngFor="let u of searchedUsers" alignContent="middle">
+      <ng-template body let-rows$>
+        <tr bitRow *ngFor="let u of rows$ | async" alignContent="middle">
           <td bitCell (click)="checkUser(u)">
             <input type="checkbox" bitCheckbox [(ngModel)]="$any(u).checked" />
           </td>

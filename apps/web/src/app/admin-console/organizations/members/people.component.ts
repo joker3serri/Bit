@@ -47,7 +47,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
-import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions, TableDataSource } from "@bitwarden/components";
 
 import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
 import { BasePeopleComponent } from "../../common/base.people.component";
@@ -92,6 +92,8 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
   status: OrganizationUserStatusType = null;
   orgResetPasswordPolicyEnabled = false;
   orgIsOnSecretsManagerStandalone = false;
+
+  dataSource = new TableDataSource<OrganizationUserView>();
 
   protected canUseSecretsManager$: Observable<boolean>;
 
@@ -218,7 +220,9 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
   }
 
   async load() {
-    await super.load();
+    this.loading = true;
+    this.dataSource.data = await this.getUsers();
+    this.loading = false;
   }
 
   async getUsers(): Promise<OrganizationUserView[]> {
