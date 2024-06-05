@@ -209,26 +209,7 @@
               {{ "restrictedCollectionAssignmentDesc" | i18n }}
             </span>
           </div>
-          <div *ngIf="!organization.flexibleCollections" class="tw-mb-6">
-            <bit-form-control>
-              <input type="checkbox" bitCheckbox formControlName="accessAllCollections" />
-              <bit-label>
-                {{ "accessAllCollectionsDesc" | i18n }}
-                <a
-                  bitLink
-                  target="_blank"
-                  rel="noreferrer"
-                  appA11yTitle="{{ 'learnMore' | i18n }}"
-                  href="https://bitwarden.com/help/user-types-access-control/#access-control"
-                >
-                  <i class="bwi bwi-question-circle" aria-hidden="true"></i>
-                </a>
-              </bit-label>
-              <bit-hint>{{ "accessAllCollectionsHelp" | i18n }}</bit-hint>
-            </bit-form-control>
-          </div>
           <bit-access-selector
-            *ngIf="!accessAllCollections"
             [permissionMode]="PermissionMode.Edit"
             formControlName="access"
             [showGroupColumn]="organization.useGroups"

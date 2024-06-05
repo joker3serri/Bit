@@ -75,7 +75,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
 
       // The enable() above also enables the permission control, so we need to disable it again
       // Disable permission control if accessAllItems is enabled or not in Edit mode
-      if (item.accessAllItems || this.permissionMode != PermissionMode.Edit) {
+      if (this.permissionMode != PermissionMode.Edit) {
         controlRow.controls.permission.disable();
       }
     }
@@ -323,7 +323,7 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
   }
 
   protected canEditItemPermission(item: AccessItemView) {
-    return this.permissionMode == PermissionMode.Edit && !item.readonly && !item.accessAllItems;
+    return this.permissionMode == PermissionMode.Edit && !item.readonly;
   }
 
   private _itemComparator(a: AccessItemView, b: AccessItemView) {

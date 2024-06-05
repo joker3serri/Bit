@@ -35,12 +35,6 @@ export enum AccessItemType {
  */
 export type AccessItemView = SelectItemView & {
   /**
-   * Flag that this group/member can access all items.
-   * This will disable the permission editor for this item.
-   */
-  accessAllItems?: boolean;
-
-  /**
    * Flag that this item cannot be modified.
    * This will disable the permission editor and will keep
    * the item always selected.
@@ -140,8 +134,7 @@ export function mapGroupToAccessItemView(group: GroupView): AccessItemView {
     type: AccessItemType.Group,
     listName: group.name,
     labelName: group.name,
-    accessAllItems: group.accessAll,
-    readonly: group.accessAll,
+    readonly: false,
   };
 }
 
@@ -155,7 +148,6 @@ export function mapUserToAccessItemView(user: OrganizationUserUserDetailsRespons
     listName: user.name?.length > 0 ? `${user.name} (${user.email})` : user.email,
     labelName: user.name ?? user.email,
     status: user.status,
-    accessAllItems: user.accessAll,
-    readonly: user.accessAll,
+    readonly: false,
   };
 }

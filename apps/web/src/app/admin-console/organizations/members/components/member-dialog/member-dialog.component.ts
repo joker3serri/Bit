@@ -99,7 +99,6 @@ export class MemberDialogComponent implements OnDestroy {
     emails: [""],
     type: OrganizationUserType.User,
     externalId: this.formBuilder.control({ value: "", disabled: true }),
-    accessAllCollections: false,
     accessSecretsManager: false,
     access: [[] as AccessItemValue[]],
     groups: [[] as AccessItemValue[]],
@@ -135,10 +134,6 @@ export class MemberDialogComponent implements OnDestroy {
 
   get customUserTypeSelected(): boolean {
     return this.formGroup.value.type === OrganizationUserType.Custom;
-  }
-
-  get accessAllCollections(): boolean {
-    return this.formGroup.value.accessAllCollections;
   }
 
   constructor(
@@ -378,7 +373,6 @@ export class MemberDialogComponent implements OnDestroy {
     this.formGroup.patchValue({
       type: userDetails.type,
       externalId: userDetails.externalId,
-      accessAllCollections: userDetails.accessAll,
       access: accessSelections,
       accessSecretsManager: userDetails.accessSecretsManager,
       groups: groupAccessSelections,
@@ -467,7 +461,6 @@ export class MemberDialogComponent implements OnDestroy {
     const userView = new OrganizationUserAdminView();
     userView.id = this.params.organizationUserId;
     userView.organizationId = this.params.organizationId;
-    userView.accessAll = this.accessAllCollections;
     userView.type = this.formGroup.value.type;
     userView.permissions = this.setRequestPermissions(
       userView.permissions ?? new PermissionsApi(),
