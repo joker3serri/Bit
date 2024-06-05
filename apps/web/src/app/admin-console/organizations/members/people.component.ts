@@ -1,8 +1,10 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   combineLatest,
   concatMap,
+  debounceTime,
   firstValueFrom,
   from,
   lastValueFrom,
@@ -93,7 +95,9 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
   orgResetPasswordPolicyEnabled = false;
   orgIsOnSecretsManagerStandalone = false;
 
-  dataSource = new TableDataSource<OrganizationUserView>();
+  protected dataSource = new TableDataSource<OrganizationUserView>();
+  // This does not use super.searchControl because we are replacing that logic
+  protected search = new FormControl("");
 
   protected canUseSecretsManager$: Observable<boolean>;
 
@@ -138,6 +142,10 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
       dialogService,
       organizationManagementPreferencesService,
     );
+
+    this.search.valueChanges
+      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .subscribe((v) => (this.dataSource.filter = v));
   }
 
   async ngOnInit() {
@@ -199,7 +207,8 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
 
           await this.load();
 
-          this.searchControl.setValue(qParams.search);
+          this.search.setValue(qParams.search);
+
           if (qParams.viewEvents != null) {
             const user = this.users.filter((u) => u.id === qParams.viewEvents);
             if (user.length > 0 && user[0].status === OrganizationUserStatusType.Confirmed) {
