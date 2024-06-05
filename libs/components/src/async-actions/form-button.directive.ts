@@ -1,9 +1,9 @@
-import { Directive, Input, OnDestroy, Optional } from "@angular/core";
+import { Directive, Input, OnDestroy, OnInit } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
-import { BitActionDirective } from "./bit-action.directive";
+import { AsyncContextProvider } from "./async-context-provider.abstraction";
 import { BitSubmitDirective } from "./bit-submit.directive";
 
 /**
@@ -14,52 +14,46 @@ import { BitSubmitDirective } from "./bit-submit.directive";
  * - Disables the button while a `bitAction` directive on another button is being processed.
  *
  * When attached to a button with `bitAction` directive inside of a form:
- * - Disables the button while the `bitSubmit` directive is processing an async submit action.
- * - Disables the button while a `bitAction` directive on another button is being processed.
- * - Disables form submission while the `bitAction` directive is processing an async action.
+ * - Acts as a context provider for the `bitAction` directive, automatically connecting it with
+ *   the form's context.
  *
  * Note: you must use a directive that implements the ButtonLikeAbstraction (bitButton or bitIconButton for example)
  * along with this one in order to avoid provider errors.
  */
 @Directive({
   selector: "button[bitFormButton]",
+  providers: [{ provide: AsyncContextProvider, useExisting: BitFormButtonDirective }],
 })
-export class BitFormButtonDirective implements OnDestroy {
+export class BitFormButtonDirective implements AsyncContextProvider, OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  @Input("bitAction") private bitAction: unknown;
 
   @Input() type: string;
   @Input() disabled?: boolean;
 
   constructor(
-    buttonComponent: ButtonLikeAbstraction,
-    @Optional() submitDirective?: BitSubmitDirective,
-    @Optional() actionDirective?: BitActionDirective,
-  ) {
-    if (submitDirective && buttonComponent) {
-      submitDirective.loading$.pipe(takeUntil(this.destroy$)).subscribe((loading) => {
-        if (this.type === "submit") {
-          buttonComponent.loading = loading;
-        } else {
-          buttonComponent.disabled = loading;
-        }
-      });
+    private buttonComponent: ButtonLikeAbstraction,
+    private submitDirective: BitSubmitDirective,
+  ) {}
 
-      submitDirective.disabled$.pipe(takeUntil(this.destroy$)).subscribe((disabled) => {
-        if (this.disabled !== false) {
-          buttonComponent.disabled = disabled;
-        }
-      });
-    }
+  ngOnInit(): void {
+    this.submitDirective.state$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
+      if (this.bitAction) {
+        // This button already has a bitAction directive, so it will handle it's own state.
+        return;
+      }
 
-    if (submitDirective && actionDirective) {
-      actionDirective.loading$.pipe(takeUntil(this.destroy$)).subscribe((disabled) => {
-        submitDirective.disabled = disabled;
-      });
+      if (this.type === "submit") {
+        this.buttonComponent.loading = state === "loading";
+        this.buttonComponent.disabled = state === "disabled";
+      } else {
+        this.buttonComponent.disabled = state === "loading" || state === "disabled";
+      }
+    });
+  }
 
-      submitDirective.disabled$.pipe(takeUntil(this.destroy$)).subscribe((disabled) => {
-        actionDirective.disabled = disabled;
-      });
-    }
+  get context() {
+    return this.submitDirective.context;
   }
 
   ngOnDestroy(): void {
