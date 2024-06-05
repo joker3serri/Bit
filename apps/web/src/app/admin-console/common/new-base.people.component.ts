@@ -1,6 +1,6 @@
-import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
+import { Directive, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { firstValueFrom, concatMap, map, lastValueFrom, startWith, debounceTime } from "rxjs";
+import { firstValueFrom, lastValueFrom, debounceTime, takeUntil, Subject } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -22,7 +22,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, TableDataSource } from "@bitwarden/components";
 
 import { OrganizationUserView } from "../organizations/core/views/organization-user.view";
 import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
@@ -34,7 +34,8 @@ const MaxCheckedCount = 500;
 @Directive()
 export abstract class NewBasePeopleComponent<
   UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
-> {
+> implements OnDestroy
+{
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
 
@@ -84,12 +85,21 @@ export abstract class NewBasePeopleComponent<
   abstract userType: typeof OrganizationUserType | typeof ProviderUserType;
   abstract userStatusType: typeof OrganizationUserStatusType | typeof ProviderUserStatusType;
 
+  protected dataSource = new TableDataSource<UserType>();
+
   loading = true;
   statusMap = new Map<StatusType, UserType[]>();
   status: StatusType;
-  users: UserType[] = [];
   pagedUsers: UserType[] = [];
   actionPromise: Promise<void>;
+
+  get users() {
+    return this.dataSource.data;
+  }
+
+  set users(users: UserType[]) {
+    this.dataSource.data = users;
+  }
 
   protected allUsers: UserType[] = [];
   protected activeUsers: UserType[] = [];
@@ -98,19 +108,8 @@ export abstract class NewBasePeopleComponent<
   protected pageSize = 100;
 
   protected searchControl = new FormControl("", { nonNullable: true });
-  protected isSearching$ = this.searchControl.valueChanges.pipe(
-    debounceTime(500),
-    concatMap((searchText) => this.searchService.isSearchable(searchText)),
-    startWith(false),
-  );
-  protected isPaging$ = this.isSearching$.pipe(
-    map((isSearching) => {
-      if (isSearching && this.didScroll) {
-        this.resetPaging();
-      }
-      return !isSearching && this.users && this.users.length > this.pageSize;
-    }),
-  );
+
+  protected destroy$ = new Subject<void>();
 
   private pagedUsersCount = 0;
 
@@ -127,7 +126,11 @@ export abstract class NewBasePeopleComponent<
     protected userNamePipe: UserNamePipe,
     protected dialogService: DialogService,
     protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
-  ) {}
+  ) {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .subscribe((v) => (this.dataSource.filter = v));
+  }
 
   abstract edit(user: UserType): void;
   abstract getUsers(): Promise<ListResponse<UserType> | UserType[]>;
@@ -137,8 +140,18 @@ export abstract class NewBasePeopleComponent<
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   async load() {
+    this.loading = true;
+
+    // Load new users from the server
     const response = await this.getUsers();
+
+    // Reset and repopulate the statusMap
     this.statusMap.clear();
     this.activeUsers = [];
     for (const status of Utils.iterateEnum(this.userStatusType)) {
@@ -151,12 +164,6 @@ export abstract class NewBasePeopleComponent<
       this.allUsers = response;
     }
 
-    this.allUsers.sort(
-      Utils.getSortFunction<ProviderUserUserDetailsResponse | OrganizationUserView>(
-        this.i18nService,
-        "email",
-      ),
-    );
     this.allUsers.forEach((u) => {
       if (!this.statusMap.has(u.status)) {
         this.statusMap.set(u.status, [u]);
@@ -167,7 +174,10 @@ export abstract class NewBasePeopleComponent<
         this.activeUsers.push(u);
       }
     });
+
+    // Filter based on UserStatus - this also populates the table on first load
     this.filter(this.status);
+
     this.loading = false;
   }
 
@@ -180,7 +190,6 @@ export abstract class NewBasePeopleComponent<
     }
     // Reset checkbox selecton
     this.selectAll(false);
-    this.resetPaging();
   }
 
   loadMore() {

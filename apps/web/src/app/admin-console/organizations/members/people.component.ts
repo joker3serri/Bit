@@ -1,17 +1,14 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   combineLatest,
   concatMap,
-  debounceTime,
   firstValueFrom,
   from,
   lastValueFrom,
   map,
   Observable,
   shareReplay,
-  Subject,
   switchMap,
   takeUntil,
 } from "rxjs";
@@ -49,7 +46,7 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
-import { DialogService, SimpleDialogOptions, TableDataSource } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 
 import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
 import { NewBasePeopleComponent } from "../../common/new-base.people.component";
@@ -95,14 +92,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
   orgResetPasswordPolicyEnabled = false;
   orgIsOnSecretsManagerStandalone = false;
 
-  protected dataSource = new TableDataSource<OrganizationUserView>();
-  // This does not use super.searchControl because we are replacing that logic
-  protected search = new FormControl("");
-  private allUsersNew: OrganizationUserView[] = [];
-
   protected canUseSecretsManager$: Observable<boolean>;
-
-  private destroy$ = new Subject<void>();
 
   constructor(
     apiService: ApiService,
@@ -143,10 +133,6 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
       dialogService,
       organizationManagementPreferencesService,
     );
-
-    this.search.valueChanges
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
-      .subscribe((v) => (this.dataSource.filter = v));
   }
 
   async ngOnInit() {
@@ -208,7 +194,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
 
           await this.load();
 
-          this.search.setValue(qParams.search);
+          this.searchControl.setValue(qParams.search);
 
           if (qParams.viewEvents != null) {
             const user = this.users.filter((u) => u.id === qParams.viewEvents);
@@ -222,27 +208,6 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
         takeUntil(this.destroy$),
       )
       .subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  async load() {
-    this.loading = true;
-    this.allUsersNew = await this.getUsers();
-    this.filter(null);
-    this.loading = false;
-  }
-
-  filter(status: OrganizationUserStatusType) {
-    if (status == null) {
-      this.dataSource.data = [...this.allUsersNew];
-      return;
-    }
-
-    this.dataSource.data = this.allUsersNew.filter((u) => u.status === status);
   }
 
   async getUsers(): Promise<OrganizationUserView[]> {
