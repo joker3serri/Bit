@@ -94,7 +94,7 @@ export const HeaderWithPadding: Story = {
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
           <bit-card>
-            <h3 bitTypography="h3">bit-section-header has bottom padding</h3>
+            <h3 bitTypography="h3">bit-section-header has padding</h3>
           </bit-card>
         </bit-section>
         <bit-section>
@@ -106,7 +106,7 @@ export const HeaderWithPadding: Story = {
           </bit-section-header>
           <div>
             <bit-card>
-              <h3 bitTypography="h3">bit-section-header has bottom padding</h3>
+              <h3 bitTypography="h3">bit-section-header has padding</h3>
             </bit-card>
           </div>
         </bit-section>
@@ -118,7 +118,7 @@ export const HeaderWithPadding: Story = {
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
           <bit-item>
-            <bit-item-content bitTypography="body1">bit-section-header has bottom padding</bit-item-content>
+            <bit-item-content bitTypography="body1">bit-section-header has padding</bit-item-content>
           </bit-item>
         </bit-section>
         <bit-section>
@@ -130,7 +130,7 @@ export const HeaderWithPadding: Story = {
           </bit-section-header>
           <bit-item-group>
             <bit-item>
-              <bit-item-content bitTypography="body1">bit-section-header has bottom padding</bit-item-content>
+              <bit-item-content bitTypography="body1">bit-section-header has padding</bit-item-content>
             </bit-item>
           </bit-item-group>
         </bit-section>
@@ -151,7 +151,7 @@ export const HeaderWithoutPadding: Story = {
             <button bitIconButton="bwi-star" size="small" slot="end"></button>
           </bit-section-header>
           <div>
-            <h3 bitTypography="h3">just a div, so bit-section-header has no bottom padding</h3>
+            <h3 bitTypography="h3">just a div, so bit-section-header has no padding</h3>
           </div>
         </bit-section>
         <bit-section>
@@ -165,7 +165,7 @@ export const HeaderWithoutPadding: Story = {
             a div here
           </div>
           <bit-card>
-            <h3 bitTypography="h3">bit-section-header has no bottom padding</h3>
+            <h3 bitTypography="h3">bit-section-header has no padding</h3>
           </bit-card>
         </bit-section>
       </div>
