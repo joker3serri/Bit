@@ -17,7 +17,6 @@ import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationManagementPreferencesService } from "@bitwarden/common/admin-console/abstractions/organization-management-preferences/organization-management-preferences.service";
@@ -101,7 +100,6 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     modalService: ModalService,
     platformUtilsService: PlatformUtilsService,
     cryptoService: CryptoService,
-    searchService: SearchService,
     validationService: ValidationService,
     private policyService: PolicyService,
     private policyApiService: PolicyApiService,
@@ -121,7 +119,6 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
   ) {
     super(
       apiService,
-      searchService,
       i18nService,
       platformUtilsService,
       cryptoService,
