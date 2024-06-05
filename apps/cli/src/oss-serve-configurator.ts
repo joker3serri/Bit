@@ -27,7 +27,6 @@ import { CreateCommand } from "./vault/create.command";
 import { DeleteCommand } from "./vault/delete.command";
 import { SyncCommand } from "./vault/sync.command";
 
-
 export class OssServeConfigurator {
   private listCommand: ListCommand;
   private getCommand: GetCommand;
