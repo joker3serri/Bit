@@ -9,7 +9,7 @@ import {
   UnauthGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
-import { AnonLayoutWrapperComponent } from "@bitwarden/auth/angular";
+import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -221,7 +221,7 @@ const routes: Routes = [
         data: {
           pageTitle: "recoverAccountTwoStep",
           titleId: "recoverAccountTwoStep",
-        },
+        } satisfies DataProperties & AnonLayoutWrapperData,
       },
     ],
   },
