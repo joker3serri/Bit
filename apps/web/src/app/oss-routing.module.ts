@@ -202,6 +202,50 @@ const routes: Routes = [
   },
   {
     path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "recover-2fa",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: RecoverTwoFactorComponent,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+        data: {
+          pageTitle: "recoverAccountTwoStep",
+          titleId: "recoverAccountTwoStep",
+        } satisfies DataProperties & AnonLayoutWrapperData,
+      },
+      {
+        path: "recover-delete",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: RecoverDeleteComponent,
+            data: {
+              pageTitle: "deleteAccount",
+              titleId: "deleteAccount",
+            } satisfies DataProperties & AnonLayoutWrapperData,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "",
     component: UserLayoutComponent,
     canActivate: [deepLinkGuard(), AuthGuard],
     children: [
@@ -307,31 +351,6 @@ const routes: Routes = [
     path: "organizations",
     loadChildren: () =>
       import("./admin-console/organizations/organization.module").then((m) => m.OrganizationModule),
-  },
-  {
-    path: "",
-    component: AnonLayoutWrapperComponent,
-    children: [
-      {
-        path: "recover-delete",
-        canActivate: [unauthGuardFn()],
-        children: [
-          {
-            path: "",
-            component: RecoverDeleteComponent,
-            data: {
-              pageTitle: "deleteAccount",
-              titleId: "deleteAccount",
-            } satisfies DataProperties & AnonLayoutWrapperData,
-          },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent,
-            outlet: "environment-selector",
-          },
-        ],
-      },
-    ],
   },
 ];
 
