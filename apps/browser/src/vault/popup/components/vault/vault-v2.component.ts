@@ -71,7 +71,7 @@ export class VaultV2Component implements OnInit, OnDestroy {
             this.vaultState = VaultState.Empty;
             break;
           case deactivatedOrg:
-            // The deactivated org state takes precedence over the empty vault state
+            // The deactivated org state takes precedence over the no results state
             this.vaultState = VaultState.DeactivatedOrg;
             break;
           case noResults:
