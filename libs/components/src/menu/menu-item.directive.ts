@@ -9,8 +9,8 @@ export class MenuItemDirective implements FocusableOption {
   @HostBinding("class") classList = [
     "tw-block",
     "tw-w-full",
-    "tw-py-1",
-    "tw-px-4",
+    "tw-py-1.5",
+    "tw-px-3",
     "!tw-text-main",
     "!tw-no-underline",
     "tw-cursor-pointer",
