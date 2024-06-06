@@ -93,8 +93,8 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
   protected canUseSecretsManager$: Observable<boolean>;
 
   // Fixed sizes used for cdkVirtualScroll
-  protected rowHeight = 61;
-  protected rowHeightClass = `tw-h-[61.5px]`;
+  protected rowHeight = 62;
+  protected rowHeightClass = `tw-h-[62px]`;
 
   constructor(
     apiService: ApiService,
