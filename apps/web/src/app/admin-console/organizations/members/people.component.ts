@@ -13,7 +13,6 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -108,7 +107,6 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     private policyService: PolicyService,
     private policyApiService: PolicyApiService,
     logService: LogService,
-    searchPipe: SearchPipe,
     userNamePipe: UserNamePipe,
     private syncService: SyncService,
     private organizationService: OrganizationService,
@@ -129,7 +127,6 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
       validationService,
       modalService,
       logService,
-      searchPipe,
       userNamePipe,
       dialogService,
       organizationManagementPreferencesService,

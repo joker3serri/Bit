@@ -2,7 +2,6 @@ import { Directive, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core
 import { FormControl } from "@angular/forms";
 import { firstValueFrom, lastValueFrom, debounceTime, takeUntil, Subject } from "rxjs";
 
-import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -107,7 +106,6 @@ export abstract class NewBasePeopleComponent<
     protected validationService: ValidationService,
     protected modalService: ModalService,
     private logService: LogService,
-    private searchPipe: SearchPipe,
     protected userNamePipe: UserNamePipe,
     protected dialogService: DialogService,
     protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
@@ -186,14 +184,7 @@ export abstract class NewBasePeopleComponent<
       this.selectAll(false);
     }
 
-    // TODO: this is using different criteria to the table - refactor
-    const filteredUsers = this.searchPipe.transform(
-      this.dataSource.data,
-      this.searchControl.value,
-      "name",
-      "email",
-      "id",
-    );
+    const filteredUsers = this.dataSource.filteredData;
 
     const selectCount =
       select && filteredUsers.length > MaxCheckedCount ? MaxCheckedCount : filteredUsers.length;
