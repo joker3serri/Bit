@@ -190,18 +190,17 @@ export abstract class NewBasePeopleComponent<
     } else {
       this.dataSource.data = this.activeUsers;
     }
-    // Reset checkbox selecton
+    // Reset checkbox selection
     this.selectAll(false);
   }
 
-  // TODO: remove any cast
   checkUser(user: UserView, select?: boolean) {
     (user as any).checked = select == null ? !(user as any).checked : select;
   }
 
   selectAll(select: boolean) {
     if (select) {
-      // clear all current selections
+      // Reset checkbox selection first so we know nothing else is selected
       this.selectAll(false);
     }
 
