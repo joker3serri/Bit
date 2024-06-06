@@ -128,7 +128,7 @@
         <ng-template body let-rows$>
           <tr
             bitRow
-            *cdkVirtualFor="let u of rows$ | async"
+            *cdkVirtualFor="let u of rows$"
             alignContent="middle"
             [ngClass]="rowHeightClass"
           >
