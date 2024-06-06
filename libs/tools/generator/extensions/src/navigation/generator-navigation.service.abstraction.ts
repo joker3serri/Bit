@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
 import { UserId } from "@bitwarden/common/types/guid";
-import { PolicyEvaluator } from "@bitwarden/generator";
+import { PolicyEvaluator } from "@bitwarden/generator-core";
 
 import { GeneratorNavigation } from "./generator-navigation";
 import { GeneratorNavigationPolicy } from "./generator-navigation-policy";
