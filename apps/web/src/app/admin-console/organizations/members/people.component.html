@@ -270,7 +270,7 @@
                 <button
                   type="button"
                   bitMenuItem
-                  (click)="events(u)"
+                  (click)="openEventsDialog(u)"
                   *ngIf="organization.useEvents && u.status === userStatusType.Confirmed"
                 >
                   <i aria-hidden="true" class="bwi bwi-file-text"></i> {{ "eventLogs" | i18n }}

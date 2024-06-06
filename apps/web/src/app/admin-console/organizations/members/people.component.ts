@@ -195,9 +195,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
           if (qParams.viewEvents != null) {
             const user = this.dataSource.data.filter((u) => u.id === qParams.viewEvents);
             if (user.length > 0 && user[0].status === OrganizationUserStatusType.Confirmed) {
-              // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-              // eslint-disable-next-line @typescript-eslint/no-floating-promises
-              this.events(user[0]);
+              this.openEventsDialog(user[0]);
             }
           }
         }),
@@ -578,8 +576,8 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     await this.load();
   }
 
-  async events(user: OrganizationUserView) {
-    await openEntityEventsDialog(this.dialogService, {
+  openEventsDialog(user: OrganizationUserView) {
+    openEntityEventsDialog(this.dialogService, {
       data: {
         name: this.userNamePipe.transform(user),
         organizationId: this.organization.id,
