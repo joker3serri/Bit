@@ -198,7 +198,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
           this.searchControl.setValue(qParams.search);
 
           if (qParams.viewEvents != null) {
-            const user = this.users.filter((u) => u.id === qParams.viewEvents);
+            const user = this.dataSource.data.filter((u) => u.id === qParams.viewEvents);
             if (user.length > 0 && user[0].status === OrganizationUserStatusType.Confirmed) {
               // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
               // eslint-disable-next-line @typescript-eslint/no-floating-promises

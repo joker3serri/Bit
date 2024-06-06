@@ -92,14 +92,6 @@ export abstract class NewBasePeopleComponent<
   pagedUsers: UserType[] = [];
   actionPromise: Promise<void>;
 
-  get users() {
-    return this.dataSource.data;
-  }
-
-  set users(users: UserType[]) {
-    this.dataSource.data = users;
-  }
-
   protected allUsers: UserType[] = [];
   protected activeUsers: UserType[] = [];
 
@@ -177,9 +169,9 @@ export abstract class NewBasePeopleComponent<
   filter(status: StatusType) {
     this.status = status;
     if (this.status != null) {
-      this.users = this.statusMap.get(this.status);
+      this.dataSource.data = this.statusMap.get(this.status);
     } else {
-      this.users = this.activeUsers;
+      this.dataSource.data = this.activeUsers;
     }
     // Reset checkbox selecton
     this.selectAll(false);
@@ -194,8 +186,9 @@ export abstract class NewBasePeopleComponent<
       this.selectAll(false);
     }
 
+    // TODO: this is using different criteria to the table - refactor
     const filteredUsers = this.searchPipe.transform(
-      this.users,
+      this.dataSource.data,
       this.searchControl.value,
       "name",
       "email",
@@ -378,13 +371,13 @@ export abstract class NewBasePeopleComponent<
   }
 
   protected getCheckedUsers() {
-    return this.users.filter((u) => (u as any).checked);
+    return this.dataSource.data.filter((u) => (u as any).checked);
   }
 
   protected removeUser(user: UserType) {
-    let index = this.users.indexOf(user);
+    let index = this.dataSource.data.indexOf(user);
     if (index > -1) {
-      this.users.splice(index, 1);
+      this.dataSource.data.splice(index, 1);
     }
 
     index = this.allUsers.indexOf(user);
