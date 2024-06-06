@@ -1,4 +1,5 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   combineLatest,
@@ -10,7 +11,6 @@ import {
   Observable,
   shareReplay,
   switchMap,
-  takeUntil,
 } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -203,7 +203,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
             }
           }
         }),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(),
       )
       .subscribe();
   }

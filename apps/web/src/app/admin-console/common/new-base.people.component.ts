@@ -1,7 +1,7 @@
 import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
-import { firstValueFrom, lastValueFrom, debounceTime, Subject } from "rxjs";
+import { firstValueFrom, lastValueFrom, debounceTime } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -121,8 +121,6 @@ export abstract class NewBasePeopleComponent<
   protected activeUsers: UserView[] = [];
 
   protected searchControl = new FormControl("", { nonNullable: true });
-
-  protected destroy$ = new Subject<void>();
 
   constructor(
     protected apiService: ApiService,
