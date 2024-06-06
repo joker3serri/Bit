@@ -25,7 +25,7 @@
         [appA11yTitle]="'viewItemTitle' | i18n: cipher.name"
       >
         <app-vault-icon slot="start" [cipher]="cipher"></app-vault-icon>
-        {{ cipher.name }}
+        <span data-testid="item-name">{{ cipher.name }}</span>
         <i
           class="bwi bwi-sm"
           *ngIf="cipher.organizationId"
