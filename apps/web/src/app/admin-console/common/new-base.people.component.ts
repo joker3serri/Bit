@@ -201,6 +201,7 @@ export abstract class NewBasePeopleComponent<
 
   selectAll(select: boolean) {
     if (select) {
+      // clear all current selections
       this.selectAll(false);
     }
 
