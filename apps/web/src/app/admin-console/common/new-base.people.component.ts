@@ -1,6 +1,7 @@
-import { Directive, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
+import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
-import { firstValueFrom, lastValueFrom, debounceTime, takeUntil, Subject } from "rxjs";
+import { firstValueFrom, lastValueFrom, debounceTime, Subject } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -29,11 +30,14 @@ type StatusType = OrganizationUserStatusType | ProviderUserStatusType;
 
 const MaxCheckedCount = 500;
 
+/**
+ * A refactored copy of BasePeopleComponent, using the component library table and other modern features.
+ * This will replace BasePeopleComponent once all subclasses have been changed over to use this class.
+ */
 @Directive()
 export abstract class NewBasePeopleComponent<
   UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
-> implements OnDestroy
-{
+> {
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
 
@@ -65,6 +69,9 @@ export abstract class NewBasePeopleComponent<
       : 0;
   }
 
+  /**
+   * Shows a banner alerting the admin that users need to be confirmed.
+   */
   get showConfirmUsers(): boolean {
     return (
       this.activeUsers != null &&
@@ -86,12 +93,31 @@ export abstract class NewBasePeopleComponent<
   protected dataSource = new TableDataSource<UserType>();
 
   loading = true;
+
+  /**
+   * A hashmap that groups users by their status (invited/accepted/etc). This is used by the toggles to show
+   * user counts and filter data by user status.
+   */
   statusMap = new Map<StatusType, UserType[]>();
-  status: StatusType;
-  pagedUsers: UserType[] = [];
+
+  /**
+   * The currently selected status filter, or null to show all active users.
+   */
+  status: StatusType | null;
+
+  /**
+   * The currently executing promise - used to avoid multiple user actions executing at once.
+   */
   actionPromise: Promise<void>;
 
+  /**
+   * All users, loaded from the server, before any filtering has been applied.
+   */
   protected allUsers: UserType[] = [];
+
+  /**
+   * Active users only, that is, users that are not in the revoked status.
+   */
   protected activeUsers: UserType[] = [];
 
   protected searchControl = new FormControl("", { nonNullable: true });
@@ -111,7 +137,7 @@ export abstract class NewBasePeopleComponent<
     protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
   ) {
     this.searchControl.valueChanges
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((v) => (this.dataSource.filter = v));
   }
 
@@ -122,11 +148,6 @@ export abstract class NewBasePeopleComponent<
   abstract restoreUser(id: string): Promise<void>;
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 
   async load() {
     this.loading = true;
@@ -164,7 +185,7 @@ export abstract class NewBasePeopleComponent<
     this.loading = false;
   }
 
-  filter(status: StatusType) {
+  filter(status: StatusType | null) {
     this.status = status;
     if (this.status != null) {
       this.dataSource.data = this.statusMap.get(this.status);
@@ -175,6 +196,8 @@ export abstract class NewBasePeopleComponent<
     this.selectAll(false);
   }
 
+  // TODO: remove any cast
+  // TODO: avoid ambiguous name UserType vs. this.userType
   checkUser(user: UserType, select?: boolean) {
     (user as any).checked = select == null ? !(user as any).checked : select;
   }
@@ -365,6 +388,9 @@ export abstract class NewBasePeopleComponent<
     return this.dataSource.data.filter((u) => (u as any).checked);
   }
 
+  /**
+   * Remove a user row from the table and all related data sources
+   */
   protected removeUser(user: UserType) {
     let index = this.dataSource.data.indexOf(user);
     if (index > -1) {
