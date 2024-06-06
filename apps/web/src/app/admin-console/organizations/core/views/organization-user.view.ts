@@ -37,8 +37,6 @@ export class OrganizationUserView {
   groupNames: string[] = [];
   collectionNames: string[] = [];
 
-  displayName: string;
-
   static fromResponse(response: OrganizationUserUserDetailsResponse): OrganizationUserView {
     const view = Object.assign(new OrganizationUserView(), response) as OrganizationUserView;
 
@@ -49,9 +47,6 @@ export class OrganizationUserView {
     if (response.groups != undefined) {
       view.groups = response.groups;
     }
-
-    // This has to be a property and not a getter in order to work with bitSortable table sorting
-    view.displayName = view.name == null || view.name.trim() === "" ? view.email : view.name;
 
     return view;
   }
