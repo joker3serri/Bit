@@ -33,7 +33,7 @@ export abstract class UserVerificationService {
    * Verifies the user using the provided verification data.
    * PIN or biometrics are verified client-side.
    * OTP is sent to the server for verification (with no other data)
-   * Master Password attempts to verify client-side first, then server-side if necessary.
+   * Master Password verifies client-side first if there is a MP hash, or server-side if not.
    * @param verification User-supplied verification data (OTP, MP, PIN, or biometrics)
    * @throws Error if the verification data is invalid or the verification fails
    */
@@ -64,7 +64,7 @@ export abstract class UserVerificationService {
    * @param userId The user to verify
    * @param email The user's email
    * @throws Error if the master password is invalid
-   * @returns Master password policy options if the master password is verified on the server, null if verified client-side.
+   * @returns An object containing the master key, and master password policy options if verified on server.
    */
   verifyUserByMasterPassword: (
     verification: MasterPasswordVerification,
