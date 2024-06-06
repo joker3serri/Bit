@@ -396,7 +396,10 @@ export abstract class NewBasePeopleComponent<
   protected removeUser(user: UserView) {
     let index = this.dataSource.data.indexOf(user);
     if (index > -1) {
-      this.dataSource.data.splice(index, 1);
+      // Clone the array so that the setter for dataSource.data is triggered to update the table rendering
+      const updatedData = [...this.dataSource.data];
+      updatedData.splice(index, 1);
+      this.dataSource.data = updatedData;
     }
 
     index = this.allUsers.indexOf(user);
