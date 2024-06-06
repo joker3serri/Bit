@@ -1,19 +1,13 @@
-import { ApiService } from "../../../../abstractions/api.service";
-import { CryptoService } from "../../../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../../../platform/abstractions/encrypt.service";
-import { I18nService } from "../../../../platform/abstractions/i18n.service";
-import { StateProvider } from "../../../../platform/state";
-import { FASTMAIL_FORWARDER, FASTMAIL_BUFFER } from "../../key-definitions";
-import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
-import { Forwarders } from "../options/constants";
-import { EmailPrefixOptions, ApiOptions } from "../options/forwarder-options";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
-export const DefaultFastmailOptions: ApiOptions & EmailPrefixOptions = Object.freeze({
-  website: "",
-  domain: "",
-  prefix: "",
-  token: "",
-});
+import { Forwarders, DefaultFastmailOptions } from "../../data";
+import { EmailPrefixOptions, ApiOptions } from "../../types";
+import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
+import { FASTMAIL_FORWARDER, FASTMAIL_BUFFER } from "../storage";
 
 /** Generates a forwarding address for Fastmail */
 export class FastmailForwarder extends ForwarderGeneratorStrategy<ApiOptions & EmailPrefixOptions> {

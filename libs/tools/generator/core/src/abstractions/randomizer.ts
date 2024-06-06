@@ -1,4 +1,4 @@
-import { WordOptions } from "../types/word-options";
+import { WordOptions } from "../types";
 
 /** Entropy source for credential generation. */
 export interface Randomizer {

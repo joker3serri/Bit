@@ -1,13 +1,13 @@
-import { PolicyType } from "../../../admin-console/enums";
-import { StateProvider } from "../../../platform/state";
-import { GeneratorStrategy } from "../abstractions";
-import { Randomizer } from "../abstractions/randomizer";
-import { CATCHALL_SETTINGS } from "../key-definitions";
-import { NoPolicy } from "../no-policy";
-import { newDefaultEvaluator } from "../rx-operators";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { StateProvider } from "@bitwarden/common/platform/state";
+
+import { GeneratorStrategy, Randomizer } from "../abstractions";
+import { DefaultCatchallOptions } from "../data";
+import { newDefaultEvaluator } from "../rx";
+import { NoPolicy, CatchallGenerationOptions } from "../types";
 import { clone$PerUserId, sharedStateByUserId } from "../util";
 
-import { CatchallGenerationOptions, DefaultCatchallOptions } from "./catchall-generator-options";
+import { CATCHALL_SETTINGS } from "./storage";
 
 /** Strategy for creating usernames using a catchall email address */
 export class CatchallGeneratorStrategy

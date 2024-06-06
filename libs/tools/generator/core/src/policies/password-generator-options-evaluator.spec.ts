@@ -1,12 +1,7 @@
-/**
- * include structuredClone in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
+import { DefaultPasswordBoundaries, DisabledPasswordGeneratorPolicy } from "../data";
+import { PasswordGenerationOptions } from "../types";
 
-import { DefaultBoundaries } from "./password-generator-options-evaluator";
-import { DisabledPasswordGeneratorPolicy } from "./password-generator-policy";
-
-import { PasswordGenerationOptions, PasswordGeneratorOptionsEvaluator } from ".";
+import { PasswordGeneratorOptionsEvaluator } from "./password-generator-options-evaluator";
 
 describe("Password generator options builder", () => {
   const defaultOptions = Object.freeze({ minLength: 0 });
@@ -27,30 +22,30 @@ describe("Password generator options builder", () => {
 
       const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
-      expect(builder.length).toEqual(DefaultBoundaries.length);
-      expect(builder.minDigits).toEqual(DefaultBoundaries.minDigits);
-      expect(builder.minSpecialCharacters).toEqual(DefaultBoundaries.minSpecialCharacters);
+      expect(builder.length).toEqual(DefaultPasswordBoundaries.length);
+      expect(builder.minDigits).toEqual(DefaultPasswordBoundaries.minDigits);
+      expect(builder.minSpecialCharacters).toEqual(DefaultPasswordBoundaries.minSpecialCharacters);
     });
 
     it.each([1, 2, 3, 4])(
       "should use the default length boundaries when they are greater than `policy.minLength` (= %i)",
       (minLength) => {
-        expect(minLength).toBeLessThan(DefaultBoundaries.length.min);
+        expect(minLength).toBeLessThan(DefaultPasswordBoundaries.length.min);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         policy.minLength = minLength;
 
         const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
-        expect(builder.length).toEqual(DefaultBoundaries.length);
+        expect(builder.length).toEqual(DefaultPasswordBoundaries.length);
       },
     );
 
     it.each([8, 20, 100])(
       "should use `policy.minLength` (= %i) when it is greater than the default minimum length",
       (expectedLength) => {
-        expect(expectedLength).toBeGreaterThan(DefaultBoundaries.length.min);
-        expect(expectedLength).toBeLessThanOrEqual(DefaultBoundaries.length.max);
+        expect(expectedLength).toBeGreaterThan(DefaultPasswordBoundaries.length.min);
+        expect(expectedLength).toBeLessThanOrEqual(DefaultPasswordBoundaries.length.max);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         policy.minLength = expectedLength;
@@ -58,14 +53,14 @@ describe("Password generator options builder", () => {
         const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
         expect(builder.length.min).toEqual(expectedLength);
-        expect(builder.length.max).toEqual(DefaultBoundaries.length.max);
+        expect(builder.length.max).toEqual(DefaultPasswordBoundaries.length.max);
       },
     );
 
     it.each([150, 300, 9000])(
       "should use `policy.minLength` (= %i) when it is greater than the default boundaries",
       (expectedLength) => {
-        expect(expectedLength).toBeGreaterThan(DefaultBoundaries.length.max);
+        expect(expectedLength).toBeGreaterThan(DefaultPasswordBoundaries.length.max);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         policy.minLength = expectedLength;
@@ -80,8 +75,8 @@ describe("Password generator options builder", () => {
     it.each([3, 5, 8, 9])(
       "should use `policy.numberCount` (= %i) when it is greater than the default minimum digits",
       (expectedMinDigits) => {
-        expect(expectedMinDigits).toBeGreaterThan(DefaultBoundaries.minDigits.min);
-        expect(expectedMinDigits).toBeLessThanOrEqual(DefaultBoundaries.minDigits.max);
+        expect(expectedMinDigits).toBeGreaterThan(DefaultPasswordBoundaries.minDigits.min);
+        expect(expectedMinDigits).toBeLessThanOrEqual(DefaultPasswordBoundaries.minDigits.max);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         policy.numberCount = expectedMinDigits;
@@ -89,14 +84,14 @@ describe("Password generator options builder", () => {
         const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
         expect(builder.minDigits.min).toEqual(expectedMinDigits);
-        expect(builder.minDigits.max).toEqual(DefaultBoundaries.minDigits.max);
+        expect(builder.minDigits.max).toEqual(DefaultPasswordBoundaries.minDigits.max);
       },
     );
 
     it.each([10, 20, 400])(
       "should use `policy.numberCount` (= %i) when it is greater than the default digit boundaries",
       (expectedMinDigits) => {
-        expect(expectedMinDigits).toBeGreaterThan(DefaultBoundaries.minDigits.max);
+        expect(expectedMinDigits).toBeGreaterThan(DefaultPasswordBoundaries.minDigits.max);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         policy.numberCount = expectedMinDigits;
@@ -112,10 +107,10 @@ describe("Password generator options builder", () => {
       "should use `policy.specialCount` (= %i) when it is greater than the default minimum special characters",
       (expectedSpecialCharacters) => {
         expect(expectedSpecialCharacters).toBeGreaterThan(
-          DefaultBoundaries.minSpecialCharacters.min,
+          DefaultPasswordBoundaries.minSpecialCharacters.min,
         );
         expect(expectedSpecialCharacters).toBeLessThanOrEqual(
-          DefaultBoundaries.minSpecialCharacters.max,
+          DefaultPasswordBoundaries.minSpecialCharacters.max,
         );
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
@@ -125,7 +120,7 @@ describe("Password generator options builder", () => {
 
         expect(builder.minSpecialCharacters.min).toEqual(expectedSpecialCharacters);
         expect(builder.minSpecialCharacters.max).toEqual(
-          DefaultBoundaries.minSpecialCharacters.max,
+          DefaultPasswordBoundaries.minSpecialCharacters.max,
         );
       },
     );
@@ -134,7 +129,7 @@ describe("Password generator options builder", () => {
       "should use `policy.specialCount` (= %i) when it is greater than the default special characters boundaries",
       (expectedSpecialCharacters) => {
         expect(expectedSpecialCharacters).toBeGreaterThan(
-          DefaultBoundaries.minSpecialCharacters.max,
+          DefaultPasswordBoundaries.minSpecialCharacters.max,
         );
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
@@ -154,7 +149,7 @@ describe("Password generator options builder", () => {
     ])(
       "should ensure the minimum length (= %i) is at least the sum of minimums (= %i + %i)",
       (expectedLength, numberCount, specialCount) => {
-        expect(expectedLength).toBeGreaterThanOrEqual(DefaultBoundaries.length.min);
+        expect(expectedLength).toBeGreaterThanOrEqual(DefaultPasswordBoundaries.length.min);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         policy.numberCount = numberCount;
@@ -177,7 +172,7 @@ describe("Password generator options builder", () => {
 
     it("should return true when the policy has a minlength greater than the default boundary", () => {
       const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
-      policy.minLength = DefaultBoundaries.length.min + 1;
+      policy.minLength = DefaultPasswordBoundaries.length.min + 1;
       const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
       expect(builder.policyInEffect).toEqual(true);
@@ -185,7 +180,7 @@ describe("Password generator options builder", () => {
 
     it("should return true when the policy has a number count greater than the default boundary", () => {
       const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
-      policy.numberCount = DefaultBoundaries.minDigits.min + 1;
+      policy.numberCount = DefaultPasswordBoundaries.minDigits.min + 1;
       const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
       expect(builder.policyInEffect).toEqual(true);
@@ -193,7 +188,7 @@ describe("Password generator options builder", () => {
 
     it("should return true when the policy has a special character count greater than the default boundary", () => {
       const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
-      policy.specialCount = DefaultBoundaries.minSpecialCharacters.min + 1;
+      policy.specialCount = DefaultPasswordBoundaries.minSpecialCharacters.min + 1;
       const builder = new PasswordGeneratorOptionsEvaluator(policy);
 
       expect(builder.policyInEffect).toEqual(true);
@@ -710,7 +705,7 @@ describe("Password generator options builder", () => {
       "should set `options.minLength` to the minimum boundary when the sum of minimums (%i + %i + %i + %i) is less than the default minimum length.",
       (minLowercase, minUppercase, minNumber, minSpecial) => {
         const sumOfMinimums = minLowercase + minUppercase + minNumber + minSpecial;
-        expect(sumOfMinimums).toBeLessThan(DefaultBoundaries.length.min);
+        expect(sumOfMinimums).toBeLessThan(DefaultPasswordBoundaries.length.min);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         const builder = new PasswordGeneratorOptionsEvaluator(policy);
@@ -735,7 +730,7 @@ describe("Password generator options builder", () => {
     ])(
       "should set `options.minLength === %i` to the sum of minimums (%i + %i + %i + %i) when the sum is at least the default minimum length.",
       (expectedMinLength, minLowercase, minUppercase, minNumber, minSpecial) => {
-        expect(expectedMinLength).toBeGreaterThanOrEqual(DefaultBoundaries.length.min);
+        expect(expectedMinLength).toBeGreaterThanOrEqual(DefaultPasswordBoundaries.length.min);
 
         const policy = Object.assign({}, DisabledPasswordGeneratorPolicy);
         const builder = new PasswordGeneratorOptionsEvaluator(policy);

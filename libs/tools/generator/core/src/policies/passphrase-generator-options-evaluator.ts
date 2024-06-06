@@ -1,31 +1,6 @@
-import { PolicyEvaluator } from "../abstractions/policy-evaluator.abstraction";
-
-import {
-  DefaultPassphraseGenerationOptions,
-  PassphraseGenerationOptions,
-} from "./passphrase-generation-options";
-import { PassphraseGeneratorPolicy } from "./passphrase-generator-policy";
-
-type Boundary = {
-  readonly min: number;
-  readonly max: number;
-};
-
-function initializeBoundaries() {
-  const numWords = Object.freeze({
-    min: 3,
-    max: 20,
-  });
-
-  return Object.freeze({
-    numWords,
-  });
-}
-
-/** Immutable default boundaries for passphrase generation.
- * These are used when the policy does not override a value.
- */
-export const DefaultBoundaries = initializeBoundaries();
+import { PolicyEvaluator } from "../abstractions";
+import { DefaultPassphraseGenerationOptions, DefaultPassphraseBoundaries } from "../data";
+import { Boundary, PassphraseGenerationOptions, PassphraseGeneratorPolicy } from "../types";
 
 /** Enforces policy for passphrase generation options.
  */
@@ -63,7 +38,7 @@ export class PassphraseGeneratorOptionsEvaluator
     }
 
     this.policy = structuredClone(policy);
-    this.numWords = createBoundary(policy.minNumberWords, DefaultBoundaries.numWords);
+    this.numWords = createBoundary(policy.minNumberWords, DefaultPassphraseBoundaries.numWords);
   }
 
   /** {@link PolicyEvaluator.policyInEffect} */
@@ -71,7 +46,7 @@ export class PassphraseGeneratorOptionsEvaluator
     const policies = [
       this.policy.capitalize,
       this.policy.includeNumber,
-      this.policy.minNumberWords > DefaultBoundaries.numWords.min,
+      this.policy.minNumberWords > DefaultPassphraseBoundaries.numWords.min,
     ];
 
     return policies.includes(true);

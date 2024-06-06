@@ -1,27 +1,19 @@
-/**
- * include structuredClone in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
-
 import { mock } from "jest-mock-extended";
 import { of, firstValueFrom } from "rxjs";
 
-import { PolicyType } from "../../../admin-console/enums";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
-import { StateProvider } from "../../../platform/state";
-import { UserId } from "../../../types/guid";
-import { Randomizer } from "../abstractions/randomizer";
-import { PASSWORD_SETTINGS } from "../key-definitions";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { StateProvider } from "@bitwarden/common/platform/state";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { DisabledPasswordGeneratorPolicy } from "./password-generator-policy";
+import { Randomizer } from "../abstractions";
+import { DefaultPasswordGenerationOptions, DisabledPasswordGeneratorPolicy } from "../data";
+import { PasswordGeneratorOptionsEvaluator } from "../policies";
 
-import {
-  DefaultPasswordGenerationOptions,
-  PasswordGeneratorOptionsEvaluator,
-  PasswordGeneratorStrategy,
-} from ".";
+import { PasswordGeneratorStrategy } from "./password-generator-strategy";
+import { PASSWORD_SETTINGS } from "./storage";
 
 const SomeUser = "some user" as UserId;
 

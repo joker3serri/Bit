@@ -1,35 +1,17 @@
-import { Jsonify } from "type-fest";
+import { GENERATOR_DISK, UserKeyDefinition } from "@bitwarden/common/platform/state";
+import { BufferedKeyDefinition } from "@bitwarden/common/tools/state/buffered-key-definition";
 
-import { GENERATOR_DISK, UserKeyDefinition } from "../../platform/state";
-import { BufferedKeyDefinition } from "../state/buffered-key-definition";
-import { SecretClassifier } from "../state/secret-classifier";
-import { SecretKeyDefinition } from "../state/secret-key-definition";
-
-import { GeneratedCredential } from "./history/generated-credential";
-import { LegacyPasswordHistoryDecryptor } from "./history/legacy-password-history-decryptor";
-import { GeneratorNavigation } from "./navigation/generator-navigation";
-import { PassphraseGenerationOptions } from "./passphrase/passphrase-generation-options";
-import { GeneratedPasswordHistory } from "./password/generated-password-history";
-import { PasswordGenerationOptions } from "./password/password-generation-options";
-import { CatchallGenerationOptions } from "./username/catchall-generator-options";
-import { EffUsernameGenerationOptions } from "./username/eff-username-generator-options";
 import {
+  PassphraseGenerationOptions,
+  PasswordGenerationOptions,
+  CatchallGenerationOptions,
+  EffUsernameGenerationOptions,
   ApiOptions,
   EmailDomainOptions,
   EmailPrefixOptions,
   SelfHostedApiOptions,
-} from "./username/options/forwarder-options";
-import { SubaddressGenerationOptions } from "./username/subaddress-generator-options";
-
-/** plaintext password generation options */
-export const GENERATOR_SETTINGS = new UserKeyDefinition<GeneratorNavigation>(
-  GENERATOR_DISK,
-  "generatorSettings",
-  {
-    deserializer: (value) => value,
-    clearOn: ["logout"],
-  },
-);
+  SubaddressGenerationOptions,
+} from "../types";
 
 /** plaintext password generation options */
 export const PASSWORD_SETTINGS = new UserKeyDefinition<PasswordGenerationOptions>(
@@ -200,35 +182,3 @@ export const SIMPLE_LOGIN_BUFFER = new BufferedKeyDefinition<SelfHostedApiOption
     clearOn: ["logout"],
   },
 );
-
-/** encrypted password generation history */
-export const GENERATOR_HISTORY = SecretKeyDefinition.array(
-  GENERATOR_DISK,
-  "localGeneratorHistory",
-  SecretClassifier.allSecret<GeneratedCredential>(),
-  {
-    deserializer: GeneratedCredential.fromJSON,
-    clearOn: ["logout"],
-  },
-);
-
-/** encrypted password generation history subject to migration */
-export const GENERATOR_HISTORY_BUFFER = new BufferedKeyDefinition<
-  GeneratedPasswordHistory[],
-  GeneratedCredential[],
-  LegacyPasswordHistoryDecryptor
->(GENERATOR_DISK, "localGeneratorHistoryBuffer", {
-  deserializer(history) {
-    const items = history as Jsonify<GeneratedPasswordHistory>[];
-    return items?.map((h) => new GeneratedPasswordHistory(h.password, h.date));
-  },
-  async isValid(history) {
-    return history.length ? true : false;
-  },
-  async map(history, decryptor) {
-    const credentials = await decryptor.decrypt(history);
-    const mapped = credentials.map((c) => new GeneratedCredential(c.password, "password", c.date));
-    return mapped;
-  },
-  clearOn: ["logout"],
-});

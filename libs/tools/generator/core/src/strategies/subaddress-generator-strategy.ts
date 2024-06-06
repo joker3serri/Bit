@@ -1,16 +1,13 @@
-import { PolicyType } from "../../../admin-console/enums";
-import { StateProvider } from "../../../platform/state";
-import { GeneratorStrategy } from "../abstractions";
-import { Randomizer } from "../abstractions/randomizer";
-import { SUBADDRESS_SETTINGS } from "../key-definitions";
-import { NoPolicy } from "../no-policy";
-import { newDefaultEvaluator } from "../rx-operators";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { StateProvider } from "@bitwarden/common/platform/state";
+
+import { GeneratorStrategy, Randomizer } from "../abstractions";
+import { DefaultSubaddressOptions } from "../data";
+import { newDefaultEvaluator } from "../rx";
+import { SubaddressGenerationOptions, NoPolicy } from "../types";
 import { clone$PerUserId, sharedStateByUserId } from "../util";
 
-import {
-  DefaultSubaddressOptions,
-  SubaddressGenerationOptions,
-} from "./subaddress-generator-options";
+import { SUBADDRESS_SETTINGS } from "./storage";
 
 /** Strategy for creating an email subaddress
  *  @remarks The subaddress is the part following the `+`.

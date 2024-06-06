@@ -1,14 +1,11 @@
-/**
- * include Request in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "../../../../types/guid";
-import { DUCK_DUCK_GO_FORWARDER } from "../../key-definitions";
-import { Forwarders } from "../options/constants";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { DuckDuckGoForwarder, DefaultDuckDuckGoOptions } from "./duck-duck-go";
+import { Forwarders, DefaultDuckDuckGoOptions } from "../../data";
+import { DUCK_DUCK_GO_FORWARDER } from "../storage";
+
+import { DuckDuckGoForwarder } from "./duck-duck-go";
 import { mockApiService, mockI18nService } from "./mocks.jest";
 
 const SomeUser = "some user" as UserId;

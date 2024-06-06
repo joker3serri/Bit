@@ -1,10 +1,12 @@
-import { PolicyType } from "../../../admin-console/enums";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
-import { PolicyId } from "../../../types/guid";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { PolicyId } from "@bitwarden/common/types/guid";
 
-import { DisabledPassphraseGeneratorPolicy, leastPrivilege } from "./passphrase-generator-policy";
+import { DisabledPassphraseGeneratorPolicy } from "../data";
+
+import { passphraseLeastPrivilege } from "./passphrase-least-privilege";
 
 function createPolicy(
   data: any,
@@ -20,11 +22,11 @@ function createPolicy(
   });
 }
 
-describe("leastPrivilege", () => {
+describe("passphraseLeastPrivilege", () => {
   it("should return the accumulator when the policy type does not apply", () => {
     const policy = createPolicy({}, PolicyType.RequireSso);
 
-    const result = leastPrivilege(DisabledPassphraseGeneratorPolicy, policy);
+    const result = passphraseLeastPrivilege(DisabledPassphraseGeneratorPolicy, policy);
 
     expect(result).toEqual(DisabledPassphraseGeneratorPolicy);
   });
@@ -32,7 +34,7 @@ describe("leastPrivilege", () => {
   it("should return the accumulator when the policy is not enabled", () => {
     const policy = createPolicy({}, PolicyType.PasswordGenerator, false);
 
-    const result = leastPrivilege(DisabledPassphraseGeneratorPolicy, policy);
+    const result = passphraseLeastPrivilege(DisabledPassphraseGeneratorPolicy, policy);
 
     expect(result).toEqual(DisabledPassphraseGeneratorPolicy);
   });
@@ -44,7 +46,7 @@ describe("leastPrivilege", () => {
   ])("should take the %p from the policy", (input, value) => {
     const policy = createPolicy({ [input]: value });
 
-    const result = leastPrivilege(DisabledPassphraseGeneratorPolicy, policy);
+    const result = passphraseLeastPrivilege(DisabledPassphraseGeneratorPolicy, policy);
 
     expect(result).toEqual({ ...DisabledPassphraseGeneratorPolicy, [input]: value });
   });

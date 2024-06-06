@@ -1,4 +1,4 @@
-import { ForwarderMetadata } from "./forwarder-options";
+import { ForwarderMetadata } from "../types";
 
 /** Metadata about an email forwarding service.
  *  @remarks This is used to populate the forwarder selection list

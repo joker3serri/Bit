@@ -1,5 +1,5 @@
-import { PolicyEvaluator } from "./abstractions";
-import { NoPolicy } from "./no-policy";
+import { PolicyEvaluator } from "../abstractions";
+import { NoPolicy } from "../types";
 
 /** A policy evaluator that does not apply any policy */
 export class DefaultPolicyEvaluator<PolicyTarget>

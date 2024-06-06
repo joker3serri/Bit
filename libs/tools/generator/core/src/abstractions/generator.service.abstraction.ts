@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { UserId } from "../../../types/guid";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { PolicyEvaluator } from "./policy-evaluator.abstraction";
 

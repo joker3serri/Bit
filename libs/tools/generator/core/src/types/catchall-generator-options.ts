@@ -1,5 +1,5 @@
-import { RequestOptions } from "./options/forwarder-options";
-import { UsernameGenerationMode } from "./options/generator-options";
+import { RequestOptions } from "./forwarder-options";
+import { UsernameGenerationMode } from "./generator-options";
 
 /** Settings supported when generating an email subaddress */
 export type CatchallGenerationOptions = {
@@ -12,10 +12,3 @@ export type CatchallGenerationOptions = {
    */
   catchallDomain?: string;
 } & RequestOptions;
-
-/** The default options for catchall address generation. */
-export const DefaultCatchallOptions: CatchallGenerationOptions = Object.freeze({
-  catchallType: "random",
-  catchallDomain: "",
-  website: null,
-});

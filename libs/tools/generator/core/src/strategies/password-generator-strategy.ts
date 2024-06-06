@@ -1,17 +1,13 @@
-import { GeneratorStrategy } from "..";
-import { PolicyType } from "../../../admin-console/enums";
-import { StateProvider } from "../../../platform/state";
-import { Randomizer } from "../abstractions/randomizer";
-import { PASSWORD_SETTINGS } from "../key-definitions";
-import { Policies } from "../policies";
-import { mapPolicyToEvaluator } from "../rx-operators";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { StateProvider } from "@bitwarden/common/platform/state";
+
+import { GeneratorStrategy, Randomizer } from "../abstractions";
+import { Policies, DefaultPasswordGenerationOptions } from "../data";
+import { mapPolicyToEvaluator } from "../rx";
+import { PasswordGenerationOptions, PasswordGeneratorPolicy } from "../types";
 import { clone$PerUserId, sharedStateByUserId } from "../util";
 
-import {
-  DefaultPasswordGenerationOptions,
-  PasswordGenerationOptions,
-} from "./password-generation-options";
-import { PasswordGeneratorPolicy } from "./password-generator-policy";
+import { PASSWORD_SETTINGS } from "./storage";
 
 /** Generates passwords composed of random characters */
 export class PasswordGeneratorStrategy

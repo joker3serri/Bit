@@ -1,18 +1,14 @@
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { EFFLongWordList } from "@bitwarden/common/platform/misc/wordlist";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
-import { PolicyType } from "../../../admin-console/enums";
-import { StateProvider } from "../../../platform/state";
-import { GeneratorStrategy } from "../abstractions";
-import { Randomizer } from "../abstractions/randomizer";
-import { EFF_USERNAME_SETTINGS } from "../key-definitions";
-import { NoPolicy } from "../no-policy";
-import { newDefaultEvaluator } from "../rx-operators";
+import { GeneratorStrategy, Randomizer } from "../abstractions";
+import { DefaultEffUsernameOptions } from "../data";
+import { newDefaultEvaluator } from "../rx";
+import { EffUsernameGenerationOptions, NoPolicy } from "../types";
 import { clone$PerUserId, sharedStateByUserId } from "../util";
 
-import {
-  DefaultEffUsernameOptions,
-  EffUsernameGenerationOptions,
-} from "./eff-username-generator-options";
+import { EFF_USERNAME_SETTINGS } from "./storage";
 
 /** Strategy for creating usernames from the EFF wordlist */
 export class EffUsernameGeneratorStrategy

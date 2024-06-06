@@ -1,18 +1,14 @@
-import { GeneratorStrategy } from "..";
-import { PolicyType } from "../../../admin-console/enums";
-import { EFFLongWordList } from "../../../platform/misc/wordlist";
-import { StateProvider } from "../../../platform/state";
-import { Randomizer } from "../abstractions/randomizer";
-import { PASSPHRASE_SETTINGS } from "../key-definitions";
-import { Policies } from "../policies";
-import { mapPolicyToEvaluator } from "../rx-operators";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { EFFLongWordList } from "@bitwarden/common/platform/misc/wordlist";
+import { StateProvider } from "@bitwarden/common/platform/state";
+
+import { GeneratorStrategy, Randomizer } from "../abstractions";
+import { DefaultPassphraseGenerationOptions, Policies } from "../data";
+import { mapPolicyToEvaluator } from "../rx";
+import { PassphraseGenerationOptions, PassphraseGeneratorPolicy } from "../types";
 import { clone$PerUserId, sharedStateByUserId } from "../util";
 
-import {
-  PassphraseGenerationOptions,
-  DefaultPassphraseGenerationOptions,
-} from "./passphrase-generation-options";
-import { PassphraseGeneratorPolicy } from "./passphrase-generator-policy";
+import { PASSPHRASE_SETTINGS } from "./storage";
 
 /** Generates passphrases composed of random words */
 export class PassphraseGeneratorStrategy

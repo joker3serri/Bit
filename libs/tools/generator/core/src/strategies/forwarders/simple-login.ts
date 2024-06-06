@@ -1,18 +1,13 @@
-import { ApiService } from "../../../../abstractions/api.service";
-import { CryptoService } from "../../../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../../../platform/abstractions/encrypt.service";
-import { I18nService } from "../../../../platform/abstractions/i18n.service";
-import { StateProvider } from "../../../../platform/state";
-import { SIMPLE_LOGIN_FORWARDER, SIMPLE_LOGIN_BUFFER } from "../../key-definitions";
-import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
-import { Forwarders } from "../options/constants";
-import { SelfHostedApiOptions } from "../options/forwarder-options";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
-export const DefaultSimpleLoginOptions: SelfHostedApiOptions = Object.freeze({
-  website: null,
-  baseUrl: "https://app.simplelogin.io",
-  token: "",
-});
+import { Forwarders, DefaultSimpleLoginOptions } from "../../data";
+import { SelfHostedApiOptions } from "../../types";
+import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
+import { SIMPLE_LOGIN_FORWARDER, SIMPLE_LOGIN_BUFFER } from "../storage";
 
 /** Generates a forwarding address for Simple Login */
 export class SimpleLoginForwarder extends ForwarderGeneratorStrategy<SelfHostedApiOptions> {

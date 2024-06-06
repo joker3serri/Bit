@@ -1,7 +1,7 @@
 import { distinctUntilChanged, map, OperatorFunction, pipe } from "rxjs";
 
-import { DefaultPolicyEvaluator } from "./default-policy-evaluator";
-import { PolicyConfiguration } from "./policies";
+import { DefaultPolicyEvaluator } from "./policies";
+import { PolicyConfiguration } from "./types";
 
 /**
  * An observable operator that reduces an emitted collection to a single object,

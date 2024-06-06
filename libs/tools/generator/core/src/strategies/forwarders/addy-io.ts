@@ -1,19 +1,13 @@
-import { ApiService } from "../../../../abstractions/api.service";
-import { CryptoService } from "../../../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../../../platform/abstractions/encrypt.service";
-import { I18nService } from "../../../../platform/abstractions/i18n.service";
-import { StateProvider } from "../../../../platform/state";
-import { ADDY_IO_FORWARDER, ADDY_IO_BUFFER } from "../../key-definitions";
-import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
-import { Forwarders } from "../options/constants";
-import { EmailDomainOptions, SelfHostedApiOptions } from "../options/forwarder-options";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
-export const DefaultAddyIoOptions: SelfHostedApiOptions & EmailDomainOptions = Object.freeze({
-  website: null,
-  baseUrl: "https://app.addy.io",
-  token: "",
-  domain: "",
-});
+import { DefaultAddyIoOptions, Forwarders } from "../../data";
+import { EmailDomainOptions, SelfHostedApiOptions } from "../../types";
+import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
+import { ADDY_IO_FORWARDER, ADDY_IO_BUFFER } from "../storage";
 
 /** Generates a forwarding address for addy.io (formerly anon addy) */
 export class AddyIoForwarder extends ForwarderGeneratorStrategy<

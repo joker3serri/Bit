@@ -1,17 +1,13 @@
-import { ApiService } from "../../../../abstractions/api.service";
-import { CryptoService } from "../../../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../../../platform/abstractions/encrypt.service";
-import { I18nService } from "../../../../platform/abstractions/i18n.service";
-import { StateProvider } from "../../../../platform/state";
-import { FIREFOX_RELAY_FORWARDER, FIREFOX_RELAY_BUFFER } from "../../key-definitions";
-import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
-import { Forwarders } from "../options/constants";
-import { ApiOptions } from "../options/forwarder-options";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
-export const DefaultFirefoxRelayOptions: ApiOptions = Object.freeze({
-  website: null,
-  token: "",
-});
+import { Forwarders, DefaultFirefoxRelayOptions } from "../../data";
+import { ApiOptions } from "../../types";
+import { ForwarderGeneratorStrategy } from "../forwarder-generator-strategy";
+import { FIREFOX_RELAY_FORWARDER, FIREFOX_RELAY_BUFFER } from "../storage";
 
 /** Generates a forwarding address for Firefox Relay */
 export class FirefoxRelayForwarder extends ForwarderGeneratorStrategy<ApiOptions> {

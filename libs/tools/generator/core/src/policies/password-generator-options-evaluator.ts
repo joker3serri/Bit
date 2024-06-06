@@ -1,40 +1,6 @@
-import { PolicyEvaluator } from "../abstractions/policy-evaluator.abstraction";
-
-import { PasswordGenerationOptions } from "./password-generation-options";
-import { PasswordGeneratorPolicy } from "./password-generator-policy";
-
-function initializeBoundaries() {
-  const length = Object.freeze({
-    min: 5,
-    max: 128,
-  });
-
-  const minDigits = Object.freeze({
-    min: 0,
-    max: 9,
-  });
-
-  const minSpecialCharacters = Object.freeze({
-    min: 0,
-    max: 9,
-  });
-
-  return Object.freeze({
-    length,
-    minDigits,
-    minSpecialCharacters,
-  });
-}
-
-/** Immutable default boundaries for password generation.
- * These are used when the policy does not override a value.
- */
-export const DefaultBoundaries = initializeBoundaries();
-
-type Boundary = {
-  readonly min: number;
-  readonly max: number;
-};
+import { PolicyEvaluator } from "../abstractions";
+import { DefaultPasswordBoundaries } from "../data";
+import { Boundary, PasswordGeneratorPolicy, PasswordGenerationOptions } from "../types";
 
 /** Enforces policy for password generation.
  */
@@ -82,20 +48,25 @@ export class PasswordGeneratorOptionsEvaluator
     }
 
     this.policy = structuredClone(policy);
-    this.minDigits = createBoundary(policy.numberCount, DefaultBoundaries.minDigits);
+    this.minDigits = createBoundary(policy.numberCount, DefaultPasswordBoundaries.minDigits);
     this.minSpecialCharacters = createBoundary(
       policy.specialCount,
-      DefaultBoundaries.minSpecialCharacters,
+      DefaultPasswordBoundaries.minSpecialCharacters,
     );
 
     // the overall length should be at least as long as the sum of the minimums
     const minConsistentLength = this.minDigits.min + this.minSpecialCharacters.min;
-    const minPolicyLength = policy.minLength > 0 ? policy.minLength : DefaultBoundaries.length.min;
-    const minLength = Math.max(minPolicyLength, minConsistentLength, DefaultBoundaries.length.min);
+    const minPolicyLength =
+      policy.minLength > 0 ? policy.minLength : DefaultPasswordBoundaries.length.min;
+    const minLength = Math.max(
+      minPolicyLength,
+      minConsistentLength,
+      DefaultPasswordBoundaries.length.min,
+    );
 
     this.length = {
       min: minLength,
-      max: Math.max(DefaultBoundaries.length.max, minLength),
+      max: Math.max(DefaultPasswordBoundaries.length.max, minLength),
     };
   }
 
@@ -106,9 +77,9 @@ export class PasswordGeneratorOptionsEvaluator
       this.policy.useLowercase,
       this.policy.useNumbers,
       this.policy.useSpecial,
-      this.policy.minLength > DefaultBoundaries.length.min,
-      this.policy.numberCount > DefaultBoundaries.minDigits.min,
-      this.policy.specialCount > DefaultBoundaries.minSpecialCharacters.min,
+      this.policy.minLength > DefaultPasswordBoundaries.length.min,
+      this.policy.numberCount > DefaultPasswordBoundaries.minDigits.min,
+      this.policy.specialCount > DefaultPasswordBoundaries.minSpecialCharacters.min,
     ];
 
     return policies.includes(true);

@@ -1,15 +1,12 @@
-/**
- * include Request in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
 import { firstValueFrom } from "rxjs";
 
-import { ApiService } from "../../../../abstractions/api.service";
-import { UserId } from "../../../../types/guid";
-import { FASTMAIL_FORWARDER } from "../../key-definitions";
-import { Forwarders } from "../options/constants";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { FastmailForwarder, DefaultFastmailOptions } from "./fastmail";
+import { Forwarders, DefaultFastmailOptions } from "../../data";
+import { FASTMAIL_FORWARDER } from "../storage";
+
+import { FastmailForwarder } from "./fastmail";
 import { mockI18nService } from "./mocks.jest";
 
 const SomeUser = "some user" as UserId;

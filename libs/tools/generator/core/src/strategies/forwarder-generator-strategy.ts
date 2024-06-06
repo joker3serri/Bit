@@ -1,23 +1,26 @@
 import { map } from "rxjs";
 
-import { PolicyType } from "../../../admin-console/enums";
-import { CryptoService } from "../../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../../platform/abstractions/encrypt.service";
-import { SingleUserState, StateProvider, UserKeyDefinition } from "../../../platform/state";
-import { UserId } from "../../../types/guid";
-import { BufferedKeyDefinition } from "../../state/buffered-key-definition";
-import { BufferedState } from "../../state/buffered-state";
-import { PaddedDataPacker } from "../../state/padded-data-packer";
-import { SecretClassifier } from "../../state/secret-classifier";
-import { SecretKeyDefinition } from "../../state/secret-key-definition";
-import { SecretState } from "../../state/secret-state";
-import { UserKeyEncryptor } from "../../state/user-key-encryptor";
-import { GeneratorStrategy } from "../abstractions";
-import { NoPolicy } from "../no-policy";
-import { newDefaultEvaluator } from "../rx-operators";
-import { clone$PerUserId, sharedByUserId } from "../util";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import {
+  SingleUserState,
+  StateProvider,
+  UserKeyDefinition,
+} from "@bitwarden/common/platform/state";
+import { BufferedKeyDefinition } from "@bitwarden/common/tools/state/buffered-key-definition";
+import { BufferedState } from "@bitwarden/common/tools/state/buffered-state";
+import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
+import { SecretClassifier } from "@bitwarden/common/tools/state/secret-classifier";
+import { SecretKeyDefinition } from "@bitwarden/common/tools/state/secret-key-definition";
+import { SecretState } from "@bitwarden/common/tools/state/secret-state";
+import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { ApiOptions } from "./options/forwarder-options";
+import { GeneratorStrategy } from "../abstractions";
+import { newDefaultEvaluator } from "../rx";
+import { ApiOptions, NoPolicy } from "../types";
+import { clone$PerUserId, sharedByUserId } from "../util";
 
 const OPTIONS_FRAME_SIZE = 512;
 

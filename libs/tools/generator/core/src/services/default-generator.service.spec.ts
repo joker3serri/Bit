@@ -1,24 +1,19 @@
-/**
- * include structuredClone in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
-
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom, map, pipe } from "rxjs";
 
-import { FakeSingleUserState, awaitAsync } from "../../../spec";
-import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "../../admin-console/enums";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../admin-console/models/domain/policy";
-import { SingleUserState } from "../../platform/state";
-import { UserId } from "../../types/guid";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { SingleUserState } from "@bitwarden/common/platform/state";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { GeneratorStrategy, PolicyEvaluator } from "./abstractions";
-import { PasswordGenerationOptions } from "./password";
+import { FakeSingleUserState, awaitAsync } from "../../../../../common/spec";
+import { GeneratorStrategy, PolicyEvaluator } from "../abstractions";
+import { PasswordGenerationOptions } from "../types";
 
-import { DefaultGeneratorService } from ".";
+import { DefaultGeneratorService } from "./default-generator.service";
 
 function mockPolicyService(config?: { state?: BehaviorSubject<Policy[]> }) {
   const service = mock<PolicyService>();

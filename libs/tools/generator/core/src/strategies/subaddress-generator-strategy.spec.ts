@@ -1,19 +1,19 @@
 import { mock } from "jest-mock-extended";
 import { of, firstValueFrom } from "rxjs";
 
-import { PolicyType } from "../../../admin-console/enums";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
-import { StateProvider } from "../../../platform/state";
-import { UserId } from "../../../types/guid";
-import { Randomizer } from "../abstractions/randomizer";
-import { DefaultPolicyEvaluator } from "../default-policy-evaluator";
-import { SUBADDRESS_SETTINGS } from "../key-definitions";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { StateProvider } from "@bitwarden/common/platform/state";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { DefaultSubaddressOptions } from "./subaddress-generator-options";
+import { Randomizer } from "../abstractions";
+import { DefaultSubaddressOptions } from "../data";
+import { DefaultPolicyEvaluator } from "../policies";
 
-import { SubaddressGeneratorStrategy } from ".";
+import { SUBADDRESS_SETTINGS } from "./storage";
+import { SubaddressGeneratorStrategy } from "./subaddress-generator-strategy";
 
 const SomeUser = "some user" as UserId;
 const SomePolicy = mock<Policy>({

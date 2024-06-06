@@ -1,7 +1,9 @@
 import { Observable } from "rxjs";
 
-import { UserId } from "../../../types/guid";
-import { GeneratedCredential, GeneratorCategory } from "../history";
+import { UserId } from "@bitwarden/common/types/guid";
+
+import { GeneratedCredential } from "./generated-credential";
+import { GeneratorCategory } from "./options";
 
 /** Tracks the history of password generations.
  *  Each user gets their own store.

@@ -1,5 +1,3 @@
-import { DefaultBoundaries } from "./password-generator-options-evaluator";
-
 /** Request format for password credential generation.
  *  All members of this type may be `undefined` when the user is
  *  generating a passphrase.
@@ -68,16 +66,3 @@ export type PasswordGenerationOptions = {
    */
   minSpecial?: number;
 };
-
-/** The default options for password generation. */
-export const DefaultPasswordGenerationOptions: Partial<PasswordGenerationOptions> = Object.freeze({
-  length: 14,
-  minLength: DefaultBoundaries.length.min,
-  ambiguous: true,
-  uppercase: true,
-  lowercase: true,
-  number: true,
-  minNumber: 1,
-  special: false,
-  minSpecial: 0,
-});

@@ -1,13 +1,7 @@
-/**
- * include structuredClone in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
-import { PassphraseGenerationOptions } from "./passphrase-generation-options";
-import {
-  DefaultBoundaries,
-  PassphraseGeneratorOptionsEvaluator,
-} from "./passphrase-generator-options-evaluator";
-import { DisabledPassphraseGeneratorPolicy } from "./passphrase-generator-policy";
+import { DisabledPassphraseGeneratorPolicy, DefaultPassphraseBoundaries } from "../data";
+import { PassphraseGenerationOptions } from "../types";
+
+import { PassphraseGeneratorOptionsEvaluator } from "./passphrase-generator-options-evaluator";
 
 describe("Password generator options builder", () => {
   describe("constructor()", () => {
@@ -25,7 +19,7 @@ describe("Password generator options builder", () => {
       const policy = Object.assign({}, DisabledPassphraseGeneratorPolicy);
       const builder = new PassphraseGeneratorOptionsEvaluator(policy);
 
-      expect(builder.numWords).toEqual(DefaultBoundaries.numWords);
+      expect(builder.numWords).toEqual(DefaultPassphraseBoundaries.numWords);
     });
 
     it.each([1, 2])(
@@ -36,7 +30,7 @@ describe("Password generator options builder", () => {
 
         const builder = new PassphraseGeneratorOptionsEvaluator(policy);
 
-        expect(builder.numWords).toEqual(DefaultBoundaries.numWords);
+        expect(builder.numWords).toEqual(DefaultPassphraseBoundaries.numWords);
       },
     );
 
@@ -49,7 +43,7 @@ describe("Password generator options builder", () => {
         const builder = new PassphraseGeneratorOptionsEvaluator(policy);
 
         expect(builder.numWords.min).toEqual(minNumberWords);
-        expect(builder.numWords.max).toEqual(DefaultBoundaries.numWords.max);
+        expect(builder.numWords.max).toEqual(DefaultPassphraseBoundaries.numWords.max);
       },
     );
 
@@ -77,7 +71,7 @@ describe("Password generator options builder", () => {
 
     it("should return true when the policy has a numWords greater than the default boundary", () => {
       const policy = Object.assign({}, DisabledPassphraseGeneratorPolicy);
-      policy.minNumberWords = DefaultBoundaries.numWords.min + 1;
+      policy.minNumberWords = DefaultPassphraseBoundaries.numWords.min + 1;
       const builder = new PassphraseGeneratorOptionsEvaluator(policy);
 
       expect(builder.policyInEffect).toEqual(true);
@@ -158,7 +152,7 @@ describe("Password generator options builder", () => {
     it.each([1, 2])(
       "should set `numWords` (= %i) to the minimum value when it is less than the minimum",
       (numWords) => {
-        expect(numWords).toBeLessThan(DefaultBoundaries.numWords.min);
+        expect(numWords).toBeLessThan(DefaultPassphraseBoundaries.numWords.min);
 
         const policy = Object.assign({}, DisabledPassphraseGeneratorPolicy);
         const builder = new PassphraseGeneratorOptionsEvaluator(policy);
@@ -173,8 +167,8 @@ describe("Password generator options builder", () => {
     it.each([3, 8, 18, 20])(
       "should set `numWords` (= %i) to the input value when it is within the boundaries",
       (numWords) => {
-        expect(numWords).toBeGreaterThanOrEqual(DefaultBoundaries.numWords.min);
-        expect(numWords).toBeLessThanOrEqual(DefaultBoundaries.numWords.max);
+        expect(numWords).toBeGreaterThanOrEqual(DefaultPassphraseBoundaries.numWords.min);
+        expect(numWords).toBeLessThanOrEqual(DefaultPassphraseBoundaries.numWords.max);
 
         const policy = Object.assign({}, DisabledPassphraseGeneratorPolicy);
         const builder = new PassphraseGeneratorOptionsEvaluator(policy);
@@ -189,7 +183,7 @@ describe("Password generator options builder", () => {
     it.each([21, 30, 50, 100])(
       "should set `numWords` (= %i) to the maximum value when it is greater than the maximum",
       (numWords) => {
-        expect(numWords).toBeGreaterThan(DefaultBoundaries.numWords.max);
+        expect(numWords).toBeGreaterThan(DefaultPassphraseBoundaries.numWords.max);
 
         const policy = Object.assign({}, DisabledPassphraseGeneratorPolicy);
         const builder = new PassphraseGeneratorOptionsEvaluator(policy);

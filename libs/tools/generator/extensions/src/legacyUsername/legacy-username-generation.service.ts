@@ -1,12 +1,12 @@
 import { zip, firstValueFrom, map, concatMap, combineLatest } from "rxjs";
 
-import { ApiService } from "../../abstractions/api.service";
-import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "../../auth/abstractions/account.service";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
-import { I18nService } from "../../platform/abstractions/i18n.service";
-import { StateProvider } from "../../platform/state";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 
 import { GeneratorService, GeneratorNavigationService } from "./abstractions";
 import { UsernameGenerationServiceAbstraction } from "./abstractions/username-generation.service.abstraction";

@@ -1,14 +1,11 @@
-/**
- * include Request in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
 import { firstValueFrom } from "rxjs";
 
-import { UserId } from "../../../../types/guid";
-import { FIREFOX_RELAY_FORWARDER } from "../../key-definitions";
-import { Forwarders } from "../options/constants";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { FirefoxRelayForwarder, DefaultFirefoxRelayOptions } from "./firefox-relay";
+import { Forwarders, DefaultFirefoxRelayOptions } from "../../data";
+import { FIREFOX_RELAY_FORWARDER } from "../storage";
+
+import { FirefoxRelayForwarder } from "./firefox-relay";
 import { mockApiService, mockI18nService } from "./mocks.jest";
 
 const SomeUser = "some user" as UserId;

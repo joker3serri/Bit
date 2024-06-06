@@ -1,5 +1,5 @@
-import { ApiService } from "../../../../abstractions/api.service";
-import { I18nService } from "../../../../platform/abstractions/i18n.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 /** a mock {@link ApiService} that returns a fetch-like response with a given status and body */
 export function mockApiService(status: number, body: any, statusText?: string) {

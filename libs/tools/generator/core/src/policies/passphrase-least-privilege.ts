@@ -1,21 +1,9 @@
-import { PolicyType } from "../../../admin-console/enums";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 
-/** Policy options enforced during passphrase generation. */
-export type PassphraseGeneratorPolicy = {
-  minNumberWords: number;
-  capitalize: boolean;
-  includeNumber: boolean;
-};
-
-/** The default options for password generation policy. */
-export const DisabledPassphraseGeneratorPolicy: PassphraseGeneratorPolicy = Object.freeze({
-  minNumberWords: 0,
-  capitalize: false,
-  includeNumber: false,
-});
+import { PassphraseGeneratorPolicy } from "../types";
 
 /** Reduces a policy into an accumulator by accepting the most restrictive
  *  values from each policy.
@@ -23,7 +11,7 @@ export const DisabledPassphraseGeneratorPolicy: PassphraseGeneratorPolicy = Obje
  *  @param policy the policy to reduce
  *  @returns the most restrictive values between the policy and accumulator.
  */
-export function leastPrivilege(
+export function passphraseLeastPrivilege(
   acc: PassphraseGeneratorPolicy,
   policy: Policy,
 ): PassphraseGeneratorPolicy {
