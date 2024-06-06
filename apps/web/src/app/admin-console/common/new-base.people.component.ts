@@ -36,7 +36,7 @@ const MaxCheckedCount = 500;
  */
 @Directive()
 export abstract class NewBasePeopleComponent<
-  UserType extends ProviderUserUserDetailsResponse | OrganizationUserView,
+  UserView extends ProviderUserUserDetailsResponse | OrganizationUserView,
 > {
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
@@ -90,7 +90,7 @@ export abstract class NewBasePeopleComponent<
   abstract userType: typeof OrganizationUserType | typeof ProviderUserType;
   abstract userStatusType: typeof OrganizationUserStatusType | typeof ProviderUserStatusType;
 
-  protected dataSource = new TableDataSource<UserType>();
+  protected dataSource = new TableDataSource<UserView>();
 
   loading = true;
 
@@ -98,7 +98,7 @@ export abstract class NewBasePeopleComponent<
    * A hashmap that groups users by their status (invited/accepted/etc). This is used by the toggles to show
    * user counts and filter data by user status.
    */
-  statusMap = new Map<StatusType, UserType[]>();
+  statusMap = new Map<StatusType, UserView[]>();
 
   /**
    * The currently selected status filter, or null to show all active users.
@@ -113,12 +113,12 @@ export abstract class NewBasePeopleComponent<
   /**
    * All users, loaded from the server, before any filtering has been applied.
    */
-  protected allUsers: UserType[] = [];
+  protected allUsers: UserView[] = [];
 
   /**
    * Active users only, that is, users that are not in the revoked status.
    */
-  protected activeUsers: UserType[] = [];
+  protected activeUsers: UserView[] = [];
 
   protected searchControl = new FormControl("", { nonNullable: true });
 
@@ -141,13 +141,13 @@ export abstract class NewBasePeopleComponent<
       .subscribe((v) => (this.dataSource.filter = v));
   }
 
-  abstract edit(user: UserType): void;
-  abstract getUsers(): Promise<ListResponse<UserType> | UserType[]>;
+  abstract edit(user: UserView): void;
+  abstract getUsers(): Promise<ListResponse<UserView> | UserView[]>;
   abstract deleteUser(id: string): Promise<void>;
   abstract revokeUser(id: string): Promise<void>;
   abstract restoreUser(id: string): Promise<void>;
   abstract reinviteUser(id: string): Promise<void>;
-  abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
+  abstract confirmUser(user: UserView, publicKey: Uint8Array): Promise<void>;
 
   async load() {
     this.loading = true;
@@ -197,8 +197,7 @@ export abstract class NewBasePeopleComponent<
   }
 
   // TODO: remove any cast
-  // TODO: avoid ambiguous name UserType vs. this.userType
-  checkUser(user: UserType, select?: boolean) {
+  checkUser(user: UserView, select?: boolean) {
     (user as any).checked = select == null ? !(user as any).checked : select;
   }
 
@@ -220,7 +219,7 @@ export abstract class NewBasePeopleComponent<
     this.edit(null);
   }
 
-  protected async removeUserConfirmationDialog(user: UserType) {
+  protected async removeUserConfirmationDialog(user: UserView) {
     return this.dialogService.openSimpleDialog({
       title: this.userNamePipe.transform(user),
       content: { key: "removeUserConfirmation" },
@@ -228,7 +227,7 @@ export abstract class NewBasePeopleComponent<
     });
   }
 
-  async remove(user: UserType) {
+  async remove(user: UserView) {
     const confirmed = await this.removeUserConfirmationDialog(user);
     if (!confirmed) {
       return false;
@@ -249,7 +248,7 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = null;
   }
 
-  protected async revokeUserConfirmationDialog(user: UserType) {
+  protected async revokeUserConfirmationDialog(user: UserView) {
     return this.dialogService.openSimpleDialog({
       title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
       content: this.revokeWarningMessage(),
@@ -258,7 +257,7 @@ export abstract class NewBasePeopleComponent<
     });
   }
 
-  async revoke(user: UserType) {
+  async revoke(user: UserView) {
     const confirmed = await this.revokeUserConfirmationDialog(user);
 
     if (!confirmed) {
@@ -280,7 +279,7 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = null;
   }
 
-  async restore(user: UserType) {
+  async restore(user: UserView) {
     this.actionPromise = this.restoreUser(user.id);
     try {
       await this.actionPromise;
@@ -296,7 +295,7 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = null;
   }
 
-  async reinvite(user: UserType) {
+  async reinvite(user: UserView) {
     if (this.actionPromise != null) {
       return;
     }
@@ -315,8 +314,8 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = null;
   }
 
-  async confirm(user: UserType) {
-    function updateUser(self: NewBasePeopleComponent<UserType>) {
+  async confirm(user: UserView) {
+    function updateUser(self: NewBasePeopleComponent<UserView>) {
       user.status = self.userStatusType.Confirmed;
       const mapIndex = self.statusMap.get(self.userStatusType.Accepted).indexOf(user);
       if (mapIndex > -1) {
@@ -391,7 +390,7 @@ export abstract class NewBasePeopleComponent<
   /**
    * Remove a user row from the table and all related data sources
    */
-  protected removeUser(user: UserType) {
+  protected removeUser(user: UserView) {
     let index = this.dataSource.data.indexOf(user);
     if (index > -1) {
       this.dataSource.data.splice(index, 1);
