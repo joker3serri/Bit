@@ -36,7 +36,14 @@
       </a>
       <ng-container slot="end">
         <bit-item-action *ngIf="showAutofillButton">
-          <button type="button" bitBadge variant="primary">{{ "autoFill" | i18n }}</button>
+          <button
+            type="button"
+            bitBadge
+            variant="primary"
+            [appA11yTitle]="'autofillTitle' | i18n: cipher.name"
+          >
+            {{ "autoFill" | i18n }}
+          </button>
         </bit-item-action>
         <app-item-copy-actions [cipher]="cipher"></app-item-copy-actions>
         <app-item-more-options
