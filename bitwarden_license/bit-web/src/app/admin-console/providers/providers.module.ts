@@ -11,9 +11,13 @@ import { OssModule } from "@bitwarden/web-vault/app/oss.module";
 
 import {
   CreateClientOrganizationComponent,
-  ManageClientOrganizationSubscriptionComponent,
+  ManageClientOrganizationNameComponent,
   ManageClientOrganizationsComponent,
-} from "../../billing/providers/clients";
+  ManageClientOrganizationSubscriptionComponent,
+  ProviderPaymentMethodComponent,
+  ProviderSelectPaymentMethodDialogComponent,
+  ProviderSubscriptionComponent,
+} from "../../billing/providers";
 
 import { AddOrganizationComponent } from "./clients/add-organization.component";
 import { ClientsComponent } from "./clients/clients.component";
@@ -61,7 +65,11 @@ import { SetupComponent } from "./setup/setup.component";
     UserAddEditComponent,
     CreateClientOrganizationComponent,
     ManageClientOrganizationsComponent,
+    ManageClientOrganizationNameComponent,
     ManageClientOrganizationSubscriptionComponent,
+    ProviderSubscriptionComponent,
+    ProviderSelectPaymentMethodDialogComponent,
+    ProviderPaymentMethodComponent,
   ],
   providers: [WebProviderService, ProviderPermissionsGuard],
 })
