@@ -3360,14 +3360,5 @@
   },
   "contactYourOrgAdmin": {
     "message": "Items in deactivated organizations cannot be accessed. Contact your organization owner for assistance."
-  },
-  "identity": {
-    "message": "Identity"
-  },
-  "card": {
-    "message": "Card"
-  },
-  "loginOneWord": {
-    "message": "Login"
   }
 }
