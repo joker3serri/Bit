@@ -134,6 +134,7 @@ export abstract class NewBasePeopleComponent<
     protected dialogService: DialogService,
     protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
   ) {
+    // Connect the search input to the table dataSource filter input
     this.searchControl.valueChanges
       .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((v) => (this.dataSource.filter = v));
@@ -183,6 +184,10 @@ export abstract class NewBasePeopleComponent<
     this.loading = false;
   }
 
+  /**
+   * Filter the data source by user status.
+   * This overwrites dataSource.data because this filtering needs to apply first, before the search input
+   */
   filter(status: StatusType | null) {
     this.status = status;
     if (this.status != null) {
