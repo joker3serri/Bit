@@ -139,22 +139,22 @@ export class VaultPopupListFiltersService {
   readonly cipherTypes: ChipSelectOption<CipherType>[] = [
     {
       value: CipherType.Login,
-      label: this.i18nService.t("logins"),
+      label: this.i18nService.t("typeLogin"),
       icon: "bwi-globe",
     },
     {
       value: CipherType.Card,
-      label: this.i18nService.t("cards"),
+      label: this.i18nService.t("typeCard"),
       icon: "bwi-credit-card",
     },
     {
       value: CipherType.Identity,
-      label: this.i18nService.t("identities"),
+      label: this.i18nService.t("typeIdentity"),
       icon: "bwi-id-card",
     },
     {
       value: CipherType.SecureNote,
-      label: this.i18nService.t("notes"),
+      label: this.i18nService.t("note"),
       icon: "bwi-sticky-note",
     },
   ];
@@ -206,7 +206,7 @@ export class VaultPopupListFiltersService {
   /**
    * Folder array structured to be directly passed to `ChipSelectComponent`
    */
-  folders$: Observable<ChipSelectOption<string>[]> = combineLatest([
+  folders$: Observable<ChipSelectOption<FolderView>[]> = combineLatest([
     this.filters$.pipe(
       distinctUntilChanged(
         (previousFilter, currentFilter) =>
@@ -258,13 +258,15 @@ export class VaultPopupListFiltersService {
         nestedList: nestedFolders,
       });
     }),
-    map((folders) => folders.nestedList.map(this.convertToChipSelectOption.bind(this))),
+    map((folders) =>
+      folders.nestedList.map((f) => this.convertToChipSelectOption(f, "bwi-folder")),
+    ),
   );
 
   /**
    * Collection array structured to be directly passed to `ChipSelectComponent`
    */
-  collections$: Observable<ChipSelectOption<string>[]> = combineLatest([
+  collections$: Observable<ChipSelectOption<CollectionView>[]> = combineLatest([
     this.filters$.pipe(
       distinctUntilChanged(
         (previousFilter, currentFilter) =>
@@ -292,7 +294,9 @@ export class VaultPopupListFiltersService {
         nestedList: nestedCollections,
       });
     }),
-    map((collections) => collections.nestedList.map(this.convertToChipSelectOption.bind(this))),
+    map((collections) =>
+      collections.nestedList.map((c) => this.convertToChipSelectOption(c, "bwi-collection")),
+    ),
   );
 
   /**
@@ -300,13 +304,14 @@ export class VaultPopupListFiltersService {
    */
   private convertToChipSelectOption<T extends ITreeNodeObject>(
     item: TreeNode<T>,
+    icon: string,
   ): ChipSelectOption<T> {
     return {
       value: item.node,
       label: item.node.name,
-      icon: "bwi-folder", // Organization & Folder icons are the same
+      icon,
       children: item.children
-        ? item.children.map(this.convertToChipSelectOption.bind(this))
+        ? item.children.map((i) => this.convertToChipSelectOption(i, icon))
         : undefined,
     };
   }
