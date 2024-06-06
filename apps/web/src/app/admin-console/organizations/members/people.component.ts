@@ -131,9 +131,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
       dialogService,
       organizationManagementPreferencesService,
     );
-  }
 
-  async ngOnInit() {
     const organization$ = this.route.params.pipe(
       concatMap((params) => this.organizationService.get$(params.organizationId)),
       shareReplay({ refCount: true, bufferSize: 1 }),
