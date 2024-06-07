@@ -109,11 +109,6 @@ export class MemberDialogComponent implements OnDestroy {
   protected canAssignAccessToAnyCollection$: Observable<boolean>;
 
   protected permissionsGroup = this.formBuilder.group({
-    manageAssignedCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
-      manageAssignedCollections: false,
-      editAssignedCollections: false,
-      deleteAssignedCollections: false,
-    }),
     manageAllCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
       manageAllCollections: false,
       createNewCollections: false,
@@ -311,13 +306,6 @@ export class MemberDialogComponent implements OnDestroy {
     this.showNoMasterPasswordWarning =
       userDetails.status > OrganizationUserStatusType.Invited &&
       userDetails.hasMasterPassword === false;
-    const assignedCollectionsPermissions = {
-      editAssignedCollections: userDetails.permissions.editAssignedCollections,
-      deleteAssignedCollections: userDetails.permissions.deleteAssignedCollections,
-      manageAssignedCollections:
-        userDetails.permissions.editAssignedCollections &&
-        userDetails.permissions.deleteAssignedCollections,
-    };
     const allCollectionsPermissions = {
       createNewCollections: userDetails.permissions.createNewCollections,
       editAnyCollection: userDetails.permissions.editAnyCollection,
@@ -337,7 +325,6 @@ export class MemberDialogComponent implements OnDestroy {
         managePolicies: userDetails.permissions.managePolicies,
         manageUsers: userDetails.permissions.manageUsers,
         manageResetPassword: userDetails.permissions.manageResetPassword,
-        manageAssignedCollectionsGroup: assignedCollectionsPermissions,
         manageAllCollectionsGroup: allCollectionsPermissions,
       });
     }
@@ -408,10 +395,6 @@ export class MemberDialogComponent implements OnDestroy {
       editAnyCollection: this.permissionsGroup.value.manageAllCollectionsGroup.editAnyCollection,
       deleteAnyCollection:
         this.permissionsGroup.value.manageAllCollectionsGroup.deleteAnyCollection,
-      editAssignedCollections:
-        this.permissionsGroup.value.manageAssignedCollectionsGroup.editAssignedCollections,
-      deleteAssignedCollections:
-        this.permissionsGroup.value.manageAssignedCollectionsGroup.deleteAssignedCollections,
     };
 
     return Object.assign(p, partialPermissions);

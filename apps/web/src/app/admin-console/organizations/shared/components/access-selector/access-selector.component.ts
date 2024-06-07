@@ -318,10 +318,6 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     return this.permissionList.find((p) => p.perm == perm)?.labelId;
   }
 
-  protected accessAllLabelId(item: AccessItemView) {
-    return item.type == AccessItemType.Group ? "groupAccessAll" : "memberAccessAll";
-  }
-
   protected canEditItemPermission(item: AccessItemView) {
     return this.permissionMode == PermissionMode.Edit && !item.readonly;
   }
