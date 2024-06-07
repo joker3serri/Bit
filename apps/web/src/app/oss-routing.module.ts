@@ -9,7 +9,12 @@ import {
   UnauthGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
-import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
+import {
+  AnonLayoutWrapperComponent,
+  AnonLayoutWrapperData,
+  RegistrationStartComponent,
+  RegistrationStartSecondaryComponent,
+} from "@bitwarden/auth/angular";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -195,6 +200,23 @@ const routes: Routes = [
     path: "",
     component: AnonLayoutWrapperComponent,
     children: [
+      {
+        path: "signup",
+        canActivate: [unauthGuardFn()],
+        data: { pageTitle: "createAccount", titleId: "createAccount" } satisfies DataProperties &
+          AnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: RegistrationStartComponent,
+          },
+          {
+            path: "",
+            component: RegistrationStartSecondaryComponent,
+            outlet: "secondary",
+          },
+        ],
+      },
       {
         path: "recover-2fa",
         canActivate: [unauthGuardFn()],
