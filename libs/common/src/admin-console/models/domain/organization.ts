@@ -203,7 +203,7 @@ export class Organization {
     flexibleCollectionsV1Enabled: boolean,
     restrictProviderAccessFlagEnabled: boolean,
   ) {
-    // Before Flexible Collections, any admin or anyone with editAnyCollection permission could edit all ciphers
+    // Before Flexible Collections V1, any admin or anyone with editAnyCollection permission could edit all ciphers
     if (!flexibleCollectionsV1Enabled) {
       return this.isAdmin || this.permissions.editAnyCollection;
     }
