@@ -8,10 +8,12 @@ import {
   ValidatorFn,
   Validators,
 } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-api.service";
+import { RegisterSendVerificationEmailRequest } from "@bitwarden/common/auth/models/request/registration/register-send-verification-email.request";
 import { RegionConfig, Region } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
@@ -86,6 +88,8 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
+    private accountApiService: AccountApiService,
+    private router: Router,
   ) {
     // TODO: this needs to update if user selects self hosted
     this.isSelfHost = platformUtilsService.isSelfHost();
@@ -114,8 +118,21 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // TODO: Implement registration logic
+    const request: RegisterSendVerificationEmailRequest = new RegisterSendVerificationEmailRequest(
+      this.email.value,
+      this.name.value,
+      false,
+    );
 
+    const result = await this.accountApiService.registerSendVerificationEmail(request);
+
+    if (typeof result === "string") {
+      // we received a token, so the env doesn't support email verification
+      // send the user directly to the finish registration page with the token as a query param
+      await this.router.navigate(["/finish-signup"], { queryParams: { token: result } });
+    }
+
+    // Result is null, so email verification is required
     this.state = RegistrationStartState.CHECK_EMAIL;
     this.registrationStartStateChange.emit(this.state);
   };
