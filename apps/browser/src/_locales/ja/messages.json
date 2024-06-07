@@ -166,14 +166,26 @@
   "confirmIdentity": {
     "message": "続行するには本人確認を行ってください。"
   },
-  "account": {
-    "message": "アカウント"
-  },
   "changeMasterPassword": {
     "message": "マスターパスワードの変更"
   },
   "continueToWebApp": {
     "message": "ウェブアプリに進みますか?"
+  },
+  "continueToWebAppDesc": {
+    "message": "Bitwarden アカウントの機能をウェブアプリでご確認ください。"
+  },
+  "continueToHelpCenter": {
+    "message": "ヘルプセンターに進みますか?"
+  },
+  "continueToHelpCenterDesc": {
+    "message": "Bitwarden のヘルプセンターで使用方法の詳細をご覧ください。"
+  },
+  "continueToBrowserExtensionStore": {
+    "message": "ブラウザの拡張機能ストアに進みますか？"
+  },
+  "continueToBrowserExtensionStoreDesc": {
+    "message": "Bitwarden を他のユーザーにもおすすめしましょう。ブラウザーの拡張機能ストアにアクセスして、レビューをしてください。"
   },
   "changeMasterPasswordOnWebConfirmation": {
     "message": "Bitwarden ウェブアプリでマスターパスワードを変更できます。"
@@ -192,8 +204,44 @@
   "logOut": {
     "message": "ログアウト"
   },
+  "aboutBitwarden": {
+    "message": "Bitwarden について"
+  },
   "about": {
     "message": "アプリについて"
+  },
+  "moreFromBitwarden": {
+    "message": "Bitwarden の詳細"
+  },
+  "continueToBitwardenDotCom": {
+    "message": "bitwarden.com に進みますか？"
+  },
+  "bitwardenForBusiness": {
+    "message": "Bitwarden for Business"
+  },
+  "bitwardenAuthenticator": {
+    "message": "Bitwarden Authenticator"
+  },
+  "continueToAuthenticatorPageDesc": {
+    "message": "Bitwarden Authenticator では認証キーを保存し、2段階認証フロー用の TOTP コードを生成できます。詳細は bitwarden.com ウェブサイトをご覧ください。"
+  },
+  "bitwardenSecretsManager": {
+    "message": "Bitwarden シークレットマネージャー"
+  },
+  "continueToSecretsManagerPageDesc": {
+    "message": "Bitwarden シークレットマネージャーで開発者向けシークレットを安全に保管、管理、共有できます。詳細は bitwarden.com ウェブサイトをご覧ください。"
+  },
+  "passwordlessDotDev": {
+    "message": "Passwordless.dev"
+  },
+  "continueToPasswordlessDotDevPageDesc": {
+    "message": "Passwordless.dev でスムーズで安全なログイン体験を無料で提供します。bitwarden.com のウェブサイトで詳細をご覧ください。"
+  },
+  "freeBitwardenFamilies": {
+    "message": "無料 Bitwarden ファミリー"
+  },
+  "freeBitwardenFamiliesPageDesc": {
+    "message": "無料 Bitwarden ファミリー特典を受け取る資格があります。ウェブアプリで受け取りできます。"
   },
   "version": {
     "message": "バージョン"
@@ -253,8 +301,8 @@
   "passGenInfo": {
     "message": "ログインのために強固なユニークパスワードを自動的に生成します。"
   },
-  "bitWebVault": {
-    "message": "Bitwarden ウェブ保管庫"
+  "bitWebVaultApp": {
+    "message": "Bitwarden ウェブアプリ"
   },
   "importItems": {
     "message": "アイテムのインポート"
@@ -341,6 +389,15 @@
   "favorite": {
     "message": "お気に入り"
   },
+  "unfavorite": {
+    "message": "お気に入り解除"
+  },
+  "itemAddedToFavorites": {
+    "message": "アイテムをお気に入りに追加しました"
+  },
+  "itemRemovedFromFavorites": {
+    "message": "アイテムをお気に入りから削除しました"
+  },
   "notes": {
     "message": "メモ"
   },
@@ -361,6 +418,9 @@
   },
   "launch": {
     "message": "開く"
+  },
+  "launchWebsite": {
+    "message": "ウェブサイトを開く"
   },
   "website": {
     "message": "ウェブサイト"
@@ -551,6 +611,9 @@
   "loggedOut": {
     "message": "ログアウトしました"
   },
+  "loggedOutDesc": {
+    "message": "アカウントからログアウトしました。"
+  },
   "loginExpired": {
     "message": "ログインセッションの有効期限が切れています。"
   },
@@ -714,6 +777,9 @@
   "notificationUnlock": {
     "message": "ロック解除"
   },
+  "additionalOptions": {
+    "message": "追加オプション"
+  },
   "enableContextMenuItem": {
     "message": "コンテキストメニューオプションを表示"
   },
@@ -751,11 +817,38 @@
     "message": "Solarized ダーク",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
+  "exportFrom": {
+    "message": "エクスポート元"
+  },
   "exportVault": {
     "message": "保管庫のエクスポート"
   },
   "fileFormat": {
     "message": "ファイル形式"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "エクスポートするファイルはパスワードで保護され、復号するにはファイルパスワードが必要になります。"
+  },
+  "filePassword": {
+    "message": "ファイルパスワード"
+  },
+  "exportPasswordDescription": {
+    "message": "このパスワードはこのファイルのエクスポートとインポート時に使用します"
+  },
+  "accountRestrictedOptionDescription": {
+    "message": "アカウントのユーザー名とマスターパスワードから得られる暗号化キーを使用してエクスポートするデータを暗号化し、現在の Bitwarden アカウントのみがインポートできるよう制限します。"
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "エクスポートを暗号化するためのファイルパスワードを設定します。そのパスワードを使用して、任意の Bitwarden アカウントにインポートします。"
+  },
+  "exportTypeHeading": {
+    "message": "エクスポートの種類"
+  },
+  "accountRestricted": {
+    "message": "アカウント制限"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "「ファイルパスワード」と「ファイルパスワードの確認」が一致しません。"
   },
   "warning": {
     "message": "警告",
@@ -779,11 +872,8 @@
   "shared": {
     "message": "共有"
   },
-  "learnOrg": {
-    "message": "組織について学ぶ"
-  },
-  "learnOrgConfirmation": {
-    "message": "Bitwarden は組織を使って保管庫アイテムを他の人と共有することができます。詳細は bitwarden.com ウェブサイトをご覧ください。"
+  "bitwardenForBusinessPageDesc": {
+    "message": "Bitwarden for Business は組織を使って保管庫アイテムを他の人と共有することができます。詳細は bitwarden.com ウェブサイトをご覧ください。"
   },
   "moveToOrganization": {
     "message": "組織に移動"
@@ -1031,6 +1121,15 @@
   },
   "selfHostedEnvironmentFooter": {
     "message": "セルフホスティングしている Bitwarden のベース URL を指定してください。"
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "オンプレミスホストした Bitwarden のベース URL を指定してください。例: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "高度な設定では、各サービスのベース URL を個別に指定できます。"
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "ベース サーバー URL または少なくとも 1 つのカスタム環境を追加する必要があります。"
   },
   "customEnvironment": {
     "message": "カスタム環境"
@@ -1344,6 +1443,15 @@
   "collections": {
     "message": "コレクション"
   },
+  "nCollections": {
+    "message": "$COUNT$ 個のコレクション",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "favorites": {
     "message": "お気に入り"
   },
@@ -1561,6 +1669,9 @@
   "restoredItem": {
     "message": "リストアされたアイテム"
   },
+  "alreadyHaveAccount": {
+    "message": "すでにアカウントをお持ちですか？"
+  },
   "vaultTimeoutLogOutConfirmation": {
     "message": "ログアウトすると保管庫へのすべてのアクセスが制限され、タイムアウト期間後にオンライン認証が必要になります。 この設定を使用してもよろしいですか？"
   },
@@ -1569,6 +1680,9 @@
   },
   "autoFillAndSave": {
     "message": "自動入力して保存"
+  },
+  "fillAndSave": {
+    "message": "入力して保存"
   },
   "autoFillSuccessAndSavedUri": {
     "message": "アイテムを自動入力して URI を保存しました"
@@ -1665,6 +1779,12 @@
   },
   "ok": {
     "message": "OK"
+  },
+  "errorRefreshingAccessToken": {
+    "message": "アクセストークンの更新エラー"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "リフレッシュトークンや API キーが見つかりませんでした。ログアウトして再度ログインしてください。"
   },
   "desktopSyncVerificationTitle": {
     "message": "デスクトップ同期の検証"
@@ -2134,6 +2254,18 @@
       }
     }
   },
+  "exportingOrganizationVaultTitle": {
+    "message": "組織保管庫のエクスポート"
+  },
+  "exportingOrganizationVaultDesc": {
+    "message": "$ORGANIZATION$ に関連付けられた組織保管庫のみがエクスポートされます。個々の保管庫または他の組織にあるアイテムは含まれません。",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "ACME Moving Co."
+      }
+    }
+  },
   "error": {
     "message": "エラー"
   },
@@ -2495,6 +2627,27 @@
   },
   "ssoIdentifierRequired": {
     "message": "組織の SSO ID が必要です。"
+  },
+  "creatingAccountOn": {
+    "message": "アカウント作成："
+  },
+  "checkYourEmail": {
+    "message": "メールをご確認ください"
+  },
+  "followTheLinkInTheEmailSentTo": {
+    "message": "アカウントの作成を続けるには"
+  },
+  "andContinueCreatingYourAccount": {
+    "message": "に送られたメールのリンクを開いてください。"
+  },
+  "noEmail": {
+    "message": "メールがありませんか?"
+  },
+  "goBack": {
+    "message": "戻って"
+  },
+  "toEditYourEmailAddress": {
+    "message": "メールアドレスを編集してください。"
   },
   "eu": {
     "message": "EU",
@@ -3137,6 +3290,103 @@
     "message": "で実行すると表示できるようになります。",
     "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
   },
+  "autofillSuggestions": {
+    "message": "候補を自動入力する"
+  },
+  "autofillSuggestionsTip": {
+    "message": "自動入力するためにこのサイトのログインアイテムを保存します"
+  },
+  "yourVaultIsEmpty": {
+    "message": "保管庫が空です"
+  },
+  "noItemsMatchSearch": {
+    "message": "検索条件に一致するアイテムがありません"
+  },
+  "clearFiltersOrTryAnother": {
+    "message": "フィルタをクリアするか、別の検索ワードをお試しください"
+  },
+  "copyInfoLabel": {
+    "message": "$ITEMNAME$ の情報をコピー",
+    "description": "Aria label for a button that opens a menu with options to copy information from an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "copyInfoTitle": {
+    "message": "情報をコピー - $ITEMNAME$",
+    "description": "Title for a button that opens a menu with options to copy information from an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "copyNoteLabel": {
+    "message": "$ITEMNAME$ のメモをコピー",
+    "description": "Aria label for a button copies a note to the clipboard.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Note Item"
+      }
+    }
+  },
+  "copyNoteTitle": {
+    "message": "メモをコピー - $ITEMNAME$",
+    "description": "Title for a button copies a note to the clipboard.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Note Item"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "$ITEMNAME$ のその他のオプション",
+    "description": "Aria label for a button that opens a menu with more options for an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "moreOptionsTitle": {
+    "message": "その他のオプション - $ITEMNAME$",
+    "description": "Title for a button that opens a menu with more options for an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "viewItemTitle": {
+    "message": "アイテムを表示 - $ITEMNAME$",
+    "description": "Title for a link that opens a view for an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "assignCollections": {
+    "message": "コレクションを割り当て"
+  },
+  "copyEmail": {
+    "message": "メールアドレスをコピー"
+  },
+  "copyPhone": {
+    "message": "電話番号をコピー"
+  },
+  "copyAddress": {
+    "message": "住所をコピー"
+  },
   "adminConsole": {
     "message": "管理コンソール"
   },
@@ -3155,7 +3405,46 @@
   "errorAssigningTargetFolder": {
     "message": "ターゲットフォルダーの割り当てに失敗しました。"
   },
+  "viewItemsIn": {
+    "message": "$NAME$ のアイテムを表示",
+    "description": "Button to view the contents of a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "backTo": {
+    "message": "$NAME$ に戻る",
+    "description": "Navigate back to a previous folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
   "new": {
     "message": "新規作成"
+  },
+  "removeItem": {
+    "message": "$NAME$ を削除",
+    "description": "Remove a selected option, such as a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "itemsWithNoFolder": {
+    "message": "フォルダーがないアイテム"
+  },
+  "organizationIsDeactivated": {
+    "message": "組織は無効化されています"
+  },
+  "contactYourOrgAdmin": {
+    "message": "無効化された組織のアイテムにアクセスすることはできません。組織の所有者に連絡してください。"
   }
 }

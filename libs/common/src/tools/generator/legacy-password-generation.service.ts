@@ -8,6 +8,8 @@ import {
   of,
   concat,
   Observable,
+  filter,
+  timeout,
 } from "rxjs";
 
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
@@ -38,11 +40,11 @@ import {
 import {
   GeneratedPasswordHistory,
   PasswordGenerationOptions,
-  PasswordGenerationService,
   PasswordGeneratorOptions,
   PasswordGeneratorPolicy,
   PasswordGeneratorStrategy,
 } from "./password";
+import { CryptoServiceRandomizer } from "./random";
 
 type MappedOptions = {
   generator: GeneratorNavigation;
@@ -58,17 +60,15 @@ export function legacyPasswordGenerationServiceFactory(
   accountService: AccountService,
   stateProvider: StateProvider,
 ): PasswordGenerationServiceAbstraction {
-  // FIXME: Once the password generation service is replaced with this service
-  // in the clients, factor out the deprecated service in its entirety.
-  const deprecatedService = new PasswordGenerationService(cryptoService, null, null);
+  const randomizer = new CryptoServiceRandomizer(cryptoService);
 
   const passwords = new DefaultGeneratorService(
-    new PasswordGeneratorStrategy(deprecatedService, stateProvider),
+    new PasswordGeneratorStrategy(randomizer, stateProvider),
     policyService,
   );
 
   const passphrases = new DefaultGeneratorService(
-    new PassphraseGeneratorStrategy(deprecatedService, stateProvider),
+    new PassphraseGeneratorStrategy(randomizer, stateProvider),
     policyService,
   );
 
@@ -382,6 +382,13 @@ export class LegacyPasswordGenerationService implements PasswordGenerationServic
   getHistory() {
     const history = this.accountService.activeAccount$.pipe(
       concatMap((account) => this.history.credentials$(account.id)),
+      timeout({
+        // timeout after 1 second
+        each: 1000,
+        with() {
+          return [];
+        },
+      }),
       map((history) => history.map(toGeneratedPasswordHistory)),
     );
 
@@ -390,13 +397,23 @@ export class LegacyPasswordGenerationService implements PasswordGenerationServic
 
   async addHistory(password: string) {
     const account = await firstValueFrom(this.accountService.activeAccount$);
-    // legacy service doesn't distinguish credential types
-    await this.history.track(account.id, password, "password");
+    if (account?.id) {
+      // legacy service doesn't distinguish credential types
+      await this.history.track(account.id, password, "password");
+    }
   }
 
   clear() {
     const history$ = this.accountService.activeAccount$.pipe(
+      filter((account) => !!account?.id),
       concatMap((account) => this.history.clear(account.id)),
+      timeout({
+        // timeout after 1 second
+        each: 1000,
+        with() {
+          return [];
+        },
+      }),
       map((history) => history.map(toGeneratedPasswordHistory)),
     );
 

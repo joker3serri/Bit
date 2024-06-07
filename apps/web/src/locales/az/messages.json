@@ -581,8 +581,14 @@
   "accessLevel": {
     "message": "Müraciət səviyyəsi"
   },
+  "accessing": {
+    "message": "Müraciət edilir"
+  },
   "loggedOut": {
     "message": "Çıxış edildi"
+  },
+  "loggedOutDesc": {
+    "message": "Hesabınızdan çıxış etmisiniz."
   },
   "loginExpired": {
     "message": "Seansın müddəti bitdi."
@@ -1047,6 +1053,12 @@
   "copyUuid": {
     "message": "UUID-ni kopyala"
   },
+  "errorRefreshingAccessToken": {
+    "message": "Müraciət tokeni təzələmə xətası"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "Təzələmə tokeni və ya API açarlar tapılmadı. Lütfən çıxış edib yenidən giriş etməyə çalışın."
+  },
   "warning": {
     "message": "Xəbərdarlıq"
   },
@@ -1340,6 +1352,9 @@
   },
   "accountDeletedDesc": {
     "message": "Hesabınız bağlandı və bütün əlaqəli verilənlər silindi."
+  },
+  "deleteOrganizationWarning": {
+    "message": "Təşkilatınızı silmək birdəfəlik prosesdir. Bu əməliyyatın geri dönüşü yoxdur."
   },
   "myAccount": {
     "message": "Hesabım"
@@ -1710,11 +1725,11 @@
   "twoFactorDuoDesc": {
     "message": "Duo Admin panelinizdən Bitwarden tətbiq məlumatlarını daxil edin."
   },
-  "twoFactorDuoIntegrationKey": {
-    "message": "İnteqrasiya açarı"
+  "twoFactorDuoClientId": {
+    "message": "Müştəri kimliyi"
   },
-  "twoFactorDuoSecretKey": {
-    "message": "Sirr açarı"
+  "twoFactorDuoClientSecret": {
+    "message": "Müştəri sirri"
   },
   "twoFactorDuoApiHostname": {
     "message": "API Host adı"
@@ -3241,6 +3256,27 @@
   "device": {
     "message": "Cihaz"
   },
+  "creatingAccountOn": {
+    "message": "Hesab yaradılır"
+  },
+  "checkYourEmail": {
+    "message": "E-poçtunuzu yoxlayın"
+  },
+  "followTheLinkInTheEmailSentTo": {
+    "message": "Göndərilən e-poçtdakı keçidi izləyin"
+  },
+  "andContinueCreatingYourAccount": {
+    "message": "və hesabınızı yaratmağa davam edin."
+  },
+  "noEmail": {
+    "message": "E-poçt yoxdur?"
+  },
+  "goBack": {
+    "message": "Geri qayıt"
+  },
+  "toEditYourEmailAddress": {
+    "message": "və e-poçt ünvanına düzəliş et."
+  },
   "view": {
     "message": "Bax"
   },
@@ -3387,6 +3423,9 @@
   },
   "deleteRecoverConfirmDesc": {
     "message": "Bitwarden hesabınızı silmək üçün tələb göndərdiniz. Təsdiqləmək üçün aşağıdakı düyməyə basın."
+  },
+  "deleteRecoverOrgConfirmDesc": {
+    "message": "Bitwarden təşkilatınızın silinməsini tələb etdiniz."
   },
   "myOrganization": {
     "message": "Təşkilatım"
@@ -5556,6 +5595,39 @@
   "rotateBillingSyncTokenTitle": {
     "message": "Faktura sinxr tokenini döndərmək, əvvəlki tokeni yararsız edəcək."
   },
+  "selfHostedServer": {
+    "message": "öz-özünə sahiblik edən"
+  },
+  "customEnvironment": {
+    "message": "Özəl mühit"
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "Şirkət daxili sahiblik edən Bitwarden quraşdırmasının təməl URL-sini qeyd edin. Nümunə: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "Qabaqcıl konfiqurasiya üçün hər xidmətin təməl URL-sini müstəqil olaraq qeyd edə bilərsiniz."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "Təməl server URL-sini və ya ən azı bir özəl mühiti əlavə etməlisiniz."
+  },
+  "apiUrl": {
+    "message": "API server URL-si"
+  },
+  "webVaultUrl": {
+    "message": "Veb anbar server URL-si"
+  },
+  "identityUrl": {
+    "message": "Kimlik server URL-si"
+  },
+  "notificationsUrl": {
+    "message": "Bildiriş server URL-si"
+  },
+  "iconsUrl": {
+    "message": "İkon server URL-si"
+  },
+  "environmentSaved": {
+    "message": "Mühit URL-ləri saxlanıldı"
+  },
   "selfHostingTitle": {
     "message": "Öz-özünə sahiblik etmə"
   },
@@ -7677,13 +7749,6 @@
     "message": "bir ödəniş üsulu əlavə edin",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To maintain your subscription for $ORG$, add a payment method.'"
   },
-  "collectionEnhancementsDesc": {
-    "message": "Əlavə rahatlıq üçün yeni ayarlar və icazələr əlavə edin. Menecer rolunu \"idarə edə bilər\" icazəsi ilə əvəz edin və istifadəçilərin kolleksiyalar yaratmasına imkan verən və kolleksiyalara administrativ müraciəti məhdudlaşdıran seçimlər təqdim edin.",
-    "description": "This describes new features and improvements for user roles and collections"
-  },
-  "collectionEnhancementsLearnMore": {
-    "message": "Kolleksiya idarəsi haqqında daha ətraflı"
-  },
   "organizationInformation": {
     "message": "Təşkilat məlumatları"
   },
@@ -7695,12 +7760,6 @@
   },
   "smFreeTrialConfirmationEmail": {
     "message": "E-poçtunuza bir təsdiq məktubu göndərdik "
-  },
-  "confirmCollectionEnhancementsDialogTitle": {
-    "message": "Bu əməliyyatın geri dönüşü yoxdur"
-  },
-  "confirmCollectionEnhancementsDialogContent": {
-    "message": "Bu özəlliyin işə salınması, menecer rolunu ləğv edəcək və onu \"İdarə edə bilər\" icazəsi ilə əvəz edəcək. Bu bir neçə dəqiqə çəkəcək. Tamamlanana qədər heç bir təşkilat dəyişikliyi etməyin. Davam etmək istədiyinizə əminsiniz?"
   },
   "sorryToSeeYouGo": {
     "message": "Getməyinizə məyus olduq! Nə üçün ləğv etdiyinizi paylaşmaqla Bitwarden-i təkmilləşdirməyə kömək edin.",
@@ -8193,6 +8252,40 @@
   "manageBillingFromProviderPortalMessage": {
     "message": "Fakturanı \"Provayder Portalı\"ndan idarə et"
   },
+  "viewItemsIn": {
+    "message": "$NAME$ daxilindəki elementlərə bax",
+    "description": "Button to view the contents of a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "backTo": {
+    "message": "Geri qayıt: $NAME$",
+    "description": "Navigate back to a previous folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "back": {
+    "message": "Geri",
+    "description": "Button text to navigate back"
+  },
+  "removeItem": {
+    "message": "Sil: $NAME$",
+    "description": "Remove a selected option, such as a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
   "viewInfo": {
     "message": "Məlumata bax"
   },
@@ -8223,6 +8316,12 @@
       }
     }
   },
+  "lowKDFIterationsBanner": {
+    "message": "Aşağı KDF iterasiyaları. Hesabınızın güvənliyini təkmilləşdirmək üçün iterasiyaları artırın."
+  },
+  "changeKDFSettings": {
+    "message": "KDF ayarlarını dəyişdir"
+  },
   "secureYourInfrastructure": {
     "message": "İnfrastrukturunuzu qoruyun"
   },
@@ -8234,5 +8333,26 @@
   },
   "upgradeOrganizationCloseSecurityGapsDesc": {
     "message": "Təkmil izləmə üçün ödənişli plana yüksəldərək təhlükəsizlik üzrə zəif nöqtələri qabaqlayın."
+  },
+  "approveAllRequests": {
+    "message": "Bütün tələbləri təsdiqlə"
+  },
+  "allLoginRequestsApproved": {
+    "message": "Bütün giriş tələbləri təsdiqləndi"
+  },
+  "payPal": {
+    "message": "PayPal"
+  },
+  "bitcoin": {
+    "message": "Bitcoin"
+  },
+  "updatedTaxInformation": {
+    "message": "Güncəlllənən vergi məlumatı"
+  },
+  "unverified": {
+    "message": "Doğrulanmayıb"
+  },
+  "verified": {
+    "message": "Doğrulandı"
   }
 }
