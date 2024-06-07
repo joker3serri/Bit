@@ -134,7 +134,6 @@ export function mapGroupToAccessItemView(group: GroupView): AccessItemView {
     type: AccessItemType.Group,
     listName: group.name,
     labelName: group.name,
-    readonly: false,
   };
 }
 
@@ -148,6 +147,5 @@ export function mapUserToAccessItemView(user: OrganizationUserUserDetailsRespons
     listName: user.name?.length > 0 ? `${user.name} (${user.email})` : user.email,
     labelName: user.name ?? user.email,
     status: user.status,
-    readonly: false,
   };
 }
