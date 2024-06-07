@@ -3727,6 +3727,15 @@
   "nothingSelected": {
     "message": "You have not selected anything."
   },
+  "receiveMarketingEmails": {
+    "message": "Get emails from Bitwarden for announcements, advice, and research opportunities."
+  },
+  "unsubscribe": {
+    "message": "Unsubscribe"
+  },
+  "atAnyTime": {
+    "message": "at any time."
+  },
   "acceptPolicies": {
     "message": "By checking this box you agree to the following:"
   },

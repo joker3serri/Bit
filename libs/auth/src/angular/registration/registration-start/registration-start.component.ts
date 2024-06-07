@@ -3,7 +3,6 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/cor
 import {
   AbstractControl,
   FormBuilder,
-  FormControl,
   ReactiveFormsModule,
   ValidatorFn,
   Validators,
@@ -62,20 +61,19 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
     name: [""],
-    acceptPolicies: [false, [this.acceptPoliciesValidator()]],
-    selectedRegion: [null],
+    receiveMarketingEmails: [false, [this.receiveMarketingEmailsValidator()]],
   });
 
-  get email(): FormControl {
-    return this.formGroup.get("email") as FormControl;
+  get email() {
+    return this.formGroup.controls.email;
   }
 
-  get name(): FormControl {
-    return this.formGroup.get("name") as FormControl;
+  get name() {
+    return this.formGroup.controls.name;
   }
 
-  get acceptPolicies(): FormControl {
-    return this.formGroup.get("acceptPolicies") as FormControl;
+  get receiveMarketingEmails() {
+    return this.formGroup.controls.receiveMarketingEmails;
   }
 
   emailReadonly: boolean = false;
@@ -100,6 +98,8 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.registrationStartStateChange.emit(this.state);
 
     this.listenForQueryParamChanges();
+
+    // TODO: calculate default value for receiveMarketingEmails based on region
   }
 
   private listenForQueryParamChanges() {
@@ -121,7 +121,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     const request: RegisterSendVerificationEmailRequest = new RegisterSendVerificationEmailRequest(
       this.email.value,
       this.name.value,
-      false,
+      this.receiveMarketingEmails.value,
     );
 
     const result = await this.accountApiService.registerSendVerificationEmail(request);
@@ -156,7 +156,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.registrationStartStateChange.emit(this.state);
   }
 
-  private acceptPoliciesValidator(): ValidatorFn {
+  private receiveMarketingEmailsValidator(): ValidatorFn {
     return (control: AbstractControl) => {
       const ctrlValue = control.value;
 
