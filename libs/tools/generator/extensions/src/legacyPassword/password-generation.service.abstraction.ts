@@ -1,8 +1,10 @@
 import { Observable } from "rxjs";
 
-import { PasswordGeneratorPolicyOptions } from "../../../admin-console/models/domain/password-generator-policy-options";
-import { GeneratedPasswordHistory } from "../password/generated-password-history";
-import { PasswordGeneratorOptions } from "../password/password-generator-options";
+import { PasswordGeneratorPolicyOptions } from "@bitwarden/common/admin-console/models/domain/password-generator-policy-options";
+
+import { GeneratedPasswordHistory } from "../history";
+
+import { PasswordGeneratorOptions } from "./password-generator-options";
 
 /** @deprecated Use {@link GeneratorService} with a password or passphrase {@link GeneratorStrategy} instead. */
 export abstract class PasswordGenerationServiceAbstraction {

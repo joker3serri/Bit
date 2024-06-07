@@ -1,6 +1,7 @@
-import { PolicyEvaluator } from "../abstractions";
+import { PolicyEvaluator } from "@bitwarden/generator-core";
 
-import { DefaultGeneratorNavigation, GeneratorNavigation } from "./generator-navigation";
+import { DefaultGeneratorNavigation } from "./default-generator-navigation";
+import { GeneratorNavigation } from "./generator-navigation";
 import { GeneratorNavigationPolicy } from "./generator-navigation-policy";
 
 /** Enforces policy for generator navigation options.

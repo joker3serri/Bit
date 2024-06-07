@@ -1,8 +1,11 @@
-import { CatchallGenerationOptions } from "./catchall-generator-options";
-import { EffUsernameGenerationOptions } from "./eff-username-generator-options";
-import { ForwarderId, RequestOptions } from "./options/forwarder-options";
-import { UsernameGeneratorType } from "./options/generator-options";
-import { SubaddressGenerationOptions } from "./subaddress-generator-options";
+import {
+  ForwarderId,
+  RequestOptions,
+  CatchallGenerationOptions,
+  EffUsernameGenerationOptions,
+  SubaddressGenerationOptions,
+  UsernameGeneratorType,
+} from "@bitwarden/generator-core";
 
 export type UsernameGeneratorOptions = EffUsernameGenerationOptions &
   SubaddressGenerationOptions &

@@ -1,16 +1,17 @@
 import { BehaviorSubject, Observable, firstValueFrom, map } from "rxjs";
 
-import { PolicyService } from "../../../admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "../../../admin-console/enums";
-import { StateProvider } from "../../../platform/state";
-import { UserId } from "../../../types/guid";
-import { GeneratorNavigationService } from "../abstractions/generator-navigation.service.abstraction";
-import { GENERATOR_SETTINGS } from "../key-definitions";
-import { distinctIfShallowMatch, reduceCollection } from "../rx-operators";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { StateProvider } from "@bitwarden/common/platform/state";
+import { distinctIfShallowMatch, reduceCollection } from "@bitwarden/common/tools/rx";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { DefaultGeneratorNavigation, GeneratorNavigation } from "./generator-navigation";
+import { DefaultGeneratorNavigation } from "./default-generator-navigation";
+import { GeneratorNavigation } from "./generator-navigation";
 import { GeneratorNavigationEvaluator } from "./generator-navigation-evaluator";
 import { DisabledGeneratorNavigationPolicy, preferPassword } from "./generator-navigation-policy";
+import { GeneratorNavigationService } from "./generator-navigation.service.abstraction";
+import { GENERATOR_SETTINGS } from "./key-definitions";
 
 export class DefaultGeneratorNavigationService implements GeneratorNavigationService {
   /** instantiates the password generator strategy.

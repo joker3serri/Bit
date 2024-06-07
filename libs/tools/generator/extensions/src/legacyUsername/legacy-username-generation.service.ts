@@ -1,43 +1,24 @@
 import { zip, firstValueFrom, map, concatMap, combineLatest } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
-
-import { GeneratorService, GeneratorNavigationService } from "./abstractions";
-import { UsernameGenerationServiceAbstraction } from "./abstractions/username-generation.service.abstraction";
-import { DefaultGeneratorService } from "./default-generator.service";
-import { DefaultGeneratorNavigationService } from "./navigation/default-generator-navigation.service";
-import { GeneratorNavigation } from "./navigation/generator-navigation";
-import { NoPolicy } from "./no-policy";
-import { CryptoServiceRandomizer } from "./random";
-import {
-  CatchallGeneratorStrategy,
-  SubaddressGeneratorStrategy,
-  EffUsernameGeneratorStrategy,
-} from "./username";
-import { CatchallGenerationOptions } from "./username/catchall-generator-options";
-import { EffUsernameGenerationOptions } from "./username/eff-username-generator-options";
-import { AddyIoForwarder } from "./username/forwarders/addy-io";
-import { DuckDuckGoForwarder } from "./username/forwarders/duck-duck-go";
-import { FastmailForwarder } from "./username/forwarders/fastmail";
-import { FirefoxRelayForwarder } from "./username/forwarders/firefox-relay";
-import { ForwardEmailForwarder } from "./username/forwarders/forward-email";
-import { SimpleLoginForwarder } from "./username/forwarders/simple-login";
-import { Forwarders } from "./username/options/constants";
 import {
   ApiOptions,
   EmailDomainOptions,
   EmailPrefixOptions,
   RequestOptions,
   SelfHostedApiOptions,
-} from "./username/options/forwarder-options";
-import { SubaddressGenerationOptions } from "./username/subaddress-generator-options";
-import { UsernameGeneratorOptions } from "./username/username-generation-options";
+  NoPolicy,
+  GeneratorService,
+  CatchallGenerationOptions,
+  EffUsernameGenerationOptions,
+  Forwarders,
+  SubaddressGenerationOptions,
+} from "@bitwarden/generator-core";
+
+import { GeneratorNavigationService, GeneratorNavigation } from "../navigation";
+
+import { UsernameGeneratorOptions } from "./username-generation-options";
+import { UsernameGenerationServiceAbstraction } from "./username-generation.service.abstraction";
 
 type MappedOptions = {
   generator: GeneratorNavigation;
@@ -55,91 +36,6 @@ type MappedOptions = {
     simpleLogin: SelfHostedApiOptions & RequestOptions;
   };
 };
-
-export function legacyUsernameGenerationServiceFactory(
-  apiService: ApiService,
-  i18nService: I18nService,
-  cryptoService: CryptoService,
-  encryptService: EncryptService,
-  policyService: PolicyService,
-  accountService: AccountService,
-  stateProvider: StateProvider,
-): UsernameGenerationServiceAbstraction {
-  const randomizer = new CryptoServiceRandomizer(cryptoService);
-
-  const effUsername = new DefaultGeneratorService(
-    new EffUsernameGeneratorStrategy(randomizer, stateProvider),
-    policyService,
-  );
-
-  const subaddress = new DefaultGeneratorService(
-    new SubaddressGeneratorStrategy(randomizer, stateProvider),
-    policyService,
-  );
-
-  const catchall = new DefaultGeneratorService(
-    new CatchallGeneratorStrategy(randomizer, stateProvider),
-    policyService,
-  );
-
-  const addyIo = new DefaultGeneratorService(
-    new AddyIoForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
-    policyService,
-  );
-
-  const duckDuckGo = new DefaultGeneratorService(
-    new DuckDuckGoForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
-    policyService,
-  );
-
-  const fastmail = new DefaultGeneratorService(
-    new FastmailForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
-    policyService,
-  );
-
-  const firefoxRelay = new DefaultGeneratorService(
-    new FirefoxRelayForwarder(
-      apiService,
-      i18nService,
-      encryptService,
-      cryptoService,
-      stateProvider,
-    ),
-    policyService,
-  );
-
-  const forwardEmail = new DefaultGeneratorService(
-    new ForwardEmailForwarder(
-      apiService,
-      i18nService,
-      encryptService,
-      cryptoService,
-      stateProvider,
-    ),
-    policyService,
-  );
-
-  const simpleLogin = new DefaultGeneratorService(
-    new SimpleLoginForwarder(apiService, i18nService, encryptService, cryptoService, stateProvider),
-    policyService,
-  );
-
-  const navigation = new DefaultGeneratorNavigationService(stateProvider, policyService);
-
-  return new LegacyUsernameGenerationService(
-    accountService,
-    navigation,
-    catchall,
-    effUsername,
-    subaddress,
-    addyIo,
-    duckDuckGo,
-    fastmail,
-    firefoxRelay,
-    forwardEmail,
-    simpleLogin,
-  );
-}
 
 /** Adapts the generator 2.0 design to 1.0 angular services. */
 export class LegacyUsernameGenerationService implements UsernameGenerationServiceAbstraction {

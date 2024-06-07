@@ -1,41 +1,36 @@
-/**
- * include structuredClone in test environment.
- * @jest-environment ../../../shared/test.environment.ts
- */
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { mockAccountServiceWith } from "../../../spec";
-import { UserId } from "../../types/guid";
-
+import { UserId } from "@bitwarden/common/types/guid";
 import {
-  GeneratorHistoryService,
-  GeneratorNavigationService,
   GeneratorService,
-} from "./abstractions";
-import { GeneratedCredential } from "./history";
-import { LegacyPasswordGenerationService } from "./legacy-password-generation.service";
-import { DefaultGeneratorNavigation, GeneratorNavigation } from "./navigation/generator-navigation";
-import { GeneratorNavigationEvaluator } from "./navigation/generator-navigation-evaluator";
-import { GeneratorNavigationPolicy } from "./navigation/generator-navigation-policy";
-import {
   DefaultPassphraseGenerationOptions,
-  PassphraseGenerationOptions,
-  PassphraseGeneratorOptionsEvaluator,
-  PassphraseGeneratorPolicy,
-} from "./passphrase";
-import { DisabledPassphraseGeneratorPolicy } from "./passphrase/passphrase-generator-policy";
-import {
   DefaultPasswordGenerationOptions,
-  GeneratedPasswordHistory,
+  DisabledPassphraseGeneratorPolicy,
+  DisabledPasswordGeneratorPolicy,
+  PassphraseGenerationOptions,
+  PassphraseGeneratorPolicy,
   PasswordGenerationOptions,
-  PasswordGeneratorOptions,
-  PasswordGeneratorOptionsEvaluator,
   PasswordGeneratorPolicy,
-} from "./password";
-import { DisabledPasswordGeneratorPolicy } from "./password/password-generator-policy";
+  policies,
+} from "@bitwarden/generator-core";
+
+import { mockAccountServiceWith } from "../../../../../common/spec";
+import { GeneratedCredential, GeneratorHistoryService, GeneratedPasswordHistory } from "../history";
+import {
+  GeneratorNavigationService,
+  DefaultGeneratorNavigation,
+  GeneratorNavigation,
+  GeneratorNavigationEvaluator,
+  GeneratorNavigationPolicy,
+} from "../navigation";
+
+import { LegacyPasswordGenerationService } from "./legacy-password-generation.service";
+import { PasswordGeneratorOptions } from "./password-generator-options";
 
 const SomeUser = "some user" as UserId;
+const PassphraseGeneratorOptionsEvaluator = policies.PassphraseGeneratorOptionsEvaluator;
+const PasswordGeneratorOptionsEvaluator = policies.PasswordGeneratorOptionsEvaluator;
 
 function createPassphraseGenerator(
   options: PassphraseGenerationOptions = {},

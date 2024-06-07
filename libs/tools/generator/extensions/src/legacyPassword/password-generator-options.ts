@@ -1,7 +1,6 @@
-import { GeneratorNavigation } from "../navigation/generator-navigation";
-import { PassphraseGenerationOptions } from "../passphrase/passphrase-generation-options";
+import { PassphraseGenerationOptions, PasswordGenerationOptions } from "@bitwarden/generator-core";
 
-import { PasswordGenerationOptions } from "./password-generation-options";
+import { GeneratorNavigation } from "../navigation";
 
 /** Request format for credential generation.
  *  This type includes all properties suitable for reactive data binding.

@@ -1,14 +1,15 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { FakeStateProvider, awaitAsync, mockAccountServiceWith } from "../../../../spec";
-import { CryptoService } from "../../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../../platform/abstractions/encrypt.service";
-import { EncString } from "../../../platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
-import { CsprngArray } from "../../../types/csprng";
-import { UserId } from "../../../types/guid";
-import { UserKey } from "../../../types/key";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { CsprngArray } from "@bitwarden/common/types/csprng";
+import { UserId } from "@bitwarden/common/types/guid";
+import { UserKey } from "@bitwarden/common/types/key";
+
+import { FakeStateProvider, awaitAsync, mockAccountServiceWith } from "../../../../../common/spec";
 
 import { LocalGeneratorHistoryService } from "./local-generator-history.service";
 

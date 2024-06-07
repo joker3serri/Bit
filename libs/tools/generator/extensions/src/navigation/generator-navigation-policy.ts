@@ -1,8 +1,8 @@
-import { PolicyType } from "../../../admin-console/enums";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
-import { GeneratorType } from "../generator-type";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { GeneratorType } from "@bitwarden/generator-core";
 
 /** Policy settings affecting password generator navigation */
 export type GeneratorNavigationPolicy = {

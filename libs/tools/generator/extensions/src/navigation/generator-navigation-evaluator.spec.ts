@@ -1,4 +1,4 @@
-import { DefaultGeneratorNavigation } from "./generator-navigation";
+import { DefaultGeneratorNavigation } from "./default-generator-navigation";
 import { GeneratorNavigationEvaluator } from "./generator-navigation-evaluator";
 
 describe("GeneratorNavigationEvaluator", () => {

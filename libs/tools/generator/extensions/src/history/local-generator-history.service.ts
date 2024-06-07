@@ -1,17 +1,17 @@
 import { map } from "rxjs";
 
-import { CryptoService } from "../../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../../platform/abstractions/encrypt.service";
-import { SingleUserState, StateProvider } from "../../../platform/state";
-import { UserId } from "../../../types/guid";
-import { BufferedState } from "../../state/buffered-state";
-import { PaddedDataPacker } from "../../state/padded-data-packer";
-import { SecretState } from "../../state/secret-state";
-import { UserKeyEncryptor } from "../../state/user-key-encryptor";
-import { GeneratorHistoryService } from "../abstractions/generator-history.abstraction";
-import { GENERATOR_HISTORY, GENERATOR_HISTORY_BUFFER } from "../key-definitions";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
+import { BufferedState } from "@bitwarden/common/tools/state/buffered-state";
+import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
+import { SecretState } from "@bitwarden/common/tools/state/secret-state";
+import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { GeneratedCredential } from "./generated-credential";
+import { GeneratorHistoryService } from "./generator-history.abstraction";
+import { GENERATOR_HISTORY, GENERATOR_HISTORY_BUFFER } from "./key-definitions";
 import { LegacyPasswordHistoryDecryptor } from "./legacy-password-history-decryptor";
 import { GeneratorCategory, HistoryServiceOptions } from "./options";
 

@@ -1,18 +1,16 @@
-/**
- * include structuredClone in test environment.
- * @jest-environment ../../../../shared/test.environment.ts
- */
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
-import { PolicyService } from "../../../admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "../../../admin-console/enums";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
-import { UserId } from "../../../types/guid";
-import { GENERATOR_SETTINGS } from "../key-definitions";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { UserId } from "@bitwarden/common/types/guid";
+
+import { FakeStateProvider, mockAccountServiceWith } from "../../../../../common/spec";
+
+import { GENERATOR_SETTINGS } from "./key-definitions";
 
 import {
   GeneratorNavigationEvaluator,

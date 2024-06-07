@@ -1,8 +1,8 @@
-import { PolicyType } from "../../../admin-console/enums";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 // FIXME: use index.ts imports once policy abstractions and models
 // implement ADR-0002
-import { Policy } from "../../../admin-console/models/domain/policy";
-import { PolicyId } from "../../../types/guid";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { PolicyId } from "@bitwarden/common/types/guid";
 
 import { DisabledGeneratorNavigationPolicy, preferPassword } from "./generator-navigation-policy";
 

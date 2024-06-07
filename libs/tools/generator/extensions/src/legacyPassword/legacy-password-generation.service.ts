@@ -12,39 +12,26 @@ import {
   timeout,
 } from "rxjs";
 
-import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
-import { PasswordGeneratorPolicyOptions } from "../../admin-console/models/domain/password-generator-policy-options";
-import { AccountService } from "../../auth/abstractions/account.service";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
-import { StateProvider } from "../../platform/state";
-
+import { PasswordGeneratorPolicyOptions } from "@bitwarden/common/admin-console/models/domain/password-generator-policy-options";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import {
-  GeneratorHistoryService,
   GeneratorService,
-  GeneratorNavigationService,
-  PolicyEvaluator,
-} from "./abstractions";
-import { PasswordGenerationServiceAbstraction } from "./abstractions/password-generation.service.abstraction";
-import { DefaultGeneratorService } from "./default-generator.service";
-import { GeneratedCredential } from "./history";
-import { LocalGeneratorHistoryService } from "./history/local-generator-history.service";
-import { GeneratorNavigation } from "./navigation";
-import { DefaultGeneratorNavigationService } from "./navigation/default-generator-navigation.service";
-import { GeneratorNavigationPolicy } from "./navigation/generator-navigation-policy";
-import {
   PassphraseGenerationOptions,
   PassphraseGeneratorPolicy,
-  PassphraseGeneratorStrategy,
-} from "./passphrase";
-import {
-  GeneratedPasswordHistory,
   PasswordGenerationOptions,
-  PasswordGeneratorOptions,
   PasswordGeneratorPolicy,
-  PasswordGeneratorStrategy,
-} from "./password";
-import { CryptoServiceRandomizer } from "./random";
+  PolicyEvaluator,
+} from "@bitwarden/generator-core";
+
+import { GeneratedCredential, GeneratorHistoryService, GeneratedPasswordHistory } from "../history";
+import {
+  GeneratorNavigationService,
+  GeneratorNavigation,
+  GeneratorNavigationPolicy,
+} from "../navigation";
+
+import { PasswordGenerationServiceAbstraction } from "./password-generation.service.abstraction";
+import { PasswordGeneratorOptions } from "./password-generator-options";
 
 type MappedOptions = {
   generator: GeneratorNavigation;
@@ -52,38 +39,6 @@ type MappedOptions = {
   passphrase: PassphraseGenerationOptions;
   policyUpdated: boolean;
 };
-
-export function legacyPasswordGenerationServiceFactory(
-  encryptService: EncryptService,
-  cryptoService: CryptoService,
-  policyService: PolicyService,
-  accountService: AccountService,
-  stateProvider: StateProvider,
-): PasswordGenerationServiceAbstraction {
-  const randomizer = new CryptoServiceRandomizer(cryptoService);
-
-  const passwords = new DefaultGeneratorService(
-    new PasswordGeneratorStrategy(randomizer, stateProvider),
-    policyService,
-  );
-
-  const passphrases = new DefaultGeneratorService(
-    new PassphraseGeneratorStrategy(randomizer, stateProvider),
-    policyService,
-  );
-
-  const navigation = new DefaultGeneratorNavigationService(stateProvider, policyService);
-
-  const history = new LocalGeneratorHistoryService(encryptService, cryptoService, stateProvider);
-
-  return new LegacyPasswordGenerationService(
-    accountService,
-    navigation,
-    passwords,
-    passphrases,
-    history,
-  );
-}
 
 /** Adapts the generator 2.0 design to 1.0 angular services. */
 export class LegacyPasswordGenerationService implements PasswordGenerationServiceAbstraction {

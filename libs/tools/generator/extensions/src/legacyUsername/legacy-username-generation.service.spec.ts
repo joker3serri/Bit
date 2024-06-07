@@ -1,42 +1,43 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { mockAccountServiceWith } from "../../../spec";
-import { UserId } from "../../types/guid";
-
-import { GeneratorNavigationService, GeneratorService } from "./abstractions";
-import { DefaultPolicyEvaluator } from "./default-policy-evaluator";
-import { LegacyUsernameGenerationService } from "./legacy-username-generation.service";
-import { DefaultGeneratorNavigation, GeneratorNavigation } from "./navigation/generator-navigation";
-import { GeneratorNavigationEvaluator } from "./navigation/generator-navigation-evaluator";
-import { GeneratorNavigationPolicy } from "./navigation/generator-navigation-policy";
-import { NoPolicy } from "./no-policy";
-import { UsernameGeneratorOptions } from "./username";
-import {
-  CatchallGenerationOptions,
-  DefaultCatchallOptions,
-} from "./username/catchall-generator-options";
-import {
-  DefaultEffUsernameOptions,
-  EffUsernameGenerationOptions,
-} from "./username/eff-username-generator-options";
-import { DefaultAddyIoOptions } from "./username/forwarders/addy-io";
-import { DefaultDuckDuckGoOptions } from "./username/forwarders/duck-duck-go";
-import { DefaultFastmailOptions } from "./username/forwarders/fastmail";
-import { DefaultFirefoxRelayOptions } from "./username/forwarders/firefox-relay";
-import { DefaultForwardEmailOptions } from "./username/forwarders/forward-email";
-import { DefaultSimpleLoginOptions } from "./username/forwarders/simple-login";
-import { Forwarders } from "./username/options/constants";
+import { UserId } from "@bitwarden/common/types/guid";
 import {
   ApiOptions,
   EmailDomainOptions,
   EmailPrefixOptions,
   SelfHostedApiOptions,
-} from "./username/options/forwarder-options";
-import {
+  GeneratorService,
+  NoPolicy,
+  CatchallGenerationOptions,
+  DefaultCatchallOptions,
+  DefaultEffUsernameOptions,
+  EffUsernameGenerationOptions,
+  DefaultAddyIoOptions,
+  DefaultDuckDuckGoOptions,
+  DefaultFastmailOptions,
+  DefaultFirefoxRelayOptions,
+  DefaultForwardEmailOptions,
+  DefaultSimpleLoginOptions,
+  Forwarders,
   DefaultSubaddressOptions,
   SubaddressGenerationOptions,
-} from "./username/subaddress-generator-options";
+  policies,
+} from "@bitwarden/generator-core";
+
+import { mockAccountServiceWith } from "../../../../../common/spec";
+import {
+  GeneratorNavigationPolicy,
+  GeneratorNavigationEvaluator,
+  DefaultGeneratorNavigation,
+  GeneratorNavigation,
+  GeneratorNavigationService,
+} from "../navigation";
+
+import { LegacyUsernameGenerationService } from "./legacy-username-generation.service";
+import { UsernameGeneratorOptions } from "./username-generation-options";
+
+const DefaultPolicyEvaluator = policies.DefaultPolicyEvaluator;
 
 const SomeUser = "userId" as UserId;
 
