@@ -170,7 +170,7 @@ describe("AutofillService", () => {
       const otherTab = mock<chrome.tabs.Tab>({ id: 2 });
 
       const tracker = subscribeTo(autofillService.collectPageDetailsFromTab$(tab));
-      const pausePromise = tracker.pauseUntilReceived(2);
+      const pausePromise = tracker.pauseUntilReceived(1);
 
       messages.next(mockCollectPageDetailsResponseMessage(tab));
       messages.next(mockCollectPageDetailsResponseMessage(otherTab));
@@ -182,7 +182,7 @@ describe("AutofillService", () => {
 
     it("ignores messages from a different sender", async () => {
       const tracker = subscribeTo(autofillService.collectPageDetailsFromTab$(tab));
-      const pausePromise = tracker.pauseUntilReceived(2);
+      const pausePromise = tracker.pauseUntilReceived(1);
 
       messages.next(mockCollectPageDetailsResponseMessage(tab));
       messages.next(
