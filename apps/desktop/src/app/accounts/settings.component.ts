@@ -274,7 +274,7 @@ export class SettingsComponent implements OnInit {
         this.biometricStateService.requirePasswordOnStart$,
       ),
       clearClipboard: await firstValueFrom(this.autofillSettingsService.clearClipboardDelay$),
-      minimizeOnCopyToClipboard: await this.stateService.getMinimizeOnCopyToClipboard(),
+      minimizeOnCopyToClipboard: await firstValueFrom(this.desktopSettingsService.minimizeOnCopy$),
       enableFavicons: await firstValueFrom(this.domainSettingsService.showFavicons$),
       enableTray: await firstValueFrom(this.desktopSettingsService.trayEnabled$),
       enableMinToTray: await firstValueFrom(this.desktopSettingsService.minimizeToTray$),
@@ -282,9 +282,12 @@ export class SettingsComponent implements OnInit {
       startToTray: await firstValueFrom(this.desktopSettingsService.startToTray$),
       openAtLogin: await firstValueFrom(this.desktopSettingsService.openAtLogin$),
       alwaysShowDock: await firstValueFrom(this.desktopSettingsService.alwaysShowDock$),
-      enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
-      enableBrowserIntegrationFingerprint:
-        await this.stateService.getEnableBrowserIntegrationFingerprint(),
+      enableBrowserIntegration: await firstValueFrom(
+        this.desktopSettingsService.browserIntegrationEnabled$,
+      ),
+      enableBrowserIntegrationFingerprint: await firstValueFrom(
+        this.desktopSettingsService.browserIntegrationFingerprintEnabled$,
+      ),
       enableDuckDuckGoBrowserIntegration: await firstValueFrom(
         this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
       ),
@@ -594,7 +597,10 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveMinOnCopyToClipboard() {
-    await this.stateService.setMinimizeOnCopyToClipboard(this.form.value.minimizeOnCopyToClipboard);
+    await this.desktopSettingsService.setMinimizeOnCopy(
+      this.form.value.minimizeOnCopyToClipboard,
+      this.currentUserId,
+    );
   }
 
   async saveClearClipboard() {
@@ -652,7 +658,9 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    await this.stateService.setEnableBrowserIntegration(this.form.value.enableBrowserIntegration);
+    await this.desktopSettingsService.setBrowserIntegrationEnabled(
+      this.form.value.enableBrowserIntegration,
+    );
 
     const errorResult = await this.nativeMessagingManifestService.generate(
       this.form.value.enableBrowserIntegration,
@@ -699,7 +707,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveBrowserIntegrationFingerprint() {
-    await this.stateService.setEnableBrowserIntegrationFingerprint(
+    await this.desktopSettingsService.setBrowserIntegrationFingerprintEnabled(
       this.form.value.enableBrowserIntegrationFingerprint,
     );
   }
