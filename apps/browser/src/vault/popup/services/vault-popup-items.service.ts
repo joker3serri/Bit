@@ -1,10 +1,11 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable, NgZone } from "@angular/core";
 import {
   BehaviorSubject,
   combineLatest,
   distinctUntilKeyChanged,
   from,
   map,
+  merge,
   Observable,
   of,
   shareReplay,
@@ -15,13 +16,18 @@ import {
 
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
+import { runInsideAngular } from "../../../platform/browser/run-inside-angular.operator";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
+import { PopupCipherView } from "../views/popup-cipher.view";
 
 import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
@@ -33,7 +39,8 @@ import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-fi
 })
 export class VaultPopupItemsService {
   private _refreshCurrentTab$ = new Subject<void>();
-  private searchText$ = new BehaviorSubject<string>("");
+  private _searchText$ = new BehaviorSubject<string>("");
+  latestSearchText$: Observable<string> = this._searchText$.asObservable();
 
   /**
    * Observable that contains the list of other cipher types that should be shown
@@ -72,22 +79,46 @@ export class VaultPopupItemsService {
    * Observable that contains the list of all decrypted ciphers.
    * @private
    */
-  private _cipherList$: Observable<CipherView[]> = this.cipherService.cipherViews$.pipe(
-    map((ciphers) => Object.values(ciphers)),
-    shareReplay({ refCount: false, bufferSize: 1 }),
+  private _cipherList$: Observable<PopupCipherView[]> = merge(
+    this.cipherService.ciphers$,
+    this.cipherService.localData$,
+  ).pipe(
+    runInsideAngular(inject(NgZone)), // Workaround to ensure cipher$ state provider emissions are run inside Angular
+    switchMap(() => Utils.asyncToObservable(() => this.cipherService.getAllDecrypted())),
+    switchMap((ciphers) =>
+      combineLatest([
+        this.organizationService.organizations$,
+        this.collectionService.decryptedCollections$,
+      ]).pipe(
+        map(([organizations, collections]) => {
+          const orgMap = Object.fromEntries(organizations.map((org) => [org.id, org]));
+          const collectionMap = Object.fromEntries(collections.map((col) => [col.id, col]));
+          return ciphers.map(
+            (cipher) =>
+              new PopupCipherView(
+                cipher,
+                cipher.collectionIds?.map((colId) => collectionMap[colId as CollectionId]),
+                orgMap[cipher.organizationId as OrganizationId],
+              ),
+          );
+        }),
+      ),
+    ),
+    shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
-  private _filteredCipherList$: Observable<CipherView[]> = combineLatest([
+  private _filteredCipherList$: Observable<PopupCipherView[]> = combineLatest([
     this._cipherList$,
-    this.searchText$,
+    this._searchText$,
     this.vaultPopupListFiltersService.filterFunction$,
   ]).pipe(
     map(([ciphers, searchText, filterFunction]): [CipherView[], string] => [
       filterFunction(ciphers),
       searchText,
     ]),
-    switchMap(([ciphers, searchText]) =>
-      this.searchService.searchCiphers(searchText, null, ciphers),
+    switchMap(
+      ([ciphers, searchText]) =>
+        this.searchService.searchCiphers(searchText, null, ciphers) as Promise<PopupCipherView[]>,
     ),
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
@@ -98,7 +129,7 @@ export class VaultPopupItemsService {
    *
    * See {@link refreshCurrentTab} to trigger re-evaluation of the current tab.
    */
-  autoFillCiphers$: Observable<CipherView[]> = combineLatest([
+  autoFillCiphers$: Observable<PopupCipherView[]> = combineLatest([
     this._filteredCipherList$,
     this._otherAutoFillTypes$,
     this._currentAutofillTab$,
@@ -117,7 +148,7 @@ export class VaultPopupItemsService {
    * List of favorite ciphers that are not currently suggested for autofill.
    * Ciphers are sorted by last used date, then by name.
    */
-  favoriteCiphers$: Observable<CipherView[]> = combineLatest([
+  favoriteCiphers$: Observable<PopupCipherView[]> = combineLatest([
     this.autoFillCiphers$,
     this._filteredCipherList$,
   ]).pipe(
@@ -134,7 +165,7 @@ export class VaultPopupItemsService {
    * List of all remaining ciphers that are not currently suggested for autofill or marked as favorite.
    * Ciphers are sorted by name.
    */
-  remainingCiphers$: Observable<CipherView[]> = combineLatest([
+  remainingCiphers$: Observable<PopupCipherView[]> = combineLatest([
     this.autoFillCiphers$,
     this.favoriteCiphers$,
     this._filteredCipherList$,
@@ -152,7 +183,7 @@ export class VaultPopupItemsService {
    * Observable that indicates whether a filter is currently applied to the ciphers.
    */
   hasFilterApplied$ = combineLatest([
-    this.searchText$,
+    this._searchText$,
     this.vaultPopupListFiltersService.filters$,
   ]).pipe(
     switchMap(([searchText, filters]) => {
@@ -204,6 +235,7 @@ export class VaultPopupItemsService {
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
     private organizationService: OrganizationService,
     private searchService: SearchService,
+    private collectionService: CollectionService,
   ) {}
 
   /**
@@ -214,7 +246,7 @@ export class VaultPopupItemsService {
   }
 
   applyFilter(newSearchText: string) {
-    this.searchText$.next(newSearchText);
+    this._searchText$.next(newSearchText);
   }
 
   /**
