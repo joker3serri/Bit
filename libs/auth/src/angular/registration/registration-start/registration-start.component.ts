@@ -32,6 +32,12 @@ export enum RegistrationStartState {
   CHECK_EMAIL = "CheckEmail",
 }
 
+const DEFAULT_MARKETING_EMAILS_PREF_BY_REGION: Record<Region, boolean> = {
+  [Region.US]: true,
+  [Region.EU]: false,
+  [Region.SelfHosted]: false,
+};
+
 @Component({
   standalone: true,
   selector: "auth-registration-start",
@@ -98,8 +104,6 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.registrationStartStateChange.emit(this.state);
 
     this.listenForQueryParamChanges();
-
-    // TODO: calculate default value for receiveMarketingEmails based on region
   }
 
   private listenForQueryParamChanges() {
@@ -109,6 +113,17 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
         this.emailReadonly = qParams.emailReadonly === "true";
       }
     });
+  }
+
+  setReceiveMarketingEmailsByRegion(region: RegionConfig | Region.SelfHosted) {
+    if (region === Region.SelfHosted) {
+      const defaultValue = DEFAULT_MARKETING_EMAILS_PREF_BY_REGION[region];
+      this.receiveMarketingEmails.setValue(defaultValue);
+    }
+
+    const regionKey = (region as RegionConfig).key;
+    const defaultValue = DEFAULT_MARKETING_EMAILS_PREF_BY_REGION[regionKey];
+    this.receiveMarketingEmails.setValue(defaultValue);
   }
 
   submit = async () => {
@@ -139,6 +154,10 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
 
   handleSelectedRegionChange(region: RegionConfig | Region.SelfHosted | null) {
     this.isSelfHost = region === Region.SelfHosted;
+
+    if (region !== null) {
+      this.setReceiveMarketingEmailsByRegion(region);
+    }
   }
 
   private validateForm(): boolean {
