@@ -8355,6 +8355,9 @@
   "verified": {
     "message": "Verified"
   },
+  "viewSecret": {
+    "message": "View secret"
+  },
   "date": {
     "message": "Date"
   },
