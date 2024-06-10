@@ -185,7 +185,7 @@ jobs:
           run_id: ${{ inputs.build-web-run-id }}
           artifacts: ${{ env._ENVIRONMENT_ARTIFACT }}
 
-      - name: Download latest cloud asset from branch/tag: ${{ inputs.branch-or-tag }}
+      - name: 'Download latest cloud asset from branch/tag: ${{ inputs.branch-or-tag }}'
         if: ${{ !inputs.build-web-run-id }}
         uses: bitwarden/gh-actions/download-artifacts@main
         id: download-latest-artifacts
