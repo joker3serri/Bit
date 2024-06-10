@@ -33,6 +33,8 @@ export class MenuItemDirective implements FocusableOption {
   @HostBinding("attr.role") role = "menuitem";
   @HostBinding("tabIndex") tabIndex = "-1";
 
+  disabled?: boolean;
+
   constructor(private elementRef: ElementRef) {}
 
   focus() {
