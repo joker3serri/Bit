@@ -36,6 +36,7 @@ export class BadgeDirective implements FocusableElement {
       "tw-inline-block",
       "tw-py-1",
       "tw-px-2",
+      "tw-font-medium",
       "tw-text-center",
       "tw-align-text-top",
       "tw-rounded-full",
