@@ -176,12 +176,6 @@ const routes: Routes = [
         data: { titleId: "updatePassword" } satisfies DataProperties,
       },
       {
-        path: "remove-password",
-        component: RemovePasswordComponent,
-        canActivate: [AuthGuard],
-        data: { titleId: "removeMasterPassword" } satisfies DataProperties,
-      },
-      {
         path: "migrate-legacy-encryption",
         loadComponent: () =>
           import("./auth/migrate-encryption/migrate-legacy-encryption.component").then(
@@ -243,6 +237,34 @@ const routes: Routes = [
             outlet: "environment-selector",
           },
         ],
+      },
+      {
+        path: "recover-2fa",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: RecoverTwoFactorComponent,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+        data: {
+          pageTitle: "recoverAccountTwoStep",
+          titleId: "recoverAccountTwoStep",
+        } satisfies DataProperties & AnonLayoutWrapperData,
+      },
+      {
+        path: "remove-password",
+        component: RemovePasswordComponent,
+        canActivate: [AuthGuard],
+        data: {
+          pageTitle: "removeMasterPassword",
+          titleId: "removeMasterPassword",
+        } satisfies DataProperties & AnonLayoutWrapperData,
       },
     ],
   },
