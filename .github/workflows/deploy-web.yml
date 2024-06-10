@@ -123,7 +123,6 @@ jobs:
         env:
           TAG: ${{ steps.project_tag.outputs.tag }}
         run: |
-          ENVIRONMENT_LOWER=$(echo ${{ inputs.environment }} | awk '{print tolower($0)}')
           BRANCH_OR_TAG_LOWER=$(echo ${{ inputs.branch-or-tag }} | awk '{print tolower($0)}')
 
           PROD_ENV_PATTERN='USPROD|EUPROD'
@@ -136,13 +135,13 @@ jobs:
           DEV_ALLOWED_TAGS_PATTERN='.*'
 
           if [[ \
-              "$ENVIRONMENT_LOWER" =~ \.*($PROD_ENV_PATTERN)\.* && \
+              ${{ inputs.environment }} =~ \.*($PROD_ENV_PATTERN)\.* && \
               ! "$BRANCH_OR_TAG_LOWER" =~ ^($PROD_ALLOWED_TAGS_PATTERN).* \
           ]] || [[ \
-              "$ENVIRONMENT_LOWER" =~ \.*($QA_ENV_PATTERN)\.* && \
+              ${{ inputs.environment }} =~ \.*($QA_ENV_PATTERN)\.* && \
               ! "$BRANCH_OR_TAG_LOWER" =~ ^($QA_ALLOWED_TAGS_PATTERN).* \
           ]] || [[ \
-              "$ENVIRONMENT_LOWER" =~ \.*($DEV_ENV_PATTERN)\.* && \
+               =~ \.*($DEV_ENV_PATTERN)\.* && \
               ! "$BRANCH_OR_TAG_LOWER" =~ ^($DEV_ALLOWED_TAGS_PATTERN).* \
           ]]; then
               echo "!Deployment blocked!"
