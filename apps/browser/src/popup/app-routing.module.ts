@@ -364,12 +364,6 @@ const routes: Routes = [
     data: { state: "edit-send" },
   },
   {
-    path: "assign-collections",
-    component: AssignCollections,
-    canActivate: [canAccessFeature(FeatureFlag.ExtensionRefresh, true, "/")],
-    data: { state: "assign-collections" },
-  },
-  {
     path: "update-temp-password",
     component: UpdateTempPasswordComponent,
     canActivate: [AuthGuard],
@@ -413,6 +407,12 @@ const routes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: "assign-collections",
+    component: AssignCollections,
+    canActivate: [canAccessFeature(FeatureFlag.ExtensionRefresh, true, "/")],
+    data: { state: "assign-collections" },
   },
   ...extensionRefreshSwap(AboutPageComponent, AboutPageV2Component, {
     path: "about",
