@@ -304,7 +304,6 @@ jobs:
 
   azure-deploy:
     name: Deploy Web Vault to ${{ inputs.environment }} Storage Account
-    if:
     needs:
       - setup
       - artifact-check
