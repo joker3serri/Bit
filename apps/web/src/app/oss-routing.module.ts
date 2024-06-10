@@ -9,12 +9,14 @@ import {
   UnauthGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
+import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
 import {
   AnonLayoutWrapperComponent,
   AnonLayoutWrapperData,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
 } from "@bitwarden/auth/angular";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { flagEnabled, Flags } from "../utils/flags";
 
@@ -202,7 +204,7 @@ const routes: Routes = [
     children: [
       {
         path: "signup",
-        canActivate: [unauthGuardFn()],
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: { pageTitle: "createAccount", titleId: "createAccount" } satisfies DataProperties &
           AnonLayoutWrapperData,
         children: [
