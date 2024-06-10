@@ -1789,6 +1789,12 @@
   "atAnyTime": {
     "message": "at any time."
   },
+  "byContinuingYouAgreeToThe": {
+    "message": "By continuing, you agree to the"
+  },
+  "and": {
+    "message": "and"
+  },
   "acceptPolicies": {
     "message": "By checking this box you agree to the following:"
   },
