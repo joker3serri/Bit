@@ -15,10 +15,10 @@
     <bit-no-items [icon]="vaultIcon">
       <ng-container slot="title">{{ "yourVaultIsEmpty" | i18n }}</ng-container>
       <ng-container slot="description">{{ "autofillSuggestionsTip" | i18n }}</ng-container>
-      <button slot="button" type="button" bitButton buttonType="primary" (click)="addCipher()">
-        {{ "new" | i18n }}
-      </button>
     </bit-no-items>
+    <div class="tw-flex tw-justify-center">
+      <app-new-item-dropdown></app-new-item-dropdown>
+    </div>
   </div>
 
   <ng-container *ngIf="vaultState !== VaultStateEnum.Empty">
