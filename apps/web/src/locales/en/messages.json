@@ -2797,12 +2797,6 @@
   "userDesc": {
     "message": "Access and add items to assigned collections"
   },
-  "manager": {
-    "message": "Manager"
-  },
-  "managerDesc": {
-    "message": "Create, delete, and manage access in assigned collections"
-  },
   "all": {
     "message": "All"
   },
@@ -4579,12 +4573,6 @@
   "permission": {
     "message": "Permission"
   },
-  "managerPermissions": {
-    "message": "Manager Permissions"
-  },
-  "adminPermissions": {
-    "message": "Admin Permissions"
-  },
   "accessEventLogs": {
     "message": "Access event logs"
   },
@@ -4608,9 +4596,6 @@
   },
   "deleteAnyCollection": {
     "message": "Delete any collection"
-  },
-  "manageAssignedCollections": {
-    "message": "Manage assigned collections"
   },
   "editAssignedCollections": {
     "message": "Edit assigned collections"
@@ -6672,12 +6657,6 @@
   "restrictedCollectionAssignmentDesc": {
     "message": "You can only assign collections you manage."
   },
-  "accessAllCollectionsDesc": {
-    "message": "Grant access to all current and future collections."
-  },
-  "accessAllCollectionsHelp": {
-    "message": "If checked, this will replace all other collection permissions."
-  },
   "selectMembers": {
     "message": "Select members"
   },
@@ -6719,12 +6698,6 @@
   },
   "group": {
     "message": "Group"
-  },
-  "groupAccessAll": {
-    "message": "This group can access and modify all items."
-  },
-  "memberAccessAll": {
-    "message": "This member can access and modify all items."
   },
   "domainVerification": {
     "message": "Domain verification"
