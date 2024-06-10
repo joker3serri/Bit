@@ -40,7 +40,13 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
   @ViewChild("twoFactorOptions", { read: ViewContainerRef, static: true })
   twoFactorOptionsModal: ViewContainerRef;
   formGroup = this.formBuilder.group({
-    token: ["", [Validators.required]],
+    token: [
+      "",
+      {
+        validators: [Validators.required],
+        updateOn: "submit",
+      },
+    ],
     remember: [false],
   });
   private destroy$ = new Subject<void>();

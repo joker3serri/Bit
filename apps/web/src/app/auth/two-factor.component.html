@@ -74,12 +74,6 @@
         </div>
       </ng-container>
     </ng-container>
-    <i
-      class="bwi bwi-spinner tw-text-muted bwi-spin pull-right"
-      title="{{ 'loading' | i18n }}"
-      *ngIf="selectedProviderType === providerType.WebAuthn"
-      aria-hidden="true"
-    ></i>
     <bit-form-control *ngIf="selectedProviderType != null">
       <bit-label>{{ "rememberMe" | i18n }}</bit-label>
       <input type="checkbox" bitCheckbox formControlName="remember" />
@@ -122,7 +116,7 @@
       </a>
     </div>
     <div class="text-center">
-      <a biLink href="#" appStopClick (click)="anotherMethod()">{{
+      <a bitLink href="#" appStopClick (click)="anotherMethod()">{{
         "useAnotherTwoStepMethod" | i18n
       }}</a>
     </div>
