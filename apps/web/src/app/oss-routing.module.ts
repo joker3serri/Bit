@@ -224,11 +224,6 @@ const routes: Routes = [
                 (mod) => mod.AcceptEmergencyComponent,
               ),
           },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent,
-            outlet: "environment-selector",
-          },
         ],
       },
       {
@@ -238,11 +233,17 @@ const routes: Routes = [
           {
             path: "",
             component: RecoverDeleteComponent,
+            data: {
+              pageTitle: "deleteAccount",
+              titleId: "deleteAccount",
+            } satisfies DataProperties & AnonLayoutWrapperData,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
           },
         ],
-        data: {
-          titleId: "deleteAccount",
-        } satisfies DataProperties,
       },
     ],
   },
