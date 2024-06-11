@@ -142,7 +142,7 @@ export class UserKeyRotationService {
 
     await this.apiService.postUserKeyUpdate(request);
 
-    // TODO: Add device trust rotation support to the user key rotation endpoint
+    // TODO PM-2199: Add device trust rotation support to the user key rotation endpoint
     await this.deviceTrustService.rotateDevicesTrust(user.id, newUserKey, masterPasswordHash);
   }
 
