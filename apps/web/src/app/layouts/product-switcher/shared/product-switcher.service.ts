@@ -7,7 +7,7 @@ import {
   ParamMap,
   Router,
 } from "@angular/router";
-import { combineLatest, concatMap, filter, map, Observable, startWith } from "rxjs";
+import { combineLatest, concatMap, filter, map, Observable, startWith, Subject } from "rxjs";
 
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import {
@@ -16,6 +16,7 @@ import {
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { SyncService } from "@bitwarden/common/platform/sync";
 
 export type ProductSwitcherItem = {
   /**
@@ -59,13 +60,21 @@ export type ProductSwitcherItem = {
   providedIn: "root",
 })
 export class ProductSwitcherService {
+  /**
+   * Emits when the sync service has completed a sync
+   */
+  private syncCompleted$ = new Subject<void>();
+
   constructor(
     private organizationService: OrganizationService,
     private providerService: ProviderService,
     private route: ActivatedRoute,
     private router: Router,
     private i18n: I18nPipe,
-  ) {}
+    private syncService: SyncService,
+  ) {
+    this.pollUntilSynced();
+  }
 
   products$: Observable<{
     bento: ProductSwitcherItem[];
@@ -78,8 +87,9 @@ export class ProductSwitcherService {
       startWith(null), // Start with a null event to trigger the initial combineLatest
       filter((e) => e instanceof NavigationEnd || e instanceof NavigationStart || e === null),
     ),
+    this.syncCompleted$,
   ]).pipe(
-    map(([orgs, ...rest]): [Organization[], ParamMap, Event | null] => {
+    map(([orgs, ...rest]): [Organization[], ParamMap, Event | null, void] => {
       return [
         // Sort orgs by name to match the order within the sidebar
         orgs.sort((a, b) => a.name.localeCompare(b.name)),
@@ -186,4 +196,15 @@ export class ProductSwitcherService {
       };
     }),
   );
+
+  /** Poll the `syncService` until a sync is completed */
+  private pollUntilSynced() {
+    const interval = setInterval(async () => {
+      const lastSync = await this.syncService.getLastSync();
+      if (lastSync !== null) {
+        clearInterval(interval);
+        this.syncCompleted$.next();
+      }
+    }, 200);
+  }
 }
