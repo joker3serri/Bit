@@ -40,7 +40,8 @@
             type="button"
             bitBadge
             variant="primary"
-            [appA11yTitle]="'autofillTitle' | i18n: cipher.name"
+            [title]="'autofillTitle' | i18n: cipher.name"
+            [attr.aria-label]="'autofillTitle' | i18n: cipher.name"
           >
             {{ "autoFill" | i18n }}
           </button>
