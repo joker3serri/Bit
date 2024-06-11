@@ -53,8 +53,8 @@
           <button
             type="button"
             bitMenuItem
-            *ngIf="runClientExport"
-            (click)="runClientExport(invoice.number)"
+            *ngIf="getClientInvoiceReport"
+            (click)="runExport(invoice.id)"
           >
             <i aria-hidden="true" class="bwi bwi-sign-in"></i>
             {{ "exportClientReport" | i18n }}

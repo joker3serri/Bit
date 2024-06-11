@@ -13,6 +13,7 @@ export class InvoicesResponse extends BaseResponse {
 }
 
 export class InvoiceResponse extends BaseResponse {
+  id: string;
   date: string;
   number: string;
   total: number;
@@ -22,6 +23,7 @@ export class InvoiceResponse extends BaseResponse {
 
   constructor(response: any) {
     super(response);
+    this.id = this.getResponseProperty("Id");
     this.date = this.getResponseProperty("Date");
     this.number = this.getResponseProperty("Number");
     this.total = this.getResponseProperty("Total");

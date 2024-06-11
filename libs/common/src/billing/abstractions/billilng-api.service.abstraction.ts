@@ -42,6 +42,8 @@ export abstract class BillingApiServiceAbstraction {
 
   getPlans: () => Promise<ListResponse<PlanResponse>>;
 
+  getProviderClientInvoiceReport: (providerId: string, invoiceId: string) => Promise<string>;
+
   getProviderInvoices: (providerId: string) => Promise<InvoicesResponse>;
 
   getProviderPaymentInformation: (providerId: string) => Promise<PaymentInformationResponse>;

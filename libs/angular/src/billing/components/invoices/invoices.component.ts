@@ -4,6 +4,7 @@ import {
   InvoiceResponse,
   InvoicesResponse,
 } from "@bitwarden/common/billing/models/response/invoices.response";
+import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 
 @Component({
   selector: "app-invoices",
@@ -12,13 +13,29 @@ import {
 export class InvoicesComponent implements OnInit {
   @Input() startWith?: InvoicesResponse;
   @Input() getInvoices?: () => Promise<InvoicesResponse>;
-  @Input() exportClientReport?: (invoiceNumber: string) => Promise<void>;
+  @Input() getClientInvoiceReport?: (invoiceId: string) => Promise<string>;
+  @Input() getClientInvoiceReportName?: (invoiceResponse: InvoiceResponse) => string;
 
   protected invoices: InvoiceResponse[] = [];
   protected loading = true;
 
-  runClientExport = async (invoiceNumber: string): Promise<void> =>
-    await this.runClientExport(invoiceNumber);
+  constructor(private fileDownloadService: FileDownloadService) {}
+
+  runExport = async (invoiceId: string): Promise<void> => {
+    const blobData = await this.getClientInvoiceReport(invoiceId);
+    let fileName = "report.csv";
+    if (this.getClientInvoiceReportName) {
+      const invoice = this.invoices.find((invoice) => invoice.id === invoiceId);
+      fileName = this.getClientInvoiceReportName(invoice);
+    }
+    this.fileDownloadService.download({
+      fileName,
+      blobData,
+      blobOptions: {
+        type: "text/csv",
+      },
+    });
+  };
 
   async ngOnInit(): Promise<void> {
     if (this.startWith) {

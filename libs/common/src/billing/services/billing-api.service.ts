@@ -108,6 +108,17 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return new ListResponse(r, PlanResponse);
   }
 
+  async getProviderClientInvoiceReport(providerId: string, invoiceId: string): Promise<string> {
+    const response = await this.apiService.send(
+      "GET",
+      "/providers/" + providerId + "/billing/invoices/" + invoiceId,
+      null,
+      true,
+      true,
+    );
+    return response as string;
+  }
+
   async getProviderInvoices(providerId: string): Promise<InvoicesResponse> {
     const response = await this.apiService.send(
       "GET",
