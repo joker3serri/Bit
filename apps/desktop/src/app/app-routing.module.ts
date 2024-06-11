@@ -11,6 +11,7 @@ import {
 import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
 import {
   AnonLayoutWrapperComponent,
+  AnonLayoutWrapperData,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
 } from "@bitwarden/auth/angular";
@@ -97,7 +98,7 @@ const routes: Routes = [
       {
         path: "signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
-        data: { pageTitle: "createAccount", titleId: "createAccount" }, // satisfies DataProperties & AnonLayoutWrapperData, TODO: add these back once we can import DataProperties on this client.
+        data: { pageTitle: "createAccount" } satisfies AnonLayoutWrapperData,
         children: [
           {
             path: "",
