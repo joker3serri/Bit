@@ -8,6 +8,13 @@ import {
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
+import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
+import {
+  AnonLayoutWrapperComponent,
+  RegistrationStartComponent,
+  RegistrationStartSecondaryComponent,
+} from "@bitwarden/auth/angular";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { fido2AuthGuard } from "../auth/guards/fido2-auth.guard";
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
@@ -342,6 +349,28 @@ const routes: Routes = [
     component: UpdateTempPasswordComponent,
     canActivate: [AuthGuard],
     data: { state: "update-temp-password" },
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "signup",
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
+        data: { pageTitle: "createAccount", titleId: "createAccount" }, // satisfies DataProperties & AnonLayoutWrapperData, TODO: add these back once we can import DataProperties on this client.
+        children: [
+          {
+            path: "",
+            component: RegistrationStartComponent,
+          },
+          {
+            path: "",
+            component: RegistrationStartSecondaryComponent,
+            outlet: "secondary",
+          },
+        ],
+      },
+    ],
   },
   ...extensionRefreshSwap(AboutPageComponent, AboutPageV2Component, {
     path: "about",
