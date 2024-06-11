@@ -89,7 +89,6 @@ const routes: Routes = [
         component: LoginViaAuthRequestComponent,
         data: { titleId: "adminApprovalRequested" } satisfies DataProperties,
       },
-      { path: "2fa", component: TwoFactorComponent, canActivate: [UnauthGuard] },
       {
         path: "login-initiated",
         component: LoginDecryptionOptionsComponent,
@@ -214,6 +213,33 @@ const routes: Routes = [
         ],
       },
       {
+        path: "2fa",
+        component: TwoFactorComponent,
+        canActivate: [unauthGuardFn()],
+        data: {
+          pageTitle: "verifyIdentity",
+        },
+      },
+      {
+        path: "recover-2fa",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: RecoverTwoFactorComponent,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+        data: {
+          pageTitle: "recoverAccountTwoStep",
+          titleId: "recoverAccountTwoStep",
+        } satisfies DataProperties & AnonLayoutWrapperData,
+      },
+      {
         path: "accept-emergency",
         canActivate: [deepLinkGuard()],
         children: [
@@ -235,25 +261,6 @@ const routes: Routes = [
             outlet: "environment-selector",
           },
         ],
-      },
-      {
-        path: "recover-2fa",
-        canActivate: [unauthGuardFn()],
-        children: [
-          {
-            path: "",
-            component: RecoverTwoFactorComponent,
-          },
-          {
-            path: "",
-            component: EnvironmentSelectorComponent,
-            outlet: "environment-selector",
-          },
-        ],
-        data: {
-          pageTitle: "recoverAccountTwoStep",
-          titleId: "recoverAccountTwoStep",
-        } satisfies DataProperties & AnonLayoutWrapperData,
       },
       {
         path: "remove-password",
