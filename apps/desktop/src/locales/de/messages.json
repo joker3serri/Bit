@@ -695,6 +695,15 @@
   "selfHostedEnvironmentFooter": {
     "message": "Bitte gib die Basis-URL deiner selbst gehosteten Bitwarden-Installation an."
   },
+  "selfHostedBaseUrlHint": {
+    "message": "Gib die Basis-URL deiner vor Ort gehosteten Bitwarden-Installation an. Beispiel: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "Für eine erweiterte Konfiguration kannst du die Basis-URL jedes Dienstes unabhängig voneinander angeben."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "Du musst entweder die Basis-Server-URL oder mindestens eine benutzerdefinierte Umgebung hinzufügen."
+  },
   "customEnvironment": {
     "message": "Benutzerdefinierte Umgebung"
   },
@@ -742,6 +751,9 @@
   },
   "loggedOut": {
     "message": "Abgemeldet"
+  },
+  "loggedOutDesc": {
+    "message": "Du wurdest von deinem Konto abgemeldet."
   },
   "loginExpired": {
     "message": "Deine Sitzung ist abgelaufen."
@@ -1212,6 +1224,12 @@
       }
     }
   },
+  "errorRefreshingAccessToken": {
+    "message": "Zugangs-Token Aktualisierungsfehler"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "Kein Aktualisierungs-Token oder API-Schlüssel gefunden. Bitte versuche dich ab- und wieder anzumelden."
+  },
   "help": {
     "message": "Hilfe"
   },
@@ -1299,11 +1317,41 @@
     "message": "Passwort aktualisiert",
     "description": "ex. Date this password was updated"
   },
+  "exportFrom": {
+    "message": "Export aus"
+  },
   "exportVault": {
     "message": "Tresor exportieren"
   },
   "fileFormat": {
     "message": "Dateiformat"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Dieser Datei-Export ist passwortgeschützt und erfordert das Dateipasswort zum Entschlüsseln."
+  },
+  "filePassword": {
+    "message": "Dateipasswort"
+  },
+  "exportPasswordDescription": {
+    "message": "Dieses Passwort wird zum Exportieren und Importieren dieser Datei verwendet"
+  },
+  "accountRestrictedOptionDescription": {
+    "message": "Verwende den Verschlüsselungsschlüssel deines Kontos, abgeleitet vom Benutzernamen und Master-Passwort, um den Export zu verschlüsseln und den Import auf das aktuelle Bitwarden-Konto zu beschränken."
+  },
+  "passwordProtected": {
+    "message": "Passwortgeschützt"
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Lege ein Dateipasswort fest, um den Export zu verschlüsseln und importiere ihn in ein beliebiges Bitwarden-Konto, wobei das Passwort zum Entschlüsseln genutzt wird."
+  },
+  "exportTypeHeading": {
+    "message": "Exporttyp"
+  },
+  "accountRestricted": {
+    "message": "Konto eingeschränkt"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "„Dateipasswort“ und „Dateipasswort bestätigen“ stimmen nicht überein."
   },
   "hCaptchaUrl": {
     "message": "hCaptcha URL",
@@ -2071,6 +2119,18 @@
       }
     }
   },
+  "exportingOrganizationVaultTitle": {
+    "message": "Tresor der Organisation wird exportiert"
+  },
+  "exportingOrganizationVaultDesc": {
+    "message": "Nur der mit $ORGANIZATION$ verbundene Organisationstresor wird exportiert. Einträge in persönlichen Tresoren oder anderen Organisationen werden nicht berücksichtigt.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "ACME Moving Co."
+      }
+    }
+  },
   "locked": {
     "message": "Gesperrt"
   },
@@ -2431,6 +2491,12 @@
   },
   "important": {
     "message": "Wichtig:"
+  },
+  "accessTokenUnableToBeDecrypted": {
+    "message": "Du wurdest abgemeldet, weil dein Zugangs-Token nicht entschlüsselt werden konnte. Bitte melde dich erneut an, um dieses Problem zu beheben."
+  },
+  "refreshTokenSecureStorageRetrievalFailure": {
+    "message": "Du wurdest abgemeldet, weil dein Aktualisierungs-Token nicht entschlüsselt werden konnte. Bitte melde dich erneut an, um dieses Problem zu beheben."
   },
   "masterPasswordHint": {
     "message": "Dein Master-Passwort kann nicht wiederhergestellt werden, wenn du es vergisst!"

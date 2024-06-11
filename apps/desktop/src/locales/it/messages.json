@@ -695,6 +695,15 @@
   "selfHostedEnvironmentFooter": {
     "message": "Specifica l'URL principale della tua installazione self-hosted di Bitwarden."
   },
+  "selfHostedBaseUrlHint": {
+    "message": "Specifica lo URL principale della tua installazione self-hosted di Bitwarden. Esempio: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "Per la configurazione avanzata, puoi specificare lo URL di base di ciascun servizio in modo indipendente."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "Devi aggiungere lo URL del server di base o almeno un ambiente personalizzato."
+  },
   "customEnvironment": {
     "message": "Ambiente personalizzato"
   },
@@ -742,6 +751,9 @@
   },
   "loggedOut": {
     "message": "Uscito"
+  },
+  "loggedOutDesc": {
+    "message": "Sei stato fatto uscire dal tuo account."
   },
   "loginExpired": {
     "message": "La tua sessione è scaduta."
@@ -1212,6 +1224,12 @@
       }
     }
   },
+  "errorRefreshingAccessToken": {
+    "message": "Errore di aggiornamento del token di accesso"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "Nessun token di aggiornamento o chiave API trovati. Prova ad uscire ed entrare di nuovo."
+  },
   "help": {
     "message": "Aiuto"
   },
@@ -1299,11 +1317,41 @@
     "message": "Password aggiornata",
     "description": "ex. Date this password was updated"
   },
+  "exportFrom": {
+    "message": "Esporta da"
+  },
   "exportVault": {
     "message": "Esporta cassaforte"
   },
   "fileFormat": {
     "message": "Formato file"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Questo file esportato sarà protetto e richiederà la password del file per decifrarlo."
+  },
+  "filePassword": {
+    "message": "Password del file"
+  },
+  "exportPasswordDescription": {
+    "message": "La password sarà utilizzata per importare ed esportare questo file"
+  },
+  "accountRestrictedOptionDescription": {
+    "message": "Usa la chiave di crittografia dell'account, derivata dal nome utente e dalla password principale del tuo account, per crittografare il file di esportazione e limitare l'importazione solo all'account Bitwarden corrente."
+  },
+  "passwordProtected": {
+    "message": "Protetto da password"
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Imposta una password del file per crittografare il file esportato e importarlo in qualsiasi account Bitwarden usando la password per decrittografarlo."
+  },
+  "exportTypeHeading": {
+    "message": "Tipo di esportazione"
+  },
+  "accountRestricted": {
+    "message": "Account limitato"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "Le due password del file non corrispondono."
   },
   "hCaptchaUrl": {
     "message": "URL hCaptcha",
@@ -2071,6 +2119,18 @@
       }
     }
   },
+  "exportingOrganizationVaultTitle": {
+    "message": "Esportando cassaforte dell'organizzazione"
+  },
+  "exportingOrganizationVaultDesc": {
+    "message": "Solo la cassaforte dell'organizzazione associata a $ORGANIZATION$ sarà esportata. Elementi nelle casseforti individuali o in altre organizzazioni non saranno inclusi.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "ACME Moving Co."
+      }
+    }
+  },
   "locked": {
     "message": "Bloccato"
   },
@@ -2431,6 +2491,12 @@
   },
   "important": {
     "message": "Importante:"
+  },
+  "accessTokenUnableToBeDecrypted": {
+    "message": "Sei stato fatto uscire perché non è stato possibile decrittografare il tuo token di accesso. Entra di nuovo per risolvere il problema."
+  },
+  "refreshTokenSecureStorageRetrievalFailure": {
+    "message": "Sei stato fatto uscire perché non è stato possibile recuperare il token di aggiornamento. Entra di nuovo per risolvere il problema."
   },
   "masterPasswordHint": {
     "message": "La tua password principale non può essere recuperata se la dimentichi!"

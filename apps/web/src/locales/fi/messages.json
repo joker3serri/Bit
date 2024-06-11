@@ -581,8 +581,14 @@
   "accessLevel": {
     "message": "Käyttöoikeustaso"
   },
+  "accessing": {
+    "message": "Avataan"
+  },
   "loggedOut": {
     "message": "Kirjauduttu ulos"
+  },
+  "loggedOutDesc": {
+    "message": "Sinut on kirjattu ulos tililtäsi."
   },
   "loginExpired": {
     "message": "Kirjautumisistuntosi on erääntynyt."
@@ -1046,6 +1052,12 @@
   },
   "copyUuid": {
     "message": "Kopioi UUID"
+  },
+  "errorRefreshingAccessToken": {
+    "message": "Access Token Refresh Error"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "No refresh token or API keys found. Please try logging out and logging back in."
   },
   "warning": {
     "message": "Varoitus"
@@ -5583,6 +5595,39 @@
   "rotateBillingSyncTokenTitle": {
     "message": "Laskutuksen synkronointitunnisteen uudistus mitätöi edellisen tunnisteen."
   },
+  "selfHostedServer": {
+    "message": "itse ylläpidetty"
+  },
+  "customEnvironment": {
+    "message": "Custom environment"
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "For advanced configuration, you can specify the base URL of each service independently."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "You must add either the base Server URL or at least one custom environment."
+  },
+  "apiUrl": {
+    "message": "API-palvelimen URL"
+  },
+  "webVaultUrl": {
+    "message": "Verkkoholvipalvelimen URL"
+  },
+  "identityUrl": {
+    "message": "Henkilöllisyyspalvelimen URL"
+  },
+  "notificationsUrl": {
+    "message": "Ilmoituspalvelimen URL"
+  },
+  "iconsUrl": {
+    "message": "Kuvakepalvelimen URL"
+  },
+  "environmentSaved": {
+    "message": "Palvelinympäristön URL-osoitteet tallennettiin"
+  },
   "selfHostingTitle": {
     "message": "Itse ylläpidetty"
   },
@@ -8290,9 +8335,24 @@
     "message": "Pysy haavoittuvuuksien edellä tehostamalla valvontaa päivittämällä maksulliseen tilaukseeen."
   },
   "approveAllRequests": {
-    "message": "Approve all requests"
+    "message": "Hyväksy kaikki pyynnöt"
   },
   "allLoginRequestsApproved": {
-    "message": "All login requests approved"
+    "message": "Kaikki kirjautumispyynnöt hyväksyttiin"
+  },
+  "payPal": {
+    "message": "PayPal"
+  },
+  "bitcoin": {
+    "message": "Bitcoin"
+  },
+  "updatedTaxInformation": {
+    "message": "Päivitetyt verotiedot"
+  },
+  "unverified": {
+    "message": "Vahvistamaton"
+  },
+  "verified": {
+    "message": "Vahvistettu"
   }
 }
