@@ -88,8 +88,26 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
 
     // if SSO is disabled OR if sso is enabled but the SSO login required policy is not enabled
     // then send user to create account
+
+    // TODO: update logic when email verification flag is removed
+    let queryParams: Params;
+    if (this.registerRoute === "/register") {
+      queryParams = {
+        fromOrgInvite: "true",
+        email: invite.email,
+      };
+    } else if (this.registerRoute === "/signup") {
+      // We have to override the base component route b/c it is correct for other components
+      // that extend the base accept comp. We don't need users to complete email verification
+      // if they are coming directly from an emailed org invite.
+      this.registerRoute = "/finish-signup";
+      queryParams = {
+        email: invite.email,
+      };
+    }
+
     await this.router.navigate([this.registerRoute], {
-      queryParams: { email: invite.email, fromOrgInvite: true },
+      queryParams: queryParams,
     });
     return;
   }
