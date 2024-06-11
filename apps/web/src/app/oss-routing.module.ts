@@ -81,7 +81,6 @@ const routes: Routes = [
         component: LoginViaAuthRequestComponent,
         data: { titleId: "adminApprovalRequested" } satisfies DataProperties,
       },
-      { path: "2fa", component: TwoFactorComponent, canActivate: [UnauthGuard] },
       {
         path: "login-initiated",
         component: LoginDecryptionOptionsComponent,
@@ -176,12 +175,6 @@ const routes: Routes = [
         data: { titleId: "updatePassword" } satisfies DataProperties,
       },
       {
-        path: "remove-password",
-        component: RemovePasswordComponent,
-        canActivate: [AuthGuard],
-        data: { titleId: "removeMasterPassword" } satisfies DataProperties,
-      },
-      {
         path: "migrate-legacy-encryption",
         loadComponent: () =>
           import("./auth/migrate-encryption/migrate-legacy-encryption.component").then(
@@ -210,6 +203,14 @@ const routes: Routes = [
         ],
         data: {
           pageTitle: "logIn",
+        },
+      },
+      {
+        path: "2fa",
+        component: TwoFactorComponent,
+        canActivate: [unauthGuardFn()],
+        data: {
+          pageTitle: "verifyIdentity",
         },
       },
       {
@@ -253,6 +254,15 @@ const routes: Routes = [
             outlet: "environment-selector",
           },
         ],
+      },
+      {
+        path: "remove-password",
+        component: RemovePasswordComponent,
+        canActivate: [AuthGuard],
+        data: {
+          pageTitle: "removeMasterPassword",
+          titleId: "removeMasterPassword",
+        } satisfies DataProperties & AnonLayoutWrapperData,
       },
     ],
   },
