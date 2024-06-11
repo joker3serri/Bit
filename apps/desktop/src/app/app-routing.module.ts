@@ -6,7 +6,15 @@ import {
   lockGuard,
   redirectGuard,
   tdeDecryptionRequiredGuard,
+  unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
+import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
+import {
+  AnonLayoutWrapperComponent,
+  RegistrationStartComponent,
+  RegistrationStartSecondaryComponent,
+} from "@bitwarden/auth/angular";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
 import { maxAccountsGuardFn } from "../auth/guards/max-accounts.guard";
@@ -81,6 +89,28 @@ const routes: Routes = [
     component: RemovePasswordComponent,
     canActivate: [AuthGuard],
     data: { titleId: "removeMasterPassword" },
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "signup",
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
+        data: { pageTitle: "createAccount", titleId: "createAccount" }, // satisfies DataProperties & AnonLayoutWrapperData, TODO: add these back once we can import DataProperties on this client.
+        children: [
+          {
+            path: "",
+            component: RegistrationStartComponent,
+          },
+          {
+            path: "",
+            component: RegistrationStartSecondaryComponent,
+            outlet: "secondary",
+          },
+        ],
+      },
+    ],
   },
 ];
 
