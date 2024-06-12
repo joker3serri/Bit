@@ -311,15 +311,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.editableCollections$ = this.allCollectionsWithoutUnassigned$.pipe(
       map((collections) => {
-        // If restricted, providers can not add items to any collections or edit those items
-        if (
-          this.organization.isProviderUser &&
-          !this.organization.isMember &&
-          this.restrictProviderAccessEnabled
-        ) {
-          return [];
-        }
-
         // Users that can edit all ciphers can implicitly add to / edit within any collection
         if (
           this.organization.canEditAllCiphers(
@@ -360,14 +351,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.addAccessToggle(0);
         }
         let ciphers;
-
-        if (
-          organization.isProviderUser &&
-          !organization.isMember &&
-          this.restrictProviderAccessEnabled
-        ) {
-          return [];
-        }
 
         if (this.flexibleCollectionsV1Enabled) {
           // Flexible collections V1 logic.
@@ -497,14 +480,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       organization$,
     ]).pipe(
       map(([filter, collection, organization]) => {
-        if (
-          organization.isProviderUser &&
-          !organization.isMember &&
-          this.restrictProviderAccessEnabled
-        ) {
-          return collection != undefined || filter.collectionId === Unassigned;
-        }
-
         return (
           (filter.collectionId === Unassigned &&
             !organization.canEditUnassignedCiphers(this.restrictProviderAccessEnabled)) ||
