@@ -195,19 +195,18 @@ export class Organization {
   }
 
   canEditUnassignedCiphers(restrictProviderAccessFlagEnabled: boolean) {
-    // Check if the user is a ProviderUser
-    if (this.isProviderUser) {
-      // If the user is not a member and the restrictProviderAccessFlag is enabled, return false
-      if (!this.isMember && restrictProviderAccessFlagEnabled) {
-        return false;
-      }
-      // If the restrictProviderAccessFlag is not enabled, return true
-      if (!restrictProviderAccessFlagEnabled) {
-        return true;
-      }
-      // The user is both a provider user and a member, they should follow normal member permission logic below
+    // Providers can access items until the restrictProviderAccess flag is enabled
+    // After the flag is enabled and removed, this block will be deleted
+    // so that they permanently lose access to items
+    if (this.isProviderUser && !restrictProviderAccessFlagEnabled) {
+      return true;
     }
-    return this.isAdmin || this.permissions.editAnyCollection;
+
+    return (
+      this.type === OrganizationUserType.Admin ||
+      this.type === OrganizationUserType.Owner ||
+      this.permissions.editAnyCollection
+    );
   }
 
   canEditAllCiphers(
@@ -219,17 +218,11 @@ export class Organization {
       return this.isAdmin || this.permissions.editAnyCollection;
     }
 
-    // Check if the user is a ProviderUser
-    if (this.isProviderUser) {
-      // If the user is not a member and the restrictProviderAccessFlag is enabled, return false
-      if (!this.isMember && restrictProviderAccessFlagEnabled) {
-        return false;
-      }
-      // If the restrictProviderAccessFlag is not enabled, return true
-      if (!restrictProviderAccessFlagEnabled) {
-        return true;
-      }
-      // The user is both a provider user and a member, they should follow normal member permission logic below
+    // Providers can access items until the restrictProviderAccess flag is enabled
+    // After the flag is enabled and removed, this block will be deleted
+    // so that they permanently lose access to items
+    if (this.isProviderUser && !restrictProviderAccessFlagEnabled) {
+      return true;
     }
 
     // Post Flexible Collections V1, the allowAdminAccessToAllCollectionItems flag can restrict admins
