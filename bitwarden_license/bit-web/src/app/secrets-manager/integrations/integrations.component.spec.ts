@@ -76,6 +76,7 @@ describe("IntegrationsComponent", () => {
   });
 
   it("shows up in test results", () => {
-    expect(true).toBe(true);
+    const example = "example";
+    expect(example).toBe("example");
   });
 });
