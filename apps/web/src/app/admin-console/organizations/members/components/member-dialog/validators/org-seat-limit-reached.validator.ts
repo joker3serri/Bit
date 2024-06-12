@@ -37,9 +37,9 @@ export function orgSeatLimitReachedValidator(
     );
 
     const productHasAdditionalSeatsOption =
-      organization.planProductType !== ProductTierType.Free &&
-      organization.planProductType !== ProductTierType.Families &&
-      organization.planProductType !== ProductTierType.TeamsStarter;
+      organization.productTierType !== ProductTierType.Free &&
+      organization.productTierType !== ProductTierType.Families &&
+      organization.productTierType !== ProductTierType.TeamsStarter;
 
     return !productHasAdditionalSeatsOption &&
       allOrganizationUserEmails.length + newEmailsToAdd.length > organization.seats

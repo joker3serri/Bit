@@ -183,7 +183,7 @@ export class VaultHeaderComponent implements OnInit {
   }
 
   async addCollection() {
-    if (this.organization.planProductType === ProductTierType.Free) {
+    if (this.organization.productTierType === ProductTierType.Free) {
       const collections = await this.collectionAdminService.getAll(this.organization.id);
       if (collections.length === this.organization.maxCollections) {
         this.showFreeOrgUpgradeDialog();

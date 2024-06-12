@@ -36,7 +36,7 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
     }
 
     value.plan = PlanType.FamiliesAnnually;
-    value.product = ProductTierType.Families;
+    value.productTier = ProductTierType.Families;
     value.acceptingSponsorship = true;
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     value.onSuccess.subscribe(this.onOrganizationCreateSuccess.bind(this));
@@ -96,7 +96,7 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
     });
 
     this.existingFamilyOrganizations$ = this.organizationService.organizations$.pipe(
-      map((orgs) => orgs.filter((o) => o.planProductType === ProductTierType.Families)),
+      map((orgs) => orgs.filter((o) => o.productTierType === ProductTierType.Families)),
     );
 
     this.existingFamilyOrganizations$.pipe(takeUntil(this._destroy)).subscribe((orgs) => {

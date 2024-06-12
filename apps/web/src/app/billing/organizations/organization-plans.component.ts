@@ -73,16 +73,16 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   selectedFile: File;
 
   @Input()
-  get product(): ProductTierType {
-    return this._product;
+  get productTier(): ProductTierType {
+    return this._productTier;
   }
 
-  set product(product: ProductTierType) {
-    this._product = product;
-    this.formGroup?.controls?.product?.setValue(product);
+  set productTier(product: ProductTierType) {
+    this._productTier = product;
+    this.formGroup?.controls?.productTier?.setValue(product);
   }
 
-  private _product = ProductTierType.Free;
+  private _productTier = ProductTierType.Free;
 
   @Input()
   get plan(): PlanType {
@@ -123,7 +123,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     additionalSeats: [0, [Validators.min(0), Validators.max(100000)]],
     clientOwnerEmail: ["", [Validators.email]],
     plan: [this.plan],
-    product: [this.product],
+    productTier: [this.productTier],
     secretsManager: this.secretsManagerSubscription,
   });
 
@@ -166,20 +166,23 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.passwordManagerPlans = plans.data.filter((plan) => !!plan.PasswordManager);
       this.secretsManagerPlans = plans.data.filter((plan) => !!plan.SecretsManager);
 
-      if (this.product === ProductTierType.Enterprise || this.product === ProductTierType.Teams) {
+      if (
+        this.productTier === ProductTierType.Enterprise ||
+        this.productTier === ProductTierType.Teams
+      ) {
         this.formGroup.controls.businessOwned.setValue(true);
       }
     }
 
-    if (this.currentPlan && this.currentPlan.product !== ProductTierType.Enterprise) {
+    if (this.currentPlan && this.currentPlan.productTier !== ProductTierType.Enterprise) {
       const upgradedPlan = this.passwordManagerPlans.find((plan) =>
-        this.currentPlan.product === ProductTierType.Free
+        this.currentPlan.productTier === ProductTierType.Free
           ? plan.type === PlanType.FamiliesAnnually
           : plan.upgradeSortOrder == this.currentPlan.upgradeSortOrder + 1,
       );
 
       this.plan = upgradedPlan.type;
-      this.product = upgradedPlan.product;
+      this.productTier = upgradedPlan.productTier;
     }
 
     if (this.hasProvider) {
@@ -190,7 +193,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         (plan) => plan.type === PlanType.TeamsAnnually,
       );
       this.plan = providerDefaultPlan.type;
-      this.product = providerDefaultPlan.product;
+      this.productTier = providerDefaultPlan.productTier;
     }
 
     if (!this.createOrganization) {
@@ -229,7 +232,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   get upgradeRequiresPaymentMethod() {
     return (
-      this.organization?.planProductType === ProductTierType.Free &&
+      this.organization?.productTierType === ProductTierType.Free &&
       !this.showFree &&
       !this.billing?.paymentSource
     );
@@ -277,12 +280,12 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       (plan) =>
         plan.type !== PlanType.Custom &&
         (!businessOwnedIsChecked || plan.canBeUsedByBusiness) &&
-        (this.showFree || plan.product !== ProductTierType.Free) &&
+        (this.showFree || plan.productTier !== ProductTierType.Free) &&
         (plan.isAnnual ||
-          plan.product === ProductTierType.Free ||
-          plan.product === ProductTierType.TeamsStarter) &&
+          plan.productTier === ProductTierType.Free ||
+          plan.productTier === ProductTierType.TeamsStarter) &&
         (!this.currentPlan || this.currentPlan.upgradeSortOrder < plan.upgradeSortOrder) &&
-        (!this.hasProvider || plan.product !== ProductTierType.TeamsStarter) &&
+        (!this.hasProvider || plan.productTier !== ProductTierType.TeamsStarter) &&
         ((!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan)) ||
           (this.isProviderQualifiedFor2020Plan() &&
             Allowed2020PlansForLegacyProviders.includes(plan.type))),
@@ -294,11 +297,11 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   get selectablePlans() {
-    const selectedProductType = this.formGroup.controls.product.value;
+    const selectedProductTierType = this.formGroup.controls.productTier.value;
     const result =
       this.passwordManagerPlans?.filter(
         (plan) =>
-          plan.product === selectedProductType &&
+          plan.productTier === selectedProductTierType &&
           ((!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan)) ||
             (this.isProviderQualifiedFor2020Plan() &&
               Allowed2020PlansForLegacyProviders.includes(plan.type))),
@@ -516,10 +519,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.teamsStarterPlanIsAvailable) {
-      this.formGroup.controls.product.setValue(ProductTierType.TeamsStarter);
+      this.formGroup.controls.productTier.setValue(ProductTierType.TeamsStarter);
       this.formGroup.controls.plan.setValue(PlanType.TeamsStarter);
     } else {
-      this.formGroup.controls.product.setValue(ProductTierType.Teams);
+      this.formGroup.controls.productTier.setValue(ProductTierType.Teams);
       this.formGroup.controls.plan.setValue(PlanType.TeamsAnnually);
     }
     this.changedProduct();
@@ -766,19 +769,19 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   private upgradeFlowPrefillForm() {
     if (this.acceptingSponsorship) {
-      this.formGroup.controls.product.setValue(ProductTierType.Families);
+      this.formGroup.controls.productTier.setValue(ProductTierType.Families);
       this.changedProduct();
       return;
     }
 
-    if (this.currentPlan && this.currentPlan.product !== ProductTierType.Enterprise) {
+    if (this.currentPlan && this.currentPlan.productTier !== ProductTierType.Enterprise) {
       const upgradedPlan = this.passwordManagerPlans.find((plan) => {
-        if (this.currentPlan.product === ProductTierType.Free) {
+        if (this.currentPlan.productTier === ProductTierType.Free) {
           return plan.type === PlanType.FamiliesAnnually;
         }
 
         if (
-          this.currentPlan.product === ProductTierType.Families &&
+          this.currentPlan.productTier === ProductTierType.Families &&
           !this.teamsStarterPlanIsAvailable
         ) {
           return plan.type === PlanType.TeamsAnnually;
@@ -788,7 +791,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       });
 
       this.plan = upgradedPlan.type;
-      this.product = upgradedPlan.product;
+      this.productTier = upgradedPlan.productTier;
       this.changedProduct();
     }
   }

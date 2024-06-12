@@ -258,6 +258,6 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
   }
 
   get isEnterpriseOrg() {
-    return this.organization?.planProductType === ProductTierType.Enterprise;
+    return this.organization?.productTierType === ProductTierType.Enterprise;
   }
 }

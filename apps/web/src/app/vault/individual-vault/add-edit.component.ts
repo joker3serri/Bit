@@ -271,7 +271,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     return (
       this.cipher.type === CipherType.Login &&
       this.cipher.login.totp &&
-      this.organization?.planProductType != ProductTierType.Free &&
+      this.organization?.productTierType != ProductTierType.Free &&
       (this.cipher.organizationUseTotp || this.canAccessPremium)
     );
   }

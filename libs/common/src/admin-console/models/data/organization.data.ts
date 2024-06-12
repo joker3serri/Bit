@@ -45,7 +45,7 @@ export class OrganizationData {
   isMember: boolean;
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
-  planProductType: ProductTierType;
+  productTierType: ProductTierType;
   keyConnectorEnabled: boolean;
   keyConnectorUrl: string;
   familySponsorshipLastSyncDate?: Date;
@@ -104,7 +104,7 @@ export class OrganizationData {
     this.providerType = response.providerType;
     this.familySponsorshipFriendlyName = response.familySponsorshipFriendlyName;
     this.familySponsorshipAvailable = response.familySponsorshipAvailable;
-    this.planProductType = response.planProductType;
+    this.productTierType = response.planProductType;
     this.keyConnectorEnabled = response.keyConnectorEnabled;
     this.keyConnectorUrl = response.keyConnectorUrl;
     this.familySponsorshipLastSyncDate = response.familySponsorshipLastSyncDate;

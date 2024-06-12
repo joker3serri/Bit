@@ -47,7 +47,7 @@ describe("ORGANIZATIONS state", () => {
         isMember: false,
         familySponsorshipFriendlyName: "fsfn",
         familySponsorshipAvailable: false,
-        planProductType: ProductTierType.Free,
+        productTierType: ProductTierType.Free,
         keyConnectorEnabled: false,
         keyConnectorUrl: "kcu",
         accessSecretsManager: false,

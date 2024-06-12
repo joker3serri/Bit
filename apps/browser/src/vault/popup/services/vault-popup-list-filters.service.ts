@@ -211,8 +211,8 @@ export class VaultPopupListFiltersService {
             // Show a warning icon if the organization is deactivated
             icon = "bwi-exclamation-triangle tw-text-danger";
           } else if (
-            org.planProductType === ProductTierType.Families ||
-            org.planProductType === ProductTierType.Free
+            org.productTierType === ProductTierType.Families ||
+            org.productTierType === ProductTierType.Free
           ) {
             // Show a family icon if the organization is a family or free org
             icon = "bwi-family";

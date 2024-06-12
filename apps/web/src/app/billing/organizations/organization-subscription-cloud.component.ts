@@ -286,7 +286,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       }
     } else if (this.sub.maxAutoscaleSeats === this.sub.seats && this.sub.seats != null) {
       return this.i18nService.t("subscriptionMaxReached", this.sub.seats.toString());
-    } else if (this.userOrg.planProductType === ProductTierType.TeamsStarter) {
+    } else if (this.userOrg.productTierType === ProductTierType.TeamsStarter) {
       return this.i18nService.t("subscriptionUserSeatsWithoutAdditionalSeatsOption", 10);
     } else if (this.sub.maxAutoscaleSeats == null) {
       return this.i18nService.t("subscriptionUserSeatsUnlimitedAutoscale");
@@ -440,12 +440,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   };
 
   get showChangePlanButton() {
-    return this.sub.plan.product !== ProductTierType.Enterprise && !this.showChangePlan;
+    return this.sub.plan.productTier !== ProductTierType.Enterprise && !this.showChangePlan;
   }
 }
 
 /**
- * Helper to sort subscription items by product type and then by addon status
+ * Helper to sort subscription items by productTier type and then by addon status
  */
 function sortSubscriptionItems(
   a: BillingSubscriptionItemResponse,

@@ -369,7 +369,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
 
   private getDialogContent(): string {
     return this.i18nService.t(
-      this.getProductKey(this.organization.planProductType),
+      this.getProductKey(this.organization.productTierType),
       this.organization.seats,
     );
   }
@@ -379,7 +379,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
       return this.i18nService.t("ok");
     }
 
-    const productType = this.organization.planProductType;
+    const productType = this.organization.productTierType;
 
     if (productType !== ProductTierType.Free && productType !== ProductTierType.TeamsStarter) {
       throw new Error(`Unsupported product type: ${productType}`);
@@ -393,10 +393,10 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
       return;
     }
 
-    const productType = this.organization.planProductType;
+    const productType = this.organization.productTierType;
 
     if (productType !== ProductTierType.Free && productType !== ProductTierType.TeamsStarter) {
-      throw new Error(`Unsupported product type: ${this.organization.planProductType}`);
+      throw new Error(`Unsupported product type: ${this.organization.productTierType}`);
     }
 
     await this.router.navigate(
@@ -440,8 +440,8 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
     if (
       !user &&
       this.allUsers.length === this.organization.seats &&
-      (this.organization.planProductType === ProductTierType.Free ||
-        this.organization.planProductType === ProductTierType.TeamsStarter)
+      (this.organization.productTierType === ProductTierType.Free ||
+        this.organization.productTierType === ProductTierType.TeamsStarter)
     ) {
       // Show org upgrade modal
       await this.showSeatLimitReachedDialog();

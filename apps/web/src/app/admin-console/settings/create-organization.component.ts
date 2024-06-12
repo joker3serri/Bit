@@ -26,16 +26,16 @@ export class CreateOrganizationComponent implements OnInit {
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
       if (qParams.plan === "families") {
         this.orgPlansComponent.plan = PlanType.FamiliesAnnually;
-        this.orgPlansComponent.product = ProductTierType.Families;
+        this.orgPlansComponent.productTier = ProductTierType.Families;
       } else if (qParams.plan === "teams") {
         this.orgPlansComponent.plan = PlanType.TeamsAnnually;
-        this.orgPlansComponent.product = ProductTierType.Teams;
+        this.orgPlansComponent.productTier = ProductTierType.Teams;
       } else if (qParams.plan === "teamsStarter") {
         this.orgPlansComponent.plan = PlanType.TeamsStarter;
-        this.orgPlansComponent.product = ProductTierType.TeamsStarter;
+        this.orgPlansComponent.productTier = ProductTierType.TeamsStarter;
       } else if (qParams.plan === "enterprise") {
         this.orgPlansComponent.plan = PlanType.EnterpriseAnnually;
-        this.orgPlansComponent.product = ProductTierType.Enterprise;
+        this.orgPlansComponent.productTier = ProductTierType.Enterprise;
       }
     });
   }

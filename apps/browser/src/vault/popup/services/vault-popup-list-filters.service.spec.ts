@@ -206,7 +206,7 @@ describe("VaultPopupListFiltersService", () => {
             name: "family org",
             id: "1234-3323-23223",
             enabled: true,
-            planProductType: ProductTierType.Families,
+            productTierType: ProductTierType.Families,
           },
         ] as Organization[];
 
@@ -224,7 +224,7 @@ describe("VaultPopupListFiltersService", () => {
             name: "free org",
             id: "1234-3323-23223",
             enabled: true,
-            planProductType: ProductTierType.Free,
+            productTierType: ProductTierType.Free,
           },
         ] as Organization[];
 
@@ -242,7 +242,7 @@ describe("VaultPopupListFiltersService", () => {
             name: "free org",
             id: "1234-3323-23223",
             enabled: false,
-            planProductType: ProductTierType.Free,
+            productTierType: ProductTierType.Free,
           },
         ] as Organization[];
 

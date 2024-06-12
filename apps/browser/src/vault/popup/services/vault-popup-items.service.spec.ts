@@ -78,7 +78,7 @@ describe("VaultPopupItemsService", () => {
     mockOrg = {
       id: "org1",
       name: "Organization 1",
-      planProductType: ProductTierType.Enterprise,
+      productTierType: ProductTierType.Enterprise,
     } as Organization;
 
     mockCollections = [

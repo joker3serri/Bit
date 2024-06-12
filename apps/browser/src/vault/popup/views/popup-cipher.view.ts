@@ -26,7 +26,7 @@ export class PopupCipherView extends CipherView {
    * Get the bwi icon for the cipher according to the organization type.
    */
   get orgIcon(): "bwi-family" | "bwi-business" | null {
-    switch (this.organization?.planProductType) {
+    switch (this.organization?.productTierType) {
       case ProductTierType.Free:
       case ProductTierType.Families:
         return "bwi-family";

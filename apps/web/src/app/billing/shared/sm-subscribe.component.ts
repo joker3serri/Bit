@@ -75,7 +75,7 @@ export class SecretsManagerSubscribeComponent implements OnInit, OnDestroy {
   };
 
   get product() {
-    return this.selectedPlan.product;
+    return this.selectedPlan.productTier;
   }
 
   get planName() {

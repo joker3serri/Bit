@@ -233,10 +233,10 @@ export class TrialBillingStepComponent implements OnInit {
 
   private isApplicable(plan: PlanResponse): boolean {
     const hasCorrectProductType =
-      plan.product === ProductTierType.Enterprise ||
-      plan.product === ProductTierType.Families ||
-      plan.product === ProductTierType.Teams ||
-      plan.product === ProductTierType.TeamsStarter;
+      plan.productTier === ProductTierType.Enterprise ||
+      plan.productTier === ProductTierType.Families ||
+      plan.productTier === ProductTierType.Teams ||
+      plan.productTier === ProductTierType.TeamsStarter;
     const notDisabledOrLegacy = !plan.disabled && !plan.legacyYear;
     return hasCorrectProductType && notDisabledOrLegacy;
   }

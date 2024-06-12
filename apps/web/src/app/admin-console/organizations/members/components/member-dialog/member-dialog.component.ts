@@ -464,7 +464,7 @@ export class MemberDialogComponent implements OnDestroy {
     } else {
       userView.id = this.params.organizationUserId;
       const maxEmailsCount =
-        organization.planProductType === ProductTierType.TeamsStarter ? 10 : 20;
+        organization.productTierType === ProductTierType.TeamsStarter ? 10 : 20;
       const emails = [...new Set(this.formGroup.value.emails.trim().split(/\s*,\s*/))];
       if (emails.length > maxEmailsCount) {
         this.formGroup.controls.emails.setErrors({
@@ -615,7 +615,7 @@ export class MemberDialogComponent implements OnDestroy {
     });
   }
 
-  protected readonly ProductType = ProductTierType;
+  protected readonly ProductTierType = ProductTierType;
 }
 
 function mapCollectionToAccessItemView(
