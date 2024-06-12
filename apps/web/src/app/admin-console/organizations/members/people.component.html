@@ -37,7 +37,7 @@
     </bit-toggle>
   </bit-toggle-group>
 </div>
-<ng-container *ngIf="loading">
+<ng-container *ngIf="!firstLoaded">
   <i
     class="bwi bwi-spinner bwi-spin text-muted"
     title="{{ 'loading' | i18n }}"
@@ -45,7 +45,7 @@
   ></i>
   <span class="sr-only">{{ "loading" | i18n }}</span>
 </ng-container>
-<ng-container *ngIf="!loading">
+<ng-container *ngIf="firstLoaded">
   <p *ngIf="!dataSource.filteredData.length">{{ "noMembersInList" | i18n }}</p>
   <ng-container *ngIf="dataSource.filteredData.length">
     <app-callout

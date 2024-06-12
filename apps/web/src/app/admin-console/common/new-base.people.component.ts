@@ -92,7 +92,7 @@ export abstract class NewBasePeopleComponent<
 
   protected dataSource = new TableDataSource<UserView>();
 
-  loading = true;
+  firstLoaded: boolean;
 
   /**
    * A hashmap that groups users by their status (invited/accepted/etc). This is used by the toggles to show
@@ -149,8 +149,6 @@ export abstract class NewBasePeopleComponent<
   abstract confirmUser(user: UserView, publicKey: Uint8Array): Promise<void>;
 
   async load() {
-    this.loading = true;
-
     // Load new users from the server
     const response = await this.getUsers();
 
@@ -181,7 +179,7 @@ export abstract class NewBasePeopleComponent<
     // Filter based on UserStatus - this also populates the table on first load
     this.filter(this.status);
 
-    this.loading = false;
+    this.firstLoaded = true;
   }
 
   /**
