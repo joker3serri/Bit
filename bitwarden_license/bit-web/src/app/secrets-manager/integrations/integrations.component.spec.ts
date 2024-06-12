@@ -74,4 +74,8 @@ describe("IntegrationsComponent", () => {
       (sdkList.componentInstance as IntegrationGridComponent).integrations.map((i) => i.name),
     ).toEqual(["C#", "C++", "Go", "Java", "JS WebAssembly", "php", "Python", "Ruby"]);
   });
+
+  it("shows up in test results", () => {
+    expect(true).toBe(true);
+  });
 });
