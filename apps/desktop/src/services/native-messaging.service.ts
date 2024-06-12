@@ -1,14 +1,15 @@
 import { Injectable, NgZone } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -21,6 +22,7 @@ import { BrowserSyncVerificationDialogComponent } from "../app/components/browse
 import { LegacyMessage } from "../models/native-messaging/legacy-message";
 import { LegacyMessageWrapper } from "../models/native-messaging/legacy-message-wrapper";
 import { Message } from "../models/native-messaging/message";
+import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
 
 import { NativeMessageHandlerService } from "./native-message-handler.service";
 
@@ -38,11 +40,12 @@ export class NativeMessagingService {
     private platformUtilService: PlatformUtilsService,
     private logService: LogService,
     private messagingService: MessagingService,
-    private stateService: StateService,
+    private desktopSettingService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
     private nativeMessageHandler: NativeMessageHandlerService,
     private dialogService: DialogService,
     private accountService: AccountService,
+    private authService: AuthService,
     private ngZone: NgZone,
   ) {}
 
@@ -53,6 +56,7 @@ export class NativeMessagingService {
   private async messageHandler(msg: LegacyMessageWrapper | Message) {
     const outerMessage = msg as Message;
     if (outerMessage.version) {
+      // If there is a version, it is a using the protocol created for the DuckDuckGo integration
       await this.nativeMessageHandler.handleMessage(outerMessage);
       return;
     }
@@ -74,7 +78,7 @@ export class NativeMessagingService {
         return;
       }
 
-      if (await this.stateService.getEnableBrowserIntegrationFingerprint()) {
+      if (await firstValueFrom(this.desktopSettingService.browserIntegrationFingerprintEnabled$)) {
         ipc.platform.nativeMessaging.sendMessage({
           command: "verifyFingerprint",
           appId: appId,
@@ -135,6 +139,19 @@ export class NativeMessagingService {
       case "biometricUnlock": {
         if (!(await this.platformUtilService.supportsBiometric())) {
           return this.send({ command: "biometricUnlock", response: "not supported" }, appId);
+        }
+
+        const userId =
+          (message.userId as UserId) ??
+          (await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id))));
+
+        if (userId == null) {
+          return this.send({ command: "biometricUnlock", response: "not unlocked" }, appId);
+        }
+
+        const authStatus = await firstValueFrom(this.authService.authStatusFor$(userId));
+        if (authStatus !== AuthenticationStatus.Unlocked) {
+          return this.send({ command: "biometricUnlock", response: "not unlocked" }, appId);
         }
 
         const biometricUnlockPromise =

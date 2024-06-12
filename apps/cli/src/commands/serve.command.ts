@@ -87,6 +87,7 @@ export class ServeCommand {
       this.serviceContainer.apiService,
       this.serviceContainer.folderApiService,
       this.serviceContainer.billingAccountProfileStateService,
+      this.serviceContainer.organizationService,
     );
     this.editCommand = new EditCommand(
       this.serviceContainer.cipherService,
@@ -103,7 +104,7 @@ export class ServeCommand {
     this.statusCommand = new StatusCommand(
       this.serviceContainer.environmentService,
       this.serviceContainer.syncService,
-      this.serviceContainer.stateService,
+      this.serviceContainer.accountService,
       this.serviceContainer.authService,
     );
     this.deleteCommand = new DeleteCommand(
