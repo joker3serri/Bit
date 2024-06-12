@@ -1,10 +1,10 @@
-import { ProductType } from "../../../enums";
+import { ProductTierType } from "../../../enums";
 import { BaseResponse } from "../../../models/response/base.response";
 import { PlanType } from "../../enums";
 
 export class PlanResponse extends BaseResponse {
   type: PlanType;
-  product: ProductType;
+  product: ProductTierType;
   name: string;
   isAnnual: boolean;
   nameLocalizationKey: string;

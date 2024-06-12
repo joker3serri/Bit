@@ -9,7 +9,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { OrganizationSponsorshipRedeemRequest } from "@bitwarden/common/admin-console/models/request/organization/organization-sponsorship-redeem.request";
 import { PlanSponsorshipType, PlanType } from "@bitwarden/common/billing/enums";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
@@ -36,7 +36,7 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
     }
 
     value.plan = PlanType.FamiliesAnnually;
-    value.product = ProductType.Families;
+    value.product = ProductTierType.Families;
     value.acceptingSponsorship = true;
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     value.onSuccess.subscribe(this.onOrganizationCreateSuccess.bind(this));
@@ -96,7 +96,7 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
     });
 
     this.existingFamilyOrganizations$ = this.organizationService.organizations$.pipe(
-      map((orgs) => orgs.filter((o) => o.planProductType === ProductType.Families)),
+      map((orgs) => orgs.filter((o) => o.planProductType === ProductTierType.Families)),
     );
 
     this.existingFamilyOrganizations$.pipe(takeUntil(this._destroy)).subscribe((orgs) => {

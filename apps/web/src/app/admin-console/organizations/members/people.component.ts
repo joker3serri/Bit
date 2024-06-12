@@ -36,7 +36,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/enums";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -352,13 +352,13 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
     return this.organization.canEditSubscription ? "ManageBilling" : "NoManageBilling";
   }
 
-  private getProductKey(productType: ProductType): string {
+  private getProductKey(productType: ProductTierType): string {
     let product = "";
     switch (productType) {
-      case ProductType.Free:
+      case ProductTierType.Free:
         product = "freeOrg";
         break;
-      case ProductType.TeamsStarter:
+      case ProductTierType.TeamsStarter:
         product = "teamsStarterPlan";
         break;
       default:
@@ -381,7 +381,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
 
     const productType = this.organization.planProductType;
 
-    if (productType !== ProductType.Free && productType !== ProductType.TeamsStarter) {
+    if (productType !== ProductTierType.Free && productType !== ProductTierType.TeamsStarter) {
       throw new Error(`Unsupported product type: ${productType}`);
     }
 
@@ -395,7 +395,7 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
 
     const productType = this.organization.planProductType;
 
-    if (productType !== ProductType.Free && productType !== ProductType.TeamsStarter) {
+    if (productType !== ProductTierType.Free && productType !== ProductTierType.TeamsStarter) {
       throw new Error(`Unsupported product type: ${this.organization.planProductType}`);
     }
 
@@ -440,8 +440,8 @@ export class PeopleComponent extends BasePeopleComponent<OrganizationUserView> {
     if (
       !user &&
       this.allUsers.length === this.organization.seats &&
-      (this.organization.planProductType === ProductType.Free ||
-        this.organization.planProductType === ProductType.TeamsStarter)
+      (this.organization.planProductType === ProductTierType.Free ||
+        this.organization.planProductType === ProductTierType.TeamsStarter)
     ) {
       // Show org upgrade modal
       await this.showSeatLimitReachedDialog();

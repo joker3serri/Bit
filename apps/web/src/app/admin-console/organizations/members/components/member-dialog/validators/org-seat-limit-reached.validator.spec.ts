@@ -2,7 +2,7 @@ import { AbstractControl, FormControl, ValidationErrors } from "@angular/forms";
 
 import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/enums";
 
 import { orgSeatLimitReachedValidator } from "./org-seat-limit-reached.validator";
 
@@ -54,7 +54,7 @@ describe("orgSeatLimitReachedValidator", () => {
 
   it("should return null when max seats are not exceeded on free plan", () => {
     organization = orgFactory({
-      planProductType: ProductType.Free,
+      planProductType: ProductTierType.Free,
       seats: 2,
     });
     validatorFn = orgSeatLimitReachedValidator(
@@ -71,7 +71,7 @@ describe("orgSeatLimitReachedValidator", () => {
 
   it("should return null when max seats are not exceeded on teams starter plan", () => {
     organization = orgFactory({
-      planProductType: ProductType.TeamsStarter,
+      planProductType: ProductTierType.TeamsStarter,
       seats: 10,
     });
     validatorFn = orgSeatLimitReachedValidator(
@@ -98,7 +98,7 @@ describe("orgSeatLimitReachedValidator", () => {
 
   it("should return validation error when max seats are exceeded on free plan", () => {
     organization = orgFactory({
-      planProductType: ProductType.Free,
+      planProductType: ProductTierType.Free,
       seats: 2,
     });
     const errorMessage = "You cannot invite more than 2 members without upgrading your plan.";
@@ -117,7 +117,7 @@ describe("orgSeatLimitReachedValidator", () => {
   it("should return null when not on free plan", () => {
     const control = new FormControl("user2@example.com,user3@example.com");
     organization = orgFactory({
-      planProductType: ProductType.Enterprise,
+      planProductType: ProductTierType.Enterprise,
       seats: 100,
     });
     validatorFn = orgSeatLimitReachedValidator(

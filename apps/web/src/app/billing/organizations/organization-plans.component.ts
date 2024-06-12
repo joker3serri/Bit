@@ -28,7 +28,7 @@ import { PaymentRequest } from "@bitwarden/common/billing/models/request/payment
 import { BillingResponse } from "@bitwarden/common/billing/models/response/billing.response";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/enums";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -73,16 +73,16 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   selectedFile: File;
 
   @Input()
-  get product(): ProductType {
+  get product(): ProductTierType {
     return this._product;
   }
 
-  set product(product: ProductType) {
+  set product(product: ProductTierType) {
     this._product = product;
     this.formGroup?.controls?.product?.setValue(product);
   }
 
-  private _product = ProductType.Free;
+  private _product = ProductTierType.Free;
 
   @Input()
   get plan(): PlanType {
@@ -102,7 +102,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   loading = true;
   selfHosted = false;
-  productTypes = ProductType;
+  productTypes = ProductTierType;
   formPromise: Promise<string>;
   singleOrgPolicyAppliesToActiveUser = false;
   isInTrialFlow = false;
@@ -166,14 +166,14 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.passwordManagerPlans = plans.data.filter((plan) => !!plan.PasswordManager);
       this.secretsManagerPlans = plans.data.filter((plan) => !!plan.SecretsManager);
 
-      if (this.product === ProductType.Enterprise || this.product === ProductType.Teams) {
+      if (this.product === ProductTierType.Enterprise || this.product === ProductTierType.Teams) {
         this.formGroup.controls.businessOwned.setValue(true);
       }
     }
 
-    if (this.currentPlan && this.currentPlan.product !== ProductType.Enterprise) {
+    if (this.currentPlan && this.currentPlan.product !== ProductTierType.Enterprise) {
       const upgradedPlan = this.passwordManagerPlans.find((plan) =>
-        this.currentPlan.product === ProductType.Free
+        this.currentPlan.product === ProductTierType.Free
           ? plan.type === PlanType.FamiliesAnnually
           : plan.upgradeSortOrder == this.currentPlan.upgradeSortOrder + 1,
       );
@@ -229,7 +229,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   get upgradeRequiresPaymentMethod() {
     return (
-      this.organization?.planProductType === ProductType.Free &&
+      this.organization?.planProductType === ProductTierType.Free &&
       !this.showFree &&
       !this.billing?.paymentSource
     );
@@ -277,12 +277,12 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       (plan) =>
         plan.type !== PlanType.Custom &&
         (!businessOwnedIsChecked || plan.canBeUsedByBusiness) &&
-        (this.showFree || plan.product !== ProductType.Free) &&
+        (this.showFree || plan.product !== ProductTierType.Free) &&
         (plan.isAnnual ||
-          plan.product === ProductType.Free ||
-          plan.product === ProductType.TeamsStarter) &&
+          plan.product === ProductTierType.Free ||
+          plan.product === ProductTierType.TeamsStarter) &&
         (!this.currentPlan || this.currentPlan.upgradeSortOrder < plan.upgradeSortOrder) &&
-        (!this.hasProvider || plan.product !== ProductType.TeamsStarter) &&
+        (!this.hasProvider || plan.product !== ProductTierType.TeamsStarter) &&
         ((!this.isProviderQualifiedFor2020Plan() && this.planIsEnabled(plan)) ||
           (this.isProviderQualifiedFor2020Plan() &&
             Allowed2020PlansForLegacyProviders.includes(plan.type))),
@@ -516,10 +516,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.teamsStarterPlanIsAvailable) {
-      this.formGroup.controls.product.setValue(ProductType.TeamsStarter);
+      this.formGroup.controls.product.setValue(ProductTierType.TeamsStarter);
       this.formGroup.controls.plan.setValue(PlanType.TeamsStarter);
     } else {
-      this.formGroup.controls.product.setValue(ProductType.Teams);
+      this.formGroup.controls.product.setValue(ProductTierType.Teams);
       this.formGroup.controls.plan.setValue(PlanType.TeamsAnnually);
     }
     this.changedProduct();
@@ -766,19 +766,19 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   private upgradeFlowPrefillForm() {
     if (this.acceptingSponsorship) {
-      this.formGroup.controls.product.setValue(ProductType.Families);
+      this.formGroup.controls.product.setValue(ProductTierType.Families);
       this.changedProduct();
       return;
     }
 
-    if (this.currentPlan && this.currentPlan.product !== ProductType.Enterprise) {
+    if (this.currentPlan && this.currentPlan.product !== ProductTierType.Enterprise) {
       const upgradedPlan = this.passwordManagerPlans.find((plan) => {
-        if (this.currentPlan.product === ProductType.Free) {
+        if (this.currentPlan.product === ProductTierType.Free) {
           return plan.type === PlanType.FamiliesAnnually;
         }
 
         if (
-          this.currentPlan.product === ProductType.Families &&
+          this.currentPlan.product === ProductTierType.Families &&
           !this.teamsStarterPlanIsAvailable
         ) {
           return plan.type === PlanType.TeamsAnnually;

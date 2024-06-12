@@ -16,7 +16,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -211,8 +211,8 @@ export class VaultPopupListFiltersService {
             // Show a warning icon if the organization is deactivated
             icon = "bwi-exclamation-triangle tw-text-danger";
           } else if (
-            org.planProductType === ProductType.Families ||
-            org.planProductType === ProductType.Free
+            org.planProductType === ProductTierType.Families ||
+            org.planProductType === ProductTierType.Free
           ) {
             // Show a family icon if the organization is a family or free org
             icon = "bwi-family";

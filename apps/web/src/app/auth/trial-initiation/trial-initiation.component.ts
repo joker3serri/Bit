@@ -10,7 +10,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PlanType } from "@bitwarden/common/billing/enums";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/enums";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -67,7 +67,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
   billingSubLabel = "";
   layout = "default";
   plan: PlanType;
-  product: ProductType;
+  product: ProductTierType;
   accountCreateOnly = true;
   useTrialStepper = false;
   policies: Policy[];
@@ -153,16 +153,16 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
 
         if (this.org === ValidOrgParams.families) {
           this.plan = PlanType.FamiliesAnnually;
-          this.product = ProductType.Families;
+          this.product = ProductTierType.Families;
         } else if (this.org === ValidOrgParams.teamsStarter) {
           this.plan = PlanType.TeamsStarter;
-          this.product = ProductType.TeamsStarter;
+          this.product = ProductTierType.TeamsStarter;
         } else if (this.org === ValidOrgParams.teams) {
           this.plan = PlanType.TeamsAnnually;
-          this.product = ProductType.Teams;
+          this.product = ProductTierType.Teams;
         } else if (this.org === ValidOrgParams.enterprise) {
           this.plan = PlanType.EnterpriseAnnually;
-          this.product = ProductType.Enterprise;
+          this.product = ProductTierType.Enterprise;
         }
       } else if (this.routeFlowOrgs.includes(qParams.org)) {
         this.referenceData.flow = qParams.org;
@@ -269,7 +269,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
 
   get trialOrganizationType(): TrialOrganizationType {
     switch (this.product) {
-      case ProductType.Free:
+      case ProductTierType.Free:
         return null;
       default:
         return this.product;
