@@ -1,4 +1,4 @@
-import { ProductTierType } from "../../../enums/product-tier-type.enum";
+import { ProductTierType } from "../../../billing/enums/product-tier-type.enum";
 import { OrganizationUserStatusType, OrganizationUserType } from "../../enums";
 import { ORGANIZATIONS } from "../../services/organization/organization.service";
 

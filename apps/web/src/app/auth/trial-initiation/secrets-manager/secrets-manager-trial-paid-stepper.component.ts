@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from "@angular/core";
 
-import { ProductTierType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
 
 import {
   OrganizationCreatedEvent,

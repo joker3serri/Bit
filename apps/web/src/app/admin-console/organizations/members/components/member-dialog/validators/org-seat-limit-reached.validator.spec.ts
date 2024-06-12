@@ -2,7 +2,7 @@ import { AbstractControl, FormControl, ValidationErrors } from "@angular/forms";
 
 import { OrganizationUserType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductTierType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
 
 import { orgSeatLimitReachedValidator } from "./org-seat-limit-reached.validator";
 
