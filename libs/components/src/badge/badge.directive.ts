@@ -52,7 +52,7 @@ export class BadgeDirective implements FocusableElement {
       .concat(this.truncate ? ["tw-truncate", this.maxWidthClass] : []);
   }
   @HostBinding("attr.title") get titleAttr() {
-    if (this.title != undefined) {
+    if (this.title !== undefined) {
       return this.title;
     }
     return this.truncate ? this.el.nativeElement.textContent.trim() : null;
