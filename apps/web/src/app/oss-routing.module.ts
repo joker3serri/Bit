@@ -66,7 +66,6 @@ const routes: Routes = [
         children: [], // Children lets us have an empty component.
         canActivate: [redirectGuard()], // Redirects either to vault, login, or lock page.
       },
-      { path: "login", component: LoginComponent, canActivate: [UnauthGuard] },
       {
         path: "login-with-device",
         component: LoginViaAuthRequestComponent,
@@ -82,7 +81,6 @@ const routes: Routes = [
         component: LoginViaAuthRequestComponent,
         data: { titleId: "adminApprovalRequested" } satisfies DataProperties,
       },
-      { path: "2fa", component: TwoFactorComponent, canActivate: [UnauthGuard] },
       {
         path: "login-initiated",
         component: LoginDecryptionOptionsComponent,
@@ -123,27 +121,12 @@ const routes: Routes = [
         data: { titleId: "joinOrganization", doNotSaveUrl: false } satisfies DataProperties,
       },
       {
-        path: "accept-emergency",
-        canActivate: [deepLinkGuard()],
-        data: { titleId: "acceptEmergency", doNotSaveUrl: false } satisfies DataProperties,
-        loadComponent: () =>
-          import("./auth/emergency-access/accept/accept-emergency.component").then(
-            (mod) => mod.AcceptEmergencyComponent,
-          ),
-      },
-      {
         path: "accept-families-for-enterprise",
         component: AcceptFamilySponsorshipComponent,
         canActivate: [deepLinkGuard()],
         data: { titleId: "acceptFamilySponsorship", doNotSaveUrl: false } satisfies DataProperties,
       },
       { path: "recover", pathMatch: "full", redirectTo: "recover-2fa" },
-      {
-        path: "recover-delete",
-        component: RecoverDeleteComponent,
-        canActivate: [UnauthGuard],
-        data: { titleId: "deleteAccount" } satisfies DataProperties,
-      },
       {
         path: "verify-recover-delete",
         component: VerifyRecoverDeleteComponent,
@@ -180,12 +163,6 @@ const routes: Routes = [
         data: { titleId: "updatePassword" } satisfies DataProperties,
       },
       {
-        path: "remove-password",
-        component: RemovePasswordComponent,
-        canActivate: [AuthGuard],
-        data: { titleId: "removeMasterPassword" } satisfies DataProperties,
-      },
-      {
         path: "migrate-legacy-encryption",
         loadComponent: () =>
           import("./auth/migrate-encryption/migrate-legacy-encryption.component").then(
@@ -198,6 +175,51 @@ const routes: Routes = [
     path: "",
     component: AnonLayoutWrapperComponent,
     children: [
+      {
+        path: "sso",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: SsoComponent,
+            data: {
+              pageTitle: "enterpriseSingleSignOn",
+              titleId: "enterpriseSingleSignOn",
+            } satisfies DataProperties & AnonLayoutWrapperData,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+      },
+      {
+        path: "login",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: LoginComponent,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+        data: {
+          pageTitle: "logIn",
+        },
+      },
+      {
+        path: "2fa",
+        component: TwoFactorComponent,
+        canActivate: [unauthGuardFn()],
+        data: {
+          pageTitle: "verifyIdentity",
+        },
+      },
       {
         path: "recover-2fa",
         canActivate: [unauthGuardFn()],
@@ -218,23 +240,50 @@ const routes: Routes = [
         } satisfies DataProperties & AnonLayoutWrapperData,
       },
       {
-        path: "sso",
+        path: "accept-emergency",
+        canActivate: [deepLinkGuard()],
+        children: [
+          {
+            path: "",
+            data: {
+              pageTitle: "emergencyAccess",
+              titleId: "acceptEmergency",
+              doNotSaveUrl: false,
+            } satisfies DataProperties & AnonLayoutWrapperData,
+            loadComponent: () =>
+              import("./auth/emergency-access/accept/accept-emergency.component").then(
+                (mod) => mod.AcceptEmergencyComponent,
+              ),
+          },
+        ],
+      },
+      {
+        path: "recover-delete",
         canActivate: [unauthGuardFn()],
         children: [
           {
             path: "",
-            component: SsoComponent,
+            component: RecoverDeleteComponent,
             data: {
-              pageTitle: "enterpriseSingleSignOn",
-              titleId: "enterpriseSingleSignOn",
+              pageTitle: "deleteAccount",
+              titleId: "deleteAccount",
             } satisfies DataProperties & AnonLayoutWrapperData,
           },
           {
             path: "",
-            component: EnvironmentSelectorComponent, // use Web or Libs component depending on your client
+            component: EnvironmentSelectorComponent,
             outlet: "environment-selector",
           },
         ],
+      },
+      {
+        path: "remove-password",
+        component: RemovePasswordComponent,
+        canActivate: [AuthGuard],
+        data: {
+          pageTitle: "removeMasterPassword",
+          titleId: "removeMasterPassword",
+        } satisfies DataProperties & AnonLayoutWrapperData,
       },
     ],
   },
