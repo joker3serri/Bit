@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { UserKeyRotationDataProviderAbstraction } from "@bitwarden/auth/common";
+import { UserKeyRotationDataProvider } from "@bitwarden/auth/common";
 import { LocalData } from "@bitwarden/common/vault/models/data/local.data";
 
 import { UriMatchStrategySetting } from "../../models/domain/domain-service";
@@ -16,9 +16,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
 import { AddEditCipherInfo } from "../types/add-edit-cipher-info";
 
-export abstract class CipherService
-  implements UserKeyRotationDataProviderAbstraction<CipherWithIdRequest>
-{
+export abstract class CipherService implements UserKeyRotationDataProvider<CipherWithIdRequest> {
   cipherViews$: Observable<Record<CipherId, CipherView>>;
   ciphers$: Observable<Record<CipherId, CipherData>>;
   localData$: Observable<Record<CipherId, LocalData>>;

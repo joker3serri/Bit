@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { UserKeyRotationDataProviderAbstraction } from "@bitwarden/auth/common";
+import { UserKeyRotationDataProvider } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyData } from "@bitwarden/common/admin-console/models/data/policy.data";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
@@ -38,7 +38,7 @@ import { EmergencyAccessApiService } from "./emergency-access-api.service";
 
 @Injectable()
 export class EmergencyAccessService
-  implements UserKeyRotationDataProviderAbstraction<EmergencyAccessWithIdRequest>
+  implements UserKeyRotationDataProvider<EmergencyAccessWithIdRequest>
 {
   constructor(
     private emergencyAccessApiService: EmergencyAccessApiService,

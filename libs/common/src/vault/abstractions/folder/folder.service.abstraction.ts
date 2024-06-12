@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { UserKeyRotationDataProviderAbstraction } from "@bitwarden/auth/common";
+import { UserKeyRotationDataProvider } from "@bitwarden/auth/common";
 
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { UserId } from "../../../types/guid";
@@ -10,9 +10,7 @@ import { Folder } from "../../models/domain/folder";
 import { FolderWithIdRequest } from "../../models/request/folder-with-id.request";
 import { FolderView } from "../../models/view/folder.view";
 
-export abstract class FolderService
-  implements UserKeyRotationDataProviderAbstraction<FolderWithIdRequest>
-{
+export abstract class FolderService implements UserKeyRotationDataProvider<FolderWithIdRequest> {
   folders$: Observable<Folder[]>;
   folderViews$: Observable<FolderView[]>;
 

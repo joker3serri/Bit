@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { UserKeyRotationDataProviderAbstraction } from "@bitwarden/auth/common";
+import { UserKeyRotationDataProvider } from "@bitwarden/auth/common";
 
 import { EncArrayBuffer } from "../../../platform/models/domain/enc-array-buffer";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
@@ -11,9 +11,7 @@ import { Send } from "../models/domain/send";
 import { SendWithIdRequest } from "../models/request/send-with-id.request";
 import { SendView } from "../models/view/send.view";
 
-export abstract class SendService
-  implements UserKeyRotationDataProviderAbstraction<SendWithIdRequest>
-{
+export abstract class SendService implements UserKeyRotationDataProvider<SendWithIdRequest> {
   sends$: Observable<Send[]>;
   sendViews$: Observable<SendView[]>;
 

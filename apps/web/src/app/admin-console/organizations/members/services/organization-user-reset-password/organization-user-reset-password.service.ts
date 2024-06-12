@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { UserKeyRotationDataProviderAbstraction } from "@bitwarden/auth/common";
+import { UserKeyRotationDataProvider } from "@bitwarden/auth/common";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
@@ -27,7 +27,7 @@ import { UserKey } from "@bitwarden/common/types/key";
   providedIn: "root",
 })
 export class OrganizationUserResetPasswordService
-  implements UserKeyRotationDataProviderAbstraction<OrganizationUserResetPasswordWithIdRequest>
+  implements UserKeyRotationDataProvider<OrganizationUserResetPasswordWithIdRequest>
 {
   constructor(
     private cryptoService: CryptoService,
