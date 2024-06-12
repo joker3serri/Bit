@@ -221,7 +221,7 @@ summary.tw-list-none::-webkit-details-marker {
 }
 
 .cdk-global-scrollblock {
-  position: static;
+  position: relative;
   height: 100%;
   overflow: hidden;
 }
