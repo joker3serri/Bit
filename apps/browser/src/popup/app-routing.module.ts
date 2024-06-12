@@ -12,6 +12,7 @@ import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag
 import {
   AnonLayoutWrapperComponent,
   AnonLayoutWrapperData,
+  RegistrationFinishComponent,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
 } from "@bitwarden/auth/angular";
@@ -368,6 +369,20 @@ const routes: Routes = [
             path: "",
             component: RegistrationStartSecondaryComponent,
             outlet: "secondary",
+          },
+        ],
+      },
+      {
+        path: "finish-signup",
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
+        data: {
+          pageTitle: "setAStrongPassword",
+          pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
+        } satisfies AnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: RegistrationFinishComponent,
           },
         ],
       },
