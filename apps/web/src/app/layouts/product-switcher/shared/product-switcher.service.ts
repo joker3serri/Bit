@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, NavigationStart, ParamMap, Router } from "@angular/router";
-import { combineLatest, concatMap, filter, map, Observable, startWith, Subject } from "rxjs";
+import { combineLatest, concatMap, filter, map, Observable, ReplaySubject, startWith } from "rxjs";
 
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import {
@@ -60,7 +60,7 @@ export class ProductSwitcherService {
    * can be displayed to the user for a brief moment until the sync is complete
    * and all data is available.
    */
-  private syncCompleted$ = new Subject<void>();
+  private syncCompleted$ = new ReplaySubject<void>(1);
 
   /**
    * Certain events should trigger an update to the `products$` observable but the values
