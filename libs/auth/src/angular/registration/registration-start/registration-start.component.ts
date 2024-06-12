@@ -1,12 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
@@ -67,7 +61,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
     name: [""],
-    receiveMarketingEmails: [false, [this.receiveMarketingEmailsValidator()]],
+    receiveMarketingEmails: [false, []],
   });
 
   get email() {
@@ -95,7 +89,6 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     private accountApiService: AccountApiService,
     private router: Router,
   ) {
-    // TODO: this needs to update if user selects self hosted
     this.isSelfHost = platformUtilsService.isSelfHost();
   }
 
@@ -173,14 +166,6 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   goBack() {
     this.state = RegistrationStartState.USER_DATA_ENTRY;
     this.registrationStartStateChange.emit(this.state);
-  }
-
-  private receiveMarketingEmailsValidator(): ValidatorFn {
-    return (control: AbstractControl) => {
-      const ctrlValue = control.value;
-
-      return !ctrlValue && !this.isSelfHost ? { required: true } : null;
-    };
   }
 
   ngOnDestroy(): void {
