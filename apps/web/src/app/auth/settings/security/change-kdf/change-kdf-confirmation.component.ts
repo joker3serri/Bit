@@ -41,7 +41,7 @@ export class ChangeKdfConfirmationComponent {
   }
 
   submit = async () => {
-    if (this.form.value.masterPassword === null) {
+    if (this.form.invalid) {
       return;
     }
     this.loading = true;
