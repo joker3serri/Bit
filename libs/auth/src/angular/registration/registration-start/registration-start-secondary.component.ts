@@ -1,16 +1,17 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, RouterModule } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ClientType } from "@bitwarden/common/enums";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-const LOGIN_ROUTE_BY_CLIENT_TYPE: Partial<Record<ClientType, string>> = {
-  [ClientType.Web]: "/login",
-  [ClientType.Desktop]: "/login",
-  [ClientType.Browser]: "/home",
-};
+/**
+ * RegistrationStartSecondaryComponentData
+ * @loginRoute: string - The client specific route to the login page - configured at the app-routing.module level.
+ */
+export interface RegistrationStartSecondaryComponentData {
+  loginRoute: string;
+}
 
 @Component({
   standalone: true,
@@ -18,10 +19,14 @@ const LOGIN_ROUTE_BY_CLIENT_TYPE: Partial<Record<ClientType, string>> = {
   templateUrl: "./registration-start-secondary.component.html",
   imports: [CommonModule, JslibModule, RouterModule],
 })
-export class RegistrationStartSecondaryComponent {
+export class RegistrationStartSecondaryComponent implements OnInit {
   loginRoute: string;
 
-  constructor(platformUtilsService: PlatformUtilsService) {
-    this.loginRoute = LOGIN_ROUTE_BY_CLIENT_TYPE[platformUtilsService.getClientType()];
+  constructor(private activatedRoute: ActivatedRoute) {}
+
+  async ngOnInit() {
+    const routeData = await firstValueFrom(this.activatedRoute.data);
+
+    this.loginRoute = routeData["loginRoute"];
   }
 }

@@ -15,6 +15,7 @@ import {
   RegistrationFinishComponent,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
+  RegistrationStartSecondaryComponentData,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -109,6 +110,9 @@ const routes: Routes = [
             path: "",
             component: RegistrationStartSecondaryComponent,
             outlet: "secondary",
+            data: {
+              loginRoute: "/login",
+            } satisfies RegistrationStartSecondaryComponentData,
           },
         ],
       },
