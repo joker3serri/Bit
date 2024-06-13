@@ -352,6 +352,16 @@ export class VaultComponent implements OnInit, OnDestroy {
         }
         let ciphers;
 
+        // Restricted providers (who are not members) do not have access org cipher endpoint below
+        // Return early to avoid 404 response
+        if (
+          this.restrictProviderAccessEnabled &&
+          !organization.isMember &&
+          organization.isProviderUser
+        ) {
+          return [];
+        }
+
         if (this.flexibleCollectionsV1Enabled) {
           // Flexible collections V1 logic.
           // If the user can edit all ciphers for the organization then fetch them ALL.
