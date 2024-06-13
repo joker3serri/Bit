@@ -74,7 +74,6 @@ const routes: Routes = [
         children: [], // Children lets us have an empty component.
         canActivate: [redirectGuard()], // Redirects either to vault, login, or lock page.
       },
-      { path: "login", component: LoginComponent, canActivate: [UnauthGuard] },
       {
         path: "login-with-device",
         component: LoginViaAuthRequestComponent,
@@ -107,12 +106,6 @@ const routes: Routes = [
         pathMatch: "full",
       },
       {
-        path: "sso",
-        component: SsoComponent,
-        canActivate: [UnauthGuard],
-        data: { titleId: "enterpriseSingleSignOn" } satisfies DataProperties,
-      },
-      {
         path: "set-password",
         component: SetPasswordComponent,
         data: { titleId: "setMasterPassword" } satisfies DataProperties,
@@ -142,12 +135,6 @@ const routes: Routes = [
         data: { titleId: "acceptFamilySponsorship", doNotSaveUrl: false } satisfies DataProperties,
       },
       { path: "recover", pathMatch: "full", redirectTo: "recover-2fa" },
-      {
-        path: "recover-delete",
-        component: RecoverDeleteComponent,
-        canActivate: [UnauthGuard],
-        data: { titleId: "deleteAccount" } satisfies DataProperties,
-      },
       {
         path: "verify-recover-delete",
         component: VerifyRecoverDeleteComponent,
@@ -229,6 +216,43 @@ const routes: Routes = [
         ],
       },
       {
+        path: "sso",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: SsoComponent,
+            data: {
+              pageTitle: "enterpriseSingleSignOn",
+              titleId: "enterpriseSingleSignOn",
+            } satisfies DataProperties & AnonLayoutWrapperData,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+      },
+      {
+        path: "login",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: LoginComponent,
+          },
+          {
+            path: "",
+            component: EnvironmentSelectorComponent,
+            outlet: "environment-selector",
+          },
+        ],
+        data: {
+          pageTitle: "logIn",
+        },
+      },
+      {
         path: "2fa",
         component: TwoFactorComponent,
         canActivate: [unauthGuardFn()],
@@ -270,6 +294,20 @@ const routes: Routes = [
               import("./auth/emergency-access/accept/accept-emergency.component").then(
                 (mod) => mod.AcceptEmergencyComponent,
               ),
+          },
+        ],
+      },
+      {
+        path: "recover-delete",
+        canActivate: [unauthGuardFn()],
+        children: [
+          {
+            path: "",
+            component: RecoverDeleteComponent,
+            data: {
+              pageTitle: "deleteAccount",
+              titleId: "deleteAccount",
+            } satisfies DataProperties & AnonLayoutWrapperData,
           },
           {
             path: "",
