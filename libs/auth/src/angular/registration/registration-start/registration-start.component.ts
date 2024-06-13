@@ -61,7 +61,7 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
     name: [""],
-    receiveMarketingEmails: [false, []],
+    receiveMarketingEmails: [false],
   });
 
   get email() {
