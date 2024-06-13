@@ -109,13 +109,14 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
   }
 
   setReceiveMarketingEmailsByRegion(region: RegionConfig | Region.SelfHosted) {
+    let defaultValue;
     if (region === Region.SelfHosted) {
-      const defaultValue = DEFAULT_MARKETING_EMAILS_PREF_BY_REGION[region];
-      this.receiveMarketingEmails.setValue(defaultValue);
+      defaultValue = DEFAULT_MARKETING_EMAILS_PREF_BY_REGION[region];
+    } else {
+      const regionKey = (region as RegionConfig).key;
+      defaultValue = DEFAULT_MARKETING_EMAILS_PREF_BY_REGION[regionKey];
     }
 
-    const regionKey = (region as RegionConfig).key;
-    const defaultValue = DEFAULT_MARKETING_EMAILS_PREF_BY_REGION[regionKey];
     this.receiveMarketingEmails.setValue(defaultValue);
   }
 
