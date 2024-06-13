@@ -166,7 +166,11 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   protected get hideVaultFilters(): boolean {
-    return this.restrictProviderAccessEnabled && this.organization?.isProviderUser;
+    return (
+      this.restrictProviderAccessEnabled &&
+      this.organization?.isProviderUser &&
+      !this.organization?.isMember
+    );
   }
 
   private searchText$ = new Subject<string>();
