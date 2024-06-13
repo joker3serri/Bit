@@ -44,11 +44,7 @@ export class DeviceApprovalProgram extends BaseProgram {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
         await this.exitIfLocked();
 
-        const cmd = new ListCommand(
-          this.serviceContainer.organizationAuthRequestService,
-          this.serviceContainer.organizationService,
-        );
-
+        const cmd = ListCommand.create(this.serviceContainer);
         const response = await cmd.run(options.organizationid);
         this.processResponse(response);
       });
@@ -63,10 +59,7 @@ export class DeviceApprovalProgram extends BaseProgram {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
         await this.exitIfLocked();
 
-        const cmd = new ApproveCommand(
-          this.serviceContainer.organizationService,
-          this.serviceContainer.organizationAuthRequestService,
-        );
+        const cmd = ApproveCommand.create(this.serviceContainer);
         const response = await cmd.run(options.organizationid, id);
         this.processResponse(response);
       });
@@ -80,10 +73,7 @@ export class DeviceApprovalProgram extends BaseProgram {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
         await this.exitIfLocked();
 
-        const cmd = new ApproveAllCommand(
-          this.serviceContainer.organizationAuthRequestService,
-          this.serviceContainer.organizationService,
-        );
+        const cmd = ApproveAllCommand.create(this.serviceContainer);
         const response = await cmd.run(options.organizationid);
         this.processResponse(response);
       });
@@ -98,10 +88,7 @@ export class DeviceApprovalProgram extends BaseProgram {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
         await this.exitIfLocked();
 
-        const cmd = new DenyCommand(
-          this.serviceContainer.organizationService,
-          this.serviceContainer.organizationAuthRequestService,
-        );
+        const cmd = DenyCommand.create(this.serviceContainer);
         const response = await cmd.run(options.organizationid, id);
         this.processResponse(response);
       });
@@ -115,10 +102,7 @@ export class DeviceApprovalProgram extends BaseProgram {
         await this.exitIfFeatureFlagDisabled(FeatureFlag.BulkDeviceApproval);
         await this.exitIfLocked();
 
-        const cmd = new DenyAllCommand(
-          this.serviceContainer.organizationService,
-          this.serviceContainer.organizationAuthRequestService,
-        );
+        const cmd = DenyAllCommand.create(this.serviceContainer);
         const response = await cmd.run(options.organizationid);
         this.processResponse(response);
       });
