@@ -3,7 +3,7 @@
   <a
     type="button"
     bitButton
-    *ngIf="manageOrganizations"
+    *ngIf="isProviderAdmin"
     buttonType="primary"
     (click)="createClientOrganization()"
   >
@@ -64,7 +64,7 @@
         <td>
           <span>{{ client.plan }}</span>
         </td>
-        <td bitCell>
+        <td bitCell *ngIf="this.isProviderAdmin">
           <button
             [bitMenuTriggerFor]="rowMenu"
             type="button"
@@ -92,6 +92,9 @@
     </ng-template>
   </bit-table>
   <div *ngIf="clients.length === 0" class="tw-mt-10">
-    <app-no-clients (addNewOrganizationClicked)="createClientOrganization()" />
+    <app-no-clients
+      [showAddNewOrganizationButton]="this.isProviderAdmin"
+      (addNewOrganizationClicked)="createClientOrganization()"
+    />
   </div>
 </ng-container>
