@@ -587,6 +587,9 @@
   "loggedOut": {
     "message": "Sessão encerrada"
   },
+  "loggedOutDesc": {
+    "message": "You have been logged out of your account."
+  },
   "loginExpired": {
     "message": "A sua sessão expirou."
   },
@@ -718,6 +721,9 @@
   },
   "logIn": {
     "message": "Iniciar sessão"
+  },
+  "verifyIdentity": {
+    "message": "Verify your Identity"
   },
   "logInInitiated": {
     "message": "Login iniciado"
@@ -1049,6 +1055,12 @@
   },
   "copyUuid": {
     "message": "Copiar URL"
+  },
+  "errorRefreshingAccessToken": {
+    "message": "Access Token Refresh Error"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "No refresh token or API keys found. Please try logging out and logging back in."
   },
   "warning": {
     "message": "Aviso"
@@ -2784,12 +2796,6 @@
   },
   "userDesc": {
     "message": "Um usuário comum com acesso às coleções da sua organização."
-  },
-  "manager": {
-    "message": "Gerente"
-  },
-  "managerDesc": {
-    "message": "Os gerentes podem acessar e gerenciar coleções atribuídas em sua organização."
   },
   "all": {
     "message": "Todos"
@@ -4567,12 +4573,6 @@
   "permission": {
     "message": "Permissão"
   },
-  "managerPermissions": {
-    "message": "Permissões de Gerente"
-  },
-  "adminPermissions": {
-    "message": "Permissões de Administrador"
-  },
   "accessEventLogs": {
     "message": "Acessar Registro de Eventos"
   },
@@ -4596,9 +4596,6 @@
   },
   "deleteAnyCollection": {
     "message": "Excluir Qualquer Coleção"
-  },
-  "manageAssignedCollections": {
-    "message": "Gerenciar Coleções Atribuídas"
   },
   "editAssignedCollections": {
     "message": "Editar Coleções Atribuídas"
@@ -5585,6 +5582,39 @@
   },
   "rotateBillingSyncTokenTitle": {
     "message": "Renovar o Token de Sincronização de Cobrança invalidará o token anterior."
+  },
+  "selfHostedServer": {
+    "message": "self-hosted"
+  },
+  "customEnvironment": {
+    "message": "Custom environment"
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "For advanced configuration, you can specify the base URL of each service independently."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "You must add either the base Server URL or at least one custom environment."
+  },
+  "apiUrl": {
+    "message": "API server URL"
+  },
+  "webVaultUrl": {
+    "message": "Web vault server URL"
+  },
+  "identityUrl": {
+    "message": "Identity server URL"
+  },
+  "notificationsUrl": {
+    "message": "Notifications server URL"
+  },
+  "iconsUrl": {
+    "message": "Icons server URL"
+  },
+  "environmentSaved": {
+    "message": "Environment URLs saved"
   },
   "selfHostingTitle": {
     "message": "Auto-hospedado"
@@ -6627,12 +6657,6 @@
   "restrictedCollectionAssignmentDesc": {
     "message": "Você só pode atribuir coleções que você gerencia."
   },
-  "accessAllCollectionsDesc": {
-    "message": "Conceder acesso a todas as coleções atuais e futuras."
-  },
-  "accessAllCollectionsHelp": {
-    "message": "Se marcado, isto irá substituir todas as permissões de outras coleções."
-  },
   "selectMembers": {
     "message": "Selecionar membros"
   },
@@ -6674,12 +6698,6 @@
   },
   "group": {
     "message": "Grupo"
-  },
-  "groupAccessAll": {
-    "message": "Este grupo pode acessar e modificar todos os itens."
-  },
-  "memberAccessAll": {
-    "message": "Este usuário pode acessar e modificar todos os itens."
   },
   "domainVerification": {
     "message": "Verificação de Domínio"
@@ -8297,5 +8315,30 @@
   },
   "allLoginRequestsApproved": {
     "message": "All login requests approved"
+  },
+  "payPal": {
+    "message": "PayPal"
+  },
+  "bitcoin": {
+    "message": "Bitcoin"
+  },
+  "updatedTaxInformation": {
+    "message": "Updated tax information"
+  },
+  "unverified": {
+    "message": "Unverified"
+  },
+  "verified": {
+    "message": "Verified"
+  },
+  "viewSecret": {
+    "message": "View secret"
+  },
+  "noClients": {
+    "message": "There are no clients to list"
+  },
+  "providerBillingEmailHint": {
+    "message": "This email address will receive all invoices pertaining to this provider",
+    "description": "A hint that shows up on the Provider setup page to inform the admin the billing email will receive the provider's invoices."
   }
 }

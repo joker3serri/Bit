@@ -695,6 +695,15 @@
   "selfHostedEnvironmentFooter": {
     "message": "Especifique a URL de base da sua instalação local do Bitwarden."
   },
+  "selfHostedBaseUrlHint": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "For advanced configuration, you can specify the base URL of each service independently."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "You must add either the base Server URL or at least one custom environment."
+  },
   "customEnvironment": {
     "message": "Ambiente Personalizado"
   },
@@ -742,6 +751,9 @@
   },
   "loggedOut": {
     "message": "Sessão encerrada"
+  },
+  "loggedOutDesc": {
+    "message": "You have been logged out of your account."
   },
   "loginExpired": {
     "message": "A sua sessão expirou."
@@ -1211,6 +1223,12 @@
         "example": "Password"
       }
     }
+  },
+  "errorRefreshingAccessToken": {
+    "message": "Access Token Refresh Error"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "No refresh token or API keys found. Please try logging out and logging back in."
   },
   "help": {
     "message": "Ajuda"
@@ -2383,9 +2401,6 @@
   "denyLogIn": {
     "message": "Negar acesso"
   },
-  "approveLoginRequests": {
-    "message": "Aprovar solicitações de acesso"
-  },
   "logInConfirmedForEmailOnDevice": {
     "message": "Acesso confirmado para $EMAIL$ em $DEVICE$",
     "placeholders": {
@@ -2419,9 +2434,6 @@
   },
   "thisRequestIsNoLongerValid": {
     "message": "Este pedido não é mais válido."
-  },
-  "approveLoginRequestDesc": {
-    "message": "Use este dispositivo para aprovar solicitações de acesso feitas de outros dispositivos."
   },
   "confirmLoginAtemptForMail": {
     "message": "Confirmar tentativa de acesso de $EMAIL$",
@@ -2473,6 +2485,12 @@
   },
   "important": {
     "message": "Importante:"
+  },
+  "accessTokenUnableToBeDecrypted": {
+    "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."
+  },
+  "refreshTokenSecureStorageRetrievalFailure": {
+    "message": "You have been logged out because your refresh token could not be retrieved. Please log in again to resolve this issue."
   },
   "masterPasswordHint": {
     "message": "A sua senha mestra não pode ser recuperada se você esquecê-la!"

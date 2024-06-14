@@ -695,6 +695,15 @@
   "selfHostedEnvironmentFooter": {
     "message": "Tukuyin ang base URL ng iyong on premises na naka host sa pag install ng Bitwarden."
   },
+  "selfHostedBaseUrlHint": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "For advanced configuration, you can specify the base URL of each service independently."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "You must add either the base Server URL or at least one custom environment."
+  },
   "customEnvironment": {
     "message": "Kapaligirang Custom"
   },
@@ -742,6 +751,9 @@
   },
   "loggedOut": {
     "message": "Umalis na"
+  },
+  "loggedOutDesc": {
+    "message": "You have been logged out of your account."
   },
   "loginExpired": {
     "message": "Nag-expire na ang iyong session sa login."
@@ -1211,6 +1223,12 @@
         "example": "Password"
       }
     }
+  },
+  "errorRefreshingAccessToken": {
+    "message": "Access Token Refresh Error"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "No refresh token or API keys found. Please try logging out and logging back in."
   },
   "help": {
     "message": "Tulong"
@@ -2383,9 +2401,6 @@
   "denyLogIn": {
     "message": "Tanggihan ang pag login"
   },
-  "approveLoginRequests": {
-    "message": "Aprubahan ang mga kahilingan sa pag login"
-  },
   "logInConfirmedForEmailOnDevice": {
     "message": "Nakumpirma ang pag-login para sa $EMAIL$ sa $DEVICE$",
     "placeholders": {
@@ -2419,9 +2434,6 @@
   },
   "thisRequestIsNoLongerValid": {
     "message": "Hindi na valid ang request na ito."
-  },
-  "approveLoginRequestDesc": {
-    "message": "Gamitin ang device na ito para aprubahan ang mga kahilingan sa pag-login na ginawa mula sa iba pang mga device."
   },
   "confirmLoginAtemptForMail": {
     "message": "Kumpirmahin ang pagtatangka sa pag-login para sa $EMAIL$",
@@ -2473,6 +2485,12 @@
   },
   "important": {
     "message": "Mahalaga:"
+  },
+  "accessTokenUnableToBeDecrypted": {
+    "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."
+  },
+  "refreshTokenSecureStorageRetrievalFailure": {
+    "message": "You have been logged out because your refresh token could not be retrieved. Please log in again to resolve this issue."
   },
   "masterPasswordHint": {
     "message": "Hindi mababawi ang password ng master mo kung nakalimutan mo ito!"
