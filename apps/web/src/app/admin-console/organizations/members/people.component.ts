@@ -67,18 +67,8 @@ import { ResetPasswordComponent } from "./components/reset-password.component";
   templateUrl: "people.component.html",
 })
 export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView> {
-  @ViewChild("groupsTemplate", { read: ViewContainerRef, static: true })
-  groupsModalRef: ViewContainerRef;
-  @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
-  confirmModalRef: ViewContainerRef;
   @ViewChild("resetPasswordTemplate", { read: ViewContainerRef, static: true })
   resetPasswordModalRef: ViewContainerRef;
-  @ViewChild("bulkStatusTemplate", { read: ViewContainerRef, static: true })
-  bulkStatusModalRef: ViewContainerRef;
-  @ViewChild("bulkConfirmTemplate", { read: ViewContainerRef, static: true })
-  bulkConfirmModalRef: ViewContainerRef;
-  @ViewChild("bulkRemoveTemplate", { read: ViewContainerRef, static: true })
-  bulkRemoveModalRef: ViewContainerRef;
 
   userType = OrganizationUserType;
   userStatusType = OrganizationUserStatusType;
