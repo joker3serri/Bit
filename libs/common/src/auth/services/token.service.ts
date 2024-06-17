@@ -182,14 +182,14 @@ export class TokenService implements TokenServiceAbstraction {
       throw new Error("User id not found. Cannot set tokens.");
     }
 
-    const newTokens = new SetTokensResult();
-
-    newTokens.accessToken = await this._setAccessToken(
+    const newAccessToken = await this._setAccessToken(
       accessToken,
       vaultTimeoutAction,
       vaultTimeout,
       userId,
     );
+
+    const newTokens = new SetTokensResult(newAccessToken);
 
     if (refreshToken) {
       newTokens.refreshToken = await this.setRefreshToken(
