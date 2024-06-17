@@ -101,8 +101,10 @@ export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
 
   disable = async () => {
     await this.disableWebAuth();
-    this.onChangeStatus.emit(this.enabled);
-    this.dialogRef.close();
+    if (!this.enabled) {
+      this.onChangeStatus.emit(this.enabled);
+      this.dialogRef.close();
+    }
   };
 
   private async disableWebAuth() {
