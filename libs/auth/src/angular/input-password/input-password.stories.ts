@@ -1,7 +1,7 @@
 import { importProvidersFrom } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { action } from "@storybook/addon-actions";
-import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
+import { Meta, StoryObj, applicationConfig } from "@storybook/angular";
 import { of } from "rxjs";
 import { ZXCVBNResult } from "zxcvbn";
 
@@ -19,7 +19,7 @@ import { InputPasswordComponent } from "./input-password.component";
 
 const mockMasterPasswordPolicyOptions = {
   minComplexity: 4,
-  minLength: 10,
+  minLength: 14,
   requireUpper: true,
   requireLower: true,
   requireNumbers: true,
@@ -30,12 +30,10 @@ export default {
   title: "Auth/Input Password",
   component: InputPasswordComponent,
   decorators: [
-    moduleMetadata({
-      imports: [BrowserAnimationsModule],
-    }),
     applicationConfig({
       providers: [
         importProvidersFrom(PreloadedEnglishI18nModule),
+        importProvidersFrom(BrowserAnimationsModule),
         {
           provide: AuditService,
           useValue: {

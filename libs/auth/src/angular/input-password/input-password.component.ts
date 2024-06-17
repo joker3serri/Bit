@@ -62,6 +62,7 @@ export class InputPasswordComponent implements OnInit {
   protected maxHintLength = 50;
 
   protected minPasswordLength = Utils.minimumPasswordLength;
+  protected minPasswordMsg = "";
   protected masterPasswordPolicy: MasterPasswordPolicyOptions;
   protected passwordStrengthResult: any;
   protected showErrorSummary = false;
@@ -110,6 +111,15 @@ export class InputPasswordComponent implements OnInit {
     this.masterPasswordPolicy = await this.policyApiService.getMasterPasswordPolicyOptsForOrgUser(
       this.orgId,
     );
+
+    if (this.masterPasswordPolicy != null && this.masterPasswordPolicy.minLength > 0) {
+      this.minPasswordMsg = this.i18nService.t(
+        "characterMinimum",
+        this.masterPasswordPolicy.minLength,
+      );
+    } else {
+      this.minPasswordMsg = this.i18nService.t("characterMinimum", this.minPasswordLength);
+    }
   }
 
   getPasswordStrengthResult(result: any) {
