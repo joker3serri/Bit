@@ -32,13 +32,19 @@ import { CipherAttachmentsComponent } from "./cipher-attachments/cipher-attachme
 })
 export class AttachmentsV2Component {
   /** The status for the attachment form */
-  attachmentFormStatus: FormControlStatus;
+  protected attachmentFormStatus: FormControlStatus;
 
   /** The `id` tied to the underlying HTMLFormElement */
   attachmentFormId = CipherAttachmentsComponent.attachmentFormID;
 
   /** Id of the cipher */
   cipherId: string;
+
+  /** Loading state of the attachment form */
+  protected loading = false;
+
+  /** Disabled state of the attachment form */
+  protected disabled = false;
 
   constructor(route: ActivatedRoute) {
     route.queryParams.pipe(takeUntilDestroyed(), first()).subscribe(({ cipherId }) => {

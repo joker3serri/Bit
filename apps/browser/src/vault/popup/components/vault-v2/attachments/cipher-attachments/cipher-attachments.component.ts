@@ -1,12 +1,15 @@
 import { CommonModule } from "@angular/common";
 import {
+  AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
   ViewChild,
+  inject,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import {
@@ -26,6 +29,7 @@ import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   AsyncActionsModule,
+  BitSubmitDirective,
   ButtonModule,
   CardComponent,
   ToastService,
@@ -50,11 +54,15 @@ type CipherAttachmentForm = FormGroup<{
     CardComponent,
   ],
 })
-export class CipherAttachmentsComponent implements OnInit {
+export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
   /** `id` associated with the form element */
   static attachmentFormID = "attachmentForm";
 
-  @ViewChild("fileInput", { read: ElementRef }) fileInput: ElementRef<HTMLInputElement>;
+  /** Reference to the file HTMLInputElement */
+  @ViewChild("fileInput", { read: ElementRef }) private fileInput: ElementRef<HTMLInputElement>;
+
+  /** Reference to the BitSubmitDirective */
+  @ViewChild(BitSubmitDirective) private bitSubmit: BitSubmitDirective;
 
   /** The `id` of the cipher in context */
   @Input({ required: true }) cipherId: string;
@@ -62,12 +70,20 @@ export class CipherAttachmentsComponent implements OnInit {
   /** Emits the status of the attachment form */
   @Output() formStatusChange = new EventEmitter<FormControlStatus>();
 
+  /** Emits the `BitSubmitDirective` loading state */
+  @Output() formLoading = new EventEmitter<boolean>();
+
+  /** Emits the `BitSubmitDirective` disabled state */
+  @Output() formDisabled = new EventEmitter<boolean>();
+
   cipher: CipherView;
-  cipherDomain: Cipher;
 
   attachmentForm: CipherAttachmentForm = this.formBuilder.group({
     file: new FormControl<File>(null, [Validators.required]),
   });
+
+  private cipherDomain: Cipher;
+  private destroy$ = inject(DestroyRef);
 
   constructor(
     private cipherService: CipherService,
@@ -86,6 +102,16 @@ export class CipherAttachmentsComponent implements OnInit {
     this.cipher = await this.cipherDomain.decrypt(
       await this.cipherService.getKeyForCipherKeyDecryption(this.cipherDomain),
     );
+  }
+
+  ngAfterViewInit(): void {
+    this.bitSubmit.loading$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((loading) => {
+      this.formLoading.emit(loading);
+    });
+
+    this.bitSubmit.disabled$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((disabled) => {
+      this.formDisabled.emit(disabled);
+    });
   }
 
   /** Reference the `id` via the static property */
