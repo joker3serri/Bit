@@ -11,6 +11,7 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { DEFAULT_KDF_CONFIG } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { MasterKey } from "@bitwarden/common/types/key";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -27,6 +28,7 @@ import { SharedModule } from "../../../../components/src/shared";
 import { PasswordCalloutComponent } from "../password-callout/password-callout.component";
 
 export interface PasswordInputResult {
+  masterKey: MasterKey;
   masterKeyHash: string;
   kdfConfig: PBKDF2KdfConfig;
   hint: string;
@@ -171,6 +173,7 @@ export class InputPasswordComponent implements OnInit {
     const masterKeyHash = await this.cryptoService.hashMasterKey(password, masterKey);
 
     this.onPasswordFormSubmit.emit({
+      masterKey,
       masterKeyHash,
       kdfConfig,
       hint: this.formGroup.controls.hint.value,
