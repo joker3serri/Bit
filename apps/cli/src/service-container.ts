@@ -122,7 +122,10 @@ import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-u
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import {
+  legacyPassword,
+  PasswordGenerationServiceAbstraction,
+} from "@bitwarden/generator-extensions";
 import {
   ImportApiService,
   ImportApiServiceAbstraction,
@@ -181,7 +184,7 @@ export class ServiceContainer {
   syncService: SyncService;
   eventCollectionService: EventCollectionServiceAbstraction;
   eventUploadService: EventUploadServiceAbstraction;
-  passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction;
+  passwordGenerationService: PasswordGenerationServiceAbstraction;
   passwordStrengthService: PasswordStrengthServiceAbstraction;
   userDecryptionOptionsService: InternalUserDecryptionOptionsServiceAbstraction;
   totpService: TotpService;

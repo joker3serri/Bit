@@ -37,7 +37,7 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 import { NodeUtils } from "@bitwarden/node/node-utils";
 
 import { Response } from "../../models/response";
@@ -57,7 +57,7 @@ export class LoginCommand {
     protected apiService: ApiService,
     protected cryptoFunctionService: CryptoFunctionService,
     protected environmentService: EnvironmentService,
-    protected passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected platformUtilsService: PlatformUtilsService,
     protected accountService: AccountService,
