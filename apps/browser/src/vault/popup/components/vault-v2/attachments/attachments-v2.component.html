@@ -3,6 +3,16 @@
     <app-pop-out slot="end" />
   </popup-header>
 
+  <bit-card>
+    <label for="file" bitTypography="body2" class="tw-text-muted tw-px-1 tw-pb-1.5">
+      {{ "addAttachment" | i18n }}</label
+    >
+    <input type="file" id="file" name="file" aria-describedby="fileHelp" required />
+    <p id="fileHelp" bitTypography="helper" class="tw-text-muted tw-px-1 tw-pt-1 tw-mb-0">
+      {{ "maxFileSize" | i18n }}
+    </p>
+  </bit-card>
+
   <popup-footer slot="footer">
     <button bitButton type="button" buttonType="primary">
       {{ "upload" | i18n }}

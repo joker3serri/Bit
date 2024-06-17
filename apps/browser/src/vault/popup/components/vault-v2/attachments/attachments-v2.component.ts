@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ButtonModule } from "@bitwarden/components";
+import { ButtonModule, CardComponent, TypographyModule } from "@bitwarden/components";
 
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
@@ -17,6 +17,8 @@ import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-p
     CommonModule,
     ButtonModule,
     JslibModule,
+    TypographyModule,
+    CardComponent,
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,

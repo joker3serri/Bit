@@ -3484,5 +3484,8 @@
   },
   "upload": {
     "message": "Upload"
+  },
+  "addAttachment":{
+    "message": "Add attachment"
   }
 }
