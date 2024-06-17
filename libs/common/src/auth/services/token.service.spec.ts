@@ -2388,11 +2388,11 @@ describe("TokenService", () => {
       const clientId = "clientId";
       const clientSecret = "clientSecret";
 
-      (tokenService as any)._setAccessToken = jest.fn();
       // any hack allows for mocking private method.
-      (tokenService as any).setRefreshToken = jest.fn();
-      tokenService.setClientId = jest.fn();
-      tokenService.setClientSecret = jest.fn();
+      (tokenService as any)._setAccessToken = jest.fn().mockReturnValue(accessTokenJwt);
+      (tokenService as any).setRefreshToken = jest.fn().mockReturnValue(refreshToken);
+      tokenService.setClientId = jest.fn().mockReturnValue(clientId);
+      tokenService.setClientSecret = jest.fn().mockReturnValue(clientSecret);
 
       // Act
       // Note: passing a valid access token so that a valid user id can be determined from the access token
@@ -2438,14 +2438,48 @@ describe("TokenService", () => {
       );
     });
 
+    it("does not try to set the refresh token when it is not passed in", async () => {
+      // Arrange
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+
+      (tokenService as any)._setAccessToken = jest.fn().mockReturnValue(accessTokenJwt);
+      (tokenService as any).setRefreshToken = jest.fn();
+      tokenService.setClientId = jest.fn();
+      tokenService.setClientSecret = jest.fn();
+
+      // Act
+      const result = await tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        null,
+      );
+
+      // Assert
+      expect((tokenService as any)._setAccessToken).toHaveBeenCalledWith(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+
+      // any hack allows for testing private methods
+      expect((tokenService as any).setRefreshToken).not.toHaveBeenCalled();
+      expect(tokenService.setClientId).not.toHaveBeenCalled();
+      expect(tokenService.setClientSecret).not.toHaveBeenCalled();
+
+      expect(result).toStrictEqual(new SetTokensResult(accessTokenJwt));
+    });
+
     it("does not try to set client id and client secret when they are not passed in", async () => {
       // Arrange
       const refreshToken = "refreshToken";
       const vaultTimeoutAction = VaultTimeoutAction.Lock;
       const vaultTimeout = 30;
 
-      (tokenService as any)._setAccessToken = jest.fn();
-      (tokenService as any).setRefreshToken = jest.fn();
+      (tokenService as any)._setAccessToken = jest.fn().mockReturnValue(accessTokenJwt);
+      (tokenService as any).setRefreshToken = jest.fn().mockReturnValue(refreshToken);
       tokenService.setClientId = jest.fn();
       tokenService.setClientSecret = jest.fn();
 
