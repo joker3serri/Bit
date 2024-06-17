@@ -20,7 +20,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
 
@@ -38,7 +38,7 @@ export class UpdatePasswordComponent extends BaseChangePasswordComponent {
     protected router: Router,
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
-    passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     policyService: PolicyService,
     cryptoService: CryptoService,
     messagingService: MessagingService,

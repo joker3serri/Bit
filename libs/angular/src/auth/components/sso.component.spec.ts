@@ -28,7 +28,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { SsoComponent } from "./sso.component";
 // test component that extends the SsoComponent
@@ -69,7 +69,7 @@ describe("SsoComponent", () => {
   let mockApiService: MockProxy<ApiService>;
   let mockCryptoFunctionService: MockProxy<CryptoFunctionService>;
   let mockEnvironmentService: MockProxy<EnvironmentService>;
-  let mockPasswordGenerationService: MockProxy<legacyPassword.PasswordGenerationServiceAbstraction>;
+  let mockPasswordGenerationService: MockProxy<PasswordGenerationServiceAbstraction>;
   let mockLogService: MockProxy<LogService>;
   let mockUserDecryptionOptionsService: MockProxy<UserDecryptionOptionsServiceAbstraction>;
   let mockConfigService: MockProxy<ConfigService>;
@@ -202,7 +202,7 @@ describe("SsoComponent", () => {
         { provide: CryptoFunctionService, useValue: mockCryptoFunctionService },
         { provide: EnvironmentService, useValue: mockEnvironmentService },
         {
-          provide: legacyPassword.PasswordGenerationServiceAbstraction,
+          provide: PasswordGenerationServiceAbstraction,
           useValue: mockPasswordGenerationService,
         },
 

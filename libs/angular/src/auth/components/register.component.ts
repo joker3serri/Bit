@@ -18,7 +18,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DEFAULT_KDF_CONFIG } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import {
   AllValidationErrors,
@@ -92,7 +92,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     protected apiService: ApiService,
     protected stateService: StateService,
     platformUtilsService: PlatformUtilsService,
-    protected passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     environmentService: EnvironmentService,
     protected logService: LogService,
     protected auditService: AuditService,

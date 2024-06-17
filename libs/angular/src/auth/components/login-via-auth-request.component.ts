@@ -32,7 +32,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
@@ -74,7 +74,7 @@ export class LoginViaAuthRequestComponent
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
     private appIdService: AppIdService,
-    private passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private apiService: ApiService,
     private authService: AuthService,
     private logService: LogService,

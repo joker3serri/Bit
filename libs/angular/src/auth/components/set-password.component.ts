@@ -31,7 +31,7 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
 
@@ -56,7 +56,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     i18nService: I18nService,
     cryptoService: CryptoService,
     messagingService: MessagingService,
-    passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     platformUtilsService: PlatformUtilsService,
     private policyApiService: PolicyApiServiceAbstraction,
     policyService: PolicyService,

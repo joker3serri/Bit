@@ -16,7 +16,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { PasswordColorText } from "../../tools/password-strength/password-strength.component";
 
@@ -41,7 +41,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     protected i18nService: I18nService,
     protected cryptoService: CryptoService,
     protected messagingService: MessagingService,
-    protected passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
     protected stateService: StateService,

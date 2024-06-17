@@ -24,7 +24,7 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
 
@@ -49,7 +49,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   constructor(
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
-    passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     policyService: PolicyService,
     cryptoService: CryptoService,
     messagingService: MessagingService,

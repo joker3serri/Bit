@@ -12,12 +12,14 @@ import {
   GeneratorType,
   DefaultPasswordBoundaries as DefaultBoundaries,
 } from "@bitwarden/generator-core";
-import { legacyPassword, legacyUsername } from "@bitwarden/generator-extensions";
+import {
+  legacyPassword,
+  PasswordGenerationServiceAbstraction,
+  legacyUsername,
+  UsernameGenerationServiceAbstraction,
+} from "@bitwarden/generator-extensions";
 
-type PasswordGenerationServiceAbstraction = legacyPassword.PasswordGenerationServiceAbstraction;
 type PasswordGeneratorOptions = legacyPassword.PasswordGeneratorOptions;
-
-type UsernameGenerationServiceAbstraction = legacyUsername.UsernameGenerationServiceAbstraction;
 type UsernameGeneratorOptions = legacyUsername.UsernameGeneratorOptions;
 
 export class EmailForwarderOptions {
