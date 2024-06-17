@@ -7873,7 +7873,7 @@
     "message": "Adjustments to seats will be reflected in the next billing cycle."
   },
   "unassignedSeatsDescription": {
-    "message": "Unassigned subscription seats"
+    "message": "Unassigned seats"
   },
   "purchaseSeatDescription": {
     "message": "Additional seats purchased"
@@ -8377,5 +8377,8 @@
   "invoiceNumberHeader": {
     "message": "Invoice number",
     "description": "A table header for an invoice's number"
+  },
+  "serviceUsersSubscriptionUpdateError": {
+    "message": "Service users cannot update a client's subscription over the seat minimum."
   }
 }

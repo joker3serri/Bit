@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { PlanType } from "@bitwarden/common/billing/enums";
@@ -11,22 +11,22 @@ import { DialogService, ToastService } from "@bitwarden/components";
 
 import { WebProviderService } from "../../../admin-console/providers/services/web-provider.service";
 
-type CreateClientOrganizationParams = {
+type CreateClientDialogParams = {
   providerId: string;
   plans: PlanResponse[];
 };
 
-export enum CreateClientOrganizationResultType {
+export enum CreateClientDialogResultType {
   Closed = "closed",
   Submitted = "submitted",
 }
 
-export const openCreateClientOrganizationDialog = (
+export const openCreateClientDialog = (
   dialogService: DialogService,
-  dialogConfig: DialogConfig<CreateClientOrganizationParams>,
+  dialogConfig: DialogConfig<CreateClientDialogParams>,
 ) =>
-  dialogService.open<CreateClientOrganizationResultType, CreateClientOrganizationParams>(
-    CreateClientOrganizationComponent,
+  dialogService.open<CreateClientDialogResultType, CreateClientDialogParams>(
+    CreateClientDialogComponent,
     dialogConfig,
   );
 
@@ -39,25 +39,29 @@ type PlanCard = {
 };
 
 @Component({
-  selector: "app-create-client-organization",
-  templateUrl: "./create-client-organization.component.html",
+  templateUrl: "./create-client-dialog.component.html",
 })
-export class CreateClientOrganizationComponent implements OnInit {
-  protected formGroup = this.formBuilder.group({
-    clientOwnerEmail: ["", [Validators.required, Validators.email]],
-    organizationName: ["", Validators.required],
-    seats: [null, [Validators.required, Validators.min(1)]],
+export class CreateClientDialogComponent implements OnInit {
+  // protected formGroup = this.formBuilder.group({
+  //   clientOwnerEmail: ["", [Validators.required, Validators.email]],
+  //   organizationName: ["", Validators.required],
+  //   seats: [null, [Validators.required, Validators.min(1)]],
+  // });
+  protected formGroup = new FormGroup({
+    clientOwnerEmail: new FormControl<string>("", [Validators.required, Validators.email]),
+    organizationName: new FormControl<string>("", [Validators.required]),
+    seats: new FormControl<number>(null, [Validators.required, Validators.min(1)]),
   });
   protected loading = true;
   protected planCards: PlanCard[];
-  protected ResultType = CreateClientOrganizationResultType;
+  protected ResultType = CreateClientDialogResultType;
 
   private providerPlans: ProviderPlanResponse[];
 
   constructor(
     private billingApiService: BillingApiServiceAbstraction,
-    @Inject(DIALOG_DATA) private dialogParams: CreateClientOrganizationParams,
-    private dialogRef: DialogRef<CreateClientOrganizationResultType>,
+    @Inject(DIALOG_DATA) private dialogParams: CreateClientDialogParams,
+    private dialogRef: DialogRef<CreateClientDialogResultType>,
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
     private toastService: ToastService,
