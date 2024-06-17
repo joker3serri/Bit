@@ -1769,13 +1769,13 @@ export class ApiService implements ApiServiceAbstraction {
         this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
       );
 
-      await this.tokenService.setTokens(
+      const refreshedTokens = await this.tokenService.setTokens(
         tokenResponse.accessToken,
         vaultTimeoutAction as VaultTimeoutAction,
         vaultTimeout,
         tokenResponse.refreshToken,
       );
-      return tokenResponse.accessToken;
+      return refreshedTokens.accessToken;
     } else {
       const error = await this.handleError(response, true, true);
       return Promise.reject(error);
@@ -1810,12 +1810,12 @@ export class ApiService implements ApiServiceAbstraction {
       this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
     );
 
-    await this.tokenService.setAccessToken(
+    const refreshedToken = await this.tokenService.setAccessToken(
       response.accessToken,
       vaultTimeoutAction as VaultTimeoutAction,
       vaultTimeout,
     );
-    return response.accessToken;
+    return refreshedToken;
   }
 
   async send(
