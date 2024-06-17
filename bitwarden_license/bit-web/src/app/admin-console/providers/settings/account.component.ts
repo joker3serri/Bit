@@ -1,7 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, switchMap, takeUntil } from "rxjs";
 
 import { UserVerificationDialogComponent } from "@bitwarden/auth/angular";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -21,7 +21,7 @@ import { DialogService } from "@bitwarden/components";
   templateUrl: "account.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class AccountComponent {
+export class AccountComponent implements OnDestroy {
   selfHosted = false;
   loading = true;
   provider: ProviderResponse;
@@ -53,24 +53,24 @@ export class AccountComponent {
 
   async ngOnInit() {
     this.selfHosted = this.platformUtilsService.isSelfHost();
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-    this.route.parent.parent.params.subscribe(async (params) => {
-      this.providerId = params.providerId;
-      try {
-        this.provider = await this.providerApiService.getProvider(this.providerId);
-        this.formGroup.patchValue({
-          providerName: this.provider.name,
-          providerBillingEmail: this.provider.billingEmail,
-        });
-      } catch (e) {
-        this.logService.error(`Handled exception: ${e}`);
-      }
-    });
+    this.route.parent.parent.params
+      .pipe(
+        switchMap(async (params) => {
+          this.providerId = params.providerId;
+          try {
+            this.provider = await this.providerApiService.getProvider(this.providerId);
+            this.formGroup.patchValue({
+              providerName: this.provider.name,
+              providerBillingEmail: this.provider.billingEmail,
+            });
+          } catch (e) {
+            this.logService.error(`Handled exception: ${e}`);
+          }
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
     this.loading = false;
-    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((v) => {
-      this.provider.name = v.providerName;
-      this.provider.billingEmail = v.providerBillingEmail;
-    });
   }
   ngOnDestroy() {
     this.destroy$.next();
@@ -78,14 +78,14 @@ export class AccountComponent {
   }
   submit = async () => {
     const request = new ProviderUpdateRequest();
-    request.name = this.provider.name;
-    request.businessName = this.provider.businessName;
-    request.billingEmail = this.provider.billingEmail;
+    request.name = this.formGroup.get("providerName").value;
+    request.businessName = this.formGroup.get("providerName").value;
+    request.billingEmail = this.formGroup.get("providerBillingEmail").value;
 
-    await this.providerApiService.putProvider(this.providerId, request).then(() => {
-      return this.syncService.fullSync(true);
-    });
+    await this.providerApiService.putProvider(this.providerId, request);
+    await this.syncService.fullSync(true);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("providerUpdated"));
+    this.provider = await this.providerApiService.getProvider(this.providerId);
   };
 
   async deleteProvider() {
