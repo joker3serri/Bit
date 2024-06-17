@@ -247,9 +247,9 @@ export class ApiService implements ApiServiceAbstraction {
     return Promise.reject(new ErrorResponse(responseJson, response.status, true));
   }
 
-  async refreshIdentityToken(): Promise<string> {
+  async refreshIdentityToken(): Promise<any> {
     try {
-      return await this.refreshToken();
+      await this.refreshToken();
     } catch (e) {
       this.logService.error("Error refreshing access token: ", e);
       throw e;
