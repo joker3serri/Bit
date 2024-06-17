@@ -24,7 +24,7 @@ export abstract class TokenService {
    * @param refreshToken The optional refresh token to set. Note: this is undefined when using the CLI Login Via API Key flow
    * @param clientIdClientSecret The API Key Client ID and Client Secret to set.
    *
-   * @returns A SetTokensResult containing the tokens that were set.
+   * @returns A promise that resolves with the SetTokensResult containing the tokens that were set.
    */
   setTokens: (
     accessToken: string,
