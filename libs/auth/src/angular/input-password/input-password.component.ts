@@ -49,7 +49,7 @@ export interface PasswordInputResult {
   ],
 })
 export class InputPasswordComponent implements OnInit {
-  @Output() onPasswordFormSubmit = new EventEmitter();
+  @Output() onPasswordFormSubmit = new EventEmitter<PasswordInputResult>();
 
   @Input({ required: true }) email: string;
   @Input() protected buttonText: string;
@@ -167,12 +167,10 @@ export class InputPasswordComponent implements OnInit {
     );
     const masterKeyHash = await this.cryptoService.hashMasterKey(password, masterKey);
 
-    const passwordInputResult = {
+    this.onPasswordFormSubmit.emit({
       masterKeyHash,
       kdfConfig,
       hint: this.formGroup.controls.hint.value,
-    };
-
-    this.onPasswordFormSubmit.emit(passwordInputResult as PasswordInputResult);
+    });
   };
 }
