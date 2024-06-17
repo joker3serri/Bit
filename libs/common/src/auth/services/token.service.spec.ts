@@ -15,6 +15,7 @@ import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypt
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { VaultTimeout, VaultTimeoutStringType } from "../../types/vault-timeout.type";
+import { SetTokensResult } from "../models/domain/set-tokens-result";
 
 import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
 import {
@@ -2432,11 +2433,9 @@ describe("TokenService", () => {
         userIdFromAccessToken,
       );
 
-      expect(result).toStrictEqual({
-        accessToken: accessTokenJwt,
-        refreshToken: refreshToken,
-        clientIdSecretPair: [clientId, clientSecret],
-      });
+      expect(result).toStrictEqual(
+        new SetTokensResult(accessTokenJwt, refreshToken, [clientId, clientSecret]),
+      );
     });
 
     it("does not try to set client id and client secret when they are not passed in", async () => {
@@ -2477,10 +2476,7 @@ describe("TokenService", () => {
       expect(tokenService.setClientId).not.toHaveBeenCalled();
       expect(tokenService.setClientSecret).not.toHaveBeenCalled();
 
-      expect(result).toStrictEqual({
-        accessToken: accessTokenJwt,
-        refreshToken: refreshToken,
-      });
+      expect(result).toStrictEqual(new SetTokensResult(accessTokenJwt, refreshToken));
     });
 
     it("throws an error when the access token is invalid", async () => {
@@ -2574,9 +2570,7 @@ describe("TokenService", () => {
 
       // Assert
       expect((tokenService as any).setRefreshToken).not.toHaveBeenCalled();
-      expect(result).toStrictEqual({
-        accessToken: accessTokenJwt,
-      });
+      expect(result).toStrictEqual(new SetTokensResult(accessTokenJwt));
     });
   });
 
