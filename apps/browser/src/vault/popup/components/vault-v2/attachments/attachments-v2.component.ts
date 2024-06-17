@@ -1,5 +1,9 @@
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControlStatus } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { first } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ButtonModule } from "@bitwarden/components";
@@ -16,6 +20,7 @@ import { CipherAttachmentsComponent } from "./cipher-attachments/cipher-attachme
   selector: "app-attachments",
   templateUrl: "./attachments-v2.component.html",
   imports: [
+    CommonModule,
     ButtonModule,
     JslibModule,
     CipherAttachmentsComponent,
@@ -31,4 +36,13 @@ export class AttachmentsV2Component {
 
   /** The `id` tied to the underlying HTMLFormElement */
   attachmentFormId = CipherAttachmentsComponent.attachmentFormID;
+
+  /** Id of the cipher */
+  cipherId: string;
+
+  constructor(route: ActivatedRoute) {
+    route.queryParams.pipe(takeUntilDestroyed(), first()).subscribe(({ cipherId }) => {
+      this.cipherId = cipherId;
+    });
+  }
 }

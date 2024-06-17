@@ -4,6 +4,8 @@
   </popup-header>
 
   <app-cipher-attachments
+    *ngIf="cipherId"
+    [cipherId]="cipherId"
     (formStatusChange)="attachmentFormStatus = $event"
   ></app-cipher-attachments>
 
