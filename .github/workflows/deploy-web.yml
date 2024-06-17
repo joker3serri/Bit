@@ -123,7 +123,12 @@ jobs:
         env:
           TAG: ${{ steps.project_tag.outputs.tag }}
         run: |
-          BRANCH_OR_TAG_LOWER=$(echo ${{ inputs.branch-or-tag }} | awk '{print tolower($0)}')
+          BRANCH_OR_TAG_LOWER=""
+          if [ -z "${{ inputs.build-web-run-id }}" ]; then
+            BRANCH_OR_TAG_LOWER=$(echo ${{ inputs.branch-or-tag }} | awk '{print tolower($0)}')
+          else
+            BRANCH_OR_TAG_LOWER=$(gh api /repos/bitwarden/clients/actions/runs/${{ inputs.build-web-run-id }}/artifacts --jq '.artifacts[0].workflow_run.head_sha')
+          fi
 
           PROD_ENV_PATTERN='USPROD|EUPROD'
           PROD_ALLOWED_TAGS_PATTERN='web-v[0-9]+\.[0-9]+\.[0-9]+'
@@ -132,7 +137,7 @@ jobs:
           QA_ALLOWED_TAGS_PATTERN='.*'
 
           DEV_ENV_PATTERN='USDEV'
-          DEV_ALLOWED_TAGS_PATTERN='.*'
+          DEV_ALLOWED_TAGS_PATTERN='main'
 
           if [[ \
               ${{ inputs.environment }} =~ \.*($PROD_ENV_PATTERN)\.* && \
@@ -151,7 +156,7 @@ jobs:
               echo "Tag: ${{ inputs.branch-or-tag }}
               exit 1
           else
-              echo "${{ inputs.branch-or-tag }} is allowed to deployed on to ${{ inputs.environment }} environment"
+              echo The input Tag or Branch is allowed to deploy on to ${{ inputs.environment }} environment"
           fi
 
   approval:
@@ -239,31 +244,6 @@ jobs:
           else
             # Set the commit to the output of step download-latest-artifacts.
             echo "commit=${{ steps.download-latest-artifacts.outputs.artifact-build-commit }}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Ensure artifact is from main branch for USDEV environment
-        if: ${{ 'inputs.environment' == 'USDEV'}}
-        run: |
-          # If run-id was used
-          if [ "${{ inputs.build-web-run-id }}" ]; then
-            if [ "${{ steps.download-latest-artifacts.outputs.artifact-build-branch }}" != "main" ]; then
-              echo "Artifact is not from main branch"
-              exit 1
-            fi
-
-          # If artifact download failed
-          elif [ "${{ steps.download-latest-artifacts.outcome }}" == "failure" ]; then
-            branch=$(gh api /repos/bitwarden/clients/actions/runs/${{ steps.trigger-build-web.outputs.workflow_id }}/artifacts --jq '.artifacts[0].workflow_run.head_branch')
-              if [ "$branch" != "main" ]; then
-                echo "Artifact is not from main branch"
-                exit 1
-              fi
-
-          else
-            if [ "${{ steps.download-latest-artifacts.outputs.artifact-build-branch }}" != "main" ]; then
-              echo "Artifact is not from main branch"
-              exit 1
-            fi
           fi
 
   notify-start:
