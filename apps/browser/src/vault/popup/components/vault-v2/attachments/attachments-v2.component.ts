@@ -25,4 +25,11 @@ import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-p
     PopOutComponent,
   ],
 })
-export class AttachmentsV2Component {}
+export class AttachmentsV2Component {
+  file: File;
+
+  onFileChange(event: Event): void {
+    const fileInputEl = <HTMLInputElement>event.target;
+    this.file = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
+  }
+}
