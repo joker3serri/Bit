@@ -9,12 +9,12 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { legacyPassword, legacyUsername } from "@bitwarden/generator-extensions";
+import {
+  PasswordGenerationServiceAbstraction,
+  UsernameGenerationServiceAbstraction,
+} from "@bitwarden/generator-extensions";
 
 import { GeneratorComponent } from "./generator.component";
-
-const PasswordGenerationServiceAbstraction = legacyPassword.PasswordGenerationServiceAbstraction;
-const UsernameGenerationServiceAbstraction = legacyUsername.UsernameGenerationServiceAbstraction;
 
 describe("GeneratorComponent", () => {
   let component: GeneratorComponent;

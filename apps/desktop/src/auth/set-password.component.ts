@@ -22,7 +22,7 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 const BroadcasterSubscriptionId = "SetPasswordComponent";
 
@@ -38,7 +38,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
     i18nService: I18nService,
     cryptoService: CryptoService,
     messagingService: MessagingService,
-    passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     platformUtilsService: PlatformUtilsService,
     policyApiService: PolicyApiServiceAbstraction,
     policyService: PolicyService,

@@ -12,7 +12,7 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { DecryptedCommandData } from "../models/native-messaging/decrypted-command-data";
 import { CredentialCreatePayload } from "../models/native-messaging/encrypted-message-payloads/credential-create-payload";
@@ -34,7 +34,7 @@ export class EncryptedMessageHandlerService {
     private cipherService: CipherService,
     private policyService: PolicyService,
     private messagingService: MessagingService,
-    private passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
   ) {}
 
   async responseDataForCommand(commandData: DecryptedCommandData): Promise<MessageResponseData> {

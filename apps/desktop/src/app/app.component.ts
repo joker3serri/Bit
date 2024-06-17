@@ -50,7 +50,7 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { DialogService, ToastOptions, ToastService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { LoginApprovalComponent } from "../auth/login/login-approval.component";
@@ -121,7 +121,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private broadcasterService: BroadcasterService,
     private folderService: InternalFolderService,
     private syncService: SyncService,
-    private passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private cipherService: CipherService,
     private authService: AuthService,
     private router: Router,
