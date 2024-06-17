@@ -3,6 +3,7 @@ import { firstValueFrom, map, from, zip, Observable } from "rxjs";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "../../abstractions/event/event-collection.service";
 import { EventUploadService } from "../../abstractions/event/event-upload.service";
 import { OrganizationService } from "../../admin-console/abstractions/organization/organization.service.abstraction";
+import { AccountService } from "../../auth/abstractions/account.service";
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { EventType } from "../../enums";
@@ -22,6 +23,7 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     private organizationService: OrganizationService,
     private eventUploadService: EventUploadService,
     private authService: AuthService,
+    private accountService: AccountService,
   ) {
     this.orgIds$ = this.organizationService.organizations$.pipe(
       map((orgs) => orgs?.filter((o) => o.useEvents)?.map((x) => x.id) ?? []),
@@ -38,7 +40,7 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     ciphers: CipherView[],
     uploadImmediately = false,
   ): Promise<any> {
-    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id)));
     const eventStore = this.stateProvider.getUser(userId, EVENT_COLLECTION);
 
     if (!(await this.shouldUpdate(null, eventType, ciphers))) {
@@ -46,25 +48,20 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     }
 
     const events$ = this.orgIds$.pipe(
-      map((orgs) => {
-        const filtered = ciphers.filter((c) => orgs.includes(c.organizationId));
-        return filtered.map((c) => {
-          const event = new EventData();
-          event.type = eventType;
-          event.cipherId = c.id;
-          event.date = new Date().toISOString();
-          event.organizationId = c.organizationId;
-          return event;
-        });
-      }),
+      map((orgs) =>
+        ciphers
+          .filter((c) => orgs.includes(c.organizationId))
+          .map((c) => ({
+            type: eventType,
+            cipherId: c.id,
+            date: new Date().toISOString(),
+            organizationId: c.organizationId,
+          })),
+      ),
     );
 
     await eventStore.update(
-      (currentEvents, newEvents) => {
-        const events = currentEvents ?? [];
-        events.push(...newEvents);
-        return events;
-      },
+      (currentEvents, newEvents) => [...(currentEvents ?? []), ...newEvents],
       {
         combineLatestWith: events$,
       },
@@ -87,7 +84,7 @@ export class EventCollectionService implements EventCollectionServiceAbstraction
     uploadImmediately = false,
     organizationId: string = null,
   ): Promise<any> {
-    const userId = await firstValueFrom(this.stateProvider.activeUserId$);
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id)));
     const eventStore = this.stateProvider.getUser(userId, EVENT_COLLECTION);
 
     if (!(await this.shouldUpdate(organizationId, eventType, undefined, cipherId))) {

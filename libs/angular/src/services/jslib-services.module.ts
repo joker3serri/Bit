@@ -804,6 +804,7 @@ const safeProviders: SafeProvider[] = [
       OrganizationServiceAbstraction,
       EventUploadServiceAbstraction,
       AuthServiceAbstraction,
+      AccountServiceAbstraction,
     ],
   }),
   safeProvider({
