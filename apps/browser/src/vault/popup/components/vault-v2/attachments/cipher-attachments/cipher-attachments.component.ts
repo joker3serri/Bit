@@ -134,15 +134,16 @@ export class CipherAttachmentsComponent implements OnInit {
       this.cipher = await this.cipherDomain.decrypt(
         await this.cipherService.getKeyForCipherKeyDecryption(this.cipherDomain),
       );
-      this.toastService.showToast({
-        variant: "success",
-        title: this.i18nService.t("attachmentSaved"),
-        message: null,
-      });
 
       // Reset reactive form and input element
       this.fileInput.nativeElement.value = "";
       this.attachmentForm.controls.file.setValue(null);
+
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("attachmentSaved"),
+      });
     } catch (e) {
       this.logService.error(e);
     }
