@@ -2565,10 +2565,18 @@ describe("TokenService", () => {
       (tokenService as any).setRefreshToken = jest.fn();
 
       // Act
-      await tokenService.setTokens(accessTokenJwt, vaultTimeoutAction, vaultTimeout, refreshToken);
+      const result = await tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        refreshToken,
+      );
 
       // Assert
       expect((tokenService as any).setRefreshToken).not.toHaveBeenCalled();
+      expect(result).toStrictEqual({
+        accessToken: accessTokenJwt,
+      });
     });
   });
 
