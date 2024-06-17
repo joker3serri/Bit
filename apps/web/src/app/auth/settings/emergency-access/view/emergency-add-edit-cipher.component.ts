@@ -19,7 +19,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { AddEditComponent as BaseAddEditComponent } from "../../../../vault/individual-vault/add-edit.component";
@@ -42,7 +42,7 @@ export class EmergencyAddEditCipherComponent extends BaseAddEditComponent {
     accountService: AccountService,
     collectionService: CollectionService,
     totpService: TotpService,
-    passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     messagingService: MessagingService,
     eventCollectionService: EventCollectionService,
     policyService: PolicyService,

@@ -24,7 +24,7 @@ import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { DialogService } from "@bitwarden/components";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 @Component({
@@ -56,7 +56,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     accountService: AccountService,
     collectionService: CollectionService,
     protected totpService: TotpService,
-    protected passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected messagingService: MessagingService,
     eventCollectionService: EventCollectionService,
     protected policyService: PolicyService,
