@@ -9,6 +9,7 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { PBKDF2KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { DEFAULT_KDF_CONFIG } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   AsyncActionsModule,
@@ -159,12 +160,14 @@ export class InputPasswordComponent implements OnInit {
     }
 
     // Create and hash new master key
-    const kdfConfig = new PBKDF2KdfConfig();
+    const kdfConfig = DEFAULT_KDF_CONFIG;
+
     const masterKey = await this.cryptoService.makeMasterKey(
       password,
       this.email.trim().toLowerCase(),
       kdfConfig,
     );
+
     const masterKeyHash = await this.cryptoService.hashMasterKey(password, masterKey);
 
     this.onPasswordFormSubmit.emit({
