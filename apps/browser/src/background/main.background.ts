@@ -173,7 +173,12 @@ import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
-import { legacyPassword, legacyUsername } from "@bitwarden/generator-extensions";
+import {
+  legacyPassword,
+  PasswordGenerationServiceAbstraction,
+  legacyUsername,
+  UsernameGenerationServiceAbstraction,
+} from "@bitwarden/generator-extensions";
 import {
   ImportApiService,
   ImportApiServiceAbstraction,
@@ -262,7 +267,7 @@ export default class MainBackground {
   collectionService: CollectionServiceAbstraction;
   vaultTimeoutService: VaultTimeoutService;
   vaultTimeoutSettingsService: VaultTimeoutSettingsServiceAbstraction;
-  passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction;
+  passwordGenerationService: PasswordGenerationServiceAbstraction;
   syncService: SyncService;
   passwordStrengthService: PasswordStrengthServiceAbstraction;
   totpService: TotpServiceAbstraction;
@@ -294,7 +299,7 @@ export default class MainBackground {
   keyConnectorService: KeyConnectorServiceAbstraction;
   userVerificationService: UserVerificationServiceAbstraction;
   vaultFilterService: VaultFilterService;
-  usernameGenerationService: legacyUsername.UsernameGenerationServiceAbstraction;
+  usernameGenerationService: UsernameGenerationServiceAbstraction;
   encryptService: EncryptService;
   folderApiService: FolderApiServiceAbstraction;
   policyApiService: PolicyApiServiceAbstraction;

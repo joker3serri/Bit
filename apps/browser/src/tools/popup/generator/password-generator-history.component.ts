@@ -4,7 +4,7 @@ import { Component } from "@angular/core";
 import { PasswordGeneratorHistoryComponent as BasePasswordGeneratorHistoryComponent } from "@bitwarden/angular/tools/generator/components/password-generator-history.component";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 @Component({
   selector: "app-password-generator-history",
@@ -12,7 +12,7 @@ import { legacyPassword } from "@bitwarden/generator-extensions";
 })
 export class PasswordGeneratorHistoryComponent extends BasePasswordGeneratorHistoryComponent {
   constructor(
-    passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     platformUtilsService: PlatformUtilsService,
     i18nService: I18nService,
     private location: Location,

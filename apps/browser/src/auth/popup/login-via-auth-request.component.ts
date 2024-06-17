@@ -22,7 +22,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { legacyPassword } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
 
 @Component({
   selector: "app-login-via-auth-request",
@@ -34,7 +34,7 @@ export class LoginViaAuthRequestComponent extends BaseLoginWithDeviceComponent {
     cryptoService: CryptoService,
     cryptoFunctionService: CryptoFunctionService,
     appIdService: AppIdService,
-    passwordGenerationService: legacyPassword.PasswordGenerationServiceAbstraction,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     apiService: ApiService,
     authService: AuthService,
     logService: LogService,
