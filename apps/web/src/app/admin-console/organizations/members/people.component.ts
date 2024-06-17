@@ -37,14 +37,13 @@ import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
-import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
 
 import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
 import { NewBasePeopleComponent } from "../../common/new-base.people.component";
@@ -98,31 +97,30 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
 
   constructor(
     apiService: ApiService,
-    private route: ActivatedRoute,
     i18nService: I18nService,
+    organizationManagementPreferencesService: OrganizationManagementPreferencesService,
     modalService: ModalService,
-    platformUtilsService: PlatformUtilsService,
     cryptoService: CryptoService,
     validationService: ValidationService,
-    private policyService: PolicyService,
-    private policyApiService: PolicyApiService,
     logService: LogService,
     userNamePipe: UserNamePipe,
+    dialogService: DialogService,
+    toastService: ToastService,
+    private policyService: PolicyService,
+    private policyApiService: PolicyApiService,
+    private route: ActivatedRoute,
     private syncService: SyncService,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    dialogService: DialogService,
     private router: Router,
     private groupService: GroupService,
     private collectionService: CollectionService,
-    organizationManagementPreferencesService: OrganizationManagementPreferencesService,
     private billingApiService: BillingApiServiceAbstraction,
   ) {
     super(
       apiService,
       i18nService,
-      platformUtilsService,
       cryptoService,
       validationService,
       modalService,
@@ -130,6 +128,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
       userNamePipe,
       dialogService,
       organizationManagementPreferencesService,
+      toastService,
     );
 
     const organization$ = this.route.params.pipe(
@@ -408,11 +407,11 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
 
   async edit(user: OrganizationUserView, initialTab: MemberDialogTab = MemberDialogTab.Role) {
     if (!user && this.organization.hasReseller && this.organization.seats === this.confirmedCount) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("seatLimitReached"),
-        this.i18nService.t("contactYourProvider"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("seatLimitReached"),
+        message: this.i18nService.t("contactYourProvider"),
+      });
       return;
     }
 
@@ -506,11 +505,11 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     const filteredUsers = users.filter((u) => u.status === OrganizationUserStatusType.Invited);
 
     if (filteredUsers.length <= 0) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("noSelectedUsersApplicable"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccurred"),
+        message: this.i18nService.t("noSelectedUsersApplicable"),
+      });
       return;
     }
 
@@ -558,11 +557,11 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     const users = this.getCheckedUsers().filter((ou) => !ou.accessSecretsManager);
 
     if (users.length === 0) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("noSelectedUsersApplicable"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccurred"),
+        message: this.i18nService.t("noSelectedUsersApplicable"),
+      });
       return;
     }
 

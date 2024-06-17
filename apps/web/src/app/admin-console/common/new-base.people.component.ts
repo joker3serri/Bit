@@ -18,10 +18,9 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogService, TableDataSource } from "@bitwarden/components";
+import { DialogService, TableDataSource, ToastService } from "@bitwarden/components";
 
 import { OrganizationUserView } from "../organizations/core/views/organization-user.view";
 import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
@@ -125,7 +124,6 @@ export abstract class NewBasePeopleComponent<
   constructor(
     protected apiService: ApiService,
     protected i18nService: I18nService,
-    protected platformUtilsService: PlatformUtilsService,
     protected cryptoService: CryptoService,
     protected validationService: ValidationService,
     protected modalService: ModalService,
@@ -133,6 +131,7 @@ export abstract class NewBasePeopleComponent<
     protected userNamePipe: UserNamePipe,
     protected dialogService: DialogService,
     protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
+    protected toastService: ToastService,
   ) {
     // Connect the search input to the table dataSource filter input
     this.searchControl.valueChanges
@@ -237,11 +236,11 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = this.deleteUser(user.id);
     try {
       await this.actionPromise;
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("removedUserId", this.userNamePipe.transform(user)),
-      );
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("removedUserId", this.userNamePipe.transform(user)),
+      });
       this.removeUser(user);
     } catch (e) {
       this.validationService.showError(e);
@@ -268,11 +267,11 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = this.revokeUser(user.id);
     try {
       await this.actionPromise;
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("revokedUserId", this.userNamePipe.transform(user)),
-      );
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("revokedUserId", this.userNamePipe.transform(user)),
+      });
       await this.load();
     } catch (e) {
       this.validationService.showError(e);
@@ -284,11 +283,11 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = this.restoreUser(user.id);
     try {
       await this.actionPromise;
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("restoredUserId", this.userNamePipe.transform(user)),
-      );
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("restoredUserId", this.userNamePipe.transform(user)),
+      });
       await this.load();
     } catch (e) {
       this.validationService.showError(e);
@@ -304,11 +303,11 @@ export abstract class NewBasePeopleComponent<
     this.actionPromise = this.reinviteUser(user.id);
     try {
       await this.actionPromise;
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("hasBeenReinvited", this.userNamePipe.transform(user)),
-      );
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("hasBeenReinvited", this.userNamePipe.transform(user)),
+      });
     } catch (e) {
       this.validationService.showError(e);
     }
@@ -330,11 +329,11 @@ export abstract class NewBasePeopleComponent<
         this.actionPromise = this.confirmUser(user, publicKey);
         await this.actionPromise;
         updateUser(this);
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("hasBeenConfirmed", this.userNamePipe.transform(user)),
-        );
+        this.toastService.showToast({
+          variant: "success",
+          title: null,
+          message: this.i18nService.t("hasBeenConfirmed", this.userNamePipe.transform(user)),
+        });
       } catch (e) {
         this.validationService.showError(e);
         throw e;
