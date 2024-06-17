@@ -1,6 +1,6 @@
 <h2 class="tw-sr-only" id="attachments">{{ "attachments" | i18n }}</h2>
 
-<ul *ngIf="cipher?.attachments" aria-labelledby="attachments">
+<ul *ngIf="cipher?.attachments" aria-labelledby="attachments" class="tw-list-none">
   <li *ngFor="let attachments of cipher.attachments">
     <bit-card class="tw-mb-2">
       <div>
