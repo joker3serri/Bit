@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
   Component,
   ElementRef,
@@ -18,6 +19,7 @@ import {
 } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
@@ -29,7 +31,6 @@ import {
   ToastService,
   TypographyModule,
 } from "@bitwarden/components";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 type CipherAttachmentForm = FormGroup<{
   file: FormControl<File | null>;
@@ -42,6 +43,7 @@ type CipherAttachmentForm = FormGroup<{
   imports: [
     AsyncActionsModule,
     ButtonModule,
+    CommonModule,
     JslibModule,
     ReactiveFormsModule,
     TypographyModule,
