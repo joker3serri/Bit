@@ -4,6 +4,7 @@ exclude = ["index.node"]
 license = "GPL-3.0"
 name = "desktop_napi"
 version = "0.0.0"
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
