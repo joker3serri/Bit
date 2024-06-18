@@ -9,15 +9,15 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
-type ManageClientOrganizationDialogParams = {
+type ManageClientSubscriptionDialogParams = {
   organization: ProviderOrganizationOrganizationDetailsResponse;
 };
 
 @Component({
-  templateUrl: "manage-client-organization-subscription.component.html",
+  templateUrl: "manage-client-subscription-dialog.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class ManageClientOrganizationSubscriptionComponent implements OnInit {
+export class ManageClientSubscriptionDialogComponent implements OnInit {
   loading = true;
   providerOrganizationId: string;
   providerId: string;
@@ -31,7 +31,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
 
   constructor(
     public dialogRef: DialogRef,
-    @Inject(DIALOG_DATA) protected data: ManageClientOrganizationDialogParams,
+    @Inject(DIALOG_DATA) protected data: ManageClientSubscriptionDialogParams,
     private billingApiService: BillingApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
@@ -110,7 +110,7 @@ export class ManageClientOrganizationSubscriptionComponent implements OnInit {
     }
   }
 
-  static open(dialogService: DialogService, data: ManageClientOrganizationDialogParams) {
-    return dialogService.open(ManageClientOrganizationSubscriptionComponent, { data });
+  static open(dialogService: DialogService, data: ManageClientSubscriptionDialogParams) {
+    return dialogService.open(ManageClientSubscriptionDialogComponent, { data });
   }
 }

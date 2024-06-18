@@ -9,7 +9,7 @@ import { FrontendLayoutComponent } from "@bitwarden/web-vault/app/layouts/fronte
 import { UserLayoutComponent } from "@bitwarden/web-vault/app/layouts/user-layout.component";
 
 import {
-  ManageClientOrganizationsComponent,
+  ManageClientsComponent,
   ProviderSubscriptionComponent,
   hasConsolidatedBilling,
   ProviderPaymentMethodComponent,
@@ -85,7 +85,7 @@ const routes: Routes = [
           {
             path: "manage-client-organizations",
             canActivate: [hasConsolidatedBilling],
-            component: ManageClientOrganizationsComponent,
+            component: ManageClientsComponent,
             data: { titleId: "clients" },
           },
           {

@@ -21,19 +21,19 @@ import { BaseClientsComponent } from "../../../admin-console/providers/clients/b
 import { WebProviderService } from "../../../admin-console/providers/services/web-provider.service";
 
 import {
-  CreateClientOrganizationResultType,
-  openCreateClientOrganizationDialog,
-} from "./create-client-organization.component";
+  CreateClientDialogResultType,
+  openCreateClientDialog,
+} from "./create-client-dialog.component";
 import {
-  ManageClientOrganizationNameResultType,
-  openManageClientOrganizationNameDialog,
-} from "./manage-client-organization-name.component";
-import { ManageClientOrganizationSubscriptionComponent } from "./manage-client-organization-subscription.component";
+  ManageClientNameDialogResultType,
+  openManageClientNameDialog,
+} from "./manage-client-name-dialog.component";
+import { ManageClientSubscriptionDialogComponent } from "./manage-client-subscription-dialog.component";
 
 @Component({
-  templateUrl: "manage-client-organizations.component.html",
+  templateUrl: "manage-clients.component.html",
 })
-export class ManageClientOrganizationsComponent extends BaseClientsComponent {
+export class ManageClientsComponent extends BaseClientsComponent {
   providerId: string;
   provider: Provider;
 
@@ -110,8 +110,8 @@ export class ManageClientOrganizationsComponent extends BaseClientsComponent {
     this.loading = false;
   }
 
-  async manageName(organization: ProviderOrganizationOrganizationDetailsResponse) {
-    const dialogRef = openManageClientOrganizationNameDialog(this.dialogService, {
+  async manageClientName(organization: ProviderOrganizationOrganizationDetailsResponse) {
+    const dialogRef = openManageClientNameDialog(this.dialogService, {
       data: {
         providerId: this.providerId,
         organization: {
@@ -124,17 +124,17 @@ export class ManageClientOrganizationsComponent extends BaseClientsComponent {
 
     const result = await firstValueFrom(dialogRef.closed);
 
-    if (result === ManageClientOrganizationNameResultType.Submitted) {
+    if (result === ManageClientNameDialogResultType.Submitted) {
       await this.load();
     }
   }
 
-  async manageSubscription(organization: ProviderOrganizationOrganizationDetailsResponse) {
+  async manageClientSubscription(organization: ProviderOrganizationOrganizationDetailsResponse) {
     if (organization == null) {
       return;
     }
 
-    const dialogRef = ManageClientOrganizationSubscriptionComponent.open(this.dialogService, {
+    const dialogRef = ManageClientSubscriptionDialogComponent.open(this.dialogService, {
       organization: organization,
     });
 
@@ -142,8 +142,8 @@ export class ManageClientOrganizationsComponent extends BaseClientsComponent {
     await this.load();
   }
 
-  createClientOrganization = async () => {
-    const reference = openCreateClientOrganizationDialog(this.dialogService, {
+  createClient = async () => {
+    const reference = openCreateClientDialog(this.dialogService, {
       data: {
         providerId: this.providerId,
         plans: this.plans,
@@ -152,7 +152,7 @@ export class ManageClientOrganizationsComponent extends BaseClientsComponent {
 
     const result = await lastValueFrom(reference.closed);
 
-    if (result === CreateClientOrganizationResultType.Closed) {
+    if (result === CreateClientDialogResultType.Closed) {
       return;
     }
 

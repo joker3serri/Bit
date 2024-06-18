@@ -5,7 +5,7 @@
     bitButton
     *ngIf="manageOrganizations"
     buttonType="primary"
-    (click)="createClientOrganization()"
+    (click)="createClient()"
   >
     <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
     {{ "addNewOrganization" | i18n }}
@@ -73,11 +73,11 @@
             appA11yTitle="{{ 'options' | i18n }}"
           ></button>
           <bit-menu #rowMenu>
-            <button type="button" bitMenuItem (click)="manageName(client)">
+            <button type="button" bitMenuItem (click)="manageClientName(client)">
               <i aria-hidden="true" class="bwi bwi-pencil-square"></i>
               {{ "updateName" | i18n }}
             </button>
-            <button type="button" bitMenuItem (click)="manageSubscription(client)">
+            <button type="button" bitMenuItem (click)="manageClientSubscription(client)">
               <i aria-hidden="true" class="bwi bwi-family"></i>
               {{ "manageSubscription" | i18n }}
             </button>
@@ -92,6 +92,6 @@
     </ng-template>
   </bit-table>
   <div *ngIf="clients.length === 0" class="tw-mt-10">
-    <app-no-clients (addNewOrganizationClicked)="createClientOrganization()" />
+    <app-no-clients (addNewOrganizationClicked)="createClient()" />
   </div>
 </ng-container>
