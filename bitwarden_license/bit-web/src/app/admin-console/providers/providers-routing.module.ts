@@ -118,7 +118,7 @@ const routes: Routes = [
           },
           {
             path: "billing",
-            canActivate: [hasConsolidatedBilling],
+            canActivate: [ProviderPermissionsGuard, hasConsolidatedBilling],
             data: { providerPermissions: (provider: Provider) => provider.isProviderAdmin },
             children: [
               {
@@ -129,6 +129,7 @@ const routes: Routes = [
               {
                 path: "subscription",
                 component: ProviderSubscriptionComponent,
+                canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "subscription",
                 },
@@ -136,6 +137,7 @@ const routes: Routes = [
               {
                 path: "payment-method",
                 component: ProviderPaymentMethodComponent,
+                canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "paymentMethod",
                 },
@@ -143,6 +145,7 @@ const routes: Routes = [
               {
                 path: "history",
                 component: ProviderBillingHistoryComponent,
+                canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "billingHistory",
                 },

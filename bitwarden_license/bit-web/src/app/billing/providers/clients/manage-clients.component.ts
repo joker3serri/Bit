@@ -10,7 +10,7 @@ import { ProviderUserType } from "@bitwarden/common/admin-console/enums";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
-import { canAccessBilling } from "@bitwarden/common/billing/abstractions/provider-billing.service.abstraction";
+import { hasConsolidatedBilling } from "@bitwarden/common/billing/abstractions/provider-billing.service.abstraction";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -38,7 +38,7 @@ export class ManageClientsComponent extends BaseClientsComponent {
   provider: Provider;
 
   loading = true;
-  manageOrganizations = false;
+  isProviderAdmin = false;
 
   protected plans: PlanResponse[];
 
@@ -73,9 +73,9 @@ export class ManageClientsComponent extends BaseClientsComponent {
         switchMap((params) => {
           this.providerId = params.providerId;
           return this.providerService.get$(this.providerId).pipe(
-            canAccessBilling(this.configService),
-            map((canAccessBilling) => {
-              if (!canAccessBilling) {
+            hasConsolidatedBilling(this.configService),
+            map((hasConsolidatedBilling) => {
+              if (!hasConsolidatedBilling) {
                 return from(
                   this.router.navigate(["../clients"], {
                     relativeTo: this.activatedRoute,
@@ -99,7 +99,7 @@ export class ManageClientsComponent extends BaseClientsComponent {
   async load() {
     this.provider = await firstValueFrom(this.providerService.get$(this.providerId));
 
-    this.manageOrganizations = this.provider.type === ProviderUserType.ProviderAdmin;
+    this.isProviderAdmin = this.provider.type === ProviderUserType.ProviderAdmin;
 
     this.clients = (await this.apiService.getProviderClients(this.providerId)).data;
 
