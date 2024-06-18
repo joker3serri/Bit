@@ -519,14 +519,6 @@ export class ImportComponent implements OnInit, OnDestroy {
     const fileEl = document.getElementById("import_input_file") as HTMLInputElement;
     const files = fileEl.files;
     let fileContents = this.formGroup.controls.fileContents.value;
-    if ((files == null || files.length === 0) && (fileContents == null || fileContents === "")) {
-      this.toastService.showToast({
-        variant: "error",
-        title: this.i18nService.t("errorOccurred"),
-        message: this.i18nService.t("selectFile"),
-      });
-      return;
-    }
 
     if (files != null && files.length > 0) {
       try {
