@@ -417,6 +417,19 @@ describe("SendService", () => {
       expect(result).toMatchObject([{ id: "1", key: "Re-encrypted Send Key" }]);
     });
 
+    it("returns empty array if there are no sends", async () => {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      sendService.replace(null);
+
+      await awaitAsync();
+
+      const newUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
+      const result = await sendService.getRotatedData(originalUserKey, newUserKey, mockUserId);
+
+      expect(result).toEqual([]);
+    });
+
     it("throws if the original user key is null", async () => {
       await expect(sendService.getRotatedData(null, newUserKey, mockUserId)).rejects.toThrow(
         "Original user key is required for rotation.",
