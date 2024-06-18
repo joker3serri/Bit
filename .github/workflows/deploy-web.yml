@@ -127,7 +127,7 @@ jobs:
           if [ -z "${{ inputs.build-web-run-id }}" ]; then
             BRANCH_OR_TAG_LOWER=$(echo ${{ inputs.branch-or-tag }} | awk '{print tolower($0)}')
           else
-            BRANCH_OR_TAG_LOWER=$(gh api /repos/bitwarden/clients/actions/runs/${{ inputs.build-web-run-id }}/artifacts --jq '.artifacts[0].workflow_run.head_sha')
+            BRANCH_OR_TAG_LOWER=$(gh api /repos/bitwarden/clients/actions/runs/${{ inputs.build-web-run-id }}/artifacts --jq '.artifacts[0].workflow_run.head_branch' | awk '{print tolower($0)}')
           fi
 
           PROD_ENV_PATTERN='USPROD|EUPROD'
@@ -152,11 +152,11 @@ jobs:
               echo "!Deployment blocked!"
               echo "Attempting to deploy a tag that is not allowed in ${{ inputs.environment }} environment"
               echo
-              echo "Environment: ${{ inputs.environment }}
-              echo "Tag: ${{ inputs.branch-or-tag }}
+              echo "Environment: ${{ inputs.environment }}"
+              echo "Tag: $BRANCH_OR_TAG_LOWER"
               exit 1
           else
-              echo The input Tag or Branch is allowed to deploy on to ${{ inputs.environment }} environment"
+              echo "The input Branch/Tag: '$BRANCH_OR_TAG_LOWER' is allowed to deploy on ${{ inputs.environment }} environment"
           fi
 
   approval:
