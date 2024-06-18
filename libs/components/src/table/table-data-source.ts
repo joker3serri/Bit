@@ -224,7 +224,7 @@ export class TableDataSource<T> extends DataSource<T> {
    * at least one occurrence in that string. The filter string has its whitespace
    * trimmed and the match is case-insensitive.
    */
-  static simpleStringFilter = <T>(filter: string): FilterFn<T> => {
+  static readonly simpleStringFilter = <T>(filter: string): FilterFn<T> => {
     if (!filter) {
       return null;
     }
