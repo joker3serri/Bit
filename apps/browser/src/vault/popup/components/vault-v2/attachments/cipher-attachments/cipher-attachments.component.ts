@@ -62,7 +62,7 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
   @ViewChild("fileInput", { read: ElementRef }) private fileInput: ElementRef<HTMLInputElement>;
 
   /** Reference to the BitSubmitDirective */
-  @ViewChild(BitSubmitDirective) private bitSubmit: BitSubmitDirective;
+  @ViewChild(BitSubmitDirective) bitSubmit: BitSubmitDirective;
 
   /** The `id` of the cipher in context */
   @Input({ required: true }) cipherId: string;
@@ -97,7 +97,7 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  async ngOnInit(): Promise<Promise<Promise<void>>> {
+  async ngOnInit(): Promise<void> {
     this.cipherDomain = await this.cipherService.get(this.cipherId);
     this.cipher = await this.cipherDomain.decrypt(
       await this.cipherService.getKeyForCipherKeyDecryption(this.cipherDomain),
