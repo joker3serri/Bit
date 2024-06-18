@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { PlanType } from "@bitwarden/common/billing/enums";
@@ -42,10 +42,10 @@ type PlanCard = {
   templateUrl: "./create-client-dialog.component.html",
 })
 export class CreateClientDialogComponent implements OnInit {
-  protected formGroup = this.formBuilder.group({
-    clientOwnerEmail: ["", [Validators.required, Validators.email]],
-    organizationName: ["", Validators.required],
-    seats: [null, [Validators.required, Validators.min(1)]],
+  protected formGroup = new FormGroup({
+    clientOwnerEmail: new FormControl<string>("", [Validators.required, Validators.email]),
+    organizationName: new FormControl<string>("", [Validators.required]),
+    seats: new FormControl<number>(null, [Validators.required, Validators.min(1)]),
   });
   protected loading = true;
   protected planCards: PlanCard[];
@@ -57,7 +57,6 @@ export class CreateClientDialogComponent implements OnInit {
     private billingApiService: BillingApiServiceAbstraction,
     @Inject(DIALOG_DATA) private dialogParams: CreateClientDialogParams,
     private dialogRef: DialogRef<CreateClientDialogResultType>,
-    private formBuilder: FormBuilder,
     private i18nService: I18nService,
     private toastService: ToastService,
     private webProviderService: WebProviderService,
@@ -158,14 +157,35 @@ export class CreateClientDialogComponent implements OnInit {
     this.dialogRef.close(this.ResultType.Submitted);
   };
 
-  protected get unassignedSeatsForSelectedPlan(): number {
-    if (this.loading || !this.planCards) {
+  protected get unassignedSeats(): number {
+    const selectedProviderPlan = this.getSelectedProviderPlan();
+
+    if (selectedProviderPlan === null) {
       return 0;
     }
-    const selectedPlan = this.planCards.find((planCard) => planCard.selected).plan;
-    const selectedProviderPlan = this.providerPlans.find(
-      (providerPlan) => providerPlan.planName === selectedPlan.name,
-    );
+
     return selectedProviderPlan.seatMinimum - selectedProviderPlan.assignedSeats;
+  }
+
+  protected get additionalSeatsPurchased(): number {
+    const selectedProviderPlan = this.getSelectedProviderPlan();
+
+    if (selectedProviderPlan === null) {
+      return 0;
+    }
+
+    const selectedSeats = this.formGroup.value.seats ?? 0;
+
+    const purchased = selectedSeats - this.unassignedSeats;
+
+    return purchased > 0 ? purchased : 0;
+  }
+
+  private getSelectedProviderPlan(): ProviderPlanResponse {
+    if (this.loading || !this.planCards) {
+      return null;
+    }
+    const selectedPlan = this.planCards.find((planCard) => planCard.selected).plan;
+    return this.providerPlans.find((providerPlan) => providerPlan.planName === selectedPlan.name);
   }
 }
