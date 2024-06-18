@@ -157,7 +157,7 @@ export class CreateClientDialogComponent implements OnInit {
     this.dialogRef.close(this.ResultType.Submitted);
   };
 
-  protected get unassignedSeats(): number {
+  protected get openSeats(): number {
     const selectedProviderPlan = this.getSelectedProviderPlan();
 
     if (selectedProviderPlan === null) {
@@ -165,6 +165,12 @@ export class CreateClientDialogComponent implements OnInit {
     }
 
     return selectedProviderPlan.seatMinimum - selectedProviderPlan.assignedSeats;
+  }
+
+  protected get unassignedSeats(): number {
+    const unassignedSeats = this.openSeats - this.formGroup.value.seats;
+
+    return unassignedSeats > 0 ? unassignedSeats : 0;
   }
 
   protected get additionalSeatsPurchased(): number {
@@ -176,7 +182,7 @@ export class CreateClientDialogComponent implements OnInit {
 
     const selectedSeats = this.formGroup.value.seats ?? 0;
 
-    const purchased = selectedSeats - this.unassignedSeats;
+    const purchased = selectedSeats - this.openSeats;
 
     return purchased > 0 ? purchased : 0;
   }

@@ -56,7 +56,7 @@
           <input type="text" bitInput formControlName="seats" />
           <bit-hint
             class="tw-text-muted tw-grid tw-grid-flow-col tw-gap-1 tw-grid-cols-1 tw-grid-rows-2"
-            *ngIf="unassignedSeats > 0"
+            *ngIf="openSeats > 0"
           >
             <span class="tw-col-span-1"
               >{{ unassignedSeats }} {{ "unassignedSeatsDescription" | i18n | lowercase }}</span

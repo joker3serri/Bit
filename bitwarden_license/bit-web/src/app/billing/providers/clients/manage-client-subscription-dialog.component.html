@@ -12,11 +12,15 @@
         </bit-label>
         <input type="number" bitInput formControlName="assignedSeats" />
         <bit-hint class="tw-text-muted" *ngIf="openSeats > 0 || isServiceUserWithPurchasedSeats">
-          <div class="tw-grid tw-grid-flow-col tw-gap-1 tw-grid-cols-1 tw-grid-rows-2">
+          <div
+            *ngIf="!this.isServiceUserWithPurchasedSeats"
+            class="tw-grid tw-grid-flow-col tw-gap-1 tw-grid-cols-1"
+            [ngClass]="{ 'tw-grid-rows-2': this.isProviderAdmin }"
+          >
             <span class="tw-col-span-1">
               {{ unassignedSeats }} {{ "unassignedSeatsDescription" | i18n | lowercase }}
             </span>
-            <span class="tw-col-span-1"
+            <span *ngIf="this.isProviderAdmin" class="tw-col-span-1"
               >{{ additionalSeatsPurchased }}
               {{ "purchaseSeatDescription" | i18n | lowercase }}</span
             >
