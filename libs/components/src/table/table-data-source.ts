@@ -214,8 +214,15 @@ export class TableDataSource<T> extends DataSource<T> {
   }
 
   /**
+   * Modified from https://github.com/angular/components/blob/main/src/material/table/table-data-source.ts
+   * License: MIT
+   * Copyright (c) 2022 Google LLC.
+   *
    * @param filter the string to search for
-   * @returns a filter function that matches if the stringified row data contains the supplied `filter`
+   * @returns a function that checks if a data object matches the provided `filter` string. Each data object
+   * is converted to a string of its properties and returns true if the filter has
+   * at least one occurrence in that string. The filter string has its whitespace
+   * trimmed and the match is case-insensitive.
    */
   static simpleStringFilter = <T>(filter: string): FilterFn<T> => {
     if (!filter) {
