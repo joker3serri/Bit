@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 import { firstValueFrom } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { DialogService } from "@bitwarden/components";
@@ -35,7 +35,7 @@ export class IsEnterpriseOrgGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    if (org.planProductType != ProductType.Enterprise) {
+    if (org.productTierType != ProductTierType.Enterprise) {
       // Users without billing permission can't access billing
       if (!org.canEditSubscription) {
         await this.dialogService.openSimpleDialog({
@@ -62,6 +62,6 @@ export class IsEnterpriseOrgGuard implements CanActivate {
       }
     }
 
-    return org.planProductType == ProductType.Enterprise;
+    return org.productTierType == ProductTierType.Enterprise;
   }
 }
