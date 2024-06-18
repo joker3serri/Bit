@@ -40,7 +40,7 @@ export class AddEditV2Component {
 
   subscribeToParams(): void {
     this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const isNew = params.isNew.toLowerCase() === "true";
+      const isNew = params.isNew?.toLowerCase() === "true";
       const cipherType = parseInt(params.type);
 
       this.headerText = this.setHeader(isNew, cipherType);
