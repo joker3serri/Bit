@@ -418,9 +418,7 @@ describe("SendService", () => {
     });
 
     it("returns empty array if there are no sends", async () => {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      sendService.replace(null);
+      await sendService.replace(null);
 
       await awaitAsync();
 
