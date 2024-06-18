@@ -17,7 +17,7 @@ export type FilterFn<T> = (data: T) => boolean;
 export class TableDataSource<T> extends DataSource<T> {
   private readonly _data: BehaviorSubject<T[]>;
   private readonly _sort: BehaviorSubject<Sort>;
-  private readonly _filter = new BehaviorSubject<FilterFn<T>>(null);
+  private readonly _filter = new BehaviorSubject<string | FilterFn<T>>(null);
   private readonly _renderData = new BehaviorSubject<T[]>([]);
   private _renderChangesSubscription: Subscription | null = null;
 
@@ -57,11 +57,15 @@ export class TableDataSource<T> extends DataSource<T> {
     return this._sort.value;
   }
 
+  /**
+   * Filter to apply to the `data`.
+   *
+   * If a string is provided, it will be converted to a filter using {@link simpleStringFilter}
+   **/
   get filter() {
     return this._filter.value;
   }
-
-  set filter(filter: (data: T) => boolean) {
+  set filter(filter: string | FilterFn<T>) {
     this._filter.next(filter);
     // Normally the `filteredData` is updated by the re-render
     // subscription, but that won't happen if it's inactive.
@@ -97,7 +101,11 @@ export class TableDataSource<T> extends DataSource<T> {
   }
 
   private filterData(data: T[]): T[] {
-    this.filteredData = this.filter == null ? data : data.filter((obj) => this.filter(obj));
+    const filter =
+      typeof this.filter === "string"
+        ? TableDataSource.simpleStringFilter(this.filter)
+        : this.filter;
+    this.filteredData = this.filter == null ? data : data.filter((obj) => filter(obj));
 
     return this.filteredData;
   }

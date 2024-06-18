@@ -137,7 +137,7 @@ export abstract class NewBasePeopleComponent<
     // Connect the search input to the table dataSource filter input
     this.searchControl.valueChanges
       .pipe(debounceTime(200), takeUntilDestroyed())
-      .subscribe((v) => (this.dataSource.filter = TableDataSource.simpleStringFilter(v)));
+      .subscribe((v) => (this.dataSource.filter = v));
   }
 
   abstract edit(user: UserView): void;

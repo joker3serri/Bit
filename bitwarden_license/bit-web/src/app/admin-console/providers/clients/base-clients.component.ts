@@ -25,7 +25,7 @@ export abstract class BaseClientsComponent implements OnInit, OnDestroy {
   set searchText(value: string) {
     this.searchText$.next(value);
     this.selection.clear();
-    this.dataSource.filter = TableDataSource.simpleStringFilter(value);
+    this.dataSource.filter = value;
   }
 
   private searching = false;
