@@ -8,10 +8,12 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { ToastService } from "@bitwarden/components";
 
 import { CipherAttachmentsComponent } from "./cipher-attachments.component";
+import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
 
 describe("CipherAttachmentsComponent", () => {
   let component: CipherAttachmentsComponent;
@@ -199,6 +201,26 @@ describe("CipherAttachmentsComponent", () => {
 
         expect(emitSpy).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe("removeAttachment", () => {
+    const attachment = { id: "1234-5678" } as AttachmentView;
+
+    beforeEach(() => {
+      component.cipher.attachments = [attachment];
+
+      fixture.detectChanges();
+    });
+
+    it("removes attachment from cipher", () => {
+      const deleteAttachmentComponent = fixture.debugElement.query(
+        By.directive(DeleteAttachmentComponent),
+      ).componentInstance as DeleteAttachmentComponent;
+
+      deleteAttachmentComponent.onDeletionSuccess.emit();
+
+      expect(component.cipher.attachments).toEqual([]);
     });
   });
 });

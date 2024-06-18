@@ -26,6 +26,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   AsyncActionsModule,
@@ -35,6 +36,8 @@ import {
   ToastService,
   TypographyModule,
 } from "@bitwarden/components";
+
+import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
 
 type CipherAttachmentForm = FormGroup<{
   file: FormControl<File | null>;
@@ -52,6 +55,7 @@ type CipherAttachmentForm = FormGroup<{
     ReactiveFormsModule,
     TypographyModule,
     CardComponent,
+    DeleteAttachmentComponent,
   ],
 })
 export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
@@ -179,4 +183,13 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
       this.logService.error(e);
     }
   };
+
+  /** Removes the attachment from the cipher */
+  removeAttachment(attachment: AttachmentView) {
+    const index = this.cipher.attachments.indexOf(attachment);
+
+    if (index > -1) {
+      this.cipher.attachments.splice(index, 1);
+    }
+  }
 }
