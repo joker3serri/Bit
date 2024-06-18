@@ -76,6 +76,9 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
   /** Emits the `BitSubmitDirective` disabled state */
   @Output() formDisabled = new EventEmitter<boolean>();
 
+  /** Emits after a file has been successfully uploaded */
+  @Output() onUploadSuccess = new EventEmitter<void>();
+
   cipher: CipherView;
 
   attachmentForm: CipherAttachmentForm = this.formBuilder.group({
@@ -170,6 +173,8 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
         title: null,
         message: this.i18nService.t("attachmentSaved"),
       });
+
+      this.onUploadSuccess.emit();
     } catch (e) {
       this.logService.error(e);
     }

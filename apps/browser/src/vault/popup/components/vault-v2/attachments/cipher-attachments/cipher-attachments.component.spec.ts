@@ -191,6 +191,14 @@ describe("CipherAttachmentsComponent", () => {
           message: "attachmentSaved",
         });
       });
+
+      it('emits "onUploadSuccess"', async () => {
+        const emitSpy = jest.spyOn(component.onUploadSuccess, "emit");
+
+        await component.submit();
+
+        expect(emitSpy).toHaveBeenCalled();
+      });
     });
   });
 });
