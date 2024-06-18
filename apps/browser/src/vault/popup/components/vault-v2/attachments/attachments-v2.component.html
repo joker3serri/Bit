@@ -9,6 +9,7 @@
     (formStatusChange)="attachmentFormStatus = $event"
     (formDisabled)="disabled = $event"
     (formLoading)="loading = $event"
+    (onUploadSuccess)="navigateToEditScreen()"
   ></app-cipher-attachments>
 
   <popup-footer slot="footer">

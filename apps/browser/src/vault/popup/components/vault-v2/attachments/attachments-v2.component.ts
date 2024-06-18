@@ -2,10 +2,11 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControlStatus } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { ButtonModule } from "@bitwarden/components";
 
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
@@ -46,9 +47,24 @@ export class AttachmentsV2Component {
   /** Id of the cipher */
   cipherId: string;
 
-  constructor(route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private cipherService: CipherService,
+    route: ActivatedRoute,
+  ) {
     route.queryParams.pipe(takeUntilDestroyed(), first()).subscribe(({ cipherId }) => {
       this.cipherId = cipherId;
+    });
+  }
+
+  /** Navigate the user back to the edit screen after uploading an attachment */
+  async navigateToEditScreen() {
+    const cipherDomain = await this.cipherService.get(this.cipherId);
+
+    // `navigateToEditScreen` is called from an event handler and will not be awaited
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    this.router.navigate(["/edit-cipher"], {
+      queryParams: { cipherId: this.cipherId, type: cipherDomain.type },
     });
   }
 }
