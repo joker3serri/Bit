@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, switchMap, takeUntil } from "rxjs";
@@ -21,7 +21,7 @@ import { DialogService } from "@bitwarden/components";
   templateUrl: "account.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class AccountComponent implements OnDestroy {
+export class AccountComponent implements OnDestroy, OnInit {
   selfHosted = false;
   loading = true;
   provider: ProviderResponse;
@@ -65,12 +65,13 @@ export class AccountComponent implements OnDestroy {
             });
           } catch (e) {
             this.logService.error(`Handled exception: ${e}`);
+          } finally {
+            this.loading = false;
           }
         }),
         takeUntil(this.destroy$),
       )
       .subscribe();
-    this.loading = false;
   }
   ngOnDestroy() {
     this.destroy$.next();
@@ -78,14 +79,14 @@ export class AccountComponent implements OnDestroy {
   }
   submit = async () => {
     const request = new ProviderUpdateRequest();
-    request.name = this.formGroup.get("providerName").value;
-    request.businessName = this.formGroup.get("providerName").value;
-    request.billingEmail = this.formGroup.get("providerBillingEmail").value;
+    request.name = this.formGroup.value.providerName;
+    request.businessName = this.formGroup.value.providerName;
+    request.billingEmail = this.formGroup.value.providerBillingEmail;
 
     await this.providerApiService.putProvider(this.providerId, request);
     await this.syncService.fullSync(true);
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("providerUpdated"));
     this.provider = await this.providerApiService.getProvider(this.providerId);
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("providerUpdated"));
   };
 
   async deleteProvider() {
