@@ -20,7 +20,7 @@
         </button>
       </div>
       <div class="modal-body" *ngIf="cipher">
-        <bit-callout type="info">
+        <bit-callout type="info" *ngIf="allowOwnershipAssignment() && !allowPersonal">
           {{ "personalOwnershipPolicyInEffect" | i18n }}
         </bit-callout>
         <div class="row" *ngIf="!editMode && !viewOnly">
