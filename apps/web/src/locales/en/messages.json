@@ -8390,9 +8390,8 @@
   "exportClientReport": {
     "message": "Export client report"
   },
-  "invoiceNumberHeader": {
-    "message": "Invoice number",
-    "description": "A table header for an invoice's number"
+  "invoice": {
+    "message": "Invoice"
   },
   "unassignedSeatsAvailable": {
     "message": "You have $SEATS$ unassigned seats available.",
