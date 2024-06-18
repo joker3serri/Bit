@@ -27,7 +27,7 @@ export class ProjectsListComponent {
   @Input()
   set search(search: string) {
     this.selection.clear();
-    this.dataSource.filter = search;
+    this.dataSource.filter = TableDataSource.simpleStringFilter(search);
   }
 
   @Output() editProjectEvent = new EventEmitter<string>();
