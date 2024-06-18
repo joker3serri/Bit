@@ -16,6 +16,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { OrganizationUserResetPasswordService } from "../../admin-console/organizations/members/services/organization-user-reset-password/organization-user-reset-password.service";
+import { WebauthnLoginAdminService } from "../core";
 import { EmergencyAccessService } from "../emergency-access";
 
 import { UpdateKeyRequest } from "./request/update-key.request";
@@ -36,6 +37,7 @@ export class UserKeyRotationService {
     private encryptService: EncryptService,
     private kdfConfigService: KdfConfigService,
     private syncService: SyncService,
+    private webauthnLoginAdminService: WebauthnLoginAdminService,
   ) {}
 
   /**
@@ -138,6 +140,15 @@ export class UserKeyRotationService {
     );
     if (rotatedResetPasswordKeys != null) {
       request.resetPasswordKeys = rotatedResetPasswordKeys;
+    }
+
+    const rotatedWebauthnKeys = await this.webauthnLoginAdminService.getRotatedData(
+      originalUserKey,
+      newUserKey,
+      user.id,
+    );
+    if (rotatedWebauthnKeys != null) {
+      request.webauthnKeys = rotatedWebauthnKeys;
     }
 
     await this.apiService.postUserKeyUpdate(request);

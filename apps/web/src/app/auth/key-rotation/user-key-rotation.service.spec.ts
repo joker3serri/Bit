@@ -4,6 +4,7 @@ import { BehaviorSubject } from "rxjs";
 import { OrganizationUserResetPasswordWithIdRequest } from "@bitwarden/common/admin-console/abstractions/organization-user/requests";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
+import { WebauthnRotateCredentialRequest } from "@bitwarden/common/auth/models/request/webauthn-rotate-credential.request";
 import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -21,6 +22,7 @@ import { CipherWithIdRequest } from "@bitwarden/common/vault/models/request/ciph
 import { FolderWithIdRequest } from "@bitwarden/common/vault/models/request/folder-with-id.request";
 
 import { OrganizationUserResetPasswordService } from "../../admin-console/organizations/members/services/organization-user-reset-password/organization-user-reset-password.service";
+import { WebauthnLoginAdminService } from "../core";
 import { EmergencyAccessService } from "../emergency-access";
 import { EmergencyAccessWithIdRequest } from "../emergency-access/request/emergency-access-update.request";
 
@@ -42,6 +44,7 @@ describe("KeyRotationService", () => {
   let mockConfigService: MockProxy<ConfigService>;
   let mockKdfConfigService: MockProxy<KdfConfigService>;
   let mockSyncService: MockProxy<SyncService>;
+  let mockWebauthnLoginAdminService: MockProxy<WebauthnLoginAdminService>;
   let mockMasterPasswordService: FakeMasterPasswordService = new FakeMasterPasswordService();
 
   const mockUser = {
@@ -65,6 +68,7 @@ describe("KeyRotationService", () => {
     mockConfigService = mock<ConfigService>();
     mockKdfConfigService = mock<KdfConfigService>();
     mockSyncService = mock<SyncService>();
+    mockWebauthnLoginAdminService = mock<WebauthnLoginAdminService>();
 
     keyRotationService = new UserKeyRotationService(
       mockMasterPasswordService,
@@ -79,6 +83,7 @@ describe("KeyRotationService", () => {
       mockEncryptService,
       mockKdfConfigService,
       mockSyncService,
+      mockWebauthnLoginAdminService,
     );
   });
 
@@ -130,6 +135,10 @@ describe("KeyRotationService", () => {
       // Mock reset password
       const resetPassword = [createMockResetPassword("12")];
       mockResetPasswordService.getRotatedData.mockResolvedValue(resetPassword);
+
+      // Mock Webauthn
+      const webauthn = [createMockWebauthn("13"), createMockWebauthn("14")];
+      mockWebauthnLoginAdminService.getRotatedData.mockResolvedValue(webauthn);
     });
 
     it("rotates the user key and encrypted data", async () => {
@@ -144,6 +153,7 @@ describe("KeyRotationService", () => {
       expect(arg.sends.length).toBe(2);
       expect(arg.emergencyAccessKeys.length).toBe(1);
       expect(arg.resetPasswordKeys.length).toBe(1);
+      expect(arg.webauthnKeys.length).toBe(2);
     });
 
     it("throws if master password provided is falsey", async () => {
@@ -230,4 +240,10 @@ function createMockResetPassword(id: string): OrganizationUserResetPasswordWithI
     organizationId: id,
     resetPasswordKey: "mockResetPasswordKey",
   } as OrganizationUserResetPasswordWithIdRequest;
+}
+
+function createMockWebauthn(id: string): any {
+  return {
+    id: id,
+  } as WebauthnRotateCredentialRequest;
 }
