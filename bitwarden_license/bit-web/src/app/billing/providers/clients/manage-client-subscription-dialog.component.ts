@@ -35,10 +35,9 @@ export const openManageClientSubscriptionDialog = (
 })
 export class ManageClientSubscriptionDialogComponent implements OnInit {
   protected loading = true;
+  protected providerPlan: ProviderPlanResponse;
   protected openSeats: number;
   protected readonly ResultType = ManageClientSubscriptionDialogResultType;
-
-  private providerPlan: ProviderPlanResponse;
 
   protected formGroup = new FormGroup({
     assignedSeats: new FormControl<number>(this.dialogParams.organization.seats, [
@@ -66,7 +65,11 @@ export class ManageClientSubscriptionDialogComponent implements OnInit {
 
     this.openSeats = this.providerPlan.seatMinimum - this.providerPlan.assignedSeats;
 
-    this.formGroup.controls.assignedSeats.addValidators(this.createAssignedSeatsValidator());
+    this.formGroup.controls.assignedSeats.addValidators(
+      this.isServiceUserWithPurchasedSeats
+        ? this.createPurchasedSeatsValidator()
+        : this.createUnassignedSeatsValidator(),
+    );
 
     this.loading = false;
   }
@@ -100,25 +103,78 @@ export class ManageClientSubscriptionDialogComponent implements OnInit {
     this.dialogRef.close(this.ResultType.Submitted);
   };
 
-  createAssignedSeatsValidator =
+  createPurchasedSeatsValidator =
     (): ValidatorFn =>
     (formControl: FormControl<number>): ValidationErrors | null => {
-      const isAdmin = this.dialogParams.provider.type === ProviderUserType.ProviderAdmin;
-
-      if (isAdmin) {
+      if (this.isProviderAdmin) {
         return null;
       }
 
-      const addedSeats = formControl.value - this.dialogParams.organization.seats;
+      const seatAdjustment = formControl.value - this.dialogParams.organization.seats;
 
-      if (addedSeats <= this.openSeats) {
+      if (seatAdjustment <= 0) {
         return null;
       }
 
       return {
         insufficientPermissions: {
-          message: this.i18nService.t("serviceUsersSubscriptionUpdateError"),
+          message: this.i18nService.t("contactYourProviderForAdditionalSeats"),
         },
       };
     };
+
+  createUnassignedSeatsValidator =
+    (): ValidatorFn =>
+    (formControl: FormControl<number>): ValidationErrors | null => {
+      if (this.isProviderAdmin) {
+        return null;
+      }
+
+      const seatAdjustment = formControl.value - this.dialogParams.organization.seats;
+
+      if (seatAdjustment <= this.openSeats) {
+        return null;
+      }
+
+      const unassignedSeatsAvailableMessage = this.i18nService.t(
+        "unassignedSeatsAvailable",
+        this.openSeats,
+      );
+
+      const contactYourProviderMessage = this.i18nService.t(
+        "contactYourProviderForAdditionalSeats",
+      );
+
+      return {
+        insufficientPermissions: {
+          message: `${unassignedSeatsAvailableMessage} ${contactYourProviderMessage}`,
+        },
+      };
+    };
+
+  get unassignedSeats(): number {
+    const seatDifference =
+      this.formGroup.value.assignedSeats - this.dialogParams.organization.seats;
+
+    const unassignedSeats = this.openSeats - seatDifference;
+
+    return unassignedSeats >= 0 ? unassignedSeats : 0;
+  }
+
+  get additionalSeatsPurchased(): number {
+    const seatDifference =
+      this.formGroup.value.assignedSeats - this.dialogParams.organization.seats;
+
+    const purchasedSeats = seatDifference - this.openSeats;
+
+    return purchasedSeats > 0 ? purchasedSeats : 0;
+  }
+
+  get isProviderAdmin(): boolean {
+    return this.dialogParams.provider.type === ProviderUserType.ProviderAdmin;
+  }
+
+  get isServiceUserWithPurchasedSeats(): boolean {
+    return !this.isProviderAdmin && this.providerPlan && this.providerPlan.purchasedSeats > 0;
+  }
 }
