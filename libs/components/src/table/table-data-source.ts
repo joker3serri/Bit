@@ -225,11 +225,11 @@ export class TableDataSource<T> extends DataSource<T> {
    * trimmed and the match is case-insensitive.
    */
   static readonly simpleStringFilter = <T>(filter: string): FilterFn<T> => {
-    if (!filter) {
-      return null;
-    }
-
     return (data: T): boolean => {
+      if (!filter) {
+        return true;
+      }
+
       // Transform the data into a lowercase string of all property values.
       const dataStr = Object.keys(data as unknown as Record<string, any>)
         .reduce((currentTerm: string, key: string) => {
