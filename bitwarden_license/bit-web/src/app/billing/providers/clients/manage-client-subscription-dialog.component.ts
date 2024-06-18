@@ -1,116 +1,124 @@
-import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
+import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
+import { FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 
+import { ProviderUserType } from "@bitwarden/common/admin-console/enums";
+import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
-import { BillingApiServiceAbstraction as BillingApiService } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
 import { UpdateClientOrganizationRequest } from "@bitwarden/common/billing/models/request/update-client-organization.request";
 import { ProviderPlanResponse } from "@bitwarden/common/billing/models/response/provider-subscription-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 type ManageClientSubscriptionDialogParams = {
   organization: ProviderOrganizationOrganizationDetailsResponse;
+  provider: Provider;
 };
 
-@Component({
-  templateUrl: "manage-client-subscription-dialog.component.html",
-})
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class ManageClientSubscriptionDialogComponent implements OnInit {
-  loading = true;
-  providerOrganizationId: string;
-  providerId: string;
+export enum ManageClientSubscriptionDialogResultType {
+  Closed = "closed",
+  Submitted = "submitted",
+}
 
-  clientName: string;
-  assignedSeats: number;
-  unassignedSeats: number;
-  planName: string;
-  AdditionalSeatPurchased: number;
-  remainingOpenSeats: number;
+export const openManageClientSubscriptionDialog = (
+  dialogService: DialogService,
+  dialogConfig: DialogConfig<ManageClientSubscriptionDialogParams>,
+) =>
+  dialogService.open<
+    ManageClientSubscriptionDialogResultType,
+    ManageClientSubscriptionDialogParams
+  >(ManageClientSubscriptionDialogComponent, dialogConfig);
+
+@Component({
+  templateUrl: "./manage-client-subscription-dialog.component.html",
+})
+export class ManageClientSubscriptionDialogComponent implements OnInit {
+  protected loading = true;
+  protected openSeats: number;
+  protected readonly ResultType = ManageClientSubscriptionDialogResultType;
+
+  private providerPlan: ProviderPlanResponse;
+
+  protected formGroup = new FormGroup({
+    assignedSeats: new FormControl<number>(this.dialogParams.organization.seats, [
+      Validators.required,
+      Validators.min(0),
+    ]),
+  });
 
   constructor(
-    public dialogRef: DialogRef,
-    @Inject(DIALOG_DATA) protected data: ManageClientSubscriptionDialogParams,
-    private billingApiService: BillingApiService,
+    private billingApiService: BillingApiServiceAbstraction,
+    @Inject(DIALOG_DATA) protected dialogParams: ManageClientSubscriptionDialogParams,
+    private dialogRef: DialogRef<ManageClientSubscriptionDialogResultType>,
     private i18nService: I18nService,
-    private platformUtilsService: PlatformUtilsService,
-  ) {
-    this.providerOrganizationId = data.organization.id;
-    this.providerId = data.organization.providerId;
-    this.clientName = data.organization.organizationName;
-    this.assignedSeats = data.organization.seats;
-    this.planName = data.organization.plan;
-  }
+    private toastService: ToastService,
+  ) {}
 
-  async ngOnInit() {
-    try {
-      const response = await this.billingApiService.getProviderSubscription(this.providerId);
-      this.AdditionalSeatPurchased = this.getPurchasedSeatsByPlan(this.planName, response.plans);
-      const seatMinimum = this.getProviderSeatMinimumByPlan(this.planName, response.plans);
-      const assignedByPlan = this.getAssignedByPlan(this.planName, response.plans);
-      this.remainingOpenSeats = seatMinimum - assignedByPlan;
-      this.unassignedSeats = Math.abs(this.remainingOpenSeats);
-    } catch (error) {
-      this.remainingOpenSeats = 0;
-      this.AdditionalSeatPurchased = 0;
-    }
+  async ngOnInit(): Promise<void> {
+    const response = await this.billingApiService.getProviderSubscription(
+      this.dialogParams.provider.id,
+    );
+
+    this.providerPlan = response.plans.find(
+      (plan) => plan.planName === this.dialogParams.organization.plan,
+    );
+
+    this.openSeats = this.providerPlan.seatMinimum - this.providerPlan.assignedSeats;
+
+    this.formGroup.controls.assignedSeats.addValidators(this.createAssignedSeatsValidator());
+
     this.loading = false;
   }
 
-  async updateSubscription(assignedSeats: number) {
+  submit = async () => {
     this.loading = true;
-    if (!assignedSeats) {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("assignedSeatCannotUpdate"),
-      );
+
+    this.formGroup.markAllAsTouched();
+
+    if (this.formGroup.invalid) {
       return;
     }
 
     const request = new UpdateClientOrganizationRequest();
-    request.assignedSeats = assignedSeats;
-    request.name = this.clientName;
+    request.assignedSeats = this.formGroup.value.assignedSeats;
+    request.name = this.dialogParams.organization.organizationName;
 
     await this.billingApiService.updateClientOrganization(
-      this.providerId,
-      this.providerOrganizationId,
+      this.dialogParams.provider.id,
+      this.dialogParams.organization.id,
       request,
     );
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("subscriptionUpdated"));
+
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("subscriptionUpdated"),
+    });
+
     this.loading = false;
-    this.dialogRef.close();
-  }
+    this.dialogRef.close(this.ResultType.Submitted);
+  };
 
-  getPurchasedSeatsByPlan(planName: string, plans: ProviderPlanResponse[]): number {
-    const plan = plans.find((plan) => plan.planName === planName);
-    if (plan) {
-      return plan.purchasedSeats;
-    } else {
-      return 0;
-    }
-  }
+  createAssignedSeatsValidator =
+    (): ValidatorFn =>
+    (formControl: FormControl<number>): ValidationErrors | null => {
+      const isAdmin = this.dialogParams.provider.type === ProviderUserType.ProviderAdmin;
 
-  getAssignedByPlan(planName: string, plans: ProviderPlanResponse[]): number {
-    const plan = plans.find((plan) => plan.planName === planName);
-    if (plan) {
-      return plan.assignedSeats;
-    } else {
-      return 0;
-    }
-  }
+      if (isAdmin) {
+        return null;
+      }
 
-  getProviderSeatMinimumByPlan(planName: string, plans: ProviderPlanResponse[]) {
-    const plan = plans.find((plan) => plan.planName === planName);
-    if (plan) {
-      return plan.seatMinimum;
-    } else {
-      return 0;
-    }
-  }
+      const addedSeats = formControl.value - this.dialogParams.organization.seats;
 
-  static open(dialogService: DialogService, data: ManageClientSubscriptionDialogParams) {
-    return dialogService.open(ManageClientSubscriptionDialogComponent, { data });
-  }
+      if (addedSeats <= this.openSeats) {
+        return null;
+      }
+
+      return {
+        insufficientPermissions: {
+          message: this.i18nService.t("serviceUsersSubscriptionUpdateError"),
+        },
+      };
+    };
 }
