@@ -14,7 +14,7 @@
 <div class="tw-mb-4 tw-flex tw-flex-col tw-space-y-4">
   <bit-toggle-group
     [selected]="status"
-    (selectedChange)="filter($event)"
+    (selectedChange)="statusToggle.next($event)"
     [attr.aria-label]="'memberStatusFilter' | i18n"
   >
     <bit-toggle [value]="null">

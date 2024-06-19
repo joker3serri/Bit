@@ -1,7 +1,7 @@
 import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
-import { firstValueFrom, lastValueFrom, debounceTime } from "rxjs";
+import { firstValueFrom, lastValueFrom, debounceTime, combineLatest, BehaviorSubject } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -26,17 +26,41 @@ import { OrganizationUserView } from "../organizations/core/views/organization-u
 import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
 
 type StatusType = OrganizationUserStatusType | ProviderUserStatusType;
+type UserViewTypes = ProviderUserUserDetailsResponse | OrganizationUserView;
 
 const MaxCheckedCount = 500;
+
+/**
+ * Returns true if the user matches the status, or if there is no status filter set (null)
+ */
+function statusFilter(user: UserViewTypes, status: StatusType) {
+  return status == null || user.status === status;
+}
+
+/**
+ * Returns true if the string matches the user's id, name, or email.
+ * (The default string search includes all properties, which can return false positives for collection names etc)
+ */
+function textFilter(user: UserViewTypes, text: string) {
+  const normalizedText = text?.toLowerCase();
+  return (
+    !normalizedText || // null/empty strings should be ignored, i.e. always return true
+    user.email.toLowerCase().includes(normalizedText) ||
+    user.id.toLowerCase().includes(normalizedText) ||
+    user.name?.toLowerCase().includes(normalizedText)
+  );
+}
+
+function peopleFilter(searchText: string, status: StatusType) {
+  return (user: UserViewTypes) => statusFilter(user, status) && textFilter(user, searchText);
+}
 
 /**
  * A refactored copy of BasePeopleComponent, using the component library table and other modern features.
  * This will replace BasePeopleComponent once all subclasses have been changed over to use this class.
  */
 @Directive()
-export abstract class NewBasePeopleComponent<
-  UserView extends ProviderUserUserDetailsResponse | OrganizationUserView,
-> {
+export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
 
@@ -110,16 +134,12 @@ export abstract class NewBasePeopleComponent<
   actionPromise: Promise<void>;
 
   /**
-   * All users, loaded from the server, before any filtering has been applied.
-   */
-  protected allUsers: UserView[] = [];
-
-  /**
    * Active users only, that is, users that are not in the revoked status.
    */
   protected activeUsers: UserView[] = [];
 
   protected searchControl = new FormControl("", { nonNullable: true });
+  protected statusToggle = new BehaviorSubject<StatusType | null>(null);
 
   constructor(
     protected apiService: ApiService,
@@ -133,10 +153,12 @@ export abstract class NewBasePeopleComponent<
     protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
     protected toastService: ToastService,
   ) {
-    // Connect the search input to the table dataSource filter input
-    this.searchControl.valueChanges
-      .pipe(debounceTime(200), takeUntilDestroyed())
-      .subscribe((v) => (this.dataSource.filter = v));
+    // Connect the search input and status toggles to the table dataSource filter
+    combineLatest([this.searchControl.valueChanges.pipe(debounceTime(200)), this.statusToggle])
+      .pipe(takeUntilDestroyed())
+      .subscribe(
+        ([searchText, status]) => (this.dataSource.filter = peopleFilter(searchText, status)),
+      );
   }
 
   abstract edit(user: UserView): void;
@@ -151,49 +173,14 @@ export abstract class NewBasePeopleComponent<
     // Load new users from the server
     const response = await this.getUsers();
 
-    // Reset and repopulate the statusMap
-    this.statusMap.clear();
-    this.activeUsers = [];
-    for (const status of Utils.iterateEnum(this.userStatusType)) {
-      this.statusMap.set(status, []);
-    }
-
+    // Not sure why this is necessary, I assume different subcomponents supply different types
     if (response instanceof ListResponse) {
-      this.allUsers = response.data != null && response.data.length > 0 ? response.data : [];
+      this.dataSource.data = response.data != null && response.data.length > 0 ? response.data : [];
     } else if (Array.isArray(response)) {
-      this.allUsers = response;
+      this.dataSource.data = response;
     }
-
-    this.allUsers.forEach((u) => {
-      if (!this.statusMap.has(u.status)) {
-        this.statusMap.set(u.status, [u]);
-      } else {
-        this.statusMap.get(u.status).push(u);
-      }
-      if (u.status !== this.userStatusType.Revoked) {
-        this.activeUsers.push(u);
-      }
-    });
-
-    // Filter based on UserStatus - this also populates the table on first load
-    this.filter(this.status);
 
     this.firstLoaded = true;
-  }
-
-  /**
-   * Filter the data source by user status.
-   * This overwrites dataSource.data because this filtering needs to apply first, before the search input
-   */
-  filter(status: StatusType | null) {
-    this.status = status;
-    if (this.status != null) {
-      this.dataSource.data = this.statusMap.get(this.status);
-    } else {
-      this.dataSource.data = this.activeUsers;
-    }
-    // Reset checkbox selection
-    this.selectAll(false);
   }
 
   checkUser(user: UserView, select?: boolean) {
@@ -388,27 +375,15 @@ export abstract class NewBasePeopleComponent<
   }
 
   /**
-   * Remove a user row from the table and all related data sources
+   * Remove a user row from the table
    */
   protected removeUser(user: UserView) {
-    let index = this.dataSource.data.indexOf(user);
+    const index = this.dataSource.data.indexOf(user);
     if (index > -1) {
       // Clone the array so that the setter for dataSource.data is triggered to update the table rendering
       const updatedData = [...this.dataSource.data];
       updatedData.splice(index, 1);
       this.dataSource.data = updatedData;
-    }
-
-    index = this.allUsers.indexOf(user);
-    if (index > -1) {
-      this.allUsers.splice(index, 1);
-    }
-
-    if (this.statusMap.has(user.status)) {
-      index = this.statusMap.get(user.status).indexOf(user);
-      if (index > -1) {
-        this.statusMap.get(user.status).splice(index, 1);
-      }
     }
   }
 }
