@@ -1,4 +1,4 @@
-import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
+import { Directive } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
 import { firstValueFrom, lastValueFrom, debounceTime, combineLatest, BehaviorSubject } from "rxjs";
@@ -65,9 +65,6 @@ function peopleFilter(searchText: string, status: StatusType) {
  */
 @Directive()
 export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
-  @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
-  confirmModalRef: ViewContainerRef;
-
   /**
    * Shows a banner alerting the admin that users need to be confirmed.
    */
