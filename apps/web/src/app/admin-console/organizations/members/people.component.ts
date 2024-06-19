@@ -61,6 +61,11 @@ import {
   openUserAddEditDialog,
 } from "./components/member-dialog";
 import { ResetPasswordComponent } from "./components/reset-password.component";
+import { PeopleTableDataSource } from "../../common/people-table-data-source";
+
+class MemberTableDataSource extends PeopleTableDataSource<OrganizationUserView> {
+  protected statusType = OrganizationUserStatusType;
+}
 
 @Component({
   selector: "app-org-people",
@@ -73,6 +78,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
   userType = OrganizationUserType;
   userStatusType = OrganizationUserStatusType;
   memberTab = MemberDialogTab;
+  protected dataSource = new MemberTableDataSource();
 
   organization: Organization;
   status: OrganizationUserStatusType = null;
@@ -437,7 +443,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     if (
       !user &&
       this.organization.hasReseller &&
-      this.organization.seats === this.getStatusCount(this.userStatusType.Confirmed)
+      this.organization.seats === this.dataSource.confirmedUserCount
     ) {
       this.toastService.showToast({
         variant: "error",
@@ -471,14 +477,14 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
         usesKeyConnector: user?.usesKeyConnector,
         isOnSecretsManagerStandalone: this.orgIsOnSecretsManagerStandalone,
         initialTab: initialTab,
-        numConfirmedMembers: this.getStatusCount(this.userStatusType.Confirmed),
+        numConfirmedMembers: this.dataSource.confirmedUserCount,
       },
     });
 
     const result = await lastValueFrom(dialog.closed);
     switch (result) {
       case MemberDialogResult.Deleted:
-        this.removeUser(user);
+        this.dataSource.removeUser(user);
         break;
       case MemberDialogResult.Saved:
       case MemberDialogResult.Revoked:

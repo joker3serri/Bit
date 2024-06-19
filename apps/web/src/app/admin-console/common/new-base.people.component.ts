@@ -20,12 +20,12 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { DialogService, TableDataSource, ToastService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 import { OrganizationUserView } from "../organizations/core/views/organization-user.view";
 import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
 
-import { peopleFilter } from "./people-filter.component";
+import { PeopleTableDataSource, peopleFilter } from "./people-table-data-source";
 
 export type StatusType = OrganizationUserStatusType | ProviderUserStatusType;
 export type UserViewTypes = ProviderUserUserDetailsResponse | OrganizationUserView;
@@ -42,21 +42,22 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
    * Shows a banner alerting the admin that users need to be confirmed.
    */
   get showConfirmUsers(): boolean {
-    const activeCount = this.getStatusCount(null);
-    const confirmedCount = this.getStatusCount(this.userStatusType.Confirmed);
-    const acceptedCount = this.getStatusCount(this.userStatusType.Accepted);
-
-    return activeCount > 1 && confirmedCount > 0 && confirmedCount < 3 && acceptedCount > 0;
+    return (
+      this.dataSource.activeUserCount > 1 &&
+      this.dataSource.confirmedUserCount > 0 &&
+      this.dataSource.confirmedUserCount < 3 &&
+      this.dataSource.acceptedUserCount > 0
+    );
   }
 
   get showBulkConfirmUsers(): boolean {
-    return this.getStatusCount(this.userStatusType.Accepted) > 0;
+    return this.dataSource.acceptedUserCount > 0;
   }
 
   abstract userType: typeof OrganizationUserType | typeof ProviderUserType;
   abstract userStatusType: typeof OrganizationUserStatusType | typeof ProviderUserStatusType;
 
-  protected dataSource = new TableDataSource<UserView>();
+  protected abstract dataSource: PeopleTableDataSource<UserView>;
 
   firstLoaded: boolean;
 
@@ -113,14 +114,6 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
     this.firstLoaded = true;
   }
 
-  getStatusCount(status: StatusType | null) {
-    if (status == null) {
-      return this.dataSource.data.filter((u) => u.status !== this.userStatusType.Revoked).length;
-    }
-
-    return this.dataSource.data.filter((u) => u.status === status).length;
-  }
-
   checkUser(user: UserView, select?: boolean) {
     (user as any).checked = select == null ? !(user as any).checked : select;
   }
@@ -166,7 +159,7 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
         title: null,
         message: this.i18nService.t("removedUserId", this.userNamePipe.transform(user)),
       });
-      this.removeUser(user);
+      this.dataSource.removeUser(user);
     } catch (e) {
       this.validationService.showError(e);
     }
@@ -198,6 +191,8 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
         this.actionPromise = this.confirmUser(user, publicKey);
         await this.actionPromise;
         user.status = this.userStatusType.Confirmed;
+        this.dataSource.replaceUser(user);
+
         this.toastService.showToast({
           variant: "success",
           title: null,
@@ -250,18 +245,5 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
 
   protected getCheckedUsers() {
     return this.dataSource.data.filter((u) => (u as any).checked);
-  }
-
-  /**
-   * Remove a user row from the table
-   */
-  protected removeUser(user: UserView) {
-    const index = this.dataSource.data.indexOf(user);
-    if (index > -1) {
-      // Clone the array so that the setter for dataSource.data is triggered to update the table rendering
-      const updatedData = [...this.dataSource.data];
-      updatedData.splice(index, 1);
-      this.dataSource.data = updatedData;
-    }
   }
 }
