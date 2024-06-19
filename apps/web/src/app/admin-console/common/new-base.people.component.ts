@@ -30,8 +30,6 @@ import { PeopleTableDataSource, peopleFilter } from "./people-table-data-source"
 export type StatusType = OrganizationUserStatusType | ProviderUserStatusType;
 export type UserViewTypes = ProviderUserUserDetailsResponse | OrganizationUserView;
 
-const MaxCheckedCount = 500;
-
 /**
  * A refactored copy of BasePeopleComponent, using the component library table and other modern features.
  * This will replace BasePeopleComponent once all subclasses have been changed over to use this class.
@@ -112,25 +110,6 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
     }
 
     this.firstLoaded = true;
-  }
-
-  checkUser(user: UserView, select?: boolean) {
-    (user as any).checked = select == null ? !(user as any).checked : select;
-  }
-
-  selectAll(select: boolean) {
-    if (select) {
-      // Reset checkbox selection first so we know nothing else is selected
-      this.selectAll(false);
-    }
-
-    const filteredUsers = this.dataSource.filteredData;
-
-    const selectCount =
-      select && filteredUsers.length > MaxCheckedCount ? MaxCheckedCount : filteredUsers.length;
-    for (let i = 0; i < selectCount; i++) {
-      this.checkUser(filteredUsers[i], select);
-    }
   }
 
   invite() {
@@ -241,9 +220,5 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
     } catch (e) {
       this.logService.error(`Handled exception: ${e}`);
     }
-  }
-
-  protected getCheckedUsers() {
-    return this.dataSource.data.filter((u) => (u as any).checked);
   }
 }

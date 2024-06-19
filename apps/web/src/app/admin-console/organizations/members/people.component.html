@@ -76,7 +76,7 @@
                 type="checkbox"
                 bitCheckbox
                 class="tw-mr-1"
-                (change)="selectAll($any($event.target).checked)"
+                (change)="dataSource.checkAllVisible($any($event.target).checked)"
                 id="selectAll"
               />
               <label class="tw-mb-0 !tw-font-bold !tw-text-muted" for="selectAll">{{
@@ -143,7 +143,7 @@
             alignContent="middle"
             [ngClass]="rowHeightClass"
           >
-            <td bitCell (click)="checkUser(u)">
+            <td bitCell (click)="dataSource.checkUser(u)">
               <input type="checkbox" bitCheckbox [(ngModel)]="$any(u).checked" />
             </td>
             <td bitCell (click)="edit(u)" class="tw-cursor-pointer">

@@ -504,7 +504,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     const dialogRef = BulkRemoveComponent.open(this.dialogService, {
       data: {
         organizationId: this.organization.id,
-        users: this.getCheckedUsers(),
+        users: this.dataSource.getCheckedUsers(),
       },
     });
     await lastValueFrom(dialogRef.closed);
@@ -526,7 +526,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
 
     const ref = BulkRestoreRevokeComponent.open(this.dialogService, {
       organizationId: this.organization.id,
-      users: this.getCheckedUsers(),
+      users: this.dataSource.getCheckedUsers(),
       isRevoking: isRevoking,
     });
 
@@ -539,7 +539,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
       return;
     }
 
-    const users = this.getCheckedUsers();
+    const users = this.dataSource.getCheckedUsers();
     const filteredUsers = users.filter((u) => u.status === OrganizationUserStatusType.Invited);
 
     if (filteredUsers.length <= 0) {
@@ -583,7 +583,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     const dialogRef = BulkConfirmComponent.open(this.dialogService, {
       data: {
         organizationId: this.organization.id,
-        users: this.getCheckedUsers(),
+        users: this.dataSource.getCheckedUsers(),
       },
     });
 
@@ -592,7 +592,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
   }
 
   async bulkEnableSM() {
-    const users = this.getCheckedUsers().filter((ou) => !ou.accessSecretsManager);
+    const users = this.dataSource.getCheckedUsers().filter((ou) => !ou.accessSecretsManager);
 
     if (users.length === 0) {
       this.toastService.showToast({
@@ -609,7 +609,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     });
 
     await lastValueFrom(dialogRef.closed);
-    this.selectAll(false);
+    this.dataSource.deselectAll();
     await this.load();
   }
 

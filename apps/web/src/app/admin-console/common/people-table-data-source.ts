@@ -6,8 +6,10 @@ import { TableDataSource } from "@bitwarden/components";
 
 import { StatusType, UserViewTypes } from "./new-base.people.component";
 
+const MaxCheckedCount = 500;
+
 /**
- * Returns true if the user matches the status, or if the status is `null`, if the user is active (not revoked).
+ * Returns true if the user matches the status, or where the status is `null`, if the user is active (not revoked).
  */
 function statusFilter(user: UserViewTypes, status: StatusType) {
   if (status == null) {
@@ -19,7 +21,7 @@ function statusFilter(user: UserViewTypes, status: StatusType) {
 
 /**
  * Returns true if the string matches the user's id, name, or email.
- * (The default string search includes all properties, which can return false positives for collection names etc)
+ * (The default string search includes all properties, which can return false positives for collection names etc.)
  */
 function textFilter(user: UserViewTypes, text: string) {
   const normalizedText = text?.toLowerCase();
@@ -36,9 +38,8 @@ export function peopleFilter(searchText: string, status: StatusType) {
 }
 
 /**
- * An extended TableDataSource class which also tracks user totals.
- * This keeps all information about the data encapsulated in the TableDataSource, and avoids recalculating it
- * unless the underlying data changes.
+ * An extended TableDataSource class for managing people (organization members and provider users).
+ * It includes a tally of different statuses, utility methods, and other common functionality.
  */
 export abstract class PeopleTableDataSource<T extends UserViewTypes> extends TableDataSource<T> {
   protected abstract statusType: typeof OrganizationUserStatusType | typeof ProviderUserStatusType;
@@ -56,23 +57,49 @@ export abstract class PeopleTableDataSource<T extends UserViewTypes> extends Tab
   override set data(data: T[]) {
     super.data = data;
 
-    if (data == null) {
-      return;
-    }
+    this.activeUserCount =
+      this.data?.filter((u) => u.status !== this.statusType.Revoked).length ?? 0;
 
-    this.activeUserCount = this.data.filter((u) => u.status !== this.statusType.Revoked).length;
-
-    this.invitedUserCount = this.data.filter((u) => u.status === this.statusType.Invited).length;
-    this.acceptedUserCount = this.data.filter((u) => u.status === this.statusType.Accepted).length;
-    this.confirmedUserCount = this.data.filter(
-      (u) => u.status === this.statusType.Confirmed,
-    ).length;
-    this.revokedUserCount = this.data.filter((u) => u.status === this.statusType.Revoked).length;
+    this.invitedUserCount =
+      this.data?.filter((u) => u.status === this.statusType.Invited).length ?? 0;
+    this.acceptedUserCount =
+      this.data?.filter((u) => u.status === this.statusType.Accepted).length ?? 0;
+    this.confirmedUserCount =
+      this.data?.filter((u) => u.status === this.statusType.Confirmed).length ?? 0;
+    this.revokedUserCount =
+      this.data?.filter((u) => u.status === this.statusType.Revoked).length ?? 0;
   }
 
   override get data() {
     // If you override a setter, you must also override the getter
     return super.data;
+  }
+
+  checkUser(user: T, select?: boolean) {
+    (user as any).checked = select == null ? !(user as any).checked : select;
+  }
+
+  getCheckedUsers() {
+    return this.data.filter((u) => (u as any).checked);
+  }
+
+  checkAllVisible(select: boolean) {
+    if (select) {
+      // Reset checkbox selection first so we know nothing else is selected
+      this.deselectAll();
+    }
+
+    const filteredUsers = this.filteredData;
+
+    const selectCount =
+      filteredUsers.length > MaxCheckedCount ? MaxCheckedCount : filteredUsers.length;
+    for (let i = 0; i < selectCount; i++) {
+      this.checkUser(filteredUsers[i], select);
+    }
+  }
+
+  deselectAll() {
+    this.data.forEach((u) => ((u as any).checked = false));
   }
 
   /**
@@ -89,7 +116,7 @@ export abstract class PeopleTableDataSource<T extends UserViewTypes> extends Tab
   }
 
   /**
-   * Replace a user in the data source (by matching on user.id). Use this to ensure the table is re-rendered after the change.
+   * Replace a user in the data source by matching on user.id. Use this to ensure the table is re-rendered after the change.
    */
   replaceUser(user: T) {
     const index = this.data.findIndex((u) => u.id === user.id);
