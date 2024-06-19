@@ -248,10 +248,6 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
     }
   }
 
-  protected revokeWarningMessage(): string {
-    return this.i18nService.t("revokeUserConfirmation");
-  }
-
   protected getCheckedUsers() {
     return this.dataSource.data.filter((u) => (u as any).checked);
   }

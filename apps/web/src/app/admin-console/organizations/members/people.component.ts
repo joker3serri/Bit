@@ -668,7 +668,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
   protected async revokeUserConfirmationDialog(user: OrganizationUserView) {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
-      content: this.revokeWarningMessage(),
+      content: this.i18nService.t("revokeUserConfirmation"),
       acceptButtonText: { key: "revokeAccess" },
       type: "warning",
     });
