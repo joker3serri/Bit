@@ -160,7 +160,9 @@ export class SubscriptionStatusComponent {
           callout: {
             severity: "warning",
             header: pendingCancellationText,
-            body: this.i18nService.t("subscriptionPendingCanceled"),
+            body:
+              this.i18nService.t("subscriptionPendingCanceled") +
+              this.i18nService.t("providerReinstate"),
             showReinstatementButton: false,
           },
         };

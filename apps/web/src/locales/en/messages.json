@@ -8393,5 +8393,8 @@
   "invoiceNumberHeader": {
     "message": "Invoice number",
     "description": "A table header for an invoice's number"
+  },
+  "providerReinstate":{
+    "message": " Contact Customer Support to reinstate your subscription."
   }
 }
