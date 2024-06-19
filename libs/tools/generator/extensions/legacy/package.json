@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "@bitwarden/common": "file:../../../common",
-    "@bitwarden/generator-core": "file:../core"
+    "@bitwarden/generator-core": "file:../core",
+    "@bitwarden/generator-history": "file:../extensions/history",
+    "@bitwarden/generator-navigation": "file:../extensions/navigation"
   }
 }
