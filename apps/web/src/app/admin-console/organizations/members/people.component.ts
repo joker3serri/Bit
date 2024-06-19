@@ -396,7 +396,11 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
   }
 
   async edit(user: OrganizationUserView, initialTab: MemberDialogTab = MemberDialogTab.Role) {
-    if (!user && this.organization.hasReseller && this.organization.seats === this.confirmedCount) {
+    if (
+      !user &&
+      this.organization.hasReseller &&
+      this.organization.seats === this.getStatusCount(this.userStatusType.Confirmed)
+    ) {
       this.toastService.showToast({
         variant: "error",
         title: this.i18nService.t("seatLimitReached"),
@@ -429,7 +433,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
         usesKeyConnector: user?.usesKeyConnector,
         isOnSecretsManagerStandalone: this.orgIsOnSecretsManagerStandalone,
         initialTab: initialTab,
-        numConfirmedMembers: this.confirmedCount,
+        numConfirmedMembers: this.getStatusCount(this.userStatusType.Confirmed),
       },
     });
 

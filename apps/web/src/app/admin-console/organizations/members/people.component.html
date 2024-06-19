@@ -18,22 +18,38 @@
     [attr.aria-label]="'memberStatusFilter' | i18n"
   >
     <bit-toggle [value]="null">
-      {{ "all" | i18n }} <span bitBadge variant="info" *ngIf="allCount">{{ allCount }}</span>
+      {{ "all" | i18n }}
+      <span bitBadge variant="info" *ngIf="getStatusCount(null) as allCount">{{ allCount }}</span>
     </bit-toggle>
 
     <bit-toggle [value]="userStatusType.Invited">
       {{ "invited" | i18n }}
-      <span bitBadge variant="info" *ngIf="invitedCount">{{ invitedCount }}</span>
+      <span
+        bitBadge
+        variant="info"
+        *ngIf="getStatusCount(userStatusType.Invited) as invitedCount"
+        >{{ invitedCount }}</span
+      >
     </bit-toggle>
 
     <bit-toggle [value]="userStatusType.Accepted">
       {{ "needsConfirmation" | i18n }}
-      <span bitBadge variant="info" *ngIf="acceptedCount">{{ acceptedCount }}</span>
+      <span
+        bitBadge
+        variant="info"
+        *ngIf="getStatusCount(userStatusType.Accepted) as acceptedCount"
+        >{{ acceptedCount }}</span
+      >
     </bit-toggle>
 
     <bit-toggle [value]="userStatusType.Revoked">
       {{ "revoked" | i18n }}
-      <span bitBadge variant="info" *ngIf="revokedCount">{{ revokedCount }}</span>
+      <span
+        bitBadge
+        variant="info"
+        *ngIf="getStatusCount(userStatusType.Revoked) as revokedCount"
+        >{{ revokedCount }}</span
+      >
     </bit-toggle>
   </bit-toggle-group>
 </div>

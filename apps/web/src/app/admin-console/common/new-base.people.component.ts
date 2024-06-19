@@ -34,6 +34,7 @@ const MaxCheckedCount = 500;
  * Returns true if the user matches the status, or if there is no status filter set (null)
  */
 function statusFilter(user: UserViewTypes, status: StatusType) {
+  // TODO: All should not include Revoked - confirm. Also confirm whether search clears the status toggles?
   return status == null || user.status === status;
 }
 
@@ -64,50 +65,19 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
   @ViewChild("confirmTemplate", { read: ViewContainerRef, static: true })
   confirmModalRef: ViewContainerRef;
 
-  get allCount() {
-    return this.activeUsers != null ? this.activeUsers.length : 0;
-  }
-
-  get invitedCount() {
-    return this.statusMap.has(this.userStatusType.Invited)
-      ? this.statusMap.get(this.userStatusType.Invited).length
-      : 0;
-  }
-
-  get acceptedCount() {
-    return this.statusMap.has(this.userStatusType.Accepted)
-      ? this.statusMap.get(this.userStatusType.Accepted).length
-      : 0;
-  }
-
-  get confirmedCount() {
-    return this.statusMap.has(this.userStatusType.Confirmed)
-      ? this.statusMap.get(this.userStatusType.Confirmed).length
-      : 0;
-  }
-
-  get revokedCount() {
-    return this.statusMap.has(this.userStatusType.Revoked)
-      ? this.statusMap.get(this.userStatusType.Revoked).length
-      : 0;
-  }
-
   /**
    * Shows a banner alerting the admin that users need to be confirmed.
    */
   get showConfirmUsers(): boolean {
-    return (
-      this.activeUsers != null &&
-      this.statusMap != null &&
-      this.activeUsers.length > 1 &&
-      this.confirmedCount > 0 &&
-      this.confirmedCount < 3 &&
-      this.acceptedCount > 0
-    );
+    const activeCount = this.getStatusCount(null);
+    const confirmedCount = this.getStatusCount(this.userStatusType.Confirmed);
+    const acceptedCount = this.getStatusCount(this.userStatusType.Accepted);
+
+    return activeCount > 1 && confirmedCount > 0 && confirmedCount < 3 && acceptedCount > 0;
   }
 
   get showBulkConfirmUsers(): boolean {
-    return this.acceptedCount > 0;
+    return this.getStatusCount(this.userStatusType.Accepted) > 0;
   }
 
   abstract userType: typeof OrganizationUserType | typeof ProviderUserType;
@@ -118,12 +88,6 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
   firstLoaded: boolean;
 
   /**
-   * A hashmap that groups users by their status (invited/accepted/etc). This is used by the toggles to show
-   * user counts and filter data by user status.
-   */
-  statusMap = new Map<StatusType, UserView[]>();
-
-  /**
    * The currently selected status filter, or null to show all active users.
    */
   status: StatusType | null;
@@ -132,11 +96,6 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
    * The currently executing promise - used to avoid multiple user actions executing at once.
    */
   actionPromise: Promise<void>;
-
-  /**
-   * Active users only, that is, users that are not in the revoked status.
-   */
-  protected activeUsers: UserView[] = [];
 
   protected searchControl = new FormControl("", { nonNullable: true });
   protected statusToggle = new BehaviorSubject<StatusType | null>(null);
@@ -181,6 +140,14 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
     }
 
     this.firstLoaded = true;
+  }
+
+  getStatusCount(status: StatusType | null) {
+    if (status == null) {
+      return this.dataSource.data.filter((u) => u.status != this.userStatusType.Revoked).length;
+    }
+
+    return this.dataSource.data.filter((u) => u.status === status).length;
   }
 
   checkUser(user: UserView, select?: boolean) {
@@ -302,20 +269,11 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
   }
 
   async confirm(user: UserView) {
-    function updateUser(self: NewBasePeopleComponent<UserView>) {
-      user.status = self.userStatusType.Confirmed;
-      const mapIndex = self.statusMap.get(self.userStatusType.Accepted).indexOf(user);
-      if (mapIndex > -1) {
-        self.statusMap.get(self.userStatusType.Accepted).splice(mapIndex, 1);
-        self.statusMap.get(self.userStatusType.Confirmed).push(user);
-      }
-    }
-
     const confirmUser = async (publicKey: Uint8Array) => {
       try {
         this.actionPromise = this.confirmUser(user, publicKey);
         await this.actionPromise;
-        updateUser(this);
+        user.status = this.userStatusType.Confirmed;
         this.toastService.showToast({
           variant: "success",
           title: null,
