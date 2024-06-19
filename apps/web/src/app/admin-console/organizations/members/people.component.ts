@@ -282,6 +282,44 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     );
   }
 
+  async revoke(user: OrganizationUserView) {
+    const confirmed = await this.revokeUserConfirmationDialog(user);
+
+    if (!confirmed) {
+      return false;
+    }
+
+    this.actionPromise = this.revokeUser(user.id);
+    try {
+      await this.actionPromise;
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("revokedUserId", this.userNamePipe.transform(user)),
+      });
+      await this.load();
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+    this.actionPromise = null;
+  }
+
+  async restore(user: OrganizationUserView) {
+    this.actionPromise = this.restoreUser(user.id);
+    try {
+      await this.actionPromise;
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("restoredUserId", this.userNamePipe.transform(user)),
+      });
+      await this.load();
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+    this.actionPromise = null;
+  }
+
   allowResetPassword(orgUser: OrganizationUserView): boolean {
     // Hierarchy check
     let callingUserHasPermission = false;

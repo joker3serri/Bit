@@ -96,8 +96,6 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
   abstract edit(user: UserView): void;
   abstract getUsers(): Promise<ListResponse<UserView> | UserView[]>;
   abstract deleteUser(id: string): Promise<void>;
-  abstract revokeUser(id: string): Promise<void>;
-  abstract restoreUser(id: string): Promise<void>;
   abstract reinviteUser(id: string): Promise<void>;
   abstract confirmUser(user: UserView, publicKey: Uint8Array): Promise<void>;
 
@@ -169,53 +167,6 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
         message: this.i18nService.t("removedUserId", this.userNamePipe.transform(user)),
       });
       this.removeUser(user);
-    } catch (e) {
-      this.validationService.showError(e);
-    }
-    this.actionPromise = null;
-  }
-
-  protected async revokeUserConfirmationDialog(user: UserView) {
-    return this.dialogService.openSimpleDialog({
-      title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
-      content: this.revokeWarningMessage(),
-      acceptButtonText: { key: "revokeAccess" },
-      type: "warning",
-    });
-  }
-
-  async revoke(user: UserView) {
-    const confirmed = await this.revokeUserConfirmationDialog(user);
-
-    if (!confirmed) {
-      return false;
-    }
-
-    this.actionPromise = this.revokeUser(user.id);
-    try {
-      await this.actionPromise;
-      this.toastService.showToast({
-        variant: "success",
-        title: null,
-        message: this.i18nService.t("revokedUserId", this.userNamePipe.transform(user)),
-      });
-      await this.load();
-    } catch (e) {
-      this.validationService.showError(e);
-    }
-    this.actionPromise = null;
-  }
-
-  async restore(user: UserView) {
-    this.actionPromise = this.restoreUser(user.id);
-    try {
-      await this.actionPromise;
-      this.toastService.showToast({
-        variant: "success",
-        title: null,
-        message: this.i18nService.t("restoredUserId", this.userNamePipe.transform(user)),
-      });
-      await this.load();
     } catch (e) {
       this.validationService.showError(e);
     }
