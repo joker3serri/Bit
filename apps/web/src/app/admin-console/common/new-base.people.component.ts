@@ -31,11 +31,14 @@ type UserViewTypes = ProviderUserUserDetailsResponse | OrganizationUserView;
 const MaxCheckedCount = 500;
 
 /**
- * Returns true if the user matches the status, or if there is no status filter set (null)
+ * Returns true if the user matches the status, or if the status is `null`, if the user is active (not revoked).
  */
 function statusFilter(user: UserViewTypes, status: StatusType) {
-  // TODO: All should not include Revoked - confirm. Also confirm whether search clears the status toggles?
-  return status == null || user.status === status;
+  if (status == null) {
+    return user.status != OrganizationUserStatusType.Revoked;
+  }
+
+  return user.status === status;
 }
 
 /**
@@ -144,7 +147,7 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
 
   getStatusCount(status: StatusType | null) {
     if (status == null) {
-      return this.dataSource.data.filter((u) => u.status != this.userStatusType.Revoked).length;
+      return this.dataSource.data.filter((u) => u.status !== this.userStatusType.Revoked).length;
     }
 
     return this.dataSource.data.filter((u) => u.status === status).length;
