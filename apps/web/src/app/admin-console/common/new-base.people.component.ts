@@ -132,7 +132,7 @@ export abstract class NewBasePeopleComponent<UserView extends UserViewTypes> {
     // Load new users from the server
     const response = await this.getUsers();
 
-    // Not sure why this is necessary, I assume different subcomponents supply different types
+    // GetUsers can return a ListResponse or an Array
     if (response instanceof ListResponse) {
       this.dataSource.data = response.data != null && response.data.length > 0 ? response.data : [];
     } else if (Array.isArray(response)) {
