@@ -173,6 +173,10 @@
     "message": "No folder",
     "description": "This is the folder for uncategorized items"
   },
+  "selfOwnershipLabel": {
+    "message": "You",
+    "description": "Used as a label to indicate that the user is the owner of an item."
+  },
   "addFolder": {
     "message": "Add folder"
   },
@@ -400,6 +404,12 @@
   },
   "item": {
     "message": "Item"
+  },
+  "itemDetails": {
+    "message": "Item details"
+  },
+  "itemName": {
+    "message": "Item name"
   },
   "ex": {
     "message": "ex.",
