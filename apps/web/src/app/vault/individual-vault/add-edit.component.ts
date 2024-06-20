@@ -24,7 +24,7 @@ import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 @Component({

@@ -21,7 +21,7 @@ import { MasterKey, UserKey } from "@bitwarden/common/types/key";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { UserKeyRotationService } from "../key-rotation/user-key-rotation.service";
 

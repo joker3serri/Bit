@@ -21,7 +21,7 @@ import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { AddEditComponent as BaseAddEditComponent } from "../individual-vault/add-edit.component";

@@ -18,7 +18,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { OrganizationUserResetPasswordService } from "../services/organization-user-reset-password/organization-user-reset-password.service";
 
