@@ -77,9 +77,8 @@ export class TwoFactorSetupComponent extends BaseTwoFactorSetupComponent {
         }
         const duoComp = TwoFactorDuoComponent.open(this.dialogService, { data: result });
         const response: boolean = await lastValueFrom(duoComp.closed);
-        if (response !== null) {
-          this.updateStatus(response, TwoFactorProviderType.Duo);
-        }
+        this.updateStatus(response, TwoFactorProviderType.Duo);
+
         break;
       }
       default:
