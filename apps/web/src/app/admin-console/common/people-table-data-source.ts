@@ -75,6 +75,10 @@ export abstract class PeopleTableDataSource<T extends UserViewTypes> extends Tab
     return super.data;
   }
 
+  /**
+   * Check or uncheck a user in the table
+   * @param select check the user (true), uncheck the user (false), or toggle the current state (null)
+   */
   checkUser(user: T, select?: boolean) {
     (user as any).checked = select == null ? !(user as any).checked : select;
   }
@@ -83,10 +87,14 @@ export abstract class PeopleTableDataSource<T extends UserViewTypes> extends Tab
     return this.data.filter((u) => (u as any).checked);
   }
 
-  checkAllVisible(select: boolean) {
+  /**
+   * Check all filtered users (i.e. those rows that are currently visible)
+   * @param select check the filtered users (true) or uncheck the filtered users (false)
+   */
+  checkAllFilteredUsers(select: boolean) {
     if (select) {
       // Reset checkbox selection first so we know nothing else is selected
-      this.deselectAll();
+      this.uncheckAllUsers();
     }
 
     const filteredUsers = this.filteredData;
@@ -98,7 +106,7 @@ export abstract class PeopleTableDataSource<T extends UserViewTypes> extends Tab
     }
   }
 
-  deselectAll() {
+  uncheckAllUsers() {
     this.data.forEach((u) => ((u as any).checked = false));
   }
 
@@ -106,13 +114,8 @@ export abstract class PeopleTableDataSource<T extends UserViewTypes> extends Tab
    * Remove a user from the data source. Use this to ensure the table is re-rendered after the change.
    */
   removeUser(user: T) {
-    const index = this.data.indexOf(user);
-    if (index > -1) {
-      // Clone the array so that the setter for dataSource.data is triggered to update the table rendering
-      const updatedData = [...this.data];
-      updatedData.splice(index, 1);
-      this.data = updatedData;
-    }
+    // Note: use immutable functions so that we trigger setters to update the table
+    this.data = this.data.filter((u) => u != user);
   }
 
   /**
@@ -122,7 +125,7 @@ export abstract class PeopleTableDataSource<T extends UserViewTypes> extends Tab
     const index = this.data.findIndex((u) => u.id === user.id);
     if (index > -1) {
       // Clone the array so that the setter for dataSource.data is triggered to update the table rendering
-      const updatedData = [...this.data];
+      const updatedData = this.data.slice();
       updatedData[index] = user;
       this.data = updatedData;
     }

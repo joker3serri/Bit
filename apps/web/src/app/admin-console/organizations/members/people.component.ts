@@ -47,6 +47,7 @@ import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/com
 
 import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
 import { NewBasePeopleComponent } from "../../common/new-base.people.component";
+import { PeopleTableDataSource } from "../../common/people-table-data-source";
 import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 
@@ -61,7 +62,6 @@ import {
   openUserAddEditDialog,
 } from "./components/member-dialog";
 import { ResetPasswordComponent } from "./components/reset-password.component";
-import { PeopleTableDataSource } from "../../common/people-table-data-source";
 
 class MemberTableDataSource extends PeopleTableDataSource<OrganizationUserView> {
   protected statusType = OrganizationUserStatusType;
@@ -609,7 +609,7 @@ export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView
     });
 
     await lastValueFrom(dialogRef.closed);
-    this.dataSource.deselectAll();
+    this.dataSource.uncheckAllUsers();
     await this.load();
   }
 
