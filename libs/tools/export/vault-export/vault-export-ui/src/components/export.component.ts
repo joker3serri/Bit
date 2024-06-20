@@ -1,5 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import { ReactiveFormsModule, UntypedFormBuilder, Validators } from "@angular/forms";
 import { map, merge, Observable, startWith, Subject, takeUntil } from "rxjs";
 
@@ -53,6 +61,26 @@ import { ExportScopeCalloutComponent } from "./export-scope-callout.component";
   ],
 })
 export class ExportComponent implements OnInit, OnDestroy {
+  private _organizationId: string;
+
+  get organizationId(): string {
+    return this._organizationId;
+  }
+
+  /**
+   * Enables the hosting control to pass in an organizationId
+   * If a organizationId is provided, the organization selection is disabled.
+   */
+  @Input() set organizationId(value: string) {
+    this._organizationId = value;
+    this.organizationService
+      .get$(this._organizationId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((organization) => {
+        this._organizationId = organization?.id;
+      });
+  }
+
   /**
    * The hosting control also needs a bitSubmitDirective (on the Submit button) which calls this components {@link submit}-method.
    * This components formState (loading/disabled) is emitted back up to the hosting component so for example the Submit button can be enabled/disabled and show loading state.
@@ -91,7 +119,6 @@ export class ExportComponent implements OnInit, OnDestroy {
   filePasswordValue: string = null;
   private _disabledByPolicy = false;
 
-  protected organizationId: string = null;
   organizations$: Observable<Organization[]>;
 
   protected get disabledByPolicy(): boolean {
