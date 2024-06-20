@@ -32,26 +32,9 @@ export class ChangeKdfComponent implements OnInit {
   protected formGroup = this.formBuilder.group({
     kdf: new FormControl(KdfType.PBKDF2_SHA256, [Validators.required]),
     kdfConfig: this.formBuilder.group({
-      iterations: [
-        this.kdfConfig.iterations,
-        [
-          Validators.required,
-          Validators.min(PBKDF2_ITERATIONS.min),
-          Validators.max(PBKDF2_ITERATIONS.max),
-        ],
-      ],
-      memory: [
-        null as number,
-        [Validators.required, Validators.min(ARGON2_MEMORY.min), Validators.max(ARGON2_MEMORY.max)],
-      ],
-      parallelism: [
-        null as number,
-        [
-          Validators.required,
-          Validators.min(ARGON2_PARALLELISM.min),
-          Validators.max(ARGON2_PARALLELISM.max),
-        ],
-      ],
+      iterations: [this.kdfConfig.iterations],
+      memory: [null as number],
+      parallelism: [null as number],
     }),
   });
 
@@ -74,7 +57,7 @@ export class ChangeKdfComponent implements OnInit {
 
   async ngOnInit() {
     this.kdfConfig = await this.kdfConfigService.getKdfConfig();
-    this.formGroup.get("kdf").setValue(this.kdfConfig.kdfType, { emitEvent: false });
+    this.formGroup.get("kdf").setValue(this.kdfConfig.kdfType);
     this.setFormControlValues(this.kdfConfig);
 
     this.formGroup
