@@ -32,11 +32,11 @@ describe("GeneratorComponent", () => {
       providers: [
         {
           provide: PasswordGenerationServiceAbstraction,
-          useValue: mock<typeof PasswordGenerationServiceAbstraction>(),
+          useValue: mock<PasswordGenerationServiceAbstraction>(),
         },
         {
           provide: UsernameGenerationServiceAbstraction,
-          useValue: mock<typeof UsernameGenerationServiceAbstraction>(),
+          useValue: mock<UsernameGenerationServiceAbstraction>(),
         },
         {
           provide: PlatformUtilsService,
