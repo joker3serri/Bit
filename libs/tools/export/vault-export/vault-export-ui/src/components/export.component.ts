@@ -146,6 +146,7 @@ export class ExportComponent implements OnInit, OnDestroy {
   ];
 
   private destroy$ = new Subject<void>();
+  private onlyManagedCollections = true;
 
   constructor(
     protected i18nService: I18nService,
@@ -189,6 +190,8 @@ export class ExportComponent implements OnInit, OnDestroy {
       );
       this.exportForm.controls.vaultSelector.patchValue(this.organizationId);
       this.exportForm.controls.vaultSelector.disable();
+
+      this.onlyManagedCollections = false;
       return;
     }
 
@@ -319,7 +322,7 @@ export class ExportComponent implements OnInit, OnDestroy {
           this.organizationId,
           this.format,
           this.filePassword,
-          true,
+          this.onlyManagedCollections,
         );
   }
 
