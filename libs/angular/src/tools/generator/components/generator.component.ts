@@ -8,7 +8,6 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { EmailForwarderOptions } from "@bitwarden/common/tools/models/domain/email-forwarder-options";
 import { ToastService } from "@bitwarden/components";
 import {
   GeneratorType,
