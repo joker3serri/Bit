@@ -79,7 +79,7 @@ export class Fido2Component implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private browserMessagingApi: ZonedMessageListenerService,
     private passwordRepromptService: PasswordRepromptService,
-    private fido2UserVerificationService: Fido2UserVerificationService,
+    private fido2UserVerificationService: Fido2UserVerificationService
   ) {}
 
   ngOnInit() {
@@ -91,7 +91,7 @@ export class Fido2Component implements OnInit, OnDestroy {
         sessionId: queryParamMap.get("sessionId"),
         senderTabId: queryParamMap.get("senderTabId"),
         senderUrl: queryParamMap.get("senderUrl"),
-      })),
+      }))
     );
 
     combineLatest([
@@ -125,7 +125,7 @@ export class Fido2Component implements OnInit, OnDestroy {
           return message;
         }),
         filter((message) => !!message),
-        takeUntil(this.destroy$),
+        takeUntil(this.destroy$)
       )
       .subscribe((message) => {
         this.message$.next(message);
@@ -137,14 +137,14 @@ export class Fido2Component implements OnInit, OnDestroy {
         switch (message.type) {
           case "ConfirmNewCredentialRequest": {
             const equivalentDomains = await firstValueFrom(
-              this.domainSettingsService.getUrlEquivalentDomains(this.url),
+              this.domainSettingsService.getUrlEquivalentDomains(this.url)
             );
 
             this.ciphers = (await this.cipherService.getAllDecrypted()).filter(
-              (cipher) => cipher.type === CipherType.Login && !cipher.isDeleted,
+              (cipher) => cipher.type === CipherType.Login && !cipher.isDeleted
             );
             this.displayedCiphers = this.ciphers.filter((cipher) =>
-              cipher.login.matchesUri(this.url, equivalentDomains),
+              cipher.login.matchesUri(this.url, equivalentDomains)
             );
 
             if (this.displayedCiphers.length > 0) {
@@ -158,9 +158,9 @@ export class Fido2Component implements OnInit, OnDestroy {
               message.cipherIds.map(async (cipherId) => {
                 const cipher = await this.cipherService.get(cipherId);
                 return cipher.decrypt(
-                  await this.cipherService.getKeyForCipherKeyDecryption(cipher),
+                  await this.cipherService.getKeyForCipherKeyDecryption(cipher)
                 );
-              }),
+              })
             );
             this.displayedCiphers = [...this.ciphers];
             if (this.displayedCiphers.length > 0) {
@@ -174,9 +174,9 @@ export class Fido2Component implements OnInit, OnDestroy {
               message.existingCipherIds.map(async (cipherId) => {
                 const cipher = await this.cipherService.get(cipherId);
                 return cipher.decrypt(
-                  await this.cipherService.getKeyForCipherKeyDecryption(cipher),
+                  await this.cipherService.getKeyForCipherKeyDecryption(cipher)
                 );
-              }),
+              })
             );
             this.displayedCiphers = [...this.ciphers];
 
@@ -198,7 +198,7 @@ export class Fido2Component implements OnInit, OnDestroy {
           fallbackSupported: "fallbackSupported" in message && message.fallbackSupported,
         };
       }),
-      takeUntil(this.destroy$),
+      takeUntil(this.destroy$)
     );
 
     queryParams$.pipe(takeUntil(this.destroy$)).subscribe((queryParams) => {
@@ -256,7 +256,7 @@ export class Fido2Component implements OnInit, OnDestroy {
       const name = data.credentialName || data.rpId;
       // TODO: Revert to check for user verification once user verification for passkeys is approved for production.
       // PM-4577 - https://github.com/bitwarden/clients/pull/8746
-      await this.createNewCipher(name);
+      await this.createNewCipher(name, data.userName);
 
       // We are bypassing user verification pending approval.
       this.send({
@@ -325,14 +325,14 @@ export class Fido2Component implements OnInit, OnDestroy {
       this.displayedCiphers = await this.searchService.searchCiphers(
         this.searchText,
         null,
-        this.ciphers,
+        this.ciphers
       );
     } else {
       const equivalentDomains = await firstValueFrom(
-        this.domainSettingsService.getUrlEquivalentDomains(this.url),
+        this.domainSettingsService.getUrlEquivalentDomains(this.url)
       );
       this.displayedCiphers = this.ciphers.filter((cipher) =>
-        cipher.login.matchesUri(this.url, equivalentDomains),
+        cipher.login.matchesUri(this.url, equivalentDomains)
       );
     }
     this.searchPending = false;
@@ -357,11 +357,13 @@ export class Fido2Component implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private buildCipher(name: string) {
+  private buildCipher(name: string, username: string) {
     this.cipher = new CipherView();
     this.cipher.name = name;
+
     this.cipher.type = CipherType.Login;
     this.cipher.login = new LoginView();
+    this.cipher.login.username = username;
     this.cipher.login.uris = [new LoginUriView()];
     this.cipher.login.uris[0].uri = this.url;
     this.cipher.card = new CardView();
@@ -371,8 +373,8 @@ export class Fido2Component implements OnInit, OnDestroy {
     this.cipher.reprompt = CipherRepromptType.None;
   }
 
-  private async createNewCipher(name: string) {
-    this.buildCipher(name);
+  private async createNewCipher(name: string, username: string) {
+    this.buildCipher(name, username);
     const cipher = await this.cipherService.encrypt(this.cipher);
     try {
       await this.cipherService.createWithServer(cipher);
@@ -385,7 +387,7 @@ export class Fido2Component implements OnInit, OnDestroy {
   // TODO: Remove and use fido2 user verification service once user verification for passkeys is approved for production.
   private async handleUserVerification(
     userVerificationRequested: boolean,
-    cipher: CipherView,
+    cipher: CipherView
   ): Promise<boolean> {
     const masterPasswordRepromptRequired = cipher && cipher.reprompt !== 0;
 
