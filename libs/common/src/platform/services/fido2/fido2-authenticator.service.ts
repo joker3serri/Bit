@@ -111,7 +111,7 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       let pubKeyDer: ArrayBuffer;
       const response = await userInterfaceSession.confirmNewCredential({
         credentialName: params.rpEntity.name,
-        userName: params.userEntity.displayName,
+        userName: params.userEntity.name,
         userVerification: params.requireUserVerification,
         rpId: params.rpEntity.id,
       });
