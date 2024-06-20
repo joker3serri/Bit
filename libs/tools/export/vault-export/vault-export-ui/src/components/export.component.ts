@@ -240,6 +240,11 @@ export class ExportComponent implements OnInit, OnDestroy {
     try {
       const data = await this.getExportData();
       this.downloadFile(data);
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("exportSuccess"),
+      });
       this.onSuccessfulExport.emit(this.organizationId);
       await this.collectEvent();
       this.exportForm.get("secret").setValue("");
