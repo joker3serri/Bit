@@ -4,7 +4,10 @@ import { Router, RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { ButtonModule, NoItemsModule, MenuModule } from "@bitwarden/components";
+import { ButtonModule, MenuModule, NoItemsModule } from "@bitwarden/components";
+
+import { VaultPopupListFiltersService } from "../../../services/vault-popup-list-filters.service";
+import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
 
 @Component({
   selector: "app-new-item-dropdown",
@@ -15,14 +18,27 @@ import { ButtonModule, NoItemsModule, MenuModule } from "@bitwarden/components";
 export class NewItemDropdownV2Component implements OnInit, OnDestroy {
   cipherType = CipherType;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private vaultPopupListFilterService: VaultPopupListFiltersService,
+  ) {}
 
   ngOnInit(): void {}
 
   ngOnDestroy(): void {}
 
-  // TODO PM-6826: add selectedVault query param
+  private buildQueryParams(type: CipherType): AddEditQueryParams {
+    const filterValue = this.vaultPopupListFilterService.filterForm.value;
+
+    return {
+      type: type.toString(),
+      collectionId: filterValue.collection?.id,
+      organizationId: filterValue.organization?.id || filterValue.collection?.organizationId,
+      folderId: filterValue.folder?.id,
+    };
+  }
+
   newItemNavigate(type: CipherType) {
-    void this.router.navigate(["/add-cipher"], { queryParams: { type: type, isNew: true } });
+    void this.router.navigate(["/add-cipher"], { queryParams: this.buildQueryParams(type) });
   }
 }
