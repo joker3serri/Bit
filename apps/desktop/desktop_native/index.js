@@ -165,11 +165,11 @@ switch (platform) {
         break
       case 'arm64':
         localFileExisted = existsSync(
-          join(__dirname, 'desktop_native.linux-arm64-musl.node')
+          join(__dirname, 'desktop_native.linux-arm64-gnu.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./desktop_native.linux-arm64-musl.node')
+            nativeBinding = require('./desktop_native.linux-arm64-gnu.node')
           } else {
             nativeBinding = require('@bitwarden/desktop-native-linux-arm64-musl')
           }
