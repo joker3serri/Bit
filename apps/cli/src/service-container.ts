@@ -123,9 +123,9 @@ import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import {
-  legacyPassword,
+  createPasswordGenerationService,
   PasswordGenerationServiceAbstraction,
-} from "@bitwarden/generator-extensions";
+} from "@bitwarden/generator-legacy";
 import {
   ImportApiService,
   ImportApiServiceAbstraction,
@@ -506,7 +506,7 @@ export class ServiceContainer {
 
     this.passwordStrengthService = new PasswordStrengthService();
 
-    this.passwordGenerationService = legacyPassword.createPasswordGenerationService(
+    this.passwordGenerationService = createPasswordGenerationService(
       this.encryptService,
       this.cryptoService,
       this.policyService,

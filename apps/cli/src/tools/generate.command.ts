@@ -3,10 +3,7 @@ import {
   DefaultPasswordGenerationOptions,
   DefaultPassphraseGenerationOptions,
 } from "@bitwarden/generator-core";
-import {
-  legacyPassword,
-  PasswordGenerationServiceAbstraction,
-} from "@bitwarden/generator-extensions";
+import { legacyPassword, PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { Response } from "../models/response";
 import { StringResponse } from "../models/response/string.response";
