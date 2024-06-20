@@ -174,11 +174,11 @@ import { FolderService } from "@bitwarden/common/vault/services/folder/folder.se
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
 import {
-  legacyPassword,
+  legacyPasswordGenerationServiceFactory,
   PasswordGenerationServiceAbstraction,
-  legacyUsername,
+  legacyUsernameGenerationServiceFactory,
   UsernameGenerationServiceAbstraction,
-} from "@bitwarden/generator-extensions";
+} from "@bitwarden/generator-legacy";
 import {
   ImportApiService,
   ImportApiServiceAbstraction,
@@ -658,7 +658,7 @@ export default class MainBackground {
 
     this.passwordStrengthService = new PasswordStrengthService();
 
-    this.passwordGenerationService = legacyPassword.legacyPasswordGenerationServiceFactory(
+    this.passwordGenerationService = legacyPasswordGenerationServiceFactory(
       this.encryptService,
       this.cryptoService,
       this.policyService,
@@ -1108,7 +1108,7 @@ export default class MainBackground {
       this.vaultTimeoutSettingsService,
     );
 
-    this.usernameGenerationService = legacyUsername.legacyUsernameGenerationServiceFactory(
+    this.usernameGenerationService = legacyUsernameGenerationServiceFactory(
       this.apiService,
       this.i18nService,
       this.cryptoService,
