@@ -310,6 +310,7 @@ export class Fido2Component implements OnInit, OnDestroy {
         name: data.credentialName || data.rpId,
         uri: this.url,
         uilocation: "popout",
+        username: data.userName,
         senderTabId: this.senderTabId,
         sessionId: this.sessionId,
         userVerification: data.userVerification,

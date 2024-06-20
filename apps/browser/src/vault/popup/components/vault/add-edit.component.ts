@@ -127,6 +127,10 @@ export class AddEditComponent extends BaseAddEditComponent {
 
       await this.load();
 
+      if (params.username) {
+        this.cipher.login.username = params.username;
+      }
+
       if (!this.editMode || this.cloneMode) {
         if (params.name && (this.cipher.name == null || this.cipher.name === "")) {
           this.cipher.name = params.name;
