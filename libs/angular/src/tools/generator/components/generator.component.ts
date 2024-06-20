@@ -8,19 +8,18 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { EmailForwarderOptions } from "@bitwarden/common/tools/models/domain/email-forwarder-options";
+import { ToastService } from "@bitwarden/components";
 import {
   GeneratorType,
   DefaultPasswordBoundaries as DefaultBoundaries,
 } from "@bitwarden/generator-core";
 import {
-  legacyPassword,
   PasswordGenerationServiceAbstraction,
-  legacyUsername,
   UsernameGenerationServiceAbstraction,
-} from "@bitwarden/generator-extensions";
-
-type PasswordGeneratorOptions = legacyPassword.PasswordGeneratorOptions;
-type UsernameGeneratorOptions = legacyUsername.UsernameGeneratorOptions;
+  UsernameGeneratorOptions,
+  PasswordGeneratorOptions,
+} from "@bitwarden/generator-legacy";
 
 export class EmailForwarderOptions {
   name: string;
@@ -75,6 +74,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     protected route: ActivatedRoute,
     protected ngZone: NgZone,
     private win: Window,
+    protected toastService: ToastService,
   ) {
     this.typeOptions = [
       { name: i18nService.t("password"), value: "password" },
@@ -325,11 +325,14 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       password ? this.password : this.username,
       copyOptions,
     );
-    this.platformUtilsService.showToast(
-      "info",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t(password ? "password" : "username")),
-    );
+    this.toastService.showToast({
+      variant: "info",
+      title: null,
+      message: this.i18nService.t(
+        "valueCopied",
+        this.i18nService.t(password ? "password" : "username"),
+      ),
+    });
   }
 
   select() {

@@ -16,7 +16,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { PasswordColorText } from "../../tools/password-strength/password-strength.component";
 

@@ -18,7 +18,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { DEFAULT_KDF_CONFIG } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import {
   AllValidationErrors,
