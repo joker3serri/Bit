@@ -59,7 +59,7 @@ import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-extensions";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { PinServiceAbstraction } from "../../../../../libs/auth/src/common/abstractions";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";

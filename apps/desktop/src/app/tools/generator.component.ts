@@ -6,10 +6,11 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ToastService } from "@bitwarden/components";
 import {
   PasswordGenerationServiceAbstraction,
   UsernameGenerationServiceAbstraction,
-} from "@bitwarden/generator-extensions";
+} from "@bitwarden/generator-legacy";
 
 @Component({
   selector: "app-generator",
@@ -25,6 +26,7 @@ export class GeneratorComponent extends BaseGeneratorComponent {
     route: ActivatedRoute,
     ngZone: NgZone,
     logService: LogService,
+    toastService: ToastService,
   ) {
     super(
       passwordGenerationService,
@@ -36,6 +38,7 @@ export class GeneratorComponent extends BaseGeneratorComponent {
       route,
       ngZone,
       window,
+      toastService,
     );
   }
 

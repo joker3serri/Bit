@@ -9,10 +9,11 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { ToastService } from "@bitwarden/components";
 import {
   PasswordGenerationServiceAbstraction,
   UsernameGenerationServiceAbstraction,
-} from "@bitwarden/generator-extensions";
+} from "@bitwarden/generator-legacy";
 
 import { GeneratorComponent } from "./generator.component";
 
@@ -60,6 +61,10 @@ describe("GeneratorComponent", () => {
         {
           provide: AccountService,
           useValue: mock<AccountService>(),
+        },
+        {
+          provide: ToastService,
+          useValue: mock<ToastService>(),
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
