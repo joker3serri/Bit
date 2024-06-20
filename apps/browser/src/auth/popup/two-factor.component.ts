@@ -1,6 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, Subscription, firstValueFrom } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { filter, first, takeUntil } from "rxjs/operators";
 
 import { TwoFactorComponent as BaseTwoFactorComponent } from "@bitwarden/angular/auth/components/two-factor.component";
@@ -223,17 +223,5 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
           this.submit();
         });
     }
-  }
-
-  override async launchDuoFrameless() {
-    const env = await firstValueFrom(this.environmentService.environment$);
-    const launchUrl =
-      env.getWebVaultUrl() +
-      "/duo-redirect-connector.html" +
-      "?locale=" +
-      encodeURIComponent(this.i18nService.translationLocale) +
-      "&duoFramelessUrl=" +
-      encodeURIComponent(this.duoFramelessUrl);
-    this.platformUtilsService.launchUri(launchUrl);
   }
 }

@@ -149,10 +149,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent implements OnDest
     await this.submit();
   };
 
-  override async launchDuoFrameless() {
-    this.platformUtilsService.launchUri(this.duoFramelessUrl);
-  }
-
   async ngOnDestroy() {
     super.ngOnDestroy();
 
