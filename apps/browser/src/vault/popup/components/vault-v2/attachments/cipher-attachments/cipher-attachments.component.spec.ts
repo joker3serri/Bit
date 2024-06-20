@@ -1,3 +1,4 @@
+import { Component, Input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
@@ -14,6 +15,17 @@ import { ToastService } from "@bitwarden/components";
 
 import { CipherAttachmentsComponent } from "./cipher-attachments.component";
 import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
+import { DownloadAttachmentComponent } from "./download-attachment/download-attachment.component";
+
+@Component({
+  standalone: true,
+  selector: "app-download-attachment",
+  template: "",
+})
+class MockDownloadAttachmentComponent {
+  @Input() attachment: AttachmentView;
+  @Input() cipher: CipherView;
+}
 
 describe("CipherAttachmentsComponent", () => {
   let component: CipherAttachmentsComponent;
@@ -62,7 +74,16 @@ describe("CipherAttachmentsComponent", () => {
         { provide: ConfigService, useValue: mock<ConfigService>() },
         { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(CipherAttachmentsComponent, {
+        remove: {
+          imports: [DownloadAttachmentComponent],
+        },
+        add: {
+          imports: [MockDownloadAttachmentComponent],
+        },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {

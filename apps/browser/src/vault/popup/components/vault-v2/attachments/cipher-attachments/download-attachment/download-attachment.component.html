@@ -1,0 +1,10 @@
+<button
+  bitIconButton="bwi-download"
+  buttonType="main"
+  size="small"
+  type="button"
+  [appA11yTitle]="'downloadAttachmentName' | i18n: attachment.fileName"
+  [title]="'downloadAttachmentName' | i18n: attachment.fileName"
+  [loading]="downloading"
+  (click)="download()"
+></button>

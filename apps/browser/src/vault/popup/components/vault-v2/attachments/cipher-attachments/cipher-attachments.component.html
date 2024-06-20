@@ -9,7 +9,11 @@
           {{ attachment.sizeName }}
         </p>
       </div>
-      <div class="tw-flex tw-items-center">
+      <div class="tw-flex tw-items-center tw-gap-1">
+        <app-download-attachment
+          [cipher]="cipher"
+          [attachment]="attachment"
+        ></app-download-attachment>
         <app-delete-attachment
           [cipherId]="cipher.id"
           [attachment]="attachment"

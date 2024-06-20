@@ -38,6 +38,7 @@ import {
 } from "@bitwarden/components";
 
 import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
+import { DownloadAttachmentComponent } from "./download-attachment/download-attachment.component";
 
 type CipherAttachmentForm = FormGroup<{
   file: FormControl<File | null>;
@@ -56,6 +57,7 @@ type CipherAttachmentForm = FormGroup<{
     TypographyModule,
     CardComponent,
     DeleteAttachmentComponent,
+    DownloadAttachmentComponent,
   ],
 })
 export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
