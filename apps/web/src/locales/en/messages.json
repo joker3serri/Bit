@@ -8423,6 +8423,9 @@
       }
     }
   },
+  "providerReinstate":{
+    "message": " Contact Customer Support to reinstate your subscription."
+  },
   "invoice": {
     "message": "Invoice"
   },
@@ -8445,6 +8448,6 @@
   },
   "uncollectible": {
     "message": "Uncollectible",
-    "description": "The status of an invoice."
+    "description": "The status of an invoice."  
   }
 }
