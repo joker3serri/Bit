@@ -51,6 +51,7 @@ describe("CipherAttachmentsComponent", () => {
   beforeEach(async () => {
     cipherServiceGet.mockClear();
     showToast.mockClear();
+    saveAttachmentWithServer.mockClear().mockResolvedValue(cipherDomain);
 
     await TestBed.configureTestingModule({
       imports: [CipherAttachmentsComponent],
@@ -160,32 +161,51 @@ describe("CipherAttachmentsComponent", () => {
   });
 
   describe("submit", () => {
-    it("shows error toast if no file is selected", async () => {
-      await component.submit();
+    describe("error", () => {
+      it("shows error toast if no file is selected", async () => {
+        await component.submit();
 
-      expect(showToast).toHaveBeenCalledWith({
-        variant: "error",
-        title: "errorOccurred",
-        message: "selectFile",
+        expect(showToast).toHaveBeenCalledWith({
+          variant: "error",
+          title: "errorOccurred",
+          message: "selectFile",
+        });
       });
-    });
 
-    it("shows error toast if file size is greater than 500MB", async () => {
-      component.attachmentForm.controls.file.setValue({
-        size: 524288001,
-      } as File);
+      it("shows error toast if file size is greater than 500MB", async () => {
+        component.attachmentForm.controls.file.setValue({
+          size: 524288001,
+        } as File);
 
-      await component.submit();
+        await component.submit();
 
-      expect(showToast).toHaveBeenCalledWith({
-        variant: "error",
-        title: "errorOccurred",
-        message: "maxFileSize",
+        expect(showToast).toHaveBeenCalledWith({
+          variant: "error",
+          title: "errorOccurred",
+          message: "maxFileSize",
+        });
+      });
+
+      it("shows error toast for free organizations", async () => {
+        component.attachmentForm.controls.file.setValue({ size: 524287999 } as File);
+
+        saveAttachmentWithServer.mockRejectedValue(
+          new Error("This organization cannot use attachments."),
+        );
+
+        await component.submit();
+
+        expect(showToast).toHaveBeenCalledWith({
+          variant: "error",
+          title: null,
+          message: "freeOrgsCannotUseAttachments",
+        });
       });
     });
 
     describe("success", () => {
       const file = { size: 524287999 } as File;
+
       beforeEach(() => {
         component.attachmentForm.controls.file.setValue(file);
       });

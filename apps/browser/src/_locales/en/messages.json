@@ -3514,5 +3514,8 @@
   },
   "premium": {
     "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Free organizations cannot use attachments"
   }
 }
