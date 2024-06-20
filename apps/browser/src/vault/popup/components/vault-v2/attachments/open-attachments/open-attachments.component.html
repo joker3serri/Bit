@@ -1,0 +1,7 @@
+<bit-card>
+  <a class="tw-flex tw-justify-between tw-items-center" (click)="openAttachments()">
+    <p class="tw-m-0" bitTypography="body2">{{ "attachments" | i18n }}</p>
+    <i class="bwi bwi-popout bwi-lg" aria-hidden="true" *ngIf="openAttachmentsInPopout"></i>
+    <i class="bwi bwi-angle-right bwi-lg" aria-hidden="true" *ngIf="!openAttachmentsInPopout"></i>
+  </a>
+</bit-card>
