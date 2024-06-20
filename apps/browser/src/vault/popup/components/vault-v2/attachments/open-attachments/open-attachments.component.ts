@@ -1,9 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CardComponent, TypographyModule } from "@bitwarden/components";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
+import { BadgeModule, CardComponent, TypographyModule } from "@bitwarden/components";
 
 import BrowserPopupUtils from "../../../../../../platform/popup/browser-popup-utils";
 
@@ -11,7 +13,7 @@ import BrowserPopupUtils from "../../../../../../platform/popup/browser-popup-ut
   standalone: true,
   selector: "app-open-attachments",
   templateUrl: "./open-attachments.component.html",
-  imports: [CommonModule, JslibModule, TypographyModule, CardComponent],
+  imports: [BadgeModule, CommonModule, JslibModule, TypographyModule, CardComponent],
 })
 export class OpenAttachmentsComponent {
   /** Cipher `id` */
@@ -20,10 +22,27 @@ export class OpenAttachmentsComponent {
   /** True when the attachments window should be opened in a popout */
   openAttachmentsInPopout = BrowserPopupUtils.inPopup(window);
 
-  constructor(private router: Router) {}
+  /** True when the user has access to premium or h  */
+  canAccessAttachments: boolean;
 
-  /** Routes the user to the attachments screen */
+  constructor(
+    private router: Router,
+    private billingAccountProfileStateService: BillingAccountProfileStateService,
+  ) {
+    this.billingAccountProfileStateService.hasPremiumFromAnySource$
+      .pipe(takeUntilDestroyed())
+      .subscribe((canAccessPremium) => {
+        this.canAccessAttachments = canAccessPremium;
+      });
+  }
+
+  /** Routes the user to the attachments screen, if available */
   async openAttachments() {
+    if (!this.canAccessAttachments) {
+      await this.router.navigate(["/premium"]);
+      return;
+    }
+
     if (this.openAttachmentsInPopout) {
       const destinationUrl = this.router
         .createUrlTree(["/attachments"], { queryParams: { cipherId: this.cipherId } })
