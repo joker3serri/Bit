@@ -1,14 +1,23 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, Location } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Params } from "@angular/router";
+import { map, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { SearchModule, ButtonModule } from "@bitwarden/components";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { AsyncActionsModule, ButtonModule, SearchModule } from "@bitwarden/components";
+import {
+  CipherFormConfig,
+  CipherFormConfigService,
+  CipherFormMode,
+  CipherFormModule,
+  DefaultCipherFormConfigService,
+} from "@bitwarden/vault";
 
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup-header.component";
@@ -70,6 +79,7 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
   selector: "app-add-edit-v2",
   templateUrl: "add-edit-v2.component.html",
   standalone: true,
+  providers: [{ provide: CipherFormConfigService, useClass: DefaultCipherFormConfigService }],
   imports: [
     CommonModule,
     SearchModule,
@@ -79,29 +89,82 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,
+    CipherFormModule,
+    AsyncActionsModule,
   ],
 })
 export class AddEditV2Component {
   headerText: string;
+  config: CipherFormConfig;
+
+  get loading() {
+    return this.config == null;
+  }
 
   constructor(
     private route: ActivatedRoute,
+    private location: Location,
     private i18nService: I18nService,
+    private addEditFormConfigService: CipherFormConfigService,
   ) {
     this.subscribeToParams();
   }
 
-  subscribeToParams(): void {
-    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const isNew = params.isNew.toLowerCase() === "true";
-      const cipherType = parseInt(params.type);
-
-      this.headerText = this.setHeader(isNew, cipherType);
-    });
+  onCipherSaved(savedCipher: CipherView) {
+    this.location.back();
   }
 
-  setHeader(isNew: boolean, type: CipherType) {
-    const partOne = isNew ? "newItemHeader" : "editItemHeader";
+  subscribeToParams(): void {
+    this.route.queryParams
+      .pipe(
+        takeUntilDestroyed(),
+        map((params) => new QueryParams(params)),
+        switchMap(async (params) => {
+          let mode: CipherFormMode;
+          if (params.cipherId == null) {
+            mode = "add";
+          } else {
+            mode = params.clone ? "clone" : "edit";
+          }
+          const config = await this.addEditFormConfigService.buildConfig(
+            mode,
+            params.cipherId,
+            params.type,
+          );
+
+          if (config.mode === "edit" && !config.originalCipher.edit) {
+            config.mode = "partial-edit";
+          }
+
+          this.setInitialValuesFromParams(params, config);
+
+          return config;
+        }),
+      )
+      .subscribe((config) => {
+        this.config = config;
+        this.headerText = this.setHeader(config.mode, config.cipherType);
+      });
+  }
+
+  setInitialValuesFromParams(params: QueryParams, config: CipherFormConfig) {
+    config.initialValues = {};
+    if (params.folderId) {
+      config.initialValues.folderId = params.folderId;
+    }
+    if (params.organizationId) {
+      config.initialValues.organizationId = params.organizationId;
+    }
+    if (params.collectionId) {
+      config.initialValues.collectionIds = [params.collectionId];
+    }
+    if (params.uri) {
+      config.initialValues.loginUri = params.uri;
+    }
+  }
+
+  setHeader(mode: CipherFormMode, type: CipherType) {
+    const partOne = mode === "edit" || mode === "partial-edit" ? "editItemHeader" : "newItemHeader";
 
     switch (type) {
       case CipherType.Login:
