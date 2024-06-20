@@ -110,7 +110,6 @@ export class ExportComponent implements OnInit, OnDestroy {
   @Output()
   onSuccessfulExport = new EventEmitter<string>();
 
-  @Output() onSaved = new EventEmitter();
   @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
   encryptedExportType = EncryptedExportType;
@@ -238,7 +237,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     try {
       const data = await this.getExportData();
       this.downloadFile(data);
-      this.saved();
+      this.onSuccessfulExport.emit(this.organizationId);
       await this.collectEvent();
       this.exportForm.get("secret").setValue("");
       this.exportForm.clearValidators();
@@ -278,11 +277,6 @@ export class ExportComponent implements OnInit, OnDestroy {
 
     await this.doExport();
   };
-
-  protected saved() {
-    this.onSaved.emit();
-    this.onSuccessfulExport.emit(this.organizationId);
-  }
 
   private async verifyUser(): Promise<boolean> {
     let confirmDescription = "exportWarningDesc";
