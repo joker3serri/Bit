@@ -122,6 +122,7 @@ jobs:
       - name: Environment Protection
         env:
           BUILD_WEB_RUN_ID: ${{ inputs.build-web-run-id }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           BRANCH_OR_TAG_LOWER=""
           if [[ "$BUILD_WEB_RUN_ID" == "" ]]; then
