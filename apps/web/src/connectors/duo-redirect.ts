@@ -4,8 +4,6 @@ import { TranslationService } from "./translation.service";
 require("./duo-redirect.scss");
 
 const mobileDesktopCallback = "bitwarden://duo-callback";
-
-let locale: string = null;
 let localeService: TranslationService = null;
 
 window.addEventListener("load", async () => {
@@ -19,9 +17,8 @@ window.addEventListener("load", async () => {
   const client = getQsParam("client");
   const code = getQsParam("code");
   const state = getQsParam("state");
-  locale = getQsParam("locale") ?? "en";
 
-  localeService = new TranslationService(locale, "locales");
+  localeService = new TranslationService(navigator.language, "locales");
   await localeService.init();
 
   if (client === "web") {
@@ -30,13 +27,13 @@ window.addEventListener("load", async () => {
     channel.postMessage({ code: code, state: state });
     channel.close();
 
-    processAndDisplayHandoffMessage(client);
+    displayHandoffMessage(client);
   } else if (client === "browser") {
     window.postMessage({ command: "duoResult", code: code, state: state }, "*");
-    processAndDisplayHandoffMessage(client);
+    displayHandoffMessage(client);
   } else if (client === "mobile" || client === "desktop") {
     if (client === "desktop") {
-      processAndDisplayHandoffMessage(client);
+      displayHandoffMessage(client);
     }
     document.location.replace(
       mobileDesktopCallback +
@@ -80,7 +77,7 @@ function redirectToDuoFrameless(redirectUrl: string) {
  * Note: browsers won't let javascript close a tab that wasn't opened by javascript,
  * so some clients may not be able to take advantage of the countdown timer/close button.
  */
-function processAndDisplayHandoffMessage(client: string) {
+function displayHandoffMessage(client: string) {
   const content = document.getElementById("content");
   content.className = "text-center";
   content.innerHTML = "";
