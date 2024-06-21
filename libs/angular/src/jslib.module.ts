@@ -17,6 +17,7 @@ import {
   DialogModule,
   FormFieldModule,
   IconButtonModule,
+  IconModule,
   MenuModule,
   RadioButtonModule,
   SelectModule,
@@ -74,6 +75,7 @@ import { IconComponent } from "./vault/components/icon.component";
     TableModule,
     MenuModule,
     IconButtonModule,
+    IconModule,
   ],
   declarations: [
     A11yInvalidDirective,
