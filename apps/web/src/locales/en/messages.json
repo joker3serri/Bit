@@ -977,7 +977,7 @@
     "message": "Passkey"
   },
   "webAuthnDesc": {
-    "message": "Use your device's biometrics or a FIDO2 security key."
+    "message": "Use your device's biometrics or a FIDO2 compatible security key."
   },
   "webAuthnMigrated": {
     "message": "(Migrated from FIDO)"
