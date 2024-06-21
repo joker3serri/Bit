@@ -60,22 +60,8 @@ function redirectToDuoFrameless(redirectUrl: string) {
 }
 
 /**
- * The `title`, `message`, and `buttonText` properties will be used to create the
- * relevant DOM elements.
- *
- * Countdown timer:
- * The `isCountdown` signifies that you want to start a countdown timer that will
- * automatically close the tab when finished. The starting point for the timer will
- * be based upon the first number that can be parsed from the `message` property
- * (so be sure to add exactly one number to the `message`).
- *
- * If `isCountdown` is undefined/false, there will be no countdown timer and the user
- * will simply have to close the tab manually.
- *
- * If `buttonText` is undefined, there will be no close button.
- *
- * Note: browsers won't let javascript close a tab that wasn't opened by javascript,
- * so some clients may not be able to take advantage of the countdown timer/close button.
+ * Note: browsers won't let javascript close a tab (button or otherwise) that wasn't opened by javascript,
+ * so browser, desktop, and mobile are not able to take advantage of the countdown timer or close button.
  */
 function displayHandoffMessage(client: string) {
   const content = document.getElementById("content");
