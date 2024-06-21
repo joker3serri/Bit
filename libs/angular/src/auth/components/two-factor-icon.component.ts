@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: "bw-two-factor-icon",
+  selector: "auth-two-factor-icon",
   templateUrl: "./two-factor-icon.component.html",
 })
 export class TwoFactorIconComponent {
