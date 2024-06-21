@@ -745,7 +745,6 @@ export default class MainBackground {
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
 
     this.userVerificationService = new UserVerificationService(
-      this.stateService,
       this.cryptoService,
       this.accountService,
       this.masterPasswordService,
@@ -890,6 +889,7 @@ export default class MainBackground {
       this.scriptInjectorService,
       this.accountService,
       this.authService,
+      messageListener,
     );
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
@@ -938,7 +938,6 @@ export default class MainBackground {
       logoutCallback,
       this.stateService,
       this.authService,
-      this.authRequestService,
       this.messagingService,
     );
 
