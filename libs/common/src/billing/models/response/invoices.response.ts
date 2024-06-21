@@ -19,7 +19,6 @@ export class InvoiceResponse extends BaseResponse {
   total: number;
   status: string;
   url: string;
-  pdfUrl: string;
 
   constructor(response: any) {
     super(response);
@@ -29,6 +28,5 @@ export class InvoiceResponse extends BaseResponse {
     this.total = this.getResponseProperty("Total");
     this.status = this.getResponseProperty("Status");
     this.url = this.getResponseProperty("Url");
-    this.pdfUrl = this.getResponseProperty("PdfUrl");
   }
 }
