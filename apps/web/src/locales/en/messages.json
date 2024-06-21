@@ -1662,7 +1662,7 @@
   "key": {
     "message": "Key"
   },
-  "twoStepAuthenticatorEnterCode V2": {
+  "twoStepAuthenticatorEnterCodeV2": {
     "message": "Verification code"
   },
   "twoStepAuthenticatorReaddDesc": {
