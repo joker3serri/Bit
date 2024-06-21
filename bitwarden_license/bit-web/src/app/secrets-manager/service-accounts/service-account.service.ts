@@ -27,6 +27,7 @@ export class ServiceAccountService {
   protected _serviceAccount: Subject<ServiceAccountView> = new Subject();
 
   serviceAccount$ = this._serviceAccount.asObservable();
+  const test = "test";
 
   constructor(
     private cryptoService: CryptoService,
