@@ -127,10 +127,8 @@ jobs:
           BRANCH_OR_TAG_LOWER=""
           if [[ "$BUILD_WEB_RUN_ID" == "" ]]; then
             BRANCH_OR_TAG_LOWER=$(echo ${{ inputs.branch-or-tag }} | awk '{print tolower($0)}')
-            echo ">>>>>>>>Block 1"
           else
             BRANCH_OR_TAG_LOWER=$(gh api /repos/bitwarden/clients/actions/runs/$BUILD_WEB_RUN_ID/artifacts --jq '.artifacts[0].workflow_run.head_branch' | awk '{print tolower($0)}')
-            echo "Block 2>>>>>>>>>"
           fi
 
           echo "Branch/Tag: $BRANCH_OR_TAG_LOWER"
