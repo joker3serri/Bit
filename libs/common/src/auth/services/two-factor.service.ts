@@ -97,14 +97,14 @@ export class TwoFactorService implements TwoFactorServiceAbstraction {
 
   init() {
     TwoFactorProviders[TwoFactorProviderType.Email].name = this.i18nService.t("emailTitle");
-    TwoFactorProviders[TwoFactorProviderType.Email].description = this.i18nService.t("emailDesc");
+    TwoFactorProviders[TwoFactorProviderType.Email].description = this.i18nService.t("emailDescV2");
 
     TwoFactorProviders[TwoFactorProviderType.Authenticator].name =
       this.i18nService.t("authenticatorAppTitle");
     TwoFactorProviders[TwoFactorProviderType.Authenticator].description =
-      this.i18nService.t("authenticatorAppDesc");
+      this.i18nService.t("authenticatorAppDescV2");
 
-    TwoFactorProviders[TwoFactorProviderType.Duo].description = this.i18nService.t("duoDesc");
+    TwoFactorProviders[TwoFactorProviderType.Duo].description = this.i18nService.t("duoDescV2");
 
     TwoFactorProviders[TwoFactorProviderType.OrganizationDuo].name =
       "Duo (" + this.i18nService.t("organization") + ")";
@@ -115,7 +115,7 @@ export class TwoFactorService implements TwoFactorServiceAbstraction {
     TwoFactorProviders[TwoFactorProviderType.WebAuthn].description =
       this.i18nService.t("webAuthnDesc");
 
-    TwoFactorProviders[TwoFactorProviderType.Yubikey].name = this.i18nService.t("yubiKeyTitle");
+    TwoFactorProviders[TwoFactorProviderType.Yubikey].name = this.i18nService.t("yubiKeyTitleV2");
     TwoFactorProviders[TwoFactorProviderType.Yubikey].description =
       this.i18nService.t("yubiKeyDesc");
   }

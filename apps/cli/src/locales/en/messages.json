@@ -5,7 +5,7 @@
   "authenticatorAppTitle": {
     "message": "Authenticator App"
   },
-  "yubiKeyTitle": {
+  "yubiKeyTitleV2": {
     "message": "Yubico OTP Security Key"
   },
   "emailTitle": {
