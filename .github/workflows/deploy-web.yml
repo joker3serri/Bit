@@ -149,7 +149,7 @@ jobs:
               ! "$BRANCH_OR_TAG_LOWER" =~ ^($QA_ALLOWED_TAGS_PATTERN).* \
           ]] || [[ \
               ${{ inputs.environment }} =~ \.*($DEV_ENV_PATTERN)\.* && \
-              ! "$BRANCH_OR_TAG_LOWER" =~ ^($DEV_ALLOWED_TAGS_PATTERN).* \
+              $BRANCH_OR_TAG_LOWER != $DEV_ALLOWED_TAGS_PATTERN \
           ]]; then
               echo "!Deployment blocked!"
               echo "Attempting to deploy a tag that is not allowed in ${{ inputs.environment }} environment"
