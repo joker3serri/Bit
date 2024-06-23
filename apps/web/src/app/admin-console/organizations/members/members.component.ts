@@ -45,11 +45,11 @@ import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
 import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
 
-import { openEntityEventsDialog } from "../../../admin-console/organizations/manage/entity-events.component";
 import { NewBasePeopleComponent } from "../../common/new-base.people.component";
 import { PeopleTableDataSource } from "../../common/people-table-data-source";
 import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
+import { openEntityEventsDialog } from "../manage/entity-events.component";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
 import { BulkEnableSecretsManagerDialogComponent } from "./components/bulk/bulk-enable-sm-dialog.component";
@@ -68,10 +68,9 @@ class MemberTableDataSource extends PeopleTableDataSource<OrganizationUserView> 
 }
 
 @Component({
-  selector: "app-org-people",
-  templateUrl: "people.component.html",
+  templateUrl: "members.component.html",
 })
-export class PeopleComponent extends NewBasePeopleComponent<OrganizationUserView> {
+export class MembersComponent extends NewBasePeopleComponent<OrganizationUserView> {
   @ViewChild("resetPasswordTemplate", { read: ViewContainerRef, static: true })
   resetPasswordModalRef: ViewContainerRef;
 
