@@ -63,7 +63,7 @@ import {
 } from "./components/member-dialog";
 import { ResetPasswordComponent } from "./components/reset-password.component";
 
-class MemberTableDataSource extends PeopleTableDataSource<OrganizationUserView> {
+class MembersTableDataSource extends PeopleTableDataSource<OrganizationUserView> {
   protected statusType = OrganizationUserStatusType;
 }
 
@@ -77,7 +77,7 @@ export class MembersComponent extends NewBasePeopleComponent<OrganizationUserVie
   userType = OrganizationUserType;
   userStatusType = OrganizationUserStatusType;
   memberTab = MemberDialogTab;
-  protected dataSource = new MemberTableDataSource();
+  protected dataSource = new MembersTableDataSource();
 
   organization: Organization;
   status: OrganizationUserStatusType = null;
