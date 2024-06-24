@@ -1,13 +1,19 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, MenuModule, NoItemsModule } from "@bitwarden/components";
 
-import { VaultPopupListFiltersService } from "../../../services/vault-popup-list-filters.service";
 import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
+
+export interface NewItemInitialValues {
+  folderId?: string;
+  organizationId?: OrganizationId;
+  collectionId?: CollectionId;
+}
 
 @Component({
   selector: "app-new-item-dropdown",
@@ -15,26 +21,23 @@ import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
   standalone: true,
   imports: [NoItemsModule, JslibModule, CommonModule, ButtonModule, RouterLink, MenuModule],
 })
-export class NewItemDropdownV2Component implements OnInit, OnDestroy {
+export class NewItemDropdownV2Component {
   cipherType = CipherType;
 
-  constructor(
-    private router: Router,
-    private vaultPopupListFilterService: VaultPopupListFiltersService,
-  ) {}
+  /**
+   * Optional initial values to pass to the add cipher form
+   */
+  @Input()
+  initialValues: NewItemInitialValues;
 
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {}
+  constructor(private router: Router) {}
 
   private buildQueryParams(type: CipherType): AddEditQueryParams {
-    const filterValue = this.vaultPopupListFilterService.filterForm.value;
-
     return {
       type: type.toString(),
-      collectionId: filterValue.collection?.id,
-      organizationId: filterValue.organization?.id || filterValue.collection?.organizationId,
-      folderId: filterValue.folder?.id,
+      collectionId: this.initialValues?.collectionId,
+      organizationId: this.initialValues?.organizationId,
+      folderId: this.initialValues?.folderId,
     };
   }
 
