@@ -10,25 +10,40 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
  * @param defaultComponent - The component to be used when the feature flag is off.
  * @param altComponent - The component to be used when the feature flag is on.
  * @param options - The shared route options to apply to both components.
+ * @returns A tuple containing the two routes with conditional logic. This should be unpacked into your existing Routes array.
+ * @example
+ * const routes: Routes = [
+ *   ...conditionalRouteFactory({
+ *      defaultComponent: GroupsComponent,
+ *      altComponent: GroupsNewComponent,
+ *      featureFlag: FeatureFlag.GroupsComponentRefactor,
+ *      routeOptions: {
+ *        path: "groups",
+ *        canActivate: [OrganizationPermissionsGuard],
+ *      },
+ *   }),
+ * ]
  */
-export function conditionalRouteFactory(
-  config: { defaultComponent: Type<any>; altComponent: Type<any>; featureFlag: FeatureFlag },
-  routeOptions: Omit<Route, "component">,
-): Routes {
+export function conditionalRouteFactory(config: {
+  defaultComponent: Type<any>;
+  altComponent: Type<any>;
+  featureFlag: FeatureFlag;
+  routeOptions: Omit<Route, "component">;
+}): Routes {
   const canMatch$ = () =>
     inject(ConfigService)
       .getFeatureFlag$(config.featureFlag)
       .pipe(map((flagValue) => flagValue === true));
 
   const defaultRoute = {
-    ...routeOptions,
+    ...config.routeOptions,
     component: config.defaultComponent,
   };
 
   const altRoute = {
-    ...routeOptions,
+    ...config.routeOptions,
     component: config.altComponent,
-    canMatch: [canMatch$, ...(routeOptions.canMatch ?? [])],
+    canMatch: [canMatch$, ...(config.routeOptions.canMatch ?? [])],
   };
 
   // Return the alternate route first, so it is evaluated first.
