@@ -15,7 +15,7 @@ const PasswordGeneratorStrategy = strategies.PasswordGeneratorStrategy;
 const CryptoServiceRandomizer = engine.CryptoServiceRandomizer;
 const DefaultGeneratorService = services.DefaultGeneratorService;
 
-export function legacyPasswordGenerationServiceFactory(
+export function createPasswordGenerationService(
   encryptService: EncryptService,
   cryptoService: CryptoService,
   policyService: PolicyService,
