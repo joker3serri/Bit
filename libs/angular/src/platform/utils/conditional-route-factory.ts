@@ -6,11 +6,23 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 
 /**
- * Swap between two routes at runtime based on the value of a feature flag. The routes share a common path and configuration.
- * @param defaultComponent - The component to be used when the feature flag is off.
- * @param altComponent - The component to be used when the feature flag is on.
- * @param options - The shared route options to apply to both components.
- * @returns A tuple containing the two routes with conditional logic. This should be unpacked into your existing Routes array.
+ * @param defaultComponent The component to be used when the feature flag is off.
+ * @param altComponent The component to be used when the feature flag is on.
+ * @param featureFlag The feature flag to evaluate
+ * @param routeOptions The shared route options to apply to both components.
+ */
+type ConditionalRouteFactoryConfig = {
+  defaultComponent: Type<any>;
+  altComponent: Type<any>;
+  featureFlag: FeatureFlag;
+  routeOptions: Omit<Route, "component">;
+};
+
+/**
+ * Swap between two routes at runtime based on the value of a feature flag.
+ * The routes share a common path and configuration but load different components.
+ * @param config See {@link ConditionalRouteFactoryConfig}
+ * @returns A tuple containing the conditional configuration for the two routes. This should be unpacked into your existing Routes array.
  * @example
  * const routes: Routes = [
  *   ...conditionalRouteFactory({
@@ -24,12 +36,7 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
  *   }),
  * ]
  */
-export function conditionalRouteFactory(config: {
-  defaultComponent: Type<any>;
-  altComponent: Type<any>;
-  featureFlag: FeatureFlag;
-  routeOptions: Omit<Route, "component">;
-}): Routes {
+export function conditionalRouteFactory(config: ConditionalRouteFactoryConfig): Routes {
   const canMatch$ = () =>
     inject(ConfigService)
       .getFeatureFlag$(config.featureFlag)
