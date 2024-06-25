@@ -39,11 +39,11 @@ export const DEVICE_KEY = new UserKeyDefinition<DeviceKey | null>(
 );
 
 /** Uses disk storage so that the shouldTrustDevice bool can persist across login. */
-export const SHOULD_TRUST_DEVICE = new UserKeyDefinition<boolean>(
+export const SHOULD_TRUST_DEVICE = new UserKeyDefinition<boolean | null>(
   DEVICE_TRUST_DISK_LOCAL,
   "shouldTrustDevice",
   {
-    deserializer: (shouldTrustDevice) => shouldTrustDevice ?? false,
+    deserializer: (shouldTrustDevice) => shouldTrustDevice,
     clearOn: [], // Need to preserve the user setting, so we can't clear it automatically during lock or logout
   },
 );

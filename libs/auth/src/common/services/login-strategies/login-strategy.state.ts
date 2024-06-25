@@ -10,7 +10,7 @@ import { WebAuthnLoginStrategyData } from "../../login-strategies/webauthn-login
 /**
  * The current login strategy in use.
  */
-export const CURRENT_LOGIN_STRATEGY_KEY = new KeyDefinition<AuthenticationType | undefined>(
+export const CURRENT_LOGIN_STRATEGY_KEY = new KeyDefinition<AuthenticationType | null>(
   LOGIN_STRATEGY_MEMORY,
   "currentLoginStrategy",
   {
@@ -36,7 +36,7 @@ export const CACHE_EXPIRATION_KEY = new KeyDefinition<Date | null>(
  * foreground instance to send out the notification.
  * TODO: Move to Auth Request service.
  */
-export const AUTH_REQUEST_PUSH_NOTIFICATION_KEY = new KeyDefinition<string | undefined>(
+export const AUTH_REQUEST_PUSH_NOTIFICATION_KEY = new KeyDefinition<string | null>(
   LOGIN_STRATEGY_MEMORY,
   "authRequestPushNotification",
   {
