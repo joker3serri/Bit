@@ -8,6 +8,16 @@ import {
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
+import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
+import {
+  AnonLayoutWrapperComponent,
+  AnonLayoutWrapperData,
+  RegistrationFinishComponent,
+  RegistrationStartComponent,
+  RegistrationStartSecondaryComponent,
+  RegistrationStartSecondaryComponentData,
+} from "@bitwarden/auth/angular";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { fido2AuthGuard } from "../auth/guards/fido2-auth.guard";
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
@@ -40,7 +50,9 @@ import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-p
 import { AboutPageComponent } from "../tools/popup/settings/about-page/about-page.component";
 import { MoreFromBitwardenPageV2Component } from "../tools/popup/settings/about-page/more-from-bitwarden-page-v2.component";
 import { MoreFromBitwardenPageComponent } from "../tools/popup/settings/about-page/more-from-bitwarden-page.component";
-import { ExportComponent } from "../tools/popup/settings/export.component";
+import { ExportBrowserV2Component } from "../tools/popup/settings/export/export-browser-v2.component";
+import { ExportBrowserComponent } from "../tools/popup/settings/export/export-browser.component";
+import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-browser-v2.component";
 import { ImportBrowserComponent } from "../tools/popup/settings/import/import-browser.component";
 import { SettingsV2Component } from "../tools/popup/settings/settings-v2.component";
 import { SettingsComponent } from "../tools/popup/settings/settings.component";
@@ -55,6 +67,7 @@ import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filt
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
 import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
+import { AddEditV2Component } from "../vault/popup/components/vault-v2/add-edit/add-edit-v2.component";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
@@ -64,7 +77,6 @@ import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.c
 
 import { extensionRefreshRedirect, extensionRefreshSwap } from "./extension-refresh-route-utils";
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
-import { OptionsComponent } from "./settings/options.component";
 import { TabsV2Component } from "./tabs-v2.component";
 import { TabsComponent } from "./tabs.component";
 
@@ -194,20 +206,18 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "cipher-password-history" },
   },
-  {
+  ...extensionRefreshSwap(AddEditComponent, AddEditV2Component, {
     path: "add-cipher",
-    component: AddEditComponent,
     canActivate: [AuthGuard, debounceNavigationGuard()],
     data: { state: "add-cipher" },
     runGuardsAndResolvers: "always",
-  },
-  {
+  }),
+  ...extensionRefreshSwap(AddEditComponent, AddEditV2Component, {
     path: "edit-cipher",
-    component: AddEditComponent,
     canActivate: [AuthGuard, debounceNavigationGuard()],
     data: { state: "edit-cipher" },
     runGuardsAndResolvers: "always",
-  },
+  }),
   {
     path: "share-cipher",
     component: ShareComponent,
@@ -238,18 +248,16 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "generator-history" },
   },
-  {
+  ...extensionRefreshSwap(ImportBrowserComponent, ImportBrowserV2Component, {
     path: "import",
-    component: ImportBrowserComponent,
     canActivate: [AuthGuard],
     data: { state: "import" },
-  },
-  {
+  }),
+  ...extensionRefreshSwap(ExportBrowserComponent, ExportBrowserV2Component, {
     path: "export",
-    component: ExportComponent,
     canActivate: [AuthGuard],
     data: { state: "export" },
-  },
+  }),
   {
     path: "autofill",
     component: AutofillComponent,
@@ -310,12 +318,6 @@ const routes: Routes = [
     data: { state: "premium" },
   },
   {
-    path: "options",
-    component: OptionsComponent,
-    canActivate: [AuthGuard],
-    data: { state: "options" },
-  },
-  {
     path: "appearance",
     component: AppearanceComponent,
     canActivate: [AuthGuard],
@@ -350,6 +352,45 @@ const routes: Routes = [
     component: UpdateTempPasswordComponent,
     canActivate: [AuthGuard],
     data: { state: "update-temp-password" },
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "signup",
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
+        data: { pageTitle: "createAccount" } satisfies AnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: RegistrationStartComponent,
+          },
+          {
+            path: "",
+            component: RegistrationStartSecondaryComponent,
+            outlet: "secondary",
+            data: {
+              loginRoute: "/home",
+            } satisfies RegistrationStartSecondaryComponentData,
+          },
+        ],
+      },
+      {
+        path: "finish-signup",
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
+        data: {
+          pageTitle: "setAStrongPassword",
+          pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
+        } satisfies AnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: RegistrationFinishComponent,
+          },
+        ],
+      },
+    ],
   },
   ...extensionRefreshSwap(AboutPageComponent, AboutPageV2Component, {
     path: "about",
