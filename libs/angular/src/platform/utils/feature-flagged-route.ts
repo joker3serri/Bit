@@ -11,7 +11,7 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
  * @param featureFlag The feature flag to evaluate
  * @param routeOptions The shared route options to apply to both components.
  */
-type ConditionalRouteFactoryConfig = {
+type FeatureFlaggedRouteConfig = {
   defaultComponent: Type<any>;
   flaggedComponent: Type<any>;
   featureFlag: FeatureFlag;
@@ -21,11 +21,11 @@ type ConditionalRouteFactoryConfig = {
 /**
  * Swap between two routes at runtime based on the value of a feature flag.
  * The routes share a common path and configuration but load different components.
- * @param config See {@link ConditionalRouteFactoryConfig}
+ * @param config See {@link FeatureFlaggedRouteConfig}
  * @returns A tuple containing the conditional configuration for the two routes. This should be unpacked into your existing Routes array.
  * @example
  * const routes: Routes = [
- *   ...conditionalRouteFactory({
+ *   ...featureFlaggedRoute({
  *      defaultComponent: GroupsComponent,
  *      flaggedComponent: GroupsNewComponent,
  *      featureFlag: FeatureFlag.GroupsComponentRefactor,
@@ -36,7 +36,7 @@ type ConditionalRouteFactoryConfig = {
  *   }),
  * ]
  */
-export function conditionalRouteFactory(config: ConditionalRouteFactoryConfig): Routes {
+export function featureFlaggedRoute(config: FeatureFlaggedRouteConfig): Routes {
   const canMatch$ = () =>
     inject(ConfigService)
       .getFeatureFlag$(config.featureFlag)
