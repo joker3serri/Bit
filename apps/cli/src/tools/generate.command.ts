@@ -3,13 +3,14 @@ import {
   DefaultPasswordGenerationOptions,
   DefaultPassphraseGenerationOptions,
 } from "@bitwarden/generator-core";
-import { legacyPassword, PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import {
+  PasswordGeneratorOptions,
+  PasswordGenerationServiceAbstraction,
+} from "@bitwarden/generator-legacy";
 
 import { Response } from "../models/response";
 import { StringResponse } from "../models/response/string.response";
 import { CliUtils } from "../utils";
-
-type PasswordGeneratorOptions = legacyPassword.PasswordGeneratorOptions;
 
 export class GenerateCommand {
   constructor(
