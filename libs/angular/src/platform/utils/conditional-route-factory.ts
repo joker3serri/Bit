@@ -7,13 +7,13 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 
 /**
  * @param defaultComponent The component to be used when the feature flag is off.
- * @param altComponent The component to be used when the feature flag is on.
+ * @param flaggedComponent The component to be used when the feature flag is on.
  * @param featureFlag The feature flag to evaluate
  * @param routeOptions The shared route options to apply to both components.
  */
 type ConditionalRouteFactoryConfig = {
   defaultComponent: Type<any>;
-  altComponent: Type<any>;
+  flaggedComponent: Type<any>;
   featureFlag: FeatureFlag;
   routeOptions: Omit<Route, "component">;
 };
@@ -27,7 +27,7 @@ type ConditionalRouteFactoryConfig = {
  * const routes: Routes = [
  *   ...conditionalRouteFactory({
  *      defaultComponent: GroupsComponent,
- *      altComponent: GroupsNewComponent,
+ *      flaggedComponent: GroupsNewComponent,
  *      featureFlag: FeatureFlag.GroupsComponentRefactor,
  *      routeOptions: {
  *        path: "groups",
@@ -49,7 +49,7 @@ export function conditionalRouteFactory(config: ConditionalRouteFactoryConfig): 
 
   const altRoute = {
     ...config.routeOptions,
-    component: config.altComponent,
+    component: config.flaggedComponent,
     canMatch: [canMatch$, ...(config.routeOptions.canMatch ?? [])],
   };
 
