@@ -131,7 +131,7 @@ export class AddEditComponent extends BaseAddEditComponent {
         // Only allow setting username if there's no existing value
         if (
           params.username &&
-          (this.cipher.login.username === null || this.cipher.login.username === "")
+          (this.cipher.login.username == null || this.cipher.login.username === "")
         ) {
           this.cipher.login.username = params.username;
         }
