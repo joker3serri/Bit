@@ -86,6 +86,16 @@ export class CipherView implements View, InitializerMetadata {
     return this.item?.subTitle;
   }
 
+  get subName(): string {
+    if (this.login?.fido2Credentials != null && this.login.fido2Credentials.length > 0) {
+      const fido2Credential = this.login.fido2Credentials[0];
+      if (this.name != fido2Credential.rpId) {
+        return fido2Credential.rpId;
+      }
+    }
+    return null;
+  }
+
   get hasPasswordHistory(): boolean {
     return this.passwordHistory && this.passwordHistory.length > 0;
   }
