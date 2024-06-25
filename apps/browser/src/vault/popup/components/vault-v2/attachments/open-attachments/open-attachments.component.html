@@ -1,5 +1,9 @@
 <bit-card>
-  <button class="tw-w-full tw-flex tw-justify-between tw-items-center" (click)="openAttachments()">
+  <button
+    type="button"
+    class="tw-w-full tw-flex tw-justify-between tw-items-center"
+    (click)="openAttachments()"
+  >
     <p class="tw-m-0" bitTypography="body2">
       {{ "attachments" | i18n }}
       <span *ngIf="!canAccessAttachments" bitBadge variant="success" class="tw-ml-2">
