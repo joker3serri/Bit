@@ -40,7 +40,7 @@
       <h2 bitTypography="h2">{{ "paymentMethod" | i18n }}</h2>
       <p *ngIf="!paymentSource" bitTypography="body1">{{ "noPaymentMethod" | i18n }}</p>
       <ng-container *ngIf="paymentSource">
-        <app-callout
+        <bit-callout
           type="warning"
           title="{{ 'verifyBankAccount' | i18n }}"
           *ngIf="
@@ -71,7 +71,7 @@
               {{ "verifyBankAccount" | i18n }}
             </button>
           </form>
-        </app-callout>
+        </bit-callout>
         <p>
           <i class="bwi bwi-fw" [ngClass]="paymentSourceClasses"></i>
           {{ paymentSource.description }}
