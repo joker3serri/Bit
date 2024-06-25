@@ -22,7 +22,6 @@ import { TwoFactorBaseComponent } from "./two-factor-base.component";
 export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
   @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
   type = TwoFactorProviderType.Duo;
-  formPromise: Promise<TwoFactorDuoResponse>;
   formGroup = this.formBuilder.group({
     ikey: ["", [Validators.required]],
     skey: ["", [Validators.required]],
@@ -50,6 +49,7 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
       dialogService,
     );
   }
+
   get ikey() {
     return this.formGroup.get("ikey").value;
   }
@@ -68,12 +68,10 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
   set host(value: string) {
     this.formGroup.get("host").setValue(value);
   }
+
   async ngOnInit() {
-    await this.auth(this.data);
-  }
-  auth(authResponse: AuthResponse<TwoFactorDuoResponse>) {
-    super.auth(authResponse);
-    this.processResponse(authResponse.response);
+    super.auth(this.data);
+    this.processResponse(this.data.response);
   }
 
   submit = async () => {
@@ -82,16 +80,13 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
       return;
     }
     if (this.enabled) {
-      await this.disableDuo();
+      await this.disableMethod();
       this.onChangeStatus.emit(this.enabled);
     } else {
       await this.enable();
       this.onChangeStatus.emit(this.enabled);
     }
   };
-  private disableDuo() {
-    return super.disable(this.formPromise);
-  }
 
   protected async enable() {
     const request = await this.buildRequestModel(UpdateTwoFactorDuoRequest);
@@ -99,28 +94,29 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
     request.secretKey = this.skey;
     request.host = this.host;
 
-    return super.enable(async () => {
-      if (this.organizationId != null) {
-        this.formPromise = this.apiService.putTwoFactorOrganizationDuo(
-          this.organizationId,
-          request,
-        );
-      } else {
-        this.formPromise = this.apiService.putTwoFactorDuo(request);
-      }
-      const response = await this.formPromise;
-      await this.processResponse(response);
-    });
+    let response: TwoFactorDuoResponse;
+
+    if (this.organizationId != null) {
+      response = await this.apiService.putTwoFactorOrganizationDuo(this.organizationId, request);
+    } else {
+      response = await this.apiService.putTwoFactorDuo(request);
+    }
+
+    this.processResponse(response);
+    this.onUpdated.emit(true);
   }
+
   onClose = () => {
     this.dialogRef.close(this.enabled);
   };
+
   private processResponse(response: TwoFactorDuoResponse) {
     this.ikey = response.integrationKey;
     this.skey = response.secretKey;
     this.host = response.host;
     this.enabled = response.enabled;
   }
+
   /**
    * Strongly typed helper to open a TwoFactorDuoComponentComponent
    * @param dialogService Instance of the dialog service that will be used to open the dialog

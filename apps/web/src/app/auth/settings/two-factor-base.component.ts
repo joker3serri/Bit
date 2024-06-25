@@ -43,8 +43,12 @@ export abstract class TwoFactorBaseComponent {
 
   /** @deprecated used for formPromise flows.*/
   protected async enable(enableFunction: () => Promise<void>) {
-    await enableFunction();
-    this.onUpdated.emit(true);
+    try {
+      await enableFunction();
+      this.onUpdated.emit(true);
+    } catch (e) {
+      this.logService.error(e);
+    }
   }
 
   /**
@@ -62,17 +66,21 @@ export abstract class TwoFactorBaseComponent {
       return;
     }
 
-    const request = await this.buildRequestModel(TwoFactorProviderRequest);
-    request.type = this.type;
-    if (this.organizationId != null) {
-      promise = this.apiService.putTwoFactorOrganizationDisable(this.organizationId, request);
-    } else {
-      promise = this.apiService.putTwoFactorDisable(request);
+    try {
+      const request = await this.buildRequestModel(TwoFactorProviderRequest);
+      request.type = this.type;
+      if (this.organizationId != null) {
+        promise = this.apiService.putTwoFactorOrganizationDisable(this.organizationId, request);
+      } else {
+        promise = this.apiService.putTwoFactorDisable(request);
+      }
+      await promise;
+      this.enabled = false;
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("twoStepDisabled"));
+      this.onUpdated.emit(false);
+    } catch (e) {
+      this.logService.error(e);
     }
-    await promise;
-    this.enabled = false;
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("twoStepDisabled"));
-    this.onUpdated.emit(false);
   }
 
   protected async disableMethod() {
