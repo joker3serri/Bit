@@ -6,7 +6,7 @@
     </span>
     <ng-container bitDialogContent>
       <ng-container *ngIf="!enabled">
-        <img class="float-right mfaType0" alt="Authenticator app logo" />
+        <img class="tw-float-right mfaType0" alt="Authenticator app logo" />
         <p bitTypography="body1">{{ "twoStepAuthenticatorDesc" | i18n }}</p>
         <p bitTypography="body1" class="tw-font-bold">
           1. {{ "twoStepAuthenticatorDownloadApp" | i18n }}
@@ -17,7 +17,7 @@
           <p bitTypography="body1">{{ "twoStepLoginProviderEnabled" | i18n }}</p>
           {{ "twoStepAuthenticatorReaddDesc" | i18n }}
         </bit-callout>
-        <img class="float-right mfaType0" alt="Authenticator app logo" />
+        <img class="tw-float-right mfaType0" alt="Authenticator app logo" />
         <p bitTypography="body1">{{ "twoStepAuthenticatorNeedApp" | i18n }}</p>
       </ng-container>
       <ul class="bwi-ul">
@@ -57,13 +57,15 @@
         2. {{ "twoStepAuthenticatorScanCode" | i18n }}
       </p>
       <hr *ngIf="enabled" />
-      <p class="text-center" [ngClass]="{ 'mb-0': enabled }">
+      <p class="tw-text-center tw-mb-0">
         <canvas id="qr"></canvas><br />
         <code appA11yTitle="{{ 'key' | i18n }}">{{ key }}</code>
       </p>
       <ng-container *ngIf="!enabled">
         <bit-form-field>
-          <bit-label>3. {{ "twoStepAuthenticatorEnterCode" | i18n }}</bit-label>
+          <bit-label class="tw-font-bold"
+            >3. {{ "twoStepAuthenticatorEnterCode" | i18n }}</bit-label
+          >
           <input bitInput type="text" formControlName="token" appInputVerbatim />
         </bit-form-field>
       </ng-container>
