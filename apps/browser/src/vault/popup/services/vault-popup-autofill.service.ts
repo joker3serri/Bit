@@ -229,35 +229,9 @@ export class VaultPopupAutofillService {
       return false;
     }
 
-    if (cipher.login.uris == null) {
-      cipher.login.uris = [];
-    } else if (cipher.login.uris.some((uri) => uri.uri === tab.url)) {
-      // Cipher already has a URI for this tab
-      if (closePopup) {
-        this._closePopup();
-      } else {
-        this.toastService.showToast({
-          variant: "success",
-          title: null,
-          message: this.i18nService.t("autoFillSuccessAndSavedUri"),
-        });
-      }
-      return true;
-    }
+    const didSaveUri = await this._saveNewUri(cipher, tab);
 
-    const loginUri = new LoginUriView();
-    loginUri.uri = tab.url;
-    cipher.login.uris.push(loginUri);
-
-    try {
-      const encCipher = await this.cipherService.encrypt(cipher);
-      await this.cipherService.updateWithServer(encCipher);
-    } catch {
-      this.toastService.showToast({
-        variant: "error",
-        title: null,
-        message: this.i18nService.t("unexpectedError"),
-      });
+    if (!didSaveUri) {
       return false;
     }
 
@@ -270,8 +244,39 @@ export class VaultPopupAutofillService {
         message: this.i18nService.t("autoFillSuccessAndSavedUri"),
       });
     }
-    this.messagingService.send("editedCipher");
 
     return true;
+  }
+
+  /**
+   * Saves the current tab's URL as a new URI for the given cipher. If the cipher already has a URI for the tab,
+   * this method does nothing and returns true.
+   * @private
+   */
+  private async _saveNewUri(cipher: CipherView, tab: chrome.tabs.Tab): Promise<boolean> {
+    cipher.login.uris ??= [];
+
+    if (cipher.login.uris.some((uri) => uri.uri === tab.url)) {
+      // Cipher already has a URI for this tab
+      return true;
+    }
+
+    const loginUri = new LoginUriView();
+    loginUri.uri = tab.url;
+    cipher.login.uris.push(loginUri);
+
+    try {
+      const encCipher = await this.cipherService.encrypt(cipher);
+      await this.cipherService.updateWithServer(encCipher);
+      this.messagingService.send("editedCipher");
+      return true;
+    } catch {
+      this.toastService.showToast({
+        variant: "error",
+        title: null,
+        message: this.i18nService.t("unexpectedError"),
+      });
+      return false;
+    }
   }
 }
