@@ -7,11 +7,12 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { ToastService } from "@bitwarden/components";
+import { ButtonComponent, ToastService } from "@bitwarden/components";
 
 import { CipherAttachmentsComponent } from "./cipher-attachments.component";
 import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
@@ -90,7 +91,8 @@ describe("CipherAttachmentsComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CipherAttachmentsComponent);
     component = fixture.componentInstance;
-    component.cipherId = "5555-444-3333";
+    component.cipherId = "5555-444-3333" as CipherId;
+    component.submitBtn = {} as ButtonComponent;
     fixture.detectChanges();
   });
 
@@ -102,41 +104,43 @@ describe("CipherAttachmentsComponent", () => {
   });
 
   describe("bitSubmit", () => {
-    let formLoadingSpy: jest.SpyInstance;
-    let formDisabledSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      formLoadingSpy = jest.spyOn(component.formLoading, "emit");
-      formDisabledSpy = jest.spyOn(component.formDisabled, "emit");
+      component.submitBtn.disabled = undefined;
+      component.submitBtn.loading = undefined;
     });
 
-    it("emits formLoading when bitSubmit loading changes", () => {
+    it("updates sets initial state of the submit button", async () => {
+      await component.ngOnInit();
+
+      expect(component.submitBtn.disabled).toBe(true);
+    });
+
+    it("sets submitBtn loading state", () => {
       component.bitSubmit.loading = true;
 
-      expect(formLoadingSpy).toHaveBeenCalledWith(true);
+      expect(component.submitBtn.loading).toBe(true);
 
       component.bitSubmit.loading = false;
 
-      expect(formLoadingSpy).toHaveBeenCalledWith(false);
+      expect(component.submitBtn.loading).toBe(false);
     });
 
-    it("emits formDisabled when bitSubmit disabled changes", () => {
+    it("sets submitBtn disabled state", () => {
       component.bitSubmit.disabled = true;
 
-      expect(formDisabledSpy).toHaveBeenCalledWith(true);
+      expect(component.submitBtn.disabled).toBe(true);
 
       component.bitSubmit.disabled = false;
 
-      expect(formDisabledSpy).toHaveBeenCalledWith(false);
+      expect(component.submitBtn.disabled).toBe(false);
     });
   });
 
   describe("attachmentForm", () => {
-    let formStatusChangeSpy: jest.SpyInstance;
     let file: File;
 
     beforeEach(() => {
-      formStatusChangeSpy = jest.spyOn(component.formStatusChange, "emit");
+      component.submitBtn.disabled = undefined;
       file = new File([""], "attachment.txt", { type: "text/plain" });
 
       const inputElement = fixture.debugElement.query(By.css("input[type=file]"));
@@ -155,8 +159,8 @@ describe("CipherAttachmentsComponent", () => {
       expect(component.attachmentForm.controls.file.value.name).toEqual(file.name);
     });
 
-    it("emits formStatusChange when status changes", () => {
-      expect(formStatusChangeSpy).toHaveBeenCalledWith("VALID");
+    it("updates disabled state of submit button", () => {
+      expect(component.submitBtn.disabled).toBe(false);
     });
   });
 

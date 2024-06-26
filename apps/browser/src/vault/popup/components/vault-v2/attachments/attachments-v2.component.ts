@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormControlStatus } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { ButtonModule } from "@bitwarden/components";
 
@@ -32,20 +32,11 @@ import { CipherAttachmentsComponent } from "./cipher-attachments/cipher-attachme
   ],
 })
 export class AttachmentsV2Component {
-  /** The status for the attachment form */
-  protected attachmentFormStatus: FormControlStatus;
-
-  /** Loading state of the attachment form */
-  protected loading = false;
-
-  /** Disabled state of the attachment form */
-  protected disabled = false;
-
   /** The `id` tied to the underlying HTMLFormElement */
   attachmentFormId = CipherAttachmentsComponent.attachmentFormID;
 
   /** Id of the cipher */
-  cipherId: string;
+  cipherId: CipherId;
 
   constructor(
     private router: Router,

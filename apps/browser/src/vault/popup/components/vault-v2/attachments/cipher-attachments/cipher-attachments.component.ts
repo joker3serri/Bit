@@ -15,7 +15,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import {
   FormBuilder,
   FormControl,
-  FormControlStatus,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -24,6 +23,7 @@ import {
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
@@ -31,6 +31,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   AsyncActionsModule,
   BitSubmitDirective,
+  ButtonComponent,
   ButtonModule,
   CardComponent,
   ToastService,
@@ -71,16 +72,10 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
   @ViewChild(BitSubmitDirective) bitSubmit: BitSubmitDirective;
 
   /** The `id` of the cipher in context */
-  @Input({ required: true }) cipherId: string;
+  @Input({ required: true }) cipherId: CipherId;
 
-  /** Emits the status of the attachment form */
-  @Output() formStatusChange = new EventEmitter<FormControlStatus>();
-
-  /** Emits the `BitSubmitDirective` loading state */
-  @Output() formLoading = new EventEmitter<boolean>();
-
-  /** Emits the `BitSubmitDirective` disabled state */
-  @Output() formDisabled = new EventEmitter<boolean>();
+  /** An optional submit button, whose loading/disabled state will be tied to the form state. */
+  @Input() submitBtn?: ButtonComponent;
 
   /** Emits after a file has been successfully uploaded */
   @Output() onUploadSuccess = new EventEmitter<void>();
@@ -102,7 +97,11 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
     private toastService: ToastService,
   ) {
     this.attachmentForm.statusChanges.pipe(takeUntilDestroyed()).subscribe((status) => {
-      this.formStatusChange.emit(status);
+      if (!this.submitBtn) {
+        return;
+      }
+
+      this.submitBtn.disabled = status !== "VALID";
     });
   }
 
@@ -111,15 +110,28 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
     this.cipher = await this.cipherDomain.decrypt(
       await this.cipherService.getKeyForCipherKeyDecryption(this.cipherDomain),
     );
+
+    // Update the initial state of the submit button
+    if (this.submitBtn) {
+      this.submitBtn.disabled = !this.attachmentForm.valid;
+    }
   }
 
   ngAfterViewInit(): void {
     this.bitSubmit.loading$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((loading) => {
-      this.formLoading.emit(loading);
+      if (!this.submitBtn) {
+        return;
+      }
+
+      this.submitBtn.loading = loading;
     });
 
     this.bitSubmit.disabled$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((disabled) => {
-      this.formDisabled.emit(disabled);
+      if (!this.submitBtn) {
+        return;
+      }
+
+      this.submitBtn.disabled = disabled;
     });
   }
 
