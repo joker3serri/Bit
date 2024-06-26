@@ -34,6 +34,7 @@ import {
   ButtonComponent,
   ButtonModule,
   CardComponent,
+  ItemModule,
   ToastService,
   TypographyModule,
 } from "@bitwarden/components";
@@ -53,6 +54,7 @@ type CipherAttachmentForm = FormGroup<{
     AsyncActionsModule,
     ButtonModule,
     CommonModule,
+    ItemModule,
     JslibModule,
     ReactiveFormsModule,
     TypographyModule,
