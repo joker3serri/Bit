@@ -55,7 +55,6 @@ describe("DeleteAttachmentComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DeleteAttachmentComponent);
     component = fixture.componentInstance;
-    component.deleting = false;
     component.cipherId = "5555-444-3333";
     component.attachment = attachment;
     fixture.detectChanges();
@@ -67,17 +66,7 @@ describe("DeleteAttachmentComponent", () => {
     expect(deleteButton.attributes["title"]).toBe("deleteAttachmentName");
   });
 
-  it("stops deletion if already deleting", async () => {
-    component.deleting = true;
-
-    await component.delete();
-
-    expect(deleteAttachmentWithServer).not.toHaveBeenCalled();
-    expect(openSimpleDialog).not.toHaveBeenCalled();
-  });
-
   it("does not delete when the user cancels the dialog", async () => {
-    component.deleting = false;
     openSimpleDialog.mockResolvedValue(false);
 
     await component.delete();
@@ -92,8 +81,6 @@ describe("DeleteAttachmentComponent", () => {
   });
 
   it("deletes the attachment", async () => {
-    component.deleting = false;
-
     await component.delete();
 
     expect(openSimpleDialog).toHaveBeenCalledWith({
@@ -107,8 +94,6 @@ describe("DeleteAttachmentComponent", () => {
   });
 
   it("shows toast message on successful deletion", async () => {
-    component.deleting = false;
-
     await component.delete();
 
     expect(showToast).toHaveBeenCalledWith({

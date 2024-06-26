@@ -94,13 +94,6 @@ describe("DownloadAttachmentComponent", () => {
       Request = MockRequest as any;
     });
 
-    it("does not download if `downloading` is true", async () => {
-      component.downloading = true;
-      await component.download();
-
-      expect(getAttachmentData).not.toHaveBeenCalled();
-    });
-
     it("uses the attachment url when available when getAttachmentData returns a 404", async () => {
       getAttachmentData.mockRejectedValue(new ErrorResponse({}, 404));
 

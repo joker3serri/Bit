@@ -16,13 +16,13 @@ import { OrganizationId } from "@bitwarden/common/types/guid";
 import { OrgKey } from "@bitwarden/common/types/key";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { IconButtonModule, ToastService } from "@bitwarden/components";
+import { AsyncActionsModule, IconButtonModule, ToastService } from "@bitwarden/components";
 
 @Component({
   standalone: true,
   selector: "app-download-attachment",
   templateUrl: "./download-attachment.component.html",
-  imports: [CommonModule, JslibModule, IconButtonModule],
+  imports: [AsyncActionsModule, CommonModule, JslibModule, IconButtonModule],
 })
 export class DownloadAttachmentComponent {
   /** Attachment to download */
@@ -30,9 +30,6 @@ export class DownloadAttachmentComponent {
 
   /** The cipher associated with the attachment */
   @Input({ required: true }) cipher: CipherView;
-
-  /** True when the attachment is being downloaded */
-  downloading = false;
 
   /** The organization key if the cipher is associated with one */
   private orgKey: OrgKey | null = null;
@@ -59,12 +56,9 @@ export class DownloadAttachmentComponent {
   }
 
   /** Download the attachment */
-  async download() {
-    if (this.downloading) {
-      return;
-    }
-
+  download = async () => {
     let url: string;
+
     try {
       const attachmentDownloadResponse = await this.apiService.getAttachmentData(
         this.cipher.id,
@@ -81,7 +75,6 @@ export class DownloadAttachmentComponent {
       }
     }
 
-    this.downloading = true;
     const response = await fetch(new Request(url, { cache: "no-store" }));
     if (response.status !== 200) {
       this.toastService.showToast({
@@ -89,7 +82,6 @@ export class DownloadAttachmentComponent {
         title: null,
         message: this.i18nService.t("errorOccurred"),
       });
-      this.downloading = false;
       return;
     }
 
@@ -108,7 +100,5 @@ export class DownloadAttachmentComponent {
         message: this.i18nService.t("errorOccurred"),
       });
     }
-
-    this.downloading = false;
-  }
+  };
 }
