@@ -52,10 +52,11 @@ export class AttachmentsV2Component {
   async navigateToEditScreen() {
     const cipherDomain = await this.cipherService.get(this.cipherId);
 
-    // `navigateToEditScreen` is called from an event handler and will not be awaited
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate(["/edit-cipher"], {
+    void this.router.navigate(["/edit-cipher"], {
       queryParams: { cipherId: this.cipherId, type: cipherDomain.type },
+      // "replaceUrl" so the /attachments route is not in the history, thus when a back button
+      // is clicked, the user is taken to the view screen instead of the attachments screen
+      replaceUrl: true,
     });
   }
 }

@@ -116,6 +116,7 @@ describe("AttachmentsV2Component", () => {
 
     expect(navigate).toHaveBeenCalledWith(["/edit-cipher"], {
       queryParams: { cipherId: "5555-444-3333", type: CipherType.Login },
+      replaceUrl: true,
     });
   }));
 });
