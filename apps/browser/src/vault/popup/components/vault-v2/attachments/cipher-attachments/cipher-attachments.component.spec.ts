@@ -1,3 +1,4 @@
+import { Component, Input } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
@@ -9,10 +10,23 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { ButtonComponent, ToastService } from "@bitwarden/components";
 
 import { CipherAttachmentsComponent } from "./cipher-attachments.component";
+import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
+import { DownloadAttachmentComponent } from "./download-attachment/download-attachment.component";
+
+@Component({
+  standalone: true,
+  selector: "app-download-attachment",
+  template: "",
+})
+class MockDownloadAttachmentComponent {
+  @Input() attachment: AttachmentView;
+  @Input() cipher: CipherView;
+}
 
 describe("CipherAttachmentsComponent", () => {
   let component: CipherAttachmentsComponent;
@@ -38,6 +52,7 @@ describe("CipherAttachmentsComponent", () => {
   beforeEach(async () => {
     cipherServiceGet.mockClear();
     showToast.mockClear();
+    saveAttachmentWithServer.mockClear().mockResolvedValue(cipherDomain);
 
     await TestBed.configureTestingModule({
       imports: [CipherAttachmentsComponent],
@@ -61,7 +76,16 @@ describe("CipherAttachmentsComponent", () => {
         { provide: ConfigService, useValue: mock<ConfigService>() },
         { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(CipherAttachmentsComponent, {
+        remove: {
+          imports: [DownloadAttachmentComponent],
+        },
+        add: {
+          imports: [MockDownloadAttachmentComponent],
+        },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -141,32 +165,35 @@ describe("CipherAttachmentsComponent", () => {
   });
 
   describe("submit", () => {
-    it("shows error toast if no file is selected", async () => {
-      await component.submit();
+    describe("error", () => {
+      it("shows error toast if no file is selected", async () => {
+        await component.submit();
 
-      expect(showToast).toHaveBeenCalledWith({
-        variant: "error",
-        title: "errorOccurred",
-        message: "selectFile",
+        expect(showToast).toHaveBeenCalledWith({
+          variant: "error",
+          title: "errorOccurred",
+          message: "selectFile",
+        });
       });
-    });
 
-    it("shows error toast if file size is greater than 500MB", async () => {
-      component.attachmentForm.controls.file.setValue({
-        size: 524288001,
-      } as File);
+      it("shows error toast if file size is greater than 500MB", async () => {
+        component.attachmentForm.controls.file.setValue({
+          size: 524288001,
+        } as File);
 
-      await component.submit();
+        await component.submit();
 
-      expect(showToast).toHaveBeenCalledWith({
-        variant: "error",
-        title: "errorOccurred",
-        message: "maxFileSize",
+        expect(showToast).toHaveBeenCalledWith({
+          variant: "error",
+          title: "errorOccurred",
+          message: "maxFileSize",
+        });
       });
     });
 
     describe("success", () => {
       const file = { size: 524287999 } as File;
+
       beforeEach(() => {
         component.attachmentForm.controls.file.setValue(file);
       });
@@ -195,6 +222,34 @@ describe("CipherAttachmentsComponent", () => {
           message: "attachmentSaved",
         });
       });
+
+      it('emits "onUploadSuccess"', async () => {
+        const emitSpy = jest.spyOn(component.onUploadSuccess, "emit");
+
+        await component.submit();
+
+        expect(emitSpy).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("removeAttachment", () => {
+    const attachment = { id: "1234-5678" } as AttachmentView;
+
+    beforeEach(() => {
+      component.cipher.attachments = [attachment];
+
+      fixture.detectChanges();
+    });
+
+    it("removes attachment from cipher", () => {
+      const deleteAttachmentComponent = fixture.debugElement.query(
+        By.directive(DeleteAttachmentComponent),
+      ).componentInstance as DeleteAttachmentComponent;
+
+      deleteAttachmentComponent.onDeletionSuccess.emit();
+
+      expect(component.cipher.attachments).toEqual([]);
     });
   });
 });

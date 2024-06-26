@@ -1,15 +1,28 @@
 <h2 class="tw-sr-only" id="attachments">{{ "attachments" | i18n }}</h2>
 
 <ul *ngIf="cipher?.attachments" aria-labelledby="attachments" class="tw-list-none">
-  <li *ngFor="let attachments of cipher.attachments">
-    <bit-card class="tw-mb-2">
-      <div>
-        <p bitTypography="body2" class="tw-mb-0.5">{{ attachments.fileName }}</p>
-        <p bitTypography="helper" class="tw-text-muted tw-mb-0">
-          {{ attachments.sizeName }}
-        </p>
-      </div>
-    </bit-card>
+  <li *ngFor="let attachment of cipher.attachments">
+    <bit-item>
+      <bit-item-content>
+        {{ attachment.fileName }}
+        <span slot="secondary">{{ attachment.sizeName }}</span>
+      </bit-item-content>
+      <ng-container slot="end">
+        <bit-item-action>
+          <app-download-attachment
+            [cipher]="cipher"
+            [attachment]="attachment"
+          ></app-download-attachment>
+        </bit-item-action>
+        <bit-item-action>
+          <app-delete-attachment
+            [cipherId]="cipher.id"
+            [attachment]="attachment"
+            (onDeletionSuccess)="removeAttachment(attachment)"
+          ></app-delete-attachment>
+        </bit-item-action>
+      </ng-container>
+    </bit-item>
   </li>
 </ul>
 

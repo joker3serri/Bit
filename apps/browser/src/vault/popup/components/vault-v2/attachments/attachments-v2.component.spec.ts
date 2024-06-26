@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
@@ -10,6 +10,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonComponent } from "@bitwarden/components";
 
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
@@ -41,20 +42,37 @@ describe("AttachmentsV2Component", () => {
   let fixture: ComponentFixture<AttachmentsV2Component>;
   const queryParams = new BehaviorSubject<{ cipherId: string }>({ cipherId: "5555-444-3333" });
   let cipherAttachment: CipherAttachmentsComponent;
+  const navigate = jest.fn();
+
+  const cipherDomain = {
+    type: CipherType.Login,
+    name: "Test Login",
+  };
+
+  const cipherServiceGet = jest.fn().mockResolvedValue(cipherDomain);
 
   beforeEach(async () => {
+    cipherServiceGet.mockClear();
+    navigate.mockClear();
+
     await TestBed.configureTestingModule({
       imports: [AttachmentsV2Component],
       providers: [
         { provide: LogService, useValue: mock<LogService>() },
-        { provide: CipherService, useValue: mock<CipherService>() },
         { provide: ConfigService, useValue: mock<ConfigService>() },
         { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
         { provide: I18nService, useValue: { t: (key: string) => key } },
+        { provide: Router, useValue: { navigate } },
         {
           provide: ActivatedRoute,
           useValue: {
             queryParams,
+          },
+        },
+        {
+          provide: CipherService,
+          useValue: {
+            get: cipherServiceGet,
           },
         },
       ],
@@ -90,4 +108,15 @@ describe("AttachmentsV2Component", () => {
 
     expect(cipherAttachment.submitBtn).toEqual(submitBtn);
   });
+
+  it("navigates the user to the edit view `onUploadSuccess`", fakeAsync(() => {
+    cipherAttachment.onUploadSuccess.emit();
+
+    tick();
+
+    expect(navigate).toHaveBeenCalledWith(["/edit-cipher"], {
+      queryParams: { cipherId: "5555-444-3333", type: CipherType.Login },
+      replaceUrl: true,
+    });
+  }));
 });

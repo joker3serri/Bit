@@ -4,8 +4,10 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChild,
   inject,
 } from "@angular/core";
@@ -24,6 +26,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   AsyncActionsModule,
@@ -31,9 +34,13 @@ import {
   ButtonComponent,
   ButtonModule,
   CardComponent,
+  ItemModule,
   ToastService,
   TypographyModule,
 } from "@bitwarden/components";
+
+import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
+import { DownloadAttachmentComponent } from "./download-attachment/download-attachment.component";
 
 type CipherAttachmentForm = FormGroup<{
   file: FormControl<File | null>;
@@ -47,10 +54,13 @@ type CipherAttachmentForm = FormGroup<{
     AsyncActionsModule,
     ButtonModule,
     CommonModule,
+    ItemModule,
     JslibModule,
     ReactiveFormsModule,
     TypographyModule,
     CardComponent,
+    DeleteAttachmentComponent,
+    DownloadAttachmentComponent,
   ],
 })
 export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
@@ -68,6 +78,9 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
 
   /** An optional submit button, whose loading/disabled state will be tied to the form state. */
   @Input() submitBtn?: ButtonComponent;
+
+  /** Emits after a file has been successfully uploaded */
+  @Output() onUploadSuccess = new EventEmitter<void>();
 
   cipher: CipherView;
 
@@ -180,8 +193,19 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
         title: null,
         message: this.i18nService.t("attachmentSaved"),
       });
+
+      this.onUploadSuccess.emit();
     } catch (e) {
       this.logService.error(e);
     }
   };
+
+  /** Removes the attachment from the cipher */
+  removeAttachment(attachment: AttachmentView) {
+    const index = this.cipher.attachments.indexOf(attachment);
+
+    if (index > -1) {
+      this.cipher.attachments.splice(index, 1);
+    }
+  }
 }
