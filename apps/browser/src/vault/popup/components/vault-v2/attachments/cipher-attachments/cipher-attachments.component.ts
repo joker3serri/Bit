@@ -196,13 +196,6 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
 
       this.onUploadSuccess.emit();
     } catch (e) {
-      if (e.message === "This organization cannot use attachments.") {
-        this.toastService.showToast({
-          variant: "error",
-          title: null,
-          message: this.i18nService.t("freeOrgsCannotUseAttachments"),
-        });
-      }
       this.logService.error(e);
     }
   };

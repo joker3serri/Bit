@@ -189,22 +189,6 @@ describe("CipherAttachmentsComponent", () => {
           message: "maxFileSize",
         });
       });
-
-      it("shows error toast for free organizations", async () => {
-        component.attachmentForm.controls.file.setValue({ size: 524287999 } as File);
-
-        saveAttachmentWithServer.mockRejectedValue(
-          new Error("This organization cannot use attachments."),
-        );
-
-        await component.submit();
-
-        expect(showToast).toHaveBeenCalledWith({
-          variant: "error",
-          title: null,
-          message: "freeOrgsCannotUseAttachments",
-        });
-      });
     });
 
     describe("success", () => {
