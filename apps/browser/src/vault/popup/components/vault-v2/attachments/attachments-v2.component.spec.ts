@@ -84,30 +84,10 @@ describe("AttachmentsV2Component", () => {
     expect(component.cipherId).toBe("5555-444-3333");
   });
 
-  it("shows loading state on upload button", () => {
-    cipherAttachment.formLoading.emit(true);
-    fixture.detectChanges();
+  it("passes the submit button to the cipher attachments component", () => {
+    const submitBtn = fixture.debugElement.queryAll(By.directive(ButtonComponent))[1]
+      .componentInstance;
 
-    const uploadButton = fixture.debugElement.queryAll(By.directive(ButtonComponent))[1];
-
-    expect(uploadButton.componentInstance.loading).toBe(true);
-  });
-
-  it("disables upload when form is invalid", () => {
-    cipherAttachment.formStatusChange.emit("INVALID");
-    fixture.detectChanges();
-
-    const uploadButton = fixture.debugElement.query(By.css('button[type="submit"]'));
-    expect(uploadButton.nativeElement.disabled).toBe(true);
-  });
-
-  it("disables upload when `formDisabled` is true", () => {
-    cipherAttachment.formStatusChange.emit("VALID");
-    cipherAttachment.formDisabled.emit(true);
-
-    fixture.detectChanges();
-
-    const uploadButton = fixture.debugElement.query(By.css('button[type="submit"]'));
-    expect(uploadButton.nativeElement.disabled).toBe(true);
+    expect(cipherAttachment.submitBtn).toEqual(submitBtn);
   });
 });

@@ -6,20 +6,17 @@
   <app-cipher-attachments
     *ngIf="cipherId"
     [cipherId]="cipherId"
-    (formStatusChange)="attachmentFormStatus = $event"
-    (formDisabled)="disabled = $event"
-    (formLoading)="loading = $event"
+    [submitBtn]="submitButton"
   ></app-cipher-attachments>
 
   <popup-footer slot="footer">
     <button
+      #submitButton
       bitButton
       bitFormButton
       type="submit"
       buttonType="primary"
       [attr.form]="attachmentFormId"
-      [disabled]="disabled || attachmentFormStatus !== 'VALID'"
-      [loading]="loading"
     >
       {{ "upload" | i18n }}
     </button>

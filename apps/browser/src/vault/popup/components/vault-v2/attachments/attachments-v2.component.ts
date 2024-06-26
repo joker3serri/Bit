@@ -1,7 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormControlStatus } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs";
 
@@ -32,15 +31,6 @@ import { CipherAttachmentsComponent } from "./cipher-attachments/cipher-attachme
   ],
 })
 export class AttachmentsV2Component {
-  /** The status for the attachment form */
-  protected attachmentFormStatus: FormControlStatus;
-
-  /** Loading state of the attachment form */
-  protected loading = false;
-
-  /** Disabled state of the attachment form */
-  protected disabled = false;
-
   /** The `id` tied to the underlying HTMLFormElement */
   attachmentFormId = CipherAttachmentsComponent.attachmentFormID;
 
