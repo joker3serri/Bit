@@ -57,10 +57,9 @@ const routes: Routes = [
               import("../tools/vault-export/org-vault-export.component").then(
                 (mod) => mod.OrganizationVaultExportComponent,
               ),
-            canActivate: [OrganizationPermissionsGuard],
+            canActivate: [organizationPermissionsGuard((org) => org.canAccessImportExport)],
             data: {
               titleId: "exportVault",
-              organizationPermissions: (org: Organization) => org.canAccessImportExport,
             },
           },
         ],
