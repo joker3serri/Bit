@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
-import { BadgeModule, CardComponent, TypographyModule } from "@bitwarden/components";
+import { BadgeModule, CardComponent, ItemModule, TypographyModule } from "@bitwarden/components";
 
 import BrowserPopupUtils from "../../../../../../platform/popup/browser-popup-utils";
 
@@ -13,7 +13,7 @@ import BrowserPopupUtils from "../../../../../../platform/popup/browser-popup-ut
   standalone: true,
   selector: "app-open-attachments",
   templateUrl: "./open-attachments.component.html",
-  imports: [BadgeModule, CommonModule, JslibModule, TypographyModule, CardComponent],
+  imports: [BadgeModule, CommonModule, ItemModule, JslibModule, TypographyModule, CardComponent],
 })
 export class OpenAttachmentsComponent {
   /** Cipher `id` */
