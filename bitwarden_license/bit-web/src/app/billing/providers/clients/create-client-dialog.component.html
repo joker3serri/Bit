@@ -7,7 +7,9 @@
       <p>{{ "createNewClientToManageAsProvider" | i18n }}</p>
       <div class="tw-mb-3">
         <span class="tw-text-lg tw-pr-1">{{ "selectAPlan" | i18n }}</span>
-        <span bitBadge variant="success">{{ "thirtyFivePercentDiscount" | i18n }}</span>
+        <span *ngIf="this.discountPercentage" bitBadge variant="success">{{
+          "providerDiscount" | i18n: this.discountPercentage
+        }}</span>
       </div>
       <ng-container>
         <div class="tw-grid tw-grid-flow-col tw-grid-cols-2 tw-gap-4 tw-mb-4">
@@ -56,13 +58,15 @@
           <input type="text" bitInput formControlName="seats" />
           <bit-hint
             class="tw-text-muted tw-grid tw-grid-flow-col tw-gap-1 tw-grid-cols-1 tw-grid-rows-2"
-            *ngIf="unassignedSeatsForSelectedPlan > 0"
+            *ngIf="openSeats > 0"
           >
             <span class="tw-col-span-1"
-              >{{ unassignedSeatsForSelectedPlan }}
-              {{ "unassignedSeatsDescription" | i18n | lowercase }}</span
+              >{{ unassignedSeats }} {{ "unassignedSeatsDescription" | i18n | lowercase }}</span
             >
-            <span class="tw-col-span-1">0 {{ "purchaseSeatDescription" | i18n | lowercase }}</span>
+            <span class="tw-col-span-1"
+              >{{ additionalSeatsPurchased }}
+              {{ "purchaseSeatDescription" | i18n | lowercase }}</span
+            >
           </bit-hint>
         </bit-form-field>
       </div>
