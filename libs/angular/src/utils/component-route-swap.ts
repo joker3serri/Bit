@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { Route, Routes } from "@angular/router";
+import { CanMatchFn, Route, Routes } from "@angular/router";
 
 /**
  * Helper function to swap between two components based on an async condition. The async condition is evaluated
@@ -31,7 +31,7 @@ import { Route, Routes } from "@angular/router";
 export function componentRouteSwap(
   defaultComponent: Type<any>,
   altComponent: Type<any>,
-  shouldSwapFn: () => Promise<boolean>,
+  shouldSwapFn: CanMatchFn,
   options: Route,
 ): Routes {
   const defaultRoute = {
@@ -42,12 +42,7 @@ export function componentRouteSwap(
   const altRoute: Route = {
     ...options,
     component: altComponent,
-    canMatch: [
-      async () => {
-        return await shouldSwapFn();
-      },
-      ...(options.canMatch ?? []),
-    ],
+    canMatch: [shouldSwapFn, ...(options.canMatch ?? [])],
   };
 
   // Return the alternate route first, so it is evaluated first.

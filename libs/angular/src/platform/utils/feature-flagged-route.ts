@@ -5,6 +5,8 @@ import { map } from "rxjs";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 
+import { componentRouteSwap } from "../../utils/component-route-swap";
+
 /**
  * @param defaultComponent The component to be used when the feature flag is off.
  * @param flaggedComponent The component to be used when the feature flag is on.
@@ -42,17 +44,10 @@ export function featureFlaggedRoute(config: FeatureFlaggedRouteConfig): Routes {
       .getFeatureFlag$(config.featureFlag)
       .pipe(map((flagValue) => flagValue === true));
 
-  const defaultRoute = {
-    ...config.routeOptions,
-    component: config.defaultComponent,
-  };
-
-  const altRoute = {
-    ...config.routeOptions,
-    component: config.flaggedComponent,
-    canMatch: [canMatch$, ...(config.routeOptions.canMatch ?? [])],
-  };
-
-  // Return the alternate route first, so it is evaluated first.
-  return [altRoute, defaultRoute];
+  return componentRouteSwap(
+    config.defaultComponent,
+    config.flaggedComponent,
+    canMatch$,
+    config.routeOptions,
+  );
 }
