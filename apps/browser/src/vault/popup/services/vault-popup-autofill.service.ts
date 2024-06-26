@@ -164,14 +164,17 @@ export class VaultPopupAutofillService {
   }
 
   private _closePopup() {
-    if (BrowserPopupUtils.inPopup(window)) {
-      if (this.platformUtilService.isFirefox() || this.platformUtilService.isSafari()) {
-        BrowserApi.closePopup(window);
-      } else {
-        // Slight delay to fix bug in Chromium browsers where popup closes without copying totp to clipboard
-        setTimeout(() => BrowserApi.closePopup(window), 50);
-      }
+    if (!BrowserPopupUtils.inPopup(window)) {
+      return;
     }
+
+    if (this.platformUtilService.isFirefox() || this.platformUtilService.isSafari()) {
+      BrowserApi.closePopup(window);
+      return;
+    }
+
+    // Slight delay to fix bug in Chromium browsers where popup closes without copying totp to clipboard
+    setTimeout(() => BrowserApi.closePopup(window), 50);
   }
 
   /**
