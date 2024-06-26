@@ -24,6 +24,7 @@ import {
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -65,7 +66,7 @@ export class CipherAttachmentsComponent implements OnInit, AfterViewInit {
   @ViewChild(BitSubmitDirective) bitSubmit: BitSubmitDirective;
 
   /** The `id` of the cipher in context */
-  @Input({ required: true }) cipherId: string;
+  @Input({ required: true }) cipherId: CipherId;
 
   /** Emits the status of the attachment form */
   @Output() formStatusChange = new EventEmitter<FormControlStatus>();

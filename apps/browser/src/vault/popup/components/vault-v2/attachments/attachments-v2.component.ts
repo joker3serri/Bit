@@ -6,6 +6,7 @@ import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { ButtonModule } from "@bitwarden/components";
 
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
@@ -44,7 +45,7 @@ export class AttachmentsV2Component {
   attachmentFormId = CipherAttachmentsComponent.attachmentFormID;
 
   /** Id of the cipher */
-  cipherId: string;
+  cipherId: CipherId;
 
   constructor(route: ActivatedRoute) {
     route.queryParams.pipe(takeUntilDestroyed(), first()).subscribe(({ cipherId }) => {
