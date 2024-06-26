@@ -21,6 +21,7 @@ import { TwoFactorBaseComponent } from "./two-factor-base.component";
 })
 export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
   @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
+
   type = TwoFactorProviderType.Duo;
   formGroup = this.formBuilder.group({
     clientId: ["", [Validators.required]],
@@ -81,11 +82,10 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
     }
     if (this.enabled) {
       await this.disableMethod();
-      this.onChangeStatus.emit(this.enabled);
     } else {
       await this.enable();
-      this.onChangeStatus.emit(this.enabled);
     }
+    this.onChangeStatus.emit(this.enabled);
   };
 
   protected async enable() {
