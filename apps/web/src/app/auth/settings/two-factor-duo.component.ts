@@ -23,8 +23,8 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
   @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
   type = TwoFactorProviderType.Duo;
   formGroup = this.formBuilder.group({
-    ikey: ["", [Validators.required]],
-    skey: ["", [Validators.required]],
+    clientId: ["", [Validators.required]],
+    clientSecret: ["", [Validators.required]],
     host: ["", [Validators.required]],
   });
   override componentName = "app-two-factor-duo";
@@ -50,20 +50,20 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
     );
   }
 
-  get ikey() {
-    return this.formGroup.get("ikey").value;
+  get clientId() {
+    return this.formGroup.get("clientId").value;
   }
-  get skey() {
-    return this.formGroup.get("skey").value;
+  get clientSecret() {
+    return this.formGroup.get("clientSecret").value;
   }
   get host() {
     return this.formGroup.get("host").value;
   }
-  set ikey(value: string) {
-    this.formGroup.get("ikey").setValue(value);
+  set clientId(value: string) {
+    this.formGroup.get("clientId").setValue(value);
   }
-  set skey(value: string) {
-    this.formGroup.get("skey").setValue(value);
+  set clientSecret(value: string) {
+    this.formGroup.get("clientSecret").setValue(value);
   }
   set host(value: string) {
     this.formGroup.get("host").setValue(value);
@@ -90,8 +90,8 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
 
   protected async enable() {
     const request = await this.buildRequestModel(UpdateTwoFactorDuoRequest);
-    request.integrationKey = this.ikey;
-    request.secretKey = this.skey;
+    request.clientId = this.clientId;
+    request.clientSecret = this.clientSecret;
     request.host = this.host;
 
     let response: TwoFactorDuoResponse;
@@ -111,8 +111,8 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
   };
 
   private processResponse(response: TwoFactorDuoResponse) {
-    this.ikey = response.integrationKey;
-    this.skey = response.secretKey;
+    this.clientId = response.clientId;
+    this.clientSecret = response.clientSecret;
     this.host = response.host;
     this.enabled = response.enabled;
   }
