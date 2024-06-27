@@ -92,7 +92,7 @@ export class TwoFactorAuthenticatorComponent
   }
 
   submit = async () => {
-    if (this.formGroup.invalid) {
+    if (this.formGroup.invalid && !this.enabled) {
       return;
     }
     if (this.enabled) {
