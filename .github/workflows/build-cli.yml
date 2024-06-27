@@ -250,7 +250,7 @@ jobs:
 
       - name: Zip Windows
         shell: cmd
-        run: 7z a ./dist/bw${{ matrix.license_type.artifact_prefix}}-windows-%_PACKAGE_VERSION%.zip ./dist/${{matrix.license_type.build_prefix }}/windows/bw.exe
+        run: 7z a ./dist/bw${{ matrix.license_type.artifact_prefix}}-windows-%_PACKAGE_VERSION%.zip ./dist/${{ matrix.license_type.build_prefix }}/windows/bw.exe
 
       - name: Version Test
         run: |
