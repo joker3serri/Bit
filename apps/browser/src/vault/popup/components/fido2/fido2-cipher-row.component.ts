@@ -18,23 +18,21 @@ export class Fido2CipherRowComponent {
     this.onSelected.emit(c);
   }
 
+  /**
+   * Returns a subname for the cipher.
+   * If this has a FIDO2 credential, and the cipher.name is different from the FIDO2 credential's rpId, return the rpId.
+   * @param c Cipher
+   * @returns
+   */
   protected getSubName(c: CipherView): string | null {
     const fido2Credentials = c.login?.fido2Credentials;
-    
+
     if (!fido2Credentials || fido2Credentials.length === 0) {
-        return null;
+      return null;
     }
-    
+
     const [fido2Credential] = fido2Credentials;
-    
+
     return c.name !== fido2Credential.rpId ? fido2Credential.rpId : null;
-}
-    if (c.login?.fido2Credentials != null && c.login.fido2Credentials.length > 0) {
-      const fido2Credential = c.login.fido2Credentials[0];
-      if (c.name != fido2Credential.rpId) {
-        return fido2Credential.rpId;
-      }
-    }
-    return null;
   }
 }
