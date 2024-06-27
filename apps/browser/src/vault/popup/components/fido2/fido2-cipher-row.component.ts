@@ -18,7 +18,17 @@ export class Fido2CipherRowComponent {
     this.onSelected.emit(c);
   }
 
-  protected getSubName(c: CipherView): string {
+  protected getSubName(c: CipherView): string | null {
+    const fido2Credentials = c.login?.fido2Credentials;
+    
+    if (!fido2Credentials || fido2Credentials.length === 0) {
+        return null;
+    }
+    
+    const [fido2Credential] = fido2Credentials;
+    
+    return c.name !== fido2Credential.rpId ? fido2Credential.rpId : null;
+}
     if (c.login?.fido2Credentials != null && c.login.fido2Credentials.length > 0) {
       const fido2Credential = c.login.fido2Credentials[0];
       if (c.name != fido2Credential.rpId) {
