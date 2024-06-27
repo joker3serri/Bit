@@ -10,7 +10,6 @@
           <p bitTypography="body1">{{ "twoStepLoginProviderEnabled" | i18n }}</p>
           {{ "twoStepAuthenticatorReaddDesc" | i18n }}
         </bit-callout>
-        <img class="tw-float-right mfaType0" alt="Authenticator app logo" />
         <p bitTypography="body1">{{ "twoStepAuthenticatorNeedApp" | i18n }}</p>
       </ng-container>
       <ng-container *ngIf="!enabled">
@@ -77,7 +76,9 @@
         <code appA11yTitle="{{ 'key' | i18n }}">{{ key }}</code>
       </p>
       <bit-form-field *ngIf="!enabled" [disableMargin]="true">
-        <bit-label class="tw-font-bold">3. {{ "twoStepAuthenticatorEnterCodeV2" | i18n }}</bit-label>
+        <bit-label class="tw-font-bold"
+          >3. {{ "twoStepAuthenticatorEnterCodeV2" | i18n }}</bit-label
+        >
         <input bitInput type="text" formControlName="token" appInputVerbatim />
       </bit-form-field>
     </ng-container>
