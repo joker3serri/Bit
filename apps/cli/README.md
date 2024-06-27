@@ -41,6 +41,9 @@ We provide natively packaged versions of the CLI for each platform which have no
   ```bash
   brew install bitwarden-cli
   ```
+  > ⚠️ The homebrew version is not recommended for all users.
+  >
+  > Homebrew pulls the CLI's GPL build, and is missing some enterprise-grade features.
 - [Snap](https://snapcraft.io/bw)
   ```bash
   sudo snap install bw
