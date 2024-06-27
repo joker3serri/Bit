@@ -86,6 +86,10 @@ export class TwoFactorAuthenticatorComponent
     window.document.body.removeChild(this.qrScript);
   }
 
+  validateTokenControl() {
+    this.formGroup.controls.token.markAsTouched();
+  }
+
   auth(authResponse: AuthResponse<TwoFactorAuthenticatorResponse>) {
     super.auth(authResponse);
     return this.processResponse(authResponse.response);

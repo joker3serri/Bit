@@ -72,7 +72,7 @@
         bitFormButton
         type="submit"
         buttonType="primary"
-        [disabled]="formGroup.invalid && !enabled"
+        (click)="validateTokenControl()"
       >
         {{ (enabled ? "disable" : "enable") | i18n }}
       </button>
