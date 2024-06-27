@@ -12,7 +12,6 @@ import { CurrentAccountComponent } from "../../../../auth/popup/account-switchin
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
-import { VaultPopupAutofillService } from "../../services/vault-popup-autofill.service";
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
 import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } from "../vault-v2";
 import { NewItemDropdownV2Component } from "../vault-v2/new-item-dropdown/new-item-dropdown-v2.component";
@@ -60,10 +59,7 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   protected VaultStateEnum = VaultState;
 
-  constructor(
-    private vaultPopupItemsService: VaultPopupItemsService,
-    private vaultPopupAutofillService: VaultPopupAutofillService,
-  ) {
+  constructor(private vaultPopupItemsService: VaultPopupItemsService) {
     combineLatest([
       this.vaultPopupItemsService.emptyVault$,
       this.vaultPopupItemsService.noFilteredResults$,
@@ -86,12 +82,9 @@ export class VaultV2Component implements OnInit, OnDestroy {
             this.vaultState = null;
         }
       });
-    this.vaultPopupAutofillService.startCollectingPageDetails();
   }
 
   ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-    this.vaultPopupAutofillService.stopCollectingPageDetails();
-  }
+  ngOnDestroy(): void {}
 }
