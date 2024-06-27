@@ -6,6 +6,7 @@ import { ActivatedRoute } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { SearchModule, ButtonModule } from "@bitwarden/components";
 
@@ -32,7 +33,7 @@ import { OpenAttachmentsComponent } from "../attachments/open-attachments/open-a
 })
 export class AddEditV2Component {
   headerText: string;
-  cipherId: string;
+  cipherId: CipherId;
   isEdit: boolean = false;
 
   constructor(
