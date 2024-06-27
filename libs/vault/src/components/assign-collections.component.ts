@@ -304,8 +304,8 @@ export class AssignCollectionsComponent implements OnInit {
   ) {
     this.totalItemCount = this.params.ciphers.length;
 
-    // If organizationId is not present, then all ciphers are considered personal items
-    if (!organizationId) {
+    // If organizationId is not present or organizationId is MyVault, then all ciphers are considered personal items
+    if (!organizationId || organizationId === "MyVault") {
       this.editableItems = this.params.ciphers;
       this.editableItemCount = this.params.ciphers.length;
       this.personalItemsCount = this.params.ciphers.length;
