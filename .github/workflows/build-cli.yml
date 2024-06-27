@@ -256,7 +256,7 @@ jobs:
         run: |
           dir ./dist/
           Expand-Archive -Path "./dist/bw${{ matrix.license_type.artifact_prefix }}-windows-${env:_PACKAGE_VERSION}.zip" -DestinationPath "./test/${{ matrix.license_type.build_prefix }}/windows"
-          $testVersion = Invoke-Expression '& ./test/${{matrix.license_type.build_prefix }}/windows/bw.exe -v'
+          $testVersion = Invoke-Expression '& ./test/${{ matrix.license_type.build_prefix }}/windows/bw.exe -v'
           echo "version: $env:_PACKAGE_VERSION"
           echo "testVersion: $testVersion"
           if($testVersion -ne $env:_PACKAGE_VERSION) {
