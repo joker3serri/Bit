@@ -71,8 +71,8 @@ jobs:
          ]
         license_type:
          [
-          { build_prefix: "oss", readable: "open source license" },
-          { build_prefix: "bit", readable: "commercial license"}
+          { build_prefix: "oss", artifact_prefix: "-oss", readable: "open source license" },
+          { build_prefix: "bit", artifact_prefix: "", readable: "commercial license"}
          ]
     runs-on: ${{ matrix.os.distro }}
     needs:
@@ -149,8 +149,8 @@ jobs:
       matrix:
         license_type:
          [
-          { build_prefix: "oss", readable: "open source license" },
-          { build_prefix: "bit", readable: "commercial license"}
+          { build_prefix: "oss", artifact_prefix: "-oss", readable: "open source license" },
+          { build_prefix: "bit", artifact_prefix: "", readable: "commercial license"}
          ]
     runs-on: windows-2022
     needs:
