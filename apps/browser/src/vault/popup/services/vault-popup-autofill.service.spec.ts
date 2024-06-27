@@ -3,7 +3,6 @@ import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { subscribeTo } from "@bitwarden/common/spec";
@@ -40,11 +39,12 @@ describe("VaultPopupAutofillService", () => {
   const mockPasswordRepromptService = mock<PasswordRepromptService>();
   const mockCipherService = mock<CipherService>();
   const mockMessagingService = mock<MessagingService>();
-  const mockLogService = mock<LogService>();
 
   beforeEach(() => {
     jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false);
     jest.spyOn(BrowserApi, "getTabFromCurrentWindow").mockResolvedValue(mockCurrentTab);
+
+    mockAutofillService.collectPageDetailsFromTab$.mockReturnValue(new BehaviorSubject([]));
 
     testBed = TestBed.configureTestingModule({
       providers: [
@@ -55,7 +55,6 @@ describe("VaultPopupAutofillService", () => {
         { provide: PasswordRepromptService, useValue: mockPasswordRepromptService },
         { provide: CipherService, useValue: mockCipherService },
         { provide: MessagingService, useValue: mockMessagingService },
-        { provide: LogService, useValue: mockLogService },
       ],
     });
 
@@ -73,6 +72,7 @@ describe("VaultPopupAutofillService", () => {
   describe("currentAutofillTab$", () => {
     it("should return null if in popout", (done) => {
       jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true);
+      service.refreshCurrentTab();
       service.currentAutofillTab$.subscribe((tab) => {
         expect(tab).toBeNull();
         done();
@@ -108,6 +108,7 @@ describe("VaultPopupAutofillService", () => {
 
     it("should return false if there is no current tab", (done) => {
       jest.spyOn(BrowserApi, "getTabFromCurrentWindow").mockResolvedValue(null);
+      service.refreshCurrentTab();
       service.autofillAllowed$.subscribe((allowed) => {
         expect(allowed).toBe(false);
         done();
@@ -116,6 +117,7 @@ describe("VaultPopupAutofillService", () => {
 
     it("should return false if in a popout", (done) => {
       jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true);
+      service.refreshCurrentTab();
       service.autofillAllowed$.subscribe((allowed) => {
         expect(allowed).toBe(false);
         done();
@@ -126,12 +128,8 @@ describe("VaultPopupAutofillService", () => {
   describe("refreshCurrentTab()", () => {
     it("should refresh currentAutofillTab$", async () => {
       const tracked = subscribeTo(service.currentAutofillTab$);
-      await tracked.expectEmission(); // First emission due to startWith(null)
       service.refreshCurrentTab();
-      await tracked.expectEmission(); // Second emission due to refresh
-      // Cannot use tracked.pauseUntilReceived(2) because calling refreshCurrentTab() so soon after
-      // subscribing to the observable will cause the first emission to be missed due to switchMap.
-      expect(tracked.emissions.length).toBe(2);
+      await tracked.pauseUntilReceived(2);
     });
   });
 
@@ -158,7 +156,8 @@ describe("VaultPopupAutofillService", () => {
         allowTotpAutofill: true,
       };
 
-      service.startCollectingPageDetails();
+      // Refresh the current tab so the mockedPageDetails$ are used
+      service.refreshCurrentTab();
     });
 
     describe("doAutofill()", () => {
@@ -167,7 +166,6 @@ describe("VaultPopupAutofillService", () => {
         const result = await service.doAutofill(mockCipher);
         expect(result).toBe(true);
         expect(mockAutofillService.doAutoFill).toHaveBeenCalledWith(expectedAutofillArgs);
-        expect(mockLogService.warning).not.toHaveBeenCalled();
       });
 
       it("should return false if autofill is not successful", async () => {
@@ -217,14 +215,6 @@ describe("VaultPopupAutofillService", () => {
         expect(mockPlatformUtilsService.copyToClipboard).toHaveBeenCalledWith(
           totpCode,
           expect.anything(),
-        );
-      });
-
-      it("should log a warning if page details subscription is missing", async () => {
-        service.stopCollectingPageDetails();
-        await service.doAutofill(mockCipher);
-        expect(mockLogService.warning).toHaveBeenCalledWith(
-          "Page details subscription is not active. Page details may not be available in time for autofill.",
         );
       });
 

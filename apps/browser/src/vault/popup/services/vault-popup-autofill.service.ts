@@ -7,12 +7,10 @@ import {
   shareReplay,
   startWith,
   Subject,
-  Subscription,
   switchMap,
 } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -34,7 +32,6 @@ import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 })
 export class VaultPopupAutofillService {
   private _refreshCurrentTab$ = new Subject<void>();
-  private _pageDetailsSubscription: Subscription;
 
   /**
    * Observable that contains the current tab to be considered for autofill. If there is no current tab
@@ -75,46 +72,8 @@ export class VaultPopupAutofillService {
     private passwordRepromptService: PasswordRepromptService,
     private cipherService: CipherService,
     private messagingService: MessagingService,
-    private logService: LogService,
-  ) {}
-
-  /**
-   * Start a subscription to the collect page details from the current tab.
-   *
-   * The page details collection process has no definite 'end', so we must keep a subscription alive
-   * to ensure that the most up-to-date page details are always available for autofill.
-   *
-   * This method should be called early whenever autofill may be needed, such as when the popup is opened.
-   */
-  startCollectingPageDetails() {
-    if (this._pageDetailsSubscription && !this._pageDetailsSubscription.closed) {
-      return;
-    }
-    this._pageDetailsSubscription = this._currentPageDetails$.subscribe();
-  }
-
-  /**
-   * Stop the subscription to collect the page details from the current tab.
-   *
-   * This can be called when navigating away from the vault or wherever autofill is no longer needed.
-   */
-  stopCollectingPageDetails() {
-    if (this._pageDetailsSubscription && !this._pageDetailsSubscription.closed) {
-      this._pageDetailsSubscription.unsubscribe();
-      this._pageDetailsSubscription = null;
-    }
-  }
-
-  /**
-   * Helper to log a warning if there is an attempt to autofill without an active page details subscription.
-   * @private
-   */
-  private _warnIfMissingPageDetailsSub() {
-    if (!this._pageDetailsSubscription || this._pageDetailsSubscription.closed) {
-      this.logService.warning(
-        "Page details subscription is not active. Page details may not be available in time for autofill.",
-      );
-    }
+  ) {
+    this._currentPageDetails$.subscribe();
   }
 
   private async _internalDoAutofill(
@@ -191,8 +150,6 @@ export class VaultPopupAutofillService {
    * @param closePopup If true, will close the popup window after successful autofill. Defaults to true.
    */
   async doAutofill(cipher: CipherView, closePopup = true): Promise<boolean> {
-    this._warnIfMissingPageDetailsSub();
-
     const tab = await firstValueFrom(this.currentAutofillTab$);
     const pageDetails = await firstValueFrom(this._currentPageDetails$);
 
@@ -213,8 +170,6 @@ export class VaultPopupAutofillService {
    * If false, will show a success toast instead. Defaults to true.
    */
   async doAutofillAndSave(cipher: CipherView, closePopup = true): Promise<boolean> {
-    this._warnIfMissingPageDetailsSub();
-
     // We can only save URIs for login ciphers
     if (cipher.type !== CipherType.Login) {
       return false;
