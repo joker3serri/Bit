@@ -3626,23 +3626,11 @@
   "additionalOptionsDesc": {
     "message": "For additional help in managing your subscription, please contact Customer Support."
   },
-  "subscriptionUserSeatsUnlimitedAutoscale": {
-    "message": "Adjustments to your subscription will result in prorated changes to your billing totals. If newly invited members exceed your subscription seats, you will immediately receive a prorated charge for the additional members."
-  },
   "smStandaloneTrialSeatCountUpdateMessageFragment1": {
     "message": "If you want to add additional"
   },
   "smStandaloneTrialSeatCountUpdateMessageFragment2": {
     "message": "seats without the bundled offer, please contact"
-  },
-  "subscriptionUserSeatsLimitedAutoscale": {
-    "message": "Adjustments to your subscription will result in prorated changes to your billing totals. If newly invited members exceed your subscription seats, you will immediately receive a prorated charge for the additional members until your $MAX$ seat limit is reached.",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "50"
-      }
-    }
   },
   "subscriptionUserSeatsWithoutAdditionalSeatsOption": {
     "message": "You can invite up to $COUNT$ members for no additional charge. Contact Customer Support to upgrade your plan and invite more members.",
@@ -3680,8 +3668,8 @@
       }
     }
   },
-  "subscriptionMaxReached": {
-    "message": "Adjustments to your subscription will result in prorated changes to your billing totals. You cannot invite more than $COUNT$ members without increasing your subscription seats.",
+  "subscriptionSeatMaxReached": {
+    "message": "You cannot invite more than $COUNT$ members without increasing your subscription seats.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -8489,5 +8477,11 @@
   "billingHistoryDescription": {
     "message": "Download a CSV to obtain client details for each billing date. Prorated charges are not included in the CSV and may vary from the linked invoice. For the most accurate billing details, refer to your monthly invoices.",
     "description": "A paragraph on the Billing History page of the Provider Portal letting users know they can download a CSV report for their invoices that does not include prorations."    
+  },
+  "monthlySubscriptionUserSeatsMessage": {
+    "message": "Adjustments to your subscription will result in prorated charges to your billing totals on your next billing period. "
+  },
+  "annualSubscriptionUserSeatsMessage": {
+    "message": "Adjustments to your subscription will result in prorated charges on a monthly billing cycle. "
   }
 }

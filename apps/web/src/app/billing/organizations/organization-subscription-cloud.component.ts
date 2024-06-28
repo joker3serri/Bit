@@ -288,7 +288,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         ? "annualSubscriptionUserSeatsMessage"
         : "monthlySubscriptionUserSeatsMessage";
       return this.i18nService.t(
-        seatAdjustmentMessage + "subscriptionMaxReached",
+        seatAdjustmentMessage + "subscriptionSeatMaxReached",
         this.sub.seats.toString(),
       );
     } else if (this.userOrg.productTierType === ProductTierType.TeamsStarter) {
