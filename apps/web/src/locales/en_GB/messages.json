@@ -3617,23 +3617,11 @@
   "additionalOptionsDesc": {
     "message": "For additional help in managing your subscription, please contact Customer Support."
   },
-  "subscriptionUserSeatsUnlimitedAutoscale": {
-    "message": "Adjustments to your subscription will result in pro-rated changes to your billing totals. If newly invited members exceed your subscription seats, you will immediately receive a pro-rated charge for the additional members."
-  },
   "smStandaloneTrialSeatCountUpdateMessageFragment1": {
     "message": "If you want to add additional"
   },
   "smStandaloneTrialSeatCountUpdateMessageFragment2": {
     "message": "seats without the bundled offer, please contact"
-  },
-  "subscriptionUserSeatsLimitedAutoscale": {
-    "message": "Adjustments to your subscription will result in pro-rated changes to your billing totals. If newly invited members exceed your subscription seats, you will immediately receive a pro-rated charge for the additional members until your $MAX$ seat limit is reached.",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "50"
-      }
-    }
   },
   "subscriptionUserSeatsWithoutAdditionalSeatsOption": {
     "message": "You can invite up to $COUNT$ members for no additional charge. Contact Customer Support to upgrade your plan and invite more members.",
@@ -3672,7 +3660,7 @@
     }
   },
   "subscriptionMaxReached": {
-    "message": "Adjustments to your subscription will result in pro-rated changes to your billing totals. You cannot invite more than $COUNT$ members without increasing your subscription seats.",
+    "message": "You cannot invite more than $COUNT$ members without increasing your subscription seats.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -8447,5 +8435,11 @@
   },
   "smAccessRemovalSecretMessage": {
     "message": "This action will remove your access to this secret."
+  },
+  "monthlySubscriptionUserSeatsMessage": {
+    "message": "Adjustments to your subscription will result in prorated charges to your billing totals on your next billing period. "
+  },
+  "annualSubscriptionUserSeatsMessage": {
+    "message": "Adjustments to your subscription will result in prorated charges on a monthly billing cycle. "
   }
 }

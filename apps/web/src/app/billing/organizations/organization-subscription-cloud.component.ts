@@ -284,16 +284,25 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         return this.i18nService.t("subscriptionUpgrade", this.sub.seats.toString());
       }
     } else if (this.sub.maxAutoscaleSeats === this.sub.seats && this.sub.seats != null) {
-      return this.i18nService.t("subscriptionMaxReached", this.sub.seats.toString());
+      const seatAdjustmentMessage = this.sub.plan.isAnnual
+        ? "annualSubscriptionUserSeatsMessage"
+        : "monthlySubscriptionUserSeatsMessage";
+      return this.i18nService.t(
+        seatAdjustmentMessage + "subscriptionMaxReached",
+        this.sub.seats.toString(),
+      );
     } else if (this.userOrg.productTierType === ProductTierType.TeamsStarter) {
       return this.i18nService.t("subscriptionUserSeatsWithoutAdditionalSeatsOption", 10);
     } else if (this.sub.maxAutoscaleSeats == null) {
-      return this.i18nService.t("subscriptionUserSeatsUnlimitedAutoscale");
+      const seatAdjustmentMessage = this.sub.plan.isAnnual
+        ? "annualSubscriptionUserSeatsMessage"
+        : "monthlySubscriptionUserSeatsMessage";
+      return this.i18nService.t(seatAdjustmentMessage);
     } else {
-      return this.i18nService.t(
-        "subscriptionUserSeatsLimitedAutoscale",
-        this.sub.maxAutoscaleSeats.toString(),
-      );
+      const seatAdjustmentMessage = this.sub.plan.isAnnual
+        ? "annualSubscriptionUserSeatsMessage"
+        : "monthlySubscriptionUserSeatsMessage";
+      return this.i18nService.t(seatAdjustmentMessage, this.sub.maxAutoscaleSeats.toString());
     }
   }
 
