@@ -2,6 +2,7 @@ import { inject, Injectable, NgZone } from "@angular/core";
 import {
   BehaviorSubject,
   combineLatest,
+  concatMap,
   distinctUntilChanged,
   distinctUntilKeyChanged,
   from,
@@ -27,11 +28,10 @@ import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { BrowserApi } from "../../../platform/browser/browser-api";
 import { runInsideAngular } from "../../../platform/browser/run-inside-angular.operator";
-import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 import { PopupCipherView } from "../views/popup-cipher.view";
 
+import { VaultPopupAutofillService } from "./vault-popup-autofill.service";
 import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
 /**
@@ -41,7 +41,6 @@ import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-fi
   providedIn: "root",
 })
 export class VaultPopupItemsService {
-  private _refreshCurrentTab$ = new Subject<void>();
   private _searchText$ = new BehaviorSubject<string>("");
 
   /**
@@ -67,22 +66,6 @@ export class VaultPopupItemsService {
         ...(showIdentities ? [CipherType.Identity] : []),
       ];
     }),
-  );
-
-  /**
-   * Observable that contains the current tab to be considered for autofill. If there is no current tab
-   * or the popup is in a popout window, this will be null.
-   * @private
-   */
-  private _currentAutofillTab$: Observable<chrome.tabs.Tab | null> = this._refreshCurrentTab$.pipe(
-    startWith(null),
-    switchMap(async () => {
-      if (BrowserPopupUtils.inPopout(window)) {
-        return null;
-      }
-      return await BrowserApi.getTabFromCurrentWindow();
-    }),
-    shareReplay({ refCount: false, bufferSize: 1 }),
   );
 
   /**
@@ -144,7 +127,7 @@ export class VaultPopupItemsService {
   autoFillCiphers$: Observable<PopupCipherView[]> = combineLatest([
     this._filteredCipherList$,
     this._otherAutoFillTypes$,
-    this._currentAutofillTab$,
+    this.vaultPopupAutofillService.currentAutofillTab$,
   ]).pipe(
     switchMap(([ciphers, otherTypes, tab]) => {
       if (!tab) {
@@ -176,7 +159,12 @@ export class VaultPopupItemsService {
    * Ciphers are sorted by name.
    */
   remainingCiphers$: Observable<PopupCipherView[]> = this.favoriteCiphers$.pipe(
-    withLatestFrom(this._filteredCipherList$, this.autoFillCiphers$),
+    concatMap(
+      (
+        favoriteCiphers, // concatMap->of is used to make withLatestFrom lazy to avoid race conditions with autoFillCiphers$
+      ) =>
+        of(favoriteCiphers).pipe(withLatestFrom(this._filteredCipherList$, this.autoFillCiphers$)),
+    ),
     map(([favoriteCiphers, ciphers, autoFillCiphers]) =>
       ciphers.filter(
         (cipher) => !autoFillCiphers.includes(cipher) && !favoriteCiphers.includes(cipher),
@@ -212,12 +200,6 @@ export class VaultPopupItemsService {
   );
 
   /**
-   * Observable that indicates whether autofill is allowed in the current context.
-   * Autofill is allowed when there is a current tab and the popup is not in a popout window.
-   */
-  autofillAllowed$: Observable<boolean> = this._currentAutofillTab$.pipe(map((tab) => !!tab));
-
-  /**
    * Observable that indicates whether the user's vault is empty.
    */
   emptyVault$: Observable<boolean> = this._cipherList$.pipe(map((ciphers) => !ciphers.length));
@@ -251,14 +233,8 @@ export class VaultPopupItemsService {
     private organizationService: OrganizationService,
     private searchService: SearchService,
     private collectionService: CollectionService,
+    private vaultPopupAutofillService: VaultPopupAutofillService,
   ) {}
-
-  /**
-   * Re-fetch the current tab to trigger a re-evaluation of the autofill ciphers.
-   */
-  refreshCurrentTab() {
-    this._refreshCurrentTab$.next(null);
-  }
 
   applyFilter(newSearchText: string) {
     this._searchText$.next(newSearchText);
