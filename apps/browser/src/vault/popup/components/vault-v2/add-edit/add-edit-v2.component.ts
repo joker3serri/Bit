@@ -103,6 +103,10 @@ export class AddEditV2Component {
     return this.config == null;
   }
 
+  get originalCipherId(): CipherId | null {
+    return this.config?.originalCipher.id as CipherId;
+  }
+
   constructor(
     private route: ActivatedRoute,
     private location: Location,

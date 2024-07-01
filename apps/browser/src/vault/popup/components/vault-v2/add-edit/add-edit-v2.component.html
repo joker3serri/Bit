@@ -7,7 +7,12 @@
     [config]="config"
     (cipherSaved)="onCipherSaved($event)"
     [submitBtn]="submitBtn"
-  ></vault-cipher-form>
+  >
+    <app-open-attachments
+      slot="attachment-button"
+      [cipherId]="originalCipherId"
+    ></app-open-attachments>
+  </vault-cipher-form>
 
   <popup-footer slot="footer">
     <button bitButton type="submit" form="cipherForm" buttonType="primary" #submitBtn>

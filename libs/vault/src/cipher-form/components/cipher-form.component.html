@@ -5,5 +5,10 @@
       [config]="config"
       [originalCipherView]="originalCipherView"
     ></vault-item-details-section>
+
+    <!-- Attachments are only available for existing ciphers -->
+    <ng-container *ngIf="config.mode == 'edit'">
+      <ng-content select="[slot=attachment-button]"></ng-content>
+    </ng-container>
   </ng-container>
 </form>
