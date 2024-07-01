@@ -64,7 +64,8 @@ export class ItemDetailsSectionComponent implements OnInit {
    * Collections that are already assigned to the cipher and are read-only. These cannot be removed.
    * @protected
    */
-  protected readOnlyCollections: CollectionView[] = [];
+  protected readOnlyCollections: string[] = [];
+
   protected showCollectionsControl: boolean;
 
   @Input({ required: true })
@@ -212,9 +213,11 @@ export class ItemDetailsSectionComponent implements OnInit {
       this.itemDetailsForm.controls.folderId.enable();
     } else if (this.config.mode === "edit") {
       //
-      this.readOnlyCollections = this.collections.filter(
-        (c) => c.readOnly && this.originalCipherView.collectionIds.includes(c.id as CollectionId),
-      );
+      this.readOnlyCollections = this.collections
+        .filter(
+          (c) => c.readOnly && this.originalCipherView.collectionIds.includes(c.id as CollectionId),
+        )
+        .map((c) => c.name);
     }
   }
 

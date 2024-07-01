@@ -320,5 +320,36 @@ describe("ItemDetailsSectionComponent", () => {
         expect.arrayContaining([expect.objectContaining({ id: "col1" })]),
       );
     });
+
+    it("should show readonly hint if readonly collections are present", async () => {
+      component.config.mode = "edit";
+      component.originalCipherView = {
+        name: "cipher1",
+        organizationId: "org1",
+        folderId: "folder1",
+        collectionIds: ["col1", "col2", "col3"],
+        favorite: true,
+      } as CipherView;
+      component.config.organizations = [{ id: "org1" } as Organization];
+      component.config.collections = [
+        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
+        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
+        {
+          id: "col3",
+          name: "Collection 3",
+          organizationId: "org1",
+          readOnly: true,
+        } as CollectionView,
+      ];
+
+      await component.ngOnInit();
+      fixture.detectChanges();
+
+      const collectionHint = fixture.nativeElement.querySelector(
+        "bit-hint[data-testid='view-only-hint']",
+      );
+
+      expect(collectionHint).not.toBeNull();
+    });
   });
 });
