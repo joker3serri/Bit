@@ -1,5 +1,3 @@
-Lets get the build running!
-
 [![Github Workflow build on master](https://github.com/bitwarden/clients/actions/workflows/build-cli.yml/badge.svg?branch=master)](https://github.com/bitwarden/clients/actions/workflows/build-cli.yml?query=branch:master)
 [![Join the chat at https://gitter.im/bitwarden/Lobby](https://badges.gitter.im/bitwarden/Lobby.svg)](https://gitter.im/bitwarden/Lobby)
 
