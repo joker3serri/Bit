@@ -15,8 +15,6 @@ function isSetEqual(a: Set<string>, b: Set<string>) {
 export class DefaultCipherFormService implements CipherFormService {
   private cipherService: CipherService = inject(CipherService);
 
-  constructor() {}
-
   async decryptCipher(cipher: Cipher): Promise<CipherView> {
     return await cipher.decrypt(await this.cipherService.getKeyForCipherKeyDecryption(cipher));
   }

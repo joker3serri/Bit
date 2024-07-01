@@ -75,7 +75,7 @@ const defaultConfig: CipherFormConfig = {
 };
 
 class TestAddEditFormService implements CipherFormService {
-  decryptCipher(cipher: Cipher): Promise<CipherView> {
+  decryptCipher(): Promise<CipherView> {
     return Promise.resolve(defaultConfig.originalCipher as any);
   }
   async saveCipher(cipher: CipherView): Promise<CipherView> {

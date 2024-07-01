@@ -12,14 +12,11 @@ export abstract class CipherFormService {
   /**
    * Helper to decrypt a cipher and avoid the need to call the cipher service directly.
    * (useful for mocking tests/storybook).
-   * @param cipher
    */
   abstract decryptCipher(cipher: Cipher): Promise<CipherView>;
 
   /**
    * Saves the new or modified cipher with the server.
-   * @param cipher
-   * @param config
    */
   abstract saveCipher(cipher: CipherView, config: CipherFormConfig): Promise<CipherView>;
 }
