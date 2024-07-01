@@ -158,7 +158,7 @@ export class ItemDetailsSectionComponent implements OnInit {
     }
 
     if (this.originalCipherView) {
-      await this.initFromFromExistingCipher();
+      await this.initFromExistingCipher();
     } else {
       this.itemDetailsForm.setValue({
         name: "",
@@ -184,7 +184,7 @@ export class ItemDetailsSectionComponent implements OnInit {
       .subscribe();
   }
 
-  private async initFromFromExistingCipher() {
+  private async initFromExistingCipher() {
     this.itemDetailsForm.setValue({
       name: this.originalCipherView.name,
       organizationId: this.originalCipherView.organizationId,
