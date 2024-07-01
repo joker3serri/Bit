@@ -25,17 +25,16 @@ export type OptionalInitialValues = {
 };
 
 /**
- * Configuration object for the cipher form.
- * Determines the behavior of the form and the controls that are displayed/enabled.
+ * Base configuration object for the cipher form. Includes all common fields.
  */
-export type CipherFormConfig = {
+type BaseCipherFormConfig = {
   /**
    * The mode of the form.
    */
   mode: CipherFormMode;
 
   /**
-   * The type of cipher to create. Required for add mode.
+   * The type of cipher to create/edit.
    */
   cipherType: CipherType;
 
@@ -63,7 +62,7 @@ export type CipherFormConfig = {
 
   /**
    * The list of collections that the user has visibility to. This list should include read-only collections as they
-   * can still be displayed in the form in a separate, disabled control.
+   * can still be displayed in the component for reference.
    */
   collections: CollectionView[];
 
@@ -73,10 +72,49 @@ export type CipherFormConfig = {
   folders: FolderView[];
 
   /**
-   * The list of organizations that the user can create ciphers for. Required when `allowPersonalOwnership` is false.
+   * List of organizations that the user can create ciphers for.
    */
+  organizations?: Organization[];
+};
+
+/**
+ * Configuration object for the cipher form when editing/cloning an existing cipher.
+ */
+type ExistingCipherConfig = BaseCipherFormConfig & {
+  mode: "edit" | "partial-edit" | "clone";
+  originalCipher: Cipher;
+};
+
+/**
+ * Configuration object for the cipher form when creating a completely new cipher.
+ */
+type CreateNewCipherConfig = BaseCipherFormConfig & {
+  mode: "add";
+};
+
+type CombinedAddEditConfig = ExistingCipherConfig | CreateNewCipherConfig;
+
+/**
+ * Configuration object for the cipher form when personal ownership is allowed.
+ */
+type PersonalOwnershipAllowed = CombinedAddEditConfig & {
+  allowPersonalOwnership: true;
+};
+
+/**
+ * Configuration object for the cipher form when personal ownership is not allowed.
+ * Organizations must be provided.
+ */
+type PersonalOwnershipNotAllowed = CombinedAddEditConfig & {
+  allowPersonalOwnership: false;
   organizations: Organization[];
 };
+
+/**
+ * Configuration object for the cipher form.
+ * Determines the behavior of the form and the controls that are displayed/enabled.
+ */
+export type CipherFormConfig = PersonalOwnershipAllowed | PersonalOwnershipNotAllowed;
 
 /**
  * Service responsible for building the configuration object for the cipher form.
