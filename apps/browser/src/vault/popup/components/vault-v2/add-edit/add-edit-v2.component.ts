@@ -22,6 +22,7 @@ import {
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-page.component";
+import { OpenAttachmentsComponent } from "../attachments/open-attachments/open-attachments.component";
 
 /**
  * Helper class to parse query parameters for the AddEdit route.
@@ -86,6 +87,7 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
     JslibModule,
     FormsModule,
     ButtonModule,
+    OpenAttachmentsComponent,
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,
