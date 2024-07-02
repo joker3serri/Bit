@@ -2814,9 +2814,6 @@
   "invited": {
     "message": "Invited"
   },
-  "accepted": {
-    "message": "Accepted"
-  },
   "confirmed": {
     "message": "Confirmed"
   },
