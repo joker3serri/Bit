@@ -551,6 +551,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   submit = async () => {
     if (!this.taxComponent?.taxFormGroup.valid) {
       this.taxComponent?.taxFormGroup.markAllAsTouched();
+      return;
     }
 
     if (this.singleOrgPolicyBlock) {
