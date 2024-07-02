@@ -19,15 +19,6 @@ import {
 
 import { CipherFormContainer } from "../../cipher-form-container";
 
-type CardDetailsForm = {
-  cardholderName: CardView["cardholderName"];
-  number: CardView["number"];
-  brand: CardView["brand"];
-  expMonth: CardView["expMonth"];
-  expYear: CardView["expYear"] | number;
-  code: CardView["code"];
-};
-
 @Component({
   selector: "vault-card-details-section",
   templateUrl: "./card-details-section.component.html",
@@ -52,14 +43,19 @@ export class CardDetailsSectionComponent implements OnInit {
   /** True when all fields should be disabled */
   @Input() disabled: boolean;
 
-  /** All form fields associated with the card details */
-  cardDetailsForm = this.formBuilder.group<CardDetailsForm>({
-    cardholderName: null,
-    number: null,
-    brand: null,
-    expMonth: null,
-    expYear: null,
-    code: null,
+  /**
+   * All form fields associated with the card details
+   *
+   * Note: `as` is used to assert the type of the form control,
+   * leaving as just null gets inferred as `unknown`
+   */
+  cardDetailsForm = this.formBuilder.group({
+    cardholderName: null as string | null,
+    number: null as string | null,
+    brand: null as string | null,
+    expMonth: null as string | null,
+    expYear: null as string | number | null,
+    code: null as string | null,
   });
 
   /** Available Card Brands */
