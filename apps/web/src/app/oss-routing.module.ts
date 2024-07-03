@@ -250,7 +250,7 @@ const routes: Routes = [
           },
         ],
         data: {
-          pageTitle: "yourVaultIsLocked",
+          pageTitle: "yourVaultIsLockedV2",
           pageIcon: LockIcon,
           showReadonlyHostname: true,
         } satisfies AnonLayoutWrapperData,
