@@ -73,12 +73,9 @@
       <hr *ngIf="enabled" />
       <p class="tw-text-center tw-mb-0">
         <ng-container *ngIf="qrScriptError" class="tw-mt-2">
-          <i class="bwi bwi-exclamation-triangle tw-text-3xl tw-text-danger" aria-hidden="true"></i>
+          <i class="bwi bwi-error tw-text-3xl tw-text-danger" aria-hidden="true"></i>
           <p>
             {{ "twoStepAuthenticatorQRCanvasError" | i18n }}
-            <span *ngIf="!enabled">
-              {{ "twoStepAuthenticatorOrUseKey" | i18n }}
-            </span>
           </p>
         </ng-container>
         <canvas *ngIf="!qrScriptError" id="qr"></canvas>
@@ -100,7 +97,7 @@
       >
         {{ (enabled ? "disable" : "enable") | i18n }}
       </button>
-      <button bitButton bitFormButton type="button" buttonType="secondary" [bitAction]="close">
+      <button bitButton bitFormButton type="button" buttonType="secondary" bitDialogClose>
         {{ "close" | i18n }}
       </button>
     </ng-container>

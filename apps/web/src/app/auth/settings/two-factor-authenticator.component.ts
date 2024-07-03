@@ -43,7 +43,6 @@ export class TwoFactorAuthenticatorComponent
   @Output() onChangeStatus = new EventEmitter<boolean>();
   type = TwoFactorProviderType.Authenticator;
   key: string;
-  formPromise: Promise<TwoFactorAuthenticatorResponse>;
 
   override componentName = "app-two-factor-authenticator";
   qrScriptError = false;
@@ -76,6 +75,11 @@ export class TwoFactorAuthenticatorComponent
     this.qrScript = window.document.createElement("script");
     this.qrScript.src = "scripts/qrious.min.js";
     this.qrScript.async = true;
+
+    this.loadQRiousScript().catch((error) => {
+      this.logService.error(error);
+      this.qrScriptError = true;
+    });
   }
 
   async ngOnInit() {
@@ -101,58 +105,30 @@ export class TwoFactorAuthenticatorComponent
       return;
     }
     if (this.enabled) {
-      await this.disableAuthentication(this.formPromise);
-      this.onChangeStatus.emit(this.enabled);
+      await this.disableMethod();
       this.close();
     } else {
       await this.enable();
-      this.onChangeStatus.emit(this.enabled);
     }
+    this.onChangeStatus.emit(this.enabled);
   };
-
-  private async disableAuthentication(promise: Promise<unknown>) {
-    return super.disable(promise);
-  }
 
   protected async enable() {
     const request = await this.buildRequestModel(UpdateTwoFactorAuthenticatorRequest);
     request.token = this.formGroup.value.token;
     request.key = this.key;
 
-    return super.enable(async () => {
-      this.formPromise = this.apiService.putTwoFactorAuthenticator(request);
-      const response = await this.formPromise;
-      await this.processResponse(response);
-    });
+    const response = await this.apiService.putTwoFactorAuthenticator(request);
+    await this.processResponse(response);
+    this.onUpdated.emit(true);
   }
 
   private async processResponse(response: TwoFactorAuthenticatorResponse) {
     this.formGroup.get("token").setValue(null);
     this.enabled = response.enabled;
     this.key = response.key;
-    const email = await firstValueFrom(
-      this.accountService.activeAccount$.pipe(map((a) => a?.email)),
-    );
-    const createQRCode = () => {
-      new window.QRious({
-        element: document.getElementById("qr"),
-        value:
-          "otpauth://totp/Bitwarden:" +
-          Utils.encodeRFC3986URIComponent(email) +
-          "?secret=" +
-          encodeURIComponent(this.key) +
-          "&issuer=Bitwarden",
-        size: 160,
-      });
-    };
 
-    try {
-      await this.loadQRiousScript();
-      createQRCode();
-    } catch (error) {
-      this.logService.error(error);
-      this.qrScriptError = true;
-    }
+    await this.createQRCode();
   }
 
   private async loadQRiousScript(): Promise<void> {
@@ -164,6 +140,25 @@ export class TwoFactorAuthenticatorComponent
       this.qrScript.onload = () => resolve();
       this.qrScript.onerror = () =>
         reject(new Error(this.i18nService.t("twoStepAuthenticatorQRCanvasError")));
+    });
+  }
+
+  private async createQRCode() {
+    if (this.qrScriptError) {
+      return;
+    }
+    const email = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.email)),
+    );
+    new window.QRious({
+      element: document.getElementById("qr"),
+      value:
+        "otpauth://totp/Bitwarden:" +
+        Utils.encodeRFC3986URIComponent(email) +
+        "?secret=" +
+        encodeURIComponent(this.key) +
+        "&issuer=Bitwarden",
+      size: 160,
     });
   }
 
