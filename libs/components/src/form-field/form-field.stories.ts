@@ -336,7 +336,7 @@ export const FileInput: Story = {
       <form [formGroup]="formObj">
         <bit-form-field>
           <bit-label>File</bit-label>
-          <div>
+          <div class="tw-text-main">
             <button bitButton type="button" buttonType="secondary">
               Choose File
             </button>
