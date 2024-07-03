@@ -45,7 +45,11 @@
       <app-toggle-width></app-toggle-width>
     </ng-container>
   </bit-side-nav>
-  <bit-banner class="-tw-m-6 tw-flex tw-flex-col tw-pb-6" (onClose)="(true)">
+  <bit-banner
+    class="-tw-m-6 tw-flex tw-flex-col tw-pb-6"
+    (onClose)="(true)"
+    *ngIf="showProviderClientVaultPrivacyWarningBanner$ | async"
+  >
     Notice: Later this month, client vault privacy will be improved and provider members will no
     longer have direct access to client vault items. For questions,
     <a

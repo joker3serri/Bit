@@ -53,6 +53,10 @@ export class ProvidersLayoutComponent implements OnInit, OnDestroy {
     FeatureFlag.ShowPaymentMethodWarningBanners,
   );
 
+  protected showProviderClientVaultPrivacyWarningBanner$ = this.configService.getFeatureFlag$(
+    FeatureFlag.ProviderClientVaultPrivacyBanner,
+  );
+
   constructor(
     private route: ActivatedRoute,
     private providerService: ProviderService,
