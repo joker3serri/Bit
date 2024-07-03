@@ -15,7 +15,7 @@ export class LockComponent extends BaseLockComponent {
   formBuilder = inject(FormBuilder);
 
   formGroup = this.formBuilder.group({
-    masterPassword: ["", Validators.required],
+    masterPassword: ["", { validators: Validators.required, updateOn: "submit" }],
   });
 
   get masterPasswordFormControl() {
@@ -37,6 +37,12 @@ export class LockComponent extends BaseLockComponent {
   }
 
   submit = async () => {
+    this.formGroup.markAllAsTouched();
+
+    if (this.formGroup.invalid) {
+      return;
+    }
+
     this.masterPassword = this.masterPasswordFormControl.value;
     await this.superSubmit();
   };
