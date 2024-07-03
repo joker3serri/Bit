@@ -1,13 +1,15 @@
 <div class="tw-w-full tw-relative tw-group/input tw-min-h-11">
   <div class="tw-absolute tw-w-full tw-h-full">
     <label
-      class="tw-text-sm tw-text-muted tw-absolute -tw-translate-y-2 tw-px-4 tw-mb-0 tw-z-20 tw-flex tw-gap-1 tw-max-w-full"
+      class="tw-text-sm tw-text-muted tw-absolute -tw-translate-y-2 tw-px-4 tw-mb-0 tw-z-20 tw-max-w-full"
       [attr.for]="input.labelForId"
     >
-      <ng-content select="bit-label"></ng-content>
-      <span *ngIf="input.required" class="tw-text-[0.625rem] tw-font-normal">
-        ({{ "required" | i18n }})</span
-      >
+      <div class="tw-flex tw-gap-1 tw-w-full" #labelContent>
+        <ng-content select="bit-label"></ng-content>
+        <span *ngIf="input.required" class="tw-text-[0.625rem] tw-font-normal">
+          ({{ "required" | i18n }})</span
+        >
+      </div>
     </label>
     <div class="tw-w-full tw-h-full tw-flex">
       <div
@@ -15,16 +17,10 @@
         [ngClass]="inputBorderClasses"
       ></div>
       <div
-        class="tw-px-1 tw-mt-px tw-bg-background tw-border-x-0 tw-border-t-0 group-focus-within/input:tw-border-x-0 group-focus-within/input:tw-border-t-0"
+        class="tw-px-1 tw-mt-px tw-bg-background tw-border-x-0 tw-border-t-0 group-focus-within/input:tw-border-x-0 group-focus-within/input:tw-border-t-0 tw-hidden group-has-[bit-label]/input:tw-block"
         [ngClass]="inputBorderClasses"
-        *ngIf="label"
       >
-        <div class="tw-opacity-0 tw-flex tw-gap-1" aria-hidden="true">
-          <span class="tw-text-sm" [ngStyle]="labelSpacerDynamicStyle"></span>
-          <span *ngIf="input.required" class="tw-text-[0.625rem] tw-font-normal">
-            ({{ "required" | i18n }})</span
-          >
-        </div>
+        <div [ngStyle]="{ 'width.px': labelWidth }"></div>
       </div>
       <div
         class="tw-grow tw-bg-background tw-border-l-0 group-focus-within/input:tw-border-l-0 !tw-rounded-r-lg"
