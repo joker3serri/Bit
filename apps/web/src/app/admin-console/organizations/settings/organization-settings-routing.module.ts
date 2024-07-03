@@ -25,18 +25,16 @@ const routes: Routes = [
       {
         path: "account",
         component: AccountComponent,
-        canActivate: [OrganizationPermissionsGuard],
+        canActivate: [organizationPermissionsGuard((o) => o.isOwner)],
         data: {
-          organizationPermissions: (org: Organization) => org.isOwner,
           titleId: "organizationInfo",
         },
       },
       {
         path: "two-factor",
         component: TwoFactorSetupComponent,
-        canActivate: [OrganizationPermissionsGuard],
+        canActivate: [organizationPermissionsGuard((o) => o.use2fa && o.isOwner)],
         data: {
-          organizationPermissions: (org: Organization) => org.use2fa && org.isOwner,
           titleId: "twoStepLogin",
         },
       },
