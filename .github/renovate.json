@@ -116,13 +116,10 @@
         "argon2",
         "argon2-browser",
         "big-integer",
-        "jquery",
         "node-forge",
-        "popper.js",
         "rxjs",
         "type-fest",
-        "typescript",
-        "zone.js"
+        "typescript"
       ],
       "description": "Platform owned dependencies",
       "commitMessagePrefix": "[deps] Platform:",
@@ -154,12 +151,15 @@
         "autoprefixer",
         "bootstrap",
         "chromatic",
+        "jquery",
         "ngx-toastr",
+        "popper.js",
         "react",
         "react-dom",
         "remark-gfm",
         "storybook",
-        "tailwindcss"
+        "tailwindcss",
+        "zone.js"
       ],
       "description": "Component library owned dependencies",
       "commitMessagePrefix": "[deps] Design System:",
