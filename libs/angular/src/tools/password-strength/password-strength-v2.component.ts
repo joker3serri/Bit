@@ -70,14 +70,12 @@ export class PasswordStrengthV2Component implements OnChanges {
   }
 
   updatePasswordStrength(password: string) {
-    const masterPassword = password;
-
     if (this.passwordStrengthTimeout != null) {
       clearTimeout(this.passwordStrengthTimeout);
     }
 
     const strengthResult = this.passwordStrengthService.getPasswordStrength(
-      masterPassword,
+      password,
       this.email,
       this.name?.trim().toLowerCase().split(" "),
     );
