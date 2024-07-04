@@ -675,6 +675,7 @@ dependencies = [
  "dirs",
  "ed25519",
  "futures",
+ "desktop_objc",
  "gio",
  "homedir",
  "interprocess",
@@ -735,6 +736,15 @@ dependencies = [
  "simplelog",
  "tokio",
  "tokio-util",
+]
+
+[[package]]
+name = "desktop_objc"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "core-foundation",
+ "thiserror",
 ]
 
 [[package]]
