@@ -27,7 +27,6 @@ export type AllowedFeatureFlagTypes = boolean | number | string;
 
 // Helper to ensure the value is treated as a boolean.
 const FALSE = false as boolean;
-const TRUE = true as boolean;
 
 /**
  * Default value for feature flags.
@@ -52,7 +51,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.EmailVerification]: FALSE,
   [FeatureFlag.InlineMenuFieldQualification]: FALSE,
   [FeatureFlag.MemberAccessReport]: FALSE,
-  [FeatureFlag.TwoFactorComponentRefactor]: TRUE,
+  [FeatureFlag.TwoFactorComponentRefactor]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
