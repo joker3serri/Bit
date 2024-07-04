@@ -122,3 +122,6 @@ export declare namespace ipc {
     send(message: string): number
   }
 }
+export namespace autofill {
+  export function helloWorld(value: string): Promise<string>
+}
