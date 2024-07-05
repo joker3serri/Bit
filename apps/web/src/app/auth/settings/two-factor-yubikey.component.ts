@@ -1,4 +1,4 @@
-import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
+import { DIALOG_DATA, DialogConfig } from "@angular/cdk/dialog";
 import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 
@@ -38,7 +38,6 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
 
   constructor(
     @Inject(DIALOG_DATA) protected data: AuthResponse<TwoFactorYubiKeyResponse>,
-    private dialogRef: DialogRef,
     apiService: ApiService,
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
@@ -87,6 +86,19 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
   }
 
   submit = async () => {
+    this.formGroup.markAllAsTouched();
+    if (this.formGroup.invalid) {
+      return;
+    }
+    if (this.enabled) {
+      await this.disableMethod();
+    } else {
+      await this.enable();
+    }
+    this.onChangeStatus.emit(this.enabled);
+  };
+
+  protected async enable() {
     const keys = this.formGroup.controls.keys.value;
     const request = await this.buildRequestModel(UpdateTwoFactorYubioOtpRequest);
     request.key1 = keys != null && keys.length > 0 ? keys[0].key : null;
@@ -96,28 +108,10 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
     request.key5 = keys != null && keys.length > 4 ? keys[4].key : null;
     request.nfc = this.formGroup.value.nfc;
 
-    return this.submitForm(request);
-  };
-
-  private submitForm(request: UpdateTwoFactorYubioOtpRequest) {
-    return super.enable(async () => {
-      this.formPromise = this.apiService.putTwoFactorYubiKey(request);
-      const response = await this.formPromise;
-      await this.processResponse(response);
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("yubikeysUpdated"));
-    });
-  }
-
-  disable = async () => {
-    await this.disableYubikey();
-    if (!this.enabled) {
-      this.onChangeStatus.emit(this.enabled);
-      this.dialogRef.close();
-    }
-  };
-
-  private async disableYubikey() {
-    return super.disable(this.disablePromise);
+    const response: TwoFactorYubiKeyResponse = await this.apiService.putTwoFactorYubiKey(request);
+    this.processResponse(response);
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("yubikeysUpdated"));
+    this.onUpdated.emit(true);
   }
 
   remove(control: FormControl<Key>) {
