@@ -22,6 +22,8 @@ import { PaymentMethodWarningsModule } from "@bitwarden/web-vault/app/billing/sh
 import { ProductSwitcherModule } from "@bitwarden/web-vault/app/layouts/product-switcher/product-switcher.module";
 import { ToggleWidthComponent } from "@bitwarden/web-vault/app/layouts/toggle-width.component";
 
+import { ProviderClientVaultPrivacyBannerService } from "./services/provider-client-vault-privacy-banner.service";
+
 @Component({
   selector: "providers-layout",
   templateUrl: "providers-layout.component.html",
@@ -61,6 +63,7 @@ export class ProvidersLayoutComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private providerService: ProviderService,
     private configService: ConfigService,
+    protected providerClientVaultPrivacyBannerService: ProviderClientVaultPrivacyBannerService,
   ) {}
 
   ngOnInit() {
