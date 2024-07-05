@@ -50,8 +50,7 @@
     (onClose)="(true)"
     *ngIf="showProviderClientVaultPrivacyWarningBanner$ | async"
   >
-    Notice: Later this month, client vault privacy will be improved and provider members will no
-    longer have direct access to client vault items. For questions,
+    {{ "providerClientVaultPrivacyNotification" | i18n }}
     <a
       href="https://bitwarden.com/contact/"
       bitLink
@@ -59,7 +58,7 @@
       target="_blank"
       rel="noreferrer"
     >
-      contact Bitwarden support </a
+      {{ "contactBitwardenSupport" | i18n }} </a
     >.
   </bit-banner>
   <app-payment-method-warnings
