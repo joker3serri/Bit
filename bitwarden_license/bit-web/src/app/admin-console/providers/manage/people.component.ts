@@ -157,11 +157,11 @@ export class PeopleComponent
         comp.name = this.userNamePipe.transform(user);
         comp.providerId = this.providerId;
         comp.providerUserId = user != null ? user.id : null;
-        comp.onSavedUser.subscribe(() => {
+        comp.savedUser.subscribe(() => {
           modal.close();
           this.load();
         });
-        comp.onDeletedUser.subscribe(() => {
+        comp.deletedUser.subscribe(() => {
           modal.close();
           this.removeUser(user);
         });
