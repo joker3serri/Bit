@@ -1,7 +1,8 @@
-import { memberAccessReportsMock } from "./member-access-report.mock";
+import { OrganizationId } from "@bitwarden/common/src/types/guid";
+
 import { MemberAccessReportService } from "./member-access-report.service";
 describe("ImportService", () => {
-  const mockOrganizationId = "mockOrgId";
+  const mockOrganizationId = "mockOrgId" as OrganizationId;
   let memberAccessReportService: MemberAccessReportService;
 
   beforeEach(() => {
@@ -10,8 +11,7 @@ describe("ImportService", () => {
 
   describe("generateMemberAccessReportView", () => {
     it("should generate member access report view", () => {
-      const result =
-        memberAccessReportService.generateMemberAccessReportView(memberAccessReportsMock);
+      const result = memberAccessReportService.generateMemberAccessReportView();
 
       expect(result).toEqual([
         {
@@ -48,10 +48,8 @@ describe("ImportService", () => {
 
   describe("generateUserReportExportItems", () => {
     it("should generate user report export items", async () => {
-      const result = await memberAccessReportService.generateUserReportExportItems(
-        memberAccessReportsMock,
-        mockOrganizationId,
-      );
+      const result =
+        await memberAccessReportService.generateUserReportExportItems(mockOrganizationId);
 
       expect(result).toEqual(
         expect.arrayContaining([
