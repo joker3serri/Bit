@@ -164,10 +164,9 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
           this.dialogService,
           { data: result },
         );
-        this.twoFactorSetupSubscription = yubiComp.componentInstance.onChangeStatus
-          .pipe(first(), takeUntil(this.destroy$))
+        yubiComp.componentInstance.onUpdated
+          .pipe(takeUntil(this.destroy$))
           .subscribe((enabled: boolean) => {
-            yubiComp.close();
             this.updateStatus(enabled, TwoFactorProviderType.Yubikey);
           });
         break;
@@ -269,7 +268,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
       this.modal.close();
     }
     this.providers.forEach((p) => {
-      if (p.type === type) {
+      if (p.type === type && enabled !== undefined) {
         p.enabled = enabled;
       }
     });

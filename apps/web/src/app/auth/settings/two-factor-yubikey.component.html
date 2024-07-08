@@ -36,7 +36,7 @@
             <bit-form-field *ngIf="!keys[i].existingKey">
               <input bitInput type="password" formControlName="key" appInputVerbatim />
             </bit-form-field>
-            <div class="tw-flex tw-justify-between" *ngIf="keys[i].existingKey">
+            <div class="tw-flex tw-justify-between tw-mb-6" *ngIf="keys[i].existingKey">
               <span class="tw-mr-2 tw-self-center">{{ keys[i].existingKey }}</span>
               <button
                 bitIconButton="bwi-minus-circle"
@@ -70,7 +70,13 @@
       >
         {{ "disableAllKeys" | i18n }}
       </button>
-      <button bitButton bitFormButton type="button" buttonType="secondary" bitDialogClose>
+      <button
+        bitButton
+        bitFormButton
+        type="button"
+        buttonType="secondary"
+        [bitDialogClose]="this.enabled"
+      >
         {{ "close" | i18n }}
       </button>
     </ng-container>

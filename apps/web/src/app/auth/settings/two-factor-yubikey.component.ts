@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogConfig } from "@angular/cdk/dialog";
-import { Component, EventEmitter, Inject, Output } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -11,7 +11,7 @@ import { AuthResponse } from "@bitwarden/common/auth/types/auth-response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
@@ -25,7 +25,6 @@ interface Key {
   templateUrl: "two-factor-yubikey.component.html",
 })
 export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
-  @Output() onChangeStatus = new EventEmitter<boolean>();
   type = TwoFactorProviderType.Yubikey;
   keys: Key[];
   anyKeyHasNfc = false;
@@ -56,6 +55,7 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
     userVerificationService: UserVerificationService,
     dialogService: DialogService,
     private formBuilder: FormBuilder,
+    private toastService: ToastService,
   ) {
     super(
       apiService,
@@ -70,7 +70,7 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
   ngOnInit() {
     this.auth(this.data);
     this.formGroup = this.formBuilder.group({
-      formKeys: this.formBuilder.array([] as Key[]),
+      formKeys: this.formBuilder.array<Key>([]),
       anyKeyHasNfc: this.formBuilder.control(this.anyKeyHasNfc),
     });
     this.patch();
@@ -97,12 +97,17 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
     if (this.formGroup.invalid) {
       return;
     }
-    if (this.enabled) {
-      await this.disableMethod();
-    } else {
-      await this.enable();
+    await this.enable();
+  };
+
+  disable = async () => {
+    await this.disableMethod();
+
+    if (!this.enabled) {
+      for (let i = 0; i < this.keys.length; i++) {
+        this.remove(i);
+      }
     }
-    this.onChangeStatus.emit(this.enabled);
   };
 
   protected async enable() {
@@ -115,10 +120,13 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
     request.key5 = keys != null && keys.length > 4 ? keys[4].key : null;
     request.nfc = this.formGroup.value.anyKeyHasNfc;
 
-    const response: TwoFactorYubiKeyResponse = await this.apiService.putTwoFactorYubiKey(request);
-    this.processResponse(response);
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("yubikeysUpdated"));
-    this.onUpdated.emit(true);
+    this.processResponse(await this.apiService.putTwoFactorYubiKey(request));
+    this.toastService.showToast({
+      title: this.i18nService.t("success"),
+      message: this.i18nService.t("yubikeysUpdated"),
+      variant: "success",
+    });
+    this.onUpdated.emit(this.enabled);
   }
 
   remove(pos: number) {
@@ -133,8 +141,7 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
 
   private processResponse(response: TwoFactorYubiKeyResponse) {
     this.enabled = response.enabled;
-    this.onChangeStatus.emit(this.enabled);
-
+    this.anyKeyHasNfc = response.nfc || !response.enabled;
     this.keys = [
       { key: response.key1, existingKey: this.padRight(response.key1) },
       { key: response.key2, existingKey: this.padRight(response.key2) },
@@ -142,7 +149,6 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
       { key: response.key4, existingKey: this.padRight(response.key4) },
       { key: response.key5, existingKey: this.padRight(response.key5) },
     ];
-    this.anyKeyHasNfc = response.nfc || !response.enabled;
   }
 
   private padRight(str: string, character = "•", size = 44) {
