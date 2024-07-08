@@ -92,10 +92,6 @@ export class TwoFactorAuthenticatorComponent
 
   async auth(authResponse: AuthResponse<TwoFactorAuthenticatorResponse>) {
     super.auth(authResponse);
-    await this.loadQRiousScript().catch((error) => {
-      this.logService.error(error);
-      this.qrScriptError = true;
-    });
     return this.processResponse(authResponse.response);
   }
 
@@ -127,10 +123,20 @@ export class TwoFactorAuthenticatorComponent
     this.enabled = response.enabled;
     this.key = response.key;
 
+    await this.waitForQRiousToLoadOrError().catch((error) => {
+      this.logService.error(error);
+      this.qrScriptError = true;
+    });
+
     await this.createQRCode();
   }
 
-  private async loadQRiousScript(): Promise<void> {
+  private async waitForQRiousToLoadOrError(): Promise<void> {
+    // Check if QRious is already loaded or if there was an error loading it either way don't wait for it to try and load again
+    if (typeof window.QRious !== "undefined" || this.qrScriptError) {
+      return Promise.resolve();
+    }
+
     return new Promise((resolve, reject) => {
       this.qrScript.onload = () => resolve();
       this.qrScript.onerror = () =>
