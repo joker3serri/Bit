@@ -2,13 +2,8 @@
   *ngIf="autofillCiphers$ | async as ciphers"
   [ciphers]="ciphers"
   [title]="'autofillSuggestions' | i18n"
-  showAutoFill
+  [showRefresh]="showRefresh"
+  (onRefresh)="refreshCurrentTab()"
+  [description]="(showEmptyAutofillTip$ | async) ? ('autofillSuggestionsTip' | i18n) : null"
+  showAutofillButton
 ></app-vault-list-items-container>
-<ng-container *ngIf="showEmptyAutofillTip$ | async">
-  <bit-section>
-    <popup-section-header [title]="'autofillSuggestions' | i18n"></popup-section-header>
-    <span class="tw-text-muted tw-px-1" bitTypography="body2">{{
-      "autofillSuggestionsTip" | i18n
-    }}</span>
-  </bit-section>
-</ng-container>

@@ -5,15 +5,16 @@ import { mergeMap, take } from "rxjs/operators";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
+import { PBKDF2KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { KdfType, PBKDF2_ITERATIONS } from "@bitwarden/common/platform/enums";
+import { KdfType } from "@bitwarden/common/platform/enums";
 import {
   StateProvider,
   ActiveUserState,
-  KeyDefinition,
   PREMIUM_BANNER_DISK_LOCAL,
   BANNERS_DISMISSED_DISK,
+  UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
@@ -33,19 +34,21 @@ type PremiumBannerReprompt = {
 /** Banners that will be re-shown on a new session */
 type SessionBanners = Omit<VisibleVaultBanner, VisibleVaultBanner.Premium>;
 
-export const PREMIUM_BANNER_REPROMPT_KEY = new KeyDefinition<PremiumBannerReprompt>(
+export const PREMIUM_BANNER_REPROMPT_KEY = new UserKeyDefinition<PremiumBannerReprompt>(
   PREMIUM_BANNER_DISK_LOCAL,
   "bannerReprompt",
   {
     deserializer: (bannerReprompt) => bannerReprompt,
+    clearOn: [], // Do not clear user tutorials
   },
 );
 
-export const BANNERS_DISMISSED_DISK_KEY = new KeyDefinition<SessionBanners[]>(
+export const BANNERS_DISMISSED_DISK_KEY = new UserKeyDefinition<SessionBanners[]>(
   BANNERS_DISMISSED_DISK,
   "bannersDismissed",
   {
     deserializer: (bannersDismissed) => bannersDismissed,
+    clearOn: [], // Do not clear user tutorials
   },
 );
 
@@ -198,7 +201,7 @@ export class VaultBannersService {
     const kdfConfig = await this.kdfConfigService.getKdfConfig();
     return (
       kdfConfig.kdfType === KdfType.PBKDF2_SHA256 &&
-      kdfConfig.iterations < PBKDF2_ITERATIONS.defaultValue
+      kdfConfig.iterations < PBKDF2KdfConfig.ITERATIONS.defaultValue
     );
   }
 
