@@ -3,3 +3,4 @@ export { CopyCipherFieldService, CopyAction } from "./services/copy-cipher-field
 export { CopyCipherFieldDirective } from "./components/copy-cipher-field.directive";
 
 export * from "./cipher-view";
+export * from "./cipher-form";
