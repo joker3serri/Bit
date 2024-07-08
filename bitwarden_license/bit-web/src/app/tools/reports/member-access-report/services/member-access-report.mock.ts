@@ -1,8 +1,8 @@
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
-import { MemberAccessReportModel } from "./view/member-access-report.view";
+import { MemberAccessReportModel } from "../model/member-access-report.model";
 
-export const memberAccessReports: MemberAccessReportModel[] = [
+export const memberAccessReportsMock: MemberAccessReportModel[] = [
   {
     userName: "Sarah Johnson",
     email: "sjohnson@email.com",

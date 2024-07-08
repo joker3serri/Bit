@@ -58,6 +58,7 @@ export function aggregateProperty<T, K extends keyof T, V>(array: T[], property:
  *
  * @param {T[]} data - An array of objects to be exported.
  * @param {string} filename - The name of the resulting CSV file.
+ * @param {FileDownloadService} fileDownloadService - The service that has the download function
  * @param {[key in keyof T]: string } headers - A mapping of keys of type T to their corresponding header names.
  */
 export function exportToCSV<T>(
