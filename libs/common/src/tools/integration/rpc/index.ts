@@ -1,5 +1,5 @@
 export * from "./api-settings";
-export * from "./request-options";
+export * from "./integration-request";
 export * from "./rest-client";
 export * from "./rpc-definition";
 export * from "./rpc";
