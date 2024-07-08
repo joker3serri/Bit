@@ -75,11 +75,6 @@ export class TwoFactorAuthenticatorComponent
     this.qrScript = window.document.createElement("script");
     this.qrScript.src = "scripts/qrious.min.js";
     this.qrScript.async = true;
-
-    this.loadQRiousScript().catch((error) => {
-      this.logService.error(error);
-      this.qrScriptError = true;
-    });
   }
 
   async ngOnInit() {
@@ -95,8 +90,12 @@ export class TwoFactorAuthenticatorComponent
     this.formGroup.controls.token.markAsTouched();
   }
 
-  auth(authResponse: AuthResponse<TwoFactorAuthenticatorResponse>) {
+  async auth(authResponse: AuthResponse<TwoFactorAuthenticatorResponse>) {
     super.auth(authResponse);
+    await this.loadQRiousScript().catch((error) => {
+      this.logService.error(error);
+      this.qrScriptError = true;
+    });
     return this.processResponse(authResponse.response);
   }
 
@@ -106,7 +105,7 @@ export class TwoFactorAuthenticatorComponent
     }
     if (this.enabled) {
       await this.disableMethod();
-      this.close();
+      this.dialogRef.close(this.enabled);
     } else {
       await this.enable();
     }
@@ -132,10 +131,6 @@ export class TwoFactorAuthenticatorComponent
   }
 
   private async loadQRiousScript(): Promise<void> {
-    if (typeof window.QRious !== "undefined") {
-      return Promise.resolve();
-    }
-
     return new Promise((resolve, reject) => {
       this.qrScript.onload = () => resolve();
       this.qrScript.onerror = () =>
@@ -161,10 +156,6 @@ export class TwoFactorAuthenticatorComponent
       size: 160,
     });
   }
-
-  close = () => {
-    this.dialogRef.close(this.enabled);
-  };
 
   static open(
     dialogService: DialogService,
