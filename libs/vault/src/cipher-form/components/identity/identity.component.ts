@@ -77,23 +77,23 @@ export class IdentitySectionComponent implements OnInit {
     this.cipherFormContainer.registerChildForm("identityDetails", this.identityForm);
     this.identityForm.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
       const data = new IdentityView();
-      (data.title = value.title),
-        (data.firstName = value.firstName),
-        (data.lastName = value.lastName),
-        (data.username = value.username),
-        (data.company = value.company),
-        (data.ssn = value.ssn),
-        (data.passportNumber = value.passportNumber),
-        (data.licenseNumber = value.licenseNumber),
-        (data.email = value.email),
-        (data.phone = value.phone),
-        (data.address1 = value.address1),
-        (data.address2 = value.address2),
-        (data.address3 = value.address3),
-        (data.city = value.city),
-        (data.state = value.state),
-        (data.postalCode = value.postalCode),
-        (data.country = value.country);
+      data.title = value.title;
+      data.firstName = value.firstName;
+      data.lastName = value.lastName;
+      data.username = value.username;
+      data.company = value.company;
+      data.ssn = value.ssn;
+      data.passportNumber = value.passportNumber;
+      data.licenseNumber = value.licenseNumber;
+      data.email = value.email;
+      data.phone = value.phone;
+      data.address1 = value.address1;
+      data.address2 = value.address2;
+      data.address3 = value.address3;
+      data.city = value.city;
+      data.state = value.state;
+      data.postalCode = value.postalCode;
+      data.country = value.country;
 
       this.cipherFormContainer.patchCipher({
         identity: data,

@@ -97,7 +97,6 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
 })
 export class AddEditV2Component {
   headerText: string;
-  cipherId: CipherId;
   config: CipherFormConfig;
 
   get loading() {
@@ -128,7 +127,6 @@ export class AddEditV2Component {
         map((params) => new QueryParams(params)),
         switchMap(async (params) => {
           let mode: CipherFormMode;
-
           if (params.cipherId == null) {
             mode = "add";
           } else {
