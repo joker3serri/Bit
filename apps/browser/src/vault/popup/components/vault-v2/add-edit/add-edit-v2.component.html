@@ -1,12 +1,6 @@
 <popup-page>
   <popup-header slot="header" [pageTitle]="headerText" showBackButton> </popup-header>
 
-  <app-identity
-    *ngIf="cipherType === allTypes.Identity"
-    formId="cipherForm"
-    [cipherId]="cipherId"
-  ></app-identity>
-
   <vault-cipher-form
     *ngIf="!loading"
     formId="cipherForm"

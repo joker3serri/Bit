@@ -23,7 +23,6 @@ import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup
 import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-page.component";
 import { OpenAttachmentsComponent } from "../attachments/open-attachments/open-attachments.component";
-import { IdentityComponent } from "../identity/identity.component";
 
 /**
  * Helper class to parse query parameters for the AddEdit route.
@@ -92,7 +91,6 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,
-    IdentityComponent,
     CipherFormModule,
     AsyncActionsModule,
   ],
@@ -100,9 +98,6 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
 export class AddEditV2Component {
   headerText: string;
   cipherId: CipherId;
-  // isEdit: boolean = false;
-  allTypes = CipherType;
-  cipherType: CipherType;
   config: CipherFormConfig;
 
   get loading() {
@@ -157,7 +152,6 @@ export class AddEditV2Component {
       .subscribe((config) => {
         this.config = config;
         this.headerText = this.setHeader(config.mode, config.cipherType);
-        this.cipherType = config.cipherType;
       });
   }
 

@@ -4,7 +4,6 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   ButtonModule,
@@ -18,7 +17,7 @@ import {
 
 @Component({
   standalone: true,
-  selector: "app-identity",
+  selector: "vault-identity-section",
   templateUrl: "./identity.component.html",
   imports: [
     CommonModule,
@@ -34,8 +33,7 @@ import {
   ],
 })
 export class IdentityComponent implements OnInit {
-  @Input() cipherId: string;
-  cipher: CipherView;
+  @Input() originalCipherView: CipherView;
   identityTitleOptions: any[];
 
   protected identityForm = this.formBuilder.group({
@@ -60,7 +58,6 @@ export class IdentityComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private cipherService: CipherService,
     private i18nService: I18nService,
   ) {
     this.identityTitleOptions = [
@@ -73,22 +70,14 @@ export class IdentityComponent implements OnInit {
     ];
   }
 
-  async ngOnInit() {
-    if (this.cipherId) {
-      await this.getCipherData(this.cipherId);
+  ngOnInit() {
+    if (this.originalCipherView && this.originalCipherView.id) {
       this.populateFormData();
     }
   }
 
-  async getCipherData(id: string) {
-    const cipher = await this.cipherService.get(id);
-    this.cipher = await cipher.decrypt(
-      await this.cipherService.getKeyForCipherKeyDecryption(cipher),
-    );
-  }
-
   populateFormData() {
-    const { identity } = this.cipher;
+    const { identity } = this.originalCipherView;
     this.identityForm.setValue({
       title: identity.title,
       firstName: identity.firstName,
