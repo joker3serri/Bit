@@ -1,10 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 import {
   ButtonModule,
   SectionComponent,
@@ -14,6 +16,8 @@ import {
   IconButtonModule,
   SelectModule,
 } from "@bitwarden/components";
+
+import { CipherFormContainer } from "../../cipher-form-container";
 
 @Component({
   standalone: true,
@@ -32,7 +36,7 @@ import {
     SelectModule,
   ],
 })
-export class IdentityComponent implements OnInit {
+export class IdentitySectionComponent implements OnInit {
   @Input() originalCipherView: CipherView;
   identityTitleOptions: any[];
 
@@ -50,13 +54,14 @@ export class IdentityComponent implements OnInit {
     address1: [""],
     address2: [""],
     address3: [""],
-    cityTown: [""],
-    stateProvince: [""],
-    zipPostalCode: [""],
+    city: [""],
+    state: [""],
+    postalCode: [""],
     country: [""],
   });
 
   constructor(
+    private cipherFormContainer: CipherFormContainer,
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
   ) {
@@ -68,6 +73,32 @@ export class IdentityComponent implements OnInit {
       { name: i18nService.t("mx"), value: i18nService.t("mx") },
       { name: i18nService.t("dr"), value: i18nService.t("dr") },
     ];
+
+    this.cipherFormContainer.registerChildForm("identityDetails", this.identityForm);
+    this.identityForm.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+      const data = new IdentityView();
+      (data.title = value.title),
+        (data.firstName = value.firstName),
+        (data.lastName = value.lastName),
+        (data.username = value.username),
+        (data.company = value.company),
+        (data.ssn = value.ssn),
+        (data.passportNumber = value.passportNumber),
+        (data.licenseNumber = value.licenseNumber),
+        (data.email = value.email),
+        (data.phone = value.phone),
+        (data.address1 = value.address1),
+        (data.address2 = value.address2),
+        (data.address3 = value.address3),
+        (data.city = value.city),
+        (data.state = value.state),
+        (data.postalCode = value.postalCode),
+        (data.country = value.country);
+
+      this.cipherFormContainer.patchCipher({
+        identity: data,
+      });
+    });
   }
 
   ngOnInit() {
@@ -92,9 +123,9 @@ export class IdentityComponent implements OnInit {
       address1: identity.address1,
       address2: identity.address2,
       address3: identity.address3,
-      cityTown: identity.city,
-      stateProvince: identity.state,
-      zipPostalCode: identity.postalCode,
+      city: identity.city,
+      state: identity.state,
+      postalCode: identity.postalCode,
       country: identity.country,
     });
   }
