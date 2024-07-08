@@ -3,7 +3,6 @@ import {
   AfterContentChecked,
   Component,
   ContentChild,
-  ElementRef,
   HostBinding,
   HostListener,
   Input,
@@ -28,7 +27,6 @@ export class BitFormFieldComponent implements AfterContentChecked {
   @ContentChild(BitLabel) label: BitLabel;
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
-  @ViewChild("labelContent", { read: ElementRef }) labelForReal: ElementRef<HTMLLabelElement>;
 
   constructor() {}
 
@@ -84,14 +82,6 @@ export class BitFormFieldComponent implements AfterContentChecked {
   @HostListener("focusout")
   onFocusOut() {
     this.buttonIsFocused.set(false);
-  }
-
-  ngAfterViewChecked() {
-    const width = this.labelForReal.nativeElement.getBoundingClientRect().width;
-    // eslint-disable-next-line
-    console.log("ngAfterViewChecked, this is the width ->", width);
-
-    this.labelWidth = Math.round(width);
   }
 
   ngAfterContentChecked(): void {

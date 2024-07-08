@@ -9,7 +9,7 @@ import { BitFormFieldComponent } from "./form-field.component";
 })
 export class BitPrefixDirective {
   @HostBinding("class") @Input() get classList() {
-    return ["last:tw-mr-1", "tw-text-muted"];
+    return ["tw-text-muted"];
   }
 
   @HostBinding("attr.aria-describedby")

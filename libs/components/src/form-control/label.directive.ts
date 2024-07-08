@@ -17,9 +17,5 @@ export class BitLabel {
     return this.elementRef.nativeElement.textContent;
   }
 
-  get width() {
-    return this.elementRef.nativeElement.getBoundingClientRect().width;
-  }
-
   @HostBinding() @Input() id = `bit-label-${nextId++}`;
 }
