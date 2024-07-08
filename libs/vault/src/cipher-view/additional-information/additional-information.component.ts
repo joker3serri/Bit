@@ -26,6 +26,4 @@ import {
 })
 export class AdditionalInformationComponent {
   @Input() notes: string;
-
-  constructor() {}
 }

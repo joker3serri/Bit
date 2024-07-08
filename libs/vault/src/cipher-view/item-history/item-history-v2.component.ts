@@ -31,6 +31,4 @@ import {
 })
 export class ItemHistoryV2Component {
   @Input() cipher: CipherView;
-
-  constructor() {}
 }
