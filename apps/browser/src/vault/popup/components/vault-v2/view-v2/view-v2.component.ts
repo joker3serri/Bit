@@ -15,6 +15,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import {
+  AsyncActionsModule,
   SearchModule,
   ButtonModule,
   IconButtonModule,
@@ -44,6 +45,7 @@ import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup
     PopupFooterComponent,
     IconButtonModule,
     CipherViewComponent,
+    AsyncActionsModule,
   ],
 })
 export class ViewV2Component {
@@ -110,7 +112,7 @@ export class ViewV2Component {
     return true;
   }
 
-  async delete(): Promise<boolean> {
+  delete = async (): Promise<boolean> => {
     this.passwordReprompted =
       this.passwordReprompted ||
       (await this.passwordRepromptService.passwordRepromptCheck(this.cipher));
@@ -145,7 +147,7 @@ export class ViewV2Component {
     });
 
     return true;
-  }
+  };
 
   protected deleteCipher() {
     return this.cipher.isDeleted
