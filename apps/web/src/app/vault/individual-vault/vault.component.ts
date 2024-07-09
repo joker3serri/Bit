@@ -739,11 +739,8 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     if (orgId && orgId !== "MyVault") {
       const organization = this.allOrganizations.find((o) => o.id === orgId);
-      const flexibleCollectionsV1Enabled = await this.flexibleCollectionsV1Enabled();
       availableCollections = this.allCollections.filter(
-        (c) =>
-          c.organizationId === organization.id &&
-          c.canEditItems(organization, flexibleCollectionsV1Enabled, false),
+        (c) => c.organizationId === organization.id && !c.readOnly,
       );
     }
 

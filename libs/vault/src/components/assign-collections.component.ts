@@ -355,11 +355,7 @@ export class AssignCollectionsComponent implements OnInit {
           this.formGroup.controls.collections.setValue([], { emitEvent: false });
         }),
         switchMap((orgId) => {
-          return this.getCollectionsForOrganization(
-            orgId as OrganizationId,
-            v1FCEnabled,
-            restrictProviderAccess,
-          );
+          return this.getCollectionsForOrganization(orgId as OrganizationId);
         }),
         takeUntil(this.destroy$),
       )
@@ -376,15 +372,9 @@ export class AssignCollectionsComponent implements OnInit {
   /**
    * Retrieves the collections for the organization with the given ID.
    * @param orgId
-   * @param v1FCEnabled
-   * @param restrictProviderAccess
    * @returns An observable of the collections for the organization.
    */
-  private getCollectionsForOrganization(
-    orgId: OrganizationId,
-    v1FCEnabled: boolean,
-    restrictProviderAccess: boolean,
-  ): Observable<CollectionView[]> {
+  private getCollectionsForOrganization(orgId: OrganizationId): Observable<CollectionView[]> {
     return combineLatest([
       this.collectionService.decryptedCollections$,
       this.organizationService.organizations$,
@@ -394,9 +384,7 @@ export class AssignCollectionsComponent implements OnInit {
         this.orgName = org.name;
 
         return collections.filter((c) => {
-          return (
-            c.organizationId === orgId && c.canEditItems(org, v1FCEnabled, restrictProviderAccess)
-          );
+          return c.organizationId === orgId && !c.readOnly;
         });
       }),
       shareReplay({ refCount: true, bufferSize: 1 }),
