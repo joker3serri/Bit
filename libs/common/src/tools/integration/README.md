@@ -23,17 +23,32 @@ type CreateForwardingEmailConfig<Settings> = RpcConfiguration<
   ForwarderContext<Settings>
 >;
 
-// Here's how the integration should represent that data in their plugin
-type ForwarderConfiguration = IntegrationConfiguration & {
+// how a forwarder integration point might represent its configuration
+type ForwarderConfiguration<Settings> = IntegrationConfiguration & {
   forwarder: {
     defaultState: Settings;
-    createForwardingEmail: CreateForwardingEmailConfig<ForwarderSettings>;
+    createForwardingEmail: CreateForwardingEmailConfig<Settings>;
+  };
+};
+
+// how an importer integration point might represent its configuration
+type ImporterConfiguration = IntegrationConfiguration & {
+  importer: {
+    fileless: false | { selector: string };
+    formats: ContentType[];
+    crep:
+      | false
+      | {
+          /* credential exchange protocol configuration */
+        };
+    // ...
   };
 };
 
 // how a plugin might be structured
-export type AddyIoSettings = ApiSettings & EmailDomainSettings;
-export type AddyIoConfiguration = ForwarderConfiguration<AddyIoSettings>;
+export type JustTrustUsSettings = ApiSettings & EmailDomainSettings;
+export type JustTrustUsConfiguration = ForwarderConfiguration<JustTrustUsSettings> &
+  ImporterConfiguration;
 
 export const JustTrustUs = {
   // common metadata
@@ -60,5 +75,12 @@ export const JustTrustUs = {
       processJson: (json) => json.email,
     },
   },
-};
+
+  // importer specific config
+  importer: {
+    fileless: false,
+    crep: false,
+    formats: ["text/csv", "application/json"],
+  },
+} as JustTrustUsConfiguration;
 ```
