@@ -73,17 +73,18 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
       formKeys: this.formBuilder.array<Key>([]),
       anyKeyHasNfc: this.formBuilder.control(this.anyKeyHasNfc),
     });
-    this.patch();
+    this.refreshFormArrayData();
   }
 
-  patch() {
-    const control = <FormArray>this.formGroup.get("formKeys");
+  refreshFormArrayData() {
+    const formKeys = <FormArray>this.formGroup.get("formKeys");
+    formKeys.clear();
     this.keys.forEach((val) => {
       const fb = this.formBuilder.group({
         key: val.key,
         existingKey: val.existingKey,
       });
-      control.push(fb);
+      formKeys.push(fb);
     });
   }
 
@@ -121,6 +122,7 @@ export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent {
     request.nfc = this.formGroup.value.anyKeyHasNfc;
 
     this.processResponse(await this.apiService.putTwoFactorYubiKey(request));
+    this.refreshFormArrayData();
     this.toastService.showToast({
       title: this.i18nService.t("success"),
       message: this.i18nService.t("yubikeysUpdated"),
