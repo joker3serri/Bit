@@ -21,6 +21,9 @@ export enum FeatureFlag {
   InlineMenuFieldQualification = "inline-menu-field-qualification",
   MemberAccessReport = "ac-2059-member-access-report",
   TwoFactorComponentRefactor = "two-factor-component-refactor",
+  EnableTimeThreshold = "PM-5864-dollar-threshold",
+  GroupsComponentRefactor = "groups-component-refactor",
+  ProviderClientVaultPrivacyBanner = "ac-2833-provider-client-vault-privacy-banner",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -53,6 +56,10 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.InlineMenuFieldQualification]: FALSE,
   [FeatureFlag.MemberAccessReport]: FALSE,
   [FeatureFlag.TwoFactorComponentRefactor]: TRUE,
+  [FeatureFlag.TwoFactorComponentRefactor]: FALSE,
+  [FeatureFlag.EnableTimeThreshold]: FALSE,
+  [FeatureFlag.GroupsComponentRefactor]: FALSE,
+  [FeatureFlag.ProviderClientVaultPrivacyBanner]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;

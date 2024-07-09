@@ -40,6 +40,7 @@ import { CaptchaProtectedComponent } from "../captcha-protected.component";
 
 import { TwoFactorAuthAuthenticatorComponent } from "./two-factor-auth-authenticator.component";
 import { TwoFactorAuthYubikeyComponent } from "./two-factor-auth-yubikey.component";
+
 import {
   TwoFactorOptionsDialogResult,
   TwoFactorOptionsComponent,
