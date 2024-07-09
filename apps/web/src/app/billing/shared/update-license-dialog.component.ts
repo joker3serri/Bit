@@ -29,11 +29,14 @@ export class UpdateLicenseDialogComponent extends UpdateLicenseComponent {
     super(apiService, i18nService, platformUtilsService, organizationApiService, formBuilder);
   }
   async submitLicense() {
-    await this.submit();
+    const result = await this.submit();
+    if (result === UpdateLicenseDialogResult.Updated) {
+      this.dialogRef.close(UpdateLicenseDialogResult.Updated);
+    }
   }
+
   submitLicenseDialog = async () => {
     await this.submitLicense();
-    this.dialogRef.close(UpdateLicenseDialogResult.Updated);
   };
 
   cancel = async () => {
