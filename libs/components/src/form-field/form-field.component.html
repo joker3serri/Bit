@@ -1,6 +1,6 @@
 <div class="tw-w-full tw-relative tw-group/input tw-min-h-11">
   <div
-    class="tw-gap-1 tw-bg-background tw-rounded-lg tw-flex tw-border tw-border-transparent tw-border-solid tw-min-h-11 [&:not(:has(button:enabled)):has(input:read-only)]:tw-bg-secondary-100 [&:not(:has(button:enabled)):has(textarea:read-only)]:tw-bg-secondary-100"
+    class="tw-gap-1 tw-bg-background tw-rounded-lg tw-flex tw-min-h-11 [&:not(:has(button:enabled)):has(input:read-only)]:tw-bg-secondary-100 [&:not(:has(button:enabled)):has(textarea:read-only)]:tw-bg-secondary-100"
   >
     <div
       #prefixSlot
@@ -37,7 +37,7 @@
         [ngClass]="inputBorderClasses"
       >
         <label
-          class="tw-flex tw-gap-1 tw-text-sm tw-text-muted -tw-translate-y-2.5 tw-mb-0 tw-z-20 tw-max-w-full tw-pointer-events-auto"
+          class="tw-flex tw-gap-1 tw-text-sm tw-text-muted -tw-translate-y-2.5 tw-mb-0 tw-max-w-full tw-pointer-events-auto"
           [attr.for]="input.labelForId"
         >
           <ng-content select="bit-label"></ng-content>
