@@ -145,6 +145,12 @@ export class CardDetailsSectionComponent implements OnInit {
     }
   }
 
+  /** True when the heading should include the brand */
+  showBrandHeadingText() {
+    const { brand } = this.cardDetailsForm.value;
+    return brand && brand !== "Other";
+  }
+
   /** Set form initial form values from the current cipher */
   private setInitialValues() {
     const { cardholderName, number, brand, expMonth, expYear, code } = this.originalCipherView.card;
