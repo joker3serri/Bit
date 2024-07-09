@@ -1691,6 +1691,9 @@
   "twoStepAuthenticatorScanCodeV2": {
     "message": "Scan the QR code below with your authenticator app or enter the key."
   },
+  "twoStepAuthenticatorQRCanvasError": {
+    "message": "Could not load QR code. Try again or use the key below."
+  },
   "key": {
     "message": "Key"
   },
@@ -8441,6 +8444,9 @@
   },
   "memberAccessReportDesc": {
     "message": "Ensure members have access to the right credentials and their accounts are secure. Use this report to obtain a CSV of member access and account configurations."
+  },
+  "memberAccessReportPageDesc": {
+    "message": "Audit organization member access across groups, collections, and collection items. The CSV export provides a detailed breakdown per member, including information on collection permissions and account configurations."
   },
   "higherKDFIterations": {
     "message": "Higher KDF iterations can help protect your master password from being brute forced by an attacker."
