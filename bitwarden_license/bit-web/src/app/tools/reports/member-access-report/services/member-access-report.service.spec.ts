@@ -1,5 +1,6 @@
 import { OrganizationId } from "@bitwarden/common/src/types/guid";
 
+import { memberAccessReportsMock } from "./member-access-report.mock";
 import { MemberAccessReportService } from "./member-access-report.service";
 describe("ImportService", () => {
   const mockOrganizationId = "mockOrgId" as OrganizationId;
@@ -7,6 +8,11 @@ describe("ImportService", () => {
 
   beforeEach(() => {
     memberAccessReportService = new MemberAccessReportService();
+    jest
+      .spyOn(memberAccessReportService as MemberAccessReportService, "getMemberAccessData")
+      .mockImplementation(() => {
+        return memberAccessReportsMock;
+      });
   });
 
   describe("generateMemberAccessReportView", () => {

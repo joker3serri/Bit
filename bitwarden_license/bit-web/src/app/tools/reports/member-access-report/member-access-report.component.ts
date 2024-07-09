@@ -7,11 +7,10 @@ import { debounceTime, firstValueFrom } from "rxjs";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { OrganizationId } from "@bitwarden/common/types/guid";
 import { SearchModule, TableDataSource } from "@bitwarden/components";
+import { ExportHelper } from "@bitwarden/vault-export-core/src/services/export-helper";
 import { HeaderModule } from "@bitwarden/web-vault/app/layouts/header/header.module";
 import { SharedModule } from "@bitwarden/web-vault/app/shared";
 import { exportToCSV } from "@bitwarden/web-vault/app/tools/reports/report-utils";
-
-import { ExportHelper } from "../../../../../../../libs/tools/export/vault-export/vault-export-core/src/services/export-helper";
 
 import { MemberAccessReportServiceAbstraction } from "./services/member-access-report.abstraction";
 import { MemberAccessReportService } from "./services/member-access-report.service";
@@ -53,11 +52,13 @@ export class MemberAccessReportComponent implements OnInit {
   }
 
   exportReportAction = async (): Promise<void> => {
-    return exportToCSV(
-      await this.reportService.generateUserReportExportItems(this.organizationId),
-      ExportHelper.getFileName("member-access"),
-      this.fileDownloadService,
-      userReportItemHeaders,
-    );
+    this.fileDownloadService.download({
+      fileName: ExportHelper.getFileName("member-access"),
+      blobData: exportToCSV(
+        await this.reportService.generateUserReportExportItems(this.organizationId),
+        userReportItemHeaders,
+      ),
+      blobOptions: { type: "text/plain" },
+    });
   };
 }

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 
 import { OrganizationId } from "@bitwarden/common/types/guid";
 import {
-  aggregateProperty,
+  collectProperty,
   getUniqueItems,
   sumValue,
 } from "@bitwarden/web-vault/app/tools/reports/report-utils";
@@ -36,7 +36,7 @@ export class MemberAccessReportService {
     memberAccessData.forEach((userData) => {
       const name = userData.userName;
       const email = userData.email;
-      const groupCollections = aggregateProperty<
+      const groupCollections = collectProperty<
         MemberAccessGroupModel,
         "collections",
         MemberAccessCollectionModel

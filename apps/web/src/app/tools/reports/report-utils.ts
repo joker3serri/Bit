@@ -1,7 +1,5 @@
 import * as papa from "papaparse";
 
-import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
-
 /**
  * Returns an array of unique items from a collection based on a specified key.
  *
@@ -35,38 +33,29 @@ export function sumValue<T>(values: T[], getProperty: (item: T) => number): numb
 }
 
 /**
- * Aggregates a specified property from an array of objects.
+ * Collects a specified property from an array of objects.
  *
- * @param array The array of objects to aggregate from.
- * @param property The property to aggregate.
+ * @param array The array of objects to collect from.
+ * @param property The property to collect.
  * @returns An array of aggregated values from the specified property.
  */
-export function aggregateProperty<T, K extends keyof T, V>(array: T[], property: K): V[] {
-  const aggregated: V[] = [];
+export function collectProperty<T, K extends keyof T, V>(array: T[], property: K): V[] {
+  const collected: V[] = array
+    .map((i) => i[property])
+    .filter((value) => Array.isArray(value))
+    .flat() as V[];
 
-  array.forEach((item) => {
-    if (Array.isArray(item[property])) {
-      aggregated.push(...(item[property] as unknown as V[]));
-    }
-  });
-
-  return aggregated;
+  return collected;
 }
 
 /**
- * Exports an array of objects to a CSV file.
+ * Exports an array of objects to a CSV string.
  *
  * @param {T[]} data - An array of objects to be exported.
- * @param {string} filename - The name of the resulting CSV file.
- * @param {FileDownloadService} fileDownloadService - The service that has the download function
  * @param {[key in keyof T]: string } headers - A mapping of keys of type T to their corresponding header names.
+ * @returns A string in csv format from the input data.
  */
-export function exportToCSV<T>(
-  data: T[],
-  filename: string,
-  fileDownloadService: FileDownloadService,
-  headers?: Partial<{ [key in keyof T]: string }>,
-): void {
+export function exportToCSV<T>(data: T[], headers?: Partial<{ [key in keyof T]: string }>): string {
   const mappedData = data.map((item) => {
     const mappedItem: { [key: string]: string } = {};
     for (const key in item) {
@@ -78,11 +67,5 @@ export function exportToCSV<T>(
     }
     return mappedItem;
   });
-  const csv = papa.unparse(mappedData);
-
-  fileDownloadService.download({
-    fileName: filename,
-    blobData: csv,
-    blobOptions: { type: "text/plain" },
-  });
+  return papa.unparse(mappedData);
 }

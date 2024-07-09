@@ -1,16 +1,9 @@
 import * as papa from "papaparse";
 
-import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
-
-import { aggregateProperty, exportToCSV, getUniqueItems, sumValue } from "./report-utils";
-
-class MockFileDownloadService implements FileDownloadService {
-  download(options: { fileName: string; blobData: string; blobOptions: { type: string } }) {}
-}
-
 jest.mock("papaparse", () => ({
   unparse: jest.fn(),
 }));
+import { collectProperty, exportToCSV, getUniqueItems, sumValue } from "./report-utils";
 
 describe("getUniqueItems", () => {
   it("should return unique items based on a specified key", () => {
@@ -63,11 +56,11 @@ describe("sumValue", () => {
   });
 });
 
-describe("aggregateProperty", () => {
-  it("should aggregate a specified property from an array of objects", () => {
+describe("collectProperty", () => {
+  it("should collect a specified property from an array of objects", () => {
     const items = [{ values: [1, 2, 3] }, { values: [4, 5, 6] }];
 
-    const aggregated = aggregateProperty(items, "values");
+    const aggregated = collectProperty(items, "values");
 
     expect(aggregated).toEqual([1, 2, 3, 4, 5, 6]);
   });
@@ -75,7 +68,7 @@ describe("aggregateProperty", () => {
   it("should return an empty array when input is empty", () => {
     const items: { values: number[] }[] = [];
 
-    const aggregated = aggregateProperty(items, "values");
+    const aggregated = collectProperty(items, "values");
 
     expect(aggregated).toEqual([]);
   });
@@ -83,14 +76,13 @@ describe("aggregateProperty", () => {
   it("should handle objects with empty arrays as properties", () => {
     const items = [{ values: [] }, { values: [4, 5, 6] }];
 
-    const aggregated = aggregateProperty(items, "values");
+    const aggregated = collectProperty(items, "values");
 
     expect(aggregated).toEqual([4, 5, 6]);
   });
 });
 
 describe("exportToCSV", () => {
-  let fileDownloadService: FileDownloadService;
   const data = [
     {
       email: "john@example.com",
@@ -105,33 +97,18 @@ describe("exportToCSV", () => {
       accountRecoveryEnabled: "Off",
     },
   ];
-
-  beforeEach(() => {
-    fileDownloadService = new MockFileDownloadService();
-  });
-
   test("exportToCSV should correctly export data to CSV format", () => {
     const mockExportData = [
       { id: "1", name: "Alice", email: "alice@example.com" },
       { id: "2", name: "Bob", email: "bob@example.com" },
     ];
-    const spy = jest.spyOn(fileDownloadService, "download");
-    (papa.unparse as jest.Mock).mockReturnValue("mocked CSV output");
+    const mockedCsvOutput = "mocked CSV output";
+    (papa.unparse as jest.Mock).mockReturnValue(mockedCsvOutput);
 
-    exportToCSV(mockExportData, "report.csv", fileDownloadService);
-
-    expect(spy).toHaveBeenCalledWith({
-      fileName: "report.csv",
-      blobData: expect.any(String),
-      blobOptions: { type: "text/plain" },
-    });
+    exportToCSV(mockExportData);
 
     const csvOutput = papa.unparse(mockExportData);
-    expect(spy).toHaveBeenCalledWith({
-      fileName: "report.csv",
-      blobData: csvOutput,
-      blobOptions: { type: "text/plain" },
-    });
+    expect(csvOutput).toMatch(mockedCsvOutput);
   });
 
   it("should map data according to the headers and export to CSV", () => {
@@ -142,7 +119,7 @@ describe("exportToCSV", () => {
       accountRecoveryEnabled: "Account Recovery",
     };
 
-    exportToCSV(data, "test.csv", fileDownloadService, headers);
+    exportToCSV(data, headers);
 
     const expectedMappedData = [
       {
@@ -163,7 +140,7 @@ describe("exportToCSV", () => {
   });
 
   it("should use original keys if headers are not provided", () => {
-    exportToCSV(data, "test.csv", fileDownloadService);
+    exportToCSV(data);
 
     const expectedMappedData = [
       {
@@ -188,7 +165,7 @@ describe("exportToCSV", () => {
       email: "Email Address",
     };
 
-    exportToCSV(data, "test.csv", fileDownloadService, headers);
+    exportToCSV(data, headers);
 
     const expectedMappedData = [
       {
