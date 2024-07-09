@@ -1,17 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import {
-  SearchModule,
-  ButtonModule,
-  CardComponent,
-  SectionComponent,
-  SectionHeaderComponent,
-} from "@bitwarden/components";
+import { CardComponent, SectionComponent, SectionHeaderComponent } from "@bitwarden/components";
 
 @Component({
   selector: "app-item-history-v2",
@@ -19,10 +12,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-    SearchModule,
     JslibModule,
-    FormsModule,
-    ButtonModule,
     RouterModule,
     CardComponent,
     SectionComponent,

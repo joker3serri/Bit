@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { Observable, Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -12,7 +11,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { SearchModule, ButtonModule, IconButtonModule } from "@bitwarden/components";
+import { SearchModule } from "@bitwarden/components";
 
 import { PopupFooterComponent } from "../../../../apps/browser/src/platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../apps/browser/src/platform/popup/layout/popup-header.component";
@@ -32,8 +31,6 @@ import { ItemHistoryV2Component } from "./item-history/item-history-v2.component
     CommonModule,
     SearchModule,
     JslibModule,
-    FormsModule,
-    ButtonModule,
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,
@@ -42,7 +39,6 @@ import { ItemHistoryV2Component } from "./item-history/item-history-v2.component
     AttachmentsV2Component,
     ItemHistoryV2Component,
     CustomFieldV2Component,
-    IconButtonModule,
   ],
 })
 export class CipherViewComponent implements OnInit {
