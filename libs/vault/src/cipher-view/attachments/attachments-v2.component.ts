@@ -82,10 +82,9 @@ export class AttachmentsV2Component {
   }
 
   async downloadAttachment(attachment: any) {
-    this.passwordReprompted = await this.passwordRepromptService.promptPasswordCheck(
-      this.cipher,
-      this.passwordReprompted,
-    );
+    this.passwordReprompted =
+      this.passwordReprompted ||
+      (await this.passwordRepromptService.passwordRepromptCheck(this.cipher));
     if (!this.passwordReprompted) {
       return;
     }

@@ -111,10 +111,9 @@ export class ViewV2Component {
   }
 
   async delete(): Promise<boolean> {
-    this.passwordReprompted = await this.passwordRepromptService.promptPasswordCheck(
-      this.cipher,
-      this.passwordReprompted,
-    );
+    this.passwordReprompted =
+      this.passwordReprompted ||
+      (await this.passwordRepromptService.passwordRepromptCheck(this.cipher));
     if (!this.passwordReprompted) {
       return;
     }

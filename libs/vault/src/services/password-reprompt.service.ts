@@ -23,8 +23,8 @@ export class PasswordRepromptService {
     return ["TOTP", "Password", "H_Field", "Card Number", "Security Code"];
   }
 
-  async promptPasswordCheck(cipher: CipherView, passwordReprompted: boolean) {
-    if (cipher.reprompt === CipherRepromptType.None || passwordReprompted) {
+  async passwordRepromptCheck(cipher: CipherView) {
+    if (cipher.reprompt === CipherRepromptType.None) {
       return true;
     }
 
