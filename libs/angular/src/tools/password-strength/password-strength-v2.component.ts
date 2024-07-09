@@ -7,7 +7,7 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { ProgressModule } from "@bitwarden/components";
 
 export interface PasswordColorText {
-  color: string;
+  color: BackgroundTypes;
   text: string;
 }
 export type PasswordStrengthScore = 0 | 1 | 2 | 3 | 4;
@@ -37,7 +37,7 @@ export class PasswordStrengthV2Component implements OnChanges {
   color: BackgroundTypes = "danger";
   text: string;
 
-  private passwordStrengthTimeout: any;
+  private passwordStrengthTimeout: number | NodeJS.Timeout;
 
   constructor(
     private i18nService: I18nService,
