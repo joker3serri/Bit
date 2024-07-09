@@ -28,7 +28,7 @@ export class PasswordStrengthV2Component implements OnChanges {
     this.updatePasswordStrength(value);
   }
   @Output() passwordStrengthResult = new EventEmitter<any>();
-  @Output() passwordScoreColor = new EventEmitter<PasswordColorText>();
+  @Output() passwordScoreTextWithColor = new EventEmitter<PasswordColorText>();
 
   passwordScore: number;
   scoreWidth = 0;
@@ -65,7 +65,10 @@ export class PasswordStrengthV2Component implements OnChanges {
           break;
       }
 
-      this.setPasswordScoreText(this.color, this.text);
+      this.passwordScoreTextWithColor.emit({
+        color: this.color,
+        text: this.text,
+      } as PasswordColorText);
     }, 300);
   }
 
@@ -81,10 +84,5 @@ export class PasswordStrengthV2Component implements OnChanges {
     );
     this.passwordStrengthResult.emit(strengthResult);
     this.passwordScore = strengthResult == null ? null : strengthResult.score;
-  }
-
-  setPasswordScoreText(color: string, text: string) {
-    color = color.slice(3);
-    this.passwordScoreColor.emit({ color: color, text: text });
   }
 }
