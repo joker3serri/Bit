@@ -8,6 +8,7 @@
 
     <vault-identity-section
       *ngIf="config.cipherType === CipherType.Identity"
+      [disabled]="config.mode === 'partial-edit'"
       [originalCipherView]="originalCipherView"
     ></vault-identity-section>
 

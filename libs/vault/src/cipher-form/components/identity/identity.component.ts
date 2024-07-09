@@ -38,7 +38,15 @@ import { CipherFormContainer } from "../../cipher-form-container";
 })
 export class IdentitySectionComponent implements OnInit {
   @Input() originalCipherView: CipherView;
-  identityTitleOptions: any[];
+  @Input() disabled: boolean;
+  identityTitleOptions = [
+    { name: "-- " + this.i18nService.t("select") + " --", value: null },
+    { name: this.i18nService.t("mr"), value: this.i18nService.t("mr") },
+    { name: this.i18nService.t("mrs"), value: this.i18nService.t("mrs") },
+    { name: this.i18nService.t("ms"), value: this.i18nService.t("ms") },
+    { name: this.i18nService.t("mx"), value: this.i18nService.t("mx") },
+    { name: this.i18nService.t("dr"), value: this.i18nService.t("dr") },
+  ];
 
   protected identityForm = this.formBuilder.group({
     title: [null],
@@ -65,15 +73,6 @@ export class IdentitySectionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
   ) {
-    this.identityTitleOptions = [
-      { name: "-- " + i18nService.t("select") + " --", value: null },
-      { name: i18nService.t("mr"), value: i18nService.t("mr") },
-      { name: i18nService.t("mrs"), value: i18nService.t("mrs") },
-      { name: i18nService.t("ms"), value: i18nService.t("ms") },
-      { name: i18nService.t("mx"), value: i18nService.t("mx") },
-      { name: i18nService.t("dr"), value: i18nService.t("dr") },
-    ];
-
     this.cipherFormContainer.registerChildForm("identityDetails", this.identityForm);
     this.identityForm.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
       const data = new IdentityView();
@@ -102,6 +101,11 @@ export class IdentitySectionComponent implements OnInit {
   }
 
   ngOnInit() {
+    // If true will disable all inputs
+    if (this.disabled) {
+      this.identityForm.disable();
+    }
+
     if (this.originalCipherView && this.originalCipherView.id) {
       this.populateFormData();
     }
