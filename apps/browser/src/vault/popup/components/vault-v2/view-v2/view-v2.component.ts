@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Output, EventEmitter } from "@angular/core";
+import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -47,7 +47,6 @@ import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup
   ],
 })
 export class ViewV2Component {
-  @Output() onDeletedCipher = new EventEmitter<CipherView>();
   headerText: string;
   cipherId: string;
   cipher: CipherView;
@@ -134,17 +133,18 @@ export class ViewV2Component {
 
     try {
       await this.deleteCipher();
-      await this.router.navigate(["/vault"]);
-      this.toastService.showToast({
-        variant: "success",
-        title: null,
-        message: this.i18nService.t(
-          this.cipher.isDeleted ? "permanentlyDeletedItem" : "deletedItem",
-        ),
-      });
     } catch (e) {
       this.logService.error(e);
+      return false;
     }
+
+    await this.router.navigate(["/vault"]);
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t(this.cipher.isDeleted ? "permanentlyDeletedItem" : "deletedItem"),
+    });
+
     return true;
   }
 
