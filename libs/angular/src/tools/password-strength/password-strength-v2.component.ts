@@ -10,6 +10,8 @@ export interface PasswordColorText {
   color: string;
   text: string;
 }
+export type PasswordStrengthScore = 0 | 1 | 2 | 3 | 4;
+
 type SizeTypes = "small" | "default" | "large";
 type BackgroundTypes = "danger" | "primary" | "success" | "warning";
 
@@ -27,10 +29,10 @@ export class PasswordStrengthV2Component implements OnChanges {
   @Input() set password(value: string) {
     this.updatePasswordStrength(value);
   }
-  @Output() passwordStrengthResult = new EventEmitter<any>();
+  @Output() passwordStrengthScore = new EventEmitter<PasswordStrengthScore>();
   @Output() passwordScoreTextWithColor = new EventEmitter<PasswordColorText>();
 
-  passwordScore: number;
+  passwordScore: PasswordStrengthScore;
   scoreWidth = 0;
   color: BackgroundTypes = "danger";
   text: string;
@@ -82,7 +84,7 @@ export class PasswordStrengthV2Component implements OnChanges {
       this.email,
       this.name?.trim().toLowerCase().split(" "),
     );
-    this.passwordStrengthResult.emit(strengthResult);
     this.passwordScore = strengthResult == null ? null : strengthResult.score;
+    this.passwordStrengthScore.emit(this.passwordScore);
   }
 }
