@@ -22,14 +22,43 @@ type BackgroundTypes = "danger" | "primary" | "success" | "warning";
   imports: [CommonModule, JslibModule, ProgressModule],
 })
 export class PasswordStrengthV2Component implements OnChanges {
+  /**
+   * The size (height) of the password strength component.
+   * Possible values are "default", "small" and "large".
+   */
   @Input() size: SizeTypes = "default";
+  /**
+   * Determines whether to show the password strength score text on the progress bar or not.
+   */
   @Input() showText = false;
+  /**
+   * Optional email address which can be used as input for the password strength calculation
+   */
   @Input() email: string;
+  /**
+   * Optional name which can be used as input for the password strength calculation
+   */
   @Input() name: string;
+  /**
+   * Sets the password value and updates the password strength.
+   *
+   * @param value - password provided by the hosting component
+   */
   @Input() set password(value: string) {
     this.updatePasswordStrength(value);
   }
+  /**
+   * Emits the password strength score.
+   *
+   * @remarks
+   * The password strength score represents the strength of a password.
+   * It is emitted as an event when the password strength changes.
+   */
   @Output() passwordStrengthScore = new EventEmitter<PasswordStrengthScore>();
+
+  /**
+   * Emits an event with the password score text and color.
+   */
   @Output() passwordScoreTextWithColor = new EventEmitter<PasswordColorText>();
 
   passwordScore: PasswordStrengthScore;
