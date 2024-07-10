@@ -44,7 +44,7 @@ export class BitInputDirective implements BitFormFieldControl {
     ];
 
     if (this.parentFormField === null) {
-      classes.push(...inputBorderClasses(this.hasError), ...this.standaloneInputClasses());
+      classes.push(...inputBorderClasses(this.hasError), ...this.standaloneInputClasses);
     }
 
     return classes.filter((s) => s != "");
@@ -118,7 +118,7 @@ export class BitInputDirective implements BitFormFieldControl {
     });
   }
 
-  standaloneInputClasses() {
+  get standaloneInputClasses() {
     return [
       "tw-px-3",
       "tw-py-2",
