@@ -20,7 +20,6 @@ import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -324,11 +323,6 @@ const safeProviders: SafeProvider[] = [
     provide: ScriptInjectorService,
     useClass: BrowserScriptInjectorService,
     deps: [PlatformUtilsService, LogService],
-  }),
-  safeProvider({
-    provide: VaultTimeoutSettingsService,
-    useFactory: getBgService<VaultTimeoutSettingsService>("vaultTimeoutSettingsService"),
-    deps: [],
   }),
   safeProvider({
     provide: VaultTimeoutService,
