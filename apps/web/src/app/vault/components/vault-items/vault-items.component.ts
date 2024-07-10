@@ -214,10 +214,12 @@ export class VaultItemsComponent {
 
     const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
     return (
-      organization.canEditAllCiphers(
+      (organization.canEditAllCiphers(
         this.flexibleCollectionsV1Enabled,
         this.restrictProviderAccess,
-      ) || cipher.edit
+      ) &&
+        this.viewingOrgVault) ||
+      cipher.edit
     );
   }
 
@@ -290,10 +292,11 @@ export class VaultItemsComponent {
     const [orgId] = uniqueCipherOrgIds;
     const organization = this.allOrganizations.find((o) => o.id === orgId);
 
-    const canEditOrManageAllCiphers = organization?.canEditAllCiphers(
-      this.flexibleCollectionsV1Enabled,
-      this.restrictProviderAccess,
-    );
+    const canEditOrManageAllCiphers =
+      organization?.canEditAllCiphers(
+        this.flexibleCollectionsV1Enabled,
+        this.restrictProviderAccess,
+      ) && this.viewingOrgVault;
 
     const collectionNotSelected =
       this.selection.selected.filter((item) => item.collection).length === 0;
