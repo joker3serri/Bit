@@ -326,11 +326,6 @@ const safeProviders: SafeProvider[] = [
     deps: [PlatformUtilsService, LogService],
   }),
   safeProvider({
-    provide: UserVerificationService,
-    useFactory: getBgService<UserVerificationService>("userVerificationService"),
-    deps: [],
-  }),
-  safeProvider({
     provide: VaultTimeoutSettingsService,
     useFactory: getBgService<VaultTimeoutSettingsService>("vaultTimeoutSettingsService"),
     deps: [],
