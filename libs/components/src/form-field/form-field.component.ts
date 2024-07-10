@@ -28,8 +28,6 @@ export class BitFormFieldComponent implements AfterContentChecked {
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
 
-  constructor() {}
-
   private _disableMargin = false;
   @Input() set disableMargin(value: boolean | "") {
     this._disableMargin = coerceBooleanProperty(value);
@@ -38,20 +36,18 @@ export class BitFormFieldComponent implements AfterContentChecked {
     return this._disableMargin;
   }
 
-  protected labelWidth: number = 0;
-
   get inputBorderClasses(): string {
     const shouldFocusBorderAppear = !this.buttonIsFocused();
 
     const groupClasses = [
       this.input.hasError
-        ? "group-hover/input:tw-border-danger-700"
-        : "group-hover/input:tw-border-primary-500",
-      "group-focus-within/input:tw-outline-none",
-      shouldFocusBorderAppear ? "group-focus-within/input:tw-border-2" : "",
-      shouldFocusBorderAppear ? "group-focus-within/input:tw-border-primary-500" : "",
+        ? "group-hover/bit-form-field:tw-border-danger-700"
+        : "group-hover/bit-form-field:tw-border-primary-500",
+      "group-focus-within/bit-form-field:tw-outline-none",
+      shouldFocusBorderAppear ? "group-focus-within/bit-form-field:tw-border-2" : "",
+      shouldFocusBorderAppear ? "group-focus-within/bit-form-field:tw-border-primary-500" : "",
       shouldFocusBorderAppear
-        ? "group-focus-within/input:group-hover/input:tw-border-primary-500"
+        ? "group-focus-within/bit-form-field:group-hover/bit-form-field:tw-border-primary-500"
         : "",
     ];
 
@@ -71,7 +67,7 @@ export class BitFormFieldComponent implements AfterContentChecked {
    * If the currently focused element is a button, then we don't want to show focus on the
    * input field itself.
    *
-   * This is necessary because the `tw-group/input` wraps the input and any prefix/suffix
+   * This is necessary because the `tw-group/bit-form-field` wraps the input and any prefix/suffix
    * buttons
    */
   protected buttonIsFocused = signal(false);
