@@ -172,7 +172,7 @@ export class AssignCollectionsComponent implements OnInit {
       await this.handleOrganizationCiphers();
     }
 
-    this.setupFormSubscriptions(v1FCEnabled, restrictProviderAccess);
+    this.setupFormSubscriptions();
   }
 
   ngAfterViewInit(): void {
@@ -343,11 +343,8 @@ export class AssignCollectionsComponent implements OnInit {
 
   /**
    * Sets up form subscriptions for selected organizations.
-   *
-   * @param v1FCEnabled - Indicates if flexible collection flag is enabled.
-   * @param restrictProviderAccess - Indicates if provider access flag is enabled.
    */
-  private setupFormSubscriptions(v1FCEnabled: boolean, restrictProviderAccess: boolean) {
+  private setupFormSubscriptions() {
     // Listen to changes in selected organization and update collections
     this.formGroup.controls.selectedOrg.valueChanges
       .pipe(
