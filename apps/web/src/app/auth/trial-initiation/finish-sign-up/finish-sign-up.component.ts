@@ -9,7 +9,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { OrganizationBillingServiceAbstraction as OrganizationBillingService } from "@bitwarden/common/billing/abstractions/organization-billing.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
+import { ProductTierType, ProductType } from "@bitwarden/common/billing/enums";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -23,15 +23,13 @@ import {
 import { RouterService } from "../../../core/router.service";
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
-import { Product } from "./enums/product";
-
 @Component({
   selector: "app-finish-sign-up",
   templateUrl: "finish-sign-up.component.html",
 })
 export class FinishSignUpComponent implements OnInit, OnDestroy {
   /** Password Manager or Secrets Manager */
-  product: Product;
+  product: ProductType;
   /** The type of product being subscribed to */
   planType: ProductTierType;
   /** Product types that display steppers for Password Manager */
@@ -42,7 +40,7 @@ export class FinishSignUpComponent implements OnInit, OnDestroy {
   ];
   /** Display multi-step trial flow when true */
   useTrialStepper = false;
-  validProducts = [Product.PasswordManager, Product.SecretsManager];
+  validProducts = [ProductType.PasswordManager, ProductType.SecretsManager];
 
   email = "";
   fromOrgInvite = false;
@@ -110,7 +108,7 @@ export class FinishSignUpComponent implements OnInit, OnDestroy {
 
       this.product = this.validProducts.includes(qParams.product)
         ? qParams.product
-        : Product.PasswordManager;
+        : ProductType.PasswordManager;
 
       const planTypeParam = parseInt(qParams.planType);
 
@@ -214,11 +212,11 @@ export class FinishSignUpComponent implements OnInit, OnDestroy {
   }
 
   isSecretsManager() {
-    return this.product === Product.SecretsManager;
+    return this.product === ProductType.SecretsManager;
   }
 
   async getStartedNavigation(): Promise<void> {
-    if (this.product === Product.SecretsManager) {
+    if (this.product === ProductType.SecretsManager) {
       await this.router.navigate(["sm", this.orgId]);
     } else {
       await this.router.navigate(["organizations", this.orgId, "vault"]);

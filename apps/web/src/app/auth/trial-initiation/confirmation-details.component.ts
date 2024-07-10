@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-import { Product } from "./finish-sign-up/enums/product";
+import { ProductType } from "@bitwarden/common/billing/enums";
 
 @Component({
   selector: "app-trial-confirmation-details",
@@ -9,7 +9,7 @@ import { Product } from "./finish-sign-up/enums/product";
 export class ConfirmationDetailsComponent {
   @Input() email: string;
   @Input() orgLabel: string;
-  @Input() product?: Product = Product.PasswordManager;
+  @Input() product?: ProductType = ProductType.PasswordManager;
 
-  protected readonly Product = Product;
+  protected readonly Product = ProductType;
 }

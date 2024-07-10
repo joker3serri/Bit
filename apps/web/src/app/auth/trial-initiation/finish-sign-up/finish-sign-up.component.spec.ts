@@ -15,7 +15,7 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
 import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
 import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
+import { ProductTierType, ProductType } from "@bitwarden/common/billing/enums";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -25,7 +25,6 @@ import { RouterService } from "../../../core";
 import { SharedModule } from "../../../shared";
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
-import { Product } from "./enums/product";
 import { FinishSignUpComponent } from "./finish-sign-up.component";
 
 describe("FinishSignUpComponent", () => {
@@ -191,23 +190,23 @@ describe("FinishSignUpComponent", () => {
 
         await component.ngOnInit();
 
-        expect(component.product).toBe(Product.PasswordManager);
+        expect(component.product).toBe(ProductType.PasswordManager);
       });
 
       it("accepts to PasswordManager as a product", async () => {
-        mockQueryParams.next({ product: Product.PasswordManager });
+        mockQueryParams.next({ product: ProductType.PasswordManager });
 
         await component.ngOnInit();
 
-        expect(component.product).toBe(Product.PasswordManager);
+        expect(component.product).toBe(ProductType.PasswordManager);
       });
 
       it("accepts to SecretsManager as a product", async () => {
-        mockQueryParams.next({ product: Product.SecretsManager });
+        mockQueryParams.next({ product: ProductType.SecretsManager });
 
         await component.ngOnInit();
 
-        expect(component.product).toBe(Product.SecretsManager);
+        expect(component.product).toBe(ProductType.SecretsManager);
       });
     });
 
@@ -221,14 +220,14 @@ describe("FinishSignUpComponent", () => {
         ].forEach((planType) => {
           describe(`${ProductTierType[planType]}`, () => {
             it("sets `planType` attribute", async () => {
-              mockQueryParams.next({ product: Product.SecretsManager, planType });
+              mockQueryParams.next({ product: ProductType.SecretsManager, planType });
               await component.ngOnInit();
 
               expect(component.planType).toBe(planType);
             });
 
             it("shows the trial stepper", async () => {
-              mockQueryParams.next({ product: Product.SecretsManager, planType });
+              mockQueryParams.next({ product: ProductType.SecretsManager, planType });
               await component.ngOnInit();
 
               expect(component.useTrialStepper).toBe(true);
@@ -242,14 +241,14 @@ describe("FinishSignUpComponent", () => {
           (planType) => {
             describe(`${ProductTierType[planType]}`, () => {
               it("sets `planType` attribute", async () => {
-                mockQueryParams.next({ product: Product.PasswordManager, planType });
+                mockQueryParams.next({ product: ProductType.PasswordManager, planType });
                 await component.ngOnInit();
 
                 expect(component.planType).toBe(planType);
               });
 
               it("shows the trial stepper", async () => {
-                mockQueryParams.next({ product: Product.PasswordManager, planType });
+                mockQueryParams.next({ product: ProductType.PasswordManager, planType });
                 await component.ngOnInit();
 
                 expect(component.useTrialStepper).toBe(true);
@@ -265,7 +264,7 @@ describe("FinishSignUpComponent", () => {
 
           it("does not set `planType` attribute", async () => {
             mockQueryParams.next({
-              product: Product.PasswordManager,
+              product: ProductType.PasswordManager,
               planType: ProductTierType.Free,
             });
             await component.ngOnInit();
@@ -275,7 +274,7 @@ describe("FinishSignUpComponent", () => {
 
           it("does not show the trial stepper", async () => {
             mockQueryParams.next({
-              product: Product.PasswordManager,
+              product: ProductType.PasswordManager,
               planType: ProductTierType.Free,
             });
             await component.ngOnInit();
@@ -352,7 +351,7 @@ describe("FinishSignUpComponent", () => {
     });
 
     it("navigates to next step when the product is password manager", async () => {
-      component.product = Product.PasswordManager;
+      component.product = ProductType.PasswordManager;
       await component.conditionallyCreateOrganization();
 
       expect(component.verticalStepper.next).toHaveBeenCalled();
@@ -361,7 +360,7 @@ describe("FinishSignUpComponent", () => {
 
     describe("SecretsManager", () => {
       beforeEach(() => {
-        component.product = Product.SecretsManager;
+        component.product = ProductType.SecretsManager;
       });
 
       [ProductTierType.Families, ProductTierType.Teams, ProductTierType.Enterprise].forEach(
@@ -431,14 +430,14 @@ describe("FinishSignUpComponent", () => {
 
     describe("getStartedNavigation", () => {
       it("navigates to the vault", async () => {
-        component.product = Product.PasswordManager;
+        component.product = ProductType.PasswordManager;
         await component.getStartedNavigation();
 
         expect(routerSpy).toHaveBeenCalledWith(["organizations", testOrgId, "vault"]);
       });
 
       it("navigates to secrets manager", async () => {
-        component.product = Product.SecretsManager;
+        component.product = ProductType.SecretsManager;
         await component.getStartedNavigation();
 
         expect(routerSpy).toHaveBeenCalledWith(["sm", testOrgId]);
@@ -447,14 +446,14 @@ describe("FinishSignUpComponent", () => {
 
     describe("inviteUsersNavigation", () => {
       it("navigates to members page", async () => {
-        component.product = Product.SecretsManager;
+        component.product = ProductType.SecretsManager;
         await component.inviteUsersNavigation();
 
         expect(routerSpy).toHaveBeenCalledWith(["organizations", testOrgId, "members"]);
 
         routerSpy.mockClear();
 
-        component.product = Product.PasswordManager;
+        component.product = ProductType.PasswordManager;
         await component.inviteUsersNavigation();
 
         expect(routerSpy).toHaveBeenCalledWith(["organizations", testOrgId, "members"]);

@@ -1,17 +1,15 @@
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-
-import { Product } from "../enums/product";
+import { ProductType, ProductTierType } from "@bitwarden/common/billing/enums";
 
 export const freeTrialTextResolver: ResolveFn<string | null> = (
   route: ActivatedRouteSnapshot,
 ): string | null => {
   const { product, planType } = route.queryParams;
-  const products: Product[] = (product ?? "").split(",");
+  const products: ProductType[] = (product ?? "").split(",");
 
-  const onlyPasswordManager = products.length === 1 && products[0] === Product.PasswordManager;
-  const onlySecretsManager = products.length === 1 && products[0] === Product.SecretsManager;
+  const onlyPasswordManager = products.length === 1 && products[0] === ProductType.PasswordManager;
+  const onlySecretsManager = products.length === 1 && products[0] === ProductType.SecretsManager;
   const forTeams = parseInt(planType) === ProductTierType.Teams;
   const forEnterprise = parseInt(planType) === ProductTierType.Enterprise;
   const forFamilies = parseInt(planType) === ProductTierType.Families;
