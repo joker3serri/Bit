@@ -25,7 +25,6 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -245,11 +244,6 @@ const safeProviders: SafeProvider[] = [
     provide: TotpServiceAbstraction,
     useClass: TotpService,
     deps: [CryptoFunctionService, LogService],
-  }),
-  safeProvider({
-    provide: DeviceTrustServiceAbstraction,
-    useFactory: getBgService<DeviceTrustServiceAbstraction>("deviceTrustService"),
-    deps: [],
   }),
   safeProvider({
     provide: OffscreenDocumentService,
