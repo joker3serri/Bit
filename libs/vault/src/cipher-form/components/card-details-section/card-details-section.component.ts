@@ -145,10 +145,15 @@ export class CardDetailsSectionComponent implements OnInit {
     }
   }
 
-  /** True when the heading should include the brand */
-  showBrandHeadingText() {
+  /** Get the section heading based on the card brand */
+  getSectionHeading(): string {
     const { brand } = this.cardDetailsForm.value;
-    return brand && brand !== "Other";
+
+    if (brand && brand !== "Other") {
+      return this.i18nService.t("cardBrandDetails", brand);
+    }
+
+    return this.i18nService.t("cardDetails");
   }
 
   /** Set form initial form values from the current cipher */
