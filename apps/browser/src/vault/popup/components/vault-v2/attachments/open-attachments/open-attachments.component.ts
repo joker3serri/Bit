@@ -59,6 +59,10 @@ export class OpenAttachmentsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.openAttachmentsInPopout = this.filePopoutUtilsService.showFilePopoutMessage(window);
 
+    if (!this.cipherId) {
+      return;
+    }
+
     const cipherDomain = await this.cipherService.get(this.cipherId);
     const cipher = await cipherDomain.decrypt(
       await this.cipherService.getKeyForCipherKeyDecryption(cipherDomain),
