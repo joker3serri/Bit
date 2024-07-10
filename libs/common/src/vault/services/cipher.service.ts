@@ -1,4 +1,4 @@
-import { firstValueFrom, map, Observable, skipWhile, switchMap } from "rxjs";
+import { firstValueFrom, from, map, Observable, of, shareReplay, skipWhile, switchMap } from "rxjs";
 import { SemVer } from "semver";
 
 import { ApiService } from "../../abstractions/api.service";
@@ -371,6 +371,20 @@ export class CipherService implements CipherServiceAbstraction {
 
     await this.setDecryptedCipherCache(decCiphers, activeUserId);
     return decCiphers;
+  }
+
+  getCipherViews$(): Observable<CipherView[]> {
+    return this.cipherViews$.pipe(
+      switchMap((cipherRecord) => {
+        const ciphers = Object.values(cipherRecord);
+        if (ciphers.length === 0) {
+          return from(this.getAllDecrypted());
+        }
+
+        return of(ciphers);
+      }),
+      shareReplay({ refCount: true, bufferSize: 1 }),
+    );
   }
 
   private async getDecryptedCiphers() {
