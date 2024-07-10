@@ -31,7 +31,6 @@ import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/d
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import {
   AutofillSettingsService,
@@ -167,11 +166,6 @@ const safeProviders: SafeProvider[] = [
     provide: BaseUnauthGuardService,
     useClass: UnauthGuardService,
     deps: [AuthService, Router],
-  }),
-  safeProvider({
-    provide: SsoLoginServiceAbstraction,
-    useFactory: getBgService<SsoLoginServiceAbstraction>("ssoLoginService"),
-    deps: [],
   }),
   safeProvider({
     provide: CryptoFunctionService,
