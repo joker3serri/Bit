@@ -6,7 +6,6 @@ import { RouterLink } from "@angular/router";
 
 import { TwoFactorAuthAuthenticatorComponent } from "../../../../libs/angular/src/auth/components/two-factor-auth/two-factor-auth-authenticator.component";
 import { TwoFactorAuthYubikeyComponent } from "../../../../libs/angular/src/auth/components/two-factor-auth/two-factor-auth-yubikey.component";
-
 import { TwoFactorAuthComponent as BaseTwoFactorAuthComponent } from "../../../../libs/angular/src/auth/components/two-factor-auth/two-factor-auth.component";
 import { TwoFactorOptionsComponent } from "../../../../libs/angular/src/auth/components/two-factor-auth/two-factor-options.component";
 import { JslibModule } from "../../../../libs/angular/src/jslib.module";
