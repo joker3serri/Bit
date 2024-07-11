@@ -16,7 +16,6 @@ import {
   IconButtonModule,
   SelectModule,
   TypographyModule,
-  InputModule,
 } from "@bitwarden/components";
 
 import { CipherFormContainer } from "../../cipher-form-container";
@@ -37,7 +36,6 @@ import { CipherFormContainer } from "../../cipher-form-container";
     IconButtonModule,
     SelectModule,
     TypographyModule,
-    InputModule,
   ],
 })
 export class IdentitySectionComponent implements OnInit {
