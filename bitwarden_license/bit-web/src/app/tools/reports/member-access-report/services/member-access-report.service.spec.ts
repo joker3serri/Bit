@@ -1,18 +1,18 @@
+import { mock } from "jest-mock-extended";
+
 import { OrganizationId } from "@bitwarden/common/src/types/guid";
 
+import { MemberAccessReportApiService } from "./member-access-report-api.service";
 import { memberAccessReportsMock } from "./member-access-report.mock";
 import { MemberAccessReportService } from "./member-access-report.service";
 describe("ImportService", () => {
   const mockOrganizationId = "mockOrgId" as OrganizationId;
+  const reportApiService = mock<MemberAccessReportApiService>();
   let memberAccessReportService: MemberAccessReportService;
 
   beforeEach(() => {
-    memberAccessReportService = new MemberAccessReportService();
-    jest
-      .spyOn(memberAccessReportService as MemberAccessReportService, "getMemberAccessData")
-      .mockImplementation(() => {
-        return memberAccessReportsMock;
-      });
+    reportApiService.getMemberAccessData.mockImplementation(() => memberAccessReportsMock);
+    memberAccessReportService = new MemberAccessReportService(reportApiService);
   });
 
   describe("generateMemberAccessReportView", () => {

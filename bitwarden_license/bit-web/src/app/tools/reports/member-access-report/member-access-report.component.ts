@@ -4,14 +4,16 @@ import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { debounceTime, firstValueFrom } from "rxjs";
 
+import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { OrganizationId } from "@bitwarden/common/types/guid";
 import { SearchModule, TableDataSource } from "@bitwarden/components";
-import { ExportHelper } from "@bitwarden/vault-export-core/src/services/export-helper";
+import { ExportHelper } from "@bitwarden/vault-export-core";
 import { HeaderModule } from "@bitwarden/web-vault/app/layouts/header/header.module";
 import { SharedModule } from "@bitwarden/web-vault/app/shared";
 import { exportToCSV } from "@bitwarden/web-vault/app/tools/reports/report-utils";
 
+import { MemberAccessReportApiService } from "./services/member-access-report-api.service";
 import { MemberAccessReportServiceAbstraction } from "./services/member-access-report.abstraction";
 import { MemberAccessReportService } from "./services/member-access-report.service";
 import { userReportItemHeaders } from "./view/member-access-export.view";
@@ -22,10 +24,11 @@ import { MemberAccessReportView } from "./view/member-access-report.view";
   templateUrl: "member-access-report.component.html",
   imports: [SharedModule, SearchModule, HeaderModule],
   providers: [
-    {
+    safeProvider({
       provide: MemberAccessReportServiceAbstraction,
       useClass: MemberAccessReportService,
-    },
+      deps: [MemberAccessReportApiService],
+    }),
   ],
   standalone: true,
 })

@@ -10,19 +10,15 @@ import {
 import {
   MemberAccessCollectionModel,
   MemberAccessGroupModel,
-  MemberAccessReportModel,
 } from "../model/member-access-report.model";
 import { MemberAccessExportItem } from "../view/member-access-export.view";
 import { MemberAccessReportView } from "../view/member-access-report.view";
 
-import { memberAccessReportsMock } from "./member-access-report.mock";
+import { MemberAccessReportApiService } from "./member-access-report-api.service";
 
 @Injectable({ providedIn: "root" })
 export class MemberAccessReportService {
-  getMemberAccessData(): MemberAccessReportModel[] {
-    return memberAccessReportsMock;
-  }
-
+  constructor(private reportApiService: MemberAccessReportApiService) {}
   /**
    * Transforms user data into a MemberAccessReportView.
    *
@@ -32,7 +28,7 @@ export class MemberAccessReportService {
    */
   generateMemberAccessReportView(): MemberAccessReportView[] {
     const memberAccessReportViewCollection: MemberAccessReportView[] = [];
-    const memberAccessData = this.getMemberAccessData();
+    const memberAccessData = this.reportApiService.getMemberAccessData();
     memberAccessData.forEach((userData) => {
       const name = userData.userName;
       const email = userData.email;
@@ -68,7 +64,7 @@ export class MemberAccessReportService {
   async generateUserReportExportItems(
     organizationId: OrganizationId,
   ): Promise<MemberAccessExportItem[]> {
-    const memberAccessReports = this.getMemberAccessData();
+    const memberAccessReports = this.reportApiService.getMemberAccessData();
     const userReportItemPromises = memberAccessReports.flatMap(async (memberAccessReport) => {
       const partialMemberReportItem: Partial<MemberAccessExportItem> = {
         email: memberAccessReport.email,
@@ -107,7 +103,7 @@ export class MemberAccessReportService {
       return {
         ...partialReportItem,
         collection: await collection.name.decrypt(organizationId),
-        collectionPermission: "read only",
+        collectionPermission: "read only", //TODO update this value
         totalItems: collection.itemCount.toString(),
       };
     });
