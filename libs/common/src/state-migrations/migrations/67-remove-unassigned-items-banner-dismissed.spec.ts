@@ -9,13 +9,35 @@ describe("RemoveUnassignedItemsBannerDismissed", () => {
   describe("migrate", () => {
     it("deletes unassignedItemsBanner from all users", async () => {
       const output = await runMigrator(sut, {
-        authenticatedAccounts: ["user-1", "user-2"],
-        "user_user-1_unassignedItemsBanner_bannerDismissed": true,
-        "user_user-2_unassignedItemsBanner_bannerDismissed": false,
+        global_account_accounts: {
+          user1: {
+            email: "user1@email.com",
+            name: "User 1",
+            emailVerified: true,
+          },
+          user2: {
+            email: "user2@email.com",
+            name: "User 2",
+            emailVerified: true,
+          },
+        },
+        user_user1_unassignedItemsBanner_showBanner: true,
+        user_user2_unassignedItemsBanner_showBanner: false,
       });
 
       expect(output).toEqual({
-        authenticatedAccounts: ["user-1", "user-2"],
+        global_account_accounts: {
+          user1: {
+            email: "user1@email.com",
+            name: "User 1",
+            emailVerified: true,
+          },
+          user2: {
+            email: "user2@email.com",
+            name: "User 2",
+            emailVerified: true,
+          },
+        },
       });
     });
   });
