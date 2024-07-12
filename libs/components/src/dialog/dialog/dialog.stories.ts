@@ -4,6 +4,7 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
+import { BadgeModule } from "../../badge";
 import { ButtonModule } from "../../button";
 import { CardComponent } from "../../card";
 import { FormFieldModule } from "../../form-field";
@@ -25,6 +26,7 @@ export default {
     moduleMetadata({
       imports: [
         DialogModule,
+        BadgeModule,
         ButtonModule,
         SharedModule,
         IconButtonModule,
@@ -78,6 +80,9 @@ export const Default: Story = {
     props: args,
     template: `
       <bit-dialog [dialogSize]="dialogSize" [title]="title" [subtitle]="subtitle" [loading]="loading" [disablePadding]="disablePadding">
+        <ng-container bitDialogTitle>
+          <span bitBadge variant="success">Foobar</span>
+        </ng-container>
         <ng-container bitDialogContent>Dialog body text goes here.</ng-container>
         <ng-container bitDialogFooter>
           <button bitButton buttonType="primary" [disabled]="loading">Save</button>
