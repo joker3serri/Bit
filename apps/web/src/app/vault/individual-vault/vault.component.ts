@@ -61,6 +61,7 @@ import { DialogService, Icons, ToastService } from "@bitwarden/components";
 import { CollectionAssignmentResult, PasswordRepromptService } from "@bitwarden/vault";
 
 import { AssignCollectionsWebComponent } from "../components/assign-collections";
+import { SharedModule } from "../../shared/shared.module";
 import {
   CollectionDialogAction,
   CollectionDialogTabType,
@@ -68,6 +69,7 @@ import {
 } from "../components/collection-dialog";
 import { VaultItem } from "../components/vault-items/vault-item";
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";
+import { VaultItemsModule } from "../components/vault-items/vault-items.module";
 import { getNestedCollectionTree } from "../utils/collection-utils";
 
 import { AddEditComponent } from "./add-edit.component";
@@ -87,6 +89,7 @@ import {
 import { openIndividualVaultCollectionsDialog } from "./collections.component";
 import { FolderAddEditDialogResult, openFolderAddEditDialog } from "./folder-add-edit.component";
 import { ShareComponent } from "./share.component";
+import { VaultBannersComponent } from "./vault-banners/vault-banners.component";
 import { VaultFilterComponent } from "./vault-filter/components/vault-filter.component";
 import { VaultFilterService } from "./vault-filter/services/abstractions/vault-filter.service";
 import { RoutedVaultFilterBridgeService } from "./vault-filter/services/routed-vault-filter-bridge.service";
@@ -99,6 +102,9 @@ import {
 } from "./vault-filter/shared/models/routed-vault-filter.model";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
+import { VaultFilterModule } from "./vault-filter/vault-filter.module";
+import { VaultHeaderComponent } from "./vault-header/vault-header.component";
+import { VaultOnboardingComponent } from "./vault-onboarding/vault-onboarding.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -106,6 +112,15 @@ const SearchTextDebounceInterval = 200;
 @Component({
   selector: "app-vault",
   templateUrl: "vault.component.html",
+  standalone: true,
+  imports: [
+    VaultHeaderComponent,
+    VaultOnboardingComponent,
+    VaultBannersComponent,
+    VaultFilterModule,
+    VaultItemsModule,
+    SharedModule,
+  ],
   providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
 export class VaultComponent implements OnInit, OnDestroy {
@@ -323,18 +338,14 @@ export class VaultComponent implements OnInit, OnDestroy {
           const cipherId = getCipherIdFromParams(params);
           if (cipherId) {
             if ((await this.cipherService.get(cipherId)) != null) {
-              // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-              // eslint-disable-next-line @typescript-eslint/no-floating-promises
-              this.editCipherId(cipherId);
+              await this.editCipherId(cipherId);
             } else {
               this.platformUtilsService.showToast(
                 "error",
                 null,
                 this.i18nService.t("unknownCipher"),
               );
-              // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-              // eslint-disable-next-line @typescript-eslint/no-floating-promises
-              this.router.navigate([], {
+              void this.router.navigate([], {
                 queryParams: { itemId: null, cipherId: null },
                 queryParamsHandling: "merge",
               });
@@ -445,9 +456,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
     const orgs = await firstValueFrom(this.filterComponent.filters.organizationFilter.data$);
     const orgNode = ServiceUtils.getTreeNodeObject(orgs, orgId) as TreeNode<OrganizationFilter>;
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.filterComponent.filters?.organizationFilter?.action(orgNode);
+    await this.filterComponent.filters?.organizationFilter?.action(orgNode);
   }
 
   addFolder = async (): Promise<void> => {
@@ -464,9 +473,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialog.closed);
 
     if (result === FolderAddEditDialogResult.Deleted) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate([], {
+      void this.router.navigate([], {
         queryParams: { folderId: null },
         queryParamsHandling: "merge",
         replaceUrl: true,
@@ -1058,9 +1065,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       };
     }
 
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParams,
       queryParamsHandling: "merge",
