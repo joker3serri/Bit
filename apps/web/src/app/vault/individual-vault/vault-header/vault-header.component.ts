@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,8 +15,12 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
+import { BreadcrumbsModule } from "@bitwarden/components";
+import { SharedModule } from "@bitwarden/components/src/shared";
 
+import { HeaderModule } from "../../../layouts/header/header.module";
 import { CollectionDialogTabType } from "../../components/collection-dialog";
+import { PipesModule } from "../pipes/pipes.module";
 import {
   All,
   RoutedVaultFilterModel,
@@ -25,6 +30,8 @@ import {
 @Component({
   selector: "app-vault-header",
   templateUrl: "./vault-header.component.html",
+  standalone: true,
+  imports: [CommonModule, SharedModule, BreadcrumbsModule, HeaderModule, PipesModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VaultHeaderComponent implements OnInit {
