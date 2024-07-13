@@ -13,14 +13,11 @@ import { BulkDialogsModule } from "./bulk-action-dialogs/bulk-dialogs.module";
 import { OrganizationBadgeModule } from "./organization-badge/organization-badge.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { VaultBannersService } from "./vault-banners/services/vault-banners.service";
-import { VaultBannersComponent } from "./vault-banners/vault-banners.component";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
-import { VaultHeaderComponent } from "./vault-header/vault-header.component";
 import { VaultOnboardingService as VaultOnboardingServiceAbstraction } from "./vault-onboarding/services/abstraction/vault-onboarding.service";
 import { VaultOnboardingService } from "./vault-onboarding/services/vault-onboarding.service";
 import { VaultOnboardingComponent } from "./vault-onboarding/vault-onboarding.component";
 import { VaultRoutingModule } from "./vault-routing.module";
-import { VaultComponent } from "./vault.component";
 
 @NgModule({
   imports: [
@@ -40,8 +37,7 @@ import { VaultComponent } from "./vault.component";
     BannerModule,
     VerifyEmailComponent,
   ],
-  declarations: [VaultComponent, VaultHeaderComponent, VaultBannersComponent],
-  exports: [VaultComponent],
+  declarations: [],
   providers: [
     VaultBannersService,
     {
