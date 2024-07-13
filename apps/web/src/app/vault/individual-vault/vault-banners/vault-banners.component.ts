@@ -2,9 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 
 import { BannerModule } from "@bitwarden/components";
-import { SharedModule } from "@bitwarden/components/src/shared";
 
 import { VerifyEmailComponent } from "../../../auth/settings/verify-email.component";
+import { SharedModule } from "../../../shared";
 
 import { VaultBannersService, VisibleVaultBanner } from "./services/vault-banners.service";
 

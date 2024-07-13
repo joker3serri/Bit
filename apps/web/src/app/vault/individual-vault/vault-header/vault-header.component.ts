@@ -9,16 +9,17 @@ import {
 } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
-import { BreadcrumbsModule } from "@bitwarden/components";
-import { SharedModule } from "@bitwarden/components/src/shared";
+import { BreadcrumbsModule, MenuModule } from "@bitwarden/components";
 
 import { HeaderModule } from "../../../layouts/header/header.module";
+import { SharedModule } from "../../../shared";
 import { CollectionDialogTabType } from "../../components/collection-dialog";
 import { PipesModule } from "../pipes/pipes.module";
 import {
@@ -31,7 +32,15 @@ import {
   selector: "app-vault-header",
   templateUrl: "./vault-header.component.html",
   standalone: true,
-  imports: [CommonModule, SharedModule, BreadcrumbsModule, HeaderModule, PipesModule],
+  imports: [
+    CommonModule,
+    MenuModule,
+    SharedModule,
+    BreadcrumbsModule,
+    HeaderModule,
+    PipesModule,
+    JslibModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VaultHeaderComponent implements OnInit {
