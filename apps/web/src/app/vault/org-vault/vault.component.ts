@@ -58,11 +58,12 @@ import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
-import { DialogService, Icons, ToastService } from "@bitwarden/components";
+import { DialogService, Icons, NoItemsModule, ToastService } from "@bitwarden/components";
 import { CollectionAssignmentResult, PasswordRepromptService } from "@bitwarden/vault";
 
 import { GroupService, GroupView } from "../../admin-console/organizations/core";
 import { openEntityEventsDialog } from "../../admin-console/organizations/manage/entity-events.component";
+import { SharedModule } from "../../shared";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
 import { AssignCollectionsWebComponent } from "../components/assign-collections";
@@ -72,6 +73,7 @@ import {
   openCollectionDialog,
 } from "../components/collection-dialog";
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";
+import { VaultItemsModule } from "../components/vault-items/vault-items.module";
 import { CollectionAdminService } from "../core/collection-admin.service";
 import { CollectionAdminView } from "../core/views/collection-admin.view";
 import {
@@ -87,6 +89,7 @@ import {
   RoutedVaultFilterModel,
   Unassigned,
 } from "../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
+import { VaultHeaderComponent } from "../org-vault/vault-header/vault-header.component";
 import { getNestedCollectionTree } from "../utils/collection-utils";
 
 import { AddEditComponent } from "./add-edit.component";
@@ -95,7 +98,9 @@ import {
   BulkCollectionsDialogComponent,
   BulkCollectionsDialogResult,
 } from "./bulk-collections-dialog";
+import { CollectionAccessRestrictedComponent } from "./collection-access-restricted.component";
 import { openOrgVaultCollectionsDialog } from "./collections.component";
+import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 
 const BroadcasterSubscriptionId = "OrgVaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -106,8 +111,17 @@ enum AddAccessStatusType {
 }
 
 @Component({
+  standalone: true,
   selector: "app-org-vault",
   templateUrl: "vault.component.html",
+  imports: [
+    VaultHeaderComponent,
+    CollectionAccessRestrictedComponent,
+    VaultFilterModule,
+    VaultItemsModule,
+    SharedModule,
+    NoItemsModule,
+  ],
   providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
 export class VaultComponent implements OnInit, OnDestroy {
