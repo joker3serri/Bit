@@ -36,6 +36,7 @@ export const openManageClientSubscriptionDialog = (
 export class ManageClientSubscriptionDialogComponent implements OnInit {
   protected loading = true;
   protected providerPlan: ProviderPlanResponse;
+  protected assignedSeats: number;
   protected openSeats: number;
   protected purchasedSeats: number;
   protected seatMinimum: number;
@@ -65,6 +66,7 @@ export class ManageClientSubscriptionDialogComponent implements OnInit {
       (plan) => plan.planName === this.dialogParams.organization.plan,
     );
 
+    this.assignedSeats = this.providerPlan.assignedSeats;
     this.openSeats = this.providerPlan.seatMinimum - this.providerPlan.assignedSeats;
     this.purchasedSeats = this.providerPlan.purchasedSeats;
     this.seatMinimum = this.providerPlan.seatMinimum;
@@ -166,7 +168,14 @@ export class ManageClientSubscriptionDialogComponent implements OnInit {
   }
 
   get additionalSeatsPurchased(): number {
-    return this.formGroup.value.assignedSeats - this.dialogParams.organization.seats;
+    const seatDifference =
+      this.formGroup.value.assignedSeats - this.dialogParams.organization.seats;
+
+    if (this.purchasedSeats > 0) {
+      return seatDifference;
+    }
+
+    return seatDifference - this.openSeats;
   }
 
   get purchasedSeatsRemoved(): number {
