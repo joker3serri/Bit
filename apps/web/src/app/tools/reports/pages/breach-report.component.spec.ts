@@ -90,13 +90,13 @@ describe("BreachReportComponent", () => {
     expect(component.formGroup.invalid).toBe(true);
   });
 
-  it("should call auditService.breachedAccounts", async () => {
+  it("should call auditService.breachedAccounts with lowercase username", async () => {
     auditService.breachedAccounts.mockResolvedValue(breachedAccounts);
     component.formGroup.get("username").setValue("validUsername");
 
     await component.submit();
 
-    expect(auditService.breachedAccounts).toHaveBeenCalledWith("validUsername");
+    expect(auditService.breachedAccounts).toHaveBeenCalledWith("validusername");
   });
 
   it("should set breachedAccounts and checkedUsername after successful submit", async () => {
