@@ -29,7 +29,7 @@
         <i
           class="bwi bwi-sm"
           *ngIf="cipher.organizationId"
-          [ngClass]="cipher.orgIcon"
+          [ngClass]="cipher.organization.productTierType | orgIcon"
           [appA11yTitle]="orgIconTooltip(cipher)"
         ></i>
         <span slot="secondary">{{ cipher.subTitle }}</span>
