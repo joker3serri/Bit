@@ -60,8 +60,8 @@ import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { DialogService, Icons, ToastService } from "@bitwarden/components";
 import { CollectionAssignmentResult, PasswordRepromptService } from "@bitwarden/vault";
 
-import { AssignCollectionsWebComponent } from "../components/assign-collections";
 import { SharedModule } from "../../shared/shared.module";
+import { AssignCollectionsWebComponent } from "../components/assign-collections";
 import {
   CollectionDialogAction,
   CollectionDialogTabType,
@@ -744,11 +744,11 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     if (ciphers.length === 0) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("nothingSelected"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccurred"),
+        message: this.i18nService.t("nothingSelected"),
+      });
       return;
     }
 
