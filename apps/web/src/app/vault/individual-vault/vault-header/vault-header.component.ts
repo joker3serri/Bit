@@ -29,9 +29,9 @@ import {
 } from "../vault-filter/shared/models/routed-vault-filter.model";
 
 @Component({
+  standalone: true,
   selector: "app-vault-header",
   templateUrl: "./vault-header.component.html",
-  standalone: true,
   imports: [
     CommonModule,
     MenuModule,

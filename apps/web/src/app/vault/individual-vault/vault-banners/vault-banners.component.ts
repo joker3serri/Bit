@@ -9,9 +9,9 @@ import { SharedModule } from "../../../shared";
 import { VaultBannersService, VisibleVaultBanner } from "./services/vault-banners.service";
 
 @Component({
+  standalone: true,
   selector: "app-vault-banners",
   templateUrl: "./vault-banners.component.html",
-  standalone: true,
   imports: [VerifyEmailComponent, SharedModule, BannerModule],
 })
 export class VaultBannersComponent implements OnInit {
