@@ -166,14 +166,7 @@ export class ManageClientSubscriptionDialogComponent implements OnInit {
   }
 
   get additionalSeatsPurchased(): number {
-    const seatDifference =
-      this.formGroup.value.assignedSeats - this.dialogParams.organization.seats;
-
-    if (this.purchasedSeats > 0) {
-      return seatDifference;
-    }
-
-    return seatDifference - this.seatMinimum;
+    return this.formGroup.value.assignedSeats - this.dialogParams.organization.seats;
   }
 
   get purchasedSeatsRemoved(): number {
@@ -200,6 +193,6 @@ export class ManageClientSubscriptionDialogComponent implements OnInit {
   }
 
   get sellingSeats(): boolean {
-    return this.additionalSeatsPurchased < 0;
+    return this.purchasedSeats > 0 && this.additionalSeatsPurchased < 0;
   }
 }
