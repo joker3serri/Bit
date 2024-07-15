@@ -6,7 +6,7 @@ export const freeTrialTextResolver: ResolveFn<string | null> = (
   route: ActivatedRouteSnapshot,
 ): string | null => {
   const { product, planType } = route.queryParams;
-  const products: ProductType[] = (product ?? "").split(",");
+  const products: ProductType[] = (product ?? "").split(",").map((p: string) => parseInt(p));
 
   const onlyPasswordManager = products.length === 1 && products[0] === ProductType.PasswordManager;
   const onlySecretsManager = products.length === 1 && products[0] === ProductType.SecretsManager;

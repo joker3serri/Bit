@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 
-import { ProductTierType } from "@bitwarden/common/billing/enums";
+import { ProductTierType, ProductType } from "@bitwarden/common/billing/enums";
 
 import { freeTrialTextResolver } from "./free-trial-text.resolver";
 
@@ -12,13 +12,22 @@ const routerStateSnapshot = {} as RouterStateSnapshot;
 
 describe("freeTrialTextResolver", () => {
   [
-    { param: "PasswordManager", keyBase: "startYour7DayFreeTrialOfBitwardenPasswordManager" },
-    { param: "SecretsManager", keyBase: "startYour7DayFreeTrialOfBitwardenSecretsManager" },
-    { param: "PasswordManager,SecretsManager", keyBase: "startYour7DayFreeTrialOfBitwarden" },
+    {
+      param: ProductType.PasswordManager,
+      keyBase: "startYour7DayFreeTrialOfBitwardenPasswordManager",
+    },
+    {
+      param: ProductType.SecretsManager,
+      keyBase: "startYour7DayFreeTrialOfBitwardenSecretsManager",
+    },
+    {
+      param: `${ProductType.PasswordManager},${ProductType.SecretsManager}`,
+      keyBase: "startYour7DayFreeTrialOfBitwarden",
+    },
   ].forEach(({ param, keyBase }) => {
     describe(`when product is ${param}`, () => {
       beforeEach(() => {
-        route.queryParams.product = param;
+        route.queryParams.product = `${param}`;
       });
 
       it("returns teams trial text", () => {
