@@ -74,7 +74,7 @@ export class DefaultConfigService implements ConfigService {
 
     this.serverConfig$ = combineLatest([userId$, apiUrl$, authStatus$]).pipe(
       switchMap(([userId, apiUrl, authStatus]) => {
-        if (userId == null || authStatus != AuthenticationStatus.Unlocked) {
+        if (userId == null || authStatus !== AuthenticationStatus.Unlocked) {
           return this.globalConfigFor$(apiUrl).pipe(
             map((config) => [config, null, apiUrl] as const),
           );
