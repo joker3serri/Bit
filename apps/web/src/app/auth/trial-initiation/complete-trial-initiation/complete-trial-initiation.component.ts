@@ -30,10 +30,10 @@ import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.c
 export class CompleteTrialInitiation implements OnInit, OnDestroy {
   /** Password Manager or Secrets Manager */
   product: ProductType;
-  /** The type of product being subscribed to */
-  planType: ProductTierType;
+  /** The tier of product being subscribed to */
+  productTier: ProductTierType;
   /** Product types that display steppers for Password Manager */
-  stepperProductTypes: number[] = [
+  stepperProductTypes: ProductTierType[] = [
     ProductTierType.Teams,
     ProductTierType.Enterprise,
     ProductTierType.Families,
@@ -111,16 +111,16 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
         ? qParams.product
         : ProductType.PasswordManager;
 
-      const planTypeParam = parseInt(qParams.planType);
+      const productTierParam = parseInt(qParams.productTier) as ProductTierType;
 
       /** Only show the trial stepper for a subset of types */
-      const showPasswordManagerStepper = this.stepperProductTypes.includes(planTypeParam);
+      const showPasswordManagerStepper = this.stepperProductTypes.includes(productTierParam);
 
       /** All types of secret manager should see the trial stepper */
       const showSecretsManagerStepper = this.isSecretsManager();
 
-      if ((showPasswordManagerStepper || showSecretsManagerStepper) && !isNaN(planTypeParam)) {
-        this.planType = planTypeParam;
+      if ((showPasswordManagerStepper || showSecretsManagerStepper) && !isNaN(productTierParam)) {
+        this.productTier = productTierParam;
 
         this.orgLabel = this.planTypeDisplay;
         this.referenceData.flow = this.planTypeDisplay;
@@ -133,7 +133,7 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
       this.setupFamilySponsorship(qParams.sponsorshipToken);
 
       const productName = this.isSecretsManager() ? "Secrets Manager" : "Password Manager";
-      this.referenceData.initiationPath = !this.planType
+      this.referenceData.initiationPath = !this.productTier
         ? "Registration form"
         : `${productName} trial from marketing website`;
     });
@@ -248,11 +248,11 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
   }
 
   get isSecretsManagerFree() {
-    return this.isSecretsManager() && this.planType === ProductTierType.Free;
+    return this.isSecretsManager() && this.productTier === ProductTierType.Free;
   }
 
   get planTypeDisplay() {
-    switch (this.planType) {
+    switch (this.productTier) {
       case ProductTierType.Teams:
         return "Teams";
       case ProductTierType.Enterprise:
@@ -265,7 +265,7 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
   }
 
   get planInfoLabel() {
-    switch (this.planType) {
+    switch (this.productTier) {
       case ProductTierType.Teams:
         return this.i18nService.t("enterTeamsOrgInfo");
       case ProductTierType.Enterprise:
@@ -278,11 +278,11 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
   }
 
   get trialOrganizationType(): TrialOrganizationType {
-    if (this.planType === ProductTierType.Free) {
+    if (this.productTier === ProductTierType.Free) {
       return null;
     }
 
-    return this.planType;
+    return this.productTier;
   }
 
   private setupFamilySponsorship(sponsorshipToken: string) {

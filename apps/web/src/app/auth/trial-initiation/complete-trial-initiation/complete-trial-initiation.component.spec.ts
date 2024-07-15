@@ -205,24 +205,24 @@ describe("CompleteTrialInitiation", () => {
       });
     });
 
-    describe("planType", () => {
+    describe("productTier", () => {
       describe("SecretsManager", () => {
         [
           ProductTierType.Free,
           ProductTierType.Families,
           ProductTierType.Teams,
           ProductTierType.Enterprise,
-        ].forEach((planType) => {
-          describe(`${ProductTierType[planType]}`, () => {
-            it("sets `planType` attribute", async () => {
-              mockQueryParams.next({ product: ProductType.SecretsManager, planType });
+        ].forEach((productTier) => {
+          describe(`${ProductTierType[productTier]}`, () => {
+            it("sets `productTier` attribute", async () => {
+              mockQueryParams.next({ product: ProductType.SecretsManager, productTier });
               await component.ngOnInit();
 
-              expect(component.planType).toBe(planType);
+              expect(component.productTier).toBe(productTier);
             });
 
             it("shows the trial stepper", async () => {
-              mockQueryParams.next({ product: ProductType.SecretsManager, planType });
+              mockQueryParams.next({ product: ProductType.SecretsManager, productTier });
               await component.ngOnInit();
 
               expect(component.useTrialStepper).toBe(true);
@@ -233,17 +233,17 @@ describe("CompleteTrialInitiation", () => {
 
       describe("PasswordManager", () => {
         [ProductTierType.Families, ProductTierType.Teams, ProductTierType.Enterprise].forEach(
-          (planType) => {
-            describe(`${ProductTierType[planType]}`, () => {
-              it("sets `planType` attribute", async () => {
-                mockQueryParams.next({ product: ProductType.PasswordManager, planType });
+          (productTier) => {
+            describe(`${ProductTierType[productTier]}`, () => {
+              it("sets `productTier` attribute", async () => {
+                mockQueryParams.next({ product: ProductType.PasswordManager, productTier });
                 await component.ngOnInit();
 
-                expect(component.planType).toBe(planType);
+                expect(component.productTier).toBe(productTier);
               });
 
               it("shows the trial stepper", async () => {
-                mockQueryParams.next({ product: ProductType.PasswordManager, planType });
+                mockQueryParams.next({ product: ProductType.PasswordManager, productTier });
                 await component.ngOnInit();
 
                 expect(component.useTrialStepper).toBe(true);
@@ -254,7 +254,7 @@ describe("CompleteTrialInitiation", () => {
 
         describe(`${ProductTierType[ProductTierType.Free]}`, () => {
           beforeEach(() => {
-            component.planType = undefined;
+            component.productTier = undefined;
           });
 
           it("does not set `planType` attribute", async () => {
@@ -264,7 +264,7 @@ describe("CompleteTrialInitiation", () => {
             });
             await component.ngOnInit();
 
-            expect(component.planType).toBe(undefined);
+            expect(component.productTier).toBe(undefined);
           });
 
           it("does not show the trial stepper", async () => {
@@ -317,7 +317,7 @@ describe("CompleteTrialInitiation", () => {
     });
 
     it("on step 2 should show organization copy text", () => {
-      component.planType = ProductTierType.Families;
+      component.productTier = ProductTierType.Families;
       component.stepSelectionChange({
         selectedIndex: 1,
         previouslySelectedIndex: 0,
@@ -359,10 +359,10 @@ describe("CompleteTrialInitiation", () => {
       });
 
       [ProductTierType.Families, ProductTierType.Teams, ProductTierType.Enterprise].forEach(
-        (planType) => {
-          describe(`${ProductTierType[planType]}`, () => {
+        (productTier) => {
+          describe(`${ProductTierType[productTier]}`, () => {
             it("navigates to the next step", async () => {
-              component.planType = planType;
+              component.productTier = productTier;
               await component.conditionallyCreateOrganization();
 
               expect(component.verticalStepper.next).toHaveBeenCalled();
@@ -379,7 +379,7 @@ describe("CompleteTrialInitiation", () => {
             email: ["ron@channel4.com"],
           });
 
-          component.planType = ProductTierType.Free;
+          component.productTier = ProductTierType.Free;
           await component.conditionallyCreateOrganization();
 
           expect(organizationBillingMock.startFree).toHaveBeenCalledWith({
