@@ -47,7 +47,7 @@ import { EmergencyAccessViewComponent } from "./auth/settings/emergency-access/v
 import { SecurityRoutingModule } from "./auth/settings/security/security-routing.module";
 import { SsoComponent } from "./auth/sso.component";
 import { CompleteTrialInitiation } from "./auth/trial-initiation/complete-trial-initiation/complete-trial-initiation.component";
-import { freeTrialTextResolver } from "./auth/trial-initiation/finish-sign-up/resolver/free-trial-text.resolver";
+import { freeTrialTextResolver } from "./auth/trial-initiation/complete-trial-initiation/resolver/free-trial-text.resolver";
 import { TrialInitiationComponent } from "./auth/trial-initiation/trial-initiation.component";
 import { TwoFactorAuthComponent } from "./auth/two-factor-auth.component";
 import { TwoFactorComponent } from "./auth/two-factor.component";
