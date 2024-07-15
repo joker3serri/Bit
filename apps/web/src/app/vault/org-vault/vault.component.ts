@@ -704,50 +704,65 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.processingEvent = true;
 
     try {
-      if (event.type === "viewAttachments") {
-        await this.editCipherAttachments(event.item);
-      } else if (event.type === "viewCipherCollections") {
-        await this.editCipherCollections(event.item);
-      } else if (event.type === "clone") {
-        await this.cloneCipher(event.item);
-      } else if (event.type === "restore") {
-        if (event.items.length === 1) {
-          await this.restore(event.items[0]);
-        } else {
-          await this.bulkRestore(event.items);
+      switch (event.type) {
+        case "viewAttachments":
+          await this.editCipherAttachments(event.item);
+          break;
+        case "viewCipherCollections":
+          await this.editCipherCollections(event.item);
+          break;
+        case "clone":
+          await this.cloneCipher(event.item);
+          break;
+        case "restore":
+          if (event.items.length === 1) {
+            await this.restore(event.items[0]);
+          } else {
+            await this.bulkRestore(event.items);
+          }
+          break;
+        case "delete": {
+          const ciphers = event.items
+            .filter((i) => i.collection === undefined)
+            .map((i) => i.cipher);
+          const collections = event.items
+            .filter((i) => i.cipher === undefined)
+            .map((i) => i.collection);
+          if (ciphers.length === 1 && collections.length === 0) {
+            await this.deleteCipher(ciphers[0]);
+          } else if (ciphers.length === 0 && collections.length === 1) {
+            await this.deleteCollection(collections[0] as CollectionAdminView);
+          } else {
+            await this.bulkDelete(ciphers, collections, this.organization);
+          }
+          break;
         }
-      } else if (event.type === "delete") {
-        const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
-        const collections = event.items
-          .filter((i) => i.cipher === undefined)
-          .map((i) => i.collection);
-        if (ciphers.length === 1 && collections.length === 0) {
-          await this.deleteCipher(ciphers[0]);
-        } else if (ciphers.length === 0 && collections.length === 1) {
-          await this.deleteCollection(collections[0] as CollectionAdminView);
-        } else {
-          await this.bulkDelete(ciphers, collections, this.organization);
-        }
-      } else if (event.type === "copyField") {
-        await this.copy(event.item, event.field);
-      } else if (event.type === "editCollection") {
-        await this.editCollection(
-          event.item as CollectionAdminView,
-          CollectionDialogTabType.Info,
-          event.readonly,
-        );
-      } else if (event.type === "viewCollectionAccess") {
-        await this.editCollection(
-          event.item as CollectionAdminView,
-          CollectionDialogTabType.Access,
-          event.readonly,
-        );
-      } else if (event.type === "bulkEditCollectionAccess") {
-        await this.bulkEditCollectionAccess(event.items, this.organization);
-      } else if (event.type === "assignToCollections") {
-        await this.bulkAssignToCollections(event.items);
-      } else if (event.type === "viewEvents") {
-        await this.viewEvents(event.item);
+        case "copyField":
+          await this.copy(event.item, event.field);
+          break;
+        case "editCollection":
+          await this.editCollection(
+            event.item as CollectionAdminView,
+            CollectionDialogTabType.Info,
+            event.readonly,
+          );
+          break;
+        case "viewCollectionAccess":
+          await this.editCollection(
+            event.item as CollectionAdminView,
+            CollectionDialogTabType.Access,
+            event.readonly,
+          );
+          break;
+        case "bulkEditCollectionAccess":
+          await this.bulkEditCollectionAccess(event.items, this.organization);
+          break;
+        case "assignToCollections":
+          await this.bulkAssignToCollections(event.items);
+          break;
+        case "viewEvents":
+          await this.viewEvents(event.item);
+          break;
       }
     } finally {
       this.processingEvent = false;
