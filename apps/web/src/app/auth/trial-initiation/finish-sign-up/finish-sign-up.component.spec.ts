@@ -12,17 +12,17 @@ import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
-import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
 import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions/organization-billing.service";
 import { ProductTierType, ProductType } from "@bitwarden/common/billing/enums";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import { RouterService } from "../../../core";
 import { SharedModule } from "../../../shared";
+import { AcceptOrganizationInviteService } from "../../organization-invite/accept-organization.service";
+import { OrganizationInvite } from "../../organization-invite/organization-invite";
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
 import { FinishSignUpComponent } from "./finish-sign-up.component";
@@ -35,14 +35,14 @@ describe("FinishSignUpComponent", () => {
   const formBuilder: FormBuilder = new FormBuilder();
   let routerSpy: jest.SpyInstance;
 
-  let stateServiceMock: MockProxy<StateService>;
+  let acceptOrganizationInviteServiceMock: MockProxy<AcceptOrganizationInviteService>;
   let policyApiServiceMock: MockProxy<PolicyApiServiceAbstraction>;
   let policyServiceMock: MockProxy<PolicyService>;
   let organizationBillingMock: MockProxy<OrganizationBillingServiceAbstraction>;
 
   beforeEach(async () => {
     // only define services directly that we want to mock return values in this component
-    stateServiceMock = mock<StateService>();
+    acceptOrganizationInviteServiceMock = mock<AcceptOrganizationInviteService>();
     policyApiServiceMock = mock<PolicyApiServiceAbstraction>();
     policyServiceMock = mock<PolicyService>();
     organizationBillingMock = mock<OrganizationBillingServiceAbstraction>();
@@ -78,7 +78,7 @@ describe("FinishSignUpComponent", () => {
             queryParams: mockQueryParams.asObservable(),
           },
         },
-        { provide: StateService, useValue: stateServiceMock },
+        { provide: AcceptOrganizationInviteService, useValue: acceptOrganizationInviteServiceMock },
         { provide: PolicyService, useValue: policyServiceMock },
         { provide: PolicyApiServiceAbstraction, useValue: policyApiServiceMock },
         { provide: LogService, useValue: mock<LogService>() },
@@ -115,7 +115,7 @@ describe("FinishSignUpComponent", () => {
   // These tests demonstrate mocking service calls
   describe("onInit() enforcedPolicyOptions", () => {
     it("should not set enforcedPolicyOptions if state service returns no invite", async () => {
-      stateServiceMock.getOrganizationInvitation.mockReturnValueOnce(null);
+      acceptOrganizationInviteServiceMock.getOrganizationInvite.mockResolvedValueOnce(null);
       // Need to recreate component with new service mock
       fixture = TestBed.createComponent(FinishSignUpComponent);
       component = fixture.componentInstance;
@@ -126,36 +126,31 @@ describe("FinishSignUpComponent", () => {
 
     it("should set enforcedPolicyOptions if state service returns an invite", async () => {
       // Set up service method mocks
-      stateServiceMock.getOrganizationInvitation.mockReturnValueOnce(
-        Promise.resolve({
+      acceptOrganizationInviteServiceMock.getOrganizationInvite.mockResolvedValue({
+        organizationId: testOrgId,
+        token: "token",
+        email: "testEmail",
+        organizationUserId: "123",
+      } as OrganizationInvite);
+      policyApiServiceMock.getPoliciesByToken.mockResolvedValueOnce([
+        {
+          id: "345",
           organizationId: testOrgId,
-          token: "token",
-          email: "testEmail",
-          organizationUserId: "123",
-        }),
-      );
-      policyApiServiceMock.getPoliciesByToken.mockReturnValueOnce(
-        Promise.resolve({
+          type: 1,
           data: [
             {
-              id: "345",
-              organizationId: testOrgId,
-              type: 1,
-              data: [
-                {
-                  minComplexity: 4,
-                  minLength: 10,
-                  requireLower: null,
-                  requireNumbers: null,
-                  requireSpecial: null,
-                  requireUpper: null,
-                },
-              ],
-              enabled: true,
+              minComplexity: 4,
+              minLength: 10,
+              requireLower: null,
+              requireNumbers: null,
+              requireSpecial: null,
+              requireUpper: null,
             },
           ],
-        } as ListResponse<PolicyResponse>),
-      );
+          enabled: true,
+        },
+      ] as Policy[]);
+
       policyServiceMock.masterPasswordPolicyOptions$.mockReturnValue(
         of({
           minComplexity: 4,

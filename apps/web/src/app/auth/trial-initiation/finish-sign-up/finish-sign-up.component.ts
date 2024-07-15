@@ -13,7 +13,6 @@ import { ProductTierType, ProductType } from "@bitwarden/common/billing/enums";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 
 import {
   OrganizationCreatedEvent,
@@ -21,6 +20,7 @@ import {
   TrialOrganizationType,
 } from "../../../billing/accounts/trial-initiation/trial-billing-step.component";
 import { RouterService } from "../../../core/router.service";
+import { AcceptOrganizationInviteService } from "../../organization-invite/accept-organization.service";
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
 @Component({
@@ -87,13 +87,13 @@ export class FinishSignUpComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     protected router: Router,
     private formBuilder: UntypedFormBuilder,
-    private stateService: StateService,
     private logService: LogService,
     private policyApiService: PolicyApiServiceAbstraction,
     private policyService: PolicyService,
     private i18nService: I18nService,
     private routerService: RouterService,
     protected organizationBillingService: OrganizationBillingService,
+    private acceptOrganizationInviteService: AcceptOrganizationInviteService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -137,18 +137,15 @@ export class FinishSignUpComponent implements OnInit, OnDestroy {
         : `${productName} trial from marketing website`;
     });
 
-    const invite = await this.stateService.getOrganizationInvitation();
+    const invite = await this.acceptOrganizationInviteService.getOrganizationInvite();
     if (invite != null) {
       try {
-        const policies = await this.policyApiService.getPoliciesByToken(
+        this.policies = await this.policyApiService.getPoliciesByToken(
           invite.organizationId,
           invite.token,
           invite.email,
           invite.organizationUserId,
         );
-        if (policies.data != null) {
-          this.policies = Policy.fromListResponse(policies);
-        }
       } catch (e) {
         this.logService.error(e);
       }
