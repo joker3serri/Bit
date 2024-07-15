@@ -1,18 +1,11 @@
 import { DialogModule } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 
 import { TwoFactorAuthEmailComponent as TwoFactorAuthEmailBaseComponent } from "@bitwarden/angular/auth/components/two-factor-auth/two-factor-auth-email.component";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { LoginStrategyServiceAbstraction } from "../../../../../libs/auth/src/common/abstractions";
 import { AsyncActionsModule } from "../../../../../libs/components/src/async-actions";
 import { ButtonModule } from "../../../../../libs/components/src/button";
 import { DialogService } from "../../../../../libs/components/src/dialog";
@@ -42,7 +35,7 @@ import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
   providers: [I18nPipe],
 })
 export class TwoFactorAuthEmailComponent extends TwoFactorAuthEmailBaseComponent {
-const dialogService = inject(DialogService);
+  private dialogService = inject(DialogService);
 
   async ngOnInit(): Promise<void> {
     if (BrowserPopupUtils.inPopup(window)) {
