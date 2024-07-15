@@ -411,34 +411,45 @@ export class VaultComponent implements OnInit, OnDestroy {
   async onVaultItemsEvent(event: VaultItemEvent) {
     this.processingEvent = true;
     try {
-      if (event.type === "viewAttachments") {
-        await this.editCipherAttachments(event.item);
-      } else if (event.type === "viewCipherCollections") {
-        await this.editCipherCollections(event.item);
-      } else if (event.type === "clone") {
-        await this.cloneCipher(event.item);
-      } else if (event.type === "restore") {
-        if (event.items.length === 1) {
-          await this.restore(event.items[0]);
-        } else {
-          await this.bulkRestore(event.items);
-        }
-      } else if (event.type === "delete") {
-        await this.handleDeleteEvent(event.items);
-      } else if (event.type === "moveToFolder") {
-        await this.bulkMove(event.items);
-      } else if (event.type === "moveToOrganization") {
-        if (event.items.length === 1) {
-          await this.shareCipher(event.items[0]);
-        } else {
-          await this.bulkShare(event.items);
-        }
-      } else if (event.type === "copyField") {
-        await this.copy(event.item, event.field);
-      } else if (event.type === "editCollection") {
-        await this.editCollection(event.item, CollectionDialogTabType.Info);
-      } else if (event.type === "viewCollectionAccess") {
-        await this.editCollection(event.item, CollectionDialogTabType.Access);
+      switch (event.type) {
+        case "viewAttachments":
+          await this.editCipherAttachments(event.item);
+          break;
+        case "viewCipherCollections":
+          await this.editCipherCollections(event.item);
+          break;
+        case "clone":
+          await this.cloneCipher(event.item);
+          break;
+        case "restore":
+          if (event.items.length === 1) {
+            await this.restore(event.items[0]);
+          } else {
+            await this.bulkRestore(event.items);
+          }
+          break;
+        case "delete":
+          await this.handleDeleteEvent(event.items);
+          break;
+        case "moveToFolder":
+          await this.bulkMove(event.items);
+          break;
+        case "moveToOrganization":
+          if (event.items.length === 1) {
+            await this.shareCipher(event.items[0]);
+          } else {
+            await this.bulkShare(event.items);
+          }
+          break;
+        case "copyField":
+          await this.copy(event.item, event.field);
+          break;
+        case "editCollection":
+          await this.editCollection(event.item, CollectionDialogTabType.Info);
+          break;
+        case "viewCollectionAccess":
+          await this.editCollection(event.item, CollectionDialogTabType.Access);
+          break;
       }
     } finally {
       this.processingEvent = false;
