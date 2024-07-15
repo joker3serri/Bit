@@ -11,12 +11,10 @@ export enum FeatureFlag {
   ShowPaymentMethodWarningBanners = "show-payment-method-warning-banners",
   EnableConsolidatedBilling = "enable-consolidated-billing",
   AC1795_UpdatedSubscriptionStatusSection = "AC-1795_updated-subscription-status-section",
-  UnassignedItemsBanner = "unassigned-items-banner",
   EnableDeleteProvider = "AC-1218-delete-provider",
   ExtensionRefresh = "extension-refresh",
   RestrictProviderAccess = "restrict-provider-access",
   UseTreeWalkerApiForPageDetailsCollection = "use-tree-walker-api-for-page-details-collection",
-  BulkDeviceApproval = "bulk-device-approval",
   EmailVerification = "email-verification",
   InlineMenuFieldQualification = "inline-menu-field-qualification",
   MemberAccessReport = "ac-2059-member-access-report",
@@ -24,6 +22,7 @@ export enum FeatureFlag {
   EnableTimeThreshold = "PM-5864-dollar-threshold",
   GroupsComponentRefactor = "groups-component-refactor",
   ProviderClientVaultPrivacyBanner = "ac-2833-provider-client-vault-privacy-banner",
+  VaultBulkManagementAction = "vault-bulk-management-action",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -45,12 +44,10 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.ShowPaymentMethodWarningBanners]: FALSE,
   [FeatureFlag.EnableConsolidatedBilling]: FALSE,
   [FeatureFlag.AC1795_UpdatedSubscriptionStatusSection]: FALSE,
-  [FeatureFlag.UnassignedItemsBanner]: FALSE,
   [FeatureFlag.EnableDeleteProvider]: FALSE,
   [FeatureFlag.ExtensionRefresh]: FALSE,
   [FeatureFlag.RestrictProviderAccess]: FALSE,
   [FeatureFlag.UseTreeWalkerApiForPageDetailsCollection]: FALSE,
-  [FeatureFlag.BulkDeviceApproval]: FALSE,
   [FeatureFlag.EmailVerification]: FALSE,
   [FeatureFlag.InlineMenuFieldQualification]: FALSE,
   [FeatureFlag.MemberAccessReport]: FALSE,
@@ -58,6 +55,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.EnableTimeThreshold]: FALSE,
   [FeatureFlag.GroupsComponentRefactor]: FALSE,
   [FeatureFlag.ProviderClientVaultPrivacyBanner]: FALSE,
+  [FeatureFlag.VaultBulkManagementAction]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
