@@ -25,11 +25,11 @@ import { AcceptOrganizationInviteService } from "../../organization-invite/accep
 import { OrganizationInvite } from "../../organization-invite/organization-invite";
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
-import { FinishSignUpComponent } from "./finish-sign-up.component";
+import { CompleteTrialInitiation } from "./complete-trial-initiation.component";
 
-describe("FinishSignUpComponent", () => {
-  let component: FinishSignUpComponent;
-  let fixture: ComponentFixture<FinishSignUpComponent>;
+describe("CompleteTrialInitiation", () => {
+  let component: CompleteTrialInitiation;
+  let fixture: ComponentFixture<CompleteTrialInitiation>;
   const mockQueryParams = new BehaviorSubject<any>({ org: "enterprise" });
   const testOrgId = "91329456-5b9f-44b3-9279-6bb9ee6a0974";
   const formBuilder: FormBuilder = new FormBuilder();
@@ -54,7 +54,7 @@ describe("FinishSignUpComponent", () => {
       imports: [
         SharedModule,
         RouterTestingModule.withRoutes([
-          { path: "trial", component: FinishSignUpComponent },
+          { path: "trial", component: CompleteTrialInitiation },
           {
             path: `organizations/${testOrgId}/vault`,
             component: BlankComponent,
@@ -69,7 +69,7 @@ describe("FinishSignUpComponent", () => {
           },
         ]),
       ],
-      declarations: [FinishSignUpComponent, I18nPipe],
+      declarations: [CompleteTrialInitiation, I18nPipe],
       providers: [
         UntypedFormBuilder,
         {
@@ -107,7 +107,7 @@ describe("FinishSignUpComponent", () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FinishSignUpComponent);
+    fixture = TestBed.createComponent(CompleteTrialInitiation);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -117,7 +117,7 @@ describe("FinishSignUpComponent", () => {
     it("should not set enforcedPolicyOptions if state service returns no invite", async () => {
       acceptOrganizationInviteServiceMock.getOrganizationInvite.mockResolvedValueOnce(null);
       // Need to recreate component with new service mock
-      fixture = TestBed.createComponent(FinishSignUpComponent);
+      fixture = TestBed.createComponent(CompleteTrialInitiation);
       component = fixture.componentInstance;
       await component.ngOnInit();
 
@@ -163,7 +163,7 @@ describe("FinishSignUpComponent", () => {
       );
 
       // Need to recreate component with new service mocks
-      fixture = TestBed.createComponent(FinishSignUpComponent);
+      fixture = TestBed.createComponent(CompleteTrialInitiation);
       component = fixture.componentInstance;
       await component.ngOnInit();
       expect(component.enforcedPolicyOptions).toMatchObject({

@@ -14,6 +14,7 @@ import { TrialBillingStepComponent } from "../../billing/accounts/trial-initiati
 import { EnvironmentSelectorModule } from "../../components/environment-selector/environment-selector.module";
 import { SharedModule } from "../../shared";
 
+import { CompleteTrialInitiation } from "./complete-trial-initiation/complete-trial-initiation.component";
 import { ConfirmationDetailsComponent } from "./confirmation-details.component";
 import { AbmEnterpriseContentComponent } from "./content/abm-enterprise-content.component";
 import { AbmTeamsContentComponent } from "./content/abm-teams-content.component";
@@ -36,7 +37,6 @@ import { TeamsContentComponent } from "./content/teams-content.component";
 import { Teams1ContentComponent } from "./content/teams1-content.component";
 import { Teams2ContentComponent } from "./content/teams2-content.component";
 import { Teams3ContentComponent } from "./content/teams3-content.component";
-import { FinishSignUpComponent } from "./finish-sign-up/finish-sign-up.component";
 import { TrialInitiationComponent } from "./trial-initiation.component";
 import { VerticalStepperModule } from "./vertical-stepper/vertical-stepper.module";
 
@@ -55,7 +55,7 @@ import { VerticalStepperModule } from "./vertical-stepper/vertical-stepper.modul
   ],
   declarations: [
     TrialInitiationComponent,
-    FinishSignUpComponent,
+    CompleteTrialInitiation,
     EnterpriseContentComponent,
     TeamsContentComponent,
     ConfirmationDetailsComponent,
@@ -84,7 +84,7 @@ import { VerticalStepperModule } from "./vertical-stepper/vertical-stepper.modul
     SecretsManagerTrialFreeStepperComponent,
     SecretsManagerTrialPaidStepperComponent,
   ],
-  exports: [TrialInitiationComponent, FinishSignUpComponent],
+  exports: [TrialInitiationComponent, CompleteTrialInitiation],
   providers: [TitleCasePipe],
 })
 export class TrialInitiationModule {}

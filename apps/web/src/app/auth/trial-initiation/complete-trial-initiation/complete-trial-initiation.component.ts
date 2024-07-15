@@ -24,10 +24,10 @@ import { AcceptOrganizationInviteService } from "../../organization-invite/accep
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
 @Component({
-  selector: "app-finish-sign-up",
-  templateUrl: "finish-sign-up.component.html",
+  selector: "app-complete-trial-initiation",
+  templateUrl: "complete-trial-initiation.component.html",
 })
-export class FinishSignUpComponent implements OnInit, OnDestroy {
+export class CompleteTrialInitiation implements OnInit, OnDestroy {
   /** Password Manager or Secrets Manager */
   product: ProductType;
   /** The type of product being subscribed to */
@@ -38,6 +38,7 @@ export class FinishSignUpComponent implements OnInit, OnDestroy {
     ProductTierType.Enterprise,
     ProductTierType.Families,
   ];
+
   /** Display multi-step trial flow when true */
   useTrialStepper = false;
   validProducts = [ProductType.PasswordManager, ProductType.SecretsManager];
