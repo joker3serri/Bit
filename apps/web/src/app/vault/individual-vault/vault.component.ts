@@ -345,7 +345,7 @@ export class VaultComponent implements OnInit, OnDestroy {
                 title: null,
                 message: this.i18nService.t("unknownCipher"),
               });
-              void this.router.navigate([], {
+              await this.router.navigate([], {
                 queryParams: { itemId: null, cipherId: null },
                 queryParamsHandling: "merge",
               });
@@ -691,7 +691,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.refresh();
       // Navigate away if we deleted the collection we were viewing
       if (this.selectedCollection?.node.id === c?.id) {
-        void this.router.navigate([], {
+        await this.router.navigate([], {
           queryParams: { collectionId: this.selectedCollection.parent?.node.id ?? null },
           queryParamsHandling: "merge",
           replaceUrl: true,
@@ -726,7 +726,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       });
       // Navigate away if we deleted the collection we were viewing
       if (this.selectedCollection?.node.id === collection.id) {
-        void this.router.navigate([], {
+        await this.router.navigate([], {
           queryParams: { collectionId: this.selectedCollection.parent?.node.id ?? null },
           queryParamsHandling: "merge",
           replaceUrl: true,
