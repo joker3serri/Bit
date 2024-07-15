@@ -968,7 +968,13 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: DefaultConfigService,
     useClass: DefaultConfigService,
-    deps: [ConfigApiServiceAbstraction, EnvironmentService, LogService, StateProvider],
+    deps: [
+      ConfigApiServiceAbstraction,
+      EnvironmentService,
+      LogService,
+      StateProvider,
+      AuthServiceAbstraction,
+    ],
   }),
   safeProvider({
     provide: ConfigService,
