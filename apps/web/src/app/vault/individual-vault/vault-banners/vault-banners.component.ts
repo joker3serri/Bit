@@ -13,6 +13,7 @@ import { VaultBannersService, VisibleVaultBanner } from "./services/vault-banner
   selector: "app-vault-banners",
   templateUrl: "./vault-banners.component.html",
   imports: [VerifyEmailComponent, SharedModule, BannerModule],
+  providers: [VaultBannersService],
 })
 export class VaultBannersComponent implements OnInit {
   visibleBanners: VisibleVaultBanner[] = [];
