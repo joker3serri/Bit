@@ -187,7 +187,12 @@ export class CreateClientDialogComponent implements OnInit {
       return this.formGroup.value.seats;
     }
 
-    return this.formGroup.value.seats - selectedProviderPlan.seatMinimum;
+    const additionalSeatsPurchased =
+      this.formGroup.value.seats +
+      selectedProviderPlan.assignedSeats -
+      selectedProviderPlan.seatMinimum;
+
+    return additionalSeatsPurchased > 0 ? additionalSeatsPurchased : 0;
   }
 
   private getSelectedProviderPlan(): ProviderPlanResponse {
