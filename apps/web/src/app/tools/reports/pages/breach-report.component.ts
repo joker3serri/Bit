@@ -42,7 +42,7 @@ export class BreachReportComponent implements OnInit {
 
     this.error = false;
     this.loading = true;
-    const username = this.formGroup.value.username;
+    const username = this.formGroup.value.username.toLowerCase();
     try {
       this.breachedAccounts = await this.auditService.breachedAccounts(username);
     } catch {
