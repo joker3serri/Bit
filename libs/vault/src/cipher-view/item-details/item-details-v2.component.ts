@@ -3,6 +3,7 @@ import { Component, Input } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
@@ -31,4 +32,6 @@ export class ItemDetailsV2Component {
   @Input() organization?: Organization;
   @Input() collections?: CollectionView[];
   @Input() folder?: FolderView;
+
+  productTierType = ProductTierType;
 }
