@@ -49,6 +49,16 @@ export type CustomField = {
   name: string;
   value: string | boolean | null;
   linkedId: LinkedIdType;
+  /**
+   * `newField` is set to true when the custom field is created.
+   *
+   * This is applicable when the user is adding a new field but
+   * the `viewPassword` property on the cipher is false. The
+   * user will still need the ability to set the value of the field
+   * they just created.
+   *
+   * See {@link CustomFieldsComponent.canViewPasswords} for implementation.
+   */
   newField: boolean;
 };
 
