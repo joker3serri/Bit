@@ -1,6 +1,8 @@
-import { Directive, HostBinding, Input } from "@angular/core";
+import { Directive, ElementRef, HostBinding, Input, Renderer2 } from "@angular/core";
 
 import { ProductTierType } from "@bitwarden/common/billing/enums";
+
+export type OrgIconSize = "default" | "small" | "large";
 
 @Directive({
   standalone: true,
@@ -8,6 +10,25 @@ import { ProductTierType } from "@bitwarden/common/billing/enums";
 })
 export class OrgIconDirective {
   @Input({ required: true }) tierType: ProductTierType;
+  @Input() size?: OrgIconSize = "default";
+
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+  ) {
+    this.renderer.setAttribute(this.el.nativeElement, "aria-hidden", "true");
+  }
+
+  get iconSize(): "bwi-sm" | "bwi-lg" | "" {
+    switch (this.size) {
+      case "small":
+        return "bwi-sm";
+      case "large":
+        return "bwi-lg";
+      default:
+        return "";
+    }
+  }
 
   get orgIcon(): string {
     switch (this.tierType) {
@@ -24,6 +45,6 @@ export class OrgIconDirective {
   }
 
   @HostBinding("class") get classList() {
-    return ["bwi", "bwi-lg", "bwi-fw", this.orgIcon];
+    return ["bwi", "bwi-fw", this.iconSize, this.orgIcon];
   }
 }

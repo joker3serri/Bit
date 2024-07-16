@@ -16,7 +16,12 @@
         [ngClass]="{ 'tw-mb-3': cipher.collectionIds }"
         bitTypography="body2"
       >
-        <i class="tw-pt-1" appOrgIcon [tierType]="organization.productTierType"></i>
+        <i
+          class="tw-pt-1"
+          appOrgIcon
+          [tierType]="organization.productTierType"
+          [size]="orgIconSize"
+        ></i>
         {{ organization.name }}
       </p>
       <ul *ngIf="cipher.collectionIds && collections" [ngClass]="{ 'tw-mb-2': cipher.folderId }">
