@@ -64,27 +64,6 @@ class VaultComponent {
 }
 
 @Component({
-  selector: "generator-placeholder",
-  template: ` <div class="tw-text-main">generator stuff here</div> `,
-  standalone: true,
-})
-class GeneratorComponent {}
-
-@Component({
-  selector: "send-placeholder",
-  template: ` <div class="tw-text-main">send some stuff</div> `,
-  standalone: true,
-})
-class SendComponent {}
-
-@Component({
-  selector: "settings-placeholder",
-  template: ` <div class="tw-text-main">change your settings</div> `,
-  standalone: true,
-})
-class SettingsComponent {}
-
-@Component({
   selector: "mock-add-button",
   template: `
     <button bitButton buttonType="primary" type="button">
@@ -201,7 +180,7 @@ class MockVaultPagePoppedComponent {}
           <mock-current-account></mock-current-account>
         </ng-container>
       </popup-header>
-      <generator-placeholder></generator-placeholder>
+      <div class="tw-text-main">Generator content here</div>
     </popup-page>
   `,
   standalone: true,
@@ -211,7 +190,6 @@ class MockVaultPagePoppedComponent {}
     MockAddButtonComponent,
     MockPopoutButtonComponent,
     MockCurrentAccountComponent,
-    GeneratorComponent,
   ],
 })
 class MockGeneratorPageComponent {}
@@ -227,7 +205,7 @@ class MockGeneratorPageComponent {}
           <mock-current-account></mock-current-account>
         </ng-container>
       </popup-header>
-      <send-placeholder></send-placeholder>
+      <div class="tw-text-main">Send content here</div>
     </popup-page>
   `,
   standalone: true,
@@ -237,7 +215,6 @@ class MockGeneratorPageComponent {}
     MockAddButtonComponent,
     MockPopoutButtonComponent,
     MockCurrentAccountComponent,
-    SendComponent,
   ],
 })
 class MockSendPageComponent {}
@@ -253,7 +230,7 @@ class MockSendPageComponent {}
           <mock-current-account></mock-current-account>
         </ng-container>
       </popup-header>
-      <settings-placeholder></settings-placeholder>
+      <div class="tw-text-main">Settings content here</div>
     </popup-page>
   `,
   standalone: true,
@@ -263,7 +240,6 @@ class MockSendPageComponent {}
     MockAddButtonComponent,
     MockPopoutButtonComponent,
     MockCurrentAccountComponent,
-    SettingsComponent,
   ],
 })
 class MockSettingsPageComponent {}
@@ -281,6 +257,7 @@ class MockSettingsPageComponent {}
       <popup-footer slot="footer">
         <button bitButton buttonType="primary">Save</button>
         <button bitButton buttonType="secondary">Cancel</button>
+        <button slot="end" type="button" buttonType="danger" bitIconButton="bwi-trash"></button>
       </popup-footer>
     </popup-page>
   `,
@@ -294,6 +271,7 @@ class MockSettingsPageComponent {}
     MockPopoutButtonComponent,
     MockCurrentAccountComponent,
     VaultComponent,
+    IconButtonModule,
   ],
 })
 class MockVaultSubpageComponent {}
@@ -325,6 +303,7 @@ export default {
           useFactory: () => {
             return new I18nMockService({
               back: "Back",
+              loading: "Loading",
             });
           },
         },
@@ -413,6 +392,22 @@ export const CenteredContent: Story = {
                 <ng-container slot="description">One must first center oneself</ng-container>
               </bit-no-items>
             </div>
+          </popup-page>
+        </popup-tab-navigation>
+      </extension-container>
+    `,
+  }),
+};
+
+export const Loading: Story = {
+  render: (args) => ({
+    props: args,
+    template: /* HTML */ `
+      <extension-container>
+        <popup-tab-navigation>
+          <popup-page [loading]="true">
+            <popup-header slot="header" pageTitle="Page Header"></popup-header>
+            Content would go here
           </popup-page>
         </popup-tab-navigation>
       </extension-container>
