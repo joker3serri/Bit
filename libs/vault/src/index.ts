@@ -9,3 +9,5 @@ export {
   CollectionAssignmentParams,
   CollectionAssignmentResult,
 } from "./components/assign-collections.component";
+
+export { CipherAttachmentsComponent } from "./cipher-form/components/attachments/cipher-attachments.component";
