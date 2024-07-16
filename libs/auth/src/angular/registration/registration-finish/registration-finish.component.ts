@@ -5,6 +5,8 @@ import { Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
+import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-api.service";
+// import { RegisterVerificationEmailClickedRequest } from "@bitwarden/common/auth/models/request/registration/register-verification-email-clicked.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { ToastService } from "@bitwarden/components";
@@ -41,9 +43,11 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private registrationFinishService: RegistrationFinishService,
     private validationService: ValidationService,
+    private accountApiService: AccountApiService,
   ) {}
 
   async ngOnInit() {
+    // Why do I listen for query param changes... just use firstValueFrom for first load.
     this.listenForQueryParamChanges();
     this.masterPasswordPolicyOptions =
       await this.registrationFinishService.getMasterPasswordPolicyOptsFromOrgInvite();
@@ -61,11 +65,7 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
       }
 
       if (qParams.fromEmail && qParams.fromEmail === "true") {
-        this.toastService.showToast({
-          title: null,
-          message: this.i18nService.t("emailVerifiedV2"),
-          variant: "success",
-        });
+        // TODO: wire up calling async initWithUserComingFromEmail
       }
     });
   }
@@ -92,6 +92,17 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
 
     this.submitting = false;
     await this.router.navigate(["/login"], { queryParams: { email: this.email } });
+  }
+
+  private async initWithUserComingFromEmail() {
+    // const request = new RegisterVerificationEmailClickedRequest();
+    // const result = await this.accountApiService.registerVerificationEmailClicked();
+    // only show the toast after we call and it's successful
+    // this.toastService.showToast({
+    //   title: null,
+    //   message: this.i18nService.t("emailVerifiedV2"),
+    //   variant: "success",
+    // });
   }
 
   ngOnDestroy(): void {
