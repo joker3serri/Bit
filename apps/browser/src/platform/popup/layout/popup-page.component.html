@@ -1,18 +1,20 @@
 <ng-content select="[slot=header]"></ng-content>
-<div #nonScrollable>
-  <ng-content select="[slot=above-scroll-area]"></ng-content>
-</div>
-<main class="tw-bg-background-alt tw-flex-1 tw-h-full tw-overflow-y-auto">
-  <!-- Only shown when the `slot=above-scroll-area` is populated -->
-  <!-- The first div will "stick" and show a bottom border when content is scrolled -->
-  <!-- The second div is displayed on top of the first to hide it until the content is scrolled -->
-  <ng-container *ngIf="nonScrollable.children.length">
-    <div class="tw-sticky tw-h-[1px] tw-bg-secondary-300 tw-top-0"></div>
-    <div class="tw-relative tw-z-10 tw-h-[2px] tw-bg-background-alt -tw-mt-[2px]"></div>
-  </ng-container>
+<main class="tw-overflow-hidden tw-flex tw-flex-col tw-flex-1">
+  <div #nonScrollable>
+    <ng-content select="[slot=above-scroll-area]"></ng-content>
+  </div>
+  <div class="tw-bg-background-alt tw-flex-1 tw-flex tw-flex-col tw-overflow-y-auto">
+    <!-- Only shown when the `slot=above-scroll-area` is populated -->
+    <!-- The first div will "stick" and show a bottom border when content is scrolled -->
+    <!-- The second div is displayed on top of the first to hide it until the content is scrolled -->
+    <ng-container *ngIf="nonScrollable.children.length">
+      <div class="tw-sticky tw-min-h-[1px] tw-bg-secondary-300 tw-top-0"></div>
+      <div class="tw-relative tw-z-10 tw-min-h-[2px] tw-bg-background-alt -tw-mt-[2px]"></div>
+    </ng-container>
 
-  <div class="tw-max-w-screen-sm tw-mx-auto tw-p-3">
-    <ng-content></ng-content>
+    <div class="tw-max-w-screen-sm tw-mx-auto tw-w-full tw-p-3 tw-flex-1">
+      <ng-content></ng-content>
+    </div>
   </div>
 </main>
 <ng-content select="[slot=footer]"></ng-content>
