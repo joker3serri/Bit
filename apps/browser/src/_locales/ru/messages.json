@@ -556,6 +556,18 @@
   "security": {
     "message": "Безопасность"
   },
+  "confirmMasterPassword": {
+    "message": "Подтвердите мастер-пароль"
+  },
+  "masterPassword": {
+    "message": "Мастер-пароль"
+  },
+  "masterPassImportant": {
+    "message": "Ваш мастер-пароль невозможно восстановить, если вы его забудете!"
+  },
+  "masterPassHintLabel": {
+    "message": "Подсказка к мастер-паролю"
+  },
   "errorOccurred": {
     "message": "Произошла ошибка"
   },
@@ -1471,6 +1483,15 @@
       }
     }
   },
+  "viewItemHeader": {
+    "message": "Просмотр $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
   "passwordHistory": {
     "message": "История паролей"
   },
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "Требуется подтверждение электронной почты"
+  },
+  "emailVerifiedV2": {
+    "message": "Email подтвержден"
   },
   "emailVerificationRequiredDesc": {
     "message": "Для использования этой функции необходимо подтвердить ваш email. Вы можете это сделать в веб-хранилище."
@@ -3334,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Passkey удален"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Уведомление: Неприсвоенные элементы организации больше не видны в представлении \"Все хранилища\" и доступны только через консоль администратора."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Уведомление: с 16 мая 2024 года не назначенные элементы организации больше не будут видны в представлении \"Все хранилища\" и будут доступны только через консоль администратора."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Назначьте эти элементы в коллекцию из",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "чтобы сделать их видимыми.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Предложения по автозаполнению"
   },
@@ -3493,13 +3503,13 @@
     "message": "Элементы без папки"
   },
   "itemDetails": {
-    "message": "Item details"
+    "message": "Информация об элементе"
   },
   "itemName": {
-    "message": "Item name"
+    "message": "Название элемента"
   },
   "cannotRemoveViewOnlyCollections": {
-    "message": "You cannot remove collections with View only permissions: $COLLECTIONS$",
+    "message": "Вы не можете удалить коллекции с правами только на просмотр: $COLLECTIONS$",
     "placeholders": {
       "collections": {
         "content": "$1",
@@ -3511,14 +3521,32 @@
     "message": "Организация деактивирована"
   },
   "owner": {
-    "message": "Owner"
+    "message": "Владелец"
   },
   "selfOwnershipLabel": {
-    "message": "You",
+    "message": "Вы",
     "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "Доступ к элементам в деактивированных организациях невозможен. Обратитесь за помощью к владельцу организации."
+  },
+  "additionalInformation": {
+    "message": "Дополнительная информация"
+  },
+  "itemHistory": {
+    "message": "История элемента"
+  },
+  "lastEdited": {
+    "message": "Последнее изменение"
+  },
+  "ownerYou": {
+    "message": "Владелец: вы"
+  },
+  "linked": {
+    "message": "Связано"
+  },
+  "copySuccessful": {
+    "message": "Скопировано успешно"
   },
   "upload": {
     "message": "Загрузить"
@@ -3558,5 +3586,38 @@
   },
   "filters": {
     "message": "Фильтры"
+  },
+  "personalDetails": {
+    "message": "Личные данные"
+  },
+  "identification": {
+    "message": "Идентификация"
+  },
+  "contactInfo": {
+    "message": "Контактная информация"
+  },
+  "downloadAttachment": {
+    "message": "Скачать - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Реквизиты карты"
+  },
+  "cardBrandDetails": {
+    "message": "Реквизиты $BRAND$",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }
