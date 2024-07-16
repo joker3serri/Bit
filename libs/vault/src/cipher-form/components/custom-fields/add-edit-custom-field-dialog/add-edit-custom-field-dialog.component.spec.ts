@@ -47,16 +47,17 @@ describe("AddEditCustomFieldDialogComponent", () => {
   it("calls `addField` from DIALOG_DATA on with the type and label", () => {
     component.customFieldForm.setValue({ type: FieldType.Text, label: "Test Label" });
 
-    component.addField();
+    component.submit();
 
     expect(addField).toHaveBeenCalledWith(FieldType.Text, "Test Label");
   });
 
   it("calls `updateLabel` from DIALOG_DATA with the new label", () => {
+    component.variant = "edit";
     dialogData.editLabelConfig = { index: 0, label: "Test Label" };
     component.customFieldForm.setValue({ type: FieldType.Text, label: "Test Label 2" });
 
-    component.updateLabel();
+    component.submit();
 
     expect(updateLabel).toHaveBeenCalledWith(0, "Test Label 2");
   });

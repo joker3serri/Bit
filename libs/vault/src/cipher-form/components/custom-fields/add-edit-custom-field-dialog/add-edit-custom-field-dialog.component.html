@@ -1,4 +1,4 @@
-<form [formGroup]="customFieldForm">
+<form [formGroup]="customFieldForm" [bitSubmit]="submit">
   <bit-dialog>
     <span bitDialogTitle>
       {{ (variant === "add" ? "addField" : "editField") | i18n }}
@@ -27,25 +27,8 @@
       </bit-form-field>
     </div>
     <div bitDialogFooter class="tw-flex tw-gap-2 tw-w-full">
-      <button
-        *ngIf="variant === 'add'"
-        bitButton
-        buttonType="primary"
-        type="submit"
-        (click)="addField()"
-        [disabled]="customFieldForm.invalid"
-      >
-        {{ "add" | i18n }}
-      </button>
-      <button
-        *ngIf="variant === 'edit'"
-        bitButton
-        buttonType="primary"
-        type="submit"
-        (click)="updateLabel()"
-        [disabled]="customFieldForm.invalid"
-      >
-        {{ "save" | i18n }}
+      <button bitButton buttonType="primary" type="submit" [disabled]="customFieldForm.invalid">
+        {{ (variant === "add" ? "add" : "edit") | i18n }}
       </button>
       <button bitButton bitDialogClose buttonType="secondary" type="button">
         {{ "cancel" | i18n }}

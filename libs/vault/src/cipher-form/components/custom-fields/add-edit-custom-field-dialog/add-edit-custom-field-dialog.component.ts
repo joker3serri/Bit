@@ -7,6 +7,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { FieldType } from "@bitwarden/common/vault/enums";
 import {
+  AsyncActionsModule,
   ButtonModule,
   DialogModule,
   FormFieldModule,
@@ -35,6 +36,7 @@ export type AddEditCustomFieldDialogData = {
     SelectModule,
     ReactiveFormsModule,
     IconButtonModule,
+    AsyncActionsModule,
   ],
 })
 export class AddEditCustomFieldDialogComponent {
@@ -81,6 +83,15 @@ export class AddEditCustomFieldDialogComponent {
         return "";
     }
   }
+
+  /** Direct the form submission to the proper action */
+  submit = () => {
+    if (this.variant === "add") {
+      this.addField();
+    } else {
+      this.updateLabel();
+    }
+  };
 
   /** Invoke the `addField` callback with the custom field details */
   addField() {
