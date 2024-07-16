@@ -1,18 +1,20 @@
 import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { UntypedFormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
+import { PasswordInputResult, RegistrationFinishService } from "@bitwarden/auth/angular";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { OrganizationBillingServiceAbstraction as OrganizationBillingService } from "@bitwarden/common/billing/abstractions/organization-billing.service";
 import { ProductTierType, ProductType } from "@bitwarden/common/billing/enums";
-import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { ToastService } from "@bitwarden/components";
 
 import {
   OrganizationCreatedEvent,
@@ -27,7 +29,9 @@ import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.c
   selector: "app-complete-trial-initiation",
   templateUrl: "complete-trial-initiation.component.html",
 })
-export class CompleteTrialInitiation implements OnInit, OnDestroy {
+export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
+  @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
+
   /** Password Manager or Secrets Manager */
   product: ProductType;
   /** The tier of product being subscribed to */
@@ -41,53 +45,37 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
 
   /** Display multi-step trial flow when true */
   useTrialStepper = false;
+
+  /** True, registering a password is in progress */
+  submitting = false;
+
+  /** Valid product types, used to filter out invalid query parameters */
   validProducts = [ProductType.PasswordManager, ProductType.SecretsManager];
 
-  email = "";
-  fromOrgInvite = false;
   orgInfoSubLabel = "";
   orgId = "";
   orgLabel = "";
   billingSubLabel = "";
   policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
-  referenceData: ReferenceEventRequest;
-  @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
+
+  /** User's email address associated with the trial */
+  email = "";
+  /** Token from the backend associated with the email verification */
+  emailVerificationToken: string;
 
   orgInfoFormGroup = this.formBuilder.group({
     name: ["", { validators: [Validators.required, Validators.maxLength(50)], updateOn: "change" }],
-    email: [""],
+    billingEmail: [""],
   });
 
-  private set referenceDataId(referenceId: string) {
-    if (referenceId != null) {
-      this.referenceData.id = referenceId;
-    } else {
-      this.referenceData.id = ("; " + document.cookie)
-        .split("; reference=")
-        .pop()
-        .split(";")
-        .shift();
-    }
-
-    if (this.referenceData.id === "") {
-      this.referenceData.id = null;
-    } else {
-      // Matches "_ga_QBRN562QQQ=value1.value2.session" and captures values and session.
-      const regex = /_ga_QBRN562QQQ=([^.]+)\.([^.]+)\.(\d+)/;
-      const match = document.cookie.match(regex);
-      if (match) {
-        this.referenceData.session = match[3];
-      }
-    }
-  }
-
   private destroy$ = new Subject<void>();
+  protected readonly SubscriptionProduct = SubscriptionProduct;
 
   constructor(
     private route: ActivatedRoute,
     protected router: Router,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private logService: LogService,
     private policyApiService: PolicyApiServiceAbstraction,
     private policyService: PolicyService,
@@ -95,18 +83,33 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
     private routerService: RouterService,
     protected organizationBillingService: OrganizationBillingService,
     private acceptOrganizationInviteService: AcceptOrganizationInviteService,
+    private toastService: ToastService,
+    private registrationFinishService: RegistrationFinishService,
+    private validationService: ValidationService,
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((qParams) => {
-      this.referenceData = new ReferenceEventRequest();
+      // Retrieve email from query params
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
         this.email = qParams.email;
-        this.fromOrgInvite = qParams.fromOrgInvite === "true";
+        this.orgInfoFormGroup.controls.billingEmail.setValue(qParams.email);
       }
 
-      this.referenceDataId = qParams.reference;
+      // Show email validation toast when coming from email
+      if (qParams.fromEmail && qParams.fromEmail === "true") {
+        this.toastService.showToast({
+          title: null,
+          message: this.i18nService.t("emailVerifiedV2"),
+          variant: "success",
+        });
+      }
 
+      if (qParams.token != null) {
+        this.emailVerificationToken = qParams.token;
+      }
+
+      // Get product from query params, default to password manager
       this.product = this.validProducts.includes(qParams.product)
         ? qParams.product
         : ProductType.PasswordManager;
@@ -123,7 +126,6 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
         this.productTier = productTierParam;
 
         this.orgLabel = this.planTypeDisplay;
-        this.referenceData.flow = this.planTypeDisplay;
 
         this.useTrialStepper = true;
       }
@@ -131,11 +133,6 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
       // Are they coming from an email for sponsoring a families organization
       // After logging in redirect them to setup the families sponsorship
       this.setupFamilySponsorship(qParams.sponsorshipToken);
-
-      const productName = this.isSecretsManager() ? "Secrets Manager" : "Password Manager";
-      this.referenceData.initiationPath = !this.productTier
-        ? "Registration form"
-        : `${productName} trial from marketing website`;
     });
 
     const invite = await this.acceptOrganizationInviteService.getOrganizationInvite();
@@ -181,16 +178,10 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
       this.orgInfoSubLabel = this.orgInfoFormGroup.controls.name.value;
     }
 
-    //set billing sub label
+    // Set billing sub label
     if (event.selectedIndex === 2) {
       this.billingSubLabel = this.i18nService.t("billingTrialSubLabel");
     }
-  }
-
-  createdAccount(email: string) {
-    this.email = email;
-    this.orgInfoFormGroup.get("email")?.setValue(email);
-    this.verticalStepper.next();
   }
 
   billingSuccess(event: any) {
@@ -233,8 +224,8 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
 
     const response = await this.organizationBillingService.startFree({
       organization: {
-        name: this.orgInfoFormGroup.get("name").value,
-        billingEmail: this.orgInfoFormGroup.get("email").value,
+        name: this.orgInfoFormGroup.value.name,
+        billingEmail: this.orgInfoFormGroup.value.billingEmail,
       },
       plan: {
         type: 0,
@@ -245,6 +236,35 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
 
     this.orgId = response.id;
     this.verticalStepper.next();
+  }
+
+  async handlePasswordSubmit(passwordInputResult: PasswordInputResult) {
+    this.submitting = true;
+    try {
+      await this.registrationFinishService.finishRegistration(
+        this.email,
+        passwordInputResult,
+        this.emailVerificationToken,
+      );
+    } catch (e) {
+      this.validationService.showError(e);
+      this.submitting = false;
+      return;
+    }
+
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("newAccountCreated"),
+    });
+
+    this.submitting = false;
+
+    if (this.useTrialStepper) {
+      this.verticalStepper.next();
+    } else {
+      await this.router.navigate(["/login"], { queryParams: { email: this.email } });
+    }
   }
 
   get isSecretsManagerFree() {
@@ -293,6 +313,4 @@ export class CompleteTrialInitiation implements OnInit, OnDestroy {
       this.routerService.setPreviousUrl(route.toString());
     }
   }
-
-  protected readonly SubscriptionProduct = SubscriptionProduct;
 }

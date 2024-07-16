@@ -46,7 +46,7 @@ import { EmergencyAccessComponent } from "./auth/settings/emergency-access/emerg
 import { EmergencyAccessViewComponent } from "./auth/settings/emergency-access/view/emergency-access-view.component";
 import { SecurityRoutingModule } from "./auth/settings/security/security-routing.module";
 import { SsoComponent } from "./auth/sso.component";
-import { CompleteTrialInitiation } from "./auth/trial-initiation/complete-trial-initiation/complete-trial-initiation.component";
+import { CompleteTrialInitiationComponent } from "./auth/trial-initiation/complete-trial-initiation/complete-trial-initiation.component";
 import { freeTrialTextResolver } from "./auth/trial-initiation/complete-trial-initiation/resolver/free-trial-text.resolver";
 import { TrialInitiationComponent } from "./auth/trial-initiation/trial-initiation.component";
 import { TwoFactorAuthComponent } from "./auth/two-factor-auth.component";
@@ -377,7 +377,7 @@ const routes: Routes = [
       {
         path: "trial-initiation",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
-        component: CompleteTrialInitiation,
+        component: CompleteTrialInitiationComponent,
         resolve: {
           pageTitle: freeTrialTextResolver,
         },
@@ -385,7 +385,7 @@ const routes: Routes = [
       {
         path: "secrets-manager-trial-initiation",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
-        component: CompleteTrialInitiation,
+        component: CompleteTrialInitiationComponent,
         resolve: {
           pageTitle: freeTrialTextResolver,
         },
