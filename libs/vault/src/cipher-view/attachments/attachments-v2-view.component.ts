@@ -18,7 +18,7 @@ import {
   TypographyModule,
 } from "@bitwarden/components";
 
-import { DownloadAttachmentComponent } from "../../cipher-form/components/attachments/download-attachment/download-attachment.component";
+import { DownloadAttachmentComponent } from "../../components/download-attachment/download-attachment.component";
 
 @Component({
   selector: "app-attachments-v2-view",

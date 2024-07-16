@@ -14,9 +14,10 @@ import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.v
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { ButtonComponent, ToastService } from "@bitwarden/components";
 
+import { DownloadAttachmentComponent } from "../../../components/download-attachment/download-attachment.component";
+
 import { CipherAttachmentsComponent } from "./cipher-attachments.component";
 import { DeleteAttachmentComponent } from "./delete-attachment/delete-attachment.component";
-import { DownloadAttachmentComponent } from "./download-attachment/download-attachment.component";
 
 @Component({
   standalone: true,
