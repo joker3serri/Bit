@@ -10,6 +10,7 @@ import {
   CardComponent,
   CheckboxModule,
   FormFieldModule,
+  LinkModule,
   SectionComponent,
   SectionHeaderComponent,
   TypographyModule,
@@ -35,6 +36,7 @@ import { CustomFieldsComponent } from "../custom-fields/custom-fields.component"
     CheckboxModule,
     CommonModule,
     CustomFieldsComponent,
+    LinkModule,
   ],
 })
 export class AdditionalOptionsSectionComponent implements OnInit {

@@ -33,6 +33,7 @@ import {
   IconButtonModule,
   CheckboxModule,
   SelectModule,
+  LinkModule,
 } from "@bitwarden/components";
 
 import { CipherFormContainer } from "../../cipher-form-container";
@@ -69,6 +70,7 @@ export type CustomField = {
     CheckboxModule,
     SelectModule,
     DragDropModule,
+    LinkModule,
   ],
 })
 export class CustomFieldsComponent implements OnInit, AfterViewInit {
