@@ -198,9 +198,8 @@ export class ExportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const collections$ = Utils.asyncToObservable(() => this.collectionService.getAll());
     this.organizations$ = combineLatest({
-      collections: collections$,
+      collections: this.collectionService.decryptedCollections$,
       memberOrganizations: this.organizationService.memberOrganizations$,
     }).pipe(
       map(({ collections, memberOrganizations }) => {
