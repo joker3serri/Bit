@@ -181,6 +181,7 @@ export class InputPasswordComponent implements OnInit {
       masterKeyHash,
       kdfConfig,
       hint: this.formGroup.controls.hint.value,
+      password,
     });
   };
 }
