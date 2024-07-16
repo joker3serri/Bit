@@ -381,6 +381,9 @@ const routes: Routes = [
         resolve: {
           pageTitle: freeTrialTextResolver,
         },
+        data: {
+          maxWidth: "3xl",
+        } satisfies AnonLayoutWrapperData,
       },
       {
         path: "secrets-manager-trial-initiation",
