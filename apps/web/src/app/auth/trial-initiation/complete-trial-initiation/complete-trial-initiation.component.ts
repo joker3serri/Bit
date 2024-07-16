@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
 import { PasswordInputResult, RegistrationFinishService } from "@bitwarden/auth/angular";
+import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
@@ -86,6 +87,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private registrationFinishService: RegistrationFinishService,
     private validationService: ValidationService,
+    private loginStrategyService: LoginStrategyServiceAbstraction,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -254,20 +256,22 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     this.verticalStepper.next();
   }
 
-  /** Complete the users registration with their password */
+  /**
+   * Complete the users registration with their password.
+   *
+   * When a the trial stepper isn't used, redirect the user to the login page.
+   */
   async handlePasswordSubmit(passwordInputResult: PasswordInputResult) {
-    this.submitting = true;
-    try {
-      await this.registrationFinishService.finishRegistration(
-        this.email,
-        passwordInputResult,
-        this.emailVerificationToken,
-      );
-    } catch (e) {
-      this.validationService.showError(e);
+    if (!this.useTrialStepper) {
+      await this.finishRegistration(passwordInputResult);
       this.submitting = false;
+
+      await this.router.navigate(["/login"], { queryParams: { email: this.email } });
       return;
     }
+
+    const captchaToken = await this.finishRegistration(passwordInputResult);
+    await this.logIn(passwordInputResult.password, captchaToken);
 
     this.toastService.showToast({
       variant: "success",
@@ -277,11 +281,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
 
     this.submitting = false;
 
-    if (this.useTrialStepper) {
-      this.verticalStepper.next();
-    } else {
-      await this.router.navigate(["/login"], { queryParams: { email: this.email } });
-    }
+    this.verticalStepper.next();
   }
 
   private setupFamilySponsorship(sponsorshipToken: string) {
@@ -290,6 +290,33 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
         queryParams: { plan: sponsorshipToken },
       });
       this.routerService.setPreviousUrl(route.toString());
+    }
+  }
+
+  /** Logs the user in based using the token received by the `finishRegistration` method */
+  private async logIn(masterPassword: string, captchaBypassToken: string): Promise<void> {
+    const credentials = new PasswordLoginCredentials(
+      this.email,
+      masterPassword,
+      captchaBypassToken,
+      null,
+    );
+
+    await this.loginStrategyService.logIn(credentials);
+  }
+
+  finishRegistration(passwordInputResult: PasswordInputResult) {
+    this.submitting = true;
+    try {
+      return this.registrationFinishService.finishRegistration(
+        this.email,
+        passwordInputResult,
+        this.emailVerificationToken,
+      );
+    } catch (e) {
+      this.validationService.showError(e);
+      this.submitting = false;
+      return;
     }
   }
 }
