@@ -23,6 +23,7 @@ export class AnonLayoutComponent {
   @Input() subtitle: string;
   @Input() icon: Icon;
   @Input() showReadonlyHostname: boolean;
+  @Input() hideLogo: boolean = false;
 
   protected logo: Icon;
 
@@ -32,7 +33,8 @@ export class AnonLayoutComponent {
   protected version: string;
   protected theme: string;
 
-  protected showYearAndVersion = true;
+  protected hideFooter = false;
+  protected hideYearAndVersion = false;
 
   constructor(
     private environmentService: EnvironmentService,
@@ -41,7 +43,8 @@ export class AnonLayoutComponent {
   ) {
     this.year = new Date().getFullYear().toString();
     this.clientType = this.platformUtilsService.getClientType();
-    this.showYearAndVersion = this.clientType === ClientType.Web;
+    this.hideFooter = this.clientType === ClientType.Browser;
+    this.hideYearAndVersion = this.clientType !== ClientType.Web;
   }
 
   async ngOnInit() {
