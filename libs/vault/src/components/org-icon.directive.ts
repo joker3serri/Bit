@@ -45,6 +45,6 @@ export class OrgIconDirective {
   }
 
   @HostBinding("class") get classList() {
-    return ["bwi", "bwi-fw", this.iconSize, this.orgIcon];
+    return ["bwi", this.iconSize, this.orgIcon];
   }
 }

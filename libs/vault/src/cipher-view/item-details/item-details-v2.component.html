@@ -26,12 +26,12 @@
       </p>
       <ul *ngIf="cipher.collectionIds && collections" [ngClass]="{ 'tw-mb-2': cipher.folderId }">
         <div *ngFor="let collection of collections" class="tw-mb-1 tw-flex" bitTypography="body2">
-          <i class="bwi bwi-collection bwi-lg bwi-fw tw-pt-1"></i>
+          <i class="bwi bwi-collection bwi-lg tw-pt-1"></i>
           <p>{{ collection.name }}</p>
         </div>
       </ul>
       <p *ngIf="cipher.folderId && folder" bitTypography="body2">
-        <i class="bwi bwi-folder bwi-lg bwi-fw tw-pt-1"></i> {{ folder.name }}
+        <i class="bwi bwi-folder bwi-lg tw-pt-1"></i> {{ folder.name }}
       </p>
     </div>
   </bit-card>
