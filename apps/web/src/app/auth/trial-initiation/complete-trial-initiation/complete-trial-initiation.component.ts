@@ -56,7 +56,6 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   orgId = "";
   orgLabel = "";
   billingSubLabel = "";
-  policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
 
   /** User's email address associated with the trial */
@@ -71,17 +70,18 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   protected readonly SubscriptionProduct = SubscriptionProduct;
+  protected readonly ProductType = ProductType;
 
   constructor(
-    private route: ActivatedRoute,
     protected router: Router,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private logService: LogService,
     private policyApiService: PolicyApiServiceAbstraction,
     private policyService: PolicyService,
     private i18nService: I18nService,
     private routerService: RouterService,
-    protected organizationBillingService: OrganizationBillingService,
+    private organizationBillingService: OrganizationBillingService,
     private acceptOrganizationInviteService: AcceptOrganizationInviteService,
     private toastService: ToastService,
     private registrationFinishService: RegistrationFinishService,
@@ -120,7 +120,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
       const showPasswordManagerStepper = this.stepperProductTypes.includes(productTierParam);
 
       /** All types of secret manager should see the trial stepper */
-      const showSecretsManagerStepper = this.isSecretsManager();
+      const showSecretsManagerStepper = this.product === ProductType.SecretsManager;
 
       if ((showPasswordManagerStepper || showSecretsManagerStepper) && !isNaN(productTierParam)) {
         this.productTier = productTierParam;
@@ -136,9 +136,11 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     });
 
     const invite = await this.acceptOrganizationInviteService.getOrganizationInvite();
+    let policies: Policy[] | null = null;
+
     if (invite != null) {
       try {
-        this.policies = await this.policyApiService.getPoliciesByToken(
+        policies = await this.policyApiService.getPoliciesByToken(
           invite.organizationId,
           invite.token,
           invite.email,
@@ -149,9 +151,9 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.policies != null) {
+    if (policies !== null) {
       this.policyService
-        .masterPasswordPolicyOptions$(this.policies)
+        .masterPasswordPolicyOptions$(policies)
         .pipe(takeUntil(this.destroy$))
         .subscribe((enforcedPasswordPolicyOptions) => {
           this.enforcedPolicyOptions = enforcedPasswordPolicyOptions;
@@ -170,105 +172,29 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  stepSelectionChange(event: StepperSelectionEvent) {
-    // Set org info sub label
+  /** Handle manual stepper change */
+  verticalStepChange(event: StepperSelectionEvent) {
     if (event.selectedIndex === 1 && this.orgInfoFormGroup.controls.name.value === "") {
       this.orgInfoSubLabel = this.planInfoLabel;
     } else if (event.previouslySelectedIndex === 1) {
       this.orgInfoSubLabel = this.orgInfoFormGroup.controls.name.value;
     }
-
-    // Set billing sub label
-    if (event.selectedIndex === 2) {
-      this.billingSubLabel = this.i18nService.t("billingTrialSubLabel");
-    }
   }
 
-  billingSuccess(event: any) {
-    this.orgId = event?.orgId;
-    this.billingSubLabel = event?.subLabelText;
-    this.verticalStepper.next();
-  }
-
+  /** Update local details from organization created event */
   createdOrganization(event: OrganizationCreatedEvent) {
     this.orgId = event.organizationId;
     this.billingSubLabel = event.planDescription;
     this.verticalStepper.next();
   }
 
+  /** Move the user to the previous step */
   previousStep() {
     this.verticalStepper.previous();
   }
 
-  isSecretsManager() {
-    return this.product === ProductType.SecretsManager;
-  }
-
-  async getStartedNavigation(): Promise<void> {
-    if (this.product === ProductType.SecretsManager) {
-      await this.router.navigate(["sm", this.orgId]);
-    } else {
-      await this.router.navigate(["organizations", this.orgId, "vault"]);
-    }
-  }
-
-  async inviteUsersNavigation(): Promise<void> {
-    await this.router.navigate(["organizations", this.orgId, "members"]);
-  }
-
-  async conditionallyCreateOrganization(): Promise<void> {
-    if (!this.isSecretsManagerFree) {
-      this.verticalStepper.next();
-      return;
-    }
-
-    const response = await this.organizationBillingService.startFree({
-      organization: {
-        name: this.orgInfoFormGroup.value.name,
-        billingEmail: this.orgInfoFormGroup.value.billingEmail,
-      },
-      plan: {
-        type: 0,
-        subscribeToSecretsManager: true,
-        isFromSecretsManagerTrial: true,
-      },
-    });
-
-    this.orgId = response.id;
-    this.verticalStepper.next();
-  }
-
-  async handlePasswordSubmit(passwordInputResult: PasswordInputResult) {
-    this.submitting = true;
-    try {
-      await this.registrationFinishService.finishRegistration(
-        this.email,
-        passwordInputResult,
-        this.emailVerificationToken,
-      );
-    } catch (e) {
-      this.validationService.showError(e);
-      this.submitting = false;
-      return;
-    }
-
-    this.toastService.showToast({
-      variant: "success",
-      title: null,
-      message: this.i18nService.t("newAccountCreated"),
-    });
-
-    this.submitting = false;
-
-    if (this.useTrialStepper) {
-      this.verticalStepper.next();
-    } else {
-      await this.router.navigate(["/login"], { queryParams: { email: this.email } });
-    }
-  }
-
   get isSecretsManagerFree() {
-    return this.isSecretsManager() && this.productTier === ProductTierType.Free;
+    return this.product === ProductType.SecretsManager && this.productTier === ProductTierType.Free;
   }
 
   get planTypeDisplay() {
@@ -303,6 +229,59 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     }
 
     return this.productTier;
+  }
+
+  /** Create an organization unless the trial is for secrets manager */
+  async conditionallyCreateOrganization(): Promise<void> {
+    if (!this.isSecretsManagerFree) {
+      this.verticalStepper.next();
+      return;
+    }
+
+    const response = await this.organizationBillingService.startFree({
+      organization: {
+        name: this.orgInfoFormGroup.value.name,
+        billingEmail: this.orgInfoFormGroup.value.billingEmail,
+      },
+      plan: {
+        type: 0,
+        subscribeToSecretsManager: true,
+        isFromSecretsManagerTrial: true,
+      },
+    });
+
+    this.orgId = response.id;
+    this.verticalStepper.next();
+  }
+
+  /** Complete the users registration with their password */
+  async handlePasswordSubmit(passwordInputResult: PasswordInputResult) {
+    this.submitting = true;
+    try {
+      await this.registrationFinishService.finishRegistration(
+        this.email,
+        passwordInputResult,
+        this.emailVerificationToken,
+      );
+    } catch (e) {
+      this.validationService.showError(e);
+      this.submitting = false;
+      return;
+    }
+
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("newAccountCreated"),
+    });
+
+    this.submitting = false;
+
+    if (this.useTrialStepper) {
+      this.verticalStepper.next();
+    } else {
+      await this.router.navigate(["/login"], { queryParams: { email: this.email } });
+    }
   }
 
   private setupFamilySponsorship(sponsorshipToken: string) {

@@ -7,7 +7,7 @@
   ></auth-input-password>
 </div>
 <div *ngIf="useTrialStepper">
-  <app-vertical-stepper #stepper linear (selectionChange)="stepSelectionChange($event)">
+  <app-vertical-stepper #stepper linear (selectionChange)="verticalStepChange($event)">
     <app-vertical-step label="Create Account" [editable]="false" [subLabel]="email">
       <auth-input-password
         [email]="email"
@@ -37,7 +37,7 @@
           type: trialOrganizationType
         }"
         [subscriptionProduct]="
-          isSecretsManager()
+          product === ProductType.SecretsManager
             ? SubscriptionProduct.SecretsManager
             : SubscriptionProduct.PasswordManager
         "
@@ -53,18 +53,27 @@
         [product]="this.product"
       ></app-trial-confirmation-details>
       <div class="tw-mb-3 tw-flex">
-        <button type="button" bitButton buttonType="primary" (click)="getStartedNavigation()">
+        <a
+          type="button"
+          bitButton
+          buttonType="primary"
+          [routerLink]="
+            product === ProductType.SecretsManager
+              ? ['sm', orgId]
+              : ['organizations', orgId, 'vault']
+          "
+        >
           {{ "getStarted" | i18n | titlecase }}
-        </button>
-        <button
+        </a>
+        <a
           type="button"
           bitButton
           buttonType="secondary"
-          (click)="inviteUsersNavigation()"
+          [routerLink]="['organizations', orgId, 'members']"
           class="tw-ml-3 tw-inline-flex tw-items-center tw-px-3"
         >
           {{ "inviteUsers" | i18n }}
-        </button>
+        </a>
       </div>
     </app-vertical-step>
   </app-vertical-stepper>
