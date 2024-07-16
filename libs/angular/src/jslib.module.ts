@@ -46,7 +46,6 @@ import { StopClickDirective } from "./directives/stop-click.directive";
 import { StopPropDirective } from "./directives/stop-prop.directive";
 import { TrueFalseValueDirective } from "./directives/true-false-value.directive";
 import { CreditCardNumberPipe } from "./pipes/credit-card-number.pipe";
-import { OrgIconPipe } from "./pipes/org-icon.pipe";
 import { PluralizePipe } from "./pipes/pluralize.pipe";
 import { SearchCiphersPipe } from "./pipes/search-ciphers.pipe";
 import { SearchPipe } from "./pipes/search.pipe";
@@ -118,7 +117,6 @@ import { IconComponent } from "./vault/components/icon.component";
     SelectPaymentMethodComponent,
     VerifyBankAccountComponent,
     TwoFactorIconComponent,
-    OrgIconPipe,
   ],
   exports: [
     A11yInvalidDirective,
@@ -156,7 +154,6 @@ import { IconComponent } from "./vault/components/icon.component";
     SelectPaymentMethodComponent,
     VerifyBankAccountComponent,
     TwoFactorIconComponent,
-    OrgIconPipe,
   ],
   providers: [
     CreditCardNumberPipe,
@@ -167,7 +164,6 @@ import { IconComponent } from "./vault/components/icon.component";
     UserTypePipe,
     FingerprintPipe,
     PluralizePipe,
-    OrgIconPipe,
   ],
 })
 export class JslibModule {}
