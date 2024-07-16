@@ -1462,7 +1462,7 @@
     "message": "Error decrypting the exported file. Your encryption key does not match the encryption key used export the data."
   },
   "importDestination": {
-    "message": "Import destination"
+    "message": "Destination"
   },
   "learnAboutImportOptions": {
     "message": "Learn about your import options"
@@ -8564,5 +8564,8 @@
         "example": "Organization name"
       }
     }
+  },
+  "data": {
+    "message": "Data"
   }
 }

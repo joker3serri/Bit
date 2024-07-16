@@ -1368,7 +1368,7 @@
   },
   "exportPasswordDescription": {
     "message": "This password will be used to export and import this file"
-  },  
+  },
   "accountRestrictedOptionDescription": {
     "message": "Use your account encryption key, derived from your account's username and Master Password, to encrypt the export and restrict import to only the current Bitwarden account."
   },
@@ -2806,7 +2806,7 @@
     "message": "Invalid file password, please use the password you entered when you created the export file."
   },
   "importDestination": {
-    "message": "Import destination"
+    "message": "Destination"
   },
   "learnAboutImportOptions": {
     "message": "Learn about your import options"
@@ -3001,5 +3001,8 @@
         "example": "Work"
       }
     }
+  },
+  "data": {
+    "message": "Data"
   }
 }
