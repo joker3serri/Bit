@@ -271,6 +271,12 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     }
 
     const captchaToken = await this.finishRegistration(passwordInputResult);
+
+    if (captchaToken == null) {
+      this.submitting = false;
+      return;
+    }
+
     await this.logIn(passwordInputResult.password, captchaToken);
 
     this.submitting = false;
@@ -301,16 +307,12 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
 
   finishRegistration(passwordInputResult: PasswordInputResult) {
     this.submitting = true;
-    try {
-      return this.registrationFinishService.finishRegistration(
-        this.email,
-        passwordInputResult,
-        this.emailVerificationToken,
-      );
-    } catch (e) {
-      this.validationService.showError(e);
-      this.submitting = false;
-      return;
-    }
+    return this.registrationFinishService
+      .finishRegistration(this.email, passwordInputResult, this.emailVerificationToken)
+      .catch((e) => {
+        this.validationService.showError(e);
+        this.submitting = false;
+        return null;
+      });
   }
 }
