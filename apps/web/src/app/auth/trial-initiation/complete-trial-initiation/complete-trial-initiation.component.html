@@ -59,8 +59,8 @@
           buttonType="primary"
           [routerLink]="
             product === ProductType.SecretsManager
-              ? ['sm', orgId]
-              : ['organizations', orgId, 'vault']
+              ? ['/sm', orgId]
+              : ['/organizations', orgId, 'vault']
           "
         >
           {{ "getStarted" | i18n | titlecase }}
@@ -69,7 +69,7 @@
           type="button"
           bitButton
           buttonType="secondary"
-          [routerLink]="['organizations', orgId, 'members']"
+          [routerLink]="['/organizations', orgId, 'members']"
           class="tw-ml-3 tw-inline-flex tw-items-center tw-px-3"
         >
           {{ "inviteUsers" | i18n }}
