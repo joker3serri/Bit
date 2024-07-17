@@ -93,7 +93,7 @@ export class ViewV2Component {
       case CipherType.Identity:
         return this.i18nService.t("viewItemHeader", this.i18nService.t("typeIdentity"));
       case CipherType.SecureNote:
-        return this.i18nService.t("viewItemHeader", this.i18nService.t("note"));
+        return this.i18nService.t("viewItemHeader", this.i18nService.t("note").toLowerCase());
     }
   }
 
