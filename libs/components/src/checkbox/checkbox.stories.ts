@@ -16,7 +16,7 @@ import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { CheckboxModule } from "./checkbox.module";
 
-const template = `
+const template = /*html*/ `
   <form [formGroup]="formObj">
     <bit-form-control>
       <input type="checkbox" bitCheckbox formControlName="checkbox">
@@ -82,7 +82,10 @@ type Story = StoryObj<ExampleComponent>;
 export const Default: Story = {
   render: (args) => ({
     props: args,
-    template: `<app-example [checked]="checked" [disabled]="disabled"></app-example>`,
+    template: /*html*/ `
+      <app-example></app-example>
+      <app-example [checked]="true"></app-example>
+    `,
   }),
   parameters: {
     docs: {
@@ -90,10 +93,6 @@ export const Default: Story = {
         code: template,
       },
     },
-  },
-  args: {
-    checked: false,
-    disabled: false,
   },
 };
 
@@ -104,7 +103,7 @@ export const Hint: Story = {
         checkbox: new FormControl(false),
       }),
     },
-    template: `
+    template: /*html*/ `
       <form [formGroup]="formObj">
         <bit-form-control>
           <input type="checkbox" bitCheckbox formControlName="checkbox">
@@ -131,20 +130,37 @@ export const Hint: Story = {
   },
 };
 
+export const Disabled: Story = {
+  render: (args) => ({
+    props: args,
+    template: /*html*/ `
+      <app-example [disabled]="true"></app-example>
+      <app-example [checked]="true" [disabled]="true"></app-example>
+    `,
+  }),
+  parameters: {
+    docs: {
+      source: {
+        code: template,
+      },
+    },
+  },
+};
+
 export const Custom: Story = {
   render: (args) => ({
     props: args,
-    template: `
+    template: /*html*/ `
       <div class="tw-flex tw-flex-col tw-w-32">
-        <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2 tw-items-baseline">
+        <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2">
           A-Z
           <input class="tw-ml-auto focus-visible:tw-ring-offset-secondary-300" type="checkbox" bitCheckbox>
         </label>
-        <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2 tw-items-baseline">
+        <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2">
           a-z
           <input class="tw-ml-auto focus-visible:tw-ring-offset-secondary-300" type="checkbox" bitCheckbox>
         </label>
-        <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2 tw-items-baseline">
+        <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2">
           0-9
           <input class="tw-ml-auto focus-visible:tw-ring-offset-secondary-300" type="checkbox" bitCheckbox>
         </label>
@@ -156,7 +172,7 @@ export const Custom: Story = {
 export const Indeterminate: Story = {
   render: (args) => ({
     props: args,
-    template: `
+    template: /*html*/ `
       <input type="checkbox" bitCheckbox [indeterminate]="true">
     `,
   }),

@@ -1,12 +1,25 @@
-<label [class]="labelClasses">
-  <ng-content></ng-content>
-  <span [class]="labelContentClasses">
-    <span>
+<label
+  class="tw-transition tw-select-none tw-mb-0 tw-inline-flex tw-flex-col tw-group/form-control-label"
+  [ngClass]="[this.formControl.disabled ? 'tw-cursor-auto' : 'tw-cursor-pointer']"
+>
+  <div
+    class="tw-inline-flex tw-items-center tw-rounded tw-p-0.5 has-[:focus-visible]:tw-ring has-[:focus-visible]:tw-ring-primary-500"
+  >
+    <ng-content></ng-content>
+    <span
+      class="group-has-[input:not([disabled]):hover]/form-control-label:tw-underline"
+      bitTypography="body1"
+      [ngClass]="formControl.disabled ? 'tw-text-muted' : 'tw-text-main'"
+    >
       <ng-content select="bit-label"></ng-content>
       <span *ngIf="required" class="tw-text-xs tw-font-normal"> ({{ "required" | i18n }})</span>
     </span>
+  </div>
+  <div
+    class="group-has-[input[type='checkbox']]/form-control-label:tw-ml-7 group-has-[input[type='radio']]/form-control-label:tw-ml-5 [&>bit-hint]:tw-mt-0 tw-flex"
+  >
     <ng-content select="bit-hint" *ngIf="!hasError"></ng-content>
-  </span>
+  </div>
 </label>
 <div *ngIf="hasError" class="tw-mt-1 tw-text-danger">
   <i class="bwi bwi-error"></i> {{ displayError }}
