@@ -5,14 +5,14 @@ import { ProductType, ProductTierType } from "@bitwarden/common/billing/enums";
 export const freeTrialTextResolver: ResolveFn<string | null> = (
   route: ActivatedRouteSnapshot,
 ): string | null => {
-  const { product, planType } = route.queryParams;
+  const { product, productTier } = route.queryParams;
   const products: ProductType[] = (product ?? "").split(",").map((p: string) => parseInt(p));
 
   const onlyPasswordManager = products.length === 1 && products[0] === ProductType.PasswordManager;
   const onlySecretsManager = products.length === 1 && products[0] === ProductType.SecretsManager;
-  const forTeams = parseInt(planType) === ProductTierType.Teams;
-  const forEnterprise = parseInt(planType) === ProductTierType.Enterprise;
-  const forFamilies = parseInt(planType) === ProductTierType.Families;
+  const forTeams = parseInt(productTier) === ProductTierType.Teams;
+  const forEnterprise = parseInt(productTier) === ProductTierType.Enterprise;
+  const forFamilies = parseInt(productTier) === ProductTierType.Families;
 
   switch (true) {
     case onlyPasswordManager && forTeams:
