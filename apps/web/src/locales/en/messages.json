@@ -5534,6 +5534,9 @@
   "verificationCodeRequired": {
     "message": "Verification code is required."
   },
+  "webauthnCancelOrTimeout": {
+    "message": "The authentication was cancelled or took too long. Please try again."
+  },
   "invalidVerificationCode": {
     "message": "Invalid verification code"
   },
@@ -8576,5 +8579,8 @@
         "example": "Organization name"
       }
     }
+  },
+  "purchasedSeatsRemoved": {
+    "message": "purchased seats removed"
   }
 }
