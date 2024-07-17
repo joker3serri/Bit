@@ -273,12 +273,6 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     const captchaToken = await this.finishRegistration(passwordInputResult);
     await this.logIn(passwordInputResult.password, captchaToken);
 
-    this.toastService.showToast({
-      variant: "success",
-      title: null,
-      message: this.i18nService.t("newAccountCreated"),
-    });
-
     this.submitting = false;
 
     this.verticalStepper.next();
