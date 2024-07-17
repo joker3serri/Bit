@@ -11,3 +11,4 @@ export {
 } from "./components/assign-collections.component";
 
 export { CipherAttachmentsComponent } from "./cipher-form/components/attachments/cipher-attachments.component";
+export { DownloadAttachmentComponent } from "./components/download-attachment/download-attachment.component";
