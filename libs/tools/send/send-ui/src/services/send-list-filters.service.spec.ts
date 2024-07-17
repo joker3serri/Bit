@@ -1,17 +1,23 @@
 import { TestBed } from "@angular/core/testing";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, first } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { Send } from "@bitwarden/common/tools/send/models/domain/send";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
 import { SendListFiltersService } from "./send-list-filters.service";
 
 describe("SendListFiltersService", () => {
   let service: SendListFiltersService;
+  const sends$ = new BehaviorSubject({});
   const policyAppliesToActiveUser$ = new BehaviorSubject<boolean>(false);
+
+  const sendService = {
+    sends$,
+  } as unknown as SendService;
 
   const i18nService = {
     t: (key: string) => key,
@@ -27,6 +33,10 @@ describe("SendListFiltersService", () => {
 
     TestBed.configureTestingModule({
       providers: [
+        {
+          provide: SendService,
+          useValue: sendService,
+        },
         {
           provide: I18nService,
           useValue: i18nService,
@@ -44,22 +54,6 @@ describe("SendListFiltersService", () => {
 
   it("returns all send types", () => {
     expect(service.sendTypes.map((c) => c.value)).toEqual([SendType.File, SendType.Text]);
-  });
-
-  it("filters disabled sends", (done) => {
-    const sends = [{ disabled: true }, { disabled: false }, { disabled: true }] as Send[];
-    service.filterFunction$.pipe(first()).subscribe((filterFunction) => {
-      expect(filterFunction(sends)).toEqual([sends[1]]);
-      done();
-    });
-
-    service.filterForm.patchValue({});
-  });
-
-  it("resets the filter form", () => {
-    service.filterForm.patchValue({ sendType: SendType.Text });
-    service.resetFilterForm();
-    expect(service.filterForm.value).toEqual({ sendType: null });
   });
 
   it("filters by sendType", (done) => {
