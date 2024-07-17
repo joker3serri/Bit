@@ -36,14 +36,6 @@ export abstract class CipherService implements UserKeyRotationDataProvider<Ciphe
   get: (id: string) => Promise<Cipher>;
   getAll: () => Promise<Cipher[]>;
   getAllDecrypted: () => Promise<CipherView[]>;
-  /**
-   * Retrieves an Observable of CipherView arrays.
-   *
-   * This method provides access to the decrypted ciphers, ensuring they are loaded
-   * and available for use. If Ciphers are already decrypted and cached, it returns
-   * them immediately. If not, it triggers the decryption process and returns the decrypted ciphers.
-   */
-  getCipherViews$: () => Observable<CipherView[]>;
   getAllDecryptedForGrouping: (groupingId: string, folder?: boolean) => Promise<CipherView[]>;
   getAllDecryptedForUrl: (
     url: string,

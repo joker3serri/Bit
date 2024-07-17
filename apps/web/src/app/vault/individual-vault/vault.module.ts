@@ -24,6 +24,5 @@ import { VaultComponent } from "./vault.component";
     CollectionDialogModule,
     VaultComponent,
   ],
-  declarations: [],
 })
 export class VaultModule {}
