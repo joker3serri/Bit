@@ -111,10 +111,10 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
         this.emailVerificationToken = qParams.token;
       }
 
+      const product = parseInt(qParams.product);
+
       // Get product from query params, default to password manager
-      this.product = this.validProducts.includes(qParams.product)
-        ? qParams.product
-        : ProductType.PasswordManager;
+      this.product = this.validProducts.includes(product) ? product : ProductType.PasswordManager;
 
       const productTierParam = parseInt(qParams.productTier) as ProductTierType;
 
