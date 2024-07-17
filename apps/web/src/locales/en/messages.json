@@ -8567,5 +8567,8 @@
   },
   "data": {
     "message": "Data"
+  },
+  "purchasedSeatsRemoved": {
+    "message": "purchased seats removed"
   }
 }
