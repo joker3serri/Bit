@@ -96,6 +96,32 @@ export const Default: Story = {
   },
 };
 
+export const LongLabel: Story = {
+  render: () => ({
+    props: {
+      formObj: new FormGroup({
+        checkbox: new FormControl(false),
+      }),
+    },
+    template: /*html*/ `
+      <form [formGroup]="formObj" class="tw-border tw-border-solid tw-border-black tw-w-96">
+        <bit-form-control>
+          <input type="checkbox" bitCheckbox formControlName="checkbox">
+          <bit-label>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur iaculis consequat enim vitae elementum.
+            Ut non odio est. </bit-label>
+        </bit-form-control>
+      </form>
+    `,
+  }),
+  parameters: {
+    docs: {
+      source: {
+        code: template,
+      },
+    },
+  },
+};
+
 export const Hint: Story = {
   render: (args) => ({
     props: {

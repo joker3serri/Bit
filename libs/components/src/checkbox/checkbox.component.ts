@@ -25,7 +25,7 @@ export class CheckboxComponent implements BitFormControlAbstraction {
     "tw-h-5",
     "tw-w-5",
     "tw-mr-1.5",
-    "tw-mb-[1px]",
+    "tw-bottom-[-1px]", // Fix checkbox looking off-center
     "tw-flex-none", // Flexbox fix for bit-form-control
 
     "before:tw-content-['']",
