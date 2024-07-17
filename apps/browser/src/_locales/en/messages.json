@@ -423,6 +423,9 @@
   "note": {
     "message": "Note"
   },
+  "noteLowercase": {
+    "message": "note"
+  },
   "editItem": {
     "message": "Edit item"
   },
@@ -1456,6 +1459,9 @@
   "typeLogin": {
     "message": "Login"
   },
+  "typeLoginLowercase": {
+    "message": "login"
+  },
   "typeLogins": {
     "message": "Logins"
   },
@@ -1465,8 +1471,14 @@
   "typeCard": {
     "message": "Card"
   },
+  "typeCardLowercase": {
+    "message": "card"
+  },
   "typeIdentity": {
     "message": "Identity"
+  },
+  "typeIdentityLowercase": {
+    "message": "identity"
   },
   "newItemHeader":{
     "message": "New $TYPE$",
