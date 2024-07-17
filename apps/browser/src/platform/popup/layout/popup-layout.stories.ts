@@ -43,7 +43,7 @@ class ExtensionContainerComponent {}
 
         <ng-container slot="end">
           <bit-item-action>
-            <button type="button" bitBadge variant="primary">Auto-fill</button>
+            <button type="button" bitBadge variant="primary">Autofill</button>
           </bit-item-action>
           <bit-item-action>
             <button type="button" bitIconButton="bwi-clone" aria-label="Copy item"></button>
