@@ -23,17 +23,17 @@ export class SMLandingComponent {
   constructor(private organizationService: OrganizationService) {}
 
   async ngOnInit() {
-    const organizations = await this.organizationService.getAll();
+    const enabledOrganizations = (await this.organizationService.getAll()).filter((e) => e.enabled);
 
-    if (organizations.length > 0) {
-      this.handleEnabledOrganizations(organizations);
+    if (enabledOrganizations.length > 0) {
+      this.handleEnabledOrganizations(enabledOrganizations);
     } else {
       // Person is not part of any orgs they need to be in an organization in order to use SM
       this.tryItNowUrl = "/create-organization";
     }
   }
 
-  private handleEnabledOrganizations(enabledOrgs: Organization[]) {
+  private handleEnabledOrganizations(enabledOrganizations: Organization[]) {
     // People get to this page because SM (Secrets Manager) isn't enabled for them (or the Organization they are a part of)
     // 1 - SM is enabled for the Organization but not that user
     //1a - person is Admin+ (Admin or higher) and just needs instructions on how to enable it for themselves
@@ -44,18 +44,20 @@ export class SMLandingComponent {
     //2c - person is user - Direct them to request access page where an email is sent to owner/admins
 
     // We use useSecretsManager because we want to get the first org the person is a part of where SM is enabled but they don't have access enabled yet
-    const adminPlusNeedsInstructionsToEnableSM = enabledOrgs.filter(
+    const adminPlusNeedsInstructionsToEnableSM = enabledOrganizations.find(
       (o) => o.isAdmin && o.useSecretsManager,
     );
-    const ownerNeedsToEnableSM = enabledOrgs.filter((o) => o.isOwner && !o.useSecretsManager);
+    const ownerNeedsToEnableSM = enabledOrganizations.find(
+      (o) => o.isOwner && !o.useSecretsManager,
+    );
 
     // 1a If Organization has SM Enabled, but this logged in person does not have it enabled, but they are admin+ then give them instructions to enable.
-    if (adminPlusNeedsInstructionsToEnableSM.length > 0) {
-      this.ShowHowToEnableSMForMembers(adminPlusNeedsInstructionsToEnableSM[0].id);
+    if (adminPlusNeedsInstructionsToEnableSM != undefined) {
+      this.showHowToEnableSMForMembers(adminPlusNeedsInstructionsToEnableSM.id);
     }
     // 2a Owners can enable SM in the subscription area of Admin Console.
-    else if (ownerNeedsToEnableSM.length > 0) {
-      this.tryItNowUrl = `/organizations/${ownerNeedsToEnableSM[0].id}/billing/subscription`;
+    else if (ownerNeedsToEnableSM != undefined) {
+      this.tryItNowUrl = `/organizations/${ownerNeedsToEnableSM.id}/billing/subscription`;
     }
     // 1b and 2b 2c, they must be lower than an Owner, and they need access, or want their org to have access to SM.
     else {
@@ -63,7 +65,7 @@ export class SMLandingComponent {
     }
   }
 
-  private ShowHowToEnableSMForMembers(orgId: string) {
+  private showHowToEnableSMForMembers(orgId: string) {
     this.showGiveMembersAccessInstructions = true;
     this.showSecretsManagerInformation = false;
     this.learnMoreUrl =
