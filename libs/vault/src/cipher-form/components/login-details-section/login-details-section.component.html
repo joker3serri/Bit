@@ -22,7 +22,7 @@
 
     <bit-form-field>
       <bit-label>{{ "password" | i18n }}</bit-label>
-      <input bitInput formControlName="password" type="password" #passwordInput />
+      <input bitInput formControlName="password" type="password" />
       <button
         type="button"
         bitIconButton="bwi-check-circle"
@@ -42,7 +42,6 @@
         *ngIf="viewHiddenFields"
         data-testid="toggle-password-visibility"
         bitPasswordInputToggle
-        [passwordInput]="passwordInput"
       ></button>
       <button
         type="button"
@@ -88,7 +87,7 @@
           <p>{{ (canCaptureTotp ? "totpHelperWithCapture" : "totpHelper") | i18n }}</p>
         </bit-popover>
       </bit-label>
-      <input bitInput formControlName="totp" type="password" #totpInput />
+      <input bitInput formControlName="totp" type="password" />
       <button
         type="button"
         bitIconButton
@@ -96,7 +95,6 @@
         *ngIf="viewHiddenFields"
         data-testid="toggle-totp-visibility"
         bitPasswordInputToggle
-        [passwordInput]="totpInput"
       ></button>
       <button
         type="button"
