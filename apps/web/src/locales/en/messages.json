@@ -1461,7 +1461,7 @@
   "importEncKeyError": {
     "message": "Error decrypting the exported file. Your encryption key does not match the encryption key used export the data."
   },
-  "importDestination": {
+  "destination": {
     "message": "Destination"
   },
   "learnAboutImportOptions": {

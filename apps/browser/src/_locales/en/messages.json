@@ -3086,7 +3086,7 @@
   "invalidFilePassword": {
     "message": "Invalid file password, please use the password you entered when you created the export file."
   },
-  "importDestination": {
+  "destination": {
     "message": "Destination"
   },
   "learnAboutImportOptions": {
