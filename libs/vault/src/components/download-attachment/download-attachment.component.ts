@@ -32,7 +32,7 @@ export class DownloadAttachmentComponent {
   /** The cipher associated with the attachment */
   @Input({ required: true }) cipher: CipherView;
 
-  // When this component is in the view we will want to check for the master password reprompt
+  // When in view mode, we will want to check for the master password reprompt
   @Input() checkPwReprompt?: boolean = false;
 
   /** The organization key if the cipher is associated with one */
