@@ -5,7 +5,6 @@ import { map, Observable, startWith } from "rxjs";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { Send } from "@bitwarden/common/tools/send/models/domain/send";
-import { SendService } from "@bitwarden/common/tools/send/services/send.service";
 import { ITreeNodeObject, TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { ChipSelectOption } from "@bitwarden/components";
 
@@ -33,23 +32,9 @@ export class SendListFiltersService {
     startWith(INITIAL_FILTERS),
   ) as Observable<SendListFilter>;
 
-  /**
-   * All available sends
-   **/
-
-  private sends: Send[] = [];
-
-  private sends$: Observable<Send[]> = this.sendService.sends$.pipe(
-    map((sends) => {
-      this.sends = sends;
-      return sends;
-    }),
-  );
-
   constructor(
     private i18nService: I18nService,
     private formBuilder: FormBuilder,
-    private sendService: SendService,
   ) {}
 
   /**
