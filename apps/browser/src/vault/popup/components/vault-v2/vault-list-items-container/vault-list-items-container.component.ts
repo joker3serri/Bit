@@ -13,7 +13,7 @@ import {
   SectionHeaderComponent,
   TypographyModule,
 } from "@bitwarden/components";
-import { OrgIconDirective, OrgIconSize } from "@bitwarden/vault";
+import { OrgIconDirective } from "@bitwarden/vault";
 
 import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
 import { PopupCipherView } from "../../../views/popup-cipher.view";
@@ -77,8 +77,6 @@ export class VaultListItemsContainerComponent {
    */
   @Input({ transform: booleanAttribute })
   showAutofillButton: boolean;
-
-  orgIconSize: OrgIconSize = "small";
 
   /**
    * The tooltip text for the organization icon for ciphers that belong to an organization.

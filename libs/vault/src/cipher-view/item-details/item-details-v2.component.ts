@@ -12,7 +12,7 @@ import {
   SectionHeaderComponent,
   TypographyModule,
 } from "@bitwarden/components";
-import { OrgIconDirective, OrgIconSize } from "@bitwarden/vault";
+import { OrgIconDirective } from "@bitwarden/vault";
 @Component({
   selector: "app-item-details-v2",
   templateUrl: "item-details-v2.component.html",
@@ -32,5 +32,4 @@ export class ItemDetailsV2Component {
   @Input() organization?: Organization;
   @Input() collections?: CollectionView[];
   @Input() folder?: FolderView;
-  orgIconSize: OrgIconSize = "large";
 }

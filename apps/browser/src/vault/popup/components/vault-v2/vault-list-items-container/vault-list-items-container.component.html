@@ -30,7 +30,7 @@
           *ngIf="cipher.organizationId"
           appOrgIcon
           [tierType]="cipher.organization.productTierType"
-          [size]="orgIconSize"
+          [size]="'small'"
           [appA11yTitle]="orgIconTooltip(cipher)"
         ></i>
         <span slot="secondary">{{ cipher.subTitle }}</span>
