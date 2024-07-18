@@ -3401,6 +3401,30 @@
     "message": "Common formats",
     "description": "Label indicating the most common import formats"
   },
+  "confirmContinueToBrowserSettingsTitle": {
+    "message": "Continue to browser settings?",
+    "description": "Title for dialog which asks if the user wants to proceed to a relevant browser settings page"
+  },
+  "confirmContinueToHelpCenter": {
+    "message": "Continue to Help Center?",
+    "description": "Title for dialog which asks if the user wants to proceed to a relevant Help Center page"
+  },
+  "confirmContinueToHelpCenterPasswordManagementContent": {
+    "message": "Change your browser's autofill and password management settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the Help Center's page about browser password management settings"
+  },
+  "confirmContinueToHelpCenterKeyboardShortcutsContent": {
+    "message": "You can view and set extension shortcuts in your browser's settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the Help Center's page about browser keyboard shortcut settings"
+  },
+  "confirmContinueToBrowserPasswordManagementSettingsContent": {
+    "message": "Change your browser's autofill and password management settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the browser's password management settings page"
+  },
+  "confirmContinueToBrowserKeyboardShortcutSettingsContent": {
+    "message": "You can view and set extension shortcuts in your browser's settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the browser's keyboard shortcut settings page"
+  },
   "overrideDefaultBrowserAutofillTitle": {
     "message": "Make Bitwarden your default password manager?",
     "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"

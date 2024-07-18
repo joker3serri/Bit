@@ -5,12 +5,21 @@ import { RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
+import {
+  AutofillOverlayVisibility,
+  BrowserClientVendors,
+  BrowserShortcutsUris,
+  ClearClipboardDelay,
+  DisablePasswordManagerUris,
+} from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import {
-  InlineMenuVisibilitySetting,
+  BrowserClientVendor,
+  BrowserShortcutsUri,
   ClearClipboardDelaySetting,
+  DisablePasswordManagerUri,
+  InlineMenuVisibilitySetting,
 } from "@bitwarden/common/autofill/types";
 import {
   UriMatchStrategy,
@@ -74,19 +83,22 @@ export class AutofillComponent implements OnInit {
   protected defaultBrowserAutofillDisabled = false;
   protected inlineMenuVisibility: InlineMenuVisibilitySetting =
     AutofillOverlayVisibility.OnFieldFocus;
-  protected disablePasswordManagerURI: string;
-  protected browserShortcutsURI: string;
+  protected browserClientVendor: BrowserClientVendor = BrowserClientVendors.Unknown;
+  protected disablePasswordManagerURI: DisablePasswordManagerUri =
+    DisablePasswordManagerUris.Unknown;
+  protected browserShortcutsURI: BrowserShortcutsUri = BrowserShortcutsUris.Unknown;
+  protected browserClientIsUnknown: boolean;
   enableAutofillOnPageLoad = false;
   enableInlineMenu = false;
   enableInlineMenuOnIconSelect = false;
   autofillOnPageLoadDefault = false;
-  autofillOnPageLoadOptions: any[];
+  autofillOnPageLoadOptions: { name: string; value: boolean }[];
   enableContextMenuItem = false;
   enableAutoTotpCopy = false;
   clearClipboard: ClearClipboardDelaySetting;
-  clearClipboardOptions: any[];
+  clearClipboardOptions: { name: string; value: ClearClipboardDelaySetting }[];
   defaultUriMatch: UriMatchStrategySetting = UriMatchStrategy.Domain;
-  uriMatchOptions: any[];
+  uriMatchOptions: { name: string; value: UriMatchStrategySetting }[];
   showCardsCurrentTab = true;
   showIdentitiesCurrentTab = true;
   autofillKeyboardHelperText: string;
@@ -106,13 +118,13 @@ export class AutofillComponent implements OnInit {
       { name: i18nService.t("autoFillOnPageLoadNo"), value: false },
     ];
     this.clearClipboardOptions = [
-      { name: i18nService.t("never"), value: null },
-      { name: i18nService.t("tenSeconds"), value: 10 },
-      { name: i18nService.t("twentySeconds"), value: 20 },
-      { name: i18nService.t("thirtySeconds"), value: 30 },
-      { name: i18nService.t("oneMinute"), value: 60 },
-      { name: i18nService.t("twoMinutes"), value: 120 },
-      { name: i18nService.t("fiveMinutes"), value: 300 },
+      { name: i18nService.t("never"), value: ClearClipboardDelay.Never },
+      { name: i18nService.t("tenSeconds"), value: ClearClipboardDelay.TenSeconds },
+      { name: i18nService.t("twentySeconds"), value: ClearClipboardDelay.TwentySeconds },
+      { name: i18nService.t("thirtySeconds"), value: ClearClipboardDelay.ThirtySeconds },
+      { name: i18nService.t("oneMinute"), value: ClearClipboardDelay.OneMinute },
+      { name: i18nService.t("twoMinutes"), value: ClearClipboardDelay.TwoMinutes },
+      { name: i18nService.t("fiveMinutes"), value: ClearClipboardDelay.FiveMinutes },
     ];
     this.uriMatchOptions = [
       { name: i18nService.t("baseDomain"), value: UriMatchStrategy.Domain },
@@ -124,17 +136,14 @@ export class AutofillComponent implements OnInit {
     ];
 
     this.accountSwitcherEnabled = enableAccountSwitching();
-    this.disablePasswordManagerURI = this.getDisablePasswordManagerURI();
-    this.browserShortcutsURI = this.getBrowserShortcutsURI();
+    this.browserClientVendor = this.getBrowserClientVendor();
+    this.disablePasswordManagerURI = DisablePasswordManagerUris[this.browserClientVendor];
+    this.browserShortcutsURI = BrowserShortcutsUris[this.browserClientVendor];
+    this.browserClientIsUnknown = this.browserClientVendor === BrowserClientVendors.Unknown;
   }
 
   async ngOnInit() {
-    this.canOverrideBrowserAutofillSetting =
-      this.platformUtilsService.isChrome() ||
-      this.platformUtilsService.isEdge() ||
-      this.platformUtilsService.isOpera() ||
-      this.platformUtilsService.isVivaldi();
-
+    this.canOverrideBrowserAutofillSetting = !this.browserClientIsUnknown;
     this.defaultBrowserAutofillDisabled = await this.browserAutofillSettingCurrentlyOverridden();
 
     this.inlineMenuVisibility = await firstValueFrom(
@@ -214,48 +223,74 @@ export class AutofillComponent implements OnInit {
     }
   }
 
-  private getBrowserShortcutsURI(): string {
+  private getBrowserClientVendor(): BrowserClientVendor {
     if (this.platformUtilsService.isChrome()) {
-      return "chrome://extensions/shortcuts";
+      return BrowserClientVendors.Chrome;
     }
 
     if (this.platformUtilsService.isOpera()) {
-      return "opera://extensions/shortcuts";
+      return BrowserClientVendors.Opera;
     }
 
     if (this.platformUtilsService.isEdge()) {
-      return "edge://extensions/shortcuts";
+      return BrowserClientVendors.Edge;
     }
 
     if (this.platformUtilsService.isVivaldi()) {
-      return "vivaldi://extensions/shortcuts";
+      return BrowserClientVendors.Vivaldi;
     }
 
-    return "https://bitwarden.com/help/keyboard-shortcuts";
+    return BrowserClientVendors.Unknown;
   }
 
-  private getDisablePasswordManagerURI(): string {
-    if (this.platformUtilsService.isChrome()) {
-      return "chrome://settings/autofill";
-    }
-
-    if (this.platformUtilsService.isOpera()) {
-      return "opera://settings/autofill";
-    }
-
-    if (this.platformUtilsService.isEdge()) {
-      return "edge://settings/passwords";
-    }
-
-    if (this.platformUtilsService.isVivaldi()) {
-      return "vivaldi://settings/autofill";
-    }
-
-    return "https://bitwarden.com/help/disable-browser-autofill/";
-  }
-
-  protected async openURI(event: Event, uri: string) {
+  protected async openURI(event: Event, uri: BrowserShortcutsUri | DisablePasswordManagerUri) {
     event.preventDefault();
+
+    // If the destination is a password management settings page, ask the user to confirm before proceeding
+    if (uri === DisablePasswordManagerUris[this.browserClientVendor]) {
+      await this.dialogService.openSimpleDialog({
+        ...(this.browserClientIsUnknown
+          ? {
+              content: { key: "confirmContinueToHelpCenterPasswordManagementContent" },
+              title: { key: "confirmContinueToHelpCenter" },
+            }
+          : {
+              content: { key: "confirmContinueToBrowserPasswordManagementSettingsContent" },
+              title: { key: "confirmContinueToBrowserSettingsTitle" },
+            }),
+        acceptButtonText: { key: "continue" },
+        acceptAction: async () => {
+          await BrowserApi.createNewTab(uri);
+        },
+        cancelButtonText: { key: "cancel" },
+        type: "info",
+      });
+
+      return;
+    }
+
+    // If the destination is a browser shortcut settings page, ask the user to confirm before proceeding
+    if (uri === BrowserShortcutsUris[this.browserClientVendor]) {
+      await this.dialogService.openSimpleDialog({
+        ...(this.browserClientIsUnknown
+          ? {
+              content: { key: "confirmContinueToHelpCenterKeyboardShortcutsContent" },
+              title: { key: "confirmContinueToHelpCenter" },
+            }
+          : {
+              content: { key: "confirmContinueToBrowserKeyboardShortcutSettingsContent" },
+              title: { key: "confirmContinueToBrowserSettingsTitle" },
+            }),
+        acceptButtonText: { key: "continue" },
+        acceptAction: async () => {
+          await BrowserApi.createNewTab(uri);
+        },
+        cancelButtonText: { key: "cancel" },
+        type: "info",
+      });
+
+      return;
+    }
 
     await BrowserApi.createNewTab(uri);
   }
