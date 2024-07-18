@@ -28,5 +28,8 @@ import {
 })
 export class ItemHistoryV2Component {
   @Input() cipher: CipherView;
-  isLogin = CipherType.Login;
+
+  get isLogin() {
+    return CipherType.Login;
+  }
 }
