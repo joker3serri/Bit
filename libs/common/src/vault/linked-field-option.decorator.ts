@@ -7,16 +7,23 @@ type LinkedMetadataAttributes = {
    * If it is null, then the name of the class property will be used as the i18n key.
    */
   i18nKey?: string;
+
+  /**
+   * The position of the individual field to be applied when sorted.
+   */
+  sortPosition: number;
 };
 
 export class LinkedMetadata {
   private readonly _i18nKey: string;
+  readonly sortPosition: number;
 
   constructor(
     readonly propertyKey: string,
-    attributes?: LinkedMetadataAttributes,
+    attributes: LinkedMetadataAttributes,
   ) {
     this._i18nKey = attributes?.i18nKey;
+    this.sortPosition = attributes.sortPosition;
   }
 
   get i18nKey() {
@@ -30,7 +37,7 @@ export class LinkedMetadata {
  * @param id - A unique value that is saved in the Field model. It is used to look up the decorated class property.
  * @param options - {@link LinkedMetadataAttributes}
  */
-export function linkedFieldOption(id: LinkedIdType, attributes?: LinkedMetadataAttributes) {
+export function linkedFieldOption(id: LinkedIdType, attributes: LinkedMetadataAttributes) {
   return (prototype: ItemView, propertyKey: string) => {
     if (prototype.linkedFieldOptions == null) {
       prototype.linkedFieldOptions = new Map<LinkedIdType, LinkedMetadata>();
