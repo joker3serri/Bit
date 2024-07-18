@@ -13,6 +13,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 
 import { AsyncActionsModule } from "../async-actions";
 import { ButtonModule } from "../button";
+import { CardComponent } from "../card";
 import { CheckboxModule } from "../checkbox";
 import { IconButtonModule } from "../icon-button";
 import { InputModule } from "../input/input.module";
@@ -41,6 +42,7 @@ export default {
         RadioButtonModule,
         SelectModule,
         LinkModule,
+        CardComponent,
       ],
       providers: [
         {
@@ -51,6 +53,7 @@ export default {
               required: "required",
               inputRequired: "Input is required.",
               inputEmail: "Input is not an email-address.",
+              toggleVisibility: "Toggle visibility",
             });
           },
         },
@@ -215,9 +218,44 @@ export const Readonly: Story = {
       </bit-form-field>
 
       <bit-form-field>
+        <bit-label>Input</bit-label>
+        <input bitInput type="password" value="Foobar" [readonly]="true" />
+        <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
+        <button type="button" bitSuffix bitIconButton="bwi-clone" aria-label="Clone"></button>
+      </bit-form-field>
+
+      <bit-form-field>
         <bit-label>Textarea</bit-label>
         <textarea bitInput rows="4" readonly>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
       </bit-form-field>
+
+      <div class="tw-p-4 tw-mt-6 tw-bg-background-alt">
+        <bit-section>
+          <bit-card>
+            <bit-form-field>
+              <bit-label>Input</bit-label>
+              <input bitInput value="Foobar" readonly />
+            </bit-form-field>
+
+            <bit-form-field>
+              <bit-label>Input</bit-label>
+              <input bitInput type="password" value="Foobar" readonly />
+              <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
+              <button type="button" bitSuffix bitIconButton="bwi-clone" aria-label="Clone"></button>
+            </bit-form-field>
+
+            <bit-form-field>
+              <bit-label>Textarea</bit-label>
+              <textarea bitInput rows="4" readonly>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
+            </bit-form-field>
+
+            <bit-form-field disableMargin disableReadOnlyBorder>
+              <bit-label>Input</bit-label>
+              <input bitInput value="Foobar" readonly />
+            </bit-form-field>
+          </bit-card>
+        </bit-section>
+      </div>
     `,
   }),
   args: {},
