@@ -12,7 +12,6 @@ import {
   NoSendsIcon,
   NewSendDropdownComponent,
   SendListItemsContainerComponent,
-  SendListFiltersComponent,
 } from "@bitwarden/send-ui";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
@@ -35,15 +34,14 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
     RouterLink,
     NewSendDropdownComponent,
     SendListItemsContainerComponent,
-    SendListFiltersComponent,
   ],
 })
 export class SendV2Component implements OnInit, OnDestroy {
   sendType = SendType;
 
-  private destroy$ = new Subject<void>();
+  protected sends: SendView[] = [];
 
-  sends: SendView[] = [];
+  private destroy$ = new Subject<void>();
 
   protected noItemIcon = NoSendsIcon;
 
@@ -53,7 +51,7 @@ export class SendV2Component implements OnInit, OnDestroy {
     this.sendService.sendViews$
       .pipe(
         mergeMap(async (sends) => {
-          this.sends = sends.sort((a, b) => a.name.localeCompare(b.name));
+          this.sends = sends;
         }),
         takeUntil(this.destroy$),
       )
