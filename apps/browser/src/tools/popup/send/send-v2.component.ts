@@ -51,7 +51,7 @@ export class SendV2Component implements OnInit, OnDestroy {
     this.sendService.sendViews$
       .pipe(
         mergeMap(async (sends) => {
-          this.sends = sends;
+          this.sends = sends.sort((a, b) => a.name.localeCompare(b.name));
         }),
         takeUntil(this.destroy$),
       )
