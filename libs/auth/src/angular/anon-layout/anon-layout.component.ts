@@ -10,7 +10,7 @@ import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-stat
 import { IconModule, Icon } from "../../../../components/src/icon";
 import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
-import { BitwardenLogoPrimary, BitwardenLogoWhite } from "../icons/bitwarden-logo.icon";
+import { BitwardenLogoPrimary, BitwardenLogoWhite, UserIcon } from "../icons";
 
 @Component({
   standalone: true,
@@ -21,7 +21,7 @@ import { BitwardenLogoPrimary, BitwardenLogoWhite } from "../icons/bitwarden-log
 export class AnonLayoutComponent {
   @Input() title: string;
   @Input() subtitle: string;
-  @Input() icon: Icon;
+  @Input() icon: Icon = UserIcon;
   @Input() showReadonlyHostname: boolean;
   @Input() hideLogo: boolean = false;
 
