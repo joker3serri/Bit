@@ -8,11 +8,11 @@ import { ItemView } from "./item.view";
 export class CardView extends ItemView {
   @linkedFieldOption(LinkedId.CardholderName)
   cardholderName: string = null;
-  @linkedFieldOption(LinkedId.ExpMonth, "expirationMonth")
+  @linkedFieldOption(LinkedId.ExpMonth, { i18nKey: "expirationMonth" })
   expMonth: string = null;
-  @linkedFieldOption(LinkedId.ExpYear, "expirationYear")
+  @linkedFieldOption(LinkedId.ExpYear, { i18nKey: "expirationYear" })
   expYear: string = null;
-  @linkedFieldOption(LinkedId.Code, "securityCode")
+  @linkedFieldOption(LinkedId.Code, { i18nKey: "securityCode" })
   code: string = null;
 
   private _brand: string = null;

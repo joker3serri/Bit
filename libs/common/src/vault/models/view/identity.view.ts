@@ -17,11 +17,11 @@ export class IdentityView extends ItemView {
   address2: string = null;
   @linkedFieldOption(LinkedId.Address3)
   address3: string = null;
-  @linkedFieldOption(LinkedId.City, "cityTown")
+  @linkedFieldOption(LinkedId.City, { i18nKey: "cityTown" })
   city: string = null;
-  @linkedFieldOption(LinkedId.State, "stateProvince")
+  @linkedFieldOption(LinkedId.State, { i18nKey: "stateProvince" })
   state: string = null;
-  @linkedFieldOption(LinkedId.PostalCode, "zipPostalCode")
+  @linkedFieldOption(LinkedId.PostalCode, { i18nKey: "zipPostalCode" })
   postalCode: string = null;
   @linkedFieldOption(LinkedId.Country)
   country: string = null;
