@@ -123,7 +123,7 @@
     "message": "Parol yarat (kopyalandı)"
   },
   "copyElementIdentifier": {
-    "message": "Özəl sahə adını kopyala"
+    "message": "Özəl xana adını kopyala"
   },
   "noMatchingLogins": {
     "message": "Uyuşan giriş məlumatları yoxdur"
@@ -555,6 +555,18 @@
   },
   "security": {
     "message": "Güvənlik"
+  },
+  "confirmMasterPassword": {
+    "message": "Ana parolu təsdiqlə"
+  },
+  "masterPassword": {
+    "message": "Ana parol"
+  },
+  "masterPassImportant": {
+    "message": "Unutsanız, ana parolunuz geri qaytarıla bilməz!"
+  },
+  "masterPassHintLabel": {
+    "message": "Ana parol ipucusu"
   },
   "errorOccurred": {
     "message": "Bir xəta baş verdi"
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Kimlik doğrulayıcı tətbiqi"
   },
-  "authenticatorAppDesc": {
-    "message": "Vaxt əsaslı doğrulama kodları yaratmaq üçün (Authy və ya Google Authenticator kimi) kimlik doğrulayıcı tətbiq istifadə edin.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Bitwarden Authenticator kimi bir kimlik doğrulama tətbiqi tərəfindən yaradılan kodu daxil edin.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "YubiKey OTP güvənlik açarı"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP Güvənlik Açarı"
   },
   "yubiKeyDesc": {
     "message": "Hesabınıza müraciət etmək üçün bir YubiKey istifadə edin. YubiKey 4, 4 Nano, 4C və NEO cihazları ilə işləyir."
   },
-  "duoDesc": {
-    "message": "Duo Security ilə doğrulamaq üçün Duo Mobile tətbiqi, SMS, telefon zəngi və ya U2F güvənlik açarını istifadə edin.",
+  "duoDescV2": {
+    "message": "Duo Security tərəfindən yaradılan kodu daxil edin.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,17 +1144,17 @@
   "emailTitle": {
     "message": "E-poçt"
   },
-  "emailDesc": {
-    "message": "Doğrulama kodları e-poçt ünvanınıza göndəriləcək."
+  "emailDescV2": {
+    "message": "E-poçtunuza göndərilən kodu daxil edin."
   },
   "selfHostedEnvironment": {
-    "message": "Öz-özünə sahiblik edən mühit"
+    "message": "Self-hosted mühit"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Öz-özünə sahiblik edən Bitwarden quraşdırmasının baza URL-sini müəyyənləşdirin."
+    "message": "Öz-özünə sahiblik edən Bitwarden quraşdırmasının təməl URL-sini müəyyənləşdirin."
   },
   "selfHostedBaseUrlHint": {
-    "message": "Şirkət daxili sahiblik edən Bitwarden quraşdırmasının təməl URL-sini qeyd edin. Nümunə: https://bitwarden.company.com"
+    "message": "Öz-özünə sahiblik edən Bitwarden quraşdırmasının təməl URL-sini müəyyənləşdirin. Nümunə: https://bitwarden.company.com"
   },
   "selfHostedCustomEnvHeader": {
     "message": "Qabaqcıl konfiqurasiya üçün hər xidmətin təməl URL-sini müstəqil olaraq qeyd edə bilərsiniz."
@@ -1178,7 +1190,7 @@
     "message": "Mühit URL-ləri saxlanıldı."
   },
   "showAutoFillMenuOnFormFields": {
-    "message": "Form sahələrində avto-doldurma menyusunu göstər",
+    "message": "Form xanalarında avto-doldurma menyusunu göstər",
     "description": "Represents the message for allowing the user to enable the auto-fill overlay"
   },
   "showAutoFillMenuOnFormFieldsDescAlt": {
@@ -1195,7 +1207,7 @@
     "description": "Overlay setting select option for disabling autofill overlay"
   },
   "autofillOverlayVisibilityOnFieldFocus": {
-    "message": "Sahə seçiləndə (fokusda)",
+    "message": "Xana seçildikdə (fokusda)",
     "description": "Overlay appearance select option for showing the field on focus of the input element"
   },
   "autofillOverlayVisibilityOnButtonClick": {
@@ -1248,7 +1260,7 @@
     "message": "Anbarı kilidlə"
   },
   "customFields": {
-    "message": "Özəl sahələr"
+    "message": "Özəl xanalar"
   },
   "copyValue": {
     "message": "Dəyəri kopyala"
@@ -1257,7 +1269,7 @@
     "message": "Dəyər"
   },
   "newCustomField": {
-    "message": "Yeni özəl sahə"
+    "message": "Yeni özəl xana"
   },
   "dragToSort": {
     "message": "Sıralamaq üçün sürüklə"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "$TYPE$ - düzəliş et",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "$TYPE$ - bax",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -2164,6 +2185,9 @@
   "emailVerificationRequired": {
     "message": "E-poçt doğrulaması tələb olunur"
   },
+  "emailVerifiedV2": {
+    "message": "E-poçt doğrulandı"
+  },
   "emailVerificationRequiredDesc": {
     "message": "Bu özəlliyi istifadə etmək üçün e-poçtunuzu doğrulamalısınız. E-poçtunuzu veb anbarında doğrulaya bilərsiniz."
   },
@@ -2265,7 +2289,7 @@
     "message": "Unikal identifikator tapılmadı."
   },
   "convertOrganizationEncryptionDesc": {
-    "message": "$ORGANIZATION$, öz-özünə sahiblik edən açar serveri ilə SSO istifadə edir. Bu təşkilatın üzvlərinin giriş etməsi üçün artıq ana parol tələb edilməyəcək.",
+    "message": "$ORGANIZATION$, self-hosted açar serveri ilə SSO istifadə edir. Bu təşkilatın üzvlərinin giriş etməsi üçün artıq ana parol tələb edilməyəcək.",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -2513,7 +2537,7 @@
     "message": "Server versiyası"
   },
   "selfHostedServer": {
-    "message": "öz-özünə sahiblik edən"
+    "message": "self-hosted"
   },
   "thirdParty": {
     "message": "Üçüncü tərəf"
@@ -2803,7 +2827,7 @@
     "message": "Giriş, bir e-poçt ünvanı deyil."
   },
   "fieldsNeedAttention": {
-    "message": "Yuxarıdakı $COUNT$ sahənin diqqətinizə ehtiyacı var.",
+    "message": "Yuxarıdakı $COUNT$ xananın diqqətinizə ehtiyacı var.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -2886,7 +2910,7 @@
     "description": "Toast message for informing the user that auto-fill on page load has been set to the default setting."
   },
   "turnOffMasterPasswordPromptToEditField": {
-    "message": "Bu sahəyə düzəliş etmək üçün \"Ana parolu təkrar soruş\"u söndürün",
+    "message": "Bu xanaya düzəliş etmək üçün \"Ana parolu təkrar soruş\"u söndürün",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   },
   "toggleSideNavigation": {
@@ -3106,6 +3130,9 @@
   },
   "confirmFilePassword": {
     "message": "Fayl parolunu təsdiqlə"
+  },
+  "exportSuccess": {
+    "message": "Anbar datası xaricə köçürüldü"
   },
   "typePasskey": {
     "message": "Keçid açarı"
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Parol silindi"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Bildiriş: Təyin edilməyən təşkilat elementləri artıq Bütün Anbarlar görünüşündə görünən olmayacaq və yalnız Admin Konsolu vasitəsilə əlçatan olacaq."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Bildiriş: 16 May 2024-cü il tarixindən etibarən, təyin edilməyən təşkilat elementləri Bütün Anbarlar görünüşündə görünən olmayacaq və yalnız Admin Konsolu vasitəsilə əlçatan olacaq."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Bu elementləri görünən etmək üçün",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "bir kolleksiyaya təyin edin.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Avto-doldurma təklifləri"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Qovluğu olmayan elementlər"
   },
+  "itemDetails": {
+    "message": "Element detalları"
+  },
+  "itemName": {
+    "message": "Element adı"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "\"Yalnız baxma\" icazələrinə sahib kolleksiyaları silə bilməzsiniz: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "Təşkilat deaktiv edildi"
+  },
+  "owner": {
+    "message": "Sahiblik"
+  },
+  "selfOwnershipLabel": {
+    "message": "Siz",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "Deaktiv edilmiş təşkilatlardakı elementlərə müraciət edilə bilməz. Kömək üçün təşkilatınızın sahibi ilə əlaqə saxlayın."
   },
+  "additionalInformation": {
+    "message": "Əlavə məlumat"
+  },
+  "itemHistory": {
+    "message": "Element tarixçəsi"
+  },
+  "lastEdited": {
+    "message": "Son düzəliş"
+  },
+  "ownerYou": {
+    "message": "Sahiblik: Siz"
+  },
+  "linked": {
+    "message": "Əlaqələndirildi"
+  },
+  "copySuccessful": {
+    "message": "Uğurla kopyalandı"
+  },
+  "upload": {
+    "message": "Yüklə"
+  },
+  "addAttachment": {
+    "message": "Qoşma əlavə et"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "Maksimal fayl həcmi 500 MB-dır"
+  },
+  "deleteAttachmentName": {
+    "message": "$NAME$ qoşmasını sil",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "$NAME$ endir",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Bu qoşmanı birdəfəlik silmək istədiyinizə əminsiniz?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Ödənişsiz təşkilatlar qoşmaları istifadə edə bilməz"
+  },
   "filters": {
-    "message": "Filters"
+    "message": "Filtrlər"
+  },
+  "personalDetails": {
+    "message": "Şəxsi detallar"
+  },
+  "identification": {
+    "message": "İdentifikasiya"
+  },
+  "contactInfo": {
+    "message": "Əlaqə məlumatı"
+  },
+  "downloadAttachment": {
+    "message": "$ITEMNAME$ - endir",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Kart detalları"
+  },
+  "cardBrandDetails": {
+    "message": "$BRAND$ detalları",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }

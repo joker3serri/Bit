@@ -20,7 +20,7 @@
     "message": "设置强密码"
   },
   "finishCreatingYourAccountBySettingAPassword": {
-    "message": "设置密码后就能完成账户创建"
+    "message": "设置密码以完成账户的创建"
   },
   "login": {
     "message": "登录"
@@ -50,7 +50,7 @@
     "message": "主密码提示可以在您忘记密码时帮您回忆起来。"
   },
   "masterPassHintText": {
-    "message": "If you forget your password, the password hint can be sent to your email. $CURRENT$/$MAXIMUM$ character maximum.",
+    "message": "如果您忘记了密码，可以发送密码提示到您的电子邮箱。$CURRENT$ / 最多 $MAXIMUM$ 个字符。",
     "placeholders": {
       "current": {
         "content": "$1",
@@ -556,6 +556,18 @@
   "security": {
     "message": "安全"
   },
+  "confirmMasterPassword": {
+    "message": "确认主密码"
+  },
+  "masterPassword": {
+    "message": "主密码"
+  },
+  "masterPassImportant": {
+    "message": "主密码忘记后，将无法恢复！"
+  },
+  "masterPassHintLabel": {
+    "message": "主密码提示"
+  },
   "errorOccurred": {
     "message": "发生了一个错误"
   },
@@ -1013,7 +1025,7 @@
     "message": "感谢您支持 Bitwarden。"
   },
   "premiumPrice": {
-    "message": "每年只需 $PRICE$ ！",
+    "message": "只需 $PRICE$ /年！",
     "placeholders": {
       "price": {
         "content": "$1",
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "验证器 App"
   },
-  "authenticatorAppDesc": {
-    "message": "使用验证器 App（例如 Authy 或 Google Authenticator）来生成基于时间的验证码。",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "输入验证器 App（例如 Bitwarden 验证器）生成的代码。",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "YubiKey OTP 安全钥匙"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP 安全钥匙"
   },
   "yubiKeyDesc": {
     "message": "使用 YubiKey 来访问您的账户。支持 YubiKey 4、4 Nano、4C 以及 NEO 设备。"
   },
-  "duoDesc": {
-    "message": "使用 Duo Security 的 Duo 移动应用、短信、电话或 U2F 安全钥匙来进行验证。",
+  "duoDescV2": {
+    "message": "输入由 Duo Security 生成的代码。",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "电子邮件"
   },
-  "emailDesc": {
-    "message": "验证码将会发送到您的电子邮箱。"
+  "emailDescV2": {
+    "message": "输入发送到您的电子邮箱的代码。"
   },
   "selfHostedEnvironment": {
     "message": "自托管环境"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "编辑 $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "查看 $TYPE$",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "需要验证电子邮件"
+  },
+  "emailVerifiedV2": {
+    "message": "电子邮箱已验证"
   },
   "emailVerificationRequiredDesc": {
     "message": "您必须验证电子邮件才能使用此功能。您可以在网页密码库中验证您的电子邮件。"
@@ -2890,7 +2914,7 @@
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   },
   "toggleSideNavigation": {
-    "message": "Toggle side navigation"
+    "message": "切换侧边导航"
   },
   "skipToContent": {
     "message": "跳转到正文"
@@ -3106,6 +3130,9 @@
   },
   "confirmFilePassword": {
     "message": "确认文件密码"
+  },
+  "exportSuccess": {
+    "message": "密码库数据已导出"
   },
   "typePasskey": {
     "message": "通行密钥"
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "通行密钥已移除"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "注意：未分配的组织项目在「所有密码库」视图中不再可见，只能通过管理控制台访问。"
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "注意：从 2024 年 5 月 16 日起，未分配的组织项目在「所有密码库」视图中将不再可见，只能通过管理控制台访问。"
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "将这些项目分配到集合，通过",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "，以使其可见。",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "自动填充建议"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "无文件夹的项目"
   },
+  "itemDetails": {
+    "message": "项目详情"
+  },
+  "itemName": {
+    "message": "项目名称"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "您无法删除仅具有「查看」权限的集合：$COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "组织已停用"
+  },
+  "owner": {
+    "message": "所有者"
+  },
+  "selfOwnershipLabel": {
+    "message": "您",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "无法访问已停用组织中的项目。请联系您的组织所有者获取协助。"
   },
+  "additionalInformation": {
+    "message": "更多信息"
+  },
+  "itemHistory": {
+    "message": "项目历史记录"
+  },
+  "lastEdited": {
+    "message": "上次编辑"
+  },
+  "ownerYou": {
+    "message": "所有者：您"
+  },
+  "linked": {
+    "message": "已链接"
+  },
+  "copySuccessful": {
+    "message": "复制成功"
+  },
+  "upload": {
+    "message": "上传"
+  },
+  "addAttachment": {
+    "message": "添加附件"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "最大文件大小为 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "删除附件 $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "下载 $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "您确定要永久删除此附件吗？"
+  },
+  "premium": {
+    "message": "高级会员"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "免费组织无法使用附件"
+  },
   "filters": {
-    "message": "Filters"
+    "message": "筛选"
+  },
+  "personalDetails": {
+    "message": "个人信息"
+  },
+  "identification": {
+    "message": "身份"
+  },
+  "contactInfo": {
+    "message": "联系信息"
+  },
+  "downloadAttachment": {
+    "message": "下载 - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "支付卡详情"
+  },
+  "cardBrandDetails": {
+    "message": "$BRAND$ 详情",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }

@@ -151,7 +151,7 @@
     "message": "Código de segurança"
   },
   "identityName": {
-    "message": "Nome de identidade"
+    "message": "Nome da identidade"
   },
   "company": {
     "message": "Empresa"
@@ -266,7 +266,7 @@
     "message": "Nome próprio"
   },
   "middleName": {
-    "message": "Segundo nome"
+    "message": "Nome do meio"
   },
   "lastName": {
     "message": "Apelido"
@@ -346,7 +346,7 @@
     "message": "Remover"
   },
   "nameRequired": {
-    "message": "É necessário o nome."
+    "message": "O nome é obrigatório."
   },
   "addedItem": {
     "message": "Item adicionado"
@@ -539,6 +539,18 @@
       }
     }
   },
+  "masterPassword": {
+    "message": "Palavra-passe mestra"
+  },
+  "masterPassImportant": {
+    "message": "A sua palavra-passe mestra não pode ser recuperada se a esquecer!"
+  },
+  "confirmMasterPassword": {
+    "message": "Confirmar a palavra-passe mestra"
+  },
+  "masterPassHintLabel": {
+    "message": "Dica da palavra-passe mestra"
+  },
   "settings": {
     "message": "Definições"
   },
@@ -573,17 +585,17 @@
       }
     }
   },
-  "masterPassDoesntMatch": {
-    "message": "A confirmação da palavra-passe mestra não corresponde."
-  },
-  "newAccountCreated": {
-    "message": "A sua nova conta foi criada! Pode agora iniciar sessão."
-  },
   "youSuccessfullyLoggedIn": {
     "message": "Iniciou sessão com sucesso"
   },
   "youMayCloseThisWindow": {
     "message": "Pode fechar esta janela"
+  },
+  "masterPassDoesntMatch": {
+    "message": "A confirmação da palavra-passe mestra não corresponde."
+  },
+  "newAccountCreated": {
+    "message": "A sua nova conta foi criada! Pode agora iniciar sessão."
   },
   "masterPassSent": {
     "message": "Enviámos-lhe um e-mail com a dica da sua palavra-passe mestra."
@@ -666,18 +678,18 @@
   "authenticatorAppTitle": {
     "message": "Aplicação de autenticação"
   },
-  "authenticatorAppDesc": {
-    "message": "Utilize uma aplicação de autenticação (como o Authy ou o Google Authenticator) para gerar códigos de verificação baseados no tempo.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Introduza um código gerado por uma aplicação de autenticação como o Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "Chave de segurança YubiKey OTP"
+  "yubiKeyTitleV2": {
+    "message": "Chave de segurança Yubico OTP"
   },
   "yubiKeyDesc": {
     "message": "Utilize uma YubiKey para aceder à sua conta. Funciona com os dispositivos YubiKey 4, 4 Nano, 4C e NEO."
   },
-  "duoDesc": {
-    "message": "Verifique com a Duo Security utilizando a aplicação Duo Mobile, SMS, chamada telefónica ou chave de segurança U2F.",
+  "duoDescV2": {
+    "message": "Introduza um código gerado pelo Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -693,8 +705,8 @@
   "emailTitle": {
     "message": "E-mail"
   },
-  "emailDesc": {
-    "message": "Os códigos de verificação ser-lhe-ão enviados por e-mail."
+  "emailDescV2": {
+    "message": "Introduza um código enviado para o seu e-mail."
   },
   "loginUnavailable": {
     "message": "Início de sessão indisponível"
@@ -1460,7 +1472,7 @@
     "message": "Desbloquear com PIN"
   },
   "setYourPinCode": {
-    "message": "Defina o seu código PIN para desbloquear o Bitwarden. As suas definições de PIN serão redefinidas se alguma vez terminar sessão completamente da aplicação."
+    "message": "Defina o seu código PIN para desbloquear o Bitwarden. As suas definições de PIN serão redefinidas se alguma vez terminar sessão por completo da aplicação."
   },
   "pinRequired": {
     "message": "É necessário o código PIN."
@@ -1944,7 +1956,7 @@
     "message": "Eliminação pendente"
   },
   "webAuthnAuthenticate": {
-    "message": "Autenticar WebAuthn"
+    "message": "Autenticar o WebAuthn"
   },
   "hideEmail": {
     "message": "Ocultar o meu endereço de e-mail dos destinatários."
@@ -1954,6 +1966,9 @@
   },
   "emailVerificationRequired": {
     "message": "Verificação de e-mail necessária"
+  },
+  "emailVerifiedV2": {
+    "message": "E-mail verificado"
   },
   "emailVerificationRequiredDesc": {
     "message": "É necessário verificar o seu e-mail para utilizar esta funcionalidade."
@@ -2094,10 +2109,10 @@
     }
   },
   "leaveOrganization": {
-    "message": "Deixar a organização"
+    "message": "Sair da organização"
   },
   "leaveOrganizationConfirmation": {
-    "message": "Tem a certeza de que pretende deixar esta organização?"
+    "message": "Tem a certeza de que pretende sair desta organização?"
   },
   "leftOrganization": {
     "message": "Saiu da organização."
@@ -2606,10 +2621,10 @@
     "message": "Dispositivo de confiança"
   },
   "inputRequired": {
-    "message": "Campo necessário."
+    "message": "Campo obrigatório."
   },
   "required": {
-    "message": "necessário"
+    "message": "obrigatório"
   },
   "search": {
     "message": "Procurar"
@@ -2842,6 +2857,9 @@
   },
   "confirmFilePassword": {
     "message": "Confirmar a palavra-passe do ficheiro"
+  },
+  "exportSuccess": {
+    "message": "Dados do cofre exportados"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Autenticação multifator cancelada"

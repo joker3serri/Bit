@@ -556,6 +556,18 @@
   "security": {
     "message": "Сигурност"
   },
+  "confirmMasterPassword": {
+    "message": "Потрдити главну лозинку"
+  },
+  "masterPassword": {
+    "message": "Главна Лозинка"
+  },
+  "masterPassImportant": {
+    "message": "Ваша главна лозинка се не може повратити ако је заборавите!"
+  },
+  "masterPassHintLabel": {
+    "message": "Савет главне лозинке"
+  },
   "errorOccurred": {
     "message": "Дошло је до грешке!"
   },
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Апликација Аутентификатор"
   },
-  "authenticatorAppDesc": {
-    "message": "Користите апликацију за аутентификацију (као што је Authy или Google Authenticator) за генерисање верификационих кодова.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Унесите кôд који генерише апликација за аутентификацију као што је Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "YubiKey OTP сигурносни кључ"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP сигурносни кључ"
   },
   "yubiKeyDesc": {
     "message": "Користите YubiKey за приступ налогу. Ради са YubiKey 4, 4 Nano, 4C, и NEO уређајима."
   },
-  "duoDesc": {
-    "message": "Провери са Duo Security користећи Duo Mobile апликацију, СМС, телефонски позив, или U2F кључ.",
+  "duoDescV2": {
+    "message": "Унесите кôд који је генерисао Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "Е-пошта"
   },
-  "emailDesc": {
-    "message": "Верификациони кодови ће вам бити послати имејлом."
+  "emailDescV2": {
+    "message": "Унесите кôд послат на ваш имејл."
   },
   "selfHostedEnvironment": {
     "message": "Самостално окружење"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "Уреди $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "Видети $TYPE$",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "Потребна је верификација е-поште"
+  },
+  "emailVerifiedV2": {
+    "message": "Имејл верификован"
   },
   "emailVerificationRequiredDesc": {
     "message": "Морате да потврдите е-пошту да бисте користили ову функцију. Можете да потврдите е-пошту у веб сефу."
@@ -3107,6 +3131,9 @@
   "confirmFilePassword": {
     "message": "Потврдити лозинку датотеке"
   },
+  "exportSuccess": {
+    "message": "Подаци из сефа су извезени"
+  },
   "typePasskey": {
     "message": "Приступачни кључ"
   },
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Приступачни кључ је уклоњен"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Напомена: Недодељене ставке организације више нису видљиве у приказу Сви сефови и доступне су само преко Админ конзоле."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Напомена: од 16 Маја 2024м недодељене ставке организације више нису видљиве у приказу Сви сефови и доступне су само преко Админ конзоле."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Assign these items to a collection from the",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "to make them visible.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Предлози за ауто-попуњавање"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Ставке без фасцикле"
   },
+  "itemDetails": {
+    "message": "Детаљи ставке"
+  },
+  "itemName": {
+    "message": "Име ставке"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "Не можете уклонити колекције са дозволама само за приказ: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "Организација је деактивирана"
+  },
+  "owner": {
+    "message": "Власник"
+  },
+  "selfOwnershipLabel": {
+    "message": "Ти",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "Није могуће приступити ставкама у деактивираним организацијама. Обратите се власнику ваше организације за помоћ."
   },
+  "additionalInformation": {
+    "message": "Додатне информације"
+  },
+  "itemHistory": {
+    "message": "Историја предмета"
+  },
+  "lastEdited": {
+    "message": "Последња измена"
+  },
+  "ownerYou": {
+    "message": "Власник: Ви"
+  },
+  "linked": {
+    "message": "Повезано"
+  },
+  "copySuccessful": {
+    "message": "Копија успешна"
+  },
+  "upload": {
+    "message": "Отпреми"
+  },
+  "addAttachment": {
+    "message": "Додај прилог"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "Максимална величина је 500МБ"
+  },
+  "deleteAttachmentName": {
+    "message": "Обриши прилог $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "Преузми $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Да ли сте сигурни да желите да трајно избришете овај прилог?"
+  },
+  "premium": {
+    "message": "Премијум"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Бесплатне организације не могу да користе прилоге"
+  },
   "filters": {
-    "message": "Filters"
+    "message": "Филтери"
+  },
+  "personalDetails": {
+    "message": "Личне информације"
+  },
+  "identification": {
+    "message": "Идентификација"
+  },
+  "contactInfo": {
+    "message": "Контакт инфо"
+  },
+  "downloadAttachment": {
+    "message": "Преузми - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Детаљи картице"
+  },
+  "cardBrandDetails": {
+    "message": "$BRAND$ детаљи",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }

@@ -19,6 +19,7 @@ import {
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
+import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-factor-component-refactor-route-swap";
 import { fido2AuthGuard } from "../auth/guards/fido2-auth.guard";
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
 import { EnvironmentComponent } from "../auth/popup/environment.component";
@@ -33,6 +34,7 @@ import { RemovePasswordComponent } from "../auth/popup/remove-password.component
 import { SetPasswordComponent } from "../auth/popup/set-password.component";
 import { AccountSecurityComponent } from "../auth/popup/settings/account-security.component";
 import { SsoComponent } from "../auth/popup/sso.component";
+import { TwoFactorAuthComponent } from "../auth/popup/two-factor-auth.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
@@ -46,6 +48,7 @@ import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/pass
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
+import { SendV2Component } from "../tools/popup/send/send-v2.component";
 import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-page-v2.component";
 import { AboutPageComponent } from "../tools/popup/settings/about-page/about-page.component";
 import { MoreFromBitwardenPageV2Component } from "../tools/popup/settings/about-page/more-from-bitwarden-page-v2.component";
@@ -68,6 +71,9 @@ import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items
 import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
 import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { AddEditV2Component } from "../vault/popup/components/vault-v2/add-edit/add-edit-v2.component";
+import { AssignCollections } from "../vault/popup/components/vault-v2/assign-collections/assign-collections.component";
+import { AttachmentsV2Component } from "../vault/popup/components/vault-v2/attachments/attachments-v2.component";
+import { ViewV2Component } from "../vault/popup/components/vault-v2/view-v2/view-v2.component";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
@@ -136,12 +142,26 @@ const routes: Routes = [
     canActivate: [lockGuard()],
     data: { state: "lock", doNotSaveUrl: true },
   },
-  {
-    path: "2fa",
-    component: TwoFactorComponent,
-    canActivate: [unauthGuardFn(unauthRouteOverrides)],
-    data: { state: "2fa" },
-  },
+  ...twofactorRefactorSwap(
+    TwoFactorComponent,
+    AnonLayoutWrapperComponent,
+    {
+      path: "2fa",
+      canActivate: [unauthGuardFn(unauthRouteOverrides)],
+      data: { state: "2fa" },
+    },
+    {
+      path: "2fa",
+      canActivate: [unauthGuardFn(unauthRouteOverrides)],
+      data: { state: "2fa" },
+      children: [
+        {
+          path: "",
+          component: TwoFactorAuthComponent,
+        },
+      ],
+    },
+  ),
   {
     path: "2fa-options",
     component: TwoFactorOptionsComponent,
@@ -194,12 +214,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "ciphers" },
   },
-  {
+  ...extensionRefreshSwap(ViewComponent, ViewV2Component, {
     path: "view-cipher",
-    component: ViewComponent,
     canActivate: [AuthGuard],
     data: { state: "view-cipher" },
-  },
+  }),
   {
     path: "cipher-password-history",
     component: PasswordHistoryComponent,
@@ -230,12 +249,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "collections" },
   },
-  {
+  ...extensionRefreshSwap(AttachmentsComponent, AttachmentsV2Component, {
     path: "attachments",
-    component: AttachmentsComponent,
     canActivate: [AuthGuard],
     data: { state: "attachments" },
-  },
+  }),
   {
     path: "generator",
     component: GeneratorComponent,
@@ -323,12 +341,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "appearance" },
   },
-  {
+  ...extensionRefreshSwap(AddEditComponent, AddEditV2Component, {
     path: "clone-cipher",
-    component: AddEditComponent,
     canActivate: [AuthGuard],
     data: { state: "clone-cipher" },
-  },
+  }),
   {
     path: "send-type",
     component: SendTypeComponent,
@@ -392,6 +409,12 @@ const routes: Routes = [
       },
     ],
   },
+  {
+    path: "assign-collections",
+    component: AssignCollections,
+    canActivate: [canAccessFeature(FeatureFlag.ExtensionRefresh, true, "/")],
+    data: { state: "assign-collections" },
+  },
   ...extensionRefreshSwap(AboutPageComponent, AboutPageV2Component, {
     path: "about",
     canActivate: [AuthGuard],
@@ -435,12 +458,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { state: "tabs_settings" },
       }),
-      {
+      ...extensionRefreshSwap(SendGroupingsComponent, SendV2Component, {
         path: "send",
-        component: SendGroupingsComponent,
         canActivate: [AuthGuard],
         data: { state: "tabs_send" },
-      },
+      }),
     ],
   }),
   {

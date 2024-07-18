@@ -556,6 +556,18 @@
   "security": {
     "message": "Zabezpieczenia"
   },
+  "confirmMasterPassword": {
+    "message": "Potwierdź hasło główne"
+  },
+  "masterPassword": {
+    "message": "Hasło główne"
+  },
+  "masterPassImportant": {
+    "message": "Twoje hasło główne nie może zostać odzyskane, jeśli je zapomnisz!"
+  },
+  "masterPassHintLabel": {
+    "message": "Podpowiedź do hasła głównego"
+  },
   "errorOccurred": {
     "message": "Wystąpił błąd"
   },
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Aplikacja uwierzytelniająca"
   },
-  "authenticatorAppDesc": {
-    "message": "Użyj aplikacji mobilnej (np. Authy lub Google Authenticator) do generowania czasowych kodów weryfikacyjnych.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Wprowadź kod wygenerowany przez aplikację uwierzytelniającą, jak Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "Klucz bezpieczeństwa YubiKey OTP"
+  "yubiKeyTitleV2": {
+    "message": "Klucz bezpieczeństwa Yubico OTP"
   },
   "yubiKeyDesc": {
     "message": "Użyj YubiKey jako metody dostępu do konta. Działa z YubiKey 4, 4 Nano, 4C i urządzeniami NEO."
   },
-  "duoDesc": {
-    "message": "Weryfikacja z użyciem Duo Security poprzez aplikację Duo Mobile, SMS, połączenie telefoniczne lub klucz bezpieczeństwa U2F.",
+  "duoDescV2": {
+    "message": "Wprowadź kod wygenerowany przez Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "Adres e-mail"
   },
-  "emailDesc": {
-    "message": "Kody weryfikacyjne zostaną wysłane do Ciebie wiadomością e-mail."
+  "emailDescV2": {
+    "message": "Wpisz kod wysłany na Twój adres e-mail."
   },
   "selfHostedEnvironment": {
     "message": "Samodzielnie hostowane środowisko"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "Edytuj $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "Zobacz $TYPE$",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "Weryfikacja adresu e-mail jest wymagana"
+  },
+  "emailVerifiedV2": {
+    "message": "E-mail zweryfikowany"
   },
   "emailVerificationRequiredDesc": {
     "message": "Musisz zweryfikować adres e-mail, aby korzystać z tej funkcji. Adres możesz zweryfikować w sejfie internetowym."
@@ -3107,6 +3131,9 @@
   "confirmFilePassword": {
     "message": "Potwierdź hasło pliku"
   },
+  "exportSuccess": {
+    "message": "Dane sejfu zostały wyeksportowane"
+  },
   "typePasskey": {
     "message": "Passkey"
   },
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Passkey został usunięty"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Uwaga: Nieprzypisane elementy organizacji nie są już widoczne w widoku Wszystkie sejfy i są teraz dostępne tylko przez Konsolę Administracyjną."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Uwaga: 16 maja 2024 r. nieprzypisana elementy w organizacji nie będą już widoczne w widoku Wszystkie sejfy i będą dostępne tylko przez Konsolę Administracyjną."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Przypisz te elementy do kolekcji z",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": ", aby były widoczne.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Sugestie autouzupełnienia"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Elementy bez folderu"
   },
+  "itemDetails": {
+    "message": "Szczegóły elementu"
+  },
+  "itemName": {
+    "message": "Nazwa elementu"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "Nie można usunąć kolekcji z uprawnieniami tylko do przeglądania: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "Organizacja jest wyłączona"
+  },
+  "owner": {
+    "message": "Właściciel"
+  },
+  "selfOwnershipLabel": {
+    "message": "Ty",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "Nie można uzyskać dostępu do elementów w wyłączonych organizacjach. Skontaktuj się z właścicielem organizacji, aby uzyskać pomoc."
   },
+  "additionalInformation": {
+    "message": "Dodatkowe informacje"
+  },
+  "itemHistory": {
+    "message": "Historia elementu"
+  },
+  "lastEdited": {
+    "message": "Ostatnio edytowany"
+  },
+  "ownerYou": {
+    "message": "Właściciel: Ty"
+  },
+  "linked": {
+    "message": "Powiązane"
+  },
+  "copySuccessful": {
+    "message": "Kopiowanie zakończone sukcesem"
+  },
+  "upload": {
+    "message": "Wyślij"
+  },
+  "addAttachment": {
+    "message": "Dodaj załącznik"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "Maksymalny rozmiar pliku to 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "Usuń załącznik $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "Pobierz $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Czy na pewno chcesz trwale usunąć ten załącznik?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Darmowe organizacje nie mogą używać załączników"
+  },
   "filters": {
     "message": "Filtry"
+  },
+  "personalDetails": {
+    "message": "Dane osobowe"
+  },
+  "identification": {
+    "message": "Tożsamość"
+  },
+  "contactInfo": {
+    "message": "Daje kontaktowe"
+  },
+  "downloadAttachment": {
+    "message": "Pobierz - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Szczegóły karty"
+  },
+  "cardBrandDetails": {
+    "message": "Szczegóły $BRAND$",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }

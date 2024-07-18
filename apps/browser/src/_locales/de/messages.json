@@ -17,7 +17,7 @@
     "message": "Konto erstellen"
   },
   "setAStrongPassword": {
-    "message": "Ein starkes Passwort festlegen"
+    "message": "Lege ein starkes Passwort fest"
   },
   "finishCreatingYourAccountBySettingAPassword": {
     "message": "Schließe die Erstellung deines Kontos ab, indem du ein Passwort festlegst"
@@ -555,6 +555,18 @@
   },
   "security": {
     "message": "Sicherheit"
+  },
+  "confirmMasterPassword": {
+    "message": "Master-Passwort bestätigen"
+  },
+  "masterPassword": {
+    "message": "Master-Passwort"
+  },
+  "masterPassImportant": {
+    "message": "Dein Master-Passwort kann nicht wiederhergestellt werden, wenn du es vergisst!"
+  },
+  "masterPassHintLabel": {
+    "message": "Master-Passwort-Hinweis"
   },
   "errorOccurred": {
     "message": "Ein Fehler ist aufgetaucht"
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Authenticator App"
   },
-  "authenticatorAppDesc": {
-    "message": "Verwende eine Authentifizierungs-App (wie zum Beispiel Authy oder Google Authenticator), um zeitbasierte Verifizierungscodes zu generieren.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Gib einen Code ein, der von einer Authentifizierungs-App wie dem Bitwarden Authenticator generiert wurde.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "YubiKey OTP Sicherheitsschlüssel"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP-Sicherheitsschlüssel"
   },
   "yubiKeyDesc": {
     "message": "Verwende einen YubiKey um auf dein Konto zuzugreifen. Funtioniert mit YubiKey 4, Nano 4, 4C und NEO Geräten."
   },
-  "duoDesc": {
-    "message": "Verifiziere mit Duo Security, indem du die Duo Mobile App, SMS, Anrufe oder U2F Sicherheitsschlüssel benutzt.",
+  "duoDescV2": {
+    "message": "Gib einen von Duo Security generierten Code ein.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "E-Mail"
   },
-  "emailDesc": {
-    "message": "Bestätigungscodes werden Ihnen per E-Mail zugesandt."
+  "emailDescV2": {
+    "message": "Gib einen an deine E-Mail-Adresse gesendeten Code ein."
   },
   "selfHostedEnvironment": {
     "message": "Selbst gehostete Umgebung"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "$TYPE$ bearbeiten",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "$TYPE$ ansehen",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -1806,13 +1827,13 @@
     "message": "Deabonnieren"
   },
   "atAnyTime": {
-    "message": "at any time."
+    "message": "jederzeit."
   },
   "byContinuingYouAgreeToThe": {
-    "message": "By continuing, you agree to the"
+    "message": "Indem du fortfährst, stimmst du den"
   },
   "and": {
-    "message": "and"
+    "message": "und"
   },
   "acceptPolicies": {
     "message": "Durch Anwählen dieses Kästchens erklärst du dich mit Folgendem einverstanden:"
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "E-Mail-Verifizierung erforderlich"
+  },
+  "emailVerifiedV2": {
+    "message": "E-Mail-Adresse verifiziert"
   },
   "emailVerificationRequiredDesc": {
     "message": "Du musst deine E-Mail Adresse verifizieren, um diese Funktion nutzen zu können. Du kannst deine E-Mail im Web-Tresor verifizieren."
@@ -3107,6 +3131,9 @@
   "confirmFilePassword": {
     "message": "Dateipasswort bestätigen"
   },
+  "exportSuccess": {
+    "message": "Tresor-Daten exportiert"
+  },
   "typePasskey": {
     "message": "Passkey"
   },
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Passkey entfernt"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Hinweis: Nicht zugeordnete Organisationseinträge sind nicht mehr in der Ansicht aller Tresore sichtbar und nur über die Administrator-Konsole zugänglich."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Hinweis: Ab dem 16. Mai 2024 sind nicht zugewiesene Organisationselemente nicht mehr in der Ansicht aller Tresore sichtbar und nur über die Administrator-Konsole zugänglich."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Weise diese Einträge einer Sammlung aus der",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "zu, um sie sichtbar zu machen.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Vorschläge zum Auto-Ausfüllen"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Einträge ohne Ordner"
   },
+  "itemDetails": {
+    "message": "Eintrag-Details"
+  },
+  "itemName": {
+    "message": "Eintrags-Name"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "Du kannst Sammlungen mit Leseberechtigung nicht entfernen: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "Organisation ist deaktiviert"
+  },
+  "owner": {
+    "message": "Besitzer"
+  },
+  "selfOwnershipLabel": {
+    "message": "Du",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "Auf Einträge in deaktivierten Organisationen kann nicht zugegriffen werden. Kontaktiere deinen Organisationseigentümer für Unterstützung."
   },
+  "additionalInformation": {
+    "message": "Zusätzliche Informationen"
+  },
+  "itemHistory": {
+    "message": "Eintrags-Verlauf"
+  },
+  "lastEdited": {
+    "message": "Zuletzt bearbeitet"
+  },
+  "ownerYou": {
+    "message": "Eigentümer: Du"
+  },
+  "linked": {
+    "message": "Verknüpft"
+  },
+  "copySuccessful": {
+    "message": "Erfolgreich kopiert"
+  },
+  "upload": {
+    "message": "Hochladen"
+  },
+  "addAttachment": {
+    "message": "Anhang hinzufügen"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "Die maximale Dateigröße beträgt 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "Anhang $NAME$ löschen",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "$NAME$ herunterladen",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Bist du sicher, dass du diesen Anhang dauerhaft löschen möchtest?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Kostenlose Organisationen können Anhänge nicht verwenden"
+  },
   "filters": {
     "message": "Filter"
+  },
+  "personalDetails": {
+    "message": "Persönliche Details"
+  },
+  "identification": {
+    "message": "Identifikation"
+  },
+  "contactInfo": {
+    "message": "Kontaktinformationen"
+  },
+  "downloadAttachment": {
+    "message": "Herunterladen - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Kartendetails"
+  },
+  "cardBrandDetails": {
+    "message": "$BRAND$ Details",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Konto hinzufügen"
   }
 }

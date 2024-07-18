@@ -556,6 +556,18 @@
   "security": {
     "message": "Beveiliging"
   },
+  "confirmMasterPassword": {
+    "message": "Hoofdwachtwoord bevestigen"
+  },
+  "masterPassword": {
+    "message": "Hoofdwachtwoord"
+  },
+  "masterPassImportant": {
+    "message": "Je kunt je hoofdwachtwoord niet herstellen als je het vergeet!"
+  },
+  "masterPassHintLabel": {
+    "message": "Hoofdwachtwoordhint"
+  },
   "errorOccurred": {
     "message": "Er is een fout opgetreden"
   },
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Authenticatie-app"
   },
-  "authenticatorAppDesc": {
-    "message": "Gebruik een authenticatie-app (zoals Authy of Google Authenticator) om tijdgebaseerde authenticatiecodes te genereren.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Door een authenticatie-app zoals Bitwarden Authenticator gegenereerde code invoeren.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
+  "yubiKeyTitleV2": {
     "message": "YubiKey OTP-beveiligingssleutel"
   },
   "yubiKeyDesc": {
     "message": "Gebruik een YubiKey om toegang te krijgen tot uw account. Werkt met YubiKey 4, 4 Nano, 4C en Neo-apparaten."
   },
-  "duoDesc": {
-    "message": "Verificatie met Duo Security middels de Duo Mobile-app, sms, spraakoproep of een U2F-beveiligingssleutel.",
+  "duoDescV2": {
+    "message": "Door Duo Security gegenereerde code invoeren.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "E-mail"
   },
-  "emailDesc": {
-    "message": "Je ontvangt verificatiecodes via e-mail."
+  "emailDescV2": {
+    "message": "Via e-mail verstuurde code invoeren."
   },
   "selfHostedEnvironment": {
     "message": "Zelfgehoste omgeving"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "$TYPE$ bewerken",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "$TYPE$ weergeven",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "E-mailverificatie vereist"
+  },
+  "emailVerifiedV2": {
+    "message": "E-mailadres geverifieerd"
   },
   "emailVerificationRequiredDesc": {
     "message": "Je moet je e-mailadres verifiëren om deze functie te gebruiken. Je kunt je e-mailadres verifiëren in de kluis."
@@ -3107,6 +3131,9 @@
   "confirmFilePassword": {
     "message": "Bestandswachtwoord bevestigen"
   },
+  "exportSuccess": {
+    "message": "Kluisgegevens geëxporteerd"
+  },
   "typePasskey": {
     "message": "Passkey"
   },
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Passkey verwijderd"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Notice: Unassigned organization items are no longer visible in the All Vaults view and only accessible via the Admin Console."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Notice: On May 16, 2024, unassigned organization items will no longer be visible in the All Vaults view and will only be accessible via the Admin Console."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Assign these items to a collection from the",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "to make them visible.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Suggesties voor automatisch invullen"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Items zonder map"
   },
+  "itemDetails": {
+    "message": "Itemdetails"
+  },
+  "itemName": {
+    "message": "Itemnaam"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "Je kunt verzamelingen niet verwijderen met alleen rechten voor weergeven: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "Organisatie is gedeactiveerd"
+  },
+  "owner": {
+    "message": "Eigenaar"
+  },
+  "selfOwnershipLabel": {
+    "message": "Jij",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "Items in een gedeactiveerde organisatie zijn niet toegankelijk. Neem contact op met de eigenaar van je organisatie voor hulp."
   },
+  "additionalInformation": {
+    "message": "Aanvullende informatie"
+  },
+  "itemHistory": {
+    "message": "Itemgeschiedenis"
+  },
+  "lastEdited": {
+    "message": "Laatst gewijzigd"
+  },
+  "ownerYou": {
+    "message": "Eigenaar: Jij"
+  },
+  "linked": {
+    "message": "Gekoppeld"
+  },
+  "copySuccessful": {
+    "message": "Kopiëren gelukt"
+  },
+  "upload": {
+    "message": "Uploaden"
+  },
+  "addAttachment": {
+    "message": "Bijlage toevoegen"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "Maximale bestandsgrootte is 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "Bijlage $NAME$ verwijderen",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "$NAME$ downloaden",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Weet je zeker dat je deze bijlage definitief permanen wilt verwijderen?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Gratis organisaties kunnen geen bijlagen gebruiken"
+  },
   "filters": {
     "message": "Filters"
+  },
+  "personalDetails": {
+    "message": "Persoonlijke gegevens"
+  },
+  "identification": {
+    "message": "Identificatie"
+  },
+  "contactInfo": {
+    "message": "Contactgegevens"
+  },
+  "downloadAttachment": {
+    "message": "$ITEMNAME$ downloaden",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Kaartgegevens"
+  },
+  "cardBrandDetails": {
+    "message": "",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }

@@ -409,7 +409,7 @@
     "message": "Oblíbené"
   },
   "unfavorite": {
-    "message": "Unfavorite"
+    "message": "Odebrat z oblíbených"
   },
   "itemAddedToFavorites": {
     "message": "Položka byla přidána do oblíbených"
@@ -439,7 +439,7 @@
     "message": "Spustit"
   },
   "launchWebsite": {
-    "message": "Launch website"
+    "message": "Otevřít webovou stránku"
   },
   "website": {
     "message": "Webová stránka"
@@ -556,6 +556,18 @@
   "security": {
     "message": "Zabezpečení"
   },
+  "confirmMasterPassword": {
+    "message": "Potvrzení hlavního hesla"
+  },
+  "masterPassword": {
+    "message": "Hlavní heslo"
+  },
+  "masterPassImportant": {
+    "message": "Pokud zapomenete Vaše hlavní heslo, nebude možné jej obnovit!"
+  },
+  "masterPassHintLabel": {
+    "message": "Nápověda k hlavnímu heslu"
+  },
   "errorOccurred": {
     "message": "Vyskytla se chyba"
   },
@@ -591,7 +603,7 @@
     "message": "Byli jste úspěšně přihlášeni"
   },
   "youMayCloseThisWindow": {
-    "message": "Nyní můžete toto okno zavřít"
+    "message": "Toto okno můžete zavřít"
   },
   "masterPassSent": {
     "message": "Poslali jsme Vám e-mail s nápovědou k hlavnímu heslu."
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Ověřovací aplikace"
   },
-  "authenticatorAppDesc": {
-    "message": "Použijte ověřovací aplikaci (jako je Authy nebo Google Authenticator) pro generování časově omezených kódů.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Zadejte kód vygenerovaný ověřovací aplikací, jako je Autentikátor Bitwarden.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
+  "yubiKeyTitleV2": {
     "message": "Bezpečnostní klíč YubiKey OTP"
   },
   "yubiKeyDesc": {
     "message": "Použije YubiKey pro přístup k Vašemu trezoru. Podporuje YubiKey 4, 4 Nano, 4C a NEO."
   },
-  "duoDesc": {
-    "message": "Ověření pomocí Duo Security prostřednictvím aplikace Duo Mobile, SMS, telefonního hovoru nebo bezpečnostního klíče U2F.",
+  "duoDescV2": {
+    "message": "Zadejte kód vygenerovaný DUO Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "E-mail"
   },
-  "emailDesc": {
-    "message": "Ověřovací kódy Vám budou zaslány e-mailem."
+  "emailDescV2": {
+    "message": "Zadejte kód odeslaný na Váš e-mail."
   },
   "selfHostedEnvironment": {
     "message": "Vlastní hostované prostředí"
@@ -1471,6 +1483,15 @@
       }
     }
   },
+  "viewItemHeader": {
+    "message": "Zobrazit $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
   "passwordHistory": {
     "message": "Historie hesel"
   },
@@ -1481,7 +1502,7 @@
     "message": "Kolekce"
   },
   "nCollections": {
-    "message": "$COUNT$ collections",
+    "message": "$COUNT$ kolekcí",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -1719,7 +1740,7 @@
     "message": "Automaticky vyplnit a uložit"
   },
   "fillAndSave": {
-    "message": "Fill and save"
+    "message": "Vyplnit a uložit"
   },
   "autoFillSuccessAndSavedUri": {
     "message": "Položka byla automaticky vyplněna a URI bylo uloženo"
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "Je vyžadováno ověření e-mailu"
+  },
+  "emailVerifiedV2": {
+    "message": "E-mail byl ověřen"
   },
   "emailVerificationRequiredDesc": {
     "message": "Abyste mohli tuto funkci používat, musíte ověřit svůj e-mail. Svůj e-mail můžete ověřit ve webovém trezoru."
@@ -3107,6 +3131,9 @@
   "confirmFilePassword": {
     "message": "Potvrzení hesla souboru"
   },
+  "exportSuccess": {
+    "message": "Data trezoru byla exportována"
+  },
   "typePasskey": {
     "message": "Přístupový klíč"
   },
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Přístupový klíč byl odebrán"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Upozornění: Nepřiřazené položky organizace již nejsou viditelné ve vašem zobrazení všech trezorů a jsou nyní přístupné pouze v konzoli správce."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Upozornění: 16. květba 2024 již nebudou nepřiřazené položky organizace viditelné ve vašem zobrazení všech trezorů a budou přístupné pouze v konzoli správce."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Přiřadit tyto položky ke kolekci z",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "aby byly viditelné.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Návrhy automatického vyplňování"
   },
@@ -3424,7 +3437,7 @@
     "message": "Žádné hodnoty ke zkopírování"
   },
   "assignCollections": {
-    "message": "Assign collections"
+    "message": "Přiřadit kolekce"
   },
   "copyEmail": {
     "message": "Kopírovat e-mail"
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Položky bez složky"
   },
+  "itemDetails": {
+    "message": "Detaily položky"
+  },
+  "itemName": {
+    "message": "Název položky"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "Nemůžete odebrat kolekce s oprávněními jen pro zobrazení: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "Organizace je deaktivována"
+  },
+  "owner": {
+    "message": "Vlastník"
+  },
+  "selfOwnershipLabel": {
+    "message": "Vy",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "K položkám v deaktivované organizaci nemáte přístup. Požádejte o pomoc vlastníka organizace."
   },
+  "additionalInformation": {
+    "message": "Další informace"
+  },
+  "itemHistory": {
+    "message": "Historie položky"
+  },
+  "lastEdited": {
+    "message": "Naposledy upraveno"
+  },
+  "ownerYou": {
+    "message": "Vlastník: Vy"
+  },
+  "linked": {
+    "message": "Propojeno"
+  },
+  "copySuccessful": {
+    "message": "Kopírování bylo úspěšné"
+  },
+  "upload": {
+    "message": "Nahrát"
+  },
+  "addAttachment": {
+    "message": "Přidat přílohu"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "Maximální velikost souboru je 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "Smazat přílohu $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "Stáhnout $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Opravdu chcete tuto přílohu navždy smazat?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Volné organizace nemohou používat přílohy"
+  },
   "filters": {
     "message": "Filtry"
+  },
+  "personalDetails": {
+    "message": "Osobní údaje"
+  },
+  "identification": {
+    "message": "Identifikace"
+  },
+  "contactInfo": {
+    "message": "Kontaktní informace"
+  },
+  "downloadAttachment": {
+    "message": "Stahování - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Card details"
+  },
+  "cardBrandDetails": {
+    "message": "$BRAND$ details",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }

@@ -239,10 +239,10 @@
     "message": "Bitwarden para Empresas"
   },
   "bitwardenAuthenticator": {
-    "message": "Autenticador Bitwarden"
+    "message": "Bitwarden Authenticator"
   },
   "continueToAuthenticatorPageDesc": {
-    "message": "O Autenticador Bitwarden permite-lhe armazenar chaves de autenticação e gerar códigos TOTP para fluxos de verificação de 2 passos. Saiba mais no site bitwarden.com"
+    "message": "O Bitwarden Authenticator permite-lhe armazenar chaves de autenticação e gerar códigos TOTP para fluxos de verificação de 2 passos. Saiba mais no site bitwarden.com"
   },
   "bitwardenSecretsManager": {
     "message": "Gestor de Segredos Bitwarden"
@@ -556,17 +556,29 @@
   "security": {
     "message": "Segurança"
   },
+  "confirmMasterPassword": {
+    "message": "Confirmar a palavra-passe mestra"
+  },
+  "masterPassword": {
+    "message": "Palavra-passe mestra"
+  },
+  "masterPassImportant": {
+    "message": "A sua palavra-passe mestra não pode ser recuperada se a esquecer!"
+  },
+  "masterPassHintLabel": {
+    "message": "Dica da palavra-passe mestra"
+  },
   "errorOccurred": {
     "message": "Ocorreu um erro"
   },
   "emailRequired": {
-    "message": "É necessário o endereço de e-mail."
+    "message": "O endereço de e-mail é obrigatório."
   },
   "invalidEmail": {
     "message": "Endereço de e-mail inválido."
   },
   "masterPasswordRequired": {
-    "message": "É necessária a palavra-passe mestra."
+    "message": "A palavra-passe mestra é obrigatória."
   },
   "confirmMasterPasswordRequired": {
     "message": "É necessário reescrever a palavra-passe mestra."
@@ -649,7 +661,7 @@
     "message": "Ocorreu um erro inesperado."
   },
   "nameRequired": {
-    "message": "É necessário o nome."
+    "message": "O nome é obrigatório."
   },
   "addedFolder": {
     "message": "Pasta adicionada"
@@ -1082,7 +1094,7 @@
     "message": "Abrir novo separador"
   },
   "webAuthnAuthenticate": {
-    "message": "Autenticar WebAuthn"
+    "message": "Autenticar o WebAuthn"
   },
   "loginUnavailable": {
     "message": "Início de sessão indisponível"
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Aplicação de autenticação"
   },
-  "authenticatorAppDesc": {
-    "message": "Utilize uma aplicação de autenticação (como o Authy ou o Google Authenticator) para gerar códigos de verificação baseados no tempo.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Introduza um código gerado por uma aplicação de autenticação como o Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "Chave de segurança YubiKey OTP"
+  "yubiKeyTitleV2": {
+    "message": "Chave de segurança Yubico OTP"
   },
   "yubiKeyDesc": {
     "message": "Utilize uma YubiKey para aceder à sua conta. Funciona com os dispositivos YubiKey 4, 4 Nano, 4C e NEO."
   },
-  "duoDesc": {
-    "message": "Verifique com a Duo Security utilizando a aplicação Duo Mobile, SMS, chamada telefónica ou chave de segurança U2F.",
+  "duoDescV2": {
+    "message": "Introduza um código gerado pelo Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "E-mail"
   },
-  "emailDesc": {
-    "message": "Os códigos de verificação ser-lhe-ão enviados por e-mail."
+  "emailDescV2": {
+    "message": "Introduza um código enviado para o seu e-mail."
   },
   "selfHostedEnvironment": {
     "message": "Ambiente auto-hospedado"
@@ -1382,7 +1394,7 @@
     "message": "Nome próprio"
   },
   "middleName": {
-    "message": "Segundo nome"
+    "message": "Nome do meio"
   },
   "lastName": {
     "message": "Apelido"
@@ -1391,7 +1403,7 @@
     "message": "Nome completo"
   },
   "identityName": {
-    "message": "Nome de identidade"
+    "message": "Nome da identidade"
   },
   "company": {
     "message": "Empresa"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "Editar $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "Ver $TYPE$",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -1642,7 +1663,7 @@
     "message": "Desbloquear com PIN"
   },
   "setYourPinCode": {
-    "message": "Defina o seu código PIN para desbloquear o Bitwarden. As suas definições de PIN serão redefinidas se alguma vez terminar sessão completamente da aplicação."
+    "message": "Defina o seu código PIN para desbloquear o Bitwarden. As suas definições de PIN serão redefinidas se alguma vez terminar sessão por completo da aplicação."
   },
   "pinRequired": {
     "message": "É necessário o código PIN."
@@ -2164,6 +2185,9 @@
   "emailVerificationRequired": {
     "message": "Verificação de e-mail necessária"
   },
+  "emailVerifiedV2": {
+    "message": "E-mail verificado"
+  },
   "emailVerificationRequiredDesc": {
     "message": "Tem de verificar o seu e-mail para utilizar esta funcionalidade. Pode verificar o seu e-mail no cofre Web."
   },
@@ -2274,7 +2298,7 @@
     }
   },
   "leaveOrganization": {
-    "message": "Deixar a organização"
+    "message": "Sair da organização"
   },
   "removeMasterPassword": {
     "message": "Remover palavra-passe mestra"
@@ -2283,7 +2307,7 @@
     "message": "Palavra-passe mestra removida"
   },
   "leaveOrganizationConfirmation": {
-    "message": "Tem a certeza de que pretende deixar esta organização?"
+    "message": "Tem a certeza de que pretende sair desta organização?"
   },
   "leftOrganization": {
     "message": "Saiu da organização."
@@ -2739,10 +2763,10 @@
     "message": "Dispositivo de confiança"
   },
   "inputRequired": {
-    "message": "Campo necessário."
+    "message": "Campo obrigatório."
   },
   "required": {
-    "message": "necessário"
+    "message": "obrigatório"
   },
   "search": {
     "message": "Procurar"
@@ -3107,6 +3131,9 @@
   "confirmFilePassword": {
     "message": "Confirmar a palavra-passe do ficheiro"
   },
+  "exportSuccess": {
+    "message": "Dados do cofre exportados"
+  },
   "typePasskey": {
     "message": "Chave de acesso"
   },
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Chave de acesso removida"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Aviso: Os itens da organização não atribuídos já não são visíveis na vista Todos os cofres e só são acessíveis através da Consola de administração."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Aviso: A 16 de maio de 2024, os itens da organização não atribuídos deixarão de estar visíveis na vista Todos os cofres e só estarão acessíveis através da consola de administração."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Atribua estes itens a uma coleção a partir da",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "para os tornar visíveis.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Sugestões de preenchimento automático"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Itens sem pasta"
   },
+  "itemDetails": {
+    "message": "Detalhes do item"
+  },
+  "itemName": {
+    "message": "Nome do item"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "Não é possível remover coleções com permissões de Apenas visualização: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "A organização está desativada"
+  },
+  "owner": {
+    "message": "Proprietário"
+  },
+  "selfOwnershipLabel": {
+    "message": "Eu",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "Não é possível aceder aos itens de organizações desativadas. Contacte o proprietário da organização para obter assistência."
   },
+  "additionalInformation": {
+    "message": "Informações adicionais"
+  },
+  "itemHistory": {
+    "message": "Histórico do item"
+  },
+  "lastEdited": {
+    "message": "Última edição"
+  },
+  "ownerYou": {
+    "message": "Proprietário: Eu"
+  },
+  "linked": {
+    "message": "Associado"
+  },
+  "copySuccessful": {
+    "message": "Cópia bem-sucedida"
+  },
+  "upload": {
+    "message": "Carregar"
+  },
+  "addAttachment": {
+    "message": "Adicionar anexo"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "O tamanho máximo do ficheiro é de 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "Eliminar o anexo $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "Transferir $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Tem a certeza de que pretende eliminar permanentemente este anexo?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "As organizações gratuitas não podem utilizar anexos"
+  },
   "filters": {
     "message": "Filtros"
+  },
+  "personalDetails": {
+    "message": "Dados pessoais"
+  },
+  "identification": {
+    "message": "Identificação"
+  },
+  "contactInfo": {
+    "message": "Informações de contacto"
+  },
+  "downloadAttachment": {
+    "message": "Transferir - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Detalhes do cartão"
+  },
+  "cardBrandDetails": {
+    "message": "Detalhes do $BRAND$",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
   }
 }

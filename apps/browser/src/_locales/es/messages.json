@@ -556,6 +556,18 @@
   "security": {
     "message": "Seguridad"
   },
+  "confirmMasterPassword": {
+    "message": "Confirm master password"
+  },
+  "masterPassword": {
+    "message": "Master password"
+  },
+  "masterPassImportant": {
+    "message": "Your master password cannot be recovered if you forget it!"
+  },
+  "masterPassHintLabel": {
+    "message": "Master password hint"
+  },
   "errorOccurred": {
     "message": "Ha ocurrido un error"
   },
@@ -1105,18 +1117,18 @@
   "authenticatorAppTitle": {
     "message": "Aplicación de autenticación"
   },
-  "authenticatorAppDesc": {
-    "message": "Utiliza una aplicación de autenticación (como Authy o Google Authenticator) para generar código de verificación basados en tiempo.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Introduce un código generado por una aplicación de autenticación como Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "Llave de seguridad YubiKey OTP"
+  "yubiKeyTitleV2": {
+    "message": "Llave de seguridad Yubico OTP"
   },
   "yubiKeyDesc": {
     "message": "Usa un Yubikey para acceder a tu cuenta. Funciona con YubiKey 4, 4 Nano, 4C y dispositivos NEO."
   },
-  "duoDesc": {
-    "message": "Verificar con Duo Security usando la aplicación Duo Mobile, SMS, llamada telefónica o llave de seguridad U2F.",
+  "duoDescV2": {
+    "message": "Introduce un código generado por Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1132,8 +1144,8 @@
   "emailTitle": {
     "message": "Correo electrónico"
   },
-  "emailDesc": {
-    "message": "Los códigos de verificación te serán enviados por correo electrónico."
+  "emailDescV2": {
+    "message": "Introduce un código enviado a tu correo electrónico."
   },
   "selfHostedEnvironment": {
     "message": "Entorno de alojamiento propio"
@@ -1464,6 +1476,15 @@
   },
   "editItemHeader": {
     "message": "Editar $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "View $TYPE$",
     "placeholders": {
       "type": {
         "content": "$1",
@@ -2163,6 +2184,9 @@
   },
   "emailVerificationRequired": {
     "message": "Verificación de correo electrónico requerida"
+  },
+  "emailVerifiedV2": {
+    "message": "Email verified"
   },
   "emailVerificationRequiredDesc": {
     "message": "Debes verificar tu correo electrónico para usar esta función. Puedes verificar tu correo electrónico en la caja fuerte web."
@@ -3107,6 +3131,9 @@
   "confirmFilePassword": {
     "message": "Confirmar contraseña del archivo"
   },
+  "exportSuccess": {
+    "message": "Datos de la caja fuerte exportados"
+  },
   "typePasskey": {
     "message": "Clave de acceso"
   },
@@ -3331,20 +3358,6 @@
   "passkeyRemoved": {
     "message": "Clave de acceso eliminada"
   },
-  "unassignedItemsBannerNotice": {
-    "message": "Aviso: Los elementos de organización no asignados ya no son visibles en la vista de Todas las cajas fuertes y solo son accesibles a través de la Consola de Administrador."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Aviso: El 16 de mayo de 2024, los elementos de organización no asignados no serán visibles en la vista de Todas las cajas fuertes y solo serán accesibles a través de la Consola de Administrador."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Asignar estos elementos a una colección de",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "para hcerlos visibles.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "autofillSuggestions": {
     "message": "Autocompletar sugerencias"
   },
@@ -3489,13 +3502,122 @@
   "itemsWithNoFolder": {
     "message": "Elementos sin carpeta"
   },
+  "itemDetails": {
+    "message": "Item details"
+  },
+  "itemName": {
+    "message": "Item name"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "You cannot remove collections with View only permissions: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
   "organizationIsDeactivated": {
     "message": "La organización está desactivada"
+  },
+  "owner": {
+    "message": "Owner"
+  },
+  "selfOwnershipLabel": {
+    "message": "You",
+    "description": "Used as a label to indicate that the user is the owner of an item."
   },
   "contactYourOrgAdmin": {
     "message": "No se puede acceder a los elementos de las organizaciones desactivadas. Ponte en contacto con el propietario de tu organización para obtener ayuda."
   },
+  "additionalInformation": {
+    "message": "Additional information"
+  },
+  "itemHistory": {
+    "message": "Item history"
+  },
+  "lastEdited": {
+    "message": "Last edited"
+  },
+  "ownerYou": {
+    "message": "Owner: You"
+  },
+  "linked": {
+    "message": "Linked"
+  },
+  "copySuccessful": {
+    "message": "Copy Successful"
+  },
+  "upload": {
+    "message": "Subir"
+  },
+  "addAttachment": {
+    "message": "Añadir adjunto"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "El tamaño máximo del fichero es de 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "Elimina el adjunto $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "Descargar $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "¿Estás seguro de que deseas eliminar permanentemente este adjunto?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Las organizaciones gratis no pueden usar archivos adjuntos"
+  },
   "filters": {
-    "message": "Filters"
+    "message": "Filtros"
+  },
+  "personalDetails": {
+    "message": "Personal details"
+  },
+  "identification": {
+    "message": "Identification"
+  },
+  "contactInfo": {
+    "message": "Contact info"
+  },
+  "downloadAttachment": {
+    "message": "Download - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "cardDetails": {
+    "message": "Card details"
+  },
+  "cardBrandDetails": {
+    "message": "$BRAND$ details",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Añadir cuenta"
   }
 }

@@ -173,6 +173,10 @@
     "message": "Ingen mappe",
     "description": "This is the folder for uncategorized items"
   },
+  "selfOwnershipLabel": {
+    "message": "Dig",
+    "description": "Used as a label to indicate that the user is the owner of an item."
+  },
   "addFolder": {
     "message": "Tilføj mappe"
   },
@@ -400,6 +404,21 @@
   },
   "item": {
     "message": "Emne"
+  },
+  "itemDetails": {
+    "message": "Emnedetaljer"
+  },
+  "itemName": {
+    "message": "Emnenavn"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "Samlinger med kun tilladelsen Vis kan ikke fjernes: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
   },
   "ex": {
     "message": "eks.",
@@ -835,8 +854,8 @@
   "emailAddress": {
     "message": "E-mailadresse"
   },
-  "yourVaultIsLocked": {
-    "message": "Din boks er låst. Bekræft din hovedadgangskode for at fortsætte."
+  "yourVaultIsLockedV2": {
+    "message": "Boksen er låst."
   },
   "uuid": {
     "message": "UUID"
@@ -962,18 +981,18 @@
   "authenticatorAppTitle": {
     "message": "Godkendelses-app"
   },
-  "authenticatorAppDesc": {
-    "message": "Benyt en godkendelses-app (såsom Authy eller Google Authenticator) til at generere tidsbaserede bekræftelseskoder.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Angiv en kode genereret af en godkendelses-app såsom Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "YubiKey OTP-sikkerhedsnøgle"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP-sikkerhedsnøgle"
   },
   "yubiKeyDesc": {
-    "message": "Benyt en YubiKey for at tilgå din konto. Fungerer med YubiKey 4- og 5-serien samt NEO-enheder."
+    "message": "Benyt en YubiKey for at tilgå din konto. Fungerer med YubiKey 4-/5-serien samt NEO-enheder."
   },
-  "duoDesc": {
-    "message": "Bekræft med Duo Security vha. Duo Mobile-appen, SMS, telefonopkald eller U2F-sikkerhedsnøgle.",
+  "duoDescV2": {
+    "message": "Angiv en kode genereret af Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -998,8 +1017,8 @@
   "emailTitle": {
     "message": "E-mail"
   },
-  "emailDesc": {
-    "message": "Bekræftelseskoder vil blive e-mailet til dig."
+  "emailDescV2": {
+    "message": "Angiv en kode tilsendt pr. e-mail."
   },
   "continue": {
     "message": "Fortsæt"
@@ -1041,7 +1060,7 @@
     "message": "Sikker på, at du vil fortsætte?"
   },
   "moveSelectedItemsDesc": {
-    "message": "Vælg en mappe, hvortil de(t) $COUNT$ valgte emne(r) ønskes flyttet.",
+    "message": "Choose a folder that you would like to add the $COUNT$ selected item(s) to.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -1639,35 +1658,47 @@
   "twoStepLoginAuthDesc": {
     "message": "Angiv hovedadgangskoden for at ændre indstillinger for totrins-login."
   },
-  "twoStepAuthenticatorDesc": {
-    "message": "Følg disse trin for at opsætte totrins-login vha. en godkendelses-app:"
+  "twoStepAuthenticatorInstructionPrefix": {
+    "message": "Download en godkendelses-app, såsom f.eks."
   },
-  "twoStepAuthenticatorDownloadApp": {
-    "message": "Download en totrins godkendelses-app"
+  "twoStepAuthenticatorInstructionInfix1": {
+    "message": ","
   },
-  "twoStepAuthenticatorNeedApp": {
-    "message": "Behov for en totrins godkendelses-app? Download en af følgende"
+  "twoStepAuthenticatorInstructionInfix2": {
+    "message": "eller"
   },
-  "iosDevices": {
-    "message": "iOS-enheder"
+  "twoStepAuthenticatorInstructionSuffix": {
+    "message": "."
   },
-  "androidDevices": {
-    "message": "Android-enheder"
+  "continueToExternalUrlTitle": {
+    "message": "Fortsæt til $URL$?",
+    "placeholders": {
+      "url": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
   },
-  "windowsDevices": {
-    "message": "Windows-enheder"
+  "continueToExternalUrlDesc": {
+    "message": "Bitwarden forlades nu og et eksternt websted åbnes i et nyt vindue."
   },
-  "twoStepAuthenticatorAppsRecommended": {
-    "message": "Disse apps anbefales, men andre godkendelses-apps vil også fungere."
+  "twoStepContinueToBitwardenUrlTitle": {
+    "message": "Fortsæt til bitwarden.com?"
   },
-  "twoStepAuthenticatorScanCode": {
-    "message": "Skan denne QR-kode med godkendelses-appen"
+  "twoStepContinueToBitwardenUrlDesc": {
+    "message": "Bitwarden Authenticator muliggør at gemme godkendelsesnøgler og generere TOTP-koder til totrinsbekræftelsesstrømme. Læs mere på bitwarden.com-webstedet."
+  },
+  "twoStepAuthenticatorScanCodeV2": {
+    "message": "Skan QR-koden nedenfor med godkendelses-appen eller angiv nøglen."
+  },
+  "twoStepAuthenticatorQRCanvasError": {
+    "message": "Kunne ikke indlæse QR-kode. Forsøg igen eller brug nøglen nedenfor."
   },
   "key": {
     "message": "Nøgle"
   },
-  "twoStepAuthenticatorEnterCode": {
-    "message": "Angiv den 6-cifrede bekræftelseskode fra appen"
+  "twoStepAuthenticatorEnterCodeV2": {
+    "message": "Bekræftelseskode"
   },
   "twoStepAuthenticatorReaddDesc": {
     "message": "Ønskes den føjet til en anden enhed, er nedenstående den QR-kode (eller nøgle), der kræves af godkendelses-appen."
@@ -2786,9 +2817,6 @@
   "invited": {
     "message": "Inviteret"
   },
-  "accepted": {
-    "message": "Accepteret"
-  },
   "confirmed": {
     "message": "Bekræftet"
   },
@@ -3374,6 +3402,9 @@
   "emailVerified": {
     "message": "Kontoe-mail bekræftet"
   },
+  "emailVerifiedV2": {
+    "message": "E-mail bekræftet"
+  },
   "emailVerifiedFailed": {
     "message": "Kan ikke bekræfte din e-mail. Prøv at sende en ny verifikations-email."
   },
@@ -3673,6 +3704,15 @@
   },
   "subscriptionMaxReached": {
     "message": "Abonnementsjusteringer vil resultere i forholdsmæssige ændringer af dine faktureringstotaler. Der kan ikke inviteres flere end $COUNT$ brugere uden at øge antallet af abonnementspladser.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "50"
+      }
+    }
+  },
+  "subscriptionSeatMaxReached": {
+    "message": "Der kan ikke inviteres flere end $COUNT$ brugere som medlemmer uden at øge abonnementspladserne.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -4150,6 +4190,9 @@
   },
   "thisWindowWillCloseIn5Seconds": {
     "message": "Dette vindue lukkes automatisk om 5 sekunder"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Dette vindue kan nu lukkes"
   },
   "includeAllTeamsFeatures": {
     "message": "Alle teamfunktioner, plus:"
@@ -5618,7 +5661,7 @@
     "message": "Rotering af faktureringssynk-tokenet vil ugyldiggøre det foregående token."
   },
   "selfHostedServer": {
-    "message": "self-hosted"
+    "message": "selv-hostet"
   },
   "customEnvironment": {
     "message": "Custom environment"
@@ -7840,7 +7883,7 @@
     "message": "Tildel til samlinger"
   },
   "bulkCollectionAssignmentDialogDescription": {
-    "message": "Vælg de samlinger som emnerne vil blive delt med. Når et emne er opdateret i en samling, vil det blive afspejlet i alle samlinger. Kun organisationsmedlemmer med adgang til disse samlinger vil kunne se emnerne."
+    "message": "Only organization members with access to these collections will be able to see the items."
   },
   "selectCollectionsToAssign": {
     "message": "Vælg samlinger at tildele"
@@ -8118,23 +8161,6 @@
   "restrictedGroupAccessDesc": {
     "message": "Man kan ikke føje sig selv til en gruppe."
   },
-  "unassignedItemsBannerSelfHost": {
-    "message": "Bemærk: Pr. 2. maj 2024 vil utildelte organisationsemner ikke længere være synlige i Alle Bokse-visningen på tværs af enheder og vil kun være tilgængelige via Admin-konsollen. Tildel disse emner til en samling via Admin-konsollen for at gøre dem synlige."
-  },
-  "unassignedItemsBannerNotice": {
-    "message": "Bemærk: Utildelte organisationsemner er ikke længere synlige i Alle Bokse-visningen, men er kun tilgængelige via Admin-konsol."
-  },
-  "unassignedItemsBannerSelfHostNotice": {
-    "message": "Bemærk: Pr. 16. maj 2024 er utildelte organisationsemner er ikke længere synlige i Alle Bokse-visningen, men er kun tilgængelige via Admin-konsol."
-  },
-  "unassignedItemsBannerCTAPartOne": {
-    "message": "Tildel disse emner til en samling via",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
-  "unassignedItemsBannerCTAPartTwo": {
-    "message": "for at gøre dem synlige.",
-    "description": "This will be part of a larger sentence, which will read like so: Assign these items to a collection from the Admin Console to make them visible."
-  },
   "deleteProvider": {
     "message": "Slet udbyder"
   },
@@ -8396,15 +8422,14 @@
   "exportClientReport": {
     "message": "Eksportér klientrapport"
   },
-  "invoiceNumberHeader": {
-    "message": "Fakturanummer",
-    "description": "A table header for an invoice's number"
-  },
   "memberAccessReport": {
     "message": "Medlemsadgang"
   },
   "memberAccessReportDesc": {
     "message": "Sikr, at medlemmerne har adgang til de rigtige legitimationsoplysninger, og at deres konti er sikre. Brug denne rapport til at få en CSV over medlemsadgang og kontoopsætninger."
+  },
+  "memberAccessReportPageDesc": {
+    "message": "Inspicér organisationsmedlemsadgang på tværs af grupper, samlinger og samlingsemner. CSV-eksporten giver en detaljeret opdeling pr. medlem, herunder oplysninger om samlingstilladelser og kontoopsætninger."
   },
   "higherKDFIterations": {
     "message": "Højere KDF-iterationer kan hjælpe med at beskytte hovedadgangskoden mod brute force-angreb."
@@ -8431,21 +8456,107 @@
     "message": " Kontakt kundesupport for at genoprette abonnementet."
   },
   "secretPeopleDescription": {
-    "message": "Grant groups or people access to this secret. Permissions set for people will override permissions set by groups."
+    "message": "Tildel grupper eller personer adgang til denne hemmelighed. Tilladelser sat for personer tilsidesætter tilladelser sat af grupper."
   },
   "secretPeopleEmptyMessage": {
-    "message": "Add people or groups to share access to this secret"
+    "message": "Tilføj personer eller grupper for at dele adgang til denne hemmelighed"
   },
   "secretMachineAccountsDescription": {
-    "message": "Grant machine accounts access to this secret."
+    "message": "Tildel maskinkonti adgang til denne hemmelighed."
   },
   "secretMachineAccountsEmptyMessage": {
-    "message": "Add machine accounts to grant access to this secret"
+    "message": "Tilføj maskinkontiadgang til denne hemmelighed"
   },
   "smAccessRemovalWarningSecretTitle": {
-    "message": "Remove access to this secret"
+    "message": "Fjern adgang til denne hemmelighed"
   },
   "smAccessRemovalSecretMessage": {
-    "message": "This action will remove your access to this secret."
+    "message": "Denne handling fjerner projektadgangen."
+  },
+  "invoice": {
+    "message": "Faktura"
+  },
+  "unassignedSeatsAvailable": {
+    "message": "Der er $SEATS$ utildelte pladser tilgængelige.",
+    "placeholders": {
+      "seats": {
+        "content": "$1",
+        "example": "10"
+      }
+    },
+    "description": "A message showing how many unassigned seats are available for a provider."
+  },
+  "contactYourProviderForAdditionalSeats": {
+    "message": "Kontakt udbyder-admin for tilkøb af yderligere pladser."
+  },
+  "open": {
+    "message": "Åben",
+    "description": "The status of an invoice."
+  },
+  "uncollectible": {
+    "message": "Uopkrævelig",
+    "description": "The status of an invoice."
+  },
+  "clientDetails": {
+    "message": "Kundeoplysninger"
+  },
+  "downloadCSV": {
+    "message": "Download CSV"
+  },
+  "monthlySubscriptionUserSeatsMessage": {
+    "message": "Justeringer af abonnementet vil resultere i forholdsmæssige gebyrer på faktureringsbeløbet for næste faktureringsperiode. "
+  },
+  "annualSubscriptionUserSeatsMessage": {
+    "message": "Justeringer til abonnementet vil resultere i forholdsmæssige gebyrer på en månedlig faktureringscyklus. "
+  },
+  "billingHistoryDescription": {
+    "message": "Download en CSV-fil for at få klientoplysninger for hver faktureringsdato. Forholdsmæssige gebyrer er ikke inkluderet i CSV og kan variere ift. den tilknyttede faktura. For de mest nøjagtige faktureringsoplysninger, se de månedlige fakturaer.",
+    "description": "A paragraph on the Billing History page of the Provider Portal letting users know they can download a CSV report for their invoices that does not include prorations."
+  },
+  "noInvoicesToList": {
+    "message": "Ingen fakturaer at vise",
+    "description": "A paragraph on the Billing History page of the Provider Portal letting users know they can download a CSV report for their invoices that does not include prorations."
+  },
+  "providerClientVaultPrivacyNotification": {
+    "message": "Bemærk: Senere på måneden forbedres klientboksfortroligheden, og udbydermedlemmer vil ikke længere kunne tilgå klientboksemner direkte. For evt. spørgsmål,",
+    "description": "This will be displayed as part of a larger sentence. The whole sentence reads: 'Notice: Later this month, client vault privacy will be improved and provider members will no longer have direct access to client vault items. For questions, please contact Bitwarden support'."
+  },
+  "contactBitwardenSupport": {
+    "message": "contact Bitwarden support.",
+    "description": "This will be displayed as part of a larger sentence. The whole sentence reads: 'Notice: Later this month, client vault privacy will be improved and provider members will no longer have direct access to client vault items. For questions, please contact Bitwarden support'. 'Bitwarden' should not be translated"
+  },
+  "sponsored": {
+    "message": "Sponseret"
+  },
+  "licenseAndBillingManagementDesc": {
+    "message": "Efter at have foretaget opdateringer på Bitwarden cloud-serveren, uploade licensfilen for at anvende de seneste ændringer."
+  },
+  "addToFolder": {
+    "message": "Føj til mappe"
+  },
+  "selectFolder": {
+    "message": "Vælg mappe"
+  },
+  "personalItemsTransferWarning": {
+    "message": "$PERSONAL_ITEMS_COUNT$ overføres permanent til den valgte organisation. Man vil ikke længere eje disse emner.",
+    "placeholders": {
+      "personal_items_count": {
+        "content": "$1",
+        "example": "2 items"
+      }
+    }
+  },
+  "personalItemsWithOrgTransferWarning": {
+    "message": "$PERSONAL_ITEMS_COUNT$ overføres permanent til $ORG$. Man vil ikke længere eje disse emner.",
+    "placeholders": {
+      "personal_items_count": {
+        "content": "$1",
+        "example": "2 items"
+      },
+      "org": {
+        "content": "$2",
+        "example": "Organization name"
+      }
+    }
   }
 }
