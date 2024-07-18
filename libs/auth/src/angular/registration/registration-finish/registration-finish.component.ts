@@ -49,7 +49,6 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // Why do I listen for query param changes... just use firstValueFrom for first load.
     this.listenForQueryParamChanges();
     this.masterPasswordPolicyOptions =
       await this.registrationFinishService.getMasterPasswordPolicyOptsFromOrgInvite();
