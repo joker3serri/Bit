@@ -15,8 +15,8 @@ export class UsernameRandomizer {
    *  @returns a promise that resolves with the generated username.
    */
   async randomWords(request?: WordsRequest) {
-    const length = request?.numberOfWords ?? 1;
-    if (length < 1) {
+    const numberOfWords = request?.numberOfWords ?? 1;
+    if (numberOfWords < 1) {
       return "";
     }
 
@@ -30,7 +30,7 @@ export class UsernameRandomizer {
 
     const wordList = request?.words ?? EFFLongWordList;
     const parts = [];
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < numberOfWords; i++) {
       const word = await this.random.pickWord(wordList, { titleCase: selectCase(i) });
       parts.push(word);
     }

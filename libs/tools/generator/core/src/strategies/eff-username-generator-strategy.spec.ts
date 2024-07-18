@@ -89,7 +89,7 @@ describe("EFF long word list generation strategy", () => {
 
       expect(result).toEqual("username");
       expect(randomizer.randomWords).toHaveBeenCalledWith({
-        length: 1,
+        numberOfWords: 1,
         casing: "lowercase",
         digits: 0,
       });
@@ -106,7 +106,7 @@ describe("EFF long word list generation strategy", () => {
 
       expect(result).toEqual("username");
       expect(randomizer.randomWords).toHaveBeenCalledWith({
-        length: 1,
+        numberOfWords: 1,
         casing: "lowercase",
         digits: 4,
       });
@@ -123,7 +123,7 @@ describe("EFF long word list generation strategy", () => {
 
       expect(result).toEqual("username");
       expect(randomizer.randomWords).toHaveBeenCalledWith({
-        length: 1,
+        numberOfWords: 1,
         casing: "TitleCase",
         digits: 0,
       });
@@ -139,7 +139,7 @@ describe("EFF long word list generation strategy", () => {
 
       expect(result).toEqual("username");
       expect(randomizer.randomWords).toHaveBeenCalledWith({
-        length: 1,
+        numberOfWords: 1,
         casing: "lowercase",
         digits: 0,
       });
@@ -155,7 +155,7 @@ describe("EFF long word list generation strategy", () => {
 
       expect(result).toEqual("username");
       expect(randomizer.randomWords).toHaveBeenCalledWith({
-        length: 1,
+        numberOfWords: 1,
         casing: "lowercase",
         digits: 0,
       });

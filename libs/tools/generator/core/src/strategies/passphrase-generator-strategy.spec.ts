@@ -106,7 +106,7 @@ describe("Password generation strategy", () => {
 
       expect(result).toEqual("passphrase");
       expect(randomizer.randomEffLongWords).toHaveBeenCalledWith({
-        words: 4,
+        numberOfWords: 4,
         capitalize: true,
         number: true,
         separator: "!",
@@ -124,7 +124,7 @@ describe("Password generation strategy", () => {
 
       expect(result).toEqual("passphrase");
       expect(randomizer.randomEffLongWords).toHaveBeenCalledWith({
-        words: DefaultPassphraseGenerationOptions.numWords,
+        numberOfWords: DefaultPassphraseGenerationOptions.numWords,
         capitalize: true,
         number: true,
         separator: "!",
@@ -142,7 +142,7 @@ describe("Password generation strategy", () => {
 
       expect(result).toEqual("passphrase");
       expect(randomizer.randomEffLongWords).toHaveBeenCalledWith({
-        words: 4,
+        numberOfWords: 4,
         capitalize: DefaultPassphraseGenerationOptions.capitalize,
         number: true,
         separator: "!",
@@ -160,7 +160,7 @@ describe("Password generation strategy", () => {
 
       expect(result).toEqual("passphrase");
       expect(randomizer.randomEffLongWords).toHaveBeenCalledWith({
-        words: 4,
+        numberOfWords: 4,
         capitalize: true,
         number: DefaultPassphraseGenerationOptions.includeNumber,
         separator: "!",
@@ -178,7 +178,7 @@ describe("Password generation strategy", () => {
 
       expect(result).toEqual("passphrase");
       expect(randomizer.randomEffLongWords).toHaveBeenCalledWith({
-        words: 4,
+        numberOfWords: 4,
         capitalize: true,
         number: true,
         separator: DefaultPassphraseGenerationOptions.wordSeparator,

@@ -80,14 +80,14 @@ export class EmailRandomizer {
       return null;
     }
 
-    const length = options?.numberOfWords ?? 1;
-    if (length < 1) {
+    const numberOfWords = options?.numberOfWords ?? 1;
+    if (numberOfWords < 1) {
       return null;
     }
 
     const wordList = options?.words ?? EFFLongWordList;
     const words = [];
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < numberOfWords; i++) {
       // camelCase the words for legibility
       words[i] = await this.random.pickWord(wordList, { titleCase: i !== 0 });
     }
