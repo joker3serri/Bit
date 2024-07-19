@@ -74,6 +74,14 @@ export class TwoFactorAuthDuoComponent extends TwoFactorAuthDuoBaseComponent {
   }
 
   override async launchDuoFrameless() {
+    if (this.duoFramelessUrl === null) {
+      this.toastService.showToast({
+        variant: "error",
+        title: null,
+        message: this.i18nService.t("duoHealthCheckResultsInNullAuthUrlError"),
+      });
+      return;
+    }
     const duoHandOffMessage = {
       title: this.i18nService.t("youSuccessfullyLoggedIn"),
       message: this.i18nService.t("youMayCloseThisWindow"),
