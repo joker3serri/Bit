@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
-import { mergeMap, Subject, takeUntil } from "rxjs";
+import { mergeMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
@@ -41,8 +42,6 @@ export class SendV2Component implements OnInit, OnDestroy {
 
   protected sends: SendView[] = [];
 
-  private destroy$ = new Subject<void>();
-
   protected noItemIcon = NoSendsIcon;
 
   constructor(protected sendService: SendService) {}
@@ -53,7 +52,7 @@ export class SendV2Component implements OnInit, OnDestroy {
         mergeMap(async (sends) => {
           this.sends = sends.sort((a, b) => a.name.localeCompare(b.name));
         }),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(),
       )
       .subscribe();
   }
