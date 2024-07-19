@@ -16,3 +16,4 @@ export * from "./disabled-password-generator-policy";
 export * from "./forwarders";
 export * from "./integrations";
 export * from "./policies";
+export * from "./username-digits";
