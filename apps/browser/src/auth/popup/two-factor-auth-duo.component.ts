@@ -49,7 +49,7 @@ export class TwoFactorAuthDuoComponent extends TwoFactorAuthDuoBaseComponent {
     private environmentService: EnvironmentService,
     private toastService: ToastService,
   ) {
-    super(i18nService, platformUtilsService);
+    super(i18nService, platformUtilsService, toastService);
   }
 
   async ngOnInit(): Promise<void> {
