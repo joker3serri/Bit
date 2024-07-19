@@ -18,7 +18,7 @@ describe("Addy.io forwarder", () => {
       const result = ForwardEmail.authenticate(null, context);
 
       expect(result).toEqual({ Authorization: "Basic token" });
-      expect(context.authenticationToken).toHaveBeenCalledWith({ base64: true });
+      expect(context.authenticationToken).toHaveBeenCalledWith({ base64: true, suffix: ":" });
     });
   });
 
