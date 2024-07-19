@@ -14,8 +14,9 @@ import { StateProvider } from "@bitwarden/common/platform/state";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { ToastService } from "@bitwarden/components/src/toast";
-import { PasswordRepromptService } from "@bitwarden/vault";
+import { ToastService } from "@bitwarden/components";
+
+import { PasswordRepromptService } from "../../services/password-reprompt.service";
 
 import { DownloadAttachmentComponent } from "./download-attachment.component";
 

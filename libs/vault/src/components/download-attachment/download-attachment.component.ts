@@ -17,7 +17,8 @@ import { OrgKey } from "@bitwarden/common/types/key";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { AsyncActionsModule, IconButtonModule, ToastService } from "@bitwarden/components";
-import { PasswordRepromptService } from "@bitwarden/vault";
+
+import { PasswordRepromptService } from "../../services/password-reprompt.service";
 
 @Component({
   standalone: true,
