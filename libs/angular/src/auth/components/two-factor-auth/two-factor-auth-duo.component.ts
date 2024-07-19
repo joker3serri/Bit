@@ -64,6 +64,14 @@ export class TwoFactorAuthDuoComponent {
   // Each client will have own implementation
   protected setupDuoResultListener(): void {}
   async launchDuoFrameless(): Promise<void> {
+    if (this.duoFramelessUrl === null) {
+      this.toastService.showToast({
+        variant: "error",
+        title: null,
+        message: this.i18nService.t("duoHealthCheckResultsInNullAuthUrlError"),
+      });
+      return;
+    }
     this.platformUtilsService.launchUri(this.duoFramelessUrl);
   }
 }
