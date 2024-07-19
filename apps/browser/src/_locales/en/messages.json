@@ -1272,6 +1272,20 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "If a login form is detected, autofill when the web page loads."
   },
+  "autofillOnPageLoadWarning": {
+    "message": "$OPENTAG$Warning:$CLOSETAG$ Compromised or untrusted websites can exploit autofill on page load.",
+    "placeholders": {
+      "openTag": {
+        "content": "$1",
+        "example": "<b>"
+      },
+      "closeTag": {
+        "content": "$2",
+        "example": "</b>"
+      }
+
+    }
+  },
   "experimentalFeature": {
     "message": "Compromised or untrusted websites can exploit autofill on page load."
   },

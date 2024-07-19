@@ -127,8 +127,7 @@
       <bit-card>
         <bit-hint class="tw-mb-6 tw-text-sm">
           {{ "enableAutoFillOnPageLoadDesc" | i18n }}
-          <b class="tw-capitalize">{{ "warning" | i18n }}</b
-          >: {{ "experimentalFeature" | i18n }}
+          <span [innerHTML]="'autofillOnPageLoadWarning' | i18n: '\<b>' : '\</b>'"></span>
           <a
             bitLink
             class="tw-no-underline"
