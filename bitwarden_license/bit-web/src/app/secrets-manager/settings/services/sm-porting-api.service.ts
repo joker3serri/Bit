@@ -47,7 +47,7 @@ export class SecretsManagerPortingApiService {
     );
   }
 
-  async import(organizationId: string, fileContents: string): Promise<SecretsManagerImportError> {
+  async import(organizationId: string, fileContents: string): Promise<void> {
     let requestObject = {};
 
     try {
@@ -65,7 +65,7 @@ export class SecretsManagerPortingApiService {
       this._imports.next(requestBody);
     } catch (error) {
       const errorResponse = new ErrorResponse(error, 400);
-      return this.handleServerError(errorResponse, requestObject);
+      throw this.handleServerError(errorResponse, requestObject);
     }
   }
 
