@@ -47,7 +47,7 @@ export class TwoFactorAuthDuoComponent extends TwoFactorAuthDuoBaseComponent {
     protected platformUtilsService: PlatformUtilsService,
     private browserMessagingApi: ZonedMessageListenerService,
     private environmentService: EnvironmentService,
-    private toastService: ToastService,
+    toastService: ToastService,
   ) {
     super(i18nService, platformUtilsService, toastService);
   }

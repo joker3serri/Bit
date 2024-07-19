@@ -49,7 +49,7 @@ export class TwoFactorAuthDuoComponent extends TwoFactorAuthDuoBaseComponent {
     private broadcasterService: BroadcasterService,
     private ngZone: NgZone,
     private environmentService: EnvironmentService,
-    private toastService: ToastService,
+    toastService: ToastService,
   ) {
     super(i18nService, platformUtilsService, toastService);
   }
