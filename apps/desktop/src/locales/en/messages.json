@@ -1955,30 +1955,6 @@
   "copyLink": {
     "message": "Copy link"
   },
-  "copySendTitle": {
-    "message": "Copy link - $NAME$",
-    "placeholders": {
-      "name": {
-        "content": "$1"
-      }
-    }
-  },
-  "deleteSend": {
-    "message": "Delete - $NAME$",
-    "placeholders": {
-      "name": {
-        "content": "$1"
-      }
-    }
-  },
-  "editSendTitle": {
-    "message": "Edit - $NAME$",
-    "placeholders": {
-      "name": {
-        "content": "$1"
-      }
-    }
-  },
   "disabled": {
     "message": "Disabled"
   },

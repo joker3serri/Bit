@@ -69,6 +69,8 @@ export class SendListItemsContainerComponent {
       return false;
     }
 
+    await this.sendApiService.delete(s.id);
+
     try {
       this.toastService.showToast({
         variant: "success",
@@ -80,7 +82,7 @@ export class SendListItemsContainerComponent {
     }
   }
 
-  async copy(s: SendView) {
+  async copySendLink(s: SendView) {
     const env = await firstValueFrom(this.environmentService.environment$);
     const link = env.getSendUrl() + s.accessId + "/" + s.urlB64Key;
     this.platformUtilsService.copyToClipboard(link);
