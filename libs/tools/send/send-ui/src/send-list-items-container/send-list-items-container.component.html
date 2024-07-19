@@ -9,7 +9,7 @@
     <bit-item *ngFor="let send of sends">
       <button
         bit-item-content
-        [appA11yTitle]="'editSendTitle' | i18n: (send.name | i18n)"
+        appA11yTitle="{{ 'edit' | i18n }} - {{ send.name }}"
         appStopClick
         type="button"
         class="tw-pb-1"
@@ -32,7 +32,8 @@
           <bit-item-action>
             <button
               type="button"
-              appA11yTitle="{{ 'copySendTitle' | i18n }}: {{ send.name | i18n }}"
+              (click)="copySendLink(send)"
+              appA11yTitle="{{ 'copyLink' | i18n }} - {{ send.name }}"
             >
               <i class="bwi tw-text-lg bwi-clone"></i>
             </button>
@@ -40,7 +41,8 @@
           <bit-item-action>
             <button
               type="button"
-              appA11yTitle="{{ 'deleteSendTitle' | i18n }}: {{ send.name | i18n }}"
+              (click)="deleteSend(send)"
+              appA11yTitle="{{ 'delete' | i18n }} - {{ send.name }}"
             >
               <i class="bwi tw-text-lg bwi-trash"></i>
             </button>
