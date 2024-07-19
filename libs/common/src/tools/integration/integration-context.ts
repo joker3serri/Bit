@@ -53,11 +53,12 @@ export class IntegrationContext<Settings extends object> {
    *  @param options.base64 when `true`, base64 encodes the result. Defaults to `false`.
    *  @returns the user's authentication token
    *  @throws a localized error message when the token is invalid.
+   *  @remarks the string is thrown for backwards compatibility
    */
   authenticationToken(
     options: { base64?: boolean } = null,
   ): Settings extends ApiSettings ? string : never {
-    let token = "token" in this.settings ? (this.settings?.token as string) ?? "" : "";
+    let token = "token" in this.settings ? (this.settings.token as string) ?? "" : "";
 
     if (token === "") {
       const error = this.i18n.t("forwaderInvalidToken", this.metadata.name);

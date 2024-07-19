@@ -156,8 +156,8 @@ describe("IntegrationContext", () => {
       expect(() => context.authenticationToken()).toThrow("error");
     });
 
-    it("throws an error when the value is empty", () => {
-      const context = new IntegrationContext(EXAMPLE_META, { token: "" }, i18n);
+    it.each([[undefined], [null], [""]])("throws an error when the value is %p", (token) => {
+      const context = new IntegrationContext(EXAMPLE_META, { token }, i18n);
       i18n.t.mockReturnValue("error");
 
       expect(() => context.authenticationToken()).toThrow("error");
