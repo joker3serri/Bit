@@ -21,6 +21,7 @@ import { OrganizationCounts } from "../models/view/counts.view";
 import { ProjectService } from "../projects/project.service";
 import { SecretService } from "../secrets/secret.service";
 import { ServiceAccountService } from "../service-accounts/service-account.service";
+import { SecretsManagerPortingApiService } from "../settings/services/sm-porting-api.service";
 import { CountService } from "../shared/counts/count.service";
 
 @Component({
@@ -42,6 +43,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private secretService: SecretService,
     private serviceAccountService: ServiceAccountService,
+    private portingApiService: SecretsManagerPortingApiService,
   ) {}
 
   ngOnInit() {
@@ -66,6 +68,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
       this.projectService.project$.pipe(startWith(null)),
       this.secretService.secret$.pipe(startWith(null)),
       this.serviceAccountService.serviceAccount$.pipe(startWith(null)),
+      this.portingApiService.imports$.pipe(startWith(null)),
     ])
       .pipe(
         filter(([org]) => org?.enabled),

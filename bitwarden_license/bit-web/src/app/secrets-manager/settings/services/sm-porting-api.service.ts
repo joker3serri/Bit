@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
 import { SecretsManagerImportError } from "../models/error/sm-import-error";
@@ -22,11 +22,13 @@ import {
   providedIn: "root",
 })
 export class SecretsManagerPortingApiService {
+  protected _imports = new Subject<SecretsManagerImportRequest>();
+  imports$ = this._imports.asObservable();
+
   constructor(
     private apiService: ApiService,
     private encryptService: EncryptService,
     private cryptoService: CryptoService,
-    private i18nService: I18nService,
   ) {}
 
   async export(organizationId: string): Promise<string> {
@@ -59,6 +61,8 @@ export class SecretsManagerPortingApiService {
         true,
         true,
       );
+
+      this._imports.next(requestBody);
     } catch (error) {
       const errorResponse = new ErrorResponse(error, 400);
       return this.handleServerError(errorResponse, requestObject);
