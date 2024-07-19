@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 import { ClientType } from "@bitwarden/common/enums";
@@ -12,20 +12,26 @@ import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
 import { BitwardenLogoPrimary, BitwardenLogoWhite, UserIcon } from "../icons";
 
+export interface ThemedIcon {
+  default: Icon;
+  darkTheme?: Icon;
+}
+
 @Component({
   standalone: true,
   selector: "auth-anon-layout",
   templateUrl: "./anon-layout.component.html",
   imports: [IconModule, CommonModule, TypographyModule, SharedModule],
 })
-export class AnonLayoutComponent {
+export class AnonLayoutComponent implements OnInit, OnChanges {
   @Input() title: string;
   @Input() subtitle: string;
-  @Input() icon: Icon = UserIcon;
+  @Input() icon: ThemedIcon;
   @Input() showReadonlyHostname: boolean;
   @Input() hideLogo: boolean = false;
 
   protected logo: Icon;
+  protected iconToDisplay: Icon = UserIcon;
 
   protected year = "2024";
   protected clientType: ClientType;
@@ -48,14 +54,35 @@ export class AnonLayoutComponent {
   }
 
   async ngOnInit() {
-    this.hostname = (await firstValueFrom(this.environmentService.environment$)).getHostname();
-    this.version = await this.platformUtilsService.getApplicationVersion();
     this.theme = await firstValueFrom(this.themeStateService.selectedTheme$);
 
     if (this.theme === "dark") {
       this.logo = BitwardenLogoWhite;
     } else {
       this.logo = BitwardenLogoPrimary;
+    }
+
+    await this.updateIconToDisplay();
+
+    this.hostname = (await firstValueFrom(this.environmentService.environment$)).getHostname();
+    this.version = await this.platformUtilsService.getApplicationVersion();
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.icon) {
+      await this.updateIconToDisplay();
+    }
+  }
+
+  private async updateIconToDisplay() {
+    if (this.icon) {
+      if (this.theme === "dark" && this.icon?.darkTheme) {
+        this.iconToDisplay = this.icon.darkTheme;
+      } else {
+        this.iconToDisplay = this.icon.default;
+      }
+    } else {
+      this.iconToDisplay = UserIcon;
     }
   }
 }

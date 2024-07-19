@@ -9,7 +9,7 @@ import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-stat
 
 import { ButtonModule } from "../../../../components/src/button";
 import { I18nMockService } from "../../../../components/src/utils/i18n-mock.service";
-import { LockIcon } from "../icons";
+import { LockIconPrimary, LockIconWhite } from "../icons";
 
 import { AnonLayoutComponent } from "./anon-layout.component";
 
@@ -60,7 +60,10 @@ export default {
     title: "The Page Title",
     subtitle: "The subtitle (optional)",
     showReadonlyHostname: true,
-    icon: LockIcon,
+    icon: {
+      default: LockIconPrimary,
+      darkTheme: LockIconWhite,
+    },
     hideLogo: false,
   },
 } as Meta;

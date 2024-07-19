@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { Subject, filter, switchMap, takeUntil, tap } from "rxjs";
 
-import { AnonLayoutComponent } from "@bitwarden/auth/angular";
+import { AnonLayoutComponent, ThemedIcon } from "@bitwarden/auth/angular";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Icon } from "@bitwarden/components";
 
 export interface AnonLayoutWrapperData {
   pageTitle?: string;
   pageSubtitle?: string;
-  pageIcon?: Icon;
+  pageIcon?: { default?: Icon; darkTheme?: Icon };
   showReadonlyHostname?: boolean;
 }
 
@@ -23,7 +23,7 @@ export class AnonLayoutWrapperComponent implements OnInit, OnDestroy {
 
   protected pageTitle: string;
   protected pageSubtitle: string;
-  protected pageIcon: Icon;
+  protected pageIcon: ThemedIcon;
   protected showReadonlyHostname: boolean;
 
   constructor(
