@@ -21,6 +21,22 @@ describe("Addy.io forwarder", () => {
     });
   });
 
+  describe("settings", () => {
+    it("should pass through deserialization", () => {
+      const value: any = {};
+      const result = AddyIo.forwarder.settings.deserializer(value);
+      expect(result).toBe(value);
+    });
+  });
+
+  describe("importBuffer", () => {
+    it("should pass through deserialization", () => {
+      const value: any = {};
+      const result = AddyIo.forwarder.importBuffer.options.deserializer(value);
+      expect(result).toBe(value);
+    });
+  });
+
   describe("createForwardingEmail", () => {
     describe("url", () => {
       it("returns the alias path", () => {
