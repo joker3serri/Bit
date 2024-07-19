@@ -22,20 +22,9 @@ export class GetAccountIdRpc<
     return this.requestor.forwarder.getAccountId.processJson(json, this.context);
   }
 
-  private body(req: Req) {
-    const body = this.requestor.forwarder.getAccountId.body(req, this.context);
-    if (body) {
-      const b = body(req, this.context);
-      return b && JSON.stringify(b);
-    }
-
-    return undefined;
-  }
-
   toRequest(req: Req) {
     const url = this.requestor.forwarder.getAccountId.url(req, this.context);
     const token = this.requestor.authenticate(req, this.context as IntegrationContext<Settings>);
-    const body = this.body(req);
 
     const request = new Request(url, {
       redirect: "manual",
@@ -45,7 +34,6 @@ export class GetAccountIdRpc<
         ...token,
         "Content-Type": "application/json",
       }),
-      body,
     });
 
     return request;

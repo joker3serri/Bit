@@ -18,24 +18,6 @@ export class CreateForwardingAddressRpc<
     return this.requestor.forwarder.createForwardingEmail;
   }
 
-  hasJsonPayload(response: Response): boolean {
-    return this.createForwardingEmail.hasJsonPayload(response, this.context);
-  }
-
-  processJson(json: any): [string?, string?] {
-    return this.createForwardingEmail.processJson(json, this.context);
-  }
-
-  private body(req: Req) {
-    const body = this.createForwardingEmail.body;
-    if (body) {
-      const b = body(req, this.context);
-      return b && JSON.stringify(b);
-    }
-
-    return undefined;
-  }
-
   toRequest(req: Req) {
     const url = this.createForwardingEmail.url(req, this.context);
     const token = this.requestor.authenticate(req, this.context as IntegrationContext<Settings>);
@@ -53,5 +35,27 @@ export class CreateForwardingAddressRpc<
     });
 
     return request;
+  }
+
+  private body(req: Req) {
+    const toBody = this.createForwardingEmail.body;
+    if (!toBody) {
+      return undefined;
+    }
+
+    const body = toBody(req, this.context);
+    if (!body) {
+      return undefined;
+    }
+
+    return JSON.stringify(body);
+  }
+
+  hasJsonPayload(response: Response): boolean {
+    return this.createForwardingEmail.hasJsonPayload(response, this.context);
+  }
+
+  processJson(json: any): [string?, string?] {
+    return this.createForwardingEmail.processJson(json, this.context);
   }
 }
