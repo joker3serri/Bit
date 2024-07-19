@@ -141,6 +141,14 @@ describe("IntegrationContext", () => {
       expect(result).toBe("example");
     });
 
+    it("suffix is appended to the token", () => {
+      const context = new IntegrationContext(EXAMPLE_META, { token: "example" }, i18n);
+
+      const result = context.authenticationToken({ suffix: " with suffix" });
+
+      expect(result).toBe("example with suffix");
+    });
+
     it("base64 encodes the read value", () => {
       const context = new IntegrationContext(EXAMPLE_META, { token: "example" }, i18n);
 

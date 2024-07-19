@@ -68,7 +68,7 @@ export const ForwardEmail = Object.freeze({
   selfHost: "never",
   baseUrl: "https://api.forwardemail.net",
   authenticate(_request: IntegrationRequest, context: IntegrationContext<ApiSettings>) {
-    return { Authorization: "Basic " + context.authenticationToken({ base64: true }) };
+    return { Authorization: "Basic " + context.authenticationToken({ base64: true, suffix: ":" }) };
   },
 
   // specialized configurations

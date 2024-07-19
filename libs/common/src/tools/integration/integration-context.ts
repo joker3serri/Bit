@@ -56,9 +56,10 @@ export class IntegrationContext<Settings extends object> {
    *  @remarks the string is thrown for backwards compatibility
    */
   authenticationToken(
-    options: { base64?: boolean } = null,
+    options: { base64?: boolean; suffix?: string } = null,
   ): Settings extends ApiSettings ? string : never {
     let token = "token" in this.settings ? (this.settings.token as string) ?? "" : "";
+    token += options?.suffix ?? "";
 
     if (token === "") {
       const error = this.i18n.t("forwaderInvalidToken", this.metadata.name);
