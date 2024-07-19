@@ -181,8 +181,8 @@ export class SecretsManagerPortingApiService {
 
       result.lines.push({
         id: id + 1,
-        type: itemType == "Project" ? "Project" : "Secret",
-        key: item.key,
+        type: itemType === "Project" ? "Project" : "Secret",
+        key: itemType === "Project" ? item.name : item.key,
         errorMessage: value.length > 0 ? value[0] : "",
       });
     });
