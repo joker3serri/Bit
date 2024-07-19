@@ -143,7 +143,7 @@
             bitCheckbox
             id="autofillOnPageLoad"
             type="checkbox"
-            (change)="updateAutoFillOnPageLoad()"
+            (change)="updateAutofillOnPageLoad()"
             [(ngModel)]="enableAutofillOnPageLoad"
           />
           <bit-label for="autofillOnPageLoad">{{ "enableAutoFillOnPageLoad" | i18n }}</bit-label>
@@ -153,7 +153,7 @@
           <select
             bitInput
             id="defaultAutofill"
-            (change)="updateAutoFillOnPageLoadDefault()"
+            (change)="updateAutofillOnPageLoadDefault()"
             [(ngModel)]="autofillOnPageLoadDefault"
             [disabled]="!enableAutofillOnPageLoad"
           >

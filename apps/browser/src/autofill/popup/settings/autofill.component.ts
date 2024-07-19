@@ -44,7 +44,6 @@ import {
 } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
-import { enableAccountSwitching } from "../../../platform/flags";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupFooterComponent } from "../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
@@ -135,7 +134,6 @@ export class AutofillComponent implements OnInit {
       { name: i18nService.t("never"), value: UriMatchStrategy.Never },
     ];
 
-    this.accountSwitcherEnabled = enableAccountSwitching();
     this.browserClientVendor = this.getBrowserClientVendor();
     this.disablePasswordManagerURI = DisablePasswordManagerUris[this.browserClientVendor];
     this.browserShortcutsURI = BrowserShortcutsUris[this.browserClientVendor];
@@ -203,11 +201,11 @@ export class AutofillComponent implements OnInit {
     await this.requestPrivacyPermission();
   }
 
-  async updateAutoFillOnPageLoad() {
+  async updateAutofillOnPageLoad() {
     await this.autofillSettingsService.setAutofillOnPageLoad(this.enableAutofillOnPageLoad);
   }
 
-  async updateAutoFillOnPageLoadDefault() {
+  async updateAutofillOnPageLoadDefault() {
     await this.autofillSettingsService.setAutofillOnPageLoadDefault(this.autofillOnPageLoadDefault);
   }
 
