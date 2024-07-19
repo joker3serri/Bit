@@ -166,12 +166,12 @@ export class SecretsManagerPortingApiService {
       let itemType;
       const id = Number(key.match(/[0-9]+/)[0]);
 
-      switch (key.match(/^\w+/)[0]) {
-        case "Projects":
+      switch (key.match(/^[$\\.]*(\w+)/)[1].toLowerCase()) {
+        case "projects":
           item = importResult.projects[id];
           itemType = "Project";
           break;
-        case "Secrets":
+        case "secrets":
           item = importResult.secrets[id];
           itemType = "Secret";
           break;
