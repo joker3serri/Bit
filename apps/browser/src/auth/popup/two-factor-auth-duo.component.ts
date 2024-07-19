@@ -9,6 +9,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ToastService } from "@bitwarden/components";
 
 import { AsyncActionsModule } from "../../../../../libs/components/src/async-actions";
 import { ButtonModule } from "../../../../../libs/components/src/button";
@@ -46,6 +47,7 @@ export class TwoFactorAuthDuoComponent extends TwoFactorAuthDuoBaseComponent {
     protected platformUtilsService: PlatformUtilsService,
     private browserMessagingApi: ZonedMessageListenerService,
     private environmentService: EnvironmentService,
+    private toastService: ToastService,
   ) {
     super(i18nService, platformUtilsService);
   }

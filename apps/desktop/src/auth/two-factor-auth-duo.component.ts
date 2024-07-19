@@ -15,6 +15,7 @@ import {
   ButtonModule,
   FormFieldModule,
   LinkModule,
+  ToastService,
   TypographyModule,
 } from "@bitwarden/components";
 
@@ -48,6 +49,7 @@ export class TwoFactorAuthDuoComponent extends TwoFactorAuthDuoBaseComponent {
     private broadcasterService: BroadcasterService,
     private ngZone: NgZone,
     private environmentService: EnvironmentService,
+    private toastService: ToastService,
   ) {
     super(i18nService, platformUtilsService);
   }
