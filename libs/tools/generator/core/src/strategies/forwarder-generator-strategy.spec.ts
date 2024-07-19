@@ -14,7 +14,7 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../../common/spec";
-import { AddyIo } from "../integration/addy-io";
+import { AddyIo, Fastmail, FirefoxRelay } from "../integration";
 import { DefaultPolicyEvaluator } from "../policies";
 
 import { ForwarderGeneratorStrategy } from "./forwarder-generator-strategy";
@@ -112,5 +112,40 @@ describe("ForwarderGeneratorStrategy", () => {
         expect(evaluator).toBeInstanceOf(DefaultPolicyEvaluator);
       },
     );
+  });
+
+  describe("generate", () => {
+    it("issues a remote procedure request to create the forwarding address", async () => {
+      restClient.fetchJson.mockResolvedValue("jdoe@example.com");
+      const strategy = new ForwarderGeneratorStrategy(
+        FirefoxRelay,
+        restClient,
+        i18nService,
+        encryptService,
+        keyService,
+        stateProvider,
+      );
+
+      const result = await strategy.generate({ website: null });
+
+      expect(result).toEqual("jdoe@example.com");
+    });
+
+    it("issues a remote procedure request to look up the account id before creating the forwarding address", async () => {
+      restClient.fetchJson.mockResolvedValue("some account id");
+      restClient.fetchJson.mockResolvedValue("jdoe@example.com");
+      const strategy = new ForwarderGeneratorStrategy(
+        Fastmail,
+        restClient,
+        i18nService,
+        encryptService,
+        keyService,
+        stateProvider,
+      );
+
+      const result = await strategy.generate({ website: null, prefix: "", domain: "example.com" });
+
+      expect(result).toEqual("jdoe@example.com");
+    });
   });
 });

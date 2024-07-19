@@ -53,7 +53,9 @@ export class ForwarderGeneratorStrategy<
 
   // configuration
   readonly policy = PolicyType.PasswordGenerator;
-  defaults$ = observe$PerUserId<Options>(() => this.forwarder.defaultSettings as Options);
+  defaults$ = observe$PerUserId<Options>(
+    () => this.configuration.forwarder.defaultSettings as Options,
+  );
   toEvaluator = newDefaultEvaluator<Options>();
   durableState = sharedByUserId((userId) => this.getUserSecrets(userId));
 
@@ -63,10 +65,6 @@ export class ForwarderGeneratorStrategy<
 
   private get rolloverKey() {
     return this.configuration.forwarder.importBuffer;
-  }
-
-  private get forwarder() {
-    return this.configuration.forwarder;
   }
 
   generate = async (options: Options) => {
@@ -135,7 +133,7 @@ export class ForwarderGeneratorStrategy<
     return new ForwarderContext(configuration, settings, this.i18nService);
   }
 
-  createForwardingAddress<Settings extends ApiSettings>(
+  private createForwardingAddress<Settings extends ApiSettings>(
     configuration: ForwarderConfiguration<Settings>,
     settings: Settings,
   ) {
@@ -144,7 +142,7 @@ export class ForwarderGeneratorStrategy<
     return rpc;
   }
 
-  getAccountId<Settings extends ApiSettings>(
+  private getAccountId<Settings extends ApiSettings>(
     configuration: ForwarderConfiguration<Settings>,
     settings: Settings,
   ) {
