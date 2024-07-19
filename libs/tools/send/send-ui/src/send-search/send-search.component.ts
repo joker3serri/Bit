@@ -7,22 +7,22 @@ import { Subject, Subscription, debounceTime, filter } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SearchModule } from "@bitwarden/components";
 
-import { VaultPopupItemsService } from "../../../services/vault-popup-items.service";
+import { SendItemsService } from "../send-items.service";
 
 const SearchTextDebounceInterval = 200;
 
 @Component({
   imports: [CommonModule, SearchModule, JslibModule, FormsModule],
   standalone: true,
-  selector: "app-vault-v2-search",
-  templateUrl: "vault-v2-search.component.html",
+  selector: "app-send-search",
+  templateUrl: "send-search.component.html",
 })
 export class VaultV2SearchComponent {
   searchText: string;
 
   private searchText$ = new Subject<string>();
 
-  constructor(private vaultPopupItemsService: VaultPopupItemsService) {
+  constructor(private sendListItemService: SendItemsService) {
     this.subscribeToLatestSearchText();
     this.subscribeToApplyFilter();
   }
@@ -32,7 +32,7 @@ export class VaultV2SearchComponent {
   }
 
   subscribeToLatestSearchText(): Subscription {
-    return this.vaultPopupItemsService.latestSearchText$
+    return this.sendListItemService.latestSearchText$
       .pipe(
         takeUntilDestroyed(),
         filter((data) => !!data),
@@ -46,7 +46,7 @@ export class VaultV2SearchComponent {
     return this.searchText$
       .pipe(debounceTime(SearchTextDebounceInterval), takeUntilDestroyed())
       .subscribe((data) => {
-        this.vaultPopupItemsService.applyFilter(data);
+        this.sendListItemService.applyFilter(data);
       });
   }
 }
