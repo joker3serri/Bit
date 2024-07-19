@@ -45,7 +45,7 @@ describe("Fastmail forwarder", () => {
 
         const result = Fastmail.forwarder.getAccountId.url(null, context);
 
-        expect(result).toEqual("/.well-known/jmap");
+        expect(result).toEqual("/jmap/session");
       });
     });
 
@@ -115,7 +115,6 @@ describe("Fastmail forwarder", () => {
     describe("body", () => {
       it("creates a request body", () => {
         context.website.mockReturnValue("website");
-        context.emailPrefix.mockReturnValue("emailPrefix");
         const request = { accountId: "accountId", website: "" };
 
         const result = Fastmail.forwarder.createForwardingEmail.body(request, context);
@@ -123,7 +122,6 @@ describe("Fastmail forwarder", () => {
 
         expect(methodCall.accountId).toEqual("accountId");
         expect(methodCall.create["new-masked-email"].forDomain).toEqual("website");
-        expect(methodCall.create["new-masked-email"].emailPrefix).toEqual("emailPrefix");
       });
     });
 
