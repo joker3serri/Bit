@@ -174,9 +174,9 @@ export class CustomFieldsComponent implements OnInit, AfterViewInit {
     zip(this.focusOnNewInput$, this.customFieldRows.changes)
       .pipe(takeUntilDestroyed(this.destroyed$))
       .subscribe(() => {
-        const input =
-          this.customFieldRows.last.nativeElement.querySelector<HTMLInputElement>("input");
-        const label = document.querySelector(`label[for="${input.id}"]`).textContent.trim();
+        const mostRecentRow = this.customFieldRows.last.nativeElement;
+        const input = mostRecentRow.querySelector<HTMLInputElement>("input");
+        const label = mostRecentRow.querySelector<HTMLLabelElement>("label").textContent.trim();
 
         // Focus the input after the announcement element is added to the DOM,
         // this should stop the announcement from being cut off by the "focus" event.
