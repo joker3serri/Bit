@@ -8,12 +8,13 @@ import {
   ForwarderContext,
   EmailDomainSettings,
   AccountRequest,
+  EmailPrefixSettings,
 } from "../engine";
 import { CreateForwardingEmailRpcDef, GetAccountIdRpcDef } from "../engine/forwarder-configuration";
 import { ApiOptions, EmailPrefixOptions } from "../types";
 
 // integration types
-export type FastmailSettings = ApiSettings & EmailDomainSettings;
+export type FastmailSettings = ApiSettings & EmailPrefixSettings & EmailDomainSettings;
 export type FastmailOptions = ApiOptions & EmailPrefixOptions & AccountRequest;
 export type FastmailRequest = IntegrationRequest & AccountRequest;
 export type FastmailConfiguration = ForwarderConfiguration<FastmailSettings, FastmailRequest>;
