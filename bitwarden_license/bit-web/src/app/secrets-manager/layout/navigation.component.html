@@ -7,7 +7,7 @@
     route="projects"
     [relativeTo]="route.parent"
   >
-    <div slot="end">
+    <div slot="end" *ngIf="isOrgEnabled$ | async">
       {{ organizationCounts?.projects }}
     </div>
   </bit-nav-item>
@@ -17,7 +17,7 @@
     route="secrets"
     [relativeTo]="route.parent"
   >
-    <div slot="end">
+    <div slot="end" *ngIf="isOrgEnabled$ | async">
       {{ organizationCounts?.secrets }}
     </div>
   </bit-nav-item>
@@ -27,7 +27,7 @@
     route="machine-accounts"
     [relativeTo]="route.parent"
   >
-    <div slot="end">
+    <div slot="end" *ngIf="isOrgEnabled$ | async">
       {{ organizationCounts?.serviceAccounts }}
     </div>
   </bit-nav-item>

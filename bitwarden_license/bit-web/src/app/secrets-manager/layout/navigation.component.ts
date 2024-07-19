@@ -4,6 +4,7 @@ import {
   combineLatest,
   concatMap,
   distinctUntilChanged,
+  filter,
   map,
   Observable,
   startWith,
@@ -30,6 +31,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   protected readonly logo = SecretsManagerLogo;
   protected orgFilter = (org: Organization) => org.canAccessSecretsManager;
   protected isAdmin$: Observable<boolean>;
+  protected isOrgEnabled$: Observable<boolean>;
   protected organizationCounts: OrganizationCounts;
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -43,26 +45,31 @@ export class NavigationComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const orgId$ = this.route.params.pipe(
-      map((p) => p.organizationId),
+    const org$ = this.route.params.pipe(
+      concatMap((params) => this.organizationService.get(params.organizationId)),
       distinctUntilChanged(),
+      takeUntil(this.destroy$),
     );
 
-    this.isAdmin$ = this.route.params.pipe(
-      concatMap(
-        async (params) => (await this.organizationService.get(params.organizationId))?.isAdmin,
-      ),
+    this.isAdmin$ = org$.pipe(
+      map((org) => org?.isAdmin),
+      takeUntil(this.destroy$),
+    );
+
+    this.isOrgEnabled$ = org$.pipe(
+      map((org) => org?.enabled),
       takeUntil(this.destroy$),
     );
 
     combineLatest([
-      orgId$,
+      org$,
       this.projectService.project$.pipe(startWith(null)),
       this.secretService.secret$.pipe(startWith(null)),
       this.serviceAccountService.serviceAccount$.pipe(startWith(null)),
     ])
       .pipe(
-        switchMap(([orgId]) => this.countService.getOrganizationCounts(orgId)),
+        filter(([org]) => org?.enabled),
+        switchMap(([org]) => this.countService.getOrganizationCounts(org.id)),
         takeUntil(this.destroy$),
       )
       .subscribe((organizationCounts) => {
