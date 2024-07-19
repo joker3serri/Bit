@@ -19,6 +19,7 @@ import {
   RegistrationStartSecondaryComponentData,
   LockIconPrimary,
   LockIconWhite,
+  RegistrationLinkExpiredComponent,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -203,6 +204,22 @@ const routes: Routes = [
           {
             path: "",
             component: RegistrationFinishComponent,
+          },
+        ],
+      },
+      {
+        path: "signup-link-expired",
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
+        data: {
+          pageTitle: "expiredLink",
+        } satisfies AnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: RegistrationLinkExpiredComponent,
+            data: {
+              loginRoute: "/login",
+            } satisfies RegistrationStartSecondaryComponentData,
           },
         ],
       },
