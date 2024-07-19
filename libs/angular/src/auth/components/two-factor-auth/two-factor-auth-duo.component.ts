@@ -13,6 +13,7 @@ import {
   TypographyModule,
   FormFieldModule,
   AsyncActionsModule,
+  ToastService,
 } from "@bitwarden/components";
 
 @Component({
@@ -43,6 +44,7 @@ export class TwoFactorAuthDuoComponent {
   constructor(
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
+    private toastService: ToastService,
   ) {}
 
   async ngOnInit(): Promise<void> {
