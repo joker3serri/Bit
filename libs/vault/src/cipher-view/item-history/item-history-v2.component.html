@@ -12,7 +12,7 @@
       {{ cipher.creationDate | date: "medium" }}
     </p>
     <p
-      *ngIf="cipher.hasPasswordHistory && cipher.type === isLogin"
+      *ngIf="cipher.hasPasswordHistory && isLogin"
       class="tw-text-xs tw-text-muted tw-select-none"
       [ngClass]="{ 'tw-mb-3': cipher.hasPasswordHistory }"
     >

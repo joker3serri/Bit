@@ -30,6 +30,6 @@ export class ItemHistoryV2Component {
   @Input() cipher: CipherView;
 
   get isLogin() {
-    return CipherType.Login;
+    return this.cipher.type === CipherType.Login;
   }
 }
