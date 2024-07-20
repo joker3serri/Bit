@@ -1,5 +1,5 @@
 {
   "extends": "../../../../shared/tsconfig.libs",
-  "include": ["src", "../../../send/send-ui/src/services/send-list-filters.service.spec.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
