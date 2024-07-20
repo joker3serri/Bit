@@ -65,12 +65,12 @@ export class SendListFiltersService {
     {
       value: SendType.File,
       label: this.i18nService.t("file"),
-      icon: "bwi-globe",
+      icon: "bwi-file",
     },
     {
       value: SendType.Text,
       label: this.i18nService.t("text"),
-      icon: "bwi-credit-card",
+      icon: "bwi-file-text",
     },
   ];
 
