@@ -55,6 +55,7 @@ export class InputPasswordComponent implements OnInit {
   @Input() protected buttonText: string;
   @Input() masterPasswordPolicyOptions: MasterPasswordPolicyOptions | null = null;
   @Input() loading: boolean = false;
+  @Input() btnBlock: boolean = true;
 
   private minHintLength = 0;
   protected maxHintLength = 50;
