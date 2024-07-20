@@ -17,7 +17,7 @@ const SearchTextDebounceInterval = 200;
   selector: "app-send-search",
   templateUrl: "send-search.component.html",
 })
-export class VaultV2SearchComponent {
+export class SendSearchComponent {
   searchText: string;
 
   private searchText$ = new Subject<string>();

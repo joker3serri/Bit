@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
+import { combineLatest } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
@@ -10,6 +11,9 @@ import {
   NoSendsIcon,
   NewSendDropdownComponent,
   SendListItemsContainerComponent,
+  SendItemsService,
+  SendSearchComponent,
+  SendListFiltersComponent,
 } from "@bitwarden/send-ui";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
@@ -17,8 +21,9 @@ import { PopOutComponent } from "../../../platform/popup/components/pop-out.comp
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 
-enum SendsListState {
+enum SendState {
   Empty,
+  NoResults,
 }
 
 @Component({
@@ -36,20 +41,39 @@ enum SendsListState {
     RouterLink,
     NewSendDropdownComponent,
     SendListItemsContainerComponent,
+    SendListFiltersComponent,
+    SendSearchComponent,
   ],
 })
 export class SendV2Component implements OnInit, OnDestroy {
   sendType = SendType;
 
-  /** Visual state of the Sends list */
-  protected sendsListState: SendsListState | null = null;
+  sendState = SendState;
+
+  protected listState: SendState | null = null;
+
+  protected filteredSends = this.sendItemsService.filteredSends$;
 
   protected noItemIcon = NoSendsIcon;
 
-  protected SendsListStateEnum = SendsListState;
+  constructor(
+    protected sendItemsService: SendItemsService,
+    private cdr: ChangeDetectorRef,
+  ) {
+    combineLatest([this.sendItemsService.emptyList$, this.sendItemsService.noFilteredResults$])
+      .pipe(takeUntilDestroyed())
+      .subscribe(([emptyList, noFilteredResults]) => {
+        if (emptyList) {
+          this.listState = SendState.Empty;
+          return;
+        }
 
-  constructor() {
-    this.sendsListState = SendsListState.Empty;
+        if (noFilteredResults) {
+          this.listState = SendState.NoResults;
+          return;
+        }
+        this.cdr.detectChanges();
+      });
   }
 
   ngOnInit(): void {}

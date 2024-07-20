@@ -9,11 +9,11 @@ import { SendListFiltersService } from "../services/send-list-filters.service";
 
 @Component({
   standalone: true,
-  selector: "app-vault-list-filters",
+  selector: "app-send-list-filters",
   templateUrl: "./send-list-filters.component.html",
   imports: [CommonModule, JslibModule, ChipSelectComponent, ReactiveFormsModule],
 })
-export class VaultListFiltersComponent implements OnDestroy {
+export class SendListFiltersComponent implements OnDestroy {
   protected filterForm = this.sendListFiltersService.filterForm;
   protected sendTypes = this.sendListFiltersService.sendTypes;
 

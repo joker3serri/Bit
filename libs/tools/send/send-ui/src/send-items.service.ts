@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, NgZone } from "@angular/core";
 import {
   BehaviorSubject,
   combineLatest,
@@ -35,10 +35,10 @@ export class SendItemsService {
   private _sendsLoading$ = new Subject<void>();
 
   latestSearchText$: Observable<string> = this._searchText$.asObservable();
-  sendList$: Observable<SendView[]> = this.sendService.sendViews$;
+  private _sendList$: Observable<SendView[]> = this.sendService.sendViews$;
 
-  private _filteredSends$: Observable<SendView[]> = combineLatest([
-    this.sendList$,
+  filteredSends$: Observable<SendView[]> = combineLatest([
+    this._sendList$,
     this._searchText$,
     this.sendListFiltersService.filterFunction$,
   ]).pipe(
@@ -75,19 +75,18 @@ export class SendItemsService {
   /**
    * Observable that indicates whether the user's vault is empty.
    */
-  emptyList$: Observable<boolean> = this.sendList$.pipe(map((sends) => !sends.length));
+  emptyList$: Observable<boolean> = this._sendList$.pipe(map((sends) => !sends.length));
 
   /**
    * Observable that indicates whether there are no sends to show with the current filter.
    */
-  noFilteredResults$: Observable<boolean> = this._filteredSends$.pipe(
-    map((sends) => !sends.length),
-  );
+  noFilteredResults$: Observable<boolean> = this.filteredSends$.pipe(map((sends) => !sends.length));
 
   constructor(
     private sendService: SendService,
     private sendListFiltersService: SendListFiltersService,
     private searchService: SearchService,
+    private ngZone: NgZone,
   ) {}
 
   applyFilter(newSearchText: string) {
