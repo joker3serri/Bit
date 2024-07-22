@@ -245,7 +245,6 @@ jobs:
     env:
       _BUILD_NUMBER: ${{ needs.setup.outputs.adj_build_number }}
       _NODE_VERSION: ${{ needs.setup.outputs.node_version }}
-      NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
