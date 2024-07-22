@@ -130,16 +130,16 @@ export class AssignCollectionsComponent implements OnInit {
   protected transferWarningText = (orgName: string, itemsCount: number) => {
     const haveOrgName = !!orgName;
 
-    switch (true) {
-      case itemsCount > 1 && haveOrgName:
-        return this.i18nService.t("personalItemsWithOrgTransferWarningPlural", itemsCount, orgName);
-      case itemsCount > 1 && !haveOrgName:
-        return this.i18nService.t("personalItemsTransferWarningPlural", itemsCount);
-      case itemsCount === 1 && haveOrgName:
-        return this.i18nService.t("personalItemWithOrgTransferWarningSingular", orgName);
-      default:
-        return this.i18nService.t("personalItemTransferWarningSingular");
+    if (itemsCount > 1 && haveOrgName) {
+      return this.i18nService.t("personalItemsWithOrgTransferWarningPlural", itemsCount, orgName);
     }
+    if (itemsCount > 1 && !haveOrgName) {
+      return this.i18nService.t("personalItemsTransferWarningPlural", itemsCount);
+    }
+    if (itemsCount === 1 && haveOrgName) {
+      return this.i18nService.t("personalItemWithOrgTransferWarningSingular", orgName);
+    }
+    return this.i18nService.t("personalItemTransferWarningSingular");
   };
 
   private editableItems: CipherView[] = [];
