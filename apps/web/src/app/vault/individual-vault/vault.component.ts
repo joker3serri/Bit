@@ -485,7 +485,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialog.closed);
 
     if (result === FolderAddEditDialogResult.Deleted) {
-      void this.router.navigate([], {
+      await this.router.navigate([], {
         queryParams: { folderId: null },
         queryParamsHandling: "merge",
         replaceUrl: true,
