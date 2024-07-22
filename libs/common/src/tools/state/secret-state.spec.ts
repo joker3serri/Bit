@@ -1,5 +1,5 @@
 import { mock } from "jest-mock-extended";
-import { firstValueFrom, from } from "rxjs";
+import { firstValueFrom, from, Observable, of } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import {
@@ -36,7 +36,7 @@ const FOOBAR_RECORD = SecretKeyDefinition.record(GENERATOR_DISK, "fooBar", class
 
 const SomeUser = "some user" as UserId;
 
-function mockEncryptor<T>(fooBar: T[] = []): UserEncryptor {
+function mockEncryptor<T>(fooBar: T[] = []): Observable<UserEncryptor> {
   // stores "encrypted values" so that they can be "decrypted" later
   // while allowing the operations to be interleaved.
   const encrypted = new Map<string, Jsonify<FooBar>>(
@@ -44,12 +44,12 @@ function mockEncryptor<T>(fooBar: T[] = []): UserEncryptor {
   );
 
   const result = mock<UserEncryptor>({
-    encrypt<T>(value: Jsonify<T>, user: UserId) {
+    encrypt<T>(value: Jsonify<T>) {
       const encString = toKey(value as any);
       encrypted.set(encString.encryptedString, toValue(value));
       return Promise.resolve(encString);
     },
-    decrypt(secret: EncString, userId: UserId) {
+    decrypt(secret: EncString) {
       const decValue = encrypted.get(secret.encryptedString);
       return Promise.resolve(decValue as any);
     },
@@ -68,7 +68,7 @@ function mockEncryptor<T>(fooBar: T[] = []): UserEncryptor {
 
   // typescript pops a false positive about missing `encrypt` and `decrypt`
   // functions, so assert the type manually.
-  return result as unknown as UserEncryptor;
+  return of(result as unknown as UserEncryptor);
 }
 
 async function fakeStateProvider() {
