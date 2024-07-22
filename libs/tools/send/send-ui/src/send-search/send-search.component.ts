@@ -7,7 +7,7 @@ import { Subject, Subscription, debounceTime, filter } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SearchModule } from "@bitwarden/components";
 
-import { SendItemsService } from "../send-items.service";
+import { SendItemsService } from "../services/send-items.service";
 
 const SearchTextDebounceInterval = 200;
 

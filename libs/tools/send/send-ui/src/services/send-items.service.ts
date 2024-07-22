@@ -17,7 +17,7 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
-import { SendListFiltersService } from "./services/send-list-filters.service";
+import { SendListFiltersService } from "./send-list-filters.service";
 
 /**
  * Service for managing the various item lists on the new Vault tab in the browser popup.
