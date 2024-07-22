@@ -4,6 +4,8 @@ import { Subject } from "rxjs";
 import {
   RegistrationFinishService as RegistrationFinishServiceAbstraction,
   DefaultRegistrationFinishService,
+  AnonLayoutWrapperDataService,
+  DefaultAnonLayoutWrapperDataService,
 } from "@bitwarden/auth/angular";
 import {
   AuthRequestServiceAbstraction,
@@ -1268,6 +1270,11 @@ const safeProviders: SafeProvider[] = [
     provide: RegisterRouteService,
     useClass: RegisterRouteService,
     deps: [ConfigService],
+  }),
+  safeProvider({
+    provide: AnonLayoutWrapperDataService,
+    useClass: DefaultAnonLayoutWrapperDataService,
+    deps: [],
   }),
   safeProvider({
     provide: RegistrationFinishServiceAbstraction,

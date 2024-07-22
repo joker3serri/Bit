@@ -7,6 +7,8 @@ export * from "./icons";
 
 export * from "./anon-layout/anon-layout.component";
 export * from "./anon-layout/anon-layout-wrapper.component";
+export * from "./anon-layout/anon-layout-wrapper-data.service";
+export * from "./anon-layout/default-anon-layout-wrapper-data.service";
 export * from "./fingerprint-dialog/fingerprint-dialog.component";
 export * from "./input-password/input-password.component";
 export * from "./password-callout/password-callout.component";
