@@ -1,0 +1,28 @@
+<bit-section [formGroup]="autofillOptionsForm">
+  <bit-section-header>
+    <h2 bitTypography="h5">
+      {{ "autofillOptions" | i18n }}
+    </h2>
+  </bit-section-header>
+
+  <bit-card formArrayName="uris">
+    <vault-autofill-uri-option
+      *ngFor="let uri of uriControls; let i = index"
+      [formControlName]="i"
+      (remove)="removeUri(i)"
+      [canRemove]="uriControls.length > 1"
+      [defaultMatchDetection]="defaultMatchDetection$ | async"
+    ></vault-autofill-uri-option>
+
+    <button
+      type="button"
+      bitLink
+      linkType="primary"
+      (click)="addUri({ uri: null, matchDetection: null }, true)"
+      *ngIf="autofillOptionsForm.enabled"
+    >
+      <i class="bwi bwi-plus tw-font-bold" aria-hidden="true"></i>
+      Add website
+    </button>
+  </bit-card>
+</bit-section>
