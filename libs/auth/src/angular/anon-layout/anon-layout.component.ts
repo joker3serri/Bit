@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 import { ClientType } from "@bitwarden/common/enums";
@@ -12,26 +12,20 @@ import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
 import { BitwardenLogoPrimary, BitwardenLogoWhite, UserIcon } from "../icons";
 
-export interface ThemedIcon {
-  default: Icon;
-  darkTheme?: Icon;
-}
-
 @Component({
   standalone: true,
   selector: "auth-anon-layout",
   templateUrl: "./anon-layout.component.html",
   imports: [IconModule, CommonModule, TypographyModule, SharedModule],
 })
-export class AnonLayoutComponent implements OnInit, OnChanges {
+export class AnonLayoutComponent implements OnInit {
   @Input() title: string;
   @Input() subtitle: string;
-  @Input() icon: ThemedIcon;
+  @Input() icon: Icon = UserIcon;
   @Input() showReadonlyHostname: boolean;
   @Input() hideLogo: boolean = false;
 
   protected logo: Icon;
-  protected iconToDisplay: Icon = UserIcon;
 
   protected year = "2024";
   protected clientType: ClientType;
@@ -62,27 +56,7 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
       this.logo = BitwardenLogoPrimary;
     }
 
-    await this.updateIconToDisplay();
-
     this.hostname = (await firstValueFrom(this.environmentService.environment$)).getHostname();
     this.version = await this.platformUtilsService.getApplicationVersion();
-  }
-
-  async ngOnChanges(changes: SimpleChanges) {
-    if (changes.icon) {
-      await this.updateIconToDisplay();
-    }
-  }
-
-  private async updateIconToDisplay() {
-    if (this.icon) {
-      if (this.theme === "dark" && this.icon?.darkTheme) {
-        this.iconToDisplay = this.icon.darkTheme;
-      } else {
-        this.iconToDisplay = this.icon.default;
-      }
-    } else {
-      this.iconToDisplay = UserIcon;
-    }
   }
 }

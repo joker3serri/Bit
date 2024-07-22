@@ -9,7 +9,7 @@ import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-stat
 
 import { ButtonModule } from "../../../../components/src/button";
 import { I18nMockService } from "../../../../components/src/utils/i18n-mock.service";
-import { LockIconPrimary, LockIconWhite } from "../icons";
+import { LockIcon } from "../icons";
 
 import { AnonLayoutComponent } from "./anon-layout.component";
 
@@ -60,10 +60,7 @@ export default {
     title: "The Page Title",
     subtitle: "The subtitle (optional)",
     showReadonlyHostname: true,
-    icon: {
-      default: LockIconPrimary,
-      darkTheme: LockIconWhite,
-    },
+    icon: LockIcon,
     hideLogo: false,
   },
 } as Meta;
@@ -148,7 +145,7 @@ export const WithThinPrimaryContent: Story = {
   }),
 };
 
-export const WithIcon: Story = {
+export const WithCustomIcon: Story = {
   render: (args) => ({
     props: args,
     template:
@@ -170,7 +167,7 @@ export const HideLogo: Story = {
     template:
       // Projected content (the <div>) and styling is just a sample and can be replaced with any content/styling.
       `
-      <auth-anon-layout [title]="title" [subtitle]="subtitle" [icon]="icon" [showReadonlyHostname]="showReadonlyHostname" [hideLogo]="true">
+      <auth-anon-layout [title]="title" [subtitle]="subtitle" [showReadonlyHostname]="showReadonlyHostname" [hideLogo]="true">
         <div>
           <div class="tw-font-bold">Primary Projected Content Area (customizable)</div>
           <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus illum vero, placeat recusandae esse ratione eius minima veniam nemo, quas beatae! Impedit molestiae alias sapiente explicabo. Sapiente corporis ipsa numquam?</div>

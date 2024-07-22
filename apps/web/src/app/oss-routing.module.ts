@@ -17,8 +17,7 @@ import {
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
   RegistrationStartSecondaryComponentData,
-  LockIconPrimary,
-  LockIconWhite,
+  LockIcon,
   RegistrationLinkExpiredComponent,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -271,10 +270,7 @@ const routes: Routes = [
         ],
         data: {
           pageTitle: "yourVaultIsLockedV2",
-          pageIcon: {
-            default: LockIconPrimary,
-            darkTheme: LockIconWhite,
-          },
+          pageIcon: LockIcon,
           showReadonlyHostname: true,
         } satisfies AnonLayoutWrapperData,
       },
