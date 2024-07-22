@@ -1,6 +1,12 @@
 import { importProvidersFrom, Component } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from "@storybook/angular";
 import { of } from "rxjs";
 
 import { ClientType } from "@bitwarden/common/enums";
@@ -35,6 +41,23 @@ const decorators = (options: {
   themeType?: ThemeType;
 }) => {
   return [
+    componentWrapperDecorator(
+      /**
+       * Applying a CSS transform makes a `position: fixed` element act like it is `position: relative`
+       * https://github.com/storybookjs/storybook/issues/8011#issue-490251969
+       */
+      (story) => {
+        return /* HTML */ `<div class="tw-scale-100 ">${story}</div>`;
+      },
+      ({ globals }) => {
+        /**
+         * avoid a bug with the way that we render the same component twice in the same iframe and how
+         * that interacts with the router-outlet
+         */
+        const themeOverride = globals["theme"] === "both" ? "light" : globals["theme"];
+        return { theme: themeOverride };
+      },
+    ),
     moduleMetadata({
       declarations: options.components,
       imports: [RouterModule, ButtonModule],
