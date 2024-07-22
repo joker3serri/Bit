@@ -19,6 +19,7 @@ import {
   RegistrationStartSecondaryComponentData,
   SetPasswordJitComponent,
   LockIcon,
+  RegistrationLinkExpiredComponent,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -214,6 +215,22 @@ const routes: Routes = [
           pageTitle: "joinOrganization",
           pageSubtitle: "finishJoiningThisOrganizationBySettingAMasterPassword",
         } satisfies AnonLayoutWrapperData,
+      },
+      {
+        path: "signup-link-expired",
+        canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
+        data: {
+          pageTitle: "expiredLink",
+        } satisfies AnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: RegistrationLinkExpiredComponent,
+            data: {
+              loginRoute: "/login",
+            } satisfies RegistrationStartSecondaryComponentData,
+          },
+        ],
       },
       {
         path: "sso",
