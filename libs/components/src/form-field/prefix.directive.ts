@@ -12,9 +12,13 @@ export class BitPrefixDirective {
     return ["tw-text-muted"];
   }
 
+  private _ariaDescribedBy: string = null;
   @HostBinding("attr.aria-describedby")
+  set ariaDescribedBy(value: string) {
+    this._ariaDescribedBy = value;
+  }
   get ariaDescribedBy() {
-    return this.parentFormField?.label?.id || null;
+    return this._ariaDescribedBy;
   }
 
   constructor(
@@ -25,6 +29,12 @@ export class BitPrefixDirective {
   ngOnInit() {
     if (this.iconButtonComponent) {
       this.iconButtonComponent.size = "small";
+    }
+  }
+
+  ngAfterContentInit() {
+    if (this.parentFormField?.label?.id) {
+      this.ariaDescribedBy = this.parentFormField.label.id;
     }
   }
 }
