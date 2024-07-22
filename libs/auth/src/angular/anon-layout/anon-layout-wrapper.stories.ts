@@ -1,6 +1,5 @@
 import { importProvidersFrom, Component } from "@angular/core";
-import { Data } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule, Routes } from "@angular/router";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 import { of } from "rxjs";
 
@@ -12,51 +11,15 @@ import {
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
-import { TypographyModule } from "@bitwarden/components";
+import { ButtonModule } from "@bitwarden/components";
 
 import { PreloadedEnglishI18nModule } from "../../../../../apps/web/src/app/core/tests";
 import { LockIcon } from "../icons";
+import { RegistrationCheckEmailIcon } from "../icons/registration-check-email.icon";
 
 import { AnonLayoutWrapperDataService } from "./anon-layout-wrapper-data.service";
 import { AnonLayoutWrapperComponent, AnonLayoutWrapperData } from "./anon-layout-wrapper.component";
 import { DefaultAnonLayoutWrapperDataService } from "./default-anon-layout-wrapper-data.service";
-
-@Component({
-  selector: "app-dummy",
-  template: "<p>Dummy Component Content</p>",
-})
-export class DummyComponent {
-  constructor() {}
-}
-
-// const routes: Routes = [
-//   {
-//     path: "",
-//     redirectTo: "dummy",
-//     pathMatch: "full",
-//   },
-//   {
-//     path: "",
-//     component: AnonLayoutWrapperComponent,
-//     children: [
-//       {
-//         path: "dummy",
-//         component: DummyComponent,
-//         data: {
-//           pageTitle: "setAStrongPassword",
-//           pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
-//           pageIcon: LockIcon,
-//         },
-//       },
-//     ],
-//   },
-// ];
-
-// @NgModule({
-//   imports: [RouterModule.forRoot(routes)],
-//   exports: [RouterModule],
-// })
-// export class StorybookAppRoutingModule {}
 
 export default {
   title: "Auth/Anon Layout Wrapper",
@@ -64,8 +27,8 @@ export default {
 } as Meta;
 
 const decorators = (options: {
-  isSelfHost?: boolean;
-  firstChildData?: Data;
+  components: any[];
+  routes: Routes;
   applicationVersion?: string;
   clientType?: ClientType;
   hostName?: string;
@@ -73,33 +36,8 @@ const decorators = (options: {
 }) => {
   return [
     moduleMetadata({
-      declarations: [DummyComponent],
-      imports: [
-        RouterTestingModule.withRoutes([
-          // {
-          //   path: "",
-          //   redirectTo: "dummy",
-          //   pathMatch: "full",
-          // },
-          {
-            path: "",
-            component: AnonLayoutWrapperComponent,
-            children: [
-              {
-                path: "",
-                data: {
-                  pageTitle: "setAStrongPassword",
-                  pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
-                  pageIcon: LockIcon,
-                } satisfies AnonLayoutWrapperData,
-                children: [{ path: "", component: DummyComponent }],
-              },
-            ],
-          },
-        ]),
-        // StorybookAppRoutingModule,
-        TypographyModule,
-      ],
+      declarations: options.components,
+      imports: [RouterModule, ButtonModule],
       providers: [
         {
           provide: AnonLayoutWrapperDataService,
@@ -130,22 +68,147 @@ const decorators = (options: {
       ],
     }),
     applicationConfig({
-      providers: [importProvidersFrom(PreloadedEnglishI18nModule)],
+      providers: [
+        importProvidersFrom(RouterModule.forRoot(options.routes)),
+        importProvidersFrom(PreloadedEnglishI18nModule),
+      ],
     }),
   ];
 };
 
 type Story = StoryObj<AnonLayoutWrapperComponent>;
 
-export const Example: Story = {
+// Default Example
+
+@Component({
+  selector: "bit-default-primary-outlet-example-component",
+  template: "<p>Primary Outlet Example: <br> your primary component content goes here</p>",
+})
+export class DefaultPrimaryOutletExampleComponent {}
+
+@Component({
+  selector: "bit-default-secondary-outlet-example-component",
+  template: "<p>Secondary Outlet Example: <br> your secondary content goes here</p>",
+})
+export class DefaultSecondaryOutletExampleComponent {}
+
+@Component({
+  selector: "bit-default-env-selector-outlet-example-component",
+  template: "<p>Env Selector Outlet Example: <br> your env selector goes here</p>",
+})
+export class DefaultEnvSelectorOutletExampleComponent {}
+
+export const DefaultContentExample: Story = {
   render: (args) => ({
     props: args,
+    template: "<router-outlet></router-outlet>",
   }),
   decorators: decorators({
-    firstChildData: {
-      pageTitle: "setAStrongPassword",
-      pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
-      pageIcon: LockIcon,
-    },
+    components: [
+      DefaultPrimaryOutletExampleComponent,
+      DefaultSecondaryOutletExampleComponent,
+      DefaultEnvSelectorOutletExampleComponent,
+    ],
+    routes: [
+      {
+        path: "**",
+        redirectTo: "default-example",
+        pathMatch: "full",
+      },
+      {
+        path: "",
+        component: AnonLayoutWrapperComponent,
+        children: [
+          {
+            path: "default-example",
+            data: {},
+            children: [
+              {
+                path: "",
+                component: DefaultPrimaryOutletExampleComponent,
+              },
+              {
+                path: "",
+                component: DefaultSecondaryOutletExampleComponent,
+                outlet: "secondary",
+              },
+              {
+                path: "",
+                component: DefaultEnvSelectorOutletExampleComponent,
+                outlet: "environment-selector",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }),
+};
+
+// Dynamic Content Example
+const initialData: AnonLayoutWrapperData = {
+  pageTitle: "setAStrongPassword",
+  pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
+  pageIcon: LockIcon,
+};
+
+const changedData: AnonLayoutWrapperData = {
+  pageTitle: "enterpriseSingleSignOn",
+  pageSubtitle: "checkYourEmail",
+  pageIcon: RegistrationCheckEmailIcon,
+};
+
+@Component({
+  selector: "bit-dynamic-content-example-component",
+  template: `
+    <button type="button" bitButton buttonType="primary" (click)="toggleData()">Toggle Data</button>
+  `,
+})
+export class DynamicContentExampleComponent {
+  initialData = true;
+
+  constructor(private anonLayoutWrapperDataService: AnonLayoutWrapperDataService) {}
+
+  toggleData() {
+    if (this.initialData) {
+      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData(changedData);
+    } else {
+      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData(initialData);
+    }
+
+    this.initialData = !this.initialData;
+  }
+}
+
+export const DynamicContentExample: Story = {
+  render: (args) => ({
+    props: args,
+    template: "<router-outlet></router-outlet>",
+  }),
+  decorators: decorators({
+    components: [DynamicContentExampleComponent],
+    routes: [
+      {
+        path: "**",
+        redirectTo: "dynamic-content-example",
+        pathMatch: "full",
+      },
+      {
+        path: "",
+        component: AnonLayoutWrapperComponent,
+        children: [
+          {
+            path: "dynamic-content-example",
+            data: initialData,
+            children: [
+              {
+                path: "",
+                component: DynamicContentExampleComponent,
+              },
+            ],
+          },
+        ],
+      },
+    ],
   }),
 };
