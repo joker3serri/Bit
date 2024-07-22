@@ -82,19 +82,19 @@ type Story = StoryObj<AnonLayoutWrapperComponent>;
 
 @Component({
   selector: "bit-default-primary-outlet-example-component",
-  template: "<p>Primary Outlet Example: <br> your primary component content goes here</p>",
+  template: "<p>Primary Outlet Example: <br> your primary component goes here</p>",
 })
 export class DefaultPrimaryOutletExampleComponent {}
 
 @Component({
   selector: "bit-default-secondary-outlet-example-component",
-  template: "<p>Secondary Outlet Example: <br> your secondary content goes here</p>",
+  template: "<p>Secondary Outlet Example: <br> your secondary component goes here</p>",
 })
 export class DefaultSecondaryOutletExampleComponent {}
 
 @Component({
   selector: "bit-default-env-selector-outlet-example-component",
-  template: "<p>Env Selector Outlet Example: <br> your env selector goes here</p>",
+  template: "<p>Env Selector Outlet Example: <br> your env selector component goes here</p>",
 })
 export class DefaultEnvSelectorOutletExampleComponent {}
 
