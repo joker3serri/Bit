@@ -367,6 +367,12 @@ const routes: Routes = [
     data: { state: "edit-send" },
   },
   {
+    path: "send-created",
+    component: SendCreatedComponent,
+    canActivate: [AuthGuard],
+    data: { state: "send" },
+  },
+  {
     path: "update-temp-password",
     component: UpdateTempPasswordComponent,
     canActivate: [AuthGuard],
