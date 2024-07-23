@@ -28,6 +28,7 @@ import { CollectionView } from "@bitwarden/common/vault/models/view/collection.v
 import {
   AsyncActionsModule,
   BitSubmitDirective,
+  ButtonComponent,
   ButtonModule,
   DialogModule,
   FormFieldModule,
@@ -86,11 +87,10 @@ export class AssignCollectionsComponent implements OnInit {
 
   @Input() params: CollectionAssignmentParams;
 
-  @Output()
-  formLoading = new EventEmitter<boolean>();
-
-  @Output()
-  formDisabled = new EventEmitter<boolean>();
+  /**
+   * Submit button instance that will be disabled or marked as loading when the form is submitting.
+   */
+  @Input() submitBtn?: ButtonComponent;
 
   @Output()
   editableItemCountChange = new EventEmitter<number>();
@@ -123,6 +123,11 @@ export class AssignCollectionsComponent implements OnInit {
           setTimeout(() => {
             this.formGroup.patchValue({ selectedOrg: orgs[0].id });
             this.setFormValidators();
+
+            // Disable the org selector if there is only one organization
+            if (orgs.length === 1) {
+              this.formGroup.controls.selectedOrg.disable();
+            }
           });
         }
       }),
@@ -139,7 +144,7 @@ export class AssignCollectionsComponent implements OnInit {
   // Get the selected organization ID. If the user has not selected an organization from the form,
   // fallback to use the organization ID from the params.
   private get selectedOrgId(): OrganizationId {
-    return this.formGroup.value.selectedOrg || this.params.organizationId;
+    return this.formGroup.getRawValue().selectedOrg || this.params.organizationId;
   }
   private destroy$ = new Subject<void>();
 
@@ -177,11 +182,19 @@ export class AssignCollectionsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.bitSubmit.loading$.pipe(takeUntil(this.destroy$)).subscribe((loading) => {
-      this.formLoading.emit(loading);
+      if (!this.submitBtn) {
+        return;
+      }
+
+      this.submitBtn.loading = loading;
     });
 
     this.bitSubmit.disabled$.pipe(takeUntil(this.destroy$)).subscribe((disabled) => {
-      this.formDisabled.emit(disabled);
+      if (!this.submitBtn) {
+        return;
+      }
+
+      this.submitBtn.disabled = disabled;
     });
   }
 
