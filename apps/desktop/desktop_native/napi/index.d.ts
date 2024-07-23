@@ -123,5 +123,5 @@ export declare namespace ipc {
   }
 }
 export namespace autofill {
-  export function helloWorld(value: string): Promise<string>
+  export function runCommand(value: string): Promise<string>
 }
