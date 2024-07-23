@@ -1326,8 +1326,8 @@
   "cfTypeBoolean": {
     "message": "Boolean"
   },
-  "cfTypeChecked": {
-    "message": "Checked"
+  "cfTypeCheckbox": {
+    "message": "Checkbox"
   },
   "cfTypeLinked": {
     "message": "Linked",
@@ -3859,5 +3859,8 @@
         "example": "3"
       }
     }
+  },
+  "itemLocation": {
+    "message": "Item Location"
   }
 }
