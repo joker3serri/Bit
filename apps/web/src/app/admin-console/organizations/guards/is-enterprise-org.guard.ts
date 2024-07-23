@@ -57,7 +57,7 @@ export function isEnterpriseOrgGuard(): CanActivateFn {
         });
         if (upgradeConfirmed) {
           await router.navigate(["organizations", org.id, "billing", "subscription"], {
-            queryParams: { upgrade: true },
+            queryParams: { upgrade: true, productTierType: ProductTierType.Enterprise },
           });
         }
       }
