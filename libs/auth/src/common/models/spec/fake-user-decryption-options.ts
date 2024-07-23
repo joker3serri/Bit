@@ -29,12 +29,12 @@ export class FakeTrustedDeviceUserDecryptionOption extends TrustedDeviceUserDecr
     hasAdminApproval: boolean,
     hasLoginApprovingDevice: boolean,
     hasManageResetPasswordPermission: boolean,
-    isTdOffboarding: boolean,
+    isTdeOffboarding: boolean,
   ) {
     super();
     this.hasAdminApproval = hasAdminApproval;
     this.hasLoginApprovingDevice = hasLoginApprovingDevice;
     this.hasManageResetPasswordPermission = hasManageResetPasswordPermission;
-    this.isTdeOffboarding = isTdOffboarding;
+    this.isTdeOffboarding = isTdeOffboarding;
   }
 }
