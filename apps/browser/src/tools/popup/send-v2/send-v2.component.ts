@@ -13,6 +13,7 @@ import {
   NoSendsIcon,
   NewSendDropdownComponent,
   SendListItemsContainerComponent,
+  SendListFiltersComponent,
 } from "@bitwarden/send-ui";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
@@ -35,6 +36,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
     RouterLink,
     NewSendDropdownComponent,
     SendListItemsContainerComponent,
+    SendListFiltersComponent,
   ],
 })
 export class SendV2Component implements OnInit, OnDestroy {
