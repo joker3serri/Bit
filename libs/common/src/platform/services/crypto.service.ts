@@ -98,7 +98,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     }
 
     // Set userId to ensure we have one for the account status update
-    [userId, key] = await this.stateProvider.setUserState(USER_KEY, key, userId);
+    await this.stateProvider.setUserState(USER_KEY, key, userId);
     await this.stateProvider.setUserState(USER_EVER_HAD_USER_KEY, true, userId);
 
     await this.storeAdditionalKeys(key, userId);

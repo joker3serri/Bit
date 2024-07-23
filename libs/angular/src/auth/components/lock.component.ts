@@ -136,14 +136,13 @@ export class LockComponent implements OnInit, OnDestroy {
     }
 
     await this.biometricStateService.setUserPromptCancelled();
-    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
     const userKey = await this.cryptoService.getUserKeyFromStorage(
       KeySuffixOptions.Biometric,
-      userId,
+      this.activeUserId,
     );
 
     if (userKey) {
-      await this.setUserKeyAndContinue(userKey, userId, false);
+      await this.setUserKeyAndContinue(userKey, this.activeUserId, false);
     }
 
     return !!userKey;
