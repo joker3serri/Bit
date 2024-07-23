@@ -31,7 +31,7 @@ export class BitFormFieldComponent implements AfterContentChecked {
   @Input({ transform: booleanAttribute })
   disableMargin = false;
 
-  /** Remove the bottom border when the child input is marked `readonly` */
+  /** If `true`, remove the bottom border for `readonly` inputs */
   @Input({ transform: booleanAttribute })
   disableReadOnlyBorder = false;
 

@@ -70,13 +70,12 @@
 </div>
 
 <ng-template #readOnlyView>
-  <div *ngIf="readOnly" class="tw-w-full tw-relative">
+  <div class="tw-w-full tw-relative">
     <label
       class="tw-flex tw-gap-1 tw-text-sm tw-text-muted tw-mb-0 tw-max-w-full"
-      [ngClass]="{
-        'tw-text-primary-600 tw-font-semibold': defaultContentIsFocused(),
-        'tw-text-muted': !defaultContentIsFocused()
-      }"
+      [ngClass]="
+        defaultContentIsFocused() ? 'tw-text-primary-600 tw-font-semibold' : 'tw-text-muted'
+      "
       [attr.for]="input.labelForId"
     >
       <ng-container *ngTemplateOutlet="labelContent"></ng-container>
