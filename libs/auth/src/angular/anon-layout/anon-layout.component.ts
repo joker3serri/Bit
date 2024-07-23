@@ -25,6 +25,7 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
   @Input() icon: Icon;
   @Input() showReadonlyHostname: boolean;
   @Input() hideLogo: boolean = false;
+  @Input() hideFooter: boolean = false;
 
   protected logo: Icon;
 
@@ -34,7 +35,6 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
   protected version: string;
   protected theme: string;
 
-  protected hideFooter = false;
   protected hideYearAndVersion = false;
 
   constructor(
@@ -44,7 +44,6 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
   ) {
     this.year = new Date().getFullYear().toString();
     this.clientType = this.platformUtilsService.getClientType();
-    this.hideFooter = this.clientType === ClientType.Browser;
     this.hideYearAndVersion = this.clientType !== ClientType.Web;
   }
 
