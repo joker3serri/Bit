@@ -20,10 +20,8 @@ import {
   OffboardingSurveyDialogResultType,
   openOffboardingSurvey,
 } from "../shared/offboarding-survey.component";
-import {
-  UpdateLicenseDialogComponent,
-  UpdateLicenseDialogResult,
-} from "../shared/update-license-dialog.component";
+import { UpdateLicenseDialogComponent } from "../shared/update-license-dialog.component";
+import { UpdateLicenseDialogResult } from "../shared/update-license-types";
 
 @Component({
   templateUrl: "user-subscription.component.html",
@@ -146,19 +144,17 @@ export class UserSubscriptionComponent implements OnInit {
     }
   };
 
-  adjustStorage = (add: boolean) => {
-    return async () => {
-      const dialogRef = openAdjustStorageDialog(this.dialogService, {
-        data: {
-          storageGbPrice: 4,
-          add: add,
-        },
-      });
-      const result = await lastValueFrom(dialogRef.closed);
-      if (result === AdjustStorageDialogResult.Adjusted) {
-        await this.load();
-      }
-    };
+  adjustStorage = async (add: boolean) => {
+    const dialogRef = openAdjustStorageDialog(this.dialogService, {
+      data: {
+        storageGbPrice: 4,
+        add: add,
+      },
+    });
+    const result = await lastValueFrom(dialogRef.closed);
+    if (result === AdjustStorageDialogResult.Adjusted) {
+      await this.load();
+    }
   };
 
   get subscriptionMarkedForCancel() {

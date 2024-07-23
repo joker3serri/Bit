@@ -2,19 +2,27 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/auth/guards";
+import { featureFlaggedRoute } from "@bitwarden/angular/platform/utils/feature-flagged-route";
+import { AnonLayoutWrapperComponent } from "@bitwarden/auth/angular";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ProvidersComponent } from "@bitwarden/web-vault/app/admin-console/providers/providers.component";
 import { FrontendLayoutComponent } from "@bitwarden/web-vault/app/layouts/frontend-layout.component";
 import { UserLayoutComponent } from "@bitwarden/web-vault/app/layouts/user-layout.component";
 
-import { ProviderSubscriptionComponent, hasConsolidatedBilling } from "../../billing/providers";
-import { ManageClientOrganizationsComponent } from "../../billing/providers/clients";
+import {
+  ManageClientsComponent,
+  ProviderSubscriptionComponent,
+  hasConsolidatedBilling,
+  ProviderBillingHistoryComponent,
+} from "../../billing/providers";
 
 import { ClientsComponent } from "./clients/clients.component";
 import { CreateOrganizationComponent } from "./clients/create-organization.component";
-import { ProviderPermissionsGuard } from "./guards/provider-permissions.guard";
+import { providerPermissionsGuard } from "./guards/provider-permissions.guard";
 import { AcceptProviderComponent } from "./manage/accept-provider.component";
 import { EventsComponent } from "./manage/events.component";
+import { MembersComponent } from "./manage/members.component";
 import { PeopleComponent } from "./manage/people.component";
 import { ProvidersLayoutComponent } from "./providers-layout.component";
 import { AccountComponent } from "./settings/account.component";
@@ -44,10 +52,19 @@ const routes: Routes = [
         component: SetupProviderComponent,
         data: { titleId: "setupProvider" },
       },
+    ],
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
       {
         path: "accept-provider",
         component: AcceptProviderComponent,
-        data: { titleId: "acceptProvider" },
+        data: {
+          pageTitle: "joinProvider",
+          titleId: "acceptProvider",
+        },
       },
     ],
   },
@@ -62,7 +79,7 @@ const routes: Routes = [
       {
         path: ":providerId",
         component: ProvidersLayoutComponent,
-        canActivate: [ProviderPermissionsGuard],
+        canActivate: [providerPermissionsGuard()],
         children: [
           { path: "", pathMatch: "full", redirectTo: "clients" },
           { path: "clients/create", component: CreateOrganizationComponent },
@@ -70,7 +87,7 @@ const routes: Routes = [
           {
             path: "manage-client-organizations",
             canActivate: [hasConsolidatedBilling],
-            component: ManageClientOrganizationsComponent,
+            component: ManageClientsComponent,
             data: { titleId: "clients" },
           },
           {
@@ -81,22 +98,28 @@ const routes: Routes = [
                 pathMatch: "full",
                 redirectTo: "people",
               },
-              {
-                path: "people",
-                component: PeopleComponent,
-                canActivate: [ProviderPermissionsGuard],
-                data: {
-                  titleId: "people",
-                  providerPermissions: (provider: Provider) => provider.canManageUsers,
+              ...featureFlaggedRoute({
+                defaultComponent: PeopleComponent,
+                flaggedComponent: MembersComponent,
+                featureFlag: FeatureFlag.AC2828_ProviderPortalMembersPage,
+                routeOptions: {
+                  path: "people",
+                  canActivate: [
+                    providerPermissionsGuard((provider: Provider) => provider.canManageUsers),
+                  ],
+                  data: {
+                    titleId: "people",
+                  },
                 },
-              },
+              }),
               {
                 path: "events",
                 component: EventsComponent,
-                canActivate: [ProviderPermissionsGuard],
+                canActivate: [
+                  providerPermissionsGuard((provider: Provider) => provider.canAccessEventLogs),
+                ],
                 data: {
                   titleId: "eventLogs",
-                  providerPermissions: (provider: Provider) => provider.canAccessEventLogs,
                 },
               },
             ],
@@ -104,7 +127,6 @@ const routes: Routes = [
           {
             path: "billing",
             canActivate: [hasConsolidatedBilling],
-            data: { providerPermissions: (provider: Provider) => provider.isProviderAdmin },
             children: [
               {
                 path: "",
@@ -114,8 +136,17 @@ const routes: Routes = [
               {
                 path: "subscription",
                 component: ProviderSubscriptionComponent,
+                canActivate: [providerPermissionsGuard()],
                 data: {
                   titleId: "subscription",
+                },
+              },
+              {
+                path: "history",
+                component: ProviderBillingHistoryComponent,
+                canActivate: [providerPermissionsGuard()],
+                data: {
+                  titleId: "billingHistory",
                 },
               },
             ],
@@ -131,10 +162,11 @@ const routes: Routes = [
               {
                 path: "account",
                 component: AccountComponent,
-                canActivate: [ProviderPermissionsGuard],
+                canActivate: [
+                  providerPermissionsGuard((provider: Provider) => provider.isProviderAdmin),
+                ],
                 data: {
                   titleId: "myProvider",
-                  providerPermissions: (provider: Provider) => provider.isProviderAdmin,
                 },
               },
             ],
