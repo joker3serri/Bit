@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 import { ClientType } from "@bitwarden/common/enums";
@@ -10,7 +10,8 @@ import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-stat
 import { IconModule, Icon } from "../../../../components/src/icon";
 import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
-import { BitwardenLogoPrimary, BitwardenLogoWhite, UserIcon } from "../icons";
+import { BitwardenLogoPrimary, BitwardenLogoWhite } from "../icons";
+import { BitwardenShieldPrimary, BitwardenShieldWhite } from "../icons/bitwarden-shield.icon";
 
 @Component({
   standalone: true,
@@ -18,10 +19,10 @@ import { BitwardenLogoPrimary, BitwardenLogoWhite, UserIcon } from "../icons";
   templateUrl: "./anon-layout.component.html",
   imports: [IconModule, CommonModule, TypographyModule, SharedModule],
 })
-export class AnonLayoutComponent implements OnInit {
+export class AnonLayoutComponent implements OnInit, OnChanges {
   @Input() title: string;
   @Input() subtitle: string;
-  @Input() icon: Icon = UserIcon;
+  @Input() icon: Icon;
   @Input() showReadonlyHostname: boolean;
   @Input() hideLogo: boolean = false;
 
@@ -56,7 +57,26 @@ export class AnonLayoutComponent implements OnInit {
       this.logo = BitwardenLogoPrimary;
     }
 
+    await this.updateIcon(this.theme);
+
     this.hostname = (await firstValueFrom(this.environmentService.environment$)).getHostname();
     this.version = await this.platformUtilsService.getApplicationVersion();
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.icon) {
+      const theme = await firstValueFrom(this.themeStateService.selectedTheme$);
+      await this.updateIcon(theme);
+    }
+  }
+
+  private async updateIcon(theme: string) {
+    if (this.icon == null && theme === "dark") {
+      this.icon = BitwardenShieldWhite;
+    }
+
+    if (this.icon == null && theme !== "dark") {
+      this.icon = BitwardenShieldPrimary;
+    }
   }
 }
