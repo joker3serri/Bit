@@ -132,6 +132,7 @@ import { IconComponent } from "./vault/components/icon.component";
     FallbackSrcDirective,
     I18nPipe,
     IconComponent,
+    IconModule,
     InputStripSpacesDirective,
     InputVerbatimDirective,
     NotPremiumDirective,
