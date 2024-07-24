@@ -3,6 +3,7 @@ import {
   AfterContentChecked,
   Component,
   ContentChild,
+  ElementRef,
   HostBinding,
   HostListener,
   Input,
@@ -25,6 +26,8 @@ export class BitFormFieldComponent implements AfterContentChecked {
   @ContentChild(BitFormFieldControl) input: BitFormFieldControl;
   @ContentChild(BitHintComponent) hint: BitHintComponent;
   @ContentChild(BitLabel) label: BitLabel;
+  @ViewChild("prefixSlot") prefixContainer: ElementRef;
+  @ViewChild("suffixSlot") suffixContainer: ElementRef;
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
 
@@ -34,6 +37,22 @@ export class BitFormFieldComponent implements AfterContentChecked {
   }
   get disableMargin() {
     return this._disableMargin;
+  }
+
+  get inputWrapperClasses(): string {
+    const classes = "";
+
+    return classes
+      .concat(
+        this.prefixContainer?.nativeElement.childElementCount === 0
+          ? "tw-rounded-l-lg tw-pl-3"
+          : "",
+      )
+      .concat(
+        this.suffixContainer?.nativeElement.childElementCount === 0
+          ? " tw-rounded-r-lg tw-pr-3"
+          : "",
+      );
   }
 
   get inputBorderClasses(): string {
