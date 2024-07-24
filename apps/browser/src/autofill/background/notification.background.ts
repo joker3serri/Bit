@@ -690,11 +690,7 @@ export default class NotificationBackground {
   ): Promise<void> {
     const messageData = message.data as LockedVaultPendingNotificationsData;
     const retryCommand = messageData.commandToRetry.message.command;
-    if (
-      retryCommand === "autofill_login" ||
-      retryCommand === "autofill_card" ||
-      retryCommand === "autofill_identity"
-    ) {
+    if (["autofill_login", "autofill_card", "autofill_identity"].includes(retryCommand)) {
       await BrowserApi.tabSendMessageData(sender.tab, "closeNotificationBar");
     }
 

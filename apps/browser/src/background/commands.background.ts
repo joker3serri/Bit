@@ -48,13 +48,13 @@ export default class CommandsBackground {
         await this.generatePasswordToClipboard();
         break;
       case "autofill_login":
-        await this.autoFillAction(sender ? sender.tab : null);
+        await this.triggerAutofillCommand(sender ? sender.tab : null, "autofill_cmd");
         break;
       case "autofill_card":
-        await this.autoFillAction(sender ? sender.tab : null, "autofill_card");
+        await this.triggerAutofillCommand(sender ? sender.tab : null, "autofill_card");
         break;
       case "autofill_identity":
-        await this.autoFillAction(sender ? sender.tab : null, "autofill_identity");
+        await this.triggerAutofillCommand(sender ? sender.tab : null, "autofill_identity");
         break;
       case "open_popup":
         await this.openPopup();
@@ -74,12 +74,12 @@ export default class CommandsBackground {
     await this.passwordGenerationService.addHistory(password);
   }
 
-  private async autoFillAction(tab?: chrome.tabs.Tab, commandSender = "autofill_cmd") {
+  private async triggerAutofillCommand(tab?: chrome.tabs.Tab, commandSender?: string) {
     if (!tab) {
       tab = await BrowserApi.getTabFromCurrentWindowId();
     }
 
-    if (tab == null) {
+    if (tab == null || !commandSender) {
       return;
     }
 

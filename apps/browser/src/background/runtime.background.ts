@@ -146,7 +146,7 @@ export default class RuntimeBackground {
                   details: msg.details,
                 },
               ],
-              true,
+              msg.sender === "autofill_card",
               CipherType.Card,
             );
             break;
@@ -160,7 +160,7 @@ export default class RuntimeBackground {
                   details: msg.details,
                 },
               ],
-              true,
+              msg.sender === "autofill_identity",
               CipherType.Identity,
             );
             break;
