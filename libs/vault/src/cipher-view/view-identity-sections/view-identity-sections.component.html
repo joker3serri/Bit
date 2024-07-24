@@ -6,7 +6,7 @@
   <bit-card>
     <bit-form-field *ngIf="cipher.identity.fullName">
       <bit-label>{{ "name" | i18n }}</bit-label>
-      <input bitInput [value]="cipher.identity.fullName" disabled />
+      <input bitInput [value]="cipher.identity.fullName" disabled data-testid="name" />
       <button
         type="button"
         bitIconButton="bwi-clone"
@@ -18,7 +18,7 @@
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.username">
       <bit-label>{{ "username" | i18n }}</bit-label>
-      <input bitInput [value]="cipher.identity.username" disabled />
+      <input bitInput [value]="cipher.identity.username" disabled data-testid="username" />
       <button
         type="button"
         bitIconButton="bwi-clone"
@@ -30,7 +30,7 @@
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.company">
       <bit-label>{{ "company" | i18n }}</bit-label>
-      <input bitInput [value]="cipher.identity.company" disabled />
+      <input bitInput [value]="cipher.identity.company" disabled data-testid="company" />
       <button
         type="button"
         bitIconButton="bwi-clone"
@@ -51,7 +51,7 @@
   <bit-card>
     <bit-form-field *ngIf="cipher.identity.ssn">
       <bit-label>{{ "ssn" | i18n }}</bit-label>
-      <input bitInput type="password" [value]="cipher.identity.ssn" disabled />
+      <input bitInput type="password" [value]="cipher.identity.ssn" disabled data-testid="ssn" />
       <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
       <button
         type="button"
@@ -64,7 +64,13 @@
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.passportNumber">
       <bit-label>{{ "passportNumber" | i18n }}</bit-label>
-      <input bitInput type="password" [value]="cipher.identity.passportNumber" disabled />
+      <input
+        bitInput
+        type="password"
+        [value]="cipher.identity.passportNumber"
+        disabled
+        data-testid="passport"
+      />
       <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
       <button
         type="button"
@@ -77,7 +83,7 @@
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.licenseNumber">
       <bit-label>{{ "licenseNumber" | i18n }}</bit-label>
-      <input bitInput [value]="cipher.identity.licenseNumber" disabled />
+      <input bitInput [value]="cipher.identity.licenseNumber" disabled data-testid="license" />
       <button
         type="button"
         bitIconButton="bwi-clone"
@@ -98,7 +104,7 @@
   <bit-card>
     <bit-form-field *ngIf="cipher.identity.email">
       <bit-label>{{ "email" | i18n }}</bit-label>
-      <input bitInput [value]="cipher.identity.email" disabled />
+      <input bitInput [value]="cipher.identity.email" disabled data-testid="email" />
       <button
         type="button"
         bitIconButton="bwi-clone"
@@ -110,7 +116,7 @@
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.phone">
       <bit-label>{{ "phone" | i18n }}</bit-label>
-      <input bitInput [value]="cipher.identity.phone" disabled />
+      <input bitInput [value]="cipher.identity.phone" disabled data-testid="phone" />
       <button
         type="button"
         bitIconButton="bwi-clone"
@@ -128,6 +134,7 @@
         [value]="addressFields"
         [rows]="addressRows"
         disabled
+        data-testid="address"
       ></textarea>
       <button
         type="button"
