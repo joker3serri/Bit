@@ -12,14 +12,8 @@ export class BitSuffixDirective {
     return ["tw-text-muted"];
   }
 
-  private _ariaDescribedBy: string = null;
   @HostBinding("attr.aria-describedby")
-  set ariaDescribedBy(value: string) {
-    this._ariaDescribedBy = value;
-  }
-  get ariaDescribedBy() {
-    return this._ariaDescribedBy;
-  }
+  protected ariaDescribedBy: string;
 
   constructor(
     @Optional() private parentFormField: BitFormFieldComponent,
