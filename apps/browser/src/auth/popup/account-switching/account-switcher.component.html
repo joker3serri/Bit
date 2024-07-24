@@ -1,5 +1,5 @@
 <ng-container *ngIf="extensionRefreshFlag">
-  <popup-page>
+  <popup-page  [loading]="loading">
     <popup-header slot="header" pageTitle="{{ 'switchAccounts' | i18n }}" showBackButton>
       <ng-container slot="end">
         <app-pop-out></app-pop-out>
@@ -7,25 +7,40 @@
       </ng-container>
     </popup-header>
 
-    <!-- <bit-item>
-      <button bit-item-content>
-        <i slot="start" class="bwi bwi-globe tw-text-3xl tw-text-muted" aria-hidden="true"></i>
-        Foo
-        <span slot="secondary">Bar</span>
+    <bit-item>
+      <button bit-item-content type="button">
+        <bit-avatar
+          slot="start"
+          [text]="'Foo'"
+        ></bit-avatar>
+        foo@bitwarden.com
+        <ng-container slot="secondary">
+          <div>Bitwarden.com</div>
+          <div><em>active</em></div>
+        </ng-container>
+        <i slot="end" class="bwi bwi-lock" aria-hidden="true"></i>
       </button>
+    </bit-item>
 
-      <ng-container slot="end">
-        <bit-item-action>
-          <button type="button" bitBadge variant="primary">Auto-fill</button>
-        </bit-item-action>
-        <bit-item-action>
-          <button type="button" bitIconButton="bwi-clone"></button>
-        </bit-item-action>
-        <bit-item-action>
-          <button type="button" bitIconButton="bwi-ellipsis-v"></button>
-        </bit-item-action>
-      </ng-container>
-    </bit-item> -->
+
+      <bit-section-header>
+        <h2 bitTypography="h6">{{"availableAccounts" | i18n}}</h2>
+      </bit-section-header>
+
+      <div class="tw-bg-background-alt tw-p-2">
+        <bit-section>
+          <bit-section-header>
+            <h2 bitTypography="h6">
+              Card as immediate sibling
+            </h2>
+            <!-- <button bitIconButton="bwi-star" size="small" slot="end"></button> -->
+          </bit-section-header>
+          <!-- <bit-card>
+            <h3 bitTypography="h3">bit-section-header has padding</h3>
+          </bit-card> -->
+        </bit-section>
+      </div>
+  
   </popup-page>
 </ng-container>
 
