@@ -73,7 +73,7 @@ describe("SecretsManagerPortingApiService", () => {
 
       await sut.import("organizationId", importData);
 
-      expect(apiService.send).toBeCalledWith(
+      expect(apiService.send).toHaveBeenCalledWith(
         "POST",
         "/sm/organizationId/import",
         expectedRequest,
