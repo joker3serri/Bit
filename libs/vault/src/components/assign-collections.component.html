@@ -1,5 +1,12 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit" id="assign_collections_form">
-  <p>{{ "bulkCollectionAssignmentDialogDescription" | i18n }}</p>
+  <p>
+    {{
+      (personalItemsCount === 1
+        ? "bulkCollectionAssignmentDialogDescriptionSingular"
+        : "bulkCollectionAssignmentDialogDescriptionPlural"
+      ) | i18n
+    }}
+  </p>
 
   <ul class="tw-list-disc tw-pl-5 tw-space-y-2 tw-break-words">
     <li *ngIf="readonlyItemCount > 0">
