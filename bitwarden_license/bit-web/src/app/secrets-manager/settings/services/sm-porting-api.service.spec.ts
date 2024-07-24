@@ -41,6 +41,7 @@ describe("SecretsManagerPortingApiService", () => {
   });
 
   describe("import", () => {
+    const organizationId = Utils.newGuid();
     const project1 = createProject();
     const project2 = createProject();
     const secret1 = createSecret(project1.id);
@@ -63,7 +64,7 @@ describe("SecretsManagerPortingApiService", () => {
         subscriptionCount++;
       });
 
-      await sut.import("organizationId", importData);
+      await sut.import(organizationId, importData);
 
       expect(subscriptionCount).toEqual(1);
     });
@@ -71,11 +72,11 @@ describe("SecretsManagerPortingApiService", () => {
     it("correct api service send parameters", async () => {
       const expectedRequest = toRequest([project1, project2], [secret1, secret2]);
 
-      await sut.import("organizationId", importData);
+      await sut.import(organizationId, importData);
 
       expect(apiService.send).toHaveBeenCalledWith(
         "POST",
-        "/sm/organizationId/import",
+        `/sm/${organizationId}/import`,
         expectedRequest,
         true,
         true,
@@ -87,7 +88,7 @@ describe("SecretsManagerPortingApiService", () => {
         apiService.send.mockRejectedValue(new Error("server error"));
 
         await expect(async () => {
-          await sut.import("organizationId", importData);
+          await sut.import(organizationId, importData);
         }).rejects.toThrow(new SecretsManagerImportError("server error"));
       });
 
@@ -110,7 +111,7 @@ describe("SecretsManagerPortingApiService", () => {
         ];
 
         try {
-          await sut.import("organizationId", importData);
+          await sut.import(organizationId, importData);
           // Expected to throw error before this line
           expect(true).toBe(false);
         } catch (err: unknown) {
@@ -139,7 +140,7 @@ describe("SecretsManagerPortingApiService", () => {
         ];
 
         try {
-          await sut.import("organizationId", importData);
+          await sut.import(organizationId, importData);
           // Expected to throw error before this line
           expect(true).toBe(false);
         } catch (err: unknown) {
@@ -168,7 +169,7 @@ describe("SecretsManagerPortingApiService", () => {
         ];
 
         try {
-          await sut.import("organizationId", importData);
+          await sut.import(organizationId, importData);
           // Expected to throw error before this line
           expect(true).toBe(false);
         } catch (err: unknown) {
@@ -197,7 +198,7 @@ describe("SecretsManagerPortingApiService", () => {
         ];
 
         try {
-          await sut.import("organizationId", importData);
+          await sut.import(organizationId, importData);
           // Expected to throw error before this line
           expect(true).toBe(false);
         } catch (err: unknown) {
