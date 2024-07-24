@@ -38,6 +38,7 @@ import { TwoFactorAuthComponent } from "../auth/popup/two-factor-auth.component"
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
+import { AutofillV1Component } from "../autofill/popup/settings/autofill-v1.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
 import { ExcludedDomainsV1Component } from "../autofill/popup/settings/excluded-domains-v1.component";
 import { ExcludedDomainsComponent } from "../autofill/popup/settings/excluded-domains.component";
@@ -50,7 +51,7 @@ import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/pass
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
-import { SendV2Component } from "../tools/popup/send/send-v2.component";
+import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
 import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-page-v2.component";
 import { AboutPageComponent } from "../tools/popup/settings/about-page/about-page.component";
 import { MoreFromBitwardenPageV2Component } from "../tools/popup/settings/about-page/more-from-bitwarden-page-v2.component";
@@ -278,12 +279,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { state: "export" },
   }),
-  {
+  ...extensionRefreshSwap(AutofillV1Component, AutofillComponent, {
     path: "autofill",
-    component: AutofillComponent,
     canActivate: [AuthGuard],
     data: { state: "autofill" },
-  },
+  }),
   {
     path: "account-security",
     component: AccountSecurityComponent,
