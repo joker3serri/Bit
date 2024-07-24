@@ -415,7 +415,7 @@
     "message": "Item added to favorites"
   },
   "itemRemovedFromFavorites": {
-      "message": "Item removed from favorites"
+    "message": "Item removed from favorites"
   },
   "notes": {
     "message": "Notes"
@@ -639,6 +639,15 @@
   "totpCapture": {
     "message": "Scan authenticator QR code from current webpage"
   },
+  "totpHelperTitle": {
+    "message": "Make 2-step verification seamless"
+  },
+  "totpHelper": {
+    "message": "Bitwarden can store and fill 2-step verification codes. Copy and paste the key into this field."
+  },
+  "totpHelperWithCapture": {
+    "message": "Bitwarden can store and fill 2-step verification codes. Select the camera icon to take a screenshot of this website's authenticator QR code, or copy and paste the key into this field."
+  },
   "copyTOTP": {
     "message": "Copy Authenticator key (TOTP)"
   },
@@ -650,6 +659,21 @@
   },
   "loginExpired": {
     "message": "Your login session has expired."
+  },
+  "logIn": {
+    "message": "Log in"
+  },
+  "restartRegistration": {
+    "message": "Restart registration"
+  },
+  "expiredLink": {
+    "message": "Expired link"
+  },
+  "pleaseRestartRegistrationOrTryLoggingIn": {
+    "message": "Please restart registration or try logging in."
+  },
+  "youMayAlreadyHaveAnAccount": {
+    "message": "You may already have an account"
   },
   "logOutConfirmation": {
     "message": "Are you sure you want to log out?"
@@ -712,6 +736,10 @@
   "newUri": {
     "message": "New URI"
   },
+  "addDomain": {
+    "message": "Add domain",
+    "description": "'Domain' here refers to an internet domain name (e.g. 'bitwarden.com') and the message in whole described the act of putting a domain value into the context."
+  },
   "addedItem": {
     "message": "Item added"
   },
@@ -752,17 +780,26 @@
   "enableAddLoginNotification": {
     "message": "Ask to add login"
   },
+  "vaultSaveOptionsTitle": {
+    "message": "Save to vault options"
+  },
   "addLoginNotificationDesc": {
     "message": "Ask to add an item if one isn't found in your vault."
   },
   "addLoginNotificationDescAlt": {
     "message": "Ask to add an item if one isn't found in your vault. Applies to all logged in accounts."
   },
+  "showCardsInVaultView": {
+    "message": "Show cards as Autofill suggestions on Vault view"
+  },
   "showCardsCurrentTab": {
     "message": "Show cards on Tab page"
   },
   "showCardsCurrentTabDesc": {
     "message": "List card items on the Tab page for easy autofill."
+  },
+  "showIdentitiesInVaultView": {
+    "message": "Show identifies as Autofill suggestions on Vault view"
   },
   "showIdentitiesCurrentTab": {
     "message": "Show identities on Tab page"
@@ -1159,10 +1196,10 @@
   "selfHostedBaseUrlHint": {
     "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
   },
-  "selfHostedCustomEnvHeader" :{
+  "selfHostedCustomEnvHeader": {
     "message": "For advanced configuration, you can specify the base URL of each service independently."
   },
-  "selfHostedEnvFormInvalid" :{
+  "selfHostedEnvFormInvalid": {
     "message": "You must add either the base Server URL or at least one custom environment."
   },
   "customEnvironment": {
@@ -1196,11 +1233,20 @@
     "message": "Show autofill menu on form fields",
     "description": "Represents the message for allowing the user to enable the autofill overlay"
   },
-  "showAutoFillMenuOnFormFieldsDescAlt": {
+  "autofillSuggestionsSectionTitle": {
+    "message": "Autofill suggestions"
+  },
+  "showInlineMenuLabel": {
+    "message": "Show autofill suggestions on form fields"
+  },
+  "showInlineMenuOnIconSelectionLabel": {
+    "message": "Display suggestions when icon is selected"
+  },
+  "showInlineMenuOnFormFieldsDescAlt": {
     "message": "Applies to all logged in accounts."
   },
   "turnOffBrowserBuiltInPasswordManagerSettings": {
-    "message": "Turn off your browser’s built in password manager settings to avoid conflicts."
+    "message": "Turn off your browser's built in password manager settings to avoid conflicts."
   },
   "turnOffBrowserBuiltInPasswordManagerSettingsLink": {
     "message": "Edit browser settings."
@@ -1217,14 +1263,33 @@
     "message": "When autofill icon is selected",
     "description": "Overlay appearance select option for showing the field on click of the overlay icon"
   },
+  "enableAutoFillOnPageLoadSectionTitle": {
+    "message": "Autofill on page load"
+  },
   "enableAutoFillOnPageLoad": {
     "message": "Autofill on page load"
   },
   "enableAutoFillOnPageLoadDesc": {
     "message": "If a login form is detected, autofill when the web page loads."
   },
+  "autofillOnPageLoadWarning": {
+    "message": "$OPENTAG$Warning:$CLOSETAG$ Compromised or untrusted websites can exploit autofill on page load.",
+    "placeholders": {
+      "openTag": {
+        "content": "$1",
+        "example": "<b>"
+      },
+      "closeTag": {
+        "content": "$2",
+        "example": "</b>"
+      }
+    }
+  },
   "experimentalFeature": {
     "message": "Compromised or untrusted websites can exploit autofill on page load."
+  },
+  "learnMoreAboutAutofillOnPageLoadLinkText": {
+    "message": "Learn more about risks"
   },
   "learnMoreAboutAutofill": {
     "message": "Learn more about autofill"
@@ -1285,6 +1350,9 @@
   },
   "cfTypeBoolean": {
     "message": "Boolean"
+  },
+  "cfTypeCheckbox": {
+    "message": "Checkbox"
   },
   "cfTypeLinked": {
     "message": "Linked",
@@ -1468,7 +1536,7 @@
   "typeIdentity": {
     "message": "Identity"
   },
-  "newItemHeader":{
+  "newItemHeader": {
     "message": "New $TYPE$",
     "placeholders": {
       "type": {
@@ -1477,7 +1545,7 @@
       }
     }
   },
-  "editItemHeader":{
+  "editItemHeader": {
     "message": "Edit $TYPE$",
     "placeholders": {
       "type": {
@@ -1823,8 +1891,8 @@
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "Your new master password does not meet the policy requirements."
   },
-  "receiveMarketingEmails": {
-    "message": "Get emails from Bitwarden for announcements, advice, and research opportunities."
+  "receiveMarketingEmailsV2": {
+    "message": "Get advice, announcements, and research opportunities from Bitwarden in your inbox."
   },
   "unsubscribe": {
     "message": "Unsubscribe"
@@ -1856,10 +1924,10 @@
   "ok": {
     "message": "Ok"
   },
-  "errorRefreshingAccessToken":{
+  "errorRefreshingAccessToken": {
     "message": "Access Token Refresh Error"
   },
-  "errorRefreshingAccessTokenDesc":{
+  "errorRefreshingAccessTokenDesc": {
     "message": "No refresh token or API keys found. Please try logging out and logging back in."
   },
   "desktopSyncVerificationTitle": {
@@ -1943,6 +2011,10 @@
   "personalOwnershipPolicyInEffectImports": {
     "message": "An organization policy has blocked importing items into your individual vault."
   },
+  "domainsTitle": {
+    "message": "Domains",
+    "description": "A category title describing the concept of web domains"
+  },
   "excludedDomains": {
     "message": "Excluded domains"
   },
@@ -1952,14 +2024,26 @@
   "excludedDomainsDescAlt": {
     "message": "Bitwarden will not ask to save login details for these domains for all logged in accounts. You must refresh the page for changes to take effect."
   },
+  "websiteItemLabel": {
+    "message": "Website $number$ (URI)",
+    "placeholders": {
+      "number": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "excludedDomainsInvalidDomain": {
     "message": "$DOMAIN$ is not a valid domain",
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "google.com"
+        "example": "duckduckgo.com"
       }
     }
+  },
+  "excludedDomainsSavedSuccess": {
+    "message": "Excluded domain changes saved"
   },
   "send": {
     "message": "Send",
@@ -2227,7 +2311,7 @@
     "message": "Your organization requires you to set a master password.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
-  "verificationRequired" : {
+  "verificationRequired": {
     "message": "Verification required",
     "description": "Default title for the user verification dialog."
   },
@@ -2656,6 +2740,12 @@
   "autofillSettings": {
     "message": "Autofill settings"
   },
+  "autofillKeyboardShortcutSectionTitle": {
+    "message": "Autofill shortcut"
+  },
+  "autofillKeyboardShortcutUpdateLabel": {
+    "message": "Change shortcut"
+  },
   "autofillShortcut": {
     "message": "Autofill keyboard shortcut"
   },
@@ -2950,11 +3040,11 @@
     "message": "Unlock account",
     "description": "Button text to display in overlay when the account is locked."
   },
-  "fillCredentialsFor":  {
+  "fillCredentialsFor": {
     "message": "Fill credentials for",
     "description": "Screen reader text for when overlay item is in focused"
   },
-  "partialUsername" : {
+  "partialUsername": {
     "message": "Partial username",
     "description": "Screen reader text for when a login item is focused where a partial username is displayed. SR will announce this phrase before reading the text of the partial username"
   },
@@ -3086,8 +3176,8 @@
   "invalidFilePassword": {
     "message": "Invalid file password, please use the password you entered when you created the export file."
   },
-  "importDestination": {
-    "message": "Import destination"
+  "destination": {
+    "message": "Destination"
   },
   "learnAboutImportOptions": {
     "message": "Learn about your import options"
@@ -3319,7 +3409,7 @@
     "placeholders": {
       "domain": {
         "content": "$1",
-        "example": "google.com"
+        "example": "duckduckgo.com"
       }
     }
   },
@@ -3327,12 +3417,36 @@
     "message": "Common formats",
     "description": "Label indicating the most common import formats"
   },
+  "confirmContinueToBrowserSettingsTitle": {
+    "message": "Continue to browser settings?",
+    "description": "Title for dialog which asks if the user wants to proceed to a relevant browser settings page"
+  },
+  "confirmContinueToHelpCenter": {
+    "message": "Continue to Help Center?",
+    "description": "Title for dialog which asks if the user wants to proceed to a relevant Help Center page"
+  },
+  "confirmContinueToHelpCenterPasswordManagementContent": {
+    "message": "Change your browser's autofill and password management settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the Help Center's page about browser password management settings"
+  },
+  "confirmContinueToHelpCenterKeyboardShortcutsContent": {
+    "message": "You can view and set extension shortcuts in your browser's settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the Help Center's page about browser keyboard shortcut settings"
+  },
+  "confirmContinueToBrowserPasswordManagementSettingsContent": {
+    "message": "Change your browser's autofill and password management settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the browser's password management settings page"
+  },
+  "confirmContinueToBrowserKeyboardShortcutSettingsContent": {
+    "message": "You can view and set extension shortcuts in your browser's settings.",
+    "description": "Body content for dialog which asks if the user wants to proceed to the browser's keyboard shortcut settings page"
+  },
   "overrideDefaultBrowserAutofillTitle": {
     "message": "Make Bitwarden your default password manager?",
     "description": "Dialog title facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutofillDescription": {
-    "message": "Ignoring this option may cause conflicts between the Bitwarden autofill menu and your browser's.",
+    "message": "Ignoring this option may cause conflicts between Bitwarden autofill suggestions and your browser's.",
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
   "overrideDefaultBrowserAutoFillSettings": {
@@ -3376,7 +3490,7 @@
     "message": "Autofill suggestions"
   },
   "autofillSuggestionsTip": {
-      "message": "Save a login item for this site to autofill"
+    "message": "Save a login item for this site to autofill"
   },
   "yourVaultIsEmpty": {
     "message": "Your vault is empty"
@@ -3450,8 +3564,8 @@
   "noValuesToCopy": {
     "message": "No values to copy"
   },
-  "assignCollections": {
-    "message": "Assign collections"
+  "assignToCollections": {
+    "message": "Assign to collections"
   },
   "copyEmail": {
     "message": "Copy email"
@@ -3544,12 +3658,6 @@
   "contactYourOrgAdmin": {
     "message": "Items in deactivated organizations cannot be accessed. Contact your organization owner for assistance."
   },
-  "itemDetails": {
-    "message": "Item details"
-  },
-  "itemName": {
-    "message": "Item name"
-  },
   "additionalInformation": {
     "message": "Additional information"
   },
@@ -3559,7 +3667,7 @@
   "lastEdited": {
     "message": "Last edited"
   },
-  "ownerYou":{
+  "ownerYou": {
     "message": "Owner: You"
   },
   "linked": {
@@ -3571,7 +3679,7 @@
   "upload": {
     "message": "Upload"
   },
-  "addAttachment":{
+  "addAttachment": {
     "message": "Add attachment"
   },
   "maxFileSizeSansPunctuation": {
@@ -3625,6 +3733,12 @@
       }
     }
   },
+  "loginCredentials": {
+    "message": "Login credentials"
+  },
+  "authenticatorKey": {
+    "message": "Authenticator key"
+  },
   "cardDetails": {
     "message": "Card details"
   },
@@ -3642,6 +3756,27 @@
   },
   "loading": {
     "message": "Loading"
+  },
+  "data": {
+    "message": "Data"
+  },
+  "assign": {
+    "message": "Assign"
+  },
+  "bulkCollectionAssignmentDialogDescription": {
+    "message": "Only organization members with access to these collections will be able to see the items."
+  },
+  "bulkCollectionAssignmentWarning": {
+    "message": "You have selected $TOTAL_COUNT$ items. You cannot update $READONLY_COUNT$ of the items because you do not have edit permissions.",
+    "placeholders": {
+      "total_count": {
+        "content": "$1",
+        "example": "10"
+      },
+      "readonly_count": {
+        "content": "$2"
+      }
+    }
   },
   "addField": {
     "message": "Add field"
@@ -3661,7 +3796,7 @@
   "hiddenHelpText": {
     "message": "Use hidden fields for sensitive data like a password"
   },
-  "checkBoxHelpText":{
+  "checkBoxHelpText": {
     "message": "Use checkboxes if you'd like to autofill a form's checkbox, like a remember email"
   },
   "linkedHelpText": {
@@ -3709,7 +3844,7 @@
       }
     }
   },
-  "reorderFieldUp":{
+  "reorderFieldUp": {
     "message": "$LABEL$ moved up, position $INDEX$ of $LENGTH$",
     "placeholders": {
       "label": {
@@ -3726,7 +3861,77 @@
       }
     }
   },
-  "reorderFieldDown":{
+  "selectCollectionsToAssign": {
+    "message": "Select collections to assign"
+  },
+  "personalItemTransferWarningSingular": {
+    "message": "1 item will be permanently transferred to the selected organization. You will no longer own this item."
+  },
+  "personalItemsTransferWarningPlural": {
+    "message": "$PERSONAL_ITEMS_COUNT$ items will be permanently transferred to the selected organization. You will no longer own these items.",
+    "placeholders": {
+      "personal_items_count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "personalItemWithOrgTransferWarningSingular": {
+    "message": "1 item will be permanently transferred to $ORG$. You will no longer own this item.",
+    "placeholders": {
+      "org": {
+        "content": "$1",
+        "example": "Organization name"
+      }
+    }
+  },
+  "personalItemsWithOrgTransferWarningPlural": {
+    "message": "$PERSONAL_ITEMS_COUNT$ items will be permanently transferred to $ORG$. You will no longer own these items.",
+    "placeholders": {
+      "personal_items_count": {
+        "content": "$1",
+        "example": "2"
+      },
+      "org": {
+        "content": "$2",
+        "example": "Organization name"
+      }
+    }
+  },
+  "successfullyAssignedCollections": {
+    "message": "Successfully assigned collections"
+  },
+  "nothingSelected": {
+    "message": "You have not selected anything."
+  },
+  "movedItemsToOrg": {
+    "message": "Selected items moved to $ORGNAME$",
+    "placeholders": {
+      "orgname": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "itemsMovedToOrg": {
+    "message": "Items moved to $ORGNAME$",
+    "placeholders": {
+      "orgname": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "itemMovedToOrg": {
+    "message": "Item moved to $ORGNAME$",
+    "placeholders": {
+      "orgname": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "reorderFieldDown": {
     "message": "$LABEL$ moved down, position $INDEX$ of $LENGTH$",
     "placeholders": {
       "label": {
@@ -3742,5 +3947,8 @@
         "example": "3"
       }
     }
+  },
+  "itemLocation": {
+    "message": "Item Location"
   }
 }
