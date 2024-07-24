@@ -263,3 +263,32 @@ jobs:
         shell: pwsh
         run: choco push --source=https://push.chocolatey.org/
         working-directory: apps/desktop/dist
+
+  update-deployment:
+    name: Update Deployment Status
+    runs-on: ubuntu-22.04
+    needs:
+      - electron-blob
+      - snap
+      - choco
+    if: ${{ always() && github.event.inputs.publish_type != 'Dry Run' }}
+    steps:
+      - name: Check if any job failed
+        if: contains(needs.*.result, 'failure')
+        run: exit 1
+
+      - name: Update deployment status to Success
+        if: ${{ github.event.inputs.release_type != 'Dry Run' && success() }}
+        uses: chrnorm/deployment-status@9a72af4586197112e0491ea843682b5dc280d806 # v2.0.3
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status to Failure
+        if: ${{ github.event.inputs.release_type != 'Dry Run' && failure() }}
+        uses: chrnorm/deployment-status@9a72af4586197112e0491ea843682b5dc280d806 # v2.0.3
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
