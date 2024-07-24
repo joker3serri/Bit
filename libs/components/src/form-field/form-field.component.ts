@@ -26,8 +26,8 @@ export class BitFormFieldComponent implements AfterContentChecked {
   @ContentChild(BitFormFieldControl) input: BitFormFieldControl;
   @ContentChild(BitHintComponent) hint: BitHintComponent;
   @ContentChild(BitLabel) label: BitLabel;
-  @ViewChild("prefixSlot") prefixContainer: ElementRef;
-  @ViewChild("suffixSlot") suffixContainer: ElementRef;
+  @ViewChild("prefixSlot") prefixContainer: ElementRef<HTMLDivElement>;
+  @ViewChild("suffixSlot") suffixContainer: ElementRef<HTMLDivElement>;
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
 
@@ -110,5 +110,15 @@ export class BitFormFieldComponent implements AfterContentChecked {
           ? " tw-rounded-r-lg tw-pr-3"
           : "",
       );
+
+    if (this.prefixContainer) {
+      this.prefixContainer.nativeElement.hidden =
+        this.prefixContainer?.nativeElement.childElementCount === 0;
+    }
+
+    if (this.suffixContainer) {
+      this.suffixContainer.nativeElement.hidden =
+        this.suffixContainer?.nativeElement.childElementCount === 0;
+    }
   }
 }
