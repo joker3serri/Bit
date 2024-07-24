@@ -81,9 +81,9 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
         let message;
         if (error instanceof Error && !Utils.isNullOrWhitespace(error?.message)) {
           message = error.message;
-        } else  {
+        } else {
           message = this.i18nService.t("errorReadingImportFile");
-        } 
+        }
 
         this.toastService.showToast({
           variant: "error",
