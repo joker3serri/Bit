@@ -1,4 +1,3 @@
-import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import {
   AfterContentChecked,
   Component,
@@ -8,6 +7,7 @@ import {
   HostListener,
   Input,
   ViewChild,
+  booleanAttribute,
   signal,
 } from "@angular/core";
 
@@ -31,18 +31,17 @@ export class BitFormFieldComponent implements AfterContentChecked {
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
 
-  private _disableMargin = false;
-  @Input() set disableMargin(value: boolean | "") {
-    this._disableMargin = coerceBooleanProperty(value);
-  }
-  get disableMargin() {
-    return this._disableMargin;
-  }
+  @Input({ transform: booleanAttribute })
+  disableMargin = false;
+
+  /** If `true`, remove the bottom border for `readonly` inputs */
+  @Input({ transform: booleanAttribute })
+  disableReadOnlyBorder = false;
 
   protected inputWrapperClasses: string;
 
   get inputBorderClasses(): string {
-    const shouldFocusBorderAppear = !this.buttonIsFocused();
+    const shouldFocusBorderAppear = this.defaultContentIsFocused();
 
     const groupClasses = [
       this.input.hasError
@@ -69,20 +68,24 @@ export class BitFormFieldComponent implements AfterContentChecked {
   }
 
   /**
-   * If the currently focused element is a button, then we don't want to show focus on the
+   * If the currently focused element is not part of the default content, then we don't want to show focus on the
    * input field itself.
    *
    * This is necessary because the `tw-group/bit-form-field` wraps the input and any prefix/suffix
    * buttons
    */
-  protected buttonIsFocused = signal(false);
+  protected defaultContentIsFocused = signal(false);
   @HostListener("focusin", ["$event.target"])
   onFocusIn(target: HTMLElement) {
-    this.buttonIsFocused.set(target.matches("button"));
+    this.defaultContentIsFocused.set(target.matches(".default-content *:focus-visible"));
   }
   @HostListener("focusout")
   onFocusOut() {
-    this.buttonIsFocused.set(false);
+    this.defaultContentIsFocused.set(false);
+  }
+
+  protected get readOnly(): boolean {
+    return this.input.readOnly;
   }
 
   ngAfterContentChecked(): void {
