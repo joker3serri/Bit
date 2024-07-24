@@ -17,6 +17,10 @@ import {
   imports: [TypographyModule, CommonModule, IconButtonModule, JslibModule, AsyncActionsModule],
 })
 export class PopupHeaderComponent {
+  /** Background color */
+  @Input()
+  background: "default" | "alt" = "default";
+
   /** Display the back button, which uses Location.back() to go back one page in history */
   @Input()
   get showBackButton() {
