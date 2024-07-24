@@ -39,21 +39,7 @@ export class BitFormFieldComponent implements AfterContentChecked {
     return this._disableMargin;
   }
 
-  get inputWrapperClasses(): string {
-    const classes = "";
-
-    return classes
-      .concat(
-        this.prefixContainer?.nativeElement.childElementCount === 0
-          ? "tw-rounded-l-lg tw-pl-3"
-          : "",
-      )
-      .concat(
-        this.suffixContainer?.nativeElement.childElementCount === 0
-          ? " tw-rounded-r-lg tw-pr-3"
-          : "",
-      );
-  }
+  protected inputWrapperClasses: string;
 
   get inputBorderClasses(): string {
     const shouldFocusBorderAppear = !this.buttonIsFocused();
@@ -107,5 +93,19 @@ export class BitFormFieldComponent implements AfterContentChecked {
     } else {
       this.input.ariaDescribedBy = undefined;
     }
+
+    const classes = "";
+
+    this.inputWrapperClasses = classes
+      .concat(
+        this.prefixContainer?.nativeElement.childElementCount === 0
+          ? "tw-rounded-l-lg tw-pl-3"
+          : "",
+      )
+      .concat(
+        this.suffixContainer?.nativeElement.childElementCount === 0
+          ? " tw-rounded-r-lg tw-pr-3"
+          : "",
+      );
   }
 }
