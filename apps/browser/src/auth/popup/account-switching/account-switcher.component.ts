@@ -48,7 +48,6 @@ import { AccountSwitcherService } from "./services/account-switcher.service";
     AccountComponent,
     SectionComponent,
     SectionHeaderComponent,
-    // CardComponent,
   ],
 })
 export class AccountSwitcherComponent implements OnInit, OnDestroy {
@@ -92,7 +91,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     this.extensionRefreshFlag = await this.configService.getFeatureFlag(
       FeatureFlag.ExtensionRefresh,
     );
-    // this.extensionRefreshFlag = false;
+    this.extensionRefreshFlag = true; // TODO: remove this once done testing.
 
     const availableVaultTimeoutActions = await firstValueFrom(
       this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(),

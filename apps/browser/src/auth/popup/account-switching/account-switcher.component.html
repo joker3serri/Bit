@@ -1,5 +1,5 @@
 <ng-container *ngIf="extensionRefreshFlag">
-  <popup-page  [loading]="loading">
+  <popup-page [loading]="loading">
     <popup-header slot="header" pageTitle="{{ 'switchAccounts' | i18n }}" showBackButton>
       <ng-container slot="end">
         <app-pop-out></app-pop-out>
@@ -7,40 +7,85 @@
       </ng-container>
     </popup-header>
 
-    <bit-item>
-      <button bit-item-content type="button">
-        <bit-avatar
-          slot="start"
-          [text]="'Foo'"
-        ></bit-avatar>
-        foo@bitwarden.com
-        <ng-container slot="secondary">
-          <div>Bitwarden.com</div>
-          <div><em>active</em></div>
-        </ng-container>
-        <i slot="end" class="bwi bwi-lock" aria-hidden="true"></i>
-      </button>
-    </bit-item>
+    <ng-container *ngIf="availableAccounts$ | async as availableAccounts">
+      <bit-section>
+        <ng-container *ngFor="let availableAccount of availableAccounts; first as isFirst">
+          <div *ngIf="availableAccount.isActive" class="tw-mb-4">
+            <auth-account
+              [account]="availableAccount"
+              [extensionRefreshFlag]="extensionRefreshFlag"
+              (loading)="loading = $event"
+            ></auth-account>
+          </div>
 
-
-      <bit-section-header>
-        <h2 bitTypography="h6">{{"availableAccounts" | i18n}}</h2>
-      </bit-section-header>
-
-      <div class="tw-bg-background-alt tw-p-2">
-        <bit-section>
-          <bit-section-header>
-            <h2 bitTypography="h6">
-              Card as immediate sibling
-            </h2>
-            <!-- <button bitIconButton="bwi-star" size="small" slot="end"></button> -->
+          <bit-section-header *ngIf="isFirst">
+            <h2 bitTypography="h6" class="">{{ "availableAccounts" | i18n }}</h2>
           </bit-section-header>
-          <!-- <bit-card>
-            <h3 bitTypography="h3">bit-section-header has padding</h3>
-          </bit-card> -->
-        </bit-section>
-      </div>
-  
+
+          <div *ngIf="!availableAccount.isActive">
+            <auth-account
+              [account]="availableAccount"
+              [extensionRefreshFlag]="extensionRefreshFlag"
+              (loading)="loading = $event"
+            ></auth-account>
+          </div>
+        </ng-container>
+
+        <!--
+          If the user has not reached the account limit, the last 'availableAccount' will have an 'id' of
+          'SPECIAL_ADD_ACCOUNT_ID'. Since we don't want to count this as one of the actual accounts,
+          we check to make sure the 'id' of the last 'availableAccount' is not equal to 'SPECIAL_ADD_ACCOUNT_ID'
+      -->
+        <p
+          class="tw-text-sm tw-text-muted"
+          *ngIf="
+            availableAccounts.length >= accountLimit &&
+            availableAccounts[availableAccounts.length - 1].id !== specialAddAccountId
+          "
+        >
+          {{ "accountLimitReached" | i18n }}
+        </p>
+      </bit-section>
+    </ng-container>
+
+    <div class="tw-mt-8" *ngIf="currentAccount$ | async as currentAccount">
+      <bit-section>
+        <bit-section-header>
+          <h2 bitTypography="h6" class="">
+            {{ "options" | i18n }}
+          </h2>
+        </bit-section-header>
+
+        <bit-item>
+          <button
+            type="button"
+            bit-item-content
+            (click)="lock(currentAccount.id)"
+            [disabled]="currentAccount.status === lockedStatus || !activeUserCanLock"
+            [title]="!activeUserCanLock ? ('unlockMethodNeeded' | i18n) : ''"
+          >
+            <i slot="start" class="bwi bwi-lock tw-text-2xl tw-text-main" aria-hidden="true"></i>
+            {{ "lockNow" | i18n }}
+          </button>
+        </bit-item>
+        <bit-item>
+          <button type="button" bit-item-content (click)="logOut(currentAccount.id)">
+            <i
+              slot="start"
+              class="bwi bwi-sign-out tw-text-2xl tw-text-main"
+              aria-hidden="true"
+            ></i>
+            {{ "logOut" | i18n }}
+          </button>
+        </bit-item>
+        <bit-item>
+          <button type="button" bit-item-content>
+            <i slot="start" class="bwi bwi-lock tw-text-2xl tw-text-main" aria-hidden="true"></i>
+            {{ "lockAll" | i18n }}
+          </button>
+        </bit-item>
+      </bit-section>
+    </div>
   </popup-page>
 </ng-container>
 
