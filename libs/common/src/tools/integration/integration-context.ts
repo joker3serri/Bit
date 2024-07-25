@@ -44,7 +44,7 @@ export class IntegrationContext<Settings extends object> {
       throw error;
     }
 
-    return result as any;
+    return result;
   }
 
   /** look up a service API's authentication token
