@@ -26,6 +26,7 @@ export class BitFormFieldComponent implements AfterContentChecked {
   @ContentChild(BitFormFieldControl) input: BitFormFieldControl;
   @ContentChild(BitHintComponent) hint: BitHintComponent;
   @ContentChild(BitLabel) label: BitLabel;
+
   @ViewChild("prefixSlot") prefixContainer: ElementRef<HTMLDivElement>;
   @ViewChild("suffixSlot") suffixContainer: ElementRef<HTMLDivElement>;
 
@@ -39,6 +40,9 @@ export class BitFormFieldComponent implements AfterContentChecked {
   disableReadOnlyBorder = false;
 
   protected inputWrapperClasses: string;
+
+  protected prefixHasChildren = signal(false);
+  protected suffixHasChildren = signal(false);
 
   get inputBorderClasses(): string {
     const shouldFocusBorderAppear = this.defaultContentIsFocused();
@@ -97,28 +101,7 @@ export class BitFormFieldComponent implements AfterContentChecked {
       this.input.ariaDescribedBy = undefined;
     }
 
-    const classes = "";
-
-    this.inputWrapperClasses = classes
-      .concat(
-        this.prefixContainer?.nativeElement.childElementCount === 0
-          ? "tw-rounded-l-lg tw-pl-3"
-          : "",
-      )
-      .concat(
-        this.suffixContainer?.nativeElement.childElementCount === 0
-          ? " tw-rounded-r-lg tw-pr-3"
-          : "",
-      );
-
-    if (this.prefixContainer) {
-      this.prefixContainer.nativeElement.hidden =
-        this.prefixContainer?.nativeElement.childElementCount === 0;
-    }
-
-    if (this.suffixContainer) {
-      this.suffixContainer.nativeElement.hidden =
-        this.suffixContainer?.nativeElement.childElementCount === 0;
-    }
+    this.prefixHasChildren.set(this.prefixContainer?.nativeElement.childElementCount > 0);
+    this.suffixHasChildren.set(this.suffixContainer?.nativeElement.childElementCount > 0);
   }
 }
