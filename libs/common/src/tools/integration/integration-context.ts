@@ -57,14 +57,15 @@ export class IntegrationContext<Settings extends object> {
   authenticationToken(
     options: { base64?: boolean; suffix?: string } = null,
   ): Settings extends ApiSettings ? string : never {
+    // normalize `token` then assert it has a value
     let token = "token" in this.settings ? ((this.settings.token as string) ?? "") : "";
-    token += options?.suffix ?? "";
-
     if (token === "") {
       const error = this.i18n.t("forwaderInvalidToken", this.metadata.name);
       throw error;
     }
 
+    // if a suffix exists, it needs to be included before encoding
+    token += options?.suffix ?? "";
     if (options?.base64) {
       token = Utils.fromUtf8ToB64(token);
     }
