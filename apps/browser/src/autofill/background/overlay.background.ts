@@ -259,7 +259,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     this.inlineMenuFido2Credentials.clear();
-    this.storeInlineMenuFido2CredentialsSubject.next(currentTab.id);
+    this.storeInlineMenuFido2CredentialsSubject.next(currentTab?.id);
 
     this.inlineMenuCiphers = new Map();
     const ciphersViews = await this.getCipherViews(currentTab, updateAllCipherTypes);
@@ -309,7 +309,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     this.cardAndIdentityCiphers.clear();
     const cipherViews = (
-      await this.cipherService.getAllDecryptedForUrl(currentTab.url, [
+      await this.cipherService.getAllDecryptedForUrl(currentTab?.url || "", [
         CipherType.Card,
         CipherType.Identity,
       ])
