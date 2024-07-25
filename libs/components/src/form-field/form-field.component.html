@@ -26,7 +26,7 @@
       class="default-content tw-w-full tw-relative tw-py-2 has-[bit-select]:tw-p-0 has-[bit-multi-select]:tw-p-0 has-[input:read-only:not([hidden])]:tw-bg-secondary-100 has-[textarea:read-only:not([hidden])]:tw-bg-secondary-100"
       [ngClass]="[
         prefixHasChildren() ? '' : 'tw-rounded-l-lg tw-pl-3',
-        suffixHasChildren() ? '' : 'tw-rounded-r-lg tw-pr-3'
+        suffixHasChildren() ? '' : 'tw-rounded-r-lg tw-pr-3',
       ]"
     >
       <ng-container *ngTemplateOutlet="defaultContent"></ng-container>
@@ -78,7 +78,7 @@
         'tw-border-secondary-300/50 tw-border-b':
           !disableReadOnlyBorder && !defaultContentIsFocused(),
         'tw-border-b-2 tw-border-transparent': disableReadOnlyBorder && !defaultContentIsFocused(),
-        'tw-border-b-2 tw-border-primary-500': defaultContentIsFocused()
+        'tw-border-b-2 tw-border-primary-500': defaultContentIsFocused(),
       }"
     >
       <div [hidden]="!prefixHasChildren()" class="tw-flex tw-items-center tw-gap-1 tw-pl-3 tw-py-2">
