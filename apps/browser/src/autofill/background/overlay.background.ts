@@ -258,8 +258,12 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       void this.closeInlineMenuAfterCiphersUpdate();
     }
 
+    if (!currentTab) {
+      return;
+    }
+
     this.inlineMenuFido2Credentials.clear();
-    this.storeInlineMenuFido2CredentialsSubject.next(currentTab?.id);
+    this.storeInlineMenuFido2CredentialsSubject.next(currentTab.id);
 
     this.inlineMenuCiphers = new Map();
     const ciphersViews = await this.getCipherViews(currentTab, updateAllCipherTypes);
@@ -290,9 +294,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return this.getAllCipherTypeViews(currentTab);
     }
 
-    const cipherViews = (
-      await this.cipherService.getAllDecryptedForUrl(currentTab?.url || "")
-    ).sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+    const cipherViews = (await this.cipherService.getAllDecryptedForUrl(currentTab.url || "")).sort(
+      (a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b),
+    );
 
     return cipherViews.concat(...this.cardAndIdentityCiphers);
   }
@@ -309,7 +313,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     this.cardAndIdentityCiphers.clear();
     const cipherViews = (
-      await this.cipherService.getAllDecryptedForUrl(currentTab?.url || "", [
+      await this.cipherService.getAllDecryptedForUrl(currentTab.url || "", [
         CipherType.Card,
         CipherType.Identity,
       ])
@@ -1292,6 +1296,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private async openInlineMenu(isFocusingFieldElement = false, isOpeningFullInlineMenu = false) {
     this.clearDelayedInlineMenuClosure();
     const currentTab = await BrowserApi.getTabFromCurrentWindowId();
+    if (!currentTab) {
+      return;
+    }
 
     await BrowserApi.tabSendMessage(
       currentTab,
@@ -1302,8 +1309,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         authStatus: await this.getAuthStatus(),
       },
       {
-        frameId:
-          this.focusedFieldData?.tabId === currentTab?.id ? this.focusedFieldData.frameId : 0,
+        frameId: this.focusedFieldData?.tabId === currentTab.id ? this.focusedFieldData.frameId : 0,
       },
     );
   }
