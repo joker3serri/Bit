@@ -320,7 +320,7 @@ export class AutofillInlineMenuIframeService implements AutofillInlineMenuIframe
    */
   private handleFadeInInlineMenuIframe() {
     this.clearFadeInTimeout();
-    this.fadeInTimeout = globalThis.globalThis.setTimeout(
+    this.fadeInTimeout = globalThis.setTimeout(
       () => this.updateElementStyles(this.iframe, { display: "block", opacity: "1" }),
       10,
     );
@@ -350,7 +350,7 @@ export class AutofillInlineMenuIframeService implements AutofillInlineMenuIframe
       opacity: "0",
     });
 
-    this.delayedCloseTimeout = globalThis.globalThis.setTimeout(() => {
+    this.delayedCloseTimeout = globalThis.setTimeout(() => {
       this.updateElementStyles(this.iframe, { transition: this.fadeInOpacityTransition });
       this.forceCloseInlineMenu();
     }, 100);
