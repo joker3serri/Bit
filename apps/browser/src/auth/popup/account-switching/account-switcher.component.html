@@ -19,7 +19,7 @@
           </div>
 
           <bit-section-header *ngIf="isFirst">
-            <h2 bitTypography="h6" class="">{{ "availableAccounts" | i18n }}</h2>
+            <h2 bitTypography="h6" class="tw-font-semibold">{{ "availableAccounts" | i18n }}</h2>
           </bit-section-header>
 
           <div *ngIf="!availableAccount.isActive">
@@ -51,7 +51,7 @@
     <div class="tw-mt-8" *ngIf="currentAccount$ | async as currentAccount">
       <bit-section>
         <bit-section-header>
-          <h2 bitTypography="h6" class="">
+          <h2 bitTypography="h6" class="tw-font-semibold">
             {{ "options" | i18n }}
           </h2>
         </bit-section-header>
