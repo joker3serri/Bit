@@ -4102,6 +4102,10 @@
   "defaultType": {
     "message": "Default type"
   },
+  "overridePasswordTypePolicy": {
+    "message": "Password Type",
+    "description": "Name of the password generator policy that overrides the user's password/passphrase selection."
+  },
   "userPreference": {
     "message": "User preference"
   },
