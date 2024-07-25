@@ -24,7 +24,7 @@ export class VaultUiOnboardingService {
     GLOBAL_VAULT_UI_ONBOARDING,
   );
 
-  readonly vaultUiOnboardingState$ = this.vaultUiOnboardingState.state$.pipe(
+  private readonly vaultUiOnboardingState$ = this.vaultUiOnboardingState.state$.pipe(
     map((x) => x ?? false),
   );
 

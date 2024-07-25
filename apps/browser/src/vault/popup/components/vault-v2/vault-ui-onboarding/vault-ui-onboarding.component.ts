@@ -65,6 +65,9 @@ export class VaultUiOnboardingComponent {
   }
 
   navigateToLink = async () => {
-    window.open("https://bitwarden.com/blog/new-look", "_blank");
+    window.open(
+      "https://bitwarden.com/blog/bringing-intuitive-workflows-and-visual-updates-to-the-bitwarden-browser/",
+      "_blank",
+    );
   };
 }
