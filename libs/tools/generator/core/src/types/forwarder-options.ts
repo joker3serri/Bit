@@ -23,8 +23,6 @@ export type ForwarderMetadata = {
 
   /** Whether the forwarder is valid for self-hosted instances of Bitwarden. */
   validForSelfHosted: boolean;
-
-  baseUrl?: string;
 };
 
 /** Options common to all forwarder APIs */
