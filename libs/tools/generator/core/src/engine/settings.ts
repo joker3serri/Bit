@@ -4,7 +4,7 @@ export type EmailDomainSettings = {
    *  @remarks The domain should be authorized by the forwarder before
    *           submitting a request through bitwarden.
    *  @example If the domain is `domain.io` and the generated username
-   *  is `jd`, then the generated email address will be `jd@mydomain.io`
+   *  is `jd`, then the generated email address will be `jd@domain.io`
    */
   domain: string;
 };
