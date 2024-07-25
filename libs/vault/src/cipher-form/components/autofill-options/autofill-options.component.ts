@@ -59,7 +59,7 @@ export class AutofillOptionsComponent implements OnInit {
   @ViewChildren(UriOptionComponent)
   protected uriOptions: QueryList<UriOptionComponent>;
 
-  protected autofillOptionsForm = this.formBuilder.group({
+  autofillOptionsForm = this.formBuilder.group({
     uris: this.formBuilder.array<UriField>([]),
   });
 
@@ -88,8 +88,8 @@ export class AutofillOptionsComponent implements OnInit {
         cipher.login.uris = value.uris.map((uri: UriField) =>
           Object.assign(new LoginUriView(), {
             uri: uri.uri,
-            matchDetection: uri.matchDetection,
-          }),
+            match: uri.matchDetection,
+          } as LoginUriView),
         );
         return cipher;
       });
@@ -131,7 +131,7 @@ export class AutofillOptionsComponent implements OnInit {
 
   private initNewCipher() {
     this.addUri({
-      uri: this.cipherFormContainer.config.initialValues.loginUri ?? null,
+      uri: this.cipherFormContainer.config.initialValues?.loginUri ?? null,
       matchDetection: null,
     });
   }
