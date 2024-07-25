@@ -35,6 +35,7 @@ import { SsoComponent } from "../auth/popup/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
+import { AutofillV1Component } from "../autofill/popup/settings/autofill-v1.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
 import { ExcludedDomainsV1Component } from "../autofill/popup/settings/excluded-domains-v1.component";
 import { ExcludedDomainsComponent } from "../autofill/popup/settings/excluded-domains.component";
@@ -92,6 +93,7 @@ import "../platform/popup/locales";
   imports: [
     A11yModule,
     AppRoutingModule,
+    AutofillComponent,
     ToastModule.forRoot({
       maxOpened: 2,
       autoDismiss: true,
@@ -179,7 +181,7 @@ import "../platform/popup/locales";
     RemovePasswordComponent,
     VaultSelectComponent,
     Fido2Component,
-    AutofillComponent,
+    AutofillV1Component,
     EnvironmentSelectorComponent,
   ],
   exports: [],

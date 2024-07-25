@@ -2,8 +2,12 @@ import { ErrorHandler, LOCALE_ID, NgModule } from "@angular/core";
 import { Subject } from "rxjs";
 
 import {
+  SetPasswordJitService,
+  DefaultSetPasswordJitService,
   RegistrationFinishService as RegistrationFinishServiceAbstraction,
   DefaultRegistrationFinishService,
+  AnonLayoutWrapperDataService,
+  DefaultAnonLayoutWrapperDataService,
 } from "@bitwarden/auth/angular";
 import {
   AuthRequestServiceAbstraction,
@@ -1050,6 +1054,7 @@ const safeProviders: SafeProvider[] = [
       SECURE_STORAGE,
       UserDecryptionOptionsServiceAbstraction,
       LogService,
+      ConfigService,
     ],
   }),
   safeProvider({
@@ -1265,9 +1270,28 @@ const safeProviders: SafeProvider[] = [
     deps: [LogService],
   }),
   safeProvider({
+    provide: SetPasswordJitService,
+    useClass: DefaultSetPasswordJitService,
+    deps: [
+      ApiServiceAbstraction,
+      CryptoServiceAbstraction,
+      I18nServiceAbstraction,
+      KdfConfigServiceAbstraction,
+      InternalMasterPasswordServiceAbstraction,
+      OrganizationApiServiceAbstraction,
+      OrganizationUserService,
+      InternalUserDecryptionOptionsServiceAbstraction,
+    ],
+  }),
+  safeProvider({
     provide: RegisterRouteService,
     useClass: RegisterRouteService,
     deps: [ConfigService],
+  }),
+  safeProvider({
+    provide: AnonLayoutWrapperDataService,
+    useClass: DefaultAnonLayoutWrapperDataService,
+    deps: [],
   }),
   safeProvider({
     provide: RegistrationFinishServiceAbstraction,
