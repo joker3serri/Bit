@@ -29,6 +29,9 @@ export class CreateForwardingAddressRpc<
       method: "POST",
       headers: new Headers({
         ...token,
+        // X-Requested-With header required by some endpoints for
+        // detailed error descriptions (see #5565)
+        "X-Requested-With": "XMLHttpRequest",
         "Content-Type": "application/json",
       }),
       body,
