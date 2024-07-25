@@ -52,7 +52,13 @@
     <bit-form-field *ngIf="cipher.identity.ssn">
       <bit-label>{{ "ssn" | i18n }}</bit-label>
       <input bitInput type="password" [value]="cipher.identity.ssn" disabled data-testid="ssn" />
-      <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
+      <button
+        type="button"
+        bitIconButton
+        bitSuffix
+        bitPasswordInputToggle
+        data-testid="ssn-toggle"
+      ></button>
       <button
         type="button"
         bitIconButton="bwi-clone"
@@ -71,7 +77,13 @@
         disabled
         data-testid="passport"
       />
-      <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
+      <button
+        type="button"
+        bitIconButton
+        bitSuffix
+        bitPasswordInputToggle
+        data-testid="passport-toggle"
+      ></button>
       <button
         type="button"
         bitIconButton="bwi-clone"
