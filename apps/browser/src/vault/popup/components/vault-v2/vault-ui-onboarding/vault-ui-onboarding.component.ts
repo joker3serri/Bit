@@ -10,8 +10,6 @@ import {
   svgIcon,
 } from "@bitwarden/components";
 
-import { VaultUiOnboardingService } from "../../../services/vault-ui-onboarding.service";
-
 const announcementIcon = svgIcon`
 <svg xmlns="http://www.w3.org/2000/svg" width="86" height="74" fill="none">
   <g fill-rule="evenodd" clip-path="url(#a)" clip-rule="evenodd">
@@ -51,36 +49,22 @@ const announcementIcon = svgIcon`
           {{ "learnMore" | i18n }}
           <i class="bwi bwi-external-link bwi-fw" aria-hidden="true"></i>
         </a>
-        <button
-          bitButton
-          type="button"
-          buttonType="secondary"
-          (click)="updateOnboardingState()"
-          bitDialogClose
-        >
+        <button bitButton type="button" buttonType="secondary" bitDialogClose>
           {{ "close" | i18n }}
         </button>
       </ng-container>
     </bit-simple-dialog>
   `,
   imports: [CommonModule, DialogModule, ButtonModule, JslibModule, IconModule],
-  providers: [VaultUiOnboardingService],
 })
 export class VaultUiOnboardingComponent {
   icon = announcementIcon;
-
-  constructor(private vaultUiOnboardingService: VaultUiOnboardingService) {}
 
   static open(dialogService: DialogService) {
     return dialogService.open<boolean>(VaultUiOnboardingComponent);
   }
 
-  updateOnboardingState = async () => {
-    await this.vaultUiOnboardingService.setVaultUiOnboardingState(true);
-  };
-
   navigateToLink = async () => {
-    await this.updateOnboardingState();
     window.open("https://bitwarden.com/blog/new-look", "_blank");
   };
 }

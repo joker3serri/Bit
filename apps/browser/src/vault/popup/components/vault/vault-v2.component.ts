@@ -56,7 +56,7 @@ enum VaultState {
 })
 export class VaultV2Component implements OnInit, OnDestroy {
   cipherType = CipherType;
-
+  // TODO: Update this date to the release date of the new Browser UI
   private onboardingUiReleaseDate = new Date("2024-07-25");
 
   protected favoriteCiphers$ = this.vaultPopupItemsService.favoriteCiphers$;
@@ -134,7 +134,12 @@ export class VaultV2Component implements OnInit, OnDestroy {
   private async openVaultUiOnboardingDialog(): Promise<boolean> {
     const dialogRef = VaultUiOnboardingComponent.open(this.dialogService);
 
-    return firstValueFrom(dialogRef.closed);
+    const result = firstValueFrom(dialogRef.closed);
+
+    // Update the onboarding state when the dialog is closed
+    await this.vaultUiOnboardingService.setVaultUiOnboardingState(true);
+
+    return result;
   }
 
   private async isNewAccount(): Promise<boolean> {
