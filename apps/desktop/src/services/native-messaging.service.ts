@@ -45,12 +45,9 @@ export class NativeMessagingService {
     private accountService: AccountService,
     private authService: AuthService,
     private ngZone: NgZone,
-  ) {
-    this.logService.info("biometricsService", this.biometricsService);
-  }
+  ) {}
 
   init() {
-    this.logService.info("biomserviceinit", this.biometricsService);
     ipc.platform.nativeMessaging.onMessage((message) => this.messageHandler(message));
   }
 
