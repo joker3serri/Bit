@@ -8,6 +8,7 @@
       bitSuffix
       [appA11yTitle]="toggleTitle"
       (click)="toggleMatchDetection()"
+      data-testid="toggle-match-detection-button"
     ></button>
     <button
       type="button"
@@ -17,7 +18,7 @@
       [appA11yTitle]="'Delete URI'"
       *ngIf="canRemove"
       (click)="removeUri()"
-      data-testid="delete-uri-button"
+      data-testid="remove-uri-button"
     ></button>
   </bit-form-field>
 
