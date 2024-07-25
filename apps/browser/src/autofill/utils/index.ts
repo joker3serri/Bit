@@ -105,15 +105,11 @@ export async function sendExtensionMessage(
   command: string,
   options: Record<string, any> = {},
 ): Promise<any | void> {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(Object.assign({ command }, options), (response) => {
-      if (chrome.runtime.lastError) {
-        // Do nothing
-      }
-
-      resolve(response);
-    });
-  });
+  try {
+    return chrome.runtime.sendMessage({ command, ...options });
+  } catch {
+    //  Do nothing
+  }
 }
 
 /**

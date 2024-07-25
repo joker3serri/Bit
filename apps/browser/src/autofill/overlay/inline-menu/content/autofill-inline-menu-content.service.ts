@@ -373,7 +373,7 @@ export class AutofillInlineMenuContentService implements AutofillInlineMenuConte
    * ensure that the inline menu elements are always present at the bottom of the
    * body element.
    */
-  private handleBodyElementMutationObserverUpdate = async () => {
+  private handleBodyElementMutationObserverUpdate = () => {
     if (
       (!this.buttonElement && !this.listElement) ||
       this.isTriggeringExcessiveMutationObserverIterations()
@@ -410,17 +410,18 @@ export class AutofillInlineMenuContentService implements AutofillInlineMenuConte
       return;
     }
 
+    const isInlineMenuButtonVisible = await this.isInlineMenuButtonVisible();
     if (
       !lastChild ||
       (lastChildIsInlineMenuList && secondToLastChildIsInlineMenuButton) ||
-      (lastChildIsInlineMenuButton && !(await this.isInlineMenuListVisible()))
+      (lastChildIsInlineMenuButton && !isInlineMenuButtonVisible)
     ) {
       return;
     }
 
     if (
       (lastChildIsInlineMenuList && !secondToLastChildIsInlineMenuButton) ||
-      (lastChildIsInlineMenuButton && (await this.isInlineMenuListVisible()))
+      (lastChildIsInlineMenuButton && isInlineMenuButtonVisible)
     ) {
       globalThis.document.body.insertBefore(this.buttonElement, this.listElement);
       return;
