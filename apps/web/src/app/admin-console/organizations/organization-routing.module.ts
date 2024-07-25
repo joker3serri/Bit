@@ -15,9 +15,10 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { organizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { organizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
 import { OrganizationLayoutComponent } from "../../admin-console/organizations/layouts/organization-layout.component";
-import { NewGroupsComponent } from "../../admin-console/organizations/manage/new-groups.component";
 import { deepLinkGuard } from "../../auth/guards/deep-link.guard";
 import { VaultModule } from "../../vault/org-vault/vault.module";
+
+import { GroupsComponent } from "./manage/groups.component";
 
 const routes: Routes = [
   {
@@ -47,7 +48,7 @@ const routes: Routes = [
         loadChildren: () => import("./members").then((m) => m.MembersModule),
       },
       {
-        component: NewGroupsComponent,
+        component: GroupsComponent,
         path: "groups",
         canActivate: [organizationPermissionsGuard(canAccessGroupsTab)],
         data: {

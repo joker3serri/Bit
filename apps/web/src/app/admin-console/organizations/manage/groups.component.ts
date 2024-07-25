@@ -71,9 +71,9 @@ const groupsFilter = (filter: string) => {
 };
 
 @Component({
-  templateUrl: "new-groups.component.html",
+  templateUrl: "groups.component.html",
 })
-export class NewGroupsComponent {
+export class GroupsComponent {
   loading = true;
   organizationId: string;
 
