@@ -147,11 +147,7 @@ export class LockComponent extends BaseLockComponent {
     let success;
     try {
       const available = await super.isBiometricUnlockAvailable();
-      this.logService.info("Biometric unlock available: " + available);
       if (!available) {
-        this.logService.info(
-          "Biometric unlock not available, automatic prompt: " + automaticPrompt,
-        );
         if (!automaticPrompt) {
           await this.dialogService.openSimpleDialog({
             type: "warning",
