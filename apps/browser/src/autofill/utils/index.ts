@@ -101,7 +101,7 @@ export function buildSvgDomElement(svgString: string, ariaHidden = true): HTMLEl
  * @param command - The command to send.
  * @param options - The options to send with the command.
  */
-export function sendExtensionMessage(
+export async function sendExtensionMessage(
   command: string,
   options: Record<string, any> = {},
 ): Promise<any> {

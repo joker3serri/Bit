@@ -410,18 +410,18 @@ export class AutofillInlineMenuContentService implements AutofillInlineMenuConte
       return;
     }
 
-    const isInlineMenuButtonVisible = await this.isInlineMenuButtonVisible();
+    const isInlineMenuListVisible = await this.isInlineMenuListVisible();
     if (
       !lastChild ||
       (lastChildIsInlineMenuList && secondToLastChildIsInlineMenuButton) ||
-      (lastChildIsInlineMenuButton && !isInlineMenuButtonVisible)
+      (lastChildIsInlineMenuButton && !isInlineMenuListVisible)
     ) {
       return;
     }
 
     if (
       (lastChildIsInlineMenuList && !secondToLastChildIsInlineMenuButton) ||
-      (lastChildIsInlineMenuButton && isInlineMenuButtonVisible)
+      (lastChildIsInlineMenuButton && isInlineMenuListVisible)
     ) {
       globalThis.document.body.insertBefore(this.buttonElement, this.listElement);
       return;
