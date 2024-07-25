@@ -91,7 +91,6 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
     this.extensionRefreshFlag = await this.configService.getFeatureFlag(
       FeatureFlag.ExtensionRefresh,
     );
-    this.extensionRefreshFlag = true; // TODO: remove this once done testing.
 
     const availableVaultTimeoutActions = await firstValueFrom(
       this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(),
