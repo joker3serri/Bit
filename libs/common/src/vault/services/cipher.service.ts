@@ -503,8 +503,8 @@ export class CipherService implements CipherServiceAbstraction {
   async getAllDecryptedCiphersOfType(type: CipherType[]): Promise<CipherView[]> {
     const ciphers = await this.getAllDecrypted();
     return ciphers
-      .sort((a, b) => this.sortCiphersByLastUsedThenName(a, b))
-      .filter((cipher) => cipher.deletedDate == null && type.includes(cipher.type));
+      .filter((cipher) => cipher.deletedDate == null && type.includes(cipher.type))
+      .sort((a, b) => this.sortCiphersByLastUsedThenName(a, b));
   }
 
   async getAllFromApiForOrganization(organizationId: string): Promise<CipherView[]> {

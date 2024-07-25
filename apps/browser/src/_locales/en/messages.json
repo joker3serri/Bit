@@ -1328,14 +1328,14 @@
   "commandOpenSidebar": {
     "message": "Open vault in sidebar"
   },
-  "commandAutofillDesc": {
-    "message": "Auto-fill the last used login for the current website"
+  "commandAutofillLoginDesc": {
+    "message": "Autofill the last used login for the current website"
   },
   "commandAutofillCardDesc": {
-    "message": "Auto-fill the last used card for the current website"
+    "message": "Autofill the last used card for the current website"
   },
   "commandAutofillIdentityDesc": {
-    "message": "Auto-fill the last used identity for the current website"
+    "message": "Autofill the last used identity for the current website"
   },
   "commandGeneratePasswordDesc": {
     "message": "Generate and copy a new random password to the clipboard"
