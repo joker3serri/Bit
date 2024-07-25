@@ -839,6 +839,7 @@ export default class MainBackground {
         this.sendService,
         this.sendApiService,
         messageListener,
+        this.stateProvider,
       );
     } else {
       this.syncService = new DefaultSyncService(
@@ -866,6 +867,7 @@ export default class MainBackground {
         this.billingAccountProfileStateService,
         this.tokenService,
         this.authService,
+        this.stateProvider,
       );
 
       this.syncServiceListener = new SyncServiceListener(
@@ -1380,7 +1382,6 @@ export default class MainBackground {
     );
 
     await Promise.all([
-      this.syncService.setLastSync(new Date(0), userBeingLoggedOut),
       this.cryptoService.clearKeys(userBeingLoggedOut),
       this.cipherService.clear(userBeingLoggedOut),
       this.folderService.clear(userBeingLoggedOut),
