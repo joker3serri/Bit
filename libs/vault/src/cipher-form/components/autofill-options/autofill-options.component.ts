@@ -6,6 +6,7 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { Subject, switchMap, take } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { UriMatchStrategySetting } from "@bitwarden/common/models/domain/domain-service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -61,6 +62,7 @@ export class AutofillOptionsComponent implements OnInit {
 
   autofillOptionsForm = this.formBuilder.group({
     uris: this.formBuilder.array<UriField>([]),
+    autofillOnPageLoad: [null as boolean],
   });
 
   protected get uriControls() {
@@ -68,6 +70,12 @@ export class AutofillOptionsComponent implements OnInit {
   }
 
   protected defaultMatchDetection$ = this.domainSettingsService.defaultUriMatchStrategy$;
+
+  protected autofillOptions: { label: string; value: boolean | null }[] = [
+    { label: this.i18nService.t("default"), value: null },
+    { label: this.i18nService.t("yes"), value: true },
+    { label: this.i18nService.t("no"), value: false },
+  ];
 
   /**
    * Emits when a new URI input is added to the form and should be focused.
@@ -80,6 +88,7 @@ export class AutofillOptionsComponent implements OnInit {
     private i18nService: I18nService,
     private liveAnnouncer: LiveAnnouncer,
     private domainSettingsService: DomainSettingsService,
+    private autofillSettingsService: AutofillSettingsServiceAbstraction,
   ) {
     this.cipherFormContainer.registerChildForm("autoFillOptions", this.autofillOptionsForm);
 
@@ -91,9 +100,12 @@ export class AutofillOptionsComponent implements OnInit {
             match: uri.matchDetection,
           } as LoginUriView),
         );
+        cipher.login.autofillOnPageLoad = value.autofillOnPageLoad;
         return cipher;
       });
     });
+
+    this.updateDefaultAutofillLabel();
 
     this.focusOnNewInput$
       .pipe(
@@ -127,6 +139,9 @@ export class AutofillOptionsComponent implements OnInit {
         matchDetection: uri.match,
       });
     });
+    this.autofillOptionsForm.patchValue({
+      autofillOnPageLoad: existingLogin.autofillOnPageLoad,
+    });
   }
 
   private initNewCipher() {
@@ -134,6 +149,25 @@ export class AutofillOptionsComponent implements OnInit {
       uri: this.cipherFormContainer.config.initialValues?.loginUri ?? null,
       matchDetection: null,
     });
+    this.autofillOptionsForm.patchValue({
+      autofillOnPageLoad: null,
+    });
+  }
+
+  private updateDefaultAutofillLabel() {
+    this.autofillSettingsService.autofillOnPageLoadDefault$
+      .pipe(takeUntilDestroyed())
+      .subscribe((value: boolean) => {
+        const defaultOption = this.autofillOptions.find((o) => o.value === value);
+
+        if (!defaultOption) {
+          return;
+        }
+
+        this.autofillOptions[0].label = this.i18nService.t("defaultLabel", defaultOption.label);
+        // Trigger change detection to update the label in the template
+        this.autofillOptions = [...this.autofillOptions];
+      });
   }
 
   /**

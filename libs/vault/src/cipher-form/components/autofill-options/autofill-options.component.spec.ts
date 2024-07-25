@@ -1,8 +1,9 @@
 import { LiveAnnouncer } from "@angular/cdk/a11y";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
+import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -21,12 +22,16 @@ describe("AutofillOptionsComponent", () => {
   let cipherFormContainer: MockProxy<CipherFormContainer>;
   let liveAnnouncer: MockProxy<LiveAnnouncer>;
   let domainSettingsService: MockProxy<DomainSettingsService>;
+  let autofillSettingsService: MockProxy<AutofillSettingsServiceAbstraction>;
 
   beforeEach(async () => {
     cipherFormContainer = mock<CipherFormContainer>();
     liveAnnouncer = mock<LiveAnnouncer>();
     domainSettingsService = mock<DomainSettingsService>();
     domainSettingsService.defaultUriMatchStrategy$ = new BehaviorSubject(null);
+
+    autofillSettingsService = mock<AutofillSettingsServiceAbstraction>();
+    autofillSettingsService.autofillOnPageLoadDefault$ = new BehaviorSubject(false);
 
     await TestBed.configureTestingModule({
       imports: [AutofillOptionsComponent],
@@ -38,6 +43,7 @@ describe("AutofillOptionsComponent", () => {
         },
         { provide: LiveAnnouncer, useValue: liveAnnouncer },
         { provide: DomainSettingsService, useValue: domainSettingsService },
+        { provide: AutofillSettingsServiceAbstraction, useValue: autofillSettingsService },
       ],
     }).compileComponents();
 
@@ -66,6 +72,7 @@ describe("AutofillOptionsComponent", () => {
 
     component.autofillOptionsForm.patchValue({
       uris: [{ uri: "https://example.com", matchDetection: UriMatchStrategy.Exact }],
+      autofillOnPageLoad: true,
     });
 
     expect(cipherFormContainer.patchCipher).toHaveBeenCalled();
@@ -79,6 +86,7 @@ describe("AutofillOptionsComponent", () => {
     } as LoginUriView);
 
     expect(updatedCipher.login.uris).toEqual([expectedUri]);
+    expect(updatedCipher.login.autofillOnPageLoad).toEqual(true);
   });
 
   it("disables 'autoFillOptionsForm' when in partial-edit mode", () => {
@@ -89,13 +97,14 @@ describe("AutofillOptionsComponent", () => {
     expect(component.autofillOptionsForm.disabled).toBe(true);
   });
 
-  it("initializes 'autoFillOptionsForm' with original login URIs", () => {
+  it("initializes 'autoFillOptionsForm' with original login view values", () => {
     const existingLogin = new LoginUriView();
     existingLogin.uri = "https://example.com";
     existingLogin.match = UriMatchStrategy.Exact;
 
     (cipherFormContainer.originalCipherView as CipherView) = new CipherView();
     cipherFormContainer.originalCipherView.login = {
+      autofillOnPageLoad: true,
       uris: [existingLogin],
     } as LoginView;
 
@@ -104,6 +113,7 @@ describe("AutofillOptionsComponent", () => {
     expect(component.autofillOptionsForm.value.uris).toEqual([
       { uri: "https://example.com", matchDetection: UriMatchStrategy.Exact },
     ]);
+    expect(component.autofillOptionsForm.value.autofillOnPageLoad).toEqual(true);
   });
 
   it("initializes 'autoFillOptionsForm' with initialValues when creating a new cipher", () => {
@@ -114,6 +124,7 @@ describe("AutofillOptionsComponent", () => {
     expect(component.autofillOptionsForm.value.uris).toEqual([
       { uri: "https://example.com", matchDetection: null },
     ]);
+    expect(component.autofillOptionsForm.value.autofillOnPageLoad).toEqual(null);
   });
 
   it("initializes 'autoFillOptionsForm' with an empty URI when creating a new cipher", () => {
@@ -124,15 +135,40 @@ describe("AutofillOptionsComponent", () => {
     expect(component.autofillOptionsForm.value.uris).toEqual([{ uri: null, matchDetection: null }]);
   });
 
-  it("announces the addition of a new URI input", () => {
+  it("updates the default autofill on page load label", () => {
+    fixture.detectChanges();
+    expect(component["autofillOptions"][0].label).toEqual("defaultLabel no");
+
+    (autofillSettingsService.autofillOnPageLoadDefault$ as BehaviorSubject<boolean>).next(true);
     fixture.detectChanges();
 
-    component.addUri(undefined, true);
+    expect(component["autofillOptions"][0].label).toEqual("defaultLabel yes");
+  });
 
+  it("announces the addition of a new URI input", fakeAsync(() => {
+    fixture.detectChanges();
+
+    // Mock the liveAnnouncer implementation so we can resolve it manually
+    let resolveAnnouncer: () => void;
+    jest.spyOn(liveAnnouncer, "announce").mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveAnnouncer = resolve;
+        }),
+    );
+
+    component.addUri(undefined, true);
     fixture.detectChanges();
 
     expect(liveAnnouncer.announce).toHaveBeenCalledWith("websiteAdded", "polite");
-  });
+
+    // Spy on the last URI input's focusInput method to ensure it is called
+    jest.spyOn(component["uriOptions"].last, "focusInput");
+    resolveAnnouncer(); // Resolve the liveAnnouncer promise so that focusOnNewInput$ pipe can continue
+    tick();
+
+    expect(component["uriOptions"].last.focusInput).toHaveBeenCalled();
+  }));
 
   it("removes URI input when remove() is called", () => {
     fixture.detectChanges();
