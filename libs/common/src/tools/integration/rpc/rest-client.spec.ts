@@ -66,6 +66,30 @@ describe("RestClient", () => {
     );
 
     it.each([
+      [401, null, null],
+      [401, undefined, undefined],
+      [401, undefined, null],
+      [403, null, null],
+      [403, undefined, undefined],
+      [403, undefined, null],
+    ])(
+      "throws an invalid token error when HTTP status is %i, message is %p, and error is %p",
+      async (status) => {
+        const client = new RestClient(api, i18n);
+        const request: IntegrationRequest = { website: null };
+        const response = mock<Response>({
+          status,
+          text: () => Promise.resolve(`{ "message": null, "error": null }`),
+        });
+        api.nativeFetch.mockResolvedValue(response);
+
+        const result = client.fetchJson(rpc, request);
+
+        await expect(result).rejects.toEqual("forwarderInvalidToken");
+      },
+    );
+
+    it.each([
       [401, "message"],
       [403, "message"],
       [401, "error"],
@@ -88,6 +112,29 @@ describe("RestClient", () => {
           "forwarderInvalidTokenWithMessage",
           "mock",
           "expected message",
+        );
+      },
+    );
+
+    it.each([[401], [403]])(
+      "throws an invalid token detailed error when HTTP status is %i and the payload has a %s",
+      async (status) => {
+        const client = new RestClient(api, i18n);
+        const request: IntegrationRequest = { website: null };
+        const response = mock<Response>({
+          status,
+          text: () =>
+            Promise.resolve(`{ "error": "that happened", "message": "expected message" }`),
+        });
+        api.nativeFetch.mockResolvedValue(response);
+
+        const result = client.fetchJson(rpc, request);
+
+        await expect(result).rejects.toEqual("forwarderInvalidTokenWithMessage");
+        expect(i18n.t).toHaveBeenCalledWith(
+          "forwarderInvalidTokenWithMessage",
+          "mock",
+          "that happened: expected message",
         );
       },
     );

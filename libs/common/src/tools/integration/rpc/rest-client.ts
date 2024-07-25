@@ -57,12 +57,11 @@ export class RestClient {
     }
 
     const json = JSON.parse(body);
-    if ("error" in json) {
-      return json.error;
-    } else if ("message" in json) {
-      return json.message;
-    }
+    const error = json.error?.toString() ?? null;
+    const message = json.message?.toString() ?? null;
 
-    return undefined;
+    const result = error && message ? `${error}: ${message}` : (error ?? message ?? undefined);
+
+    return result;
   }
 }
