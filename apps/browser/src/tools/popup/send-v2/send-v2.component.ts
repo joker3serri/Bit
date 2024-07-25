@@ -6,7 +6,7 @@ import { combineLatest } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
-import { ButtonModule, NoItemsModule } from "@bitwarden/components";
+import { ButtonModule, Icons, NoItemsModule } from "@bitwarden/components";
 import {
   NoSendsIcon,
   NewSendDropdownComponent,
@@ -55,9 +55,11 @@ export class SendV2Component implements OnInit, OnDestroy {
 
   protected sends$ = this.sendItemsService.filteredAndSortedSends$;
 
-  protected title: string = "allItems";
+  protected title: string = "allSends";
 
   protected noItemIcon = NoSendsIcon;
+
+  protected noResultsIcon = Icons.NoResults;
 
   constructor(
     protected sendItemsService: SendItemsService,
@@ -74,7 +76,7 @@ export class SendV2Component implements OnInit, OnDestroy {
         if (currentFilter?.sendType !== null) {
           this.title = `${this.sendType[currentFilter.sendType].toLowerCase()}Sends`;
         } else {
-          this.title = "allItems";
+          this.title = "allSends";
         }
 
         if (emptyList) {

@@ -64,13 +64,13 @@ export class SendListFiltersService {
   readonly sendTypes: ChipSelectOption<SendType>[] = [
     {
       value: SendType.File,
-      label: this.i18nService.t("file"),
-      icon: "bwi-globe",
+      label: this.i18nService.t("sendTYpeFile"),
+      icon: "bwi-file",
     },
     {
       value: SendType.Text,
-      label: this.i18nService.t("text"),
-      icon: "bwi-credit-card",
+      label: this.i18nService.t("sendTypeText"),
+      icon: "bwi-file-text",
     },
   ];
 

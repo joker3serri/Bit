@@ -18,9 +18,22 @@
       <tools-new-send-dropdown slot="button"></tools-new-send-dropdown>
     </bit-no-items>
   </div>
-  <app-send-search></app-send-search>
+
   <ng-container *ngIf="listState !== sendState.Empty">
-    <app-send-list-filters></app-send-list-filters>
+    <div
+      *ngIf="listState === sendState.NoResults"
+      class="tw-flex tw-flex-col tw-justify-center tw-h-auto tw-pt-12"
+    >
+      <bit-no-items [icon]="noResultsIcon">
+        <ng-container slot="title">{{ "noItemsMatchSearch" | i18n }}</ng-container>
+        <ng-container slot="description">{{ "clearFiltersOrTryAnother" | i18n }}</ng-container>
+      </bit-no-items>
+    </div>
     <app-send-list-items-container [headerText]="title | i18n" [sends]="sends$ | async" />
   </ng-container>
+
+  <div slot="above-scroll-area" class="tw-p-4" *ngIf="listState !== sendState.Empty">
+    <app-send-search></app-send-search>
+    <app-send-list-filters></app-send-list-filters>
+  </div>
 </popup-page>
