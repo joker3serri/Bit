@@ -21,6 +21,6 @@
   <app-send-search></app-send-search>
   <ng-container *ngIf="listState !== sendState.Empty">
     <app-send-list-filters></app-send-list-filters>
-    <app-send-list-items-container [sends]="filteredSends | async" />
+    <app-send-list-items-container [headerText]="title | i18n" [sends]="sends$ | async" />
   </ng-container>
 </popup-page>

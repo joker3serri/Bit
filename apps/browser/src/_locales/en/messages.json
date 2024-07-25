@@ -4002,5 +4002,11 @@
   },
   "itemLocation": {
     "message": "Item Location"
+  },
+  "fileSends": {
+    "message": "File Sends"
+  },
+  "textSends": {
+    "message": "Text Sends"
   }
 }

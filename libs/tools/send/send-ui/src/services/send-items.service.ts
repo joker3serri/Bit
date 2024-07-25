@@ -37,7 +37,12 @@ export class SendItemsService {
   latestSearchText$: Observable<string> = this._searchText$.asObservable();
   private _sendList$: Observable<SendView[]> = this.sendService.sendViews$;
 
-  filteredSends$: Observable<SendView[]> = combineLatest([
+  /**
+   * Observable that emits the list of sends, filtered and sorted based on the current search text and filters.
+   * The list is sorted alphabetically by send name.
+   * @readonly
+   */
+  filteredAndSortedSends$: Observable<SendView[]> = combineLatest([
     this._sendList$,
     this._searchText$,
     this.sendListFiltersService.filterFunction$,
@@ -48,6 +53,7 @@ export class SendItemsService {
       searchText,
     ]),
     map(([sends, searchText]) => this.searchService.searchSends(sends, searchText)),
+    map((sends) => sends.sort((a, b) => a.name.localeCompare(b.name))),
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
@@ -80,7 +86,9 @@ export class SendItemsService {
   /**
    * Observable that indicates whether there are no sends to show with the current filter.
    */
-  noFilteredResults$: Observable<boolean> = this.filteredSends$.pipe(map((sends) => !sends.length));
+  noFilteredResults$: Observable<boolean> = this.filteredAndSortedSends$.pipe(
+    map((sends) => !sends.length),
+  );
 
   constructor(
     private sendService: SendService,

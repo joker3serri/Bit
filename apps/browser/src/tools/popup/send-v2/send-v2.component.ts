@@ -14,6 +14,7 @@ import {
   SendItemsService,
   SendSearchComponent,
   SendListFiltersComponent,
+  SendListFiltersService,
 } from "@bitwarden/send-ui";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
@@ -52,17 +53,30 @@ export class SendV2Component implements OnInit, OnDestroy {
 
   protected listState: SendState | null = null;
 
-  protected filteredSends = this.sendItemsService.filteredSends$;
+  protected sends$ = this.sendItemsService.filteredAndSortedSends$;
+
+  protected title: string = "allItems";
 
   protected noItemIcon = NoSendsIcon;
 
   constructor(
     protected sendItemsService: SendItemsService,
+    protected sendListFiltersService: SendListFiltersService,
     private cdr: ChangeDetectorRef,
   ) {
-    combineLatest([this.sendItemsService.emptyList$, this.sendItemsService.noFilteredResults$])
+    combineLatest([
+      this.sendItemsService.emptyList$,
+      this.sendItemsService.noFilteredResults$,
+      this.sendListFiltersService.filters$,
+    ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([emptyList, noFilteredResults]) => {
+      .subscribe(([emptyList, noFilteredResults, currentFilter]) => {
+        if (currentFilter?.sendType !== null) {
+          this.title = `${this.sendType[currentFilter.sendType].toLowerCase()}Sends`;
+        } else {
+          this.title = "allItems";
+        }
+
         if (emptyList) {
           this.listState = SendState.Empty;
           return;

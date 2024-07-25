@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterLink } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { mock } from "jest-mock-extended";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -38,11 +38,6 @@ describe("SendV2Component", () => {
   let sendViews$: Observable<SendView[]>;
 
   beforeEach(async () => {
-    sendViews$ = of([
-      { id: "1", name: "Send A" },
-      { id: "2", name: "Send B" },
-    ] as SendView[]);
-
     await TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -86,16 +81,5 @@ describe("SendV2Component", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
-  });
-
-  it("should sort sends by name on initialization", async () => {
-    const sortedSends = [
-      { id: "1", name: "Send A" },
-      { id: "2", name: "Send B" },
-    ] as SendView[];
-
-    await component.ngOnInit();
-
-    expect(component.sends).toEqual(sortedSends);
   });
 });

@@ -45,16 +45,16 @@ describe("SendItemsService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("should update filteredSends$ when filterFunction$ changes", (done) => {
-    const sends = [
-      { id: "1", name: "Send 1", type: 1, disabled: false },
-      { id: "2", name: "Send 2", type: 2, disabled: false },
+  it("should update and sort filteredAndSortedSends$ when filterFunction$ changes", (done) => {
+    const unsortedSends = [
+      { id: "2", name: "Send B", type: 2, disabled: false },
+      { id: "1", name: "Send A", type: 1, disabled: false },
     ] as SendView[];
 
-    (sendServiceMock.sendViews$ as BehaviorSubject<SendView[]>).next(sends);
+    (sendServiceMock.sendViews$ as BehaviorSubject<SendView[]>).next([...unsortedSends]);
 
-    service.filteredSends$.subscribe((filteredSends) => {
-      expect(filteredSends).toEqual(sends);
+    service.filteredAndSortedSends$.subscribe((filteredAndSortedSends) => {
+      expect(filteredAndSortedSends).toEqual([unsortedSends[1], unsortedSends[0]]);
       done();
     });
   });
@@ -106,7 +106,7 @@ describe("SendItemsService", () => {
     service.applyFilter(searchText);
     const searchServiceSpy = jest.spyOn(searchServiceMock, "searchSends");
 
-    service.filteredSends$.subscribe(() => {
+    service.filteredAndSortedSends$.subscribe(() => {
       expect(searchServiceSpy).toHaveBeenCalledWith([], searchText);
       done();
     });
