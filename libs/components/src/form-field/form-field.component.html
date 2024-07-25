@@ -19,11 +19,7 @@
   <div
     class="tw-gap-1 tw-bg-background tw-rounded-lg tw-flex tw-min-h-11 [&:not(:has(button:enabled)):has(input:read-only)]:tw-bg-secondary-100 [&:not(:has(button:enabled)):has(textarea:read-only)]:tw-bg-secondary-100"
   >
-    <div
-      #prefixSlot
-      class="tw-flex tw-items-center tw-gap-1 tw-pl-3 tw-py-2"
-      [hidden]="!prefixHasChildren()"
-    >
+    <div class="tw-flex tw-items-center tw-gap-1 tw-pl-3 tw-py-2" [hidden]="!prefixHasChildren()">
       <ng-container *ngTemplateOutlet="prefixContent"></ng-container>
     </div>
     <div
@@ -35,11 +31,7 @@
     >
       <ng-container *ngTemplateOutlet="defaultContent"></ng-container>
     </div>
-    <div
-      #suffixSlot
-      class="tw-flex tw-items-center tw-gap-1 tw-pr-3 tw-py-2"
-      [hidden]="!suffixHasChildren()"
-    >
+    <div class="tw-flex tw-items-center tw-gap-1 tw-pr-3 tw-py-2" [hidden]="!suffixHasChildren()">
       <ng-container *ngTemplateOutlet="suffixContent"></ng-container>
     </div>
   </div>
@@ -89,21 +81,13 @@
         'tw-border-b-2 tw-border-primary-500': defaultContentIsFocused()
       }"
     >
-      <div
-        #prefixSlot
-        [hidden]="prefixSlot.childElementCount === 0"
-        class="tw-flex tw-items-center tw-gap-1 tw-pl-3 tw-py-2"
-      >
+      <div [hidden]="!prefixHasChildren()" class="tw-flex tw-items-center tw-gap-1 tw-pl-3 tw-py-2">
         <ng-container *ngTemplateOutlet="prefixContent"></ng-container>
       </div>
       <div class="default-content tw-w-full tw-pb-0 tw-relative [&>*]:tw-p-0">
         <ng-container *ngTemplateOutlet="defaultContent"></ng-container>
       </div>
-      <div
-        #suffixSlot
-        [hidden]="suffixSlot.childElementCount === 0"
-        class="tw-flex tw-items-center tw-gap-1 tw-pr-3 tw-py-2"
-      >
+      <div [hidden]="!suffixHasChildren()" class="tw-flex tw-items-center tw-gap-1 tw-pr-3 tw-py-2">
         <ng-container *ngTemplateOutlet="suffixContent"></ng-container>
       </div>
     </div>
