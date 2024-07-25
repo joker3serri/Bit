@@ -15,7 +15,7 @@
       bitIconButton="bwi-minus-circle"
       buttonType="danger"
       bitSuffix
-      [appA11yTitle]="'Delete URI'"
+      [appA11yTitle]="'deleteWebsite' | i18n"
       *ngIf="canRemove"
       (click)="removeUri()"
       data-testid="remove-uri-button"
@@ -23,7 +23,7 @@
   </bit-form-field>
 
   <bit-form-field *ngIf="showMatchDetection" class="!tw-mb-9 -tw-mt-4">
-    <bit-label>Match Detection</bit-label>
+    <bit-label>{{ "matchDetection" | i18n }}</bit-label>
     <bit-select formControlName="matchDetection" #matchDetectionSelect>
       <bit-option
         *ngFor="let o of uriMatchOptions"
