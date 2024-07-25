@@ -4,7 +4,7 @@ import {
   Component,
   ContentChild,
   ContentChildren,
-  EnvironmentInjector,
+  DestroyRef,
   HostBinding,
   HostListener,
   Input,
@@ -12,7 +12,6 @@ import {
   ViewChild,
   booleanAttribute,
   inject,
-  runInInjectionContext,
   signal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -41,7 +40,7 @@ export class BitFormFieldComponent implements AfterContentChecked, AfterContentI
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
 
-  private environmentInjector = inject(EnvironmentInjector);
+  private destroyRef = inject(DestroyRef);
 
   @Input({ transform: booleanAttribute })
   disableMargin = false;
@@ -124,22 +123,20 @@ export class BitFormFieldComponent implements AfterContentChecked, AfterContentI
       });
     }
 
-    runInInjectionContext(this.environmentInjector, () => {
-      if (this.prefixChildren) {
-        this.prefixChildren.changes
-          .pipe(startWith(this.prefixChildren), takeUntilDestroyed())
-          .subscribe(() => {
-            this.prefixHasChildren.set(this.prefixChildren.length > 0);
-          });
-      }
+    if (this.prefixChildren) {
+      this.prefixChildren.changes
+        .pipe(startWith(this.prefixChildren), takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.prefixHasChildren.set(this.prefixChildren.length > 0);
+        });
+    }
 
-      if (this.suffixChildren) {
-        this.suffixChildren.changes
-          .pipe(startWith(this.suffixChildren), takeUntilDestroyed())
-          .subscribe(() => {
-            this.suffixHasChildren.set(this.suffixChildren.length > 0);
-          });
-      }
-    });
+    if (this.suffixChildren) {
+      this.suffixChildren.changes
+        .pipe(startWith(this.suffixChildren), takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.suffixHasChildren.set(this.suffixChildren.length > 0);
+        });
+    }
   }
 }
