@@ -9,7 +9,7 @@ export type GeneratorNavigationPolicy = {
   /** The type of generator that should be shown by default when opening
    *  the password generator.
    */
-  defaultType?: GeneratorType;
+  overridePasswordType?: GeneratorType;
 };
 
 /** Reduces a policy into an accumulator by preferring the password generator
@@ -27,13 +27,15 @@ export function preferPassword(
     return acc;
   }
 
-  const isOverridable = acc.defaultType !== "password" && policy.data.defaultType;
-  const result = isOverridable ? { ...acc, defaultType: policy.data.defaultType } : acc;
+  const isOverridable = acc.overridePasswordType !== "password" && policy.data.overridePasswordType;
+  const result = isOverridable
+    ? { ...acc, overridePasswordType: policy.data.overridePasswordType }
+    : acc;
 
   return result;
 }
 
 /** The default options for password generation policy. */
 export const DisabledGeneratorNavigationPolicy: GeneratorNavigationPolicy = Object.freeze({
-  defaultType: undefined,
+  overridePasswordType: null,
 });
