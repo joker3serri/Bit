@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/auth/guards";
-import { featureFlaggedRoute } from "@bitwarden/angular/platform/utils/feature-flagged-route";
 import {
   canAccessOrgAdmin,
   canAccessGroupsTab,
@@ -12,12 +11,10 @@ import {
   canAccessSettingsTab,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { organizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { organizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
 import { OrganizationLayoutComponent } from "../../admin-console/organizations/layouts/organization-layout.component";
-import { GroupsComponent } from "../../admin-console/organizations/manage/groups.component";
 import { NewGroupsComponent } from "../../admin-console/organizations/manage/new-groups.component";
 import { deepLinkGuard } from "../../auth/guards/deep-link.guard";
 import { VaultModule } from "../../vault/org-vault/vault.module";
@@ -49,18 +46,14 @@ const routes: Routes = [
         path: "members",
         loadChildren: () => import("./members").then((m) => m.MembersModule),
       },
-      ...featureFlaggedRoute({
-        defaultComponent: GroupsComponent,
-        flaggedComponent: NewGroupsComponent,
-        featureFlag: FeatureFlag.GroupsComponentRefactor,
-        routeOptions: {
-          path: "groups",
-          canActivate: [organizationPermissionsGuard(canAccessGroupsTab)],
-          data: {
-            titleId: "groups",
-          },
+      {
+        component: NewGroupsComponent,
+        path: "groups",
+        canActivate: [organizationPermissionsGuard(canAccessGroupsTab)],
+        data: {
+          titleId: "groups",
         },
-      }),
+      },
       {
         path: "reporting",
         loadChildren: () =>
