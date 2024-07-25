@@ -6,8 +6,6 @@ import { AnonLayoutWrapperData } from "./anon-layout-wrapper.component";
 export class DefaultAnonLayoutWrapperDataService implements AnonLayoutWrapperDataService {
   private anonLayoutWrapperDataSubject = new Subject<AnonLayoutWrapperData>();
 
-  constructor() {}
-
   setAnonLayoutWrapperData(data: AnonLayoutWrapperData): void {
     this.anonLayoutWrapperDataSubject.next(data);
   }

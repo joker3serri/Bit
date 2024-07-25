@@ -2,6 +2,10 @@ import { Observable } from "rxjs";
 
 import { AnonLayoutWrapperData } from "./anon-layout-wrapper.component";
 
+/**
+ * A simple data service to allow any child components of the AnonLayoutWrapperComponent to override
+ * page route data and dynamically control the data fed into the AnonLayoutComponent via the AnonLayoutWrapperComponent.
+ */
 export abstract class AnonLayoutWrapperDataService {
   /**
    *
