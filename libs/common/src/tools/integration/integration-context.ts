@@ -17,7 +17,6 @@ export class IntegrationContext<Settings extends object> {
   ) {}
 
   /** Lookup the integration's baseUrl
-   *  @param settings settings that override the baseUrl.
    *  @returns the baseUrl for the API's integration point.
    *   - By default this is defined by the metadata
    *   - When a service allows self-hosting, this can be supplied by `settings`.
@@ -49,8 +48,8 @@ export class IntegrationContext<Settings extends object> {
   }
 
   /** look up a service API's authentication token
-   *  @param settings store the API token
    *  @param options.base64 when `true`, base64 encodes the result. Defaults to `false`.
+   *  @param options.suffix a string to append to the token. Defaults to empty.
    *  @returns the user's authentication token
    *  @throws a localized error message when the token is invalid.
    *  @remarks the string is thrown for backwards compatibility
@@ -58,7 +57,7 @@ export class IntegrationContext<Settings extends object> {
   authenticationToken(
     options: { base64?: boolean; suffix?: string } = null,
   ): Settings extends ApiSettings ? string : never {
-    let token = "token" in this.settings ? (this.settings.token as string) ?? "" : "";
+    let token = "token" in this.settings ? ((this.settings.token as string) ?? "") : "";
     token += options?.suffix ?? "";
 
     if (token === "") {
