@@ -126,10 +126,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       "inline-menu-list-action",
     );
     unlockButtonElement.textContent = this.getTranslation("unlockAccount");
-    unlockButtonElement.setAttribute(
-      "aria-label",
-      `${this.getTranslation("unlockAccount")}, ${this.getTranslation("opensInANewWindow")}`,
-    );
+    unlockButtonElement.setAttribute("aria-label", this.getTranslation("unlockAccountAria"));
     unlockButtonElement.prepend(buildSvgDomElement(lockIcon));
     unlockButtonElement.addEventListener(EVENTS.CLICK, this.handleUnlockButtonClick);
 
@@ -218,10 +215,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       "inline-menu-list-action",
     );
     this.newItemButtonElement.textContent = this.getNewItemButtonText();
-    this.newItemButtonElement.setAttribute(
-      "aria-label",
-      `${this.getNewItemAriaLabel()}, ${this.getTranslation("opensInANewWindow")}`,
-    );
+    this.newItemButtonElement.setAttribute("aria-label", this.getNewItemAriaLabel());
     this.newItemButtonElement.prepend(buildSvgDomElement(plusIcon));
     this.newItemButtonElement.addEventListener(EVENTS.CLICK, this.handeNewItemButtonClick);
 
@@ -564,7 +558,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       if (username) {
         fillCipherElement.setAttribute(
           "aria-description",
-          `${this.getTranslation("username")}, ${username}`,
+          `${this.getTranslation("username")}: ${username}`,
         );
       }
       return;

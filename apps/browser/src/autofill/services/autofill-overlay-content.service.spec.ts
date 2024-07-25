@@ -37,9 +37,10 @@ describe("AutofillOverlayContentService", () => {
     );
     autofillInit = new AutofillInit(autofillOverlayContentService);
     autofillInit.init();
-    sendExtensionMessageSpy = jest
-      .spyOn(autofillOverlayContentService as any, "sendExtensionMessage")
-      .mockResolvedValue(undefined);
+    sendExtensionMessageSpy = jest.spyOn(
+      autofillOverlayContentService as any,
+      "sendExtensionMessage",
+    );
     Object.defineProperty(document, "readyState", {
       value: defaultWindowReadyState,
       writable: true,
