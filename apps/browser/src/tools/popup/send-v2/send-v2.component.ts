@@ -88,6 +88,8 @@ export class SendV2Component implements OnInit, OnDestroy {
           this.listState = SendState.NoResults;
           return;
         }
+
+        this.listState = null;
         this.cdr.detectChanges();
       });
   }
