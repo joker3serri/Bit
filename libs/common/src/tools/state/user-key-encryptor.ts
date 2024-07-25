@@ -14,23 +14,24 @@ import { UserEncryptor } from "./user-encryptor.abstraction";
  */
 export class UserKeyEncryptor extends UserEncryptor {
   /** Instantiates the encryptor
+   *  @param userId identifies the user bound to the encryptor.
    *  @param encryptService protects properties of `Secret`.
    *  @param keyService looks up the user key when protecting data.
    *  @param dataPacker packs and unpacks data classified as secrets.
    */
   constructor(
-    readonly id: UserId,
+    readonly userId: UserId,
     private readonly encryptService: EncryptService,
     private readonly key: UserKey,
     private readonly dataPacker: DataPacker,
   ) {
     super();
+    this.assertHasValue("userId", userId);
     this.assertHasValue("key", key);
     this.assertHasValue("dataPacker", dataPacker);
     this.assertHasValue("encryptService", encryptService);
   }
 
-  /** {@link UserEncryptor.encrypt} */
   async encrypt<Secret>(secret: Jsonify<Secret>): Promise<EncString> {
     this.assertHasValue("secret", secret);
 
@@ -41,7 +42,6 @@ export class UserKeyEncryptor extends UserEncryptor {
     return encrypted;
   }
 
-  /** {@link UserEncryptor.decrypt} */
   async decrypt<Secret>(secret: EncString): Promise<Jsonify<Secret>> {
     this.assertHasValue("secret", secret);
 

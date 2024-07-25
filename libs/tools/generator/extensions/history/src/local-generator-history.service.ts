@@ -131,9 +131,7 @@ export class LocalGeneratorHistoryService extends GeneratorHistoryService {
       this.keyService,
       this.encryptService,
     );
-    const decryptor$ = this.keyService
-      .getInMemoryUserKeyFor$(userId)
-      .pipe(map((key) => key && decryptor));
+    const decryptor$ = this.keyService.userKey$(userId).pipe(map((key) => key && decryptor));
 
     // move data from the old password history once decryptor is available
     const buffer = new BufferedState(

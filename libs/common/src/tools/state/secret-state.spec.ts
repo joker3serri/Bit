@@ -1,5 +1,5 @@
 import { mock } from "jest-mock-extended";
-import { firstValueFrom, from, Observable, of } from "rxjs";
+import { BehaviorSubject, firstValueFrom, from, Observable } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import {
@@ -43,7 +43,7 @@ function mockEncryptor<T>(fooBar: T[] = []): Observable<UserEncryptor> {
     fooBar.map((fb) => [toKey(fb as any).encryptedString, toValue(fb)] as const),
   );
 
-  const result = mock<UserEncryptor>({
+  const result: UserEncryptor = mock<UserEncryptor>({
     encrypt<T>(value: Jsonify<T>) {
       const encString = toKey(value as any);
       encrypted.set(encString.encryptedString, toValue(value));
@@ -66,9 +66,9 @@ function mockEncryptor<T>(fooBar: T[] = []): Observable<UserEncryptor> {
     return JSON.parse(JSON.stringify(value));
   }
 
-  // typescript pops a false positive about missing `encrypt` and `decrypt`
-  // functions, so assert the type manually.
-  return of(result as unknown as UserEncryptor);
+  // wrap in a behavior subject to ensure a value is always available
+  const encryptor$ = new BehaviorSubject(result).asObservable();
+  return encryptor$;
 }
 
 async function fakeStateProvider() {

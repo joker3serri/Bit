@@ -1,4 +1,4 @@
-import { Observable, map, concatMap, share, ReplaySubject, timer, combineLatest } from "rxjs";
+import { Observable, map, concatMap, share, ReplaySubject, timer, combineLatest, of } from "rxjs";
 
 import { EncString } from "../../platform/models/domain/enc-string";
 import {
@@ -171,6 +171,11 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
     configureState: (state: Outer, dependencies: TCombine) => Outer,
     options: StateUpdateOptions<Outer, TCombine> = null,
   ): Promise<Outer> {
+    const combineLatestWith = combineLatest([
+      options?.combineLatestWith ?? of(null),
+      this.$encryptor,
+    ]);
+
     // read the backing store
     let latestClassified: ClassifiedFormat<Id, Disclosed>[];
     let latestCombined: TCombine;
@@ -181,7 +186,7 @@ export class SecretState<Outer, Id, Plaintext extends object, Disclosed, Secret>
         [latestCombined, latestEncryptor] = combined;
         return false;
       },
-      combineLatestWith: combineLatest([options?.combineLatestWith, this.$encryptor]),
+      combineLatestWith,
     });
 
     // exit early if there's no update to apply

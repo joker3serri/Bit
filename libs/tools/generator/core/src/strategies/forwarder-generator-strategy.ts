@@ -83,9 +83,7 @@ export abstract class ForwarderGeneratorStrategy<
     >(userId, key, this.stateProvider, encryptor$);
 
     // rollover should occur once the user key is available for decryption
-    const canDecrypt$ = this.keyService
-      .getInMemoryUserKeyFor$(userId)
-      .pipe(map((key) => key !== null));
+    const canDecrypt$ = this.keyService.userKey$(userId).pipe(map((key) => key !== null));
     const rolloverState = new BufferedState(
       this.stateProvider,
       this.rolloverKey,

@@ -59,7 +59,7 @@ describe("ForwarderGeneratorStrategy", () => {
 
   beforeEach(() => {
     const keyAvailable = of({} as UserKey);
-    keyService.getInMemoryUserKeyFor$.mockReturnValue(keyAvailable);
+    keyService.userKey$.mockReturnValue(keyAvailable);
   });
 
   afterEach(() => {
