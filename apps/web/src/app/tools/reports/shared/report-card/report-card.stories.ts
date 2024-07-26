@@ -34,6 +34,8 @@ export default {
 
 type Story = StoryObj<ReportCardComponent>;
 
+export const Enabled: Story = {};
+
 export const RequiresPremium: Story = {
   args: {
     variant: ReportVariant.RequiresPremium,
