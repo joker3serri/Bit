@@ -46,6 +46,8 @@ class QueryParams {
     this.organizationId = params.organizationId;
     this.collectionId = params.collectionId;
     this.uri = params.uri;
+    this.username = params.username;
+    this.name = params.name;
   }
 
   /**
@@ -82,6 +84,16 @@ class QueryParams {
    * Optional URI to pre-fill for login ciphers.
    */
   uri?: string;
+
+  /**
+   * Optional username to pre-fill for login/identity ciphers.
+   */
+  username?: string;
+
+  /**
+   * Optional name to pre-fill for the cipher.
+   */
+  name?: string;
 }
 
 export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
@@ -260,6 +272,12 @@ export class AddEditV2Component implements OnInit {
     }
     if (params.uri) {
       config.initialValues.loginUri = params.uri;
+    }
+    if (params.username) {
+      config.initialValues.username = params.username;
+    }
+    if (params.name) {
+      config.initialValues.name = params.name;
     }
   }
 
