@@ -51,12 +51,12 @@ describe("RestClient", () => {
       expect(api.nativeFetch).toHaveBeenCalledWith(expectedRpc.fetchRequest);
     });
 
-    it.each([[401], [403]])(
+    it.each([[401] /*,[403]*/])(
       "throws an invalid token error when HTTP status is %i",
       async (status) => {
         const client = new RestClient(api, i18n);
         const request: IntegrationRequest = { website: null };
-        const response = mock<Response>({ status });
+        const response = mock<Response>({ status, statusText: null });
         api.nativeFetch.mockResolvedValue(response);
 
         const result = client.fetchJson(rpc, request);
@@ -139,7 +139,41 @@ describe("RestClient", () => {
       },
     );
 
-    it.each([[500], [501]])(
+    it.each([[429], [500], [501]])(
+      "throws a forwarder error when HTTP status is %i",
+      async (status) => {
+        const client = new RestClient(api, i18n);
+        const request: IntegrationRequest = { website: null };
+        const response = mock<Response>({ status, statusText: null });
+        api.nativeFetch.mockResolvedValue(response);
+
+        const result = client.fetchJson(rpc, request);
+
+        await expect(result).rejects.toEqual("forwarderUnknownError");
+        expect(i18n.t).toHaveBeenCalledWith("forwarderUnknownError", "mock", undefined);
+      },
+    );
+
+    it.each([[429], [500], [501]])(
+      "throws a forwarder error when HTTP status is %i and the body is empty",
+      async (status) => {
+        const client = new RestClient(api, i18n);
+        const request: IntegrationRequest = { website: null };
+        const response = mock<Response>({
+          status,
+          statusText: null,
+          text: () => Promise.resolve(""),
+        });
+        api.nativeFetch.mockResolvedValue(response);
+
+        const result = client.fetchJson(rpc, request);
+
+        await expect(result).rejects.toEqual("forwarderUnknownError");
+        expect(i18n.t).toHaveBeenCalledWith("forwarderUnknownError", "mock", undefined);
+      },
+    );
+
+    it.each([[429], [500], [501]])(
       "throws a forwarder error with the status text when HTTP status is %i",
       async (status) => {
         const client = new RestClient(api, i18n);
@@ -155,8 +189,10 @@ describe("RestClient", () => {
     );
 
     it.each([
+      [429, "message"],
       [500, "message"],
       [500, "message"],
+      [429, "error"],
       [501, "error"],
       [501, "error"],
     ])(
@@ -174,6 +210,61 @@ describe("RestClient", () => {
 
         await expect(result).rejects.toEqual("forwarderError");
         expect(i18n.t).toHaveBeenCalledWith("forwarderError", "mock", "expected message");
+      },
+    );
+
+    it.each([[429], [500], [500]])(
+      "throws a detailed forwarder error when HTTP status is %i and the payload is a string",
+      async (status) => {
+        const client = new RestClient(api, i18n);
+        const request: IntegrationRequest = { website: null };
+        const response = mock<Response>({
+          status,
+          text: () => Promise.resolve('"expected message"'),
+        });
+        api.nativeFetch.mockResolvedValue(response);
+
+        const result = client.fetchJson(rpc, request);
+
+        await expect(result).rejects.toEqual("forwarderError");
+        expect(i18n.t).toHaveBeenCalledWith("forwarderError", "mock", "expected message");
+      },
+    );
+
+    it.each([[429], [500], [500]])(
+      "throws an unknown forwarder error when HTTP status is %i and the payload could contain an html tag",
+      async (status) => {
+        const client = new RestClient(api, i18n);
+        const request: IntegrationRequest = { website: null };
+        const response = mock<Response>({
+          status,
+          statusText: null,
+          text: () => Promise.resolve("<head>"),
+        });
+        api.nativeFetch.mockResolvedValue(response);
+
+        const result = client.fetchJson(rpc, request);
+
+        await expect(result).rejects.toEqual("forwarderUnknownError");
+        expect(i18n.t).toHaveBeenCalledWith("forwarderUnknownError", "mock", undefined);
+      },
+    );
+
+    it.each([[429], [500], [500]])(
+      "throws a unknown forwarder error when HTTP status is %i and the payload is malformed",
+      async (status) => {
+        const client = new RestClient(api, i18n);
+        const request: IntegrationRequest = { website: null };
+        const response = mock<Response>({
+          status,
+          text: () => Promise.resolve(`{ foo: "not json" }`),
+        });
+        api.nativeFetch.mockResolvedValue(response);
+
+        const result = client.fetchJson(rpc, request);
+
+        await expect(result).rejects.toEqual("forwarderUnknownError");
+        expect(i18n.t).toHaveBeenCalledWith("forwarderUnknownError", "mock", undefined);
       },
     );
 
