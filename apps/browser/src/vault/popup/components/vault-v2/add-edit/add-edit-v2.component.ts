@@ -40,7 +40,7 @@ import { OpenAttachmentsComponent } from "../attachments/open-attachments/open-a
 class QueryParams {
   constructor(params: Params) {
     this.cipherId = params.cipherId;
-    this.type = parseInt(params.type, null);
+    this.type = params.type != undefined ? parseInt(params.type, null) : undefined;
     this.clone = params.clone === "true";
     this.folderId = params.folderId;
     this.organizationId = params.organizationId;
@@ -56,7 +56,7 @@ class QueryParams {
   /**
    * The type of cipher to create.
    */
-  type: CipherType;
+  type?: CipherType;
 
   /**
    * Whether to clone the cipher.
