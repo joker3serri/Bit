@@ -8,7 +8,6 @@ import {
   OrganizationUserInviteRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
-  OrganizationUserUpdateGroupsRequest,
   OrganizationUserUpdateRequest,
 } from "./requests";
 import {
@@ -66,6 +65,16 @@ export abstract class OrganizationUserService {
     organizationId: string,
     id: string,
   ): Promise<OrganizationUserResetPasswordDetailsResponse>;
+
+  /**
+   * Retrieve reset password details for many organization users
+   * @param organizationId - Identifier for the organization
+   * @param ids - A list of organization user identifiers
+   */
+  abstract getManyOrganizationUserAccountRecoveryDetails(
+    organizationId: string,
+    ids: string[],
+  ): Promise<ListResponse<OrganizationUserResetPasswordDetailsResponse>>;
 
   /**
    * Create new organization user invite(s) for the specified organization
@@ -163,18 +172,6 @@ export abstract class OrganizationUserService {
     organizationId: string,
     id: string,
     request: OrganizationUserUpdateRequest,
-  ): Promise<void>;
-
-  /**
-   * Update an organization user's groups
-   * @param organizationId - Identifier for the organization the user belongs to
-   * @param id - Organization user identifier
-   * @param groupIds - List of group ids to associate the user with
-   */
-  abstract putOrganizationUserGroups(
-    organizationId: string,
-    id: string,
-    groupIds: OrganizationUserUpdateGroupsRequest,
   ): Promise<void>;
 
   /**

@@ -15,11 +15,11 @@ import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 import { BrowserComponentState } from "../../../models/browserComponentState";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
-import { BrowserStateService } from "../../../platform/services/abstractions/browser-state.service";
+import { BrowserSendStateService } from "../services/browser-send-state.service";
 
 const ComponentId = "SendTypeComponent";
 
@@ -42,7 +42,7 @@ export class SendTypeComponent extends BaseSendComponent {
     ngZone: NgZone,
     policyService: PolicyService,
     searchService: SearchService,
-    private stateService: BrowserStateService,
+    private stateService: BrowserSendStateService,
     private route: ActivatedRoute,
     private location: Location,
     private changeDetectorRef: ChangeDetectorRef,
@@ -51,6 +51,7 @@ export class SendTypeComponent extends BaseSendComponent {
     logService: LogService,
     sendApiService: SendApiService,
     dialogService: DialogService,
+    toastService: ToastService,
   ) {
     super(
       sendService,
@@ -63,6 +64,7 @@ export class SendTypeComponent extends BaseSendComponent {
       logService,
       sendApiService,
       dialogService,
+      toastService,
     );
     super.onSuccessfulLoad = async () => {
       this.selectType(this.type);

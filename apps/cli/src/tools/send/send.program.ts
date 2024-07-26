@@ -7,10 +7,9 @@ import { program, Command, OptionValues } from "commander";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 
-import { Main } from "../../bw";
+import { BaseProgram } from "../../base-program";
 import { GetCommand } from "../../commands/get.command";
 import { Response } from "../../models/response";
-import { Program } from "../../program";
 import { CliUtils } from "../../utils";
 
 import {
@@ -28,12 +27,8 @@ import { SendResponse } from "./models/send.response";
 
 const writeLn = CliUtils.writeLn;
 
-export class SendProgram extends Program {
-  constructor(main: Main) {
-    super(main);
-  }
-
-  async register() {
+export class SendProgram extends BaseProgram {
+  register() {
     program.addCommand(this.sendCommand());
     // receive is accessible both at `bw receive` and `bw send receive`
     program.addCommand(this.receiveCommand());
@@ -105,12 +100,12 @@ export class SendProgram extends Program {
       })
       .action(async (url: string, options: OptionValues) => {
         const cmd = new SendReceiveCommand(
-          this.main.apiService,
-          this.main.cryptoService,
-          this.main.cryptoFunctionService,
-          this.main.platformUtilsService,
-          this.main.environmentService,
-          this.main.sendApiService,
+          this.serviceContainer.apiService,
+          this.serviceContainer.cryptoService,
+          this.serviceContainer.cryptoFunctionService,
+          this.serviceContainer.platformUtilsService,
+          this.serviceContainer.environmentService,
+          this.serviceContainer.sendApiService,
         );
         const response = await cmd.run(url, options);
         this.processResponse(response);
@@ -127,9 +122,9 @@ export class SendProgram extends Program {
       .action(async (options: OptionValues) => {
         await this.exitIfLocked();
         const cmd = new SendListCommand(
-          this.main.sendService,
-          this.main.environmentService,
-          this.main.searchService,
+          this.serviceContainer.sendService,
+          this.serviceContainer.environmentService,
+          this.serviceContainer.searchService,
         );
         const response = await cmd.run(options);
         this.processResponse(response);
@@ -142,17 +137,18 @@ export class SendProgram extends Program {
       .description("Get json templates for send objects")
       .action(async (object) => {
         const cmd = new GetCommand(
-          this.main.cipherService,
-          this.main.folderService,
-          this.main.collectionService,
-          this.main.totpService,
-          this.main.auditService,
-          this.main.cryptoService,
-          this.main.stateService,
-          this.main.searchService,
-          this.main.apiService,
-          this.main.organizationService,
-          this.main.eventCollectionService,
+          this.serviceContainer.cipherService,
+          this.serviceContainer.folderService,
+          this.serviceContainer.collectionService,
+          this.serviceContainer.totpService,
+          this.serviceContainer.auditService,
+          this.serviceContainer.cryptoService,
+          this.serviceContainer.stateService,
+          this.serviceContainer.searchService,
+          this.serviceContainer.apiService,
+          this.serviceContainer.organizationService,
+          this.serviceContainer.eventCollectionService,
+          this.serviceContainer.billingAccountProfileStateService,
         );
         const response = await cmd.run("template", object, null);
         this.processResponse(response);
@@ -187,10 +183,10 @@ export class SendProgram extends Program {
       .action(async (id: string, options: OptionValues) => {
         await this.exitIfLocked();
         const cmd = new SendGetCommand(
-          this.main.sendService,
-          this.main.environmentService,
-          this.main.searchService,
-          this.main.cryptoService,
+          this.serviceContainer.sendService,
+          this.serviceContainer.environmentService,
+          this.serviceContainer.searchService,
+          this.serviceContainer.cryptoService,
         );
         const response = await cmd.run(id, options);
         this.processResponse(response);
@@ -246,16 +242,16 @@ export class SendProgram extends Program {
       .action(async (encodedJson: string, options: OptionValues) => {
         await this.exitIfLocked();
         const getCmd = new SendGetCommand(
-          this.main.sendService,
-          this.main.environmentService,
-          this.main.searchService,
-          this.main.cryptoService,
+          this.serviceContainer.sendService,
+          this.serviceContainer.environmentService,
+          this.serviceContainer.searchService,
+          this.serviceContainer.cryptoService,
         );
         const cmd = new SendEditCommand(
-          this.main.sendService,
-          this.main.stateService,
+          this.serviceContainer.sendService,
           getCmd,
-          this.main.sendApiService,
+          this.serviceContainer.sendApiService,
+          this.serviceContainer.billingAccountProfileStateService,
         );
         const response = await cmd.run(encodedJson, options);
         this.processResponse(response);
@@ -268,7 +264,10 @@ export class SendProgram extends Program {
       .description("delete a Send")
       .action(async (id: string) => {
         await this.exitIfLocked();
-        const cmd = new SendDeleteCommand(this.main.sendService, this.main.sendApiService);
+        const cmd = new SendDeleteCommand(
+          this.serviceContainer.sendService,
+          this.serviceContainer.sendApiService,
+        );
         const response = await cmd.run(id);
         this.processResponse(response);
       });
@@ -281,9 +280,9 @@ export class SendProgram extends Program {
       .action(async (id: string) => {
         await this.exitIfLocked();
         const cmd = new SendRemovePasswordCommand(
-          this.main.sendService,
-          this.main.sendApiService,
-          this.main.environmentService,
+          this.serviceContainer.sendService,
+          this.serviceContainer.sendApiService,
+          this.serviceContainer.environmentService,
         );
         const response = await cmd.run(id);
         this.processResponse(response);
@@ -322,10 +321,10 @@ export class SendProgram extends Program {
   private async runCreate(encodedJson: string, options: OptionValues) {
     await this.exitIfLocked();
     const cmd = new SendCreateCommand(
-      this.main.sendService,
-      this.main.stateService,
-      this.main.environmentService,
-      this.main.sendApiService,
+      this.serviceContainer.sendService,
+      this.serviceContainer.environmentService,
+      this.serviceContainer.sendApiService,
+      this.serviceContainer.billingAccountProfileStateService,
     );
     return await cmd.run(encodedJson, options);
   }

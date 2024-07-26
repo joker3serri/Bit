@@ -1,6 +1,5 @@
 const path = require("path");
 const webpack = require("webpack");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -67,8 +66,7 @@ const moduleRules = [
       {
         loader: "babel-loader",
         options: {
-          configFile: false,
-          plugins: ["@angular/compiler-cli/linker/babel"],
+          configFile: "../../babel.config.json",
         },
       },
     ],
@@ -108,12 +106,27 @@ const plugins = [
     chunks: ["notification/bar"],
   }),
   new HtmlWebpackPlugin({
-    template: "./src/autofill/overlay/pages/button/button.html",
+    template: "./src/autofill/overlay/inline-menu/pages/button/button.html",
+    filename: "overlay/menu-button.html",
+    chunks: ["overlay/menu-button"],
+  }),
+  new HtmlWebpackPlugin({
+    template: "./src/autofill/overlay/inline-menu/pages/list/list.html",
+    filename: "overlay/menu-list.html",
+    chunks: ["overlay/menu-list"],
+  }),
+  new HtmlWebpackPlugin({
+    template: "./src/autofill/overlay/inline-menu/pages/menu-container/menu-container.html",
+    filename: "overlay/menu.html",
+    chunks: ["overlay/menu"],
+  }),
+  new HtmlWebpackPlugin({
+    template: "./src/autofill/deprecated/overlay/pages/button/legacy-button.html",
     filename: "overlay/button.html",
     chunks: ["overlay/button"],
   }),
   new HtmlWebpackPlugin({
-    template: "./src/autofill/overlay/pages/list/list.html",
+    template: "./src/autofill/deprecated/overlay/pages/list/legacy-list.html",
     filename: "overlay/list.html",
     chunks: ["overlay/list"],
   }),
@@ -137,9 +150,6 @@ const plugins = [
     tsConfigPath: "tsconfig.json",
     entryModule: "src/popup/app.module#AppModule",
     sourceMap: true,
-  }),
-  new CleanWebpackPlugin({
-    cleanAfterEveryBuildPatterns: ["!popup/fonts/**/*"],
   }),
   new webpack.ProvidePlugin({
     process: "process/browser.js",
@@ -166,19 +176,29 @@ const mainConfig = {
       "./src/autofill/content/trigger-autofill-script-injection.ts",
     "content/bootstrap-autofill": "./src/autofill/content/bootstrap-autofill.ts",
     "content/bootstrap-autofill-overlay": "./src/autofill/content/bootstrap-autofill-overlay.ts",
+    "content/bootstrap-legacy-autofill-overlay":
+      "./src/autofill/deprecated/content/bootstrap-legacy-autofill-overlay.ts",
     "content/autofiller": "./src/autofill/content/autofiller.ts",
     "content/notificationBar": "./src/autofill/content/notification-bar.ts",
     "content/contextMenuHandler": "./src/autofill/content/context-menu-handler.ts",
     "content/content-message-handler": "./src/autofill/content/content-message-handler.ts",
-    "content/fido2/trigger-fido2-content-script-injection":
-      "./src/vault/fido2/content/trigger-fido2-content-script-injection.ts",
-    "content/fido2/content-script": "./src/vault/fido2/content/content-script.ts",
-    "content/fido2/page-script": "./src/vault/fido2/content/page-script.ts",
+    "content/fido2-content-script": "./src/autofill/fido2/content/fido2-content-script.ts",
+    "content/fido2-page-script": "./src/autofill/fido2/content/fido2-page-script.ts",
     "notification/bar": "./src/autofill/notification/bar.ts",
-    "overlay/button": "./src/autofill/overlay/pages/button/bootstrap-autofill-overlay-button.ts",
-    "overlay/list": "./src/autofill/overlay/pages/list/bootstrap-autofill-overlay-list.ts",
+    "overlay/menu-button":
+      "./src/autofill/overlay/inline-menu/pages/button/bootstrap-autofill-inline-menu-button.ts",
+    "overlay/menu-list":
+      "./src/autofill/overlay/inline-menu/pages/list/bootstrap-autofill-inline-menu-list.ts",
+    "overlay/menu":
+      "./src/autofill/overlay/inline-menu/pages/menu-container/bootstrap-autofill-inline-menu-container.ts",
+    "overlay/button":
+      "./src/autofill/deprecated/overlay/pages/button/bootstrap-autofill-overlay-button.deprecated.ts",
+    "overlay/list":
+      "./src/autofill/deprecated/overlay/pages/list/bootstrap-autofill-overlay-list.deprecated.ts",
     "encrypt-worker": "../../libs/common/src/platform/services/cryptography/encrypt.worker.ts",
     "content/lp-fileless-importer": "./src/tools/content/lp-fileless-importer.ts",
+    "content/send-on-installed-message": "./src/vault/content/send-on-installed-message.ts",
+    "content/lp-suppress-import-download": "./src/tools/content/lp-suppress-import-download.ts",
   },
   optimization: {
     minimize: ENV !== "development",
@@ -242,6 +262,7 @@ const mainConfig = {
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "build"),
+    clean: true,
   },
   module: {
     noParse: /\.wasm$/,
@@ -276,12 +297,26 @@ if (manifestVersion == 2) {
   // Manifest V2 background pages can be run through the regular build pipeline.
   // Since it's a standard webpage.
   mainConfig.entry.background = "./src/platform/background.ts";
+  mainConfig.entry["content/lp-suppress-import-download-script-append-mv2"] =
+    "./src/tools/content/lp-suppress-import-download-script-append.mv2.ts";
+  mainConfig.entry["content/fido2-page-script-append-mv2"] =
+    "./src/autofill/fido2/content/fido2-page-script-append.mv2.ts";
 
   configs.push(mainConfig);
 } else {
   // Manifest v3 needs an extra helper for utilities in the content script.
   // The javascript output of this should be added to manifest.v3.json
   mainConfig.entry["content/misc-utils"] = "./src/autofill/content/misc-utils.ts";
+  mainConfig.entry["offscreen-document/offscreen-document"] =
+    "./src/platform/offscreen-document/offscreen-document.ts";
+
+  mainConfig.plugins.push(
+    new HtmlWebpackPlugin({
+      template: "./src/platform/offscreen-document/index.html",
+      filename: "offscreen-document/index.html",
+      chunks: ["offscreen-document/offscreen-document"],
+    }),
+  );
 
   /**
    * @type {import("webpack").Configuration}

@@ -1,5 +1,4 @@
-import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -27,6 +26,8 @@ export class VaultCipherRowComponent {
   @Input() organizations: Organization[];
   @Input() collections: CollectionView[];
   @Input() viewingOrgVault: boolean;
+  @Input() canEditCipher: boolean;
+  @Input() vaultBulkManagementActionEnabled: boolean;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
@@ -34,16 +35,6 @@ export class VaultCipherRowComponent {
   @Output() checkedToggled = new EventEmitter<void>();
 
   protected CipherType = CipherType;
-
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-  ) {}
-
-  @HostBinding("class")
-  get classes() {
-    return [].concat(this.disabled ? [] : ["tw-cursor-pointer"]);
-  }
 
   protected get showTotpCopyButton() {
     return (
@@ -56,14 +47,51 @@ export class VaultCipherRowComponent {
     return this.cipher.hasOldAttachments && this.cipher.organizationId == null;
   }
 
-  @HostListener("click")
-  protected click() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate([], {
-      queryParams: { itemId: this.cipher.id },
-      queryParamsHandling: "merge",
-    });
+  protected get showAttachments() {
+    return this.canEditCipher || this.cipher.attachments?.length > 0;
+  }
+
+  protected get showAssignToCollections() {
+    return this.canEditCipher && !this.cipher.isDeleted;
+  }
+
+  protected get showClone() {
+    return this.cloneable && !this.cipher.isDeleted;
+  }
+
+  protected get showEventLogs() {
+    return this.useEvents && this.cipher.organizationId;
+  }
+
+  protected get isNotDeletedLoginCipher() {
+    return this.cipher.type === this.CipherType.Login && !this.cipher.isDeleted;
+  }
+
+  protected get showCopyPassword(): boolean {
+    return this.isNotDeletedLoginCipher && this.cipher.viewPassword;
+  }
+
+  protected get showCopyTotp(): boolean {
+    return this.isNotDeletedLoginCipher && this.showTotpCopyButton;
+  }
+
+  protected get showLaunchUri(): boolean {
+    return this.isNotDeletedLoginCipher && this.cipher.login.canLaunch;
+  }
+
+  protected get disableMenu() {
+    return (
+      !(
+        this.isNotDeletedLoginCipher ||
+        this.showCopyPassword ||
+        this.showCopyTotp ||
+        this.showLaunchUri ||
+        this.showAttachments ||
+        this.showClone ||
+        this.canEditCipher ||
+        this.cipher.isDeleted
+      ) && this.vaultBulkManagementActionEnabled
+    );
   }
 
   protected copy(field: "username" | "password" | "totp") {
@@ -79,7 +107,7 @@ export class VaultCipherRowComponent {
   }
 
   protected editCollections() {
-    this.onEvent.emit({ type: "viewCollections", item: this.cipher });
+    this.onEvent.emit({ type: "viewCipherCollections", item: this.cipher });
   }
 
   protected events() {
@@ -96,5 +124,9 @@ export class VaultCipherRowComponent {
 
   protected attachments() {
     this.onEvent.emit({ type: "viewAttachments", item: this.cipher });
+  }
+
+  protected assignToCollections() {
+    this.onEvent.emit({ type: "assignToCollections", items: [this.cipher] });
   }
 }

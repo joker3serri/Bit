@@ -6,8 +6,9 @@ import {
   PlatformUtilsService,
 } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
-import { isMacAppStore } from "../../utils";
 import { ClipboardWriteMessage } from "../types/clipboard";
+
+export const ELECTRON_SUPPORTS_SECURE_STORAGE = true;
 
 export class ElectronPlatformUtilsService implements PlatformUtilsService {
   constructor(
@@ -53,7 +54,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
   }
 
   isMacAppStore(): boolean {
-    return isMacAppStore();
+    return ipc.platform.isMacAppStore;
   }
 
   isViewOpen(): Promise<boolean> {
@@ -143,7 +144,7 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
   }
 
   supportsSecureStorage(): boolean {
-    return true;
+    return ELECTRON_SUPPORTS_SECURE_STORAGE;
   }
 
   getAutofillKeyboardShortcut(): Promise<string> {

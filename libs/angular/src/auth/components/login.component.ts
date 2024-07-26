@@ -1,12 +1,17 @@
 import { Directive, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, Subject } from "rxjs";
+import { Subject, firstValueFrom } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 
-import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
+import {
+  LoginStrategyServiceAbstraction,
+  LoginEmailServiceAbstraction,
+  PasswordLoginCredentials,
+  RegisterRouteService,
+} from "@bitwarden/auth/common";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
@@ -18,7 +23,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import {
   AllValidationErrors,
@@ -41,6 +46,10 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   validatedEmail = false;
   paramEmailSet = false;
 
+  get emailFormControl() {
+    return this.formGroup.controls.email;
+  }
+
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
     masterPassword: [
@@ -52,8 +61,9 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
 
   protected twoFactorRoute = "2fa";
   protected successRoute = "vault";
+  // TODO: remove when email verification flag is removed
+  protected registerRoute$ = this.registerRouteService.registerRoute$();
   protected forcePasswordResetRoute = "update-temp-password";
-  protected showWebauthnLogin$: Observable<boolean>;
 
   protected destroy$ = new Subject<void>();
 
@@ -77,19 +87,15 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     protected formBuilder: FormBuilder,
     protected formValidationErrorService: FormValidationErrorsService,
     protected route: ActivatedRoute,
-    protected loginService: LoginService,
+    protected loginEmailService: LoginEmailServiceAbstraction,
+    protected ssoLoginService: SsoLoginServiceAbstraction,
     protected webAuthnLoginService: WebAuthnLoginServiceAbstraction,
+    protected registerRouteService: RegisterRouteService,
   ) {
     super(environmentService, i18nService, platformUtilsService);
   }
 
-  get selfHostedDomain() {
-    return this.environmentService.hasBaseUrl() ? this.environmentService.getWebVaultUrl() : null;
-  }
-
   async ngOnInit() {
-    this.showWebauthnLogin$ = this.webAuthnLoginService.enabled$;
-
     this.route?.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       if (!params) {
         return;
@@ -98,25 +104,14 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
       const queryParamsEmail = params.email;
 
       if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
-        this.formGroup.get("email").setValue(queryParamsEmail);
-        this.loginService.setEmail(queryParamsEmail);
+        this.formGroup.controls.email.setValue(queryParamsEmail);
         this.paramEmailSet = true;
       }
     });
-    let email = this.loginService.getEmail();
-
-    if (email == null || email === "") {
-      email = await this.stateService.getRememberedEmail();
-    }
 
     if (!this.paramEmailSet) {
-      this.formGroup.get("email")?.setValue(email ?? "");
+      await this.loadEmailSettings();
     }
-    let rememberEmail = this.loginService.getRememberEmail();
-    if (rememberEmail == null) {
-      rememberEmail = (await this.stateService.getRememberedEmail()) != null;
-    }
-    this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
   }
 
   ngOnDestroy() {
@@ -150,13 +145,15 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
         this.captchaToken,
         null,
       );
+
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const response = await this.formPromise;
-      this.setFormValues();
-      await this.loginService.saveEmailSettings();
+
+      await this.saveEmailSettings();
+
       if (this.handleCaptchaRequired(response)) {
         return;
-      } else if (this.handleMigrateEncryptionKey(response)) {
+      } else if (await this.handleMigrateEncryptionKey(response)) {
         return;
       } else if (response.requiresTwoFactor) {
         if (this.onSuccessfulLoginTwoFactorNavigate != null) {
@@ -174,6 +171,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.onSuccessfulLoginForceResetNavigate();
         } else {
+          this.loginEmailService.clearValues();
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.router.navigate([this.forcePasswordResetRoute]);
@@ -189,6 +187,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.onSuccessfulLoginNavigate();
         } else {
+          this.loginEmailService.clearValues();
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.router.navigate([this.successRoute]);
@@ -218,14 +217,14 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
       return;
     }
 
-    this.setFormValues();
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate(["/login-with-device"]);
+    await this.saveEmailSettings();
+    await this.router.navigate(["/login-with-device"]);
   }
 
   async launchSsoBrowser(clientId: string, ssoRedirectUri: string) {
-    await this.saveEmailSettings();
+    // Save off email for SSO
+    await this.ssoLoginService.setSsoEmail(this.formGroup.value.email);
+
     // Generate necessary sso params
     const passwordOptions: any = {
       type: "password",
@@ -241,11 +240,12 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     const codeChallenge = Utils.fromBufferToUrlB64(codeVerifierHash);
 
     // Save sso params
-    await this.stateService.setSsoState(state);
-    await this.stateService.setSsoCodeVerifier(ssoCodeVerifier);
+    await this.ssoLoginService.setSsoState(state);
+    await this.ssoLoginService.setCodeVerifier(ssoCodeVerifier);
 
     // Build URI
-    const webUrl = this.environmentService.getWebVaultUrl();
+    const env = await firstValueFrom(this.environmentService.environment$);
+    const webUrl = env.getWebVaultUrl();
 
     // Launch browser
     this.platformUtilsService.launchUri(
@@ -265,8 +265,8 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
 
   async validateEmail() {
     this.formGroup.controls.email.markAsTouched();
-    const emailInvalid = this.formGroup.get("email").invalid;
-    if (!emailInvalid) {
+    const emailValid = this.formGroup.get("email").valid;
+    if (emailValid) {
       this.toggleValidateEmail(true);
       await this.getLoginWithDevice(this.loggedEmail);
     }
@@ -295,19 +295,33 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
     }
   }
 
-  setFormValues() {
-    this.loginService.setEmail(this.formGroup.value.email);
-    this.loginService.setRememberEmail(this.formGroup.value.rememberEmail);
+  private async loadEmailSettings() {
+    // Try to load from memory first
+    const email = this.loginEmailService.getEmail();
+    const rememberEmail = this.loginEmailService.getRememberEmail();
+    if (email) {
+      this.formGroup.controls.email.setValue(email);
+      this.formGroup.controls.rememberEmail.setValue(rememberEmail);
+    } else {
+      // If not in memory, check email on disk
+      const storedEmail = await firstValueFrom(this.loginEmailService.storedEmail$);
+      if (storedEmail) {
+        // If we have a stored email, rememberEmail should default to true
+        this.formGroup.controls.email.setValue(storedEmail);
+        this.formGroup.controls.rememberEmail.setValue(true);
+      }
+    }
   }
 
-  async saveEmailSettings() {
-    this.setFormValues();
-    await this.loginService.saveEmailSettings();
+  protected async saveEmailSettings() {
+    this.loginEmailService.setEmail(this.formGroup.value.email);
+    this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
+    await this.loginEmailService.saveEmailSettings();
   }
 
   // Legacy accounts used the master key to encrypt data. Migration is required
   // but only performed on web
-  protected handleMigrateEncryptionKey(result: AuthResult): boolean {
+  protected async handleMigrateEncryptionKey(result: AuthResult): Promise<boolean> {
     if (!result.requiresEncryptionKeyMigration) {
       return false;
     }

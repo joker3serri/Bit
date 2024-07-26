@@ -1,5 +1,5 @@
-import { AutofillPort } from "../enums/autofill-port.enums";
-import { triggerPortOnDisconnectEvent } from "../jest/testing-utils";
+import { AutofillPort } from "../enums/autofill-port.enum";
+import { triggerPortOnDisconnectEvent } from "../spec/testing-utils";
 
 import { logoIcon, logoLockedIcon } from "./svg-icons";
 
@@ -8,7 +8,6 @@ import {
   generateRandomCustomElementName,
   sendExtensionMessage,
   setElementStyles,
-  getFromLocalStorage,
   setupExtensionDisconnectAction,
   setupAutofillInitDisconnectAction,
 } from "./index";
@@ -38,14 +37,16 @@ describe("generateRandomCustomElementName", () => {
 });
 
 describe("sendExtensionMessage", () => {
-  it("sends a message to the extention", () => {
-    const extensionMessageResponse = sendExtensionMessage("updateAutofillOverlayHidden", {
-      display: "none",
-    });
-    jest.spyOn(chrome.runtime, "sendMessage");
+  it("sends a message to the extension", async () => {
+    chrome.runtime.sendMessage = jest.fn().mockResolvedValue("sendMessageResponse");
 
-    expect(chrome.runtime.sendMessage).toHaveBeenCalled();
-    expect(extensionMessageResponse).toEqual(Promise.resolve({}));
+    const response = await sendExtensionMessage("some-extension-message", { value: "value" });
+
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+      command: "some-extension-message",
+      value: "value",
+    });
+    expect(response).toEqual("sendMessageResponse");
   });
 });
 
@@ -121,33 +122,6 @@ describe("setElementStyles", () => {
     setElementStyles(testDiv, {}, true);
 
     expect(testDiv.style.cssText).toEqual(expectedCSSRuleString);
-  });
-});
-
-describe("getFromLocalStorage", () => {
-  it("returns a promise with the storage object pulled from the extension storage api", async () => {
-    const localStorage: Record<string, any> = {
-      testValue: "test",
-      another: "another",
-    };
-    jest.spyOn(chrome.storage.local, "get").mockImplementation((keys, callback) => {
-      const localStorageObject: Record<string, string> = {};
-
-      if (typeof keys === "string") {
-        localStorageObject[keys] = localStorage[keys];
-      } else if (Array.isArray(keys)) {
-        for (const key of keys) {
-          localStorageObject[key] = localStorage[key];
-        }
-      }
-
-      callback(localStorageObject);
-    });
-
-    const returnValue = await getFromLocalStorage("testValue");
-
-    expect(chrome.storage.local.get).toHaveBeenCalled();
-    expect(returnValue).toEqual({ testValue: "test" });
   });
 });
 

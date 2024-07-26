@@ -67,7 +67,7 @@
             "pathGroupsExcludedImportTypes": ["builtin"]
           }
         ],
-        "rxjs-angular/prefer-takeuntil": "error",
+        "rxjs-angular/prefer-takeuntil": ["error", { "alias": ["takeUntilDestroyed"] }],
         "rxjs/no-exposed-subjects": ["error", { "allowProtected": true }],
         "no-restricted-syntax": [
           "error",
@@ -97,9 +97,14 @@
                   // Node
                   "./libs/node/**/*",
 
+                  //Generator
+                  "./libs/tools/generator/components/**/*",
+                  "./libs/tools/generator/core/**/*",
+                  "./libs/tools/generator/extensions/**/*",
+
                   // Import/export
                   "./libs/importer/**/*",
-                  "./libs/exporter/**/*"
+                  "./libs/tools/export/vault-export/vault-export-core/**/*"
                 ]
               },
               {
@@ -183,9 +188,66 @@
       }
     },
     {
-      "files": ["libs/exporter/src/**/*.ts"],
+      "files": ["libs/tools/generator/components/src/**/*.ts"],
       "rules": {
-        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/exporter/*", "src/**/*"] }]
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/generator-components/*", "src/**/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/generator/core/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/generator-core/*", "src/**/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/generator/extensions/history/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/generator-history/*", "src/**/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/generator/extensions/legacy/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/generator-legacy/*", "src/**/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/generator/extensions/navigation/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/generator-navigation/*", "src/**/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/export/vault-export/vault-export-core/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/vault-export-core/*", "src/**/*"] }
+        ]
+      }
+    },
+    {
+      "files": ["libs/tools/export/vault-export/vault-export-ui/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          { "patterns": ["@bitwarden/vault-export-ui/*", "src/**/*"] }
+        ]
       }
     },
     {
@@ -204,6 +266,12 @@
       "files": ["libs/platform/src/**/*.ts"],
       "rules": {
         "no-restricted-imports": ["error", { "patterns": ["@bitwarden/platform/*", "src/**/*"] }]
+      }
+    },
+    {
+      "files": ["libs/tools/send/send-ui/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/send-ui/*", "src/**/*"] }]
       }
     },
     {
@@ -231,6 +299,48 @@
             "message": "Using addListener in the browser popup produces a memory leak in Safari, use `BrowserApi.addListener` instead",
             // This selector covers events like chrome.storage.local.onChange
             "selector": "CallExpression > [object.object.object.object.name='chrome'][property.name='addListener']"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["**/*.ts"],
+      "excludedFiles": ["**/platform/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              "**/platform/**/internal", // General internal pattern
+              // All features that have been converted to barrel files
+              "**/platform/messaging/**"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["bitwarden_license/bit-common/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/bit-common/*", "src/**/*"] }]
+      }
+    },
+    {
+      "files": ["apps/**/*.ts"],
+      "rules": {
+        // Catches static imports
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": ["biwarden_license/**", "@bitwarden/bit-common/*", "@bitwarden/bit-web/*"]
+          }
+        ],
+        // Catches dynamic imports, e.g. in routing modules where modules are lazy-loaded
+        "no-restricted-syntax": [
+          "error",
+          {
+            "message": "Don't import Bitwarden licensed code into OSS code.",
+            "selector": "ImportExpression > Literal.source[value=/.*(bitwarden_license|bit-common|bit-web).*/]"
           }
         ]
       }

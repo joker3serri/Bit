@@ -16,6 +16,8 @@ import { concat, Observable, Subject, lastValueFrom, combineLatest, firstValueFr
 import { filter, map, takeUntil } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { safeProvider, SafeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
+import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import {
   canAccessImport,
@@ -41,11 +43,16 @@ import {
   BitSubmitDirective,
   ButtonModule,
   CalloutModule,
+  CardComponent,
+  ContainerComponent,
   DialogService,
   FormFieldModule,
   IconButtonModule,
   RadioButtonModule,
+  SectionComponent,
+  SectionHeaderComponent,
   SelectModule,
+  ToastService,
 } from "@bitwarden/components";
 
 import { ImportOption, ImportResult, ImportType } from "../models";
@@ -64,6 +71,27 @@ import {
 } from "./dialog";
 import { ImportLastPassComponent } from "./lastpass";
 
+const safeProviders: SafeProvider[] = [
+  safeProvider({
+    provide: ImportApiServiceAbstraction,
+    useClass: ImportApiService,
+    deps: [ApiService],
+  }),
+  safeProvider({
+    provide: ImportServiceAbstraction,
+    useClass: ImportService,
+    deps: [
+      CipherService,
+      FolderService,
+      ImportApiServiceAbstraction,
+      I18nService,
+      CollectionService,
+      CryptoService,
+      PinServiceAbstraction,
+    ],
+  }),
+];
+
 @Component({
   selector: "tools-import",
   templateUrl: "import.component.html",
@@ -80,26 +108,12 @@ import { ImportLastPassComponent } from "./lastpass";
     ReactiveFormsModule,
     ImportLastPassComponent,
     RadioButtonModule,
+    CardComponent,
+    ContainerComponent,
+    SectionHeaderComponent,
+    SectionComponent,
   ],
-  providers: [
-    {
-      provide: ImportApiServiceAbstraction,
-      useClass: ImportApiService,
-      deps: [ApiService],
-    },
-    {
-      provide: ImportServiceAbstraction,
-      useClass: ImportService,
-      deps: [
-        CipherService,
-        FolderService,
-        ImportApiServiceAbstraction,
-        I18nService,
-        CollectionService,
-        CryptoService,
-      ],
-    },
-  ],
+  providers: safeProviders,
 })
 export class ImportComponent implements OnInit, OnDestroy {
   featuredImportOptions: ImportOption[];
@@ -132,7 +146,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   protected destroy$ = new Subject<void>();
 
   private _importBlockedByPolicy = false;
-  private _isFromAC = false;
+  protected isFromAC = false;
 
   formGroup = this.formBuilder.group({
     vaultSelector: [
@@ -186,6 +200,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     @Inject(ImportCollectionServiceAbstraction)
     @Optional()
     protected importCollectionService: ImportCollectionServiceAbstraction,
+    protected toastService: ToastService,
   ) {}
 
   protected get importBlockedByPolicy(): boolean {
@@ -207,7 +222,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     this.setImportOptions();
 
     await this.initializeOrganizations();
-    if (this.organizationId && this.canAccessImportExport(this.organizationId)) {
+    if (this.organizationId && (await this.canAccessImportExport(this.organizationId))) {
       this.handleOrganizationImportInit();
     } else {
       this.handleImportInit();
@@ -232,7 +247,7 @@ export class ImportComponent implements OnInit, OnDestroy {
         .then((collections) => collections.sort(Utils.getSortFunction(this.i18nService, "name"))),
     );
 
-    this._isFromAC = true;
+    this.isFromAC = true;
   }
 
   private handleImportInit() {
@@ -251,17 +266,14 @@ export class ImportComponent implements OnInit, OnDestroy {
         if (!this._importBlockedByPolicy) {
           this.formGroup.controls.targetSelector.enable();
         }
-        const flexCollectionEnabled =
-          organizations.find((x) => x.id == this.organizationId)?.flexibleCollections ?? false;
+
         if (value) {
           this.collections$ = Utils.asyncToObservable(() =>
             this.collectionService
               .getAllDecrypted()
               .then((decryptedCollections) =>
                 decryptedCollections
-                  .filter(
-                    (c2) => c2.organizationId === value && (!flexCollectionEnabled || c2.manage),
-                  )
+                  .filter((c2) => c2.organizationId === value && c2.manage)
                   .sort(Utils.getSortFunction(this.i18nService, "name")),
               ),
           );
@@ -334,22 +346,22 @@ export class ImportComponent implements OnInit, OnDestroy {
     );
 
     if (importer === null) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("selectFormat"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccurred"),
+        message: this.i18nService.t("selectFormat"),
+      });
       return;
     }
 
     const importContents = await this.setImportContents();
 
     if (importContents == null || importContents === "") {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("selectFile"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccurred"),
+        message: this.i18nService.t("selectFile"),
+      });
       return;
     }
 
@@ -359,7 +371,7 @@ export class ImportComponent implements OnInit, OnDestroy {
         importContents,
         this.organizationId,
         this.formGroup.controls.targetSelector.value,
-        this.canAccessImportExport(this.organizationId) && this._isFromAC,
+        (await this.canAccessImportExport(this.organizationId)) && this.isFromAC,
       );
 
       //No errors, display success message
@@ -379,11 +391,11 @@ export class ImportComponent implements OnInit, OnDestroy {
     }
   }
 
-  private canAccessImportExport(organizationId?: string): boolean {
+  private async canAccessImportExport(organizationId?: string): Promise<boolean> {
     if (!organizationId) {
       return false;
     }
-    return this.organizationService.get(this.organizationId)?.canAccessImportExport;
+    return (await this.organizationService.get(this.organizationId))?.canAccessImportExport;
   }
 
   getFormatInstructionTitle() {
@@ -500,11 +512,11 @@ export class ImportComponent implements OnInit, OnDestroy {
     }
 
     if (this.importBlockedByPolicy && this.organizationId == null) {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("personalOwnershipPolicyInEffectImports"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: null,
+        message: this.i18nService.t("personalOwnershipPolicyInEffectImports"),
+      });
       return false;
     }
 
@@ -515,14 +527,6 @@ export class ImportComponent implements OnInit, OnDestroy {
     const fileEl = document.getElementById("import_input_file") as HTMLInputElement;
     const files = fileEl.files;
     let fileContents = this.formGroup.controls.fileContents.value;
-    if ((files == null || files.length === 0) && (fileContents == null || fileContents === "")) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("selectFile"),
-      );
-      return;
-    }
 
     if (files != null && files.length > 0) {
       try {

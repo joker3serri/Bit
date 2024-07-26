@@ -1,5 +1,3 @@
-import { inject } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import {
   BehaviorSubject,
   EmptyError,
@@ -7,7 +5,6 @@ import {
   firstValueFrom,
   fromEvent,
   fromEventPattern,
-  map,
   merge,
   Observable,
   Subject,
@@ -19,37 +16,19 @@ import {
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserRequestedFallbackAbortReason } from "@bitwarden/common/vault/abstractions/fido2/fido2-client.service.abstraction";
+import { UserRequestedFallbackAbortReason } from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
 import {
   Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction,
   Fido2UserInterfaceSession,
   NewCredentialParams,
   PickCredentialParams,
-} from "@bitwarden/common/vault/abstractions/fido2/fido2-user-interface.service.abstraction";
+} from "@bitwarden/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { closeFido2Popout, openFido2Popout } from "../popup/utils/vault-popout-window";
 
 const BrowserFido2MessageName = "BrowserFido2UserInterfaceServiceMessage";
-
-/**
- * Function to retrieve FIDO2 session data from query parameters.
- * Expected to be used within components tied to routes with these query parameters.
- */
-export function fido2PopoutSessionData$() {
-  const route = inject(ActivatedRoute);
-
-  return route.queryParams.pipe(
-    map((queryParams) => ({
-      isFido2Session: queryParams.sessionId != null,
-      sessionId: queryParams.sessionId as string,
-      fallbackSupported: queryParams.fallbackSupported === "true",
-      userVerification: queryParams.userVerification === "true",
-      senderUrl: queryParams.senderUrl as string,
-    })),
-  );
-}
 
 export class SessionClosedError extends Error {
   constructor() {
@@ -86,8 +65,10 @@ export type BrowserFido2Message = { sessionId: string } & (
       type: "ConfirmNewCredentialRequest";
       credentialName: string;
       userName: string;
+      userHandle: string;
       userVerification: boolean;
       fallbackSupported: boolean;
+      rpId: string;
     }
   | {
       type: "ConfirmNewCredentialResponse";
@@ -262,15 +243,19 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
   async confirmNewCredential({
     credentialName,
     userName,
+    userHandle,
     userVerification,
+    rpId,
   }: NewCredentialParams): Promise<{ cipherId: string; userVerified: boolean }> {
     const data: BrowserFido2Message = {
       type: "ConfirmNewCredentialRequest",
       sessionId: this.sessionId,
       credentialName,
       userName,
+      userHandle,
       userVerification,
       fallbackSupported: this.fallbackSupported,
+      rpId,
     };
 
     await this.send(data);

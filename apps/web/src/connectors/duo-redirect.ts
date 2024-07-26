@@ -1,97 +1,105 @@
 import { getQsParam } from "./common";
+import { TranslationService } from "./translation.service";
 
 require("./duo-redirect.scss");
 
 const mobileDesktopCallback = "bitwarden://duo-callback";
+let localeService: TranslationService = null;
 
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
+  const redirectUrl = getQsParam("duoFramelessUrl");
+
+  if (redirectUrl) {
+    redirectToDuoFrameless(redirectUrl);
+    return;
+  }
+
   const client = getQsParam("client");
   const code = getQsParam("code");
+  const state = getQsParam("state");
+
+  localeService = new TranslationService(navigator.language, "locales");
+  await localeService.init();
 
   if (client === "web") {
     const channel = new BroadcastChannel("duoResult");
 
-    channel.postMessage({ code: code });
+    channel.postMessage({ code: code, state: state });
     channel.close();
 
-    processAndDisplayHandoffMessage();
+    displayHandoffMessage(client);
   } else if (client === "browser") {
-    window.postMessage({ command: "duoResult", code: code }, "*");
-    processAndDisplayHandoffMessage();
+    window.postMessage({ command: "duoResult", code: code, state: state }, "*");
+    displayHandoffMessage(client);
   } else if (client === "mobile" || client === "desktop") {
-    document.location.replace(mobileDesktopCallback + "?code=" + encodeURIComponent(code));
+    if (client === "desktop") {
+      displayHandoffMessage(client);
+    }
+    document.location.replace(
+      mobileDesktopCallback +
+        "?code=" +
+        encodeURIComponent(code) +
+        "&state=" +
+        encodeURIComponent(state),
+    );
   }
 });
 
 /**
- * The `duoHandOffMessage` is set in the client via a cookie. This allows us to
- * make use of i18n translations.
- *
- * Format the message as an object and set is as a cookie. The following gives an
- * example (be sure to replace strings with i18n translated text):
- *
- * ```
- * const duoHandOffMessage = {
- *  title: "You successfully logged in",
- *  message: "This window will automatically close in 5 seconds",
- *  buttonText: "Close",
- *  countdown: 5
- * };
- *
- * document.cookie = `duoHandOffMessage=${encodeURIComponent(JSON.stringify(duoHandOffMessage))};SameSite=strict`;
- *
- * ```
- *
- * The `title`, `message`, and `buttonText` properties will be used to create the relevant
- * DOM elements. The `countdown` property will be used for the starting value of the countdown.
- * Make sure the `countdown` number matches the number set in the `message` property.
- *
- * If no `countdown` property is given, there will be no countdown timer and the user will simply
- * have to close the tab manually.
+ * validate the Duo AuthUrl and redirect to it.
+ * @param redirectUrl the duo auth url
  */
-function processAndDisplayHandoffMessage() {
-  const handOffMessageCookie = ("; " + document.cookie)
+function redirectToDuoFrameless(redirectUrl: string) {
+  const validateUrl = new URL(redirectUrl);
 
-    .split("; duoHandOffMessage=")
-    .pop()
-    .split(";")
-    .shift();
-  const handOffMessage = JSON.parse(decodeURIComponent(handOffMessageCookie));
+  if (validateUrl.protocol !== "https:" || !validateUrl.hostname.endsWith("duosecurity.com")) {
+    throw new Error("Invalid redirect URL");
+  }
 
-  // Clear the cookie
-  document.cookie = "duoHandOffMessage=;SameSite=strict;max-age=0";
+  window.location.href = decodeURIComponent(redirectUrl);
+}
 
+/**
+ * Note: browsers won't let javascript close a tab (button or otherwise) that wasn't opened by javascript,
+ * so browser, desktop, and mobile are not able to take advantage of the countdown timer or close button.
+ */
+function displayHandoffMessage(client: string) {
   const content = document.getElementById("content");
   content.className = "text-center";
   content.innerHTML = "";
 
   const h1 = document.createElement("h1");
   const p = document.createElement("p");
-  const button = document.createElement("button");
 
-  h1.textContent = handOffMessage.title;
-  p.textContent = handOffMessage.message;
-  button.textContent = handOffMessage.buttonText;
+  h1.textContent = localeService.t("youSuccessfullyLoggedIn");
+  p.textContent =
+    client == "web"
+      ? (p.textContent = localeService.t("thisWindowWillCloseIn5Seconds"))
+      : localeService.t("youMayCloseThisWindow");
 
   h1.className = "font-weight-semibold";
   p.className = "mb-4";
-  button.className = "bg-primary text-white border-0 rounded py-2 px-3";
-
-  button.addEventListener("click", () => {
-    window.close();
-  });
 
   content.appendChild(h1);
   content.appendChild(p);
-  content.appendChild(button);
 
-  // Countdown timer (closes tab upon completion)
-  if (handOffMessage.countdown && Number.isInteger(handOffMessage.countdown)) {
-    let num = handOffMessage.countdown;
+  // Web client will have a close button as well as an auto close timer
+  if (client == "web") {
+    const button = document.createElement("button");
+    button.textContent = localeService.t("close");
+    button.className = "bg-primary text-white border-0 rounded py-2 px-3";
+
+    button.addEventListener("click", () => {
+      window.close();
+    });
+    content.appendChild(button);
+
+    // Countdown timer (closes tab upon completion)
+    let num = Number(p.textContent.match(/\d+/)[0]);
 
     const interval = setInterval(() => {
       if (num > 1) {
-        p.textContent = `This window will automatically close in ${num - 1} seconds`;
+        p.textContent = p.textContent.replace(String(num), String(num - 1));
         num--;
       } else {
         clearInterval(interval);

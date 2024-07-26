@@ -11,8 +11,8 @@ import { VaultFilterComponent as BaseVaultFilterComponent } from "../../individu
 import { VaultFilterService } from "../../individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import {
   VaultFilterList,
-  VaultFilterType,
   VaultFilterSection,
+  VaultFilterType,
 } from "../../individual-vault/vault-filter/shared/models/vault-filter-section.type";
 import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
 
@@ -103,11 +103,7 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   async buildAllFilters(): Promise<VaultFilterList> {
     const builderFilter = {} as VaultFilterList;
     builderFilter.typeFilter = await this.addTypeFilter(["favorites"]);
-    if (this._organization?.flexibleCollections) {
-      builderFilter.collectionFilter = await this.addCollectionFilter();
-    } else {
-      builderFilter.collectionFilter = await super.addCollectionFilter();
-    }
+    builderFilter.collectionFilter = await this.addCollectionFilter();
     builderFilter.trashFilter = await this.addTrashFilter();
     return builderFilter;
   }

@@ -2,10 +2,34 @@ import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { AutofocusDirective } from "@bitwarden/components";
+import {
+  AddAccountCreditDialogComponent,
+  InvoicesComponent,
+  NoInvoicesComponent,
+  ManageTaxInformationComponent,
+  SelectPaymentMethodComponent,
+  VerifyBankAccountComponent,
+} from "@bitwarden/angular/billing/components";
+import {
+  AsyncActionsModule,
+  AutofocusDirective,
+  ButtonModule,
+  CheckboxModule,
+  DialogModule,
+  FormFieldModule,
+  IconButtonModule,
+  IconModule,
+  LinkModule,
+  MenuModule,
+  RadioButtonModule,
+  SelectModule,
+  TableModule,
+  ToastModule,
+  TypographyModule,
+} from "@bitwarden/components";
 
+import { TwoFactorIconComponent } from "./auth/components/two-factor-icon.component";
 import { CalloutComponent } from "./components/callout.component";
-import { BitwardenToastModule } from "./components/toastr.component";
 import { A11yInvalidDirective } from "./directives/a11y-invalid.directive";
 import { A11yTitleDirective } from "./directives/a11y-title.directive";
 import { ApiActionDirective } from "./directives/api-action.directive";
@@ -22,6 +46,7 @@ import { StopClickDirective } from "./directives/stop-click.directive";
 import { StopPropDirective } from "./directives/stop-prop.directive";
 import { TrueFalseValueDirective } from "./directives/true-false-value.directive";
 import { CreditCardNumberPipe } from "./pipes/credit-card-number.pipe";
+import { PluralizePipe } from "./pipes/pluralize.pipe";
 import { SearchCiphersPipe } from "./pipes/search-ciphers.pipe";
 import { SearchPipe } from "./pipes/search.pipe";
 import { UserNamePipe } from "./pipes/user-name.pipe";
@@ -29,13 +54,12 @@ import { UserTypePipe } from "./pipes/user-type.pipe";
 import { EllipsisPipe } from "./platform/pipes/ellipsis.pipe";
 import { FingerprintPipe } from "./platform/pipes/fingerprint.pipe";
 import { I18nPipe } from "./platform/pipes/i18n.pipe";
-import { ExportScopeCalloutComponent } from "./tools/export/components/export-scope-callout.component";
 import { PasswordStrengthComponent } from "./tools/password-strength/password-strength.component";
 import { IconComponent } from "./vault/components/icon.component";
 
 @NgModule({
   imports: [
-    BitwardenToastModule.forRoot({
+    ToastModule.forRoot({
       maxOpened: 5,
       autoDismiss: true,
       closeButton: true,
@@ -43,6 +67,20 @@ import { IconComponent } from "./vault/components/icon.component";
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    AsyncActionsModule,
+    RadioButtonModule,
+    FormFieldModule,
+    SelectModule,
+    ButtonModule,
+    CheckboxModule,
+    DialogModule,
+    TypographyModule,
+    TableModule,
+    MenuModule,
+    IconButtonModule,
+    IconModule,
+    LinkModule,
+    IconModule,
   ],
   declarations: [
     A11yInvalidDirective,
@@ -54,7 +92,6 @@ import { IconComponent } from "./vault/components/icon.component";
     CopyTextDirective,
     CreditCardNumberPipe,
     EllipsisPipe,
-    ExportScopeCalloutComponent,
     FallbackSrcDirective,
     I18nPipe,
     IconComponent,
@@ -73,19 +110,25 @@ import { IconComponent } from "./vault/components/icon.component";
     UserTypePipe,
     IfFeatureDirective,
     FingerprintPipe,
+    AddAccountCreditDialogComponent,
+    InvoicesComponent,
+    NoInvoicesComponent,
+    ManageTaxInformationComponent,
+    SelectPaymentMethodComponent,
+    VerifyBankAccountComponent,
+    TwoFactorIconComponent,
   ],
   exports: [
     A11yInvalidDirective,
     A11yTitleDirective,
     ApiActionDirective,
     AutofocusDirective,
-    BitwardenToastModule,
+    ToastModule,
     BoxRowDirective,
     CalloutComponent,
     CopyTextDirective,
     CreditCardNumberPipe,
     EllipsisPipe,
-    ExportScopeCalloutComponent,
     FallbackSrcDirective,
     I18nPipe,
     IconComponent,
@@ -104,6 +147,13 @@ import { IconComponent } from "./vault/components/icon.component";
     UserTypePipe,
     IfFeatureDirective,
     FingerprintPipe,
+    AddAccountCreditDialogComponent,
+    InvoicesComponent,
+    NoInvoicesComponent,
+    ManageTaxInformationComponent,
+    SelectPaymentMethodComponent,
+    VerifyBankAccountComponent,
+    TwoFactorIconComponent,
   ],
   providers: [
     CreditCardNumberPipe,
@@ -113,6 +163,7 @@ import { IconComponent } from "./vault/components/icon.component";
     UserNamePipe,
     UserTypePipe,
     FingerprintPipe,
+    PluralizePipe,
   ],
 })
 export class JslibModule {}

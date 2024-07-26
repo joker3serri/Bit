@@ -1,11 +1,27 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
+import { BreadcrumbsModule, MenuModule } from "@bitwarden/components";
 
+import { HeaderModule } from "../../../layouts/header/header.module";
+import { SharedModule } from "../../../shared";
 import { CollectionDialogTabType } from "../../components/collection-dialog";
+import { PipesModule } from "../pipes/pipes.module";
 import {
   All,
   RoutedVaultFilterModel,
@@ -13,11 +29,21 @@ import {
 } from "../vault-filter/shared/models/routed-vault-filter.model";
 
 @Component({
+  standalone: true,
   selector: "app-vault-header",
   templateUrl: "./vault-header.component.html",
+  imports: [
+    CommonModule,
+    MenuModule,
+    SharedModule,
+    BreadcrumbsModule,
+    HeaderModule,
+    PipesModule,
+    JslibModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VaultHeaderComponent {
+export class VaultHeaderComponent implements OnInit {
   protected Unassigned = Unassigned;
   protected All = All;
   protected CollectionDialogTabType = CollectionDialogTabType;
@@ -55,7 +81,18 @@ export class VaultHeaderComponent {
   /** Emits an event when the delete collection button is clicked in the header */
   @Output() onDeleteCollection = new EventEmitter<void>();
 
-  constructor(private i18nService: I18nService) {}
+  private flexibleCollectionsV1Enabled = false;
+
+  constructor(
+    private i18nService: I18nService,
+    private configService: ConfigService,
+  ) {}
+
+  async ngOnInit() {
+    this.flexibleCollectionsV1Enabled = await firstValueFrom(
+      this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1),
+    );
+  }
 
   /**
    * The id of the organization that is currently being filtered on.
@@ -103,6 +140,10 @@ export class VaultHeaderComponent {
     return this.i18nService.t("allVaults");
   }
 
+  protected get icon() {
+    return this.filter.collectionId && this.filter.collectionId !== All ? "bwi-collection" : "";
+  }
+
   /**
    * A list of collection filters that form a chain from the organization root to currently selected collection.
    * Begins from the organization root and excludes the currently selected collection.
@@ -125,7 +166,7 @@ export class VaultHeaderComponent {
 
   get canEditCollection(): boolean {
     // Only edit collections if not editing "Unassigned"
-    if (this.collection === undefined) {
+    if (this.collection == null) {
       return false;
     }
 
@@ -133,7 +174,7 @@ export class VaultHeaderComponent {
     const organization = this.organizations.find(
       (o) => o.id === this.collection?.node.organizationId,
     );
-    return this.collection.node.canEdit(organization);
+    return this.collection.node.canEdit(organization, this.flexibleCollectionsV1Enabled);
   }
 
   async editCollection(tab: CollectionDialogTabType): Promise<void> {
@@ -151,7 +192,7 @@ export class VaultHeaderComponent {
       (o) => o.id === this.collection?.node.organizationId,
     );
 
-    return this.collection.node.canDelete(organization);
+    return this.collection.node.canDelete(organization, this.flexibleCollectionsV1Enabled);
   }
 
   deleteCollection() {

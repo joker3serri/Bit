@@ -1,5 +1,10 @@
-import { of } from "rxjs";
+/**
+ * need to update test environment so structuredClone works appropriately
+ * @jest-environment ../shared/test.environment.ts
+ */
+import { Observable, of } from "rxjs";
 
+import { awaitAsync, trackEmissions } from "../../../../spec";
 import { FakeAccountService, mockAccountServiceWith } from "../../../../spec/fake-account-service";
 import {
   FakeActiveUserStateProvider,
@@ -7,10 +12,12 @@ import {
   FakeGlobalStateProvider,
   FakeSingleUserStateProvider,
 } from "../../../../spec/fake-state-provider";
+import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { UserId } from "../../../types/guid";
 import { DeriveDefinition } from "../derive-definition";
 import { KeyDefinition } from "../key-definition";
 import { StateDefinition } from "../state-definition";
+import { UserKeyDefinition } from "../user-key-definition";
 
 import { DefaultStateProvider } from "./default-state.provider";
 
@@ -43,38 +50,148 @@ describe("DefaultStateProvider", () => {
     });
   });
 
+  describe.each([
+    [
+      "getUserState$",
+      (keyDefinition: UserKeyDefinition<string>, userId?: UserId) =>
+        sut.getUserState$(keyDefinition, userId),
+    ],
+    [
+      "getUserStateOrDefault$",
+      (keyDefinition: UserKeyDefinition<string>, userId?: UserId) =>
+        sut.getUserStateOrDefault$(keyDefinition, { userId: userId }),
+    ],
+  ])(
+    "Shared behavior for %s",
+    (
+      _testName: string,
+      methodUnderTest: (
+        keyDefinition: UserKeyDefinition<string>,
+        userId?: UserId,
+      ) => Observable<string>,
+    ) => {
+      const accountInfo = {
+        email: "email",
+        emailVerified: false,
+        name: "name",
+        status: AuthenticationStatus.LoggedOut,
+      };
+      const keyDefinition = new UserKeyDefinition<string>(
+        new StateDefinition("test", "disk"),
+        "test",
+        {
+          deserializer: (s) => s,
+          clearOn: [],
+        },
+      );
+
+      it("should follow the specified user if userId is provided", async () => {
+        const state = singleUserStateProvider.getFake(userId, keyDefinition);
+        state.nextState("value");
+        const emissions = trackEmissions(methodUnderTest(keyDefinition, userId));
+
+        state.nextState("value2");
+        state.nextState("value3");
+
+        expect(emissions).toEqual(["value", "value2", "value3"]);
+      });
+
+      it("should follow the current active user if no userId is provided", async () => {
+        accountService.activeAccountSubject.next({ id: userId, ...accountInfo });
+        const state = singleUserStateProvider.getFake(userId, keyDefinition);
+        state.nextState("value");
+        const emissions = trackEmissions(methodUnderTest(keyDefinition));
+
+        state.nextState("value2");
+        state.nextState("value3");
+
+        expect(emissions).toEqual(["value", "value2", "value3"]);
+      });
+
+      it("should continue to follow the state of the user that was active when called, even if active user changes", async () => {
+        const state = singleUserStateProvider.getFake(userId, keyDefinition);
+        state.nextState("value");
+        const emissions = trackEmissions(methodUnderTest(keyDefinition));
+
+        accountService.activeAccountSubject.next({ id: "newUserId" as UserId, ...accountInfo });
+        const newUserEmissions = trackEmissions(sut.getUserState$(keyDefinition));
+        state.nextState("value2");
+        state.nextState("value3");
+
+        expect(emissions).toEqual(["value", "value2", "value3"]);
+        expect(newUserEmissions).toEqual([null]);
+      });
+    },
+  );
+
   describe("getUserState$", () => {
-    const keyDefinition = new KeyDefinition<string>(new StateDefinition("test", "disk"), "test", {
-      deserializer: (s) => s,
-    });
+    const accountInfo = {
+      email: "email",
+      emailVerified: false,
+      name: "name",
+      status: AuthenticationStatus.LoggedOut,
+    };
+    const keyDefinition = new UserKeyDefinition<string>(
+      new StateDefinition("test", "disk"),
+      "test",
+      {
+        deserializer: (s) => s,
+        clearOn: [],
+      },
+    );
 
-    it("should get the state for the active user if no userId is provided", () => {
-      const state = sut.getUserState$(keyDefinition);
-      expect(state).toBe(activeUserStateProvider.get(keyDefinition).state$);
-    });
+    it("should not emit any values until a truthy user id is supplied", async () => {
+      accountService.activeAccountSubject.next(null);
+      const state = singleUserStateProvider.getFake(userId, keyDefinition);
+      state.stateSubject.next([userId, "value"]);
 
-    it("should not return state for a single user if no userId is provided", () => {
-      const state = sut.getUserState$(keyDefinition);
-      expect(state).not.toBe(singleUserStateProvider.get(userId, keyDefinition).state$);
-    });
+      const emissions = trackEmissions(sut.getUserState$(keyDefinition));
 
-    it("should get the state for the provided userId", () => {
-      const userId = "user" as UserId;
-      const state = sut.getUserState$(keyDefinition, userId);
-      expect(state).toBe(singleUserStateProvider.get(userId, keyDefinition).state$);
-    });
+      await awaitAsync();
 
-    it("should not get the active user state if userId is provided", () => {
-      const userId = "user" as UserId;
-      const state = sut.getUserState$(keyDefinition, userId);
-      expect(state).not.toBe(activeUserStateProvider.get(keyDefinition).state$);
+      expect(emissions).toHaveLength(0);
+
+      accountService.activeAccountSubject.next({ id: userId, ...accountInfo });
+
+      await awaitAsync();
+
+      expect(emissions).toEqual(["value"]);
+    });
+  });
+
+  describe("getUserStateOrDefault$", () => {
+    const keyDefinition = new UserKeyDefinition<string>(
+      new StateDefinition("test", "disk"),
+      "test",
+      {
+        deserializer: (s) => s,
+        clearOn: [],
+      },
+    );
+
+    it("should emit default value if no userId supplied and first active user id emission in falsy", async () => {
+      accountService.activeAccountSubject.next(null);
+
+      const emissions = trackEmissions(
+        sut.getUserStateOrDefault$(keyDefinition, {
+          userId: undefined,
+          defaultValue: "I'm default!",
+        }),
+      );
+
+      expect(emissions).toEqual(["I'm default!"]);
     });
   });
 
   describe("setUserState", () => {
-    const keyDefinition = new KeyDefinition<string>(new StateDefinition("test", "disk"), "test", {
-      deserializer: (s) => s,
-    });
+    const keyDefinition = new UserKeyDefinition<string>(
+      new StateDefinition("test", "disk"),
+      "test",
+      {
+        deserializer: (s) => s,
+        clearOn: [],
+      },
+    );
 
     it("should set the state for the active user if no userId is provided", async () => {
       const value = "value";
@@ -106,8 +223,9 @@ describe("DefaultStateProvider", () => {
   });
 
   it("should bind the activeUserStateProvider", () => {
-    const keyDefinition = new KeyDefinition(new StateDefinition("test", "disk"), "test", {
+    const keyDefinition = new UserKeyDefinition(new StateDefinition("test", "disk"), "test", {
       deserializer: () => null,
+      clearOn: [],
     });
     const existing = activeUserStateProvider.get(keyDefinition);
     const actual = sut.getActive(keyDefinition);
@@ -116,8 +234,9 @@ describe("DefaultStateProvider", () => {
 
   it("should bind the singleUserStateProvider", () => {
     const userId = "user" as UserId;
-    const keyDefinition = new KeyDefinition(new StateDefinition("test", "disk"), "test", {
+    const keyDefinition = new UserKeyDefinition(new StateDefinition("test", "disk"), "test", {
       deserializer: () => null,
+      clearOn: [],
     });
     const existing = singleUserStateProvider.get(userId, keyDefinition);
     const actual = sut.getUser(userId, keyDefinition);

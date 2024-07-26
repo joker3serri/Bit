@@ -1,12 +1,14 @@
 import { Component, Input, ViewChild } from "@angular/core";
 
-import { VerticalStepperComponent } from "../../trial-initiation/vertical-stepper/vertical-stepper.component";
-import { SecretsManagerTrialFreeStepperComponent } from "../secrets-manager/secrets-manager-trial-free-stepper.component";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
 
 import {
   OrganizationCreatedEvent,
-  SubscriptionType,
-} from "./secrets-manager-trial-billing-step.component";
+  SubscriptionProduct,
+  TrialOrganizationType,
+} from "../../../billing/accounts/trial-initiation/trial-billing-step.component";
+import { VerticalStepperComponent } from "../../trial-initiation/vertical-stepper/vertical-stepper.component";
+import { SecretsManagerTrialFreeStepperComponent } from "../secrets-manager/secrets-manager-trial-free-stepper.component";
 
 @Component({
   selector: "app-secrets-manager-trial-paid-stepper",
@@ -14,7 +16,7 @@ import {
 })
 export class SecretsManagerTrialPaidStepperComponent extends SecretsManagerTrialFreeStepperComponent {
   @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
-  @Input() subscriptionType: string;
+  @Input() organizationTypeQueryParameter: string;
 
   billingSubLabel = this.i18nService.t("billingTrialSubLabel");
   organizationId: string;
@@ -31,16 +33,24 @@ export class SecretsManagerTrialPaidStepperComponent extends SecretsManagerTrial
 
   get createAccountLabel() {
     const organizationType =
-      this.paidSubscriptionType == SubscriptionType.Enterprise ? "Enterprise" : "Teams";
+      this.productType === ProductTierType.TeamsStarter
+        ? "Teams Starter"
+        : ProductTierType[this.productType];
     return `Before creating your ${organizationType} organization, you first need to log in or create a personal account.`;
   }
 
-  get paidSubscriptionType() {
-    switch (this.subscriptionType) {
+  get productType(): TrialOrganizationType {
+    switch (this.organizationTypeQueryParameter) {
       case "enterprise":
-        return SubscriptionType.Enterprise;
+        return ProductTierType.Enterprise;
+      case "families":
+        return ProductTierType.Families;
       case "teams":
-        return SubscriptionType.Teams;
+        return ProductTierType.Teams;
+      case "teamsStarter":
+        return ProductTierType.TeamsStarter;
     }
   }
+
+  protected readonly SubscriptionProduct = SubscriptionProduct;
 }

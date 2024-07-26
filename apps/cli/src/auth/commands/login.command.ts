@@ -3,7 +3,7 @@ import * as http from "http";
 import { OptionValues } from "commander";
 import * as inquirer from "inquirer";
 import Separator from "inquirer/lib/objects/separator";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import {
   LoginStrategyServiceAbstraction,
@@ -15,7 +15,9 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
@@ -30,13 +32,12 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { NodeUtils } from "@bitwarden/node/node-utils";
 
 import { Response } from "../../models/response";
@@ -59,7 +60,7 @@ export class LoginCommand {
     protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected platformUtilsService: PlatformUtilsService,
-    protected stateService: StateService,
+    protected accountService: AccountService,
     protected cryptoService: CryptoService,
     protected policyService: PolicyService,
     protected twoFactorService: TwoFactorService,
@@ -68,6 +69,7 @@ export class LoginCommand {
     protected policyApiService: PolicyApiServiceAbstraction,
     protected orgService: OrganizationService,
     protected logoutCallback: () => Promise<void>,
+    protected kdfConfigService: KdfConfigService,
   ) {}
 
   async run(email: string, password: string, options: OptionValues) {
@@ -203,6 +205,7 @@ export class LoginCommand {
             ssoCodeVerifier,
             this.ssoRedirectUri,
             orgIdentifier,
+            undefined, // email to look up 2FA token not required as CLI can't remember 2FA token
             twoFactor,
           ),
         );
@@ -228,7 +231,7 @@ export class LoginCommand {
         }
       }
       if (response.requiresTwoFactor) {
-        const twoFactorProviders = this.twoFactorService.getSupportedProviders(null);
+        const twoFactorProviders = await this.twoFactorService.getSupportedProviders(null);
         if (twoFactorProviders.length === 0) {
           return Response.badRequest("No providers available for this client.");
         }
@@ -269,12 +272,12 @@ export class LoginCommand {
 
         if (
           twoFactorToken == null &&
-          response.twoFactorProviders.size > 1 &&
+          Object.keys(response.twoFactorProviders).length > 1 &&
           selectedProvider.type === TwoFactorProviderType.Email
         ) {
           const emailReq = new TwoFactorEmailRequest();
-          emailReq.email = this.loginStrategyService.email;
-          emailReq.masterPasswordHash = this.loginStrategyService.masterPasswordHash;
+          emailReq.email = await this.loginStrategyService.getEmail();
+          emailReq.masterPasswordHash = await this.loginStrategyService.getMasterPasswordHash();
           await this.apiService.postTwoFactorEmail(emailReq);
         }
 
@@ -488,7 +491,9 @@ export class LoginCommand {
     hint?: string;
   }> {
     if (this.email == null || this.email === "undefined") {
-      this.email = await this.stateService.getEmail();
+      this.email = await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((a) => a?.email)),
+      );
     }
 
     // Get New Master Password
@@ -562,14 +567,12 @@ export class LoginCommand {
       message: "Master Password Hint (optional):",
     });
     const masterPasswordHint = hint.input;
-    const kdf = await this.stateService.getKdfType();
-    const kdfConfig = await this.stateService.getKdfConfig();
+    const kdfConfig = await this.kdfConfigService.getKdfConfig();
 
     // Create new key and hash new password
     const newMasterKey = await this.cryptoService.makeMasterKey(
       masterPassword,
       this.email.trim().toLowerCase(),
-      kdf,
       kdfConfig,
     );
     const newPasswordHash = await this.cryptoService.hashMasterKey(masterPassword, newMasterKey);
@@ -689,6 +692,8 @@ export class LoginCommand {
     codeChallenge: string,
     state: string,
   ): Promise<{ ssoCode: string; orgIdentifier: string }> {
+    const env = await firstValueFrom(this.environmentService.environment$);
+
     return new Promise((resolve, reject) => {
       const callbackServer = http.createServer((req, res) => {
         const urlString = "http://localhost" + req.url;
@@ -723,7 +728,7 @@ export class LoginCommand {
         }
       });
       let foundPort = false;
-      const webUrl = this.environmentService.getWebVaultUrl();
+      const webUrl = env.getWebVaultUrl();
       for (let port = 8065; port <= 8070; port++) {
         try {
           this.ssoRedirectUri = "http://localhost:" + port;

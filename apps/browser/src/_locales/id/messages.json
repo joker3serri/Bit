@@ -3,12 +3,12 @@
     "message": "Bitwarden"
   },
   "extName": {
-    "message": "Bitwarden - Pengelola Sandi Gratis",
+    "message": "Bitwarden Pengelola Sandi",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
-    "message": "Bitwarden adalah sebuah pengelola sandi yang aman dan gratis untuk semua perangkat Anda.",
-    "description": "Extension description"
+    "message": "Bitwarden memudahkan Anda menyimpan kata sandi, kata kunci, dan informasi sensitif dimanapun Anda berada",
+    "description": "Extension description, MUST be less than 112 characters (Safari restriction)"
   },
   "loginOrCreateNewAccount": {
     "message": "Masuk atau buat akun baru untuk mengakses brankas Anda."
@@ -16,11 +16,17 @@
   "createAccount": {
     "message": "Buat Akun"
   },
+  "setAStrongPassword": {
+    "message": "Set a strong password"
+  },
+  "finishCreatingYourAccountBySettingAPassword": {
+    "message": "Finish creating your account by setting a password"
+  },
   "login": {
     "message": "Masuk"
   },
   "enterpriseSingleSignOn": {
-    "message": "Sistem Masuk Tunggal Perusahaan"
+    "message": "SSO Perusahaan"
   },
   "cancel": {
     "message": "Batal"
@@ -42,6 +48,19 @@
   },
   "masterPassHintDesc": {
     "message": "Petunjuk kata sandi utama dapat membantu Anda mengingat kata sandi Anda jika Anda melupakannya."
+  },
+  "masterPassHintText": {
+    "message": "If you forget your password, the password hint can be sent to your email. $CURRENT$/$MAXIMUM$ character maximum.",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "0"
+      },
+      "maximum": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
   },
   "reTypeMasterPass": {
     "message": "Ketik ulang Kata Sandi Utama"
@@ -92,13 +111,13 @@
     "message": "Isi otomatis"
   },
   "autoFillLogin": {
-    "message": "Auto-fill login"
+    "message": "Autofill masuk"
   },
   "autoFillCard": {
-    "message": "Auto-fill card"
+    "message": "Autofill kartu"
   },
   "autoFillIdentity": {
-    "message": "Auto-fill identity"
+    "message": "Autofill identitas"
   },
   "generatePasswordCopied": {
     "message": "Membuat Kata Sandi (tersalin)"
@@ -110,19 +129,19 @@
     "message": "Tidak ada info masuk yang cocok."
   },
   "noCards": {
-    "message": "No cards"
+    "message": "Tanpa kartu"
   },
   "noIdentities": {
-    "message": "No identities"
+    "message": "Tanpa identitas"
   },
   "addLoginMenu": {
-    "message": "Add login"
+    "message": "Tambahkan Info Masuk"
   },
   "addCardMenu": {
-    "message": "Add card"
+    "message": "Tambahkan kartu"
   },
   "addIdentityMenu": {
-    "message": "Add identity"
+    "message": "Tambahkan identitas"
   },
   "unlockVaultMenu": {
     "message": "Buka brankas Anda"
@@ -166,11 +185,29 @@
   "confirmIdentity": {
     "message": "Konfirmasi identitas Anda untuk melanjutkan."
   },
-  "account": {
-    "message": "Akun"
-  },
   "changeMasterPassword": {
     "message": "Ubah Kata Sandi Utama"
+  },
+  "continueToWebApp": {
+    "message": "Lanjut ke aplikasi web?"
+  },
+  "continueToWebAppDesc": {
+    "message": "Temukan fitur Bitwarden lebih melalui aplikasi web."
+  },
+  "continueToHelpCenter": {
+    "message": "Lanjutkan ke Pusat Bantuan?"
+  },
+  "continueToHelpCenterDesc": {
+    "message": "Pelajari lebih lanjut penggunaan Bitwarden di Pusat Bantuan."
+  },
+  "continueToBrowserExtensionStore": {
+    "message": "Lanjut ke pasar ekstensi peramban?"
+  },
+  "continueToBrowserExtensionStoreDesc": {
+    "message": "Help others find out if Bitwarden is right for them. Visit your browser's extension store and leave a rating now."
+  },
+  "changeMasterPasswordOnWebConfirmation": {
+    "message": "Anda dapat merubah sandi utama di aplikasi Bitwarden web."
   },
   "fingerprintPhrase": {
     "message": "Frasa Sidik Jari",
@@ -186,8 +223,44 @@
   "logOut": {
     "message": "Keluar"
   },
+  "aboutBitwarden": {
+    "message": "About Bitwarden"
+  },
   "about": {
     "message": "Tentang"
+  },
+  "moreFromBitwarden": {
+    "message": "More from Bitwarden"
+  },
+  "continueToBitwardenDotCom": {
+    "message": "Continue to bitwarden.com?"
+  },
+  "bitwardenForBusiness": {
+    "message": "Bitwarden for Business"
+  },
+  "bitwardenAuthenticator": {
+    "message": "Bitwarden Authenticator"
+  },
+  "continueToAuthenticatorPageDesc": {
+    "message": "Bitwarden Authenticator allows you to store authenticator keys and generate TOTP codes for 2-step verification flows. Learn more on the bitwarden.com website"
+  },
+  "bitwardenSecretsManager": {
+    "message": "Bitwarden Secrets Manager"
+  },
+  "continueToSecretsManagerPageDesc": {
+    "message": "Securely store, manage, and share developer secrets with Bitwarden Secrets Manager. Learn more on the bitwarden.com website."
+  },
+  "passwordlessDotDev": {
+    "message": "Passwordless.dev"
+  },
+  "continueToPasswordlessDotDevPageDesc": {
+    "message": "Create smooth and secure login experiences free from traditional passwords with Passwordless.dev. Learn more on the bitwarden.com website."
+  },
+  "freeBitwardenFamilies": {
+    "message": "Free Bitwarden Families"
+  },
+  "freeBitwardenFamiliesPageDesc": {
+    "message": "You are eligible for Free Bitwarden Families. Redeem this offer today in the web app."
   },
   "version": {
     "message": "Versi"
@@ -220,13 +293,13 @@
     "message": "Bantuan & Umpan Balik"
   },
   "helpCenter": {
-    "message": "Bitwarden Help center"
+    "message": "Pusat Bantuan Bitwarden"
   },
   "communityForums": {
-    "message": "Explore Bitwarden community forums"
+    "message": "Telusuri forum Bitwarden"
   },
   "contactSupport": {
-    "message": "Contact Bitwarden support"
+    "message": "Kontak dukungan Bitwarden"
   },
   "sync": {
     "message": "Sinkronisasi"
@@ -247,8 +320,8 @@
   "passGenInfo": {
     "message": "Secara otomatis membuat sandi yang kuat dan unik untuk info masuk Anda."
   },
-  "bitWebVault": {
-    "message": "Brankas Web Bitwarden"
+  "bitWebVaultApp": {
+    "message": "Bitwarden web app"
   },
   "importItems": {
     "message": "Impor Item"
@@ -269,7 +342,7 @@
     "message": "Panjang"
   },
   "passwordMinLength": {
-    "message": "Minimum password length"
+    "message": "Panjang kata sandi minimum"
   },
   "uppercase": {
     "message": "Huruf besar (A-Z)"
@@ -327,13 +400,22 @@
     "message": "Kata Sandi"
   },
   "totp": {
-    "message": "Authenticator secret"
+    "message": "Kode Autentikator"
   },
   "passphrase": {
     "message": "Frasa Sandi"
   },
   "favorite": {
     "message": "Favorit"
+  },
+  "unfavorite": {
+    "message": "Unfavorite"
+  },
+  "itemAddedToFavorites": {
+    "message": "Item added to favorites"
+  },
+  "itemRemovedFromFavorites": {
+    "message": "Item removed from favorites"
   },
   "notes": {
     "message": "Catatan"
@@ -356,6 +438,9 @@
   "launch": {
     "message": "Luncurkan"
   },
+  "launchWebsite": {
+    "message": "Launch website"
+  },
   "website": {
     "message": "Situs Web"
   },
@@ -368,11 +453,20 @@
   "other": {
     "message": "Lainnya"
   },
+  "unlockMethods": {
+    "message": "Pilihan Penguncian"
+  },
   "unlockMethodNeededToChangeTimeoutActionDesc": {
-    "message": "Set up an unlock method to change your vault timeout action."
+    "message": "Mengatur metode pembukaan kunci untuk mengubah tindakan batas waktu brankas Anda."
   },
   "unlockMethodNeeded": {
-    "message": "Set up an unlock method in Settings"
+    "message": "Mengatur metode penguncian di Pengaturan"
+  },
+  "sessionTimeoutHeader": {
+    "message": "Batas waktu sesi"
+  },
+  "otherOptions": {
+    "message": "Opsi lainnya"
   },
   "rateExtension": {
     "message": "Nilai Ekstensi"
@@ -415,7 +509,7 @@
     "message": "Kunci Sekarang"
   },
   "lockAll": {
-    "message": "Lock all"
+    "message": "Kunci semua"
   },
   "immediately": {
     "message": "Segera"
@@ -462,6 +556,18 @@
   "security": {
     "message": "Keamanan"
   },
+  "confirmMasterPassword": {
+    "message": "Confirm master password"
+  },
+  "masterPassword": {
+    "message": "Master password"
+  },
+  "masterPassImportant": {
+    "message": "Your master password cannot be recovered if you forget it!"
+  },
+  "masterPassHintLabel": {
+    "message": "Master password hint"
+  },
   "errorOccurred": {
     "message": "Terjadi kesalahan"
   },
@@ -475,10 +581,10 @@
     "message": "Kata sandi utama diperlukan."
   },
   "confirmMasterPasswordRequired": {
-    "message": "Master password retype is required."
+    "message": "Sandi utama diperlukan."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "Kata sandi utama harus $VALUE$ karakter.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -493,11 +599,20 @@
   "newAccountCreated": {
     "message": "Akun baru Anda telah dibuat! Sekarang Anda bisa masuk."
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "Anda berhasil masuk"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Anda dapat menutup jendela ini"
+  },
   "masterPassSent": {
     "message": "Kami telah mengirimi Anda email dengan petunjuk sandi utama Anda."
   },
   "verificationCodeRequired": {
     "message": "Kode verifikasi diperlukan."
+  },
+  "webauthnCancelOrTimeout": {
+    "message": "The authentication was cancelled or took too long. Please try again."
   },
   "invalidVerificationCode": {
     "message": "Kode verifikasi tidak valid"
@@ -516,22 +631,49 @@
     "message": "Tidak dapat mengisi otomatis item yang dipilih pada laman ini. Salin dan tempel informasinya sebagai gantinya."
   },
   "totpCaptureError": {
-    "message": "Unable to scan QR code from the current webpage"
+    "message": "Tidak dapat memindai kode QR dari laman ini"
   },
   "totpCaptureSuccess": {
-    "message": "Authenticator key added"
+    "message": "Kunci Autentikator ditambahkan"
   },
   "totpCapture": {
-    "message": "Scan authenticator QR code from current webpage"
+    "message": "Pindai kode QR autentikator dari laman ini"
+  },
+  "totpHelperTitle": {
+    "message": "Make 2-step verification seamless"
+  },
+  "totpHelper": {
+    "message": "Bitwarden can store and fill 2-step verification codes. Copy and paste the key into this field."
+  },
+  "totpHelperWithCapture": {
+    "message": "Bitwarden can store and fill 2-step verification codes. Select the camera icon to take a screenshot of this website's authenticator QR code, or copy and paste the key into this field."
   },
   "copyTOTP": {
-    "message": "Copy Authenticator key (TOTP)"
+    "message": "Salin kunci Autentikator (TOTP)"
   },
   "loggedOut": {
     "message": "Keluar"
   },
+  "loggedOutDesc": {
+    "message": "You have been logged out of your account."
+  },
   "loginExpired": {
     "message": "Sesi masuk Anda telah berakhir."
+  },
+  "logIn": {
+    "message": "Log in"
+  },
+  "restartRegistration": {
+    "message": "Restart registration"
+  },
+  "expiredLink": {
+    "message": "Expired link"
+  },
+  "pleaseRestartRegistrationOrTryLoggingIn": {
+    "message": "Please restart registration or try logging in."
+  },
+  "youMayAlreadyHaveAnAccount": {
+    "message": "You may already have an account"
   },
   "logOutConfirmation": {
     "message": "Anda yakin ingin keluar?"
@@ -550,12 +692,6 @@
   },
   "addedFolder": {
     "message": "Tambah Folder"
-  },
-  "changeMasterPass": {
-    "message": "Ubah Kata Sandi Utama"
-  },
-  "changeMasterPasswordConfirmation": {
-    "message": "Anda dapat mengubah kata sandi utama Anda di brankas web bitwarden.com. Anda ingin mengunjungi situs web sekarang?"
   },
   "twoStepLoginConfirmation": {
     "message": "Info masuk dua langkah membuat akun Anda lebih aman dengan mengharuskan Anda memverifikasi info masuk Anda dengan peranti lain seperti kode keamanan, aplikasi autentikasi, SMK, panggilan telepon, atau email. Info masuk dua langkah dapat diaktifkan di brankas web bitwarden.com. Anda ingin mengunjungi situs web sekarang?"
@@ -638,7 +774,7 @@
     "description": "This is the folder for uncategorized items"
   },
   "enableAddLoginNotification": {
-    "message": "Ask to add login"
+    "message": "Tanya untuk penambahan login"
   },
   "addLoginNotificationDesc": {
     "message": "\"Notifikasi Penambahan Info Masuk\" secara otomatis akan meminta Anda untuk menyimpan info masuk baru ke brankas Anda saat Anda masuk untuk pertama kalinya."
@@ -699,6 +835,9 @@
   "notificationUnlock": {
     "message": "Unlock"
   },
+  "additionalOptions": {
+    "message": "Additional options"
+  },
   "enableContextMenuItem": {
     "message": "Show context menu options"
   },
@@ -736,11 +875,38 @@
     "message": "Gelap Solarized",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
+  "exportFrom": {
+    "message": "Export from"
+  },
   "exportVault": {
     "message": "Ekspor Brankas"
   },
   "fileFormat": {
     "message": "Format Berkas"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "This file export will be password protected and require the file password to decrypt."
+  },
+  "filePassword": {
+    "message": "File password"
+  },
+  "exportPasswordDescription": {
+    "message": "This password will be used to export and import this file"
+  },
+  "accountRestrictedOptionDescription": {
+    "message": "Use your account encryption key, derived from your account's username and Master Password, to encrypt the export and restrict import to only the current Bitwarden account."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Set a file password to encrypt the export and import it to any Bitwarden account using the password for decryption."
+  },
+  "exportTypeHeading": {
+    "message": "Export type"
+  },
+  "accountRestricted": {
+    "message": "Account restricted"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "“File password”  and “Confirm file password“ do not match."
   },
   "warning": {
     "message": "PERINGATAN",
@@ -764,11 +930,8 @@
   "shared": {
     "message": "Dibagikan"
   },
-  "learnOrg": {
-    "message": "Pelajari tentang Organisasi"
-  },
-  "learnOrgConfirmation": {
-    "message": "Bitwarden memungkinkan Anda berbagi item brankas Anda dengan orang lain menggunakan organisasi. Maukah Anda mengunjungi laman bitwarden.com untuk mempelajari lebih lanjut?"
+  "bitwardenForBusinessPageDesc": {
+    "message": "Bitwarden for Business allows you to share your vault items with others by using an organization. Learn more on the bitwarden.com website."
   },
   "moveToOrganization": {
     "message": "Pindah ke Organisasi"
@@ -981,18 +1144,18 @@
   "authenticatorAppTitle": {
     "message": "Aplikasi Otentikasi"
   },
-  "authenticatorAppDesc": {
-    "message": "Gunakan aplikasi autentikasi (seperti Authy atau Google Authenticator) untuk menghasilkan kode verifikasi berbasis waktu.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Enter a code generated by an authenticator app like Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "Kunci Keamanan OTP YubiKey"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP Security Key"
   },
   "yubiKeyDesc": {
     "message": "Gunakan YubiKey untuk mengakses akun Anda. Bekerja dengan YubiKey 4, 4 Nano, 4C, dan peranti NEO."
   },
-  "duoDesc": {
-    "message": "Verifikasi dengan Duo Security menggunakan aplikasi Duo Mobile, SMS, panggilan telepon, atau kunci keamanan U2F.",
+  "duoDescV2": {
+    "message": "Enter a code generated by Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -1008,14 +1171,23 @@
   "emailTitle": {
     "message": "Email"
   },
-  "emailDesc": {
-    "message": "Kode verifikasi akan dikirim via email kepada Anda."
+  "emailDescV2": {
+    "message": "Enter a code sent to your email."
   },
   "selfHostedEnvironment": {
     "message": "Lingkungan Penyedia Personal"
   },
   "selfHostedEnvironmentFooter": {
     "message": "Tetapkan URL dasar penyedia personal pemasangan Bitwarden Anda."
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "For advanced configuration, you can specify the base URL of each service independently."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "You must add either the base Server URL or at least one custom environment."
   },
   "customEnvironment": {
     "message": "Lingkungan Khusus"
@@ -1113,9 +1285,6 @@
   },
   "commandLockVaultDesc": {
     "message": "Kunci brankas"
-  },
-  "privateModeWarning": {
-    "message": "Dukungan mode pribadi bersifat eksperimental dan beberapa fitur terbatas."
   },
   "customFields": {
     "message": "Ruas Khusus"
@@ -1323,6 +1492,33 @@
   "typeIdentity": {
     "message": "Identitas"
   },
+  "newItemHeader": {
+    "message": "New $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "editItemHeader": {
+    "message": "Edit $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
+  "viewItemHeader": {
+    "message": "View $TYPE$",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Login"
+      }
+    }
+  },
   "passwordHistory": {
     "message": "Riwayat Kata Sandi"
   },
@@ -1331,6 +1527,15 @@
   },
   "collections": {
     "message": "Koleksi"
+  },
+  "nCollections": {
+    "message": "$COUNT$ collections",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "favorites": {
     "message": "Favorit"
@@ -1549,6 +1754,9 @@
   "restoredItem": {
     "message": "Item Yang Dipulihkan"
   },
+  "alreadyHaveAccount": {
+    "message": "Already have an account?"
+  },
   "vaultTimeoutLogOutConfirmation": {
     "message": "Keluar akan menghapus semua akses ke brankas Anda dan membutuhkan otentikasi daring setelah periode batas waktu tertentu. Apakah Anda yakin ingin menggunakan pengaturan ini?"
   },
@@ -1557,6 +1765,9 @@
   },
   "autoFillAndSave": {
     "message": "Isi Otomatis dan Simpan"
+  },
+  "fillAndSave": {
+    "message": "Fill and save"
   },
   "autoFillSuccessAndSavedUri": {
     "message": "Item yang Diisi Otomatis dan URI Tersimpan"
@@ -1636,6 +1847,21 @@
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "Kata sandi utama Anda yang baru tidak memenuhi persyaratan kebijakan."
   },
+  "receiveMarketingEmailsV2": {
+    "message": "Get advice, announcements, and research opportunities from Bitwarden in your inbox."
+  },
+  "unsubscribe": {
+    "message": "Unsubscribe"
+  },
+  "atAnyTime": {
+    "message": "at any time."
+  },
+  "byContinuingYouAgreeToThe": {
+    "message": "By continuing, you agree to the"
+  },
+  "and": {
+    "message": "and"
+  },
   "acceptPolicies": {
     "message": "Dengan mencentang kotak ini, Anda menyetujui yang berikut:"
   },
@@ -1653,6 +1879,12 @@
   },
   "ok": {
     "message": "Oke"
+  },
+  "errorRefreshingAccessToken": {
+    "message": "Access Token Refresh Error"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "No refresh token or API keys found. Please try logging out and logging back in."
   },
   "desktopSyncVerificationTitle": {
     "message": "Verifikasi sinkronisasi desktop"
@@ -1701,6 +1933,12 @@
   },
   "biometricsNotSupportedDesc": {
     "message": "Biometrik peramban tidak didukung di perangkat ini."
+  },
+  "biometricsNotUnlockedTitle": {
+    "message": "User locked or logged out"
+  },
+  "biometricsNotUnlockedDesc": {
+    "message": "Please unlock this user in the desktop application and try again."
   },
   "biometricsFailedTitle": {
     "message": "Biometrics failed"
@@ -1974,6 +2212,9 @@
   "emailVerificationRequired": {
     "message": "Verifikasi Email Diperlukan"
   },
+  "emailVerifiedV2": {
+    "message": "Email verified"
+  },
   "emailVerificationRequiredDesc": {
     "message": "Anda harus memverifikasi email Anda untuk menggunakan fitur ini. Anda dapat memverifikasi email Anda di brankas web."
   },
@@ -1997,6 +2238,10 @@
   },
   "selectFolder": {
     "message": "Pilih Folder..."
+  },
+  "noFoldersFound": {
+    "message": "No folders found",
+    "description": "Used as a message within the notification bar when no folders are found"
   },
   "orgPermissionsUpdatedMustSetPassword": {
     "message": "Your organization permissions were updated, requiring you to set a master password.",
@@ -2112,6 +2357,18 @@
       }
     }
   },
+  "exportingOrganizationVaultTitle": {
+    "message": "Exporting organization vault"
+  },
+  "exportingOrganizationVaultDesc": {
+    "message": "Only the organization vault associated with $ORGANIZATION$ will be exported. Items in individual vaults or other organizations will not be included.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "ACME Moving Co."
+      }
+    }
+  },
   "error": {
     "message": "Galat"
   },
@@ -2160,6 +2417,108 @@
   },
   "forwardedEmailDesc": {
     "message": "Generate an email alias with an external forwarding service."
+  },
+  "forwarderError": {
+    "message": "$SERVICENAME$ error: $ERRORMESSAGE$",
+    "description": "Reports an error returned by a forwarding service to the user.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Invalid characters in domain name."
+      }
+    }
+  },
+  "forwarderGeneratedBy": {
+    "message": "Generated by Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen."
+  },
+  "forwarderGeneratedByWithWebsite": {
+    "message": "Website: $WEBSITE$. Generated by Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen.",
+    "placeholders": {
+      "WEBSITE": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
+  "forwaderInvalidToken": {
+    "message": "Invalid $SERVICENAME$ API token",
+    "description": "Displayed when the user's API token is empty or rejected by the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwaderInvalidTokenWithMessage": {
+    "message": "Invalid $SERVICENAME$ API token: $ERRORMESSAGE$",
+    "description": "Displayed when the user's API token is rejected by the forwarding service with an error message.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Please verify your email address to continue."
+      }
+    }
+  },
+  "forwarderNoAccountId": {
+    "message": "Unable to obtain $SERVICENAME$ masked email account ID.",
+    "description": "Displayed when the forwarding service fails to return an account ID.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoDomain": {
+    "message": "Invalid $SERVICENAME$ domain.",
+    "description": "Displayed when the domain is empty or domain authorization failed at the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoUrl": {
+    "message": "Invalid $SERVICENAME$ url.",
+    "description": "Displayed when the url of the forwarding service wasn't supplied.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownError": {
+    "message": "Unknown $SERVICENAME$ error occurred.",
+    "description": "Displayed when the forwarding service failed due to an unknown error.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownForwarder": {
+    "message": "Unknown forwarder: '$SERVICENAME$'.",
+    "description": "Displayed when the forwarding service is not supported.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "JustTrust.us"
+      }
+    }
   },
   "hostname": {
     "message": "Hostname",
@@ -2372,15 +2731,30 @@
   "ssoIdentifierRequired": {
     "message": "Organization SSO identifier is required."
   },
+  "creatingAccountOn": {
+    "message": "Creating account on"
+  },
+  "checkYourEmail": {
+    "message": "Check your email"
+  },
+  "followTheLinkInTheEmailSentTo": {
+    "message": "Follow the link in the email sent to"
+  },
+  "andContinueCreatingYourAccount": {
+    "message": "and continue creating your account."
+  },
+  "noEmail": {
+    "message": "No email?"
+  },
+  "goBack": {
+    "message": "Go back"
+  },
+  "toEditYourEmailAddress": {
+    "message": "to edit your email address."
+  },
   "eu": {
     "message": "EU",
     "description": "European Union"
-  },
-  "usDomain": {
-    "message": "bitwarden.com"
-  },
-  "euDomain": {
-    "message": "bitwarden.eu"
   },
   "accessDenied": {
     "message": "Access denied. You do not have permission to view this page."
@@ -2414,6 +2788,14 @@
   },
   "deviceTrusted": {
     "message": "Device trusted"
+  },
+  "sendsNoItemsTitle": {
+    "message": "No active Sends",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendsNoItemsMessage": {
+    "message": "Use Send to securely share encrypted information with anyone.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "inputRequired": {
     "message": "Input is required."
@@ -2566,6 +2948,9 @@
     "message": "Turn off master password re-prompt to edit this field",
     "description": "Message appearing below the autofill on load message when master password reprompt is set for a vault item."
   },
+  "toggleSideNavigation": {
+    "message": "Toggle side navigation"
+  },
   "skipToContent": {
     "message": "Skip to content"
   },
@@ -2695,6 +3080,24 @@
       }
     }
   },
+  "duoHealthCheckResultsInNullAuthUrlError": {
+    "message": "Error connecting with the Duo service. Use a different two-step login method or contact Duo for assistance."
+  },
+  "launchDuoAndFollowStepsToFinishLoggingIn": {
+    "message": "Launch Duo and follow the steps to finish logging in."
+  },
+  "duoRequiredForAccount": {
+    "message": "Duo two-step login is required for your account."
+  },
+  "popoutTheExtensionToCompleteLogin": {
+    "message": "Popout the extension to complete login."
+  },
+  "popoutExtension": {
+    "message": "Popout extension"
+  },
+  "launchDuo": {
+    "message": "Launch Duo"
+  },
   "importFormatError": {
     "message": "Data is not formatted correctly. Please check your import file and try again."
   },
@@ -2765,6 +3168,9 @@
   },
   "confirmFilePassword": {
     "message": "Confirm file password"
+  },
+  "exportSuccess": {
+    "message": "Vault data exported"
   },
   "typePasskey": {
     "message": "Passkey"
@@ -2953,10 +3359,6 @@
     "message": "Ignoring this option may cause conflicts between the Bitwarden auto-fill menu and your browser's.",
     "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
   },
-  "overrideDefaultBrowserAutofillPrivacyRequiredDescription": {
-    "message": "This action will restart the Bitwarden extension. Ignoring this option may cause conflicts between the Bitwarden auto-fill menu and your browser's.",
-    "description": "Dialog message facilitating the ability to override a chrome browser's default autofill behavior"
-  },
   "overrideDefaultBrowserAutoFillSettings": {
     "message": "Make Bitwarden your default password manager",
     "description": "Label for the setting that allows overriding the default browser autofill settings"
@@ -2972,5 +3374,455 @@
   "makeDefault": {
     "message": "Make default",
     "description": "Button text for the setting that allows overriding the default browser autofill settings"
+  },
+  "saveCipherAttemptSuccess": {
+    "message": "Credentials saved successfully!",
+    "description": "Notification message for when saving credentials has succeeded."
+  },
+  "updateCipherAttemptSuccess": {
+    "message": "Credentials updated successfully!",
+    "description": "Notification message for when updating credentials has succeeded."
+  },
+  "saveCipherAttemptFailed": {
+    "message": "Error saving credentials. Check console for details.",
+    "description": "Notification message for when saving credentials has failed."
+  },
+  "success": {
+    "message": "Success"
+  },
+  "removePasskey": {
+    "message": "Remove passkey"
+  },
+  "passkeyRemoved": {
+    "message": "Passkey removed"
+  },
+  "autofillSuggestions": {
+    "message": "Auto-fill suggestions"
+  },
+  "autofillSuggestionsTip": {
+    "message": "Save a login item for this site to auto-fill"
+  },
+  "yourVaultIsEmpty": {
+    "message": "Your vault is empty"
+  },
+  "noItemsMatchSearch": {
+    "message": "No items match your search"
+  },
+  "clearFiltersOrTryAnother": {
+    "message": "Clear filters or try another search term"
+  },
+  "copyInfoTitle": {
+    "message": "Copy info - $ITEMNAME$",
+    "description": "Title for a button that opens a menu with options to copy information from an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "copyNoteTitle": {
+    "message": "Copy Note - $ITEMNAME$",
+    "description": "Title for a button copies a note to the clipboard.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Note Item"
+      }
+    }
+  },
+  "moreOptionsLabel": {
+    "message": "More options, $ITEMNAME$",
+    "description": "Aria label for a button that opens a menu with more options for an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "moreOptionsTitle": {
+    "message": "More options - $ITEMNAME$",
+    "description": "Title for a button that opens a menu with more options for an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "viewItemTitle": {
+    "message": "View item - $ITEMNAME$",
+    "description": "Title for a link that opens a view for an item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "autofillTitle": {
+    "message": "Auto-fill - $ITEMNAME$",
+    "description": "Title for a button that auto-fills a login item.",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      }
+    }
+  },
+  "noValuesToCopy": {
+    "message": "No values to copy"
+  },
+  "assignCollections": {
+    "message": "Assign collections"
+  },
+  "copyEmail": {
+    "message": "Copy email"
+  },
+  "copyPhone": {
+    "message": "Copy phone"
+  },
+  "copyAddress": {
+    "message": "Copy address"
+  },
+  "adminConsole": {
+    "message": "Admin Console"
+  },
+  "accountSecurity": {
+    "message": "Account security"
+  },
+  "notifications": {
+    "message": "Notifications"
+  },
+  "appearance": {
+    "message": "Appearance"
+  },
+  "errorAssigningTargetCollection": {
+    "message": "Error assigning target collection."
+  },
+  "errorAssigningTargetFolder": {
+    "message": "Error assigning target folder."
+  },
+  "viewItemsIn": {
+    "message": "View items in $NAME$",
+    "description": "Button to view the contents of a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "backTo": {
+    "message": "Back to $NAME$",
+    "description": "Navigate back to a previous folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "new": {
+    "message": "New"
+  },
+  "removeItem": {
+    "message": "Remove $NAME$",
+    "description": "Remove a selected option, such as a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "itemsWithNoFolder": {
+    "message": "Items with no folder"
+  },
+  "itemDetails": {
+    "message": "Item details"
+  },
+  "itemName": {
+    "message": "Item name"
+  },
+  "cannotRemoveViewOnlyCollections": {
+    "message": "You cannot remove collections with View only permissions: $COLLECTIONS$",
+    "placeholders": {
+      "collections": {
+        "content": "$1",
+        "example": "Work, Personal"
+      }
+    }
+  },
+  "organizationIsDeactivated": {
+    "message": "Organization is deactivated"
+  },
+  "owner": {
+    "message": "Owner"
+  },
+  "selfOwnershipLabel": {
+    "message": "You",
+    "description": "Used as a label to indicate that the user is the owner of an item."
+  },
+  "contactYourOrgAdmin": {
+    "message": "Items in deactivated organizations cannot be accessed. Contact your organization owner for assistance."
+  },
+  "additionalInformation": {
+    "message": "Additional information"
+  },
+  "itemHistory": {
+    "message": "Item history"
+  },
+  "lastEdited": {
+    "message": "Last edited"
+  },
+  "ownerYou": {
+    "message": "Owner: You"
+  },
+  "linked": {
+    "message": "Linked"
+  },
+  "copySuccessful": {
+    "message": "Copy Successful"
+  },
+  "upload": {
+    "message": "Upload"
+  },
+  "addAttachment": {
+    "message": "Add attachment"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "Maximum file size is 500 MB"
+  },
+  "deleteAttachmentName": {
+    "message": "Delete attachment $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "downloadAttachmentName": {
+    "message": "Download $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Attachment Name"
+      }
+    }
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Are you sure you want to permanently delete this attachment?"
+  },
+  "premium": {
+    "message": "Premium"
+  },
+  "freeOrgsCannotUseAttachments": {
+    "message": "Free organizations cannot use attachments"
+  },
+  "filters": {
+    "message": "Filters"
+  },
+  "personalDetails": {
+    "message": "Personal details"
+  },
+  "identification": {
+    "message": "Identification"
+  },
+  "contactInfo": {
+    "message": "Contact info"
+  },
+  "downloadAttachment": {
+    "message": "Download - $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Your File"
+      }
+    }
+  },
+  "loginCredentials": {
+    "message": "Login credentials"
+  },
+  "authenticatorKey": {
+    "message": "Authenticator key"
+  },
+  "cardDetails": {
+    "message": "Card details"
+  },
+  "cardBrandDetails": {
+    "message": "$BRAND$ details",
+    "placeholders": {
+      "brand": {
+        "content": "$1",
+        "example": "Visa"
+      }
+    }
+  },
+  "addAccount": {
+    "message": "Add account"
+  },
+  "loading": {
+    "message": "Loading"
+  },
+  "assign": {
+    "message": "Assign"
+  },
+  "bulkCollectionAssignmentDialogDescription": {
+    "message": "Only organization members with access to these collections will be able to see the items."
+  },
+  "bulkCollectionAssignmentWarning": {
+    "message": "You have selected $TOTAL_COUNT$ items. You cannot update $READONLY_COUNT$ of the items because you do not have edit permissions.",
+    "placeholders": {
+      "total_count": {
+        "content": "$1",
+        "example": "10"
+      },
+      "readonly_count": {
+        "content": "$2"
+      }
+    }
+  },
+  "addField": {
+    "message": "Add field"
+  },
+  "add": {
+    "message": "Add"
+  },
+  "fieldType": {
+    "message": "Field type"
+  },
+  "fieldLabel": {
+    "message": "Field label"
+  },
+  "textHelpText": {
+    "message": "Use text fields for data like security questions"
+  },
+  "hiddenHelpText": {
+    "message": "Use hidden fields for sensitive data like a password"
+  },
+  "checkBoxHelpText": {
+    "message": "Use checkboxes if you'd like to auto-fill a form's checkbox, like a remember email"
+  },
+  "linkedHelpText": {
+    "message": "Use a linked field when you are experiencing auto-fill issues for a specific website."
+  },
+  "linkedLabelHelpText": {
+    "message": "Enter the the field's html id, name, aria-label, or placeholder."
+  },
+  "editField": {
+    "message": "Edit field"
+  },
+  "editFieldLabel": {
+    "message": "Edit $LABEL$",
+    "placeholders": {
+      "label": {
+        "content": "$1",
+        "example": "Custom field"
+      }
+    }
+  },
+  "deleteCustomField": {
+    "message": "Delete $LABEL$",
+    "placeholders": {
+      "label": {
+        "content": "$1",
+        "example": "Custom field"
+      }
+    }
+  },
+  "fieldAdded": {
+    "message": "$LABEL$ added",
+    "placeholders": {
+      "label": {
+        "content": "$1",
+        "example": "Custom field"
+      }
+    }
+  },
+  "reorderToggleButton": {
+    "message": "Reorder $LABEL$. Use arrow key to move item up or down.",
+    "placeholders": {
+      "label": {
+        "content": "$1",
+        "example": "Custom field"
+      }
+    }
+  },
+  "reorderFieldUp": {
+    "message": "$LABEL$ moved up, position $INDEX$ of $LENGTH$",
+    "placeholders": {
+      "label": {
+        "content": "$1",
+        "example": "Custom field"
+      },
+      "index": {
+        "content": "$2",
+        "example": "1"
+      },
+      "length": {
+        "content": "$3",
+        "example": "3"
+      }
+    }
+  },
+  "selectCollectionsToAssign": {
+    "message": "Select collections to assign"
+  },
+  "personalItemsTransferWarning": {
+    "message": "$PERSONAL_ITEMS_COUNT$ will be permanently transferred to the selected organization. You will no longer own these items.",
+    "placeholders": {
+      "personal_items_count": {
+        "content": "$1",
+        "example": "2 items"
+      }
+    }
+  },
+  "personalItemsWithOrgTransferWarning": {
+    "message": "$PERSONAL_ITEMS_COUNT$ will be permanently transferred to $ORG$. You will no longer own these items.",
+    "placeholders": {
+      "personal_items_count": {
+        "content": "$1",
+        "example": "2 items"
+      },
+      "org": {
+        "content": "$2",
+        "example": "Organization name"
+      }
+    }
+  },
+  "successfullyAssignedCollections": {
+    "message": "Successfully assigned collections"
+  },
+  "nothingSelected": {
+    "message": "You have not selected anything."
+  },
+  "movedItemsToOrg": {
+    "message": "Selected items moved to $ORGNAME$",
+    "placeholders": {
+      "orgname": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "reorderFieldDown": {
+    "message": "$LABEL$ moved down, position $INDEX$ of $LENGTH$",
+    "placeholders": {
+      "label": {
+        "content": "$1",
+        "example": "Custom field"
+      },
+      "index": {
+        "content": "$2",
+        "example": "1"
+      },
+      "length": {
+        "content": "$3",
+        "example": "3"
+      }
+    }
   }
 }
