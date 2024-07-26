@@ -254,13 +254,13 @@ export class ServiceContainer {
     } else if (process.env.BITWARDENCLI_APPDATA_DIR) {
       p = path.resolve(process.env.BITWARDENCLI_APPDATA_DIR);
     } else if (process.platform === "darwin") {
-      p = path.join(process.env.HOME, "Library/Application Support/Bitwarden CLI");
+      p = path.join(process.env.HOME ?? "", "Library/Application Support/Bitwarden CLI");
     } else if (process.platform === "win32") {
-      p = path.join(process.env.APPDATA, "Bitwarden CLI");
+      p = path.join(process.env.APPDATA ?? "", "Bitwarden CLI");
     } else if (process.env.XDG_CONFIG_HOME) {
       p = path.join(process.env.XDG_CONFIG_HOME, "Bitwarden CLI");
     } else {
-      p = path.join(process.env.HOME, ".config/Bitwarden CLI");
+      p = path.join(process.env.HOME ?? "", ".config/Bitwarden CLI");
     }
 
     const logoutCallback = async () => await this.logout();
@@ -655,7 +655,7 @@ export class ServiceContainer {
       this.taskSchedulerService,
       this.logService,
       lockedCallback,
-      null,
+      undefined,
     );
 
     this.avatarService = new AvatarService(this.apiService, this.stateProvider);
@@ -770,7 +770,7 @@ export class ServiceContainer {
     await this.stateService.clean();
     await this.accountService.clean(userId);
     await this.accountService.switchAccount(null);
-    process.env.BW_SESSION = null;
+    process.env.BW_SESSION = undefined;
   }
 
   async init() {
@@ -786,7 +786,7 @@ export class ServiceContainer {
     this.twoFactorService.init();
 
     const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
-    if (activeAccount) {
+    if (activeAccount?.id) {
       await this.userAutoUnlockKeyService.setUserKeyInMemoryIfAutoUserKeySet(activeAccount.id);
     }
 
