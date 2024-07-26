@@ -99,7 +99,7 @@ const defaultConfig: CipherFormConfig = {
 
 class TestAddEditFormService implements CipherFormService {
   decryptCipher(): Promise<CipherView> {
-    return Promise.resolve(defaultConfig.originalCipher as any);
+    return Promise.resolve({ ...defaultConfig.originalCipher } as any);
   }
   async saveCipher(cipher: CipherView): Promise<CipherView> {
     await new Promise((resolve) => setTimeout(resolve, 1000));
