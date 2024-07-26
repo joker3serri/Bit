@@ -240,8 +240,8 @@ export const MemberGroupAccess: Story = {
         labelName: "Admin Group",
       },
     ]),
-    render: StandaloneAccessSelectorRender,
   },
+  render: StandaloneAccessSelectorRender,
 };
 
 export const GroupMembersAccess: Story = {
@@ -306,17 +306,17 @@ const ReactiveFormAccessSelectorRender = (args: any) => ({
   },
   template: `
     <form [formGroup]="formObj" (ngSubmit)="onSubmit(formObj.controls.formItems.value)">
-            <bit-access-selector
-              formControlName="formItems"
-              [items]="items"
-              [columnHeader]="columnHeader"
-              [selectorLabelText]="selectorLabelText"
-              [selectorHelpText]="selectorHelpText"
-              [emptySelectionText]="emptySelectionText"
-              [permissionMode]="permissionMode"
-              [showMemberRoles]="showMemberRoles"
-            ></bit-access-selector>
-            <button type="submit" bitButton buttonType="primary" class="tw-mt-5">Submit</button>
+      <bit-access-selector
+        formControlName="formItems"
+        [items]="items"
+        [columnHeader]="columnHeader"
+        [selectorLabelText]="selectorLabelText"
+        [selectorHelpText]="selectorHelpText"
+        [emptySelectionText]="emptySelectionText"
+        [permissionMode]="permissionMode"
+        [showMemberRoles]="showMemberRoles"
+      ></bit-access-selector>
+      <button type="submit" bitButton buttonType="primary" class="tw-mt-5">Submit</button>
     </form>
 `,
 });
