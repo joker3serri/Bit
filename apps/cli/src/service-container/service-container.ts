@@ -147,12 +147,12 @@ import {
   VaultExportServiceAbstraction,
 } from "@bitwarden/vault-export-core";
 
-import { CliPlatformUtilsService } from "./platform/services/cli-platform-utils.service";
-import { ConsoleLogService } from "./platform/services/console-log.service";
-import { I18nService } from "./platform/services/i18n.service";
-import { LowdbStorageService } from "./platform/services/lowdb-storage.service";
-import { NodeApiService } from "./platform/services/node-api.service";
-import { NodeEnvSecureStorageService } from "./platform/services/node-env-secure-storage.service";
+import { CliPlatformUtilsService } from "../platform/services/cli-platform-utils.service";
+import { ConsoleLogService } from "../platform/services/console-log.service";
+import { I18nService } from "../platform/services/i18n.service";
+import { LowdbStorageService } from "../platform/services/lowdb-storage.service";
+import { NodeApiService } from "../platform/services/node-api.service";
+import { NodeEnvSecureStorageService } from "../platform/services/node-env-secure-storage.service";
 
 // Polyfills
 global.DOMParser = new jsdom.JSDOM().window.DOMParser;
