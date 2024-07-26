@@ -16,7 +16,7 @@ export class InlineMenuFieldQualificationService
   implements InlineMenuFieldQualificationServiceInterface
 {
   private searchFieldNamesSet = new Set(AutoFillConstants.SearchFieldNames);
-  private excludedAutofillLoginTypesSet = new Set(AutoFillConstants.ExcludedAutofillLoginTypes);
+  private excludedAutofillFieldTypesSet = new Set(AutoFillConstants.ExcludedAutofillLoginTypes);
   private usernameFieldTypes = new Set(["text", "email", "number", "tel"]);
   private usernameAutocompleteValue = "username";
   private emailAutocompleteValue = "email";
@@ -179,6 +179,10 @@ export class InlineMenuFieldQualificationService
    * @param pageDetails - The details of the page that the field is on.
    */
   isFieldForCreditCardForm(field: AutofillField, pageDetails: AutofillPageDetails): boolean {
+    if (this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet)) {
+      return false;
+    }
+
     // If the field contains any of the standardized autocomplete attribute values
     // for credit card fields, we should assume that the field is part of a credit card form.
     if (this.fieldContainsAutocompleteValues(field, this.creditCardAutocompleteValues)) {
@@ -244,6 +248,10 @@ export class InlineMenuFieldQualificationService
    * @param pageDetails - The details of the page that the field is on.
    */
   isFieldForAccountCreationForm(field: AutofillField, pageDetails: AutofillPageDetails): boolean {
+    if (this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet)) {
+      return false;
+    }
+
     if (!this.isUsernameField(field) && !this.isPasswordField(field)) {
       return false;
     }
@@ -286,6 +294,10 @@ export class InlineMenuFieldQualificationService
    * @param _pageDetails - Currently unused, will likely be required in the future
    */
   isFieldForIdentityForm(field: AutofillField, _pageDetails: AutofillPageDetails): boolean {
+    if (this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet)) {
+      return false;
+    }
+
     if (this.fieldContainsAutocompleteValues(field, this.identityAutocompleteValues)) {
       return true;
     }
@@ -833,7 +845,7 @@ export class InlineMenuFieldQualificationService
   isUsernameField = (field: AutofillField): boolean => {
     if (
       !this.usernameFieldTypes.has(field.type) ||
-      this.isExcludedFieldType(field, this.excludedAutofillLoginTypesSet)
+      this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet)
     ) {
       return false;
     }
@@ -852,7 +864,7 @@ export class InlineMenuFieldQualificationService
     }
 
     return (
-      !this.isExcludedFieldType(field, this.excludedAutofillLoginTypesSet) &&
+      !this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet) &&
       this.keywordsFoundInFieldData(field, AutoFillConstants.EmailFieldNames)
     );
   };
@@ -898,7 +910,7 @@ export class InlineMenuFieldQualificationService
     const isInputPasswordType = field.type === "password";
     if (
       (!isInputPasswordType &&
-        this.isExcludedFieldType(field, this.excludedAutofillLoginTypesSet)) ||
+        this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet)) ||
       this.fieldHasDisqualifyingAttributeValue(field)
     ) {
       return false;
