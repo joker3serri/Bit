@@ -534,6 +534,7 @@ export class ServiceContainer {
       this.secureStorageService,
       this.userDecryptionOptionsService,
       this.logService,
+      this.configService,
     );
 
     this.authRequestService = new AuthRequestService(
@@ -623,6 +624,8 @@ export class ServiceContainer {
 
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
+
+    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
     this.userVerificationService = new UserVerificationService(
       this.cryptoService,
@@ -727,8 +730,6 @@ export class ServiceContainer {
     this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
 
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
-
-    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
     this.eventUploadService = new EventUploadService(
       this.apiService,
