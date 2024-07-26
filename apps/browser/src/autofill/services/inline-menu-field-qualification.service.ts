@@ -179,10 +179,6 @@ export class InlineMenuFieldQualificationService
    * @param pageDetails - The details of the page that the field is on.
    */
   isFieldForCreditCardForm(field: AutofillField, pageDetails: AutofillPageDetails): boolean {
-    if (this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet)) {
-      return false;
-    }
-
     // If the field contains any of the standardized autocomplete attribute values
     // for credit card fields, we should assume that the field is part of a credit card form.
     if (this.fieldContainsAutocompleteValues(field, this.creditCardAutocompleteValues)) {
