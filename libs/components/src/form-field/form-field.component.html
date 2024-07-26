@@ -19,7 +19,11 @@
   <div
     class="tw-gap-1 tw-bg-background tw-rounded-lg tw-flex tw-min-h-11 [&:not(:has(button:enabled)):has(input:read-only)]:tw-bg-secondary-100 [&:not(:has(button:enabled)):has(textarea:read-only)]:tw-bg-secondary-100"
   >
-    <div class="tw-flex tw-items-center tw-gap-1 tw-pl-3 tw-py-2" [hidden]="!prefixHasChildren()">
+    <div
+      #prefixContainer
+      class="tw-flex tw-items-center tw-gap-1 tw-pl-3 tw-py-2"
+      [hidden]="!prefixHasChildren()"
+    >
       <ng-container *ngTemplateOutlet="prefixContent"></ng-container>
     </div>
     <div
@@ -31,7 +35,11 @@
     >
       <ng-container *ngTemplateOutlet="defaultContent"></ng-container>
     </div>
-    <div class="tw-flex tw-items-center tw-gap-1 tw-pr-3 tw-py-2" [hidden]="!suffixHasChildren()">
+    <div
+      #suffixContainer
+      class="tw-flex tw-items-center tw-gap-1 tw-pr-3 tw-py-2"
+      [hidden]="!suffixHasChildren()"
+    >
       <ng-container *ngTemplateOutlet="suffixContent"></ng-container>
     </div>
   </div>

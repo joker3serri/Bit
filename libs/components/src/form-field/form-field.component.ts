@@ -1,21 +1,15 @@
 import {
   AfterContentChecked,
-  AfterContentInit,
   Component,
   ContentChild,
-  ContentChildren,
-  DestroyRef,
+  ElementRef,
   HostBinding,
   HostListener,
   Input,
-  QueryList,
   ViewChild,
   booleanAttribute,
-  inject,
   signal,
 } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { startWith } from "rxjs";
 
 import { BitHintComponent } from "../form-control/hint.component";
 import { BitLabel } from "../form-control/label.directive";
@@ -23,24 +17,20 @@ import { inputBorderClasses } from "../input/input.directive";
 
 import { BitErrorComponent } from "./error.component";
 import { BitFormFieldControl } from "./form-field-control";
-import { BitPrefixDirective } from "./prefix.directive";
-import { BitSuffixDirective } from "./suffix.directive";
 
 @Component({
   selector: "bit-form-field",
   templateUrl: "./form-field.component.html",
 })
-export class BitFormFieldComponent implements AfterContentChecked, AfterContentInit {
+export class BitFormFieldComponent implements AfterContentChecked {
   @ContentChild(BitFormFieldControl) input: BitFormFieldControl;
   @ContentChild(BitHintComponent) hint: BitHintComponent;
   @ContentChild(BitLabel) label: BitLabel;
 
-  @ContentChildren(BitPrefixDirective) prefixChildren: QueryList<BitPrefixDirective>;
-  @ContentChildren(BitSuffixDirective) suffixChildren: QueryList<BitPrefixDirective>;
+  @ViewChild("prefixContainer") prefixContainer: ElementRef<HTMLDivElement>;
+  @ViewChild("suffixContainer") suffixContainer: ElementRef<HTMLDivElement>;
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
-
-  private destroyRef = inject(DestroyRef);
 
   @Input({ transform: booleanAttribute })
   disableMargin = false;
@@ -48,8 +38,6 @@ export class BitFormFieldComponent implements AfterContentChecked, AfterContentI
   /** If `true`, remove the bottom border for `readonly` inputs */
   @Input({ transform: booleanAttribute })
   disableReadOnlyBorder = false;
-
-  protected inputWrapperClasses: string;
 
   protected prefixHasChildren = signal(false);
   protected suffixHasChildren = signal(false);
@@ -110,33 +98,8 @@ export class BitFormFieldComponent implements AfterContentChecked, AfterContentI
     } else {
       this.input.ariaDescribedBy = undefined;
     }
-  }
 
-  ngAfterContentInit() {
-    if (this.label) {
-      this.prefixChildren.forEach((prefixChild) => {
-        prefixChild.ariaDescribedBy = this.label.id;
-      });
-
-      this.suffixChildren.forEach((suffixChild) => {
-        suffixChild.ariaDescribedBy = this.label.id;
-      });
-    }
-
-    if (this.prefixChildren) {
-      this.prefixChildren.changes
-        .pipe(startWith(this.prefixChildren), takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          this.prefixHasChildren.set(this.prefixChildren.length > 0);
-        });
-    }
-
-    if (this.suffixChildren) {
-      this.suffixChildren.changes
-        .pipe(startWith(this.suffixChildren), takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          this.suffixHasChildren.set(this.suffixChildren.length > 0);
-        });
-    }
+    this.prefixHasChildren.set(this.prefixContainer?.nativeElement.childElementCount > 0);
+    this.suffixHasChildren.set(this.suffixContainer?.nativeElement.childElementCount > 0);
   }
 }
