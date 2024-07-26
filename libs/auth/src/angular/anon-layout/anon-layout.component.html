@@ -4,7 +4,13 @@
   <bit-icon *ngIf="!hideLogo" [icon]="logo" class="tw-max-w-36"></bit-icon>
 
   <div class="tw-text-center">
-    <div class="tw-mx-auto tw-max-w-32 sm:tw-max-w-40">
+    <div
+      class="tw-mx-auto tw-max-w-32 sm:tw-max-w-40"
+      [ngClass]="{
+        'tw-max-w-32 sm:tw-max-w-40': !useDefaultIcon,
+        'tw-max-w-12 sm:tw-max-w-16': useDefaultIcon
+      }"
+    >
       <bit-icon [icon]="icon"></bit-icon>
     </div>
 
