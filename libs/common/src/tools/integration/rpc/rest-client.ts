@@ -47,11 +47,11 @@ export class RestClient {
     if (response.status === 401 || response.status === 403) {
       const message = await this.tryGetErrorMessage(response);
       const key = message ? "forwarderInvalidTokenWithMessage" : "forwarderInvalidToken";
-      return [key, message] as const;
+      return [key, message];
     } else if (response.status === 429 || response.status >= 500) {
       const message = await this.tryGetErrorMessage(response);
       const key = message ? "forwarderError" : "forwarderUnknownError";
-      return [key, message] as const;
+      return [key, message];
     }
   }
 
