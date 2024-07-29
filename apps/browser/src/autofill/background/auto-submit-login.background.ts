@@ -58,7 +58,7 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
 
     this.ipdAutoSubmitLoginPolicy$ = this.policyService.get$(PolicyType.AutomaticAppLogIn);
     this.ipdAutoSubmitLoginPolicy$.subscribe((policy) => {
-      if (!policy.enabled) {
+      if (!policy?.enabled) {
         this.destroy();
         return;
       }

@@ -44,6 +44,7 @@ export interface GenerateFillScriptOptions {
   onlyVisibleFields: boolean;
   fillNewPassword: boolean;
   allowTotpAutofill: boolean;
+  autoSubmitLogin: boolean;
   cipher: CipherView;
   tabUrl: string;
   defaultUriMatch: UriMatchStrategySetting;

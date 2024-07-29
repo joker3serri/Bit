@@ -345,6 +345,7 @@ export default class AutofillService implements AutofillServiceInterface {
           onlyVisibleFields: options.onlyVisibleFields || false,
           fillNewPassword: options.fillNewPassword || false,
           allowTotpAutofill: options.allowTotpAutofill || false,
+          autoSubmitLogin: options.autoSubmitLogin || false,
           cipher: options.cipher,
           tabUrl: tab.url,
           defaultUriMatch: defaultUriMatch,
@@ -796,6 +797,7 @@ export default class AutofillService implements AutofillServiceInterface {
       });
     }
 
+    const formElementsSet = new Set();
     usernames.forEach((u) => {
       // eslint-disable-next-line
       if (filledFields.hasOwnProperty(u.opid)) {
@@ -804,6 +806,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
       filledFields[u.opid] = u;
       AutofillService.fillByOpid(fillScript, u, login.username);
+      formElementsSet.add(u.form);
     });
 
     passwords.forEach((p) => {
@@ -814,23 +817,12 @@ export default class AutofillService implements AutofillServiceInterface {
 
       filledFields[p.opid] = p;
       AutofillService.fillByOpid(fillScript, p, login.password);
+      formElementsSet.add(p.form);
     });
 
-    // CG POC - Auto-submit form fields
-    if (usernames.length || passwords.length) {
-      const autoSubmitSet = new Set();
-
-      for (let i = 0; i < usernames.length; i++) {
-        autoSubmitSet.add(usernames[i].form);
-      }
-
-      for (let i = 0; i < passwords.length; i++) {
-        autoSubmitSet.add(passwords[i].form);
-      }
-
-      fillScript.autosubmit = Array.from(autoSubmitSet);
+    if (options.autoSubmitLogin && formElementsSet.size) {
+      fillScript.autosubmit = Array.from(formElementsSet);
     }
-    // END CG POC
 
     if (options.allowTotpAutofill) {
       await Promise.all(

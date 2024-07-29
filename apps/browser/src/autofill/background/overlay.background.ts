@@ -273,7 +273,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       await this.cipherService.getAllDecryptedForUrl(currentTab?.url || "")
     ).sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
 
-    return cipherViews.concat(...this.cardAndIdentityCiphers);
+    return this.cardAndIdentityCiphers
+      ? cipherViews.concat(...this.cardAndIdentityCiphers)
+      : cipherViews;
   }
 
   /**

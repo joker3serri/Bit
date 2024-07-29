@@ -696,6 +696,7 @@ describe("AutofillService", () => {
           onlyVisibleFields: autofillOptions.onlyVisibleFields || false,
           fillNewPassword: autofillOptions.fillNewPassword || false,
           allowTotpAutofill: autofillOptions.allowTotpAutofill || false,
+          autoSubmitLogin: autofillOptions.allowTotpAutofill || false,
           cipher: autofillOptions.cipher,
           tabUrl: autofillOptions.tab.url,
           defaultUriMatch: 0,
@@ -1015,6 +1016,7 @@ describe("AutofillService", () => {
           fillNewPassword: fromCommand,
           allowUntrustedIframe: fromCommand,
           allowTotpAutofill: fromCommand,
+          autoSubmitLogin: false,
         });
         expect(result).toBe(totpCode);
       });
@@ -1044,6 +1046,7 @@ describe("AutofillService", () => {
           fillNewPassword: fromCommand,
           allowUntrustedIframe: fromCommand,
           allowTotpAutofill: fromCommand,
+          autoSubmitLogin: false,
         });
         expect(result).toBe(totpCode);
       });
@@ -1070,6 +1073,7 @@ describe("AutofillService", () => {
           fillNewPassword: fromCommand,
           allowUntrustedIframe: fromCommand,
           allowTotpAutofill: fromCommand,
+          autoSubmitLogin: false,
         });
         expect(result).toBe(totpCode);
       });

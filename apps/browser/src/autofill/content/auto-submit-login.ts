@@ -189,7 +189,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
 
   function getAutofillFormElementByOpid(opid: string): HTMLFormElement | null {
     const cachedFormElements = Array.from(
-      collectAutofillContentService.getAutofillFormElements.keys(),
+      collectAutofillContentService.autofillFormElements.keys(),
     );
     const formElements = cachedFormElements?.length
       ? cachedFormElements
