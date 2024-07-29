@@ -12,6 +12,7 @@ import { Meta, StoryObj, moduleMetadata } from "@storybook/angular";
 import { I18nService } from "@bitwarden/common/src/platform/abstractions/i18n.service";
 
 import { FormControlModule } from "../form-control";
+import { TableModule } from "../table";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { CheckboxModule } from "./checkbox.module";
@@ -54,7 +55,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [ExampleComponent],
-      imports: [FormsModule, ReactiveFormsModule, FormControlModule, CheckboxModule],
+      imports: [FormsModule, ReactiveFormsModule, FormControlModule, CheckboxModule, TableModule],
       providers: [
         {
           provide: I18nService,
@@ -200,6 +201,49 @@ export const Indeterminate: Story = {
     props: args,
     template: /*html*/ `
       <input type="checkbox" bitCheckbox [indeterminate]="true">
+    `,
+  }),
+};
+
+export const InTableRow: Story = {
+  render: () => ({
+    template: /*html*/ `
+      <bit-table>
+        <ng-container header>
+          <tr>
+            <th bitCell>
+              <input
+                type="checkbox"
+                bitCheckbox
+                id="checkAll"
+                class="tw-mr-2"
+              />
+              <label for="checkAll" class="tw-mb-0">
+                All
+              </label>
+            </th>
+            <th bitCell>
+              Foo
+            </th>
+            <th bitCell>
+              Bar
+            </th>
+          </tr>
+        </ng-container>
+        <ng-template body>
+          <tr bitRow>
+            <td bitCell>
+              <input
+                type="checkbox"
+                bitCheckbox
+                id="checkOne"
+              />
+            </td>
+            <td bitCell>Lorem</td>
+            <td bitCell>Ipsum</td>
+          </tr>
+        </ng-template>
+      </bit-table>
     `,
   }),
 };
