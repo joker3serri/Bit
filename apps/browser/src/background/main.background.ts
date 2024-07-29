@@ -1483,7 +1483,17 @@ export default class MainBackground {
    * Temporary solution to handle initialization of the overlay background behind a feature flag.
    * Will be reverted to instantiation within the constructor once the feature flag is removed.
    */
-  private async initOverlayAndTabsBackground() {
+  async initOverlayAndTabsBackground() {
+    if (
+      this.popupOnlyContext ||
+      this.overlayBackground ||
+      this.tabsBackground ||
+      (await firstValueFrom(this.authService.activeAccountStatus$)) ===
+        AuthenticationStatus.LoggedOut
+    ) {
+      return;
+    }
+
     const inlineMenuPositioningImprovementsEnabled = await this.configService.getFeatureFlag(
       FeatureFlag.InlineMenuPositioningImprovements,
     );
