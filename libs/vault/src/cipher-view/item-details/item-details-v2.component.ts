@@ -11,7 +11,10 @@ import {
   SectionComponent,
   SectionHeaderComponent,
   TypographyModule,
+  FormFieldModule,
 } from "@bitwarden/components";
+
+import { OrgIconDirective } from "../../components/org-icon.directive";
 
 @Component({
   selector: "app-item-details-v2",
@@ -24,6 +27,8 @@ import {
     SectionComponent,
     SectionHeaderComponent,
     TypographyModule,
+    OrgIconDirective,
+    FormFieldModule,
   ],
 })
 export class ItemDetailsV2Component {

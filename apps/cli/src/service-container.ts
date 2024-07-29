@@ -75,6 +75,7 @@ import { DefaultConfigService } from "@bitwarden/common/platform/services/config
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { CryptoService } from "@bitwarden/common/platform/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
+import { FallbackBulkEncryptService } from "@bitwarden/common/platform/services/cryptography/fallback-bulk-encrypt.service";
 import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
@@ -290,7 +291,10 @@ export class ServiceContainer {
       this.memoryStorageForStateProviders,
     );
 
-    this.globalStateProvider = new DefaultGlobalStateProvider(storageServiceProvider);
+    this.globalStateProvider = new DefaultGlobalStateProvider(
+      storageServiceProvider,
+      this.logService,
+    );
 
     const stateEventRegistrarService = new StateEventRegistrarService(
       this.globalStateProvider,
@@ -307,6 +311,7 @@ export class ServiceContainer {
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
       storageServiceProvider,
       stateEventRegistrarService,
+      this.logService,
     );
 
     this.messagingService = MessageSender.EMPTY;
@@ -533,6 +538,7 @@ export class ServiceContainer {
       this.secureStorageService,
       this.userDecryptionOptionsService,
       this.logService,
+      this.configService,
     );
 
     this.authRequestService = new AuthRequestService(
@@ -605,6 +611,7 @@ export class ServiceContainer {
       this.stateService,
       this.autofillSettingsService,
       this.encryptService,
+      new FallbackBulkEncryptService(this.encryptService),
       this.cipherFileUploadService,
       this.configService,
       this.stateProvider,
@@ -621,6 +628,8 @@ export class ServiceContainer {
 
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
+
+    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
     this.userVerificationService = new UserVerificationService(
       this.cryptoService,
@@ -725,8 +734,6 @@ export class ServiceContainer {
     this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
 
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
-
-    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
     this.eventUploadService = new EventUploadService(
       this.apiService,

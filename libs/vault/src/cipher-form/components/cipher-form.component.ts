@@ -39,6 +39,7 @@ import { AdditionalOptionsSectionComponent } from "./additional-options/addition
 import { CardDetailsSectionComponent } from "./card-details-section/card-details-section.component";
 import { IdentitySectionComponent } from "./identity/identity.component";
 import { ItemDetailsSectionComponent } from "./item-details/item-details-section.component";
+import { LoginDetailsSectionComponent } from "./login-details-section/login-details-section.component";
 
 @Component({
   selector: "vault-cipher-form",
@@ -64,6 +65,7 @@ import { ItemDetailsSectionComponent } from "./item-details/item-details-section
     IdentitySectionComponent,
     NgIf,
     AdditionalOptionsSectionComponent,
+    LoginDetailsSectionComponent,
   ],
 })
 export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, CipherFormContainer {
@@ -89,6 +91,12 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
   submitBtn?: ButtonComponent;
 
   /**
+   * Optional function to call before submitting the form. If the function returns false, the form will not be submitted.
+   */
+  @Input()
+  beforeSubmit: () => Promise<boolean>;
+
+  /**
    * Event emitted when the cipher is saved successfully.
    */
   @Output() cipherSaved = new EventEmitter<CipherView>();
@@ -110,6 +118,7 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
    * @protected
    */
   protected updatedCipherView: CipherView | null;
+
   protected loading: boolean = true;
 
   CipherType = CipherType;
@@ -140,12 +149,11 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
   }
 
   /**
-   * Patches the updated cipher with the provided partial cipher. Used by child components to update the cipher
-   * as their form values change.
-   * @param cipher
+   * Method to update the cipherView with the new values. This method should be called by the child form components
+   * @param updateFn - A function that takes the current cipherView and returns the updated cipherView
    */
-  patchCipher(cipher: Partial<CipherView>): void {
-    this.updatedCipherView = Object.assign(this.updatedCipherView, cipher);
+  patchCipher(updateFn: (current: CipherView) => CipherView): void {
+    this.updatedCipherView = updateFn(this.updatedCipherView);
   }
 
   /**
@@ -183,6 +191,10 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
       );
 
       this.updatedCipherView = Object.assign(this.updatedCipherView, this.originalCipherView);
+
+      if (this.config.mode === "clone") {
+        this.updatedCipherView.id = null;
+      }
     } else {
       this.updatedCipherView.type = this.config.cipherType;
 
@@ -207,7 +219,17 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
       return;
     }
 
-    await this.addEditFormService.saveCipher(this.updatedCipherView, this.config);
+    if (this.beforeSubmit) {
+      const shouldSubmit = await this.beforeSubmit();
+      if (!shouldSubmit) {
+        return;
+      }
+    }
+
+    const savedCipher = await this.addEditFormService.saveCipher(
+      this.updatedCipherView,
+      this.config,
+    );
 
     this.toastService.showToast({
       variant: "success",
@@ -219,6 +241,6 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
       ),
     });
 
-    this.cipherSaved.emit(this.updatedCipherView);
+    this.cipherSaved.emit(savedCipher);
   };
 }
