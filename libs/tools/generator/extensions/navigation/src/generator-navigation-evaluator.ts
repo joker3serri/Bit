@@ -1,4 +1,4 @@
-import { PolicyEvaluator } from "@bitwarden/generator-core";
+import { PasswordTypes, PolicyEvaluator } from "@bitwarden/generator-core";
 
 import { DefaultGeneratorNavigation } from "./default-generator-navigation";
 import { GeneratorNavigation } from "./generator-navigation";
@@ -17,7 +17,7 @@ export class GeneratorNavigationEvaluator
 
   /** {@link PolicyEvaluator.policyInEffect} */
   get policyInEffect(): boolean {
-    return this.policy?.overridePasswordType ? true : false;
+    return PasswordTypes.includes(this.policy?.overridePasswordType);
   }
 
   /** Apply policy to the input options.
