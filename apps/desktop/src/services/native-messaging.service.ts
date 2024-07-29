@@ -102,7 +102,7 @@ export class NativeMessagingService {
       return;
     }
 
-    if ((await ipc.platform.getEphemeralValue(appId)) == null) {
+    if ((await ipc.platform.ephemeralStore.getEphemeralValue(appId)) == null) {
       ipc.platform.nativeMessaging.sendMessage({
         command: "invalidateEncryption",
         appId: appId,
@@ -113,7 +113,7 @@ export class NativeMessagingService {
     const message: LegacyMessage = JSON.parse(
       await this.cryptoService.decryptToUtf8(
         rawMessage as EncString,
-        SymmetricCryptoKey.fromString(await ipc.platform.getEphemeralValue(appId)),
+        SymmetricCryptoKey.fromString(await ipc.platform.ephemeralStore.getEphemeralValue(appId)),
       ),
     );
 
@@ -203,7 +203,7 @@ export class NativeMessagingService {
 
     const encrypted = await this.cryptoService.encrypt(
       JSON.stringify(message),
-      SymmetricCryptoKey.fromString(await ipc.platform.getEphemeralValue(appId)),
+      SymmetricCryptoKey.fromString(await ipc.platform.ephemeralStore.getEphemeralValue(appId)),
     );
 
     ipc.platform.nativeMessaging.sendMessage({ appId: appId, message: encrypted });
@@ -211,7 +211,10 @@ export class NativeMessagingService {
 
   private async secureCommunication(remotePublicKey: Uint8Array, appId: string) {
     const secret = await this.cryptoFunctionService.randomBytes(64);
-    await ipc.platform.setEphemeralValue(appId, new SymmetricCryptoKey(secret).keyB64);
+    await ipc.platform.ephemeralStore.setEphemeralValue(
+      appId,
+      new SymmetricCryptoKey(secret).keyB64,
+    );
 
     const encryptedSecret = await this.cryptoFunctionService.rsaEncrypt(
       secret,
