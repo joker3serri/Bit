@@ -188,6 +188,12 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     );
   };
 
+  /**
+   * Initializes the auto-submit flow for the given request, and adds the routed-to URL
+   *  to the list of valid auto-submit hosts.
+   *
+   * @param details - The details of the request.
+   */
   private setupAutoSubmitFlow = (details: chrome.webRequest.WebRequestBodyDetails) => {
     if (this.isRequestInMainFrame(details)) {
       this.currentAutoSubmitHostData = {
@@ -204,25 +210,35 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     });
   };
 
-  private disableAutoSubmitFlow = async (
-    requestInitiator: string,
-    details: chrome.webRequest.WebRequestBodyDetails,
+  private handleAutoSubmitHostNavigationCompleted = (
+    details: chrome.webNavigation.WebNavigationFramedCallbackDetails,
   ) => {
-    if (this.isValidAutoSubmitHost(requestInitiator)) {
-      this.removeUrlFromAutoSubmitHosts(requestInitiator);
-      return;
-    }
-
-    const tab = await BrowserApi.getTab(details.tabId);
-    if (this.isValidAutoSubmitHost(tab?.url)) {
-      this.removeUrlFromAutoSubmitHosts(tab.url);
+    if (
+      details.tabId === this.currentAutoSubmitHostData.tabId &&
+      this.urlContainsAutoFillParam(details.url)
+    ) {
+      this.injectAutoSubmitLoginScript(details.tabId).catch((error) =>
+        this.logService.error(error),
+      );
+      chrome.webNavigation.onCompleted.removeListener(this.handleAutoSubmitHostNavigationCompleted);
     }
   };
 
-  private clearAutoSubmitHostData = () => {
-    this.validAutoSubmitHosts.clear();
-    this.currentAutoSubmitHostData = {};
-    this.mostRecentIdpHost = {};
+  private injectAutoSubmitLoginScript = async (tabId: number) => {
+    if ((await this.getAuthStatus()) === AuthenticationStatus.Unlocked) {
+      await this.scriptInjectorService.inject({
+        tabId: tabId,
+        injectDetails: {
+          file: "content/auto-submit-login.js",
+          runAt: "document_start",
+          frame: "all_frames",
+        },
+      });
+    }
+  };
+
+  private getAuthStatus = async () => {
+    return firstValueFrom(this.authService.activeAccountStatus$);
   };
 
   private handleWebRequestOnBeforeRedirect = (
@@ -232,39 +248,6 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
       this.validAutoSubmitHosts.add(this.getUrlHost(details.redirectUrl));
       this.validAutoSubmitHosts.add(this.getUrlHost(details.url));
     }
-  };
-
-  private handleAutoSubmitHostNavigationCompleted = (
-    details: chrome.webNavigation.WebNavigationFramedCallbackDetails,
-  ) => {
-    if (
-      details.tabId !== this.currentAutoSubmitHostData.tabId ||
-      !this.urlContainsAutoFillParam(details.url)
-    ) {
-      return;
-    }
-
-    this.injectAutoSubmitLoginScript(details.tabId).catch((error) => this.logService.error(error));
-    chrome.webNavigation.onCompleted.removeListener(this.handleAutoSubmitHostNavigationCompleted);
-  };
-
-  private injectAutoSubmitLoginScript = async (tabId: number) => {
-    if ((await this.getAuthStatus()) !== AuthenticationStatus.Unlocked) {
-      return;
-    }
-
-    await this.scriptInjectorService.inject({
-      tabId: tabId,
-      injectDetails: {
-        file: "content/auto-submit-login.js",
-        runAt: "document_start",
-        frame: "all_frames",
-      },
-    });
-  };
-
-  private getAuthStatus = async () => {
-    return firstValueFrom(this.authService.activeAccountStatus$);
   };
 
   private isValidInitiator = (url: string) => {
@@ -291,6 +274,27 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
 
   private removeUrlFromAutoSubmitHosts = (url: string) => {
     this.validAutoSubmitHosts.delete(this.getUrlHost(url));
+  };
+
+  private disableAutoSubmitFlow = async (
+    requestInitiator: string,
+    details: chrome.webRequest.WebRequestBodyDetails,
+  ) => {
+    if (this.isValidAutoSubmitHost(requestInitiator)) {
+      this.removeUrlFromAutoSubmitHosts(requestInitiator);
+      return;
+    }
+
+    const tab = await BrowserApi.getTab(details.tabId);
+    if (this.isValidAutoSubmitHost(tab?.url)) {
+      this.removeUrlFromAutoSubmitHosts(tab.url);
+    }
+  };
+
+  private clearAutoSubmitHostData = () => {
+    this.validAutoSubmitHosts.clear();
+    this.currentAutoSubmitHostData = {};
+    this.mostRecentIdpHost = {};
   };
 
   /**

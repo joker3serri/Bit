@@ -4,6 +4,7 @@ import { BehaviorSubject } from "rxjs";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -27,6 +28,7 @@ describe("AutoSubmitLoginBackground", () => {
   let logService: MockProxy<LogService>;
   let autofillService: MockProxy<AutofillService>;
   let scriptInjectorService: MockProxy<ScriptInjectorService>;
+  let authStatus$: BehaviorSubject<AuthenticationStatus>;
   let authService: MockProxy<AuthService>;
   let configService: MockProxy<ConfigService>;
   let platformUtilsService: MockProxy<PlatformUtilsService>;
@@ -44,7 +46,9 @@ describe("AutoSubmitLoginBackground", () => {
     logService = mock<LogService>();
     autofillService = mock<AutofillService>();
     scriptInjectorService = mock<ScriptInjectorService>();
+    authStatus$ = new BehaviorSubject(AuthenticationStatus.Unlocked);
     authService = mock<AuthService>();
+    authService.activeAccountStatus$ = authStatus$;
     configService = mock<ConfigService>({
       getFeatureFlag: jest.fn().mockResolvedValue(true),
     });
@@ -145,6 +149,41 @@ describe("AutoSubmitLoginBackground", () => {
 
         expect(chrome.webNavigation.onCompleted.addListener).toBeCalledWith(expect.any(Function), {
           url: [{ hostEquals: subFrameHost }],
+        });
+      });
+
+      describe("injecting the auto-submit login content script", () => {
+        let webNavigationDetails: chrome.webNavigation.WebNavigationFramedCallbackDetails;
+
+        beforeEach(() => {
+          triggerWebRequestOnBeforeRequestEvent(webRequestDetails);
+          webNavigationDetails = mock<chrome.webNavigation.WebNavigationFramedCallbackDetails>({
+            tabId: webRequestDetails.tabId,
+            url: webRequestDetails.url,
+          });
+        });
+
+        it("skips injecting the content script when the extension is not unlocked", async () => {
+          authStatus$.next(AuthenticationStatus.Locked);
+
+          triggerWebNavigationOnCompletedEvent(webNavigationDetails);
+          await flushPromises();
+
+          expect(scriptInjectorService.inject).not.toHaveBeenCalled();
+        });
+
+        it("injects the auto-submit login content script", async () => {
+          triggerWebNavigationOnCompletedEvent(webNavigationDetails);
+          await flushPromises();
+
+          expect(scriptInjectorService.inject).toBeCalledWith({
+            tabId: webRequestDetails.tabId,
+            injectDetails: {
+              file: "content/auto-submit-login.js",
+              runAt: "document_start",
+              frame: "all_frames",
+            },
+          });
         });
       });
     });
