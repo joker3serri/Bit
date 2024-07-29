@@ -28,7 +28,6 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
   @Input() hideFooter: boolean = false;
 
   protected logo: Icon;
-  protected useDefaultIcon = true;
 
   protected year = "2024";
   protected clientType: ClientType;
@@ -72,8 +71,6 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
 
   private async updateIcon(theme: string) {
     if (this.icon == null) {
-      this.useDefaultIcon = true;
-
       if (theme === "dark") {
         this.icon = BitwardenShieldWhite;
       }
@@ -81,8 +78,6 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
       if (theme !== "dark") {
         this.icon = BitwardenShieldPrimary;
       }
-    } else {
-      this.useDefaultIcon = false;
     }
   }
 }
