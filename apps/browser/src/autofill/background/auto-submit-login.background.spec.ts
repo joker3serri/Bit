@@ -430,5 +430,17 @@ describe("AutoSubmitLoginBackground", () => {
         );
       });
     });
+
+    describe("multiStepAutoSubmitLoginComplete extension message", () => {
+      it("removes the sender URL from the set of valid auto-submit hosts", () => {
+        const message = { command: "multiStepAutoSubmitLoginComplete" };
+
+        sendMockExtensionMessage(message, sender);
+
+        expect(autoSubmitLoginBackground["validAutoSubmitHosts"].has(validAutoSubmitHost)).toBe(
+          false,
+        );
+      });
+    });
   });
 });

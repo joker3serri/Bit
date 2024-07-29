@@ -11,9 +11,9 @@ export type AutoSubmitLoginMessageParams = {
 };
 
 export type AutoSubmitLoginBackgroundExtensionMessageHandlers = {
-  [key: string]: ({ message, sender }: AutoSubmitLoginMessageParams) => Promise<any>;
+  [key: string]: ({ message, sender }: AutoSubmitLoginMessageParams) => any;
   triggerAutoSubmitLogin: ({ message, sender }: AutoSubmitLoginMessageParams) => Promise<void>;
-  multiStepAutoSubmitLoginComplete: ({ sender }: AutoSubmitLoginMessageParams) => Promise<void>;
+  multiStepAutoSubmitLoginComplete: ({ sender }: AutoSubmitLoginMessageParams) => void;
 };
 
 export abstract class AutoSubmitLoginBackground {

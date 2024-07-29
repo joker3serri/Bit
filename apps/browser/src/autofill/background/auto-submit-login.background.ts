@@ -490,7 +490,7 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
    *
    * @param sender - The message sender.
    */
-  private handleMultiStepAutoSubmitLoginComplete = async (sender: chrome.runtime.MessageSender) => {
+  private handleMultiStepAutoSubmitLoginComplete = (sender: chrome.runtime.MessageSender) => {
     this.removeUrlFromAutoSubmitHosts(sender.url);
   };
 
