@@ -23,7 +23,14 @@
         {{ "number" | i18n }}
       </label>
       <bit-form-field>
-        <input readonly bitInput type="password" [value]="card.number" aria-readonly="true" />
+        <input
+          readonly
+          bitInput
+          type="password"
+          [value]="card.number"
+          aria-readonly="true"
+          data-testid="cardholder-number"
+        />
         <button bitSuffix type="button" bitIconButton bitPasswordInputToggle></button>
         <button
           bitIconButton="bwi-clone"
@@ -46,7 +53,7 @@
           type="text"
           [value]="card.expiration"
           aria-readonly="true"
-          data-testid="cardholder-name"
+          data-testid="cardholder-expiration"
         />
       </bit-form-field>
     </ng-container>
@@ -55,7 +62,14 @@
         {{ "securityCode" | i18n }}
       </label>
       <bit-form-field>
-        <input readonly bitInput type="password" [value]="card.code" aria-readonly="true" />
+        <input
+          readonly
+          bitInput
+          type="password"
+          [value]="card.code"
+          aria-readonly="true"
+          data-testid="cardholder-code"
+        />
         <button bitSuffix type="button" bitIconButton bitPasswordInputToggle></button>
         <button
           bitIconButton="bwi-clone"
