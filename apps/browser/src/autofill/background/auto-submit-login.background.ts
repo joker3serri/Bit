@@ -1,4 +1,4 @@
-import { firstValueFrom, Observable } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -21,7 +21,6 @@ import {
 } from "./abstractions/auto-submit-login.background";
 
 export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstraction {
-  private ipdAutoSubmitLoginPolicy$: Observable<Policy>;
   private validIdpHosts: Set<string> = new Set();
   private validAutoSubmitHosts: Set<string> = new Set();
   private mostRecentIdpHost: { url?: string; tabId?: number } = {};
@@ -54,16 +53,20 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     const featureFlagEnabled = await this.configService.getFeatureFlag(
       FeatureFlag.IdpAutoSubmitLogin,
     );
-    if (!featureFlagEnabled) {
-      return;
+    if (featureFlagEnabled) {
+      this.policyService
+        .get$(PolicyType.AutomaticAppLogIn)
+        .subscribe(this.handleAutoSubmitLoginPolicySubscription.bind(this));
     }
-
-    this.ipdAutoSubmitLoginPolicy$ = this.policyService.get$(PolicyType.AutomaticAppLogIn);
-    this.ipdAutoSubmitLoginPolicy$.subscribe(
-      this.handleAutoSubmitLoginPolicySubscription.bind(this),
-    );
   }
 
+  /**
+   * Handles changes to the AutomaticAppLogIn policy. If the policy is not enabled, trigger
+   * a removal of any established listeners. If the policy is enabled, apply the policy to
+   * the active user.
+   *
+   * @param policy - The AutomaticAppLogIn policy details.
+   */
   private handleAutoSubmitLoginPolicySubscription = (policy: Policy) => {
     if (!policy?.enabled) {
       this.destroy();
@@ -73,6 +76,12 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     this.applyPolicyToActiveUser(policy).catch((error) => this.logService.error(error));
   };
 
+  /**
+   * Verifies if the policy applies to the active user. If so, the event listeners
+   * used to trigger auto-submission of login forms will be established.
+   *
+   * @param policy - The AutomaticAppLogIn policy details.
+   */
   private applyPolicyToActiveUser = async (policy: Policy) => {
     const policyAppliesToUser = await firstValueFrom(
       this.policyService.policyAppliesToActiveUser$(PolicyType.AutomaticAppLogIn),
@@ -86,13 +95,15 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     await this.setupAutoSubmitLoginListeners(policy);
   };
 
+  /**
+   * Sets up the event listeners used to trigger auto-submission of login forms.
+   *
+   * @param policy - The AutomaticAppLogIn policy details.
+   */
   private setupAutoSubmitLoginListeners = async (policy: Policy) => {
-    if (!policy?.data.idpHost) {
-      return;
-    }
-
-    this.parseIpdHostsFromPolicy(policy.data.idpHost);
+    this.parseIpdHostsFromPolicy(policy?.data.idpHost);
     if (!this.validIdpHosts.size) {
+      this.destroy();
       return;
     }
 
@@ -111,7 +122,12 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
-  private parseIpdHostsFromPolicy = (idpHost: string) => {
+  /**
+   * Parses the comma-separated list of IDP hosts from the AutomaticAppLogIn policy.
+   *
+   * @param idpHost - The comma-separated list of IDP hosts.
+   */
+  private parseIpdHostsFromPolicy = (idpHost?: string) => {
     if (!idpHost) {
       return;
     }
@@ -293,13 +309,24 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Extracts the host from a given URL.
+   * Will return an empty string if the provided URL is invalid.
+   *
+   * @param url - The URL to extract the host from.
+   */
   private getUrlHost = (url: string) => {
-    if (!url) {
+    let parsedUrl = url;
+    if (!parsedUrl) {
       return "";
     }
 
+    if (!parsedUrl.startsWith("http")) {
+      parsedUrl = `https://${parsedUrl}`;
+    }
+
     try {
-      const urlObj = new URL(url);
+      const urlObj = new URL(parsedUrl);
       return urlObj.host;
     } catch {
       return "";
@@ -359,7 +386,7 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
   ) => {
     const { tab, url } = sender;
     if (tab?.id !== this.currentAutoSubmitHostData.tabId || !this.isValidAutoSubmitHost(url)) {
-      return;
+      return null;
     }
 
     const handler: CallableFunction | undefined = this.extensionMessageHandlers[message?.command];
@@ -378,38 +405,69 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return true;
   };
 
+  /**
+   * Initializes several fallback event listeners for the auto-submit login feature on the Safari browser.
+   * This is required due to limitations that Safari has with the `webRequest` API. Specifically, Safari
+   * does not provide the `initiator` of a request, which is required to determine if a request is coming
+   * from a valid IDP host.
+   */
   private async initSafari() {
     const currentTab = await BrowserApi.getTabFromCurrentWindow();
-    this.setMostRecentIdpHost(currentTab.url, currentTab.id);
+    if (currentTab) {
+      this.setMostRecentIdpHost(currentTab.url, currentTab.id);
+    }
 
     chrome.tabs.onActivated.addListener(this.handleSafariTabOnActivated);
     chrome.tabs.onUpdated.addListener(this.handleSafariTabOnUpdated);
     chrome.webNavigation.onCompleted.addListener(this.handleSafariWebNavigationOnCompleted);
   }
 
+  /**
+   * Sets the most recent IDP host based on the provided URL and tab ID.
+   *
+   * @param url - The URL to set as the most recent IDP host.
+   * @param tabId - The tab ID associated with the URL.
+   */
   private setMostRecentIdpHost(url: string, tabId: number) {
     if (this.isValidIdpHost(url)) {
       this.mostRecentIdpHost = { url, tabId };
     }
   }
 
+  /**
+   * Triggers an update of the most recently visited IDP host when a user focuses a different tab.
+   *
+   * @param activeInfo - The active tab information.
+   */
   private handleSafariTabOnActivated = async (activeInfo: chrome.tabs.TabActiveInfo) => {
     const tab = await BrowserApi.getTab(activeInfo.tabId);
-    this.setMostRecentIdpHost(tab.url, tab.id);
+    if (tab) {
+      this.setMostRecentIdpHost(tab.url, tab.id);
+    }
   };
 
+  /**
+   * Triggers an update of the most recently visited IDP host when the URL of a tab is updated.
+   *
+   * @param tabId - The tab ID associated with the URL.
+   * @param changeInfo - The change information of the tab.
+   */
   private handleSafariTabOnUpdated = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
-    this.setMostRecentIdpHost(changeInfo.url, tabId);
+    if (changeInfo) {
+      this.setMostRecentIdpHost(changeInfo.url, tabId);
+    }
   };
 
+  /**
+   * Handles the completion of a web navigation event on the Safari browser. If the navigation event
+   * is for the main frame and the URL is a valid IDP host, the most recent IDP host will be updated.
+   *
+   * @param details - The web navigation details.
+   */
   private handleSafariWebNavigationOnCompleted = (
     details: chrome.webNavigation.WebNavigationFramedCallbackDetails,
   ) => {
-    if (details.frameId !== 0) {
-      return;
-    }
-
-    if (this.isValidIdpHost(details.url)) {
+    if (details.frameId === 0 && this.isValidIdpHost(details.url)) {
       this.validAutoSubmitHosts.clear();
       this.mostRecentIdpHost = {
         url: details.url,
@@ -419,6 +477,12 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Handles the removal of a tab on the Safari browser. If the tab being removed is the current
+   * auto-submit host tab, all data associated with the current auto-submit workflow will be cleared.
+   *
+   * @param tabId - The tab ID of the tab being removed.
+   */
   private handleSafariTabOnRemoved = (tabId: number) => {
     if (this.currentAutoSubmitHostData.tabId === tabId) {
       this.clearAutoSubmitHostData();
@@ -426,18 +490,28 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Determines if the auto-submit login feature should be triggered after a redirect on the Safari browser.
+   * This is required because Safari does not provide query params for the URL that is being routed to within
+   * the onBefore request listener.
+   *
+   * @param url - The URL of the redirect.
+   */
   private triggerAutoSubmitAfterRedirectOnSafari = (url: string) => {
     return this.isSafariBrowser && this.isValidAutoSubmitHost(url);
   };
 
+  /**
+   * Tears down all established event listeners for the auto-submit login feature.
+   */
   private destroy() {
     BrowserApi.removeListener(chrome.runtime.onMessage, this.handleExtensionMessage);
     chrome.webRequest.onBeforeRequest.removeListener(this.handleOnBeforeRequest);
     chrome.webRequest.onBeforeRedirect.removeListener(this.handleWebRequestOnBeforeRedirect);
     chrome.webNavigation.onCompleted.removeListener(this.handleAutoSubmitHostNavigationCompleted);
+    chrome.webNavigation.onCompleted.removeListener(this.handleSafariWebNavigationOnCompleted);
     chrome.tabs.onActivated.removeListener(this.handleSafariTabOnActivated);
     chrome.tabs.onUpdated.removeListener(this.handleSafariTabOnUpdated);
-    chrome.webNavigation.onCompleted.removeListener(this.handleSafariWebNavigationOnCompleted);
     chrome.tabs.onRemoved.removeListener(this.handleSafariTabOnRemoved);
   }
 }
