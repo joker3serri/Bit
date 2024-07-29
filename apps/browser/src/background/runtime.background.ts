@@ -244,6 +244,7 @@ export default class RuntimeBackground {
           setTimeout(async () => {
             await this.main.refreshBadge();
             await this.main.refreshMenu();
+            await this.main.updateOverlayCiphers();
           }, 2000);
           await this.configService.ensureConfigFetched();
         }
