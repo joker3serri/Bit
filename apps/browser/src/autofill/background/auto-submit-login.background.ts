@@ -141,6 +141,13 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     });
   };
 
+  /**
+   * Handles the onBeforeRequest event. This event is used to determine if a request should initialize
+   * the auto-submit login workflow. A valid request will initialize the workflow, while an invalid
+   * request will clear and disable the workflow.
+   *
+   * @param details - The details of the request.
+   */
   private handleOnBeforeRequest = (details: chrome.webRequest.WebRequestBodyDetails) => {
     const requestInitiator = this.getRequestInitiator(details);
     const isValidInitiator = this.isValidInitiator(requestInitiator);
@@ -163,6 +170,13 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     );
   };
 
+  /**
+   * This triggers if the upcoming request is a POST request and the initiator is valid. It indicates
+   * that a submission has occurred and the auto-submit login workflow should be cleared.
+   *
+   * @param details - The details of the request.
+   * @param isValidInitiator - A flag indicating if the initiator of the request is valid.
+   */
   private postRequestEncounteredAfterSubmission = (
     details: chrome.webRequest.WebRequestBodyDetails,
     isValidInitiator: boolean,
@@ -210,6 +224,11 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     });
   };
 
+  /**
+   * Triggers the injection of the auto-submit login content script once the page has completely loaded.
+   *
+   * @param details - The details of the navigation event.
+   */
   private handleAutoSubmitHostNavigationCompleted = (
     details: chrome.webNavigation.WebNavigationFramedCallbackDetails,
   ) => {
@@ -224,6 +243,11 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Triggers the injection of the auto-submit login script if the user is authenticated.
+   *
+   * @param tabId - The ID of the tab to inject the script into.
+   */
   private injectAutoSubmitLoginScript = async (tabId: number) => {
     if ((await this.getAuthStatus()) === AuthenticationStatus.Unlocked) {
       await this.scriptInjectorService.inject({
@@ -237,10 +261,19 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Retrieves the authentication status of the active user.
+   */
   private getAuthStatus = async () => {
     return firstValueFrom(this.authService.activeAccountStatus$);
   };
 
+  /**
+   * Handles web requests that are triggering a redirect. Stores the redirect URL as a valid
+   * auto-submit host if the redirectUrl should trigger an auto-submit.
+   *
+   * @param details - The details of the request.
+   */
   private handleWebRequestOnBeforeRedirect = (
     details: chrome.webRequest.WebRedirectionResponseDetails,
   ) => {
@@ -250,10 +283,20 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Determines if the provided URL is a valid initiator for the auto-submit login feature.
+   *
+   * @param url - The URL to validate as an initiator.
+   */
   private isValidInitiator = (url: string) => {
     return this.isValidIdpHost(url) || this.isValidAutoSubmitHost(url);
   };
 
+  /**
+   * Determines if the provided URL is a valid IDP host.
+   *
+   * @param url - The URL to validate as an IDP host.
+   */
   private isValidIdpHost = (url: string) => {
     const host = this.getUrlHost(url);
     if (!host) {
@@ -263,6 +306,11 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return this.validIdpHosts.has(host);
   };
 
+  /**
+   * Determines if the provided URL is a valid auto-submit host.
+   *
+   * @param url - The URL to validate as an auto-submit host.
+   */
   private isValidAutoSubmitHost = (url: string) => {
     const host = this.getUrlHost(url);
     if (!host) {
@@ -272,10 +320,25 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return this.validAutoSubmitHosts.has(host);
   };
 
+  /**
+   * Removes the provided URL from the list of valid auto-submit hosts.
+   *
+   * @param url - The URL to remove from the list of valid auto-submit hosts.
+   */
   private removeUrlFromAutoSubmitHosts = (url: string) => {
     this.validAutoSubmitHosts.delete(this.getUrlHost(url));
   };
 
+  /**
+   * Disables an active auto-submit login workflow. This triggers when a request is made that should
+   * not trigger auto-submit. If the initiator of the request is a valid auto-submit host, we need to
+   * treat this request as a navigation within the current website, but away from the intended
+   * auto-submit route. If that isn't the case, we capture the tab's details and check if an
+   * internal navigation is occurring. If so, we invalidate that host.
+   *
+   * @param requestInitiator - The initiator of the request.
+   * @param details - The details of the request.
+   */
   private disableAutoSubmitFlow = async (
     requestInitiator: string,
     details: chrome.webRequest.WebRequestBodyDetails,
@@ -291,6 +354,9 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Clears all data associated with the current auto-submit host workflow.
+   */
   private clearAutoSubmitHostData = () => {
     this.validAutoSubmitHosts.clear();
     this.currentAutoSubmitHostData = {};
@@ -395,6 +461,12 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return details.type === "main_frame";
   };
 
+  /**
+   * Triggers the auto-submit login feature on the provided tab.
+   *
+   * @param message - The auto-submit login message.
+   * @param sender - The message sender.
+   */
   private triggerAutoSubmitLogin = async (
     message: AutoSubmitLoginMessage,
     sender: chrome.runtime.MessageSender,
@@ -413,6 +485,11 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     );
   };
 
+  /**
+   * Handles the completion of auto-submit login workflow on a multistep form.
+   *
+   * @param sender - The message sender.
+   */
   private handleMultiStepAutoSubmitLoginComplete = async (sender: chrome.runtime.MessageSender) => {
     this.removeUrlFromAutoSubmitHosts(sender.url);
   };
@@ -513,6 +590,14 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return this.isSafariBrowser && this.isValidAutoSubmitHost(url);
   };
 
+  /**
+   * Handles incoming messages from the extension. The message is only listened to if it comes from
+   * the current auto-submit workflow tab and the URL is a valid auto-submit host.
+   *
+   * @param message - The incoming message.
+   * @param sender - The message sender.
+   * @param sendResponse - The response callback.
+   */
   private handleExtensionMessage = async (
     message: AutoSubmitLoginMessage,
     sender: chrome.runtime.MessageSender,
@@ -535,7 +620,7 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
 
     Promise.resolve(messageResponse)
       .then((response) => sendResponse(response))
-      .catch(this.logService.error);
+      .catch((error) => this.logService.error(error));
     return true;
   };
 
