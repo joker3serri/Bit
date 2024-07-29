@@ -161,7 +161,7 @@ import { NodeEnvSecureStorageService } from "../platform/services/node-env-secur
 global.DOMParser = new jsdom.JSDOM().window.DOMParser;
 
 // eslint-disable-next-line
-const packageJson = require("../package.json");
+const packageJson = require("../../package.json");
 
 /**
  * Instantiates services and makes them available for dependency injection.
