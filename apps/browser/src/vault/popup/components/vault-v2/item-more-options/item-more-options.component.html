@@ -28,7 +28,7 @@
       <a routerLink="" bitMenuItem (click)="clone()">
         {{ "clone" | i18n }}
       </a>
-      <a routerLink="" type="button" bitMenuItem (click)="assignToCollections()">
+      <a bitMenuItem (click)="conditionallyNavigateToAssignCollections()">
         {{ "assignToCollections" | i18n }}
       </a>
     </ng-container>

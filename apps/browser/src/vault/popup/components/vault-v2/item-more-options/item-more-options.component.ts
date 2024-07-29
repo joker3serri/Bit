@@ -160,11 +160,9 @@ export class ItemMoreOptionsComponent {
     });
   }
 
-  async assignToCollections() {
-    if (
-      this.cipher.reprompt === CipherRepromptType.Password &&
-      !(await this.passwordRepromptService.showPasswordPrompt())
-    ) {
+  /** Prompts for password when necessary then navigates to the assign collections route */
+  async conditionallyNavigateToAssignCollections() {
+    if (this.cipher.reprompt && !(await this.passwordRepromptService.showPasswordPrompt())) {
       return;
     }
 
