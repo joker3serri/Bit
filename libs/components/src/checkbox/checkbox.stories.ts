@@ -105,7 +105,7 @@ export const LongLabel: Story = {
       }),
     },
     template: /*html*/ `
-      <form [formGroup]="formObj" class="tw-border tw-border-solid tw-border-black tw-w-96">
+      <form [formGroup]="formObj" class="tw-w-96">
         <bit-form-control>
           <input type="checkbox" bitCheckbox formControlName="checkbox">
           <bit-label>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur iaculis consequat enim vitae elementum.
