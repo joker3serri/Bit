@@ -112,7 +112,6 @@ export class VaultPopupItemsService {
     this._searchText$,
     this.vaultPopupListFiltersService.filterFunction$,
   ]).pipe(
-    tap(() => this._ciphersLoading$.next()),
     map(([ciphers, searchText, filterFunction]): [CipherView[], string] => [
       filterFunction(ciphers),
       searchText,

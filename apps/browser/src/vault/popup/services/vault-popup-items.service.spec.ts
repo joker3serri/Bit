@@ -407,19 +407,6 @@ describe("VaultPopupItemsService", () => {
       expect(tracked.emissions[1]).toBe(true);
       expect(tracked.emissions[2]).toBe(false);
     });
-
-    it("should cycle when filters are applied", async () => {
-      // Restart tracking
-      tracked = new ObservableTracker(service.loading$);
-      service.applyFilter("test");
-
-      await trackedCiphers.pauseUntilReceived(2);
-
-      expect(tracked.emissions.length).toBe(3);
-      expect(tracked.emissions[0]).toBe(false);
-      expect(tracked.emissions[1]).toBe(true);
-      expect(tracked.emissions[2]).toBe(false);
-    });
   });
 
   describe("applyFilter", () => {
