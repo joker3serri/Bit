@@ -26,7 +26,9 @@ export class IntegrationContext<Settings extends object> {
   baseUrl(): string {
     // normalize baseUrl
     const setting =
-      this.settings && "baseUrl" in this.settings ? (this.settings.baseUrl as string) : "";
+      (this.settings && "baseUrl" in this.settings
+        ? (this.settings.baseUrl as string)
+        : undefined) ?? "";
     let result = "";
 
     // look up definition
