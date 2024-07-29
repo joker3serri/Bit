@@ -400,10 +400,24 @@ describe("AutoSubmitLoginBackground", () => {
         tabId: 1,
       };
       sender = mock<chrome.runtime.MessageSender>({
-        tab: { id: 1 },
+        tab: mock<chrome.tabs.Tab>({ id: 1 }),
         frameId: 0,
         url: validAutoSubmitUrl,
       });
+    });
+
+    it("skips acting on messages that do not come from the current auto-fill workflow's tab", () => {
+      sender.tab = mock<chrome.tabs.Tab>({ id: 2 });
+
+      sendMockExtensionMessage({ command: "triggerAutoSubmitLogin" }, sender);
+
+      expect(autofillService.doAutoFillOnTab).not.toHaveBeenCalled;
+    });
+
+    it("skips acting on messages whose command does not have a registered handler", () => {
+      sendMockExtensionMessage({ command: "someInvalidCommand" }, sender);
+
+      expect(autofillService.doAutoFillOnTab).not.toHaveBeenCalled;
     });
 
     describe("triggerAutoSubmitLogin extension message", () => {
