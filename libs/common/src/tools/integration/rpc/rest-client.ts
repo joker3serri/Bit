@@ -46,7 +46,7 @@ export class RestClient {
   private async detectCommonErrors(response: Response): Promise<[string, string] | undefined> {
     if (response.status === 401 || response.status === 403) {
       const message = await this.tryGetErrorMessage(response);
-      const key = message ? "forwarderInvalidTokenWithMessage" : "forwarderInvalidToken";
+      const key = message ? "forwaderInvalidTokenWithMessage" : "forwaderInvalidToken";
       return [key, message];
     } else if (response.status === 429 || response.status >= 500) {
       const message = await this.tryGetErrorMessage(response);

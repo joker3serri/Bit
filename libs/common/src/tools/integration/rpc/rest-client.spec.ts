@@ -61,7 +61,7 @@ describe("RestClient", () => {
 
         const result = client.fetchJson(rpc, request);
 
-        await expect(result).rejects.toEqual("forwarderInvalidToken");
+        await expect(result).rejects.toEqual("forwaderInvalidToken");
       },
     );
 
@@ -85,7 +85,7 @@ describe("RestClient", () => {
 
         const result = client.fetchJson(rpc, request);
 
-        await expect(result).rejects.toEqual("forwarderInvalidToken");
+        await expect(result).rejects.toEqual("forwaderInvalidToken");
       },
     );
 
@@ -107,9 +107,9 @@ describe("RestClient", () => {
 
         const result = client.fetchJson(rpc, request);
 
-        await expect(result).rejects.toEqual("forwarderInvalidTokenWithMessage");
+        await expect(result).rejects.toEqual("forwaderInvalidTokenWithMessage");
         expect(i18n.t).toHaveBeenCalledWith(
-          "forwarderInvalidTokenWithMessage",
+          "forwaderInvalidTokenWithMessage",
           "mock",
           "expected message",
         );
@@ -130,9 +130,9 @@ describe("RestClient", () => {
 
         const result = client.fetchJson(rpc, request);
 
-        await expect(result).rejects.toEqual("forwarderInvalidTokenWithMessage");
+        await expect(result).rejects.toEqual("forwaderInvalidTokenWithMessage");
         expect(i18n.t).toHaveBeenCalledWith(
-          "forwarderInvalidTokenWithMessage",
+          "forwaderInvalidTokenWithMessage",
           "mock",
           "that happened: expected message",
         );
