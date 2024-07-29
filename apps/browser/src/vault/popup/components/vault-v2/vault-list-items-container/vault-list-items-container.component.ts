@@ -108,7 +108,7 @@ export class VaultListItemsContainerComponent {
     await this.vaultPopupAutofillService.doAutofill(cipher);
   }
 
-  async onViewCipher(cipher: any) {
+  async onViewCipher(cipher: PopupCipherView) {
     const repromptPassed = await this.passwordRepromptService.passwordRepromptCheck(cipher);
     if (!repromptPassed) {
       return;
