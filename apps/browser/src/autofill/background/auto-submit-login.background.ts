@@ -22,10 +22,7 @@ import {
 
 export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstraction {
   private ipdAutoSubmitLoginPolicy$: Observable<Policy>;
-  private validIdpHosts: Set<string> = new Set([
-    "top-frame.local:8890",
-    "dev-836655.oktapreview.com",
-  ]);
+  private validIdpHosts: Set<string> = new Set();
   private validAutoSubmitHosts: Set<string> = new Set();
   private mostRecentIdpHost: { url?: string; tabId?: number } = {};
   private currentAutoSubmitHostData: { url?: string; tabId?: number } = {};
@@ -48,6 +45,11 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     this.isSafariBrowser = this.platformUtilsService.isSafari();
   }
 
+  /**
+   * Initializes the auto-submit login policy. Will return early if
+   * the feature flag is not set. If the policy is not enabled, it
+   * will trigger a removal of any established listeners.
+   */
   async init() {
     const featureFlagEnabled = await this.configService.getFeatureFlag(
       FeatureFlag.IdpAutoSubmitLogin,
@@ -57,15 +59,19 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
 
     this.ipdAutoSubmitLoginPolicy$ = this.policyService.get$(PolicyType.AutomaticAppLogIn);
-    this.ipdAutoSubmitLoginPolicy$.subscribe((policy) => {
-      if (!policy?.enabled) {
-        this.destroy();
-        return;
-      }
-
-      this.applyPolicyToActiveUser(policy).catch((error) => this.logService.error(error));
-    });
+    this.ipdAutoSubmitLoginPolicy$.subscribe(
+      this.handleAutoSubmitLoginPolicySubscription.bind(this),
+    );
   }
+
+  private handleAutoSubmitLoginPolicySubscription = (policy: Policy) => {
+    if (!policy?.enabled) {
+      this.destroy();
+      return;
+    }
+
+    this.applyPolicyToActiveUser(policy).catch((error) => this.logService.error(error));
+  };
 
   private applyPolicyToActiveUser = async (policy: Policy) => {
     const policyAppliesToUser = await firstValueFrom(
