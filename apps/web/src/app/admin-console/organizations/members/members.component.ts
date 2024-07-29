@@ -34,6 +34,8 @@ import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billilng-api.service.abstraction";
 import { isNotSelfUpgradable, ProductTierType } from "@bitwarden/common/billing/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -43,8 +45,12 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
 
+import {
+  ChangePlanDialogResultType,
+  openChangePlanDialog,
+} from "../../../billing/organizations/change-plan-dialog.component";
 import { BaseMembersComponent } from "../../common/base-members.component";
 import { PeopleTableDataSource } from "../../common/people-table-data-source";
 import { GroupService } from "../core";
@@ -86,6 +92,10 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
 
   protected canUseSecretsManager$: Observable<boolean>;
 
+  protected EnableUpgradePasswordManagerSub$ = this.configService.getFeatureFlag$(
+    FeatureFlag.EnableUpgradePasswordManagerSub,
+  );
+
   // Fixed sizes used for cdkVirtualScroll
   protected rowHeight = 62;
   protected rowHeightClass = `tw-h-[62px]`;
@@ -112,6 +122,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     private collectionService: CollectionService,
     private billingApiService: BillingApiServiceAbstraction,
     private modalService: ModalService,
+    private configService: ConfigService,
   ) {
     super(
       apiService,
@@ -366,6 +377,80 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     return this.organization.canEditSubscription ? "ManageBilling" : "NoManageBilling";
   }
 
+  private getProductKey(productType: ProductTierType): string {
+    let product = "";
+    switch (productType) {
+      case ProductTierType.Free:
+        product = "freeOrg";
+        break;
+      case ProductTierType.TeamsStarter:
+        product = "teamsStarterPlan";
+        break;
+      case ProductTierType.Families:
+        product = "familiesPlan";
+        break;
+      default:
+        throw new Error(`Unsupported product type: ${productType}`);
+    }
+    return `${product}InvLimitReached${this.getManageBillingText()}`;
+  }
+
+  private getDialogContent(): string {
+    return this.i18nService.t(
+      this.getProductKey(this.organization.productTierType),
+      this.organization.seats,
+    );
+  }
+
+  private getAcceptButtonText(): string {
+    if (!this.organization.canEditSubscription) {
+      return this.i18nService.t("ok");
+    }
+
+    const productType = this.organization.productTierType;
+
+    if (isNotSelfUpgradable(productType)) {
+      throw new Error(`Unsupported product type: ${productType}`);
+    }
+
+    return this.i18nService.t("upgrade");
+  }
+
+  private async handleDialogClose(result: boolean | undefined): Promise<void> {
+    if (!result || !this.organization.canEditSubscription) {
+      return;
+    }
+
+    const productType = this.organization.productTierType;
+
+    if (isNotSelfUpgradable(productType)) {
+      throw new Error(`Unsupported product type: ${this.organization.productTierType}`);
+    }
+
+    await this.router.navigate(
+      ["/organizations", this.organization.id, "billing", "subscription"],
+      { queryParams: { upgrade: true } },
+    );
+  }
+
+  private async showSeatLimitReachedDialog(): Promise<void> {
+    const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
+      title: this.i18nService.t("upgradeOrganization"),
+      content: this.getDialogContent(),
+      type: "primary",
+      acceptButtonText: this.getAcceptButtonText(),
+    };
+
+    if (!this.organization.canEditSubscription) {
+      orgUpgradeSimpleDialogOpts.cancelButtonText = null;
+    }
+
+    const simpleDialog = this.dialogService.openSimpleDialogRef(orgUpgradeSimpleDialogOpts);
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    firstValueFrom(simpleDialog.closed).then(this.handleDialogClose.bind(this));
+  }
+
   async edit(user: OrganizationUserView, initialTab: MemberDialogTab = MemberDialogTab.Role) {
     if (
       !user &&
@@ -391,21 +476,29 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
         this.organization.productTierType === ProductTierType.TeamsStarter ||
         this.organization.productTierType === ProductTierType.Families)
     ) {
-      if (!this.organization.canEditSubscription) {
+      const EnableUpgradePasswordManagerSub = await firstValueFrom(
+        this.EnableUpgradePasswordManagerSub$,
+      );
+      if (EnableUpgradePasswordManagerSub) {
+        const reference = openChangePlanDialog(this.dialogService, {
+          data: {
+            organizationId: this.organization.id,
+            subscription: null,
+            productTierType: this.organization.productTierType,
+          },
+        });
+
+        const result = await lastValueFrom(reference.closed);
+
+        if (result === ChangePlanDialogResultType.Submitted) {
+          await this.load();
+        }
+        return;
+      } else {
+        // Show org upgrade modal
+        await this.showSeatLimitReachedDialog();
         return;
       }
-
-      const productType = this.organization.productTierType;
-
-      if (isNotSelfUpgradable(productType)) {
-        throw new Error(`Unsupported product type: ${this.organization.productTierType}`);
-      }
-
-      await this.router.navigate(
-        ["/organizations", this.organization.id, "billing", "subscription"],
-        { queryParams: { upgrade: true } },
-      );
-      return;
     }
 
     const dialog = openUserAddEditDialog(this.dialogService, {

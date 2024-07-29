@@ -34,6 +34,7 @@ import { TaxInfoComponent } from "../shared/tax-info.component";
 type ChangePlanDialogParams = {
   organizationId: string;
   subscription: OrganizationSubscriptionResponse;
+  productTierType: ProductTierType;
 };
 
 export enum ChangePlanDialogResultType {
@@ -164,13 +165,15 @@ export class ChangePlanDialogComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     if (this.dialogParams.organizationId) {
+      this.currentPlanName = this.resolvePlanName(this.dialogParams.productTierType);
+      this.sub =
+        this.dialogParams.subscription ??
+        (await this.organizationApiService.getSubscription(this.dialogParams.organizationId));
       this.organizationId = this.dialogParams.organizationId;
-      this.currentPlan = this.dialogParams.subscription?.plan;
-      this.currentPlanName = this.i18nService.t(this.currentPlan.nameLocalizationKey);
-      this.selectedPlan = this.dialogParams.subscription?.plan;
+      this.currentPlan = this.sub?.plan;
+      this.selectedPlan = this.sub?.plan;
       this.organization = await this.organizationService.get(this.organizationId);
       this.billing = await this.organizationApiService.getBilling(this.organizationId);
-      this.sub = this.dialogParams.subscription;
     }
 
     if (!this.selfHosted) {
@@ -635,6 +638,19 @@ export class ChangePlanDialogComponent implements OnInit {
         return ["bwi-paypal text-primary"];
       default:
         return [];
+    }
+  }
+
+  resolvePlanName(productTier: ProductTierType) {
+    switch (productTier) {
+      case ProductTierType.Enterprise:
+        return this.i18nService.t("planNameEnterprise");
+      case ProductTierType.Free:
+        return this.i18nService.t("planNameFree");
+      case ProductTierType.Families:
+        return this.i18nService.t("planNameFamilies");
+      case ProductTierType.Teams:
+        return this.i18nService.t("planNameTeams");
     }
   }
 }
