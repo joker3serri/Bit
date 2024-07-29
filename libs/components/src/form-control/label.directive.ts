@@ -15,10 +15,11 @@ export class BitLabel {
   ) {}
 
   @HostBinding("class") @Input() get classList() {
+    const classes = ["tw-inline-flex", "tw-gap-1", "tw-items-baseline", "tw-flex-row"];
     /**
      * We don't want to truncate checkboxes or radio buttons, which use form-control
      */
-    return this.parentFormControl ? [] : ["tw-truncate"];
+    return this.parentFormControl ? classes : classes.concat(["tw-truncate"]);
   }
 
   @HostBinding("title") get title() {

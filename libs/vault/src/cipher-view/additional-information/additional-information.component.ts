@@ -8,6 +8,8 @@ import {
   InputModule,
   SectionComponent,
   SectionHeaderComponent,
+  TypographyModule,
+  FormFieldModule,
 } from "@bitwarden/components";
 
 @Component({
@@ -22,6 +24,8 @@ import {
     InputModule,
     SectionComponent,
     SectionHeaderComponent,
+    TypographyModule,
+    FormFieldModule,
   ],
 })
 export class AdditionalInformationComponent {
