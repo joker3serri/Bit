@@ -73,7 +73,6 @@ import { ShareComponent } from "../vault/popup/components/vault/share.component"
 import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
 import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
 import { VaultV2Component } from "../vault/popup/components/vault/vault-v2.component";
-import { ViewComponent } from "../vault/popup/components/vault/view.component";
 import { AddEditV2Component } from "../vault/popup/components/vault-v2/add-edit/add-edit-v2.component";
 import { AssignCollections } from "../vault/popup/components/vault-v2/assign-collections/assign-collections.component";
 import { AttachmentsV2Component } from "../vault/popup/components/vault-v2/attachments/attachments-v2.component";
