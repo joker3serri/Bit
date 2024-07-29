@@ -377,7 +377,7 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     initiator: string,
   ) => {
     if (this.isRequestInMainFrame(details)) {
-      return (
+      return !!(
         this.urlContainsAutoFillParam(details.url) ||
         this.triggerAutoSubmitAfterRedirectOnSafari(details.url)
       );
