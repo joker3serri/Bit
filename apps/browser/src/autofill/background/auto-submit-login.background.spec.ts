@@ -37,6 +37,8 @@ describe("AutoSubmitLoginBackground", () => {
   let autoSubmitLoginBackground: AutoSubmitLoginBackground;
   const validIpdUrl1 = "https://example.com";
   const validIpdUrl2 = "https://subdomain.example3.com";
+  const validAutoSubmitHost = "some-valid-url.com";
+  const validAutoSubmitUrl = `https://${validAutoSubmitHost}/?autofill=1`;
 
   beforeEach(() => {
     logService = mock<LogService>();
@@ -106,6 +108,48 @@ describe("AutoSubmitLoginBackground", () => {
 
       expect(chrome.webRequest.onBeforeRequest.addListener).toHaveBeenCalled();
     });
+
+    describe("starting the auto-submit login workflow", () => {
+      let webRequestDetails: chrome.webRequest.WebRequestBodyDetails;
+
+      beforeEach(async () => {
+        webRequestDetails = mock<chrome.webRequest.WebRequestBodyDetails>({
+          initiator: validIpdUrl1,
+          url: validAutoSubmitUrl,
+          type: "main_frame",
+        });
+        await autoSubmitLoginBackground.init();
+      });
+
+      it("sets up the auto-submit workflow when the web request occurs in the main frame and the destination URL contains a valid auto-fill param", () => {
+        triggerWebRequestOnBeforeRequestEvent(webRequestDetails);
+
+        expect(autoSubmitLoginBackground["currentAutoSubmitHostData"]).toStrictEqual({
+          url: validAutoSubmitUrl,
+          tabId: webRequestDetails.tabId,
+        });
+        expect(chrome.webNavigation.onCompleted.addListener).toBeCalledWith(expect.any(Function), {
+          url: [{ hostEquals: validAutoSubmitHost }],
+        });
+      });
+
+      it("sets up the auto-submit workflow when the web request occurs in a sub frame and the initiator of the request is a valid auto-submit host", async () => {
+        const topFrameHost = "some-top-frame.com";
+        const subFrameHost = "some-sub-frame.com";
+        autoSubmitLoginBackground["validAutoSubmitHosts"].add(topFrameHost);
+        webRequestDetails.type = "sub_frame";
+        webRequestDetails.initiator = `https://${topFrameHost}`;
+        webRequestDetails.url = `https://${subFrameHost}`;
+
+        triggerWebRequestOnBeforeRequestEvent(webRequestDetails);
+
+        expect(chrome.webNavigation.onCompleted.addListener).toBeCalledWith(expect.any(Function), {
+          url: [{ hostEquals: subFrameHost }],
+        });
+      });
+    });
+
+    describe("cancelling an active auto-submit login workflow", () => {});
 
     describe("when the extension is running on a Safari browser", () => {
       const tabId = 1;
@@ -219,8 +263,6 @@ describe("AutoSubmitLoginBackground", () => {
       });
 
       it("allows the route to trigger auto-submit after a chain redirection to a valid auto-submit URL is made", async () => {
-        const validAutoSubmitHost = "some-valid-url.com";
-        const validAutoSubmitUrl = `https://${validAutoSubmitHost}/?autofill=1`;
         await autoSubmitLoginBackground.init();
         autoSubmitLoginBackground["mostRecentIdpHost"] = {
           url: validIpdUrl1,

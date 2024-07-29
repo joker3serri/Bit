@@ -170,6 +170,13 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return details.method === "POST" && this.validAutoSubmitHosts.size > 0 && isValidInitiator;
   };
 
+  /**
+   * Determines if a request is attempting to redirect to an invalid host. We identify this as a case
+   * where the top level frame has navigated to either an invalid IDP host or auto-submit host.
+   *
+   * @param details - The details of the request.
+   * @param isValidInitiator - A flag indicating if the initiator of the request is valid.
+   */
   private requestRedirectsToInvalidHost = (
     details: chrome.webRequest.WebRequestBodyDetails,
     isValidInitiator: boolean,
@@ -286,6 +293,15 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     this.validAutoSubmitHosts.delete(this.getUrlHost(url));
   };
 
+  /**
+   * Determines if the provided URL is a valid auto-submit host. If the request is occurring
+   * in the main frame, we will check for the presence of the `autofill=1` query parameter.
+   * If the request is occurring in a sub frame, the main frame URL should be set as a
+   * valid auto-submit host and can be used to validate the request.
+   *
+   * @param details - The details of the request.
+   * @param initiator - The initiator of the request.
+   */
   private shouldRouteTriggerAutoSubmit = (
     details: chrome.webRequest.ResourceRequest,
     initiator: string,
@@ -300,6 +316,11 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return this.isValidAutoSubmitHost(initiator);
   };
 
+  /**
+   * Determines if the provided URL contains the `autofill=1` query parameter.
+   *
+   * @param url - The URL to check for the `autofill=1` query parameter.
+   */
   private urlContainsAutoFillParam = (url: string) => {
     try {
       const urlObj = new URL(url);
@@ -333,6 +354,14 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     }
   };
 
+  /**
+   * Determines the initiator of a request. If the request is happening in a Safari browser, we
+   * need to determine the initiator based on the stored most recently visited IDP host. When
+   * handling a sub frame request in Safari, we treat the passed URL detail as the initiator
+   * of the request, as long as an IPD host has been previously identified.
+   *
+   * @param details - The details of the request.
+   */
   private getRequestInitiator = (details: chrome.webRequest.ResourceRequest) => {
     if (!this.isSafariBrowser) {
       return details.initiator || (details as browser.webRequest._OnBeforeRequestDetails).originUrl;
@@ -349,6 +378,11 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
     return details.url;
   };
 
+  /**
+   * Verifies if a request is occurring in the main / top-level frame of a tab.
+   *
+   * @param details - The details of the request.
+   */
   private isRequestInMainFrame = (details: chrome.webRequest.ResourceRequest) => {
     if (this.isSafariBrowser) {
       return details.frameId === 0;
@@ -377,32 +411,6 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
 
   private handleMultiStepAutoSubmitLoginComplete = async (sender: chrome.runtime.MessageSender) => {
     this.removeUrlFromAutoSubmitHosts(sender.url);
-  };
-
-  private handleExtensionMessage = async (
-    message: AutoSubmitLoginMessage,
-    sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: any) => void,
-  ) => {
-    const { tab, url } = sender;
-    if (tab?.id !== this.currentAutoSubmitHostData.tabId || !this.isValidAutoSubmitHost(url)) {
-      return null;
-    }
-
-    const handler: CallableFunction | undefined = this.extensionMessageHandlers[message?.command];
-    if (!handler) {
-      return null;
-    }
-
-    const messageResponse = handler({ message, sender });
-    if (typeof messageResponse === "undefined") {
-      return null;
-    }
-
-    Promise.resolve(messageResponse)
-      .then((response) => sendResponse(response))
-      .catch(this.logService.error);
-    return true;
   };
 
   /**
@@ -499,6 +507,32 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
    */
   private triggerAutoSubmitAfterRedirectOnSafari = (url: string) => {
     return this.isSafariBrowser && this.isValidAutoSubmitHost(url);
+  };
+
+  private handleExtensionMessage = async (
+    message: AutoSubmitLoginMessage,
+    sender: chrome.runtime.MessageSender,
+    sendResponse: (response?: any) => void,
+  ) => {
+    const { tab, url } = sender;
+    if (tab?.id !== this.currentAutoSubmitHostData.tabId || !this.isValidAutoSubmitHost(url)) {
+      return null;
+    }
+
+    const handler: CallableFunction | undefined = this.extensionMessageHandlers[message?.command];
+    if (!handler) {
+      return null;
+    }
+
+    const messageResponse = handler({ message, sender });
+    if (typeof messageResponse === "undefined") {
+      return null;
+    }
+
+    Promise.resolve(messageResponse)
+      .then((response) => sendResponse(response))
+      .catch(this.logService.error);
+    return true;
   };
 
   /**
