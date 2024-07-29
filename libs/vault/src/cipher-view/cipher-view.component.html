@@ -8,6 +8,11 @@
   >
   </app-item-details-v2>
 
+  <!-- CARD DETAILS -->
+  <ng-container *ngIf="hasCard">
+    <app-card-details-view [card]="cipher.card"></app-card-details-view>
+  </ng-container>
+
   <!-- ADDITIONAL INFORMATION -->
   <ng-container *ngIf="cipher.notes">
     <app-additional-information [notes]="cipher.notes"> </app-additional-information>
