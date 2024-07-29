@@ -3,10 +3,10 @@
     <h2 bitTypography="h6">{{ "itemDetails" | i18n }}</h2>
   </bit-section-header>
   <bit-card>
-    <div>
-      <label class="tw-block tw-w-full tw-mb-1 tw-text-xs tw-text-muted tw-select-none">
+    <bit-form-field>
+      <bit-label>
         {{ "itemName" | i18n }}
-      </label>
+      </bit-label>
       <input
         readonly
         bitInput
@@ -15,7 +15,7 @@
         aria-readonly="true"
         data-testid="item-name"
       />
-    </div>
+    </bit-form-field>
 
     <ul
       [attr.aria-label]="'itemLocation' | i18n"
