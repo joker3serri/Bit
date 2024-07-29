@@ -2,7 +2,7 @@ import { ipcMain } from "electron";
 
 /**
  * The ephemeral value store holds values that should be accessible to the renderer past a process reload.
- * In the current state, no keys, that alone can be used to decrypt a vault should be kept in this store.
+ * In the current state, this store must not contain any keys that can decrypt a vault by themselves.
  */
 export class EphemeralValueStorageService {
   private ephemeralValues = new Map<string, string>();
