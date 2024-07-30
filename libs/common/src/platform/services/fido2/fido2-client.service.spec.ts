@@ -1,6 +1,8 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
+import { SessionClosedError } from "@bitwarden/browser/src/vault/fido2/browser-fido2-user-interface.service";
+
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { DomainSettingsService } from "../../../autofill/services/domain-settings.service";
@@ -608,15 +610,18 @@ describe("FidoAuthenticatorService", () => {
     });
 
     describe("assert mediated conditional ui credential", () => {
-      it("creates an active mediated conditional request", async () => {
-        const params = createParams({
-          userVerification: "required",
-          mediation: "conditional",
-          allowedCredentialIds: [],
-        });
-        authenticator.getAssertion.mockResolvedValue(createAuthenticatorAssertResult());
-        requestManager.newActiveRequest.mockResolvedValue(crypto.randomUUID());
+      const params = createParams({
+        userVerification: "required",
+        mediation: "conditional",
+        allowedCredentialIds: [],
+      });
 
+      beforeEach(() => {
+        requestManager.newActiveRequest.mockResolvedValue(crypto.randomUUID());
+        authenticator.getAssertion.mockResolvedValue(createAuthenticatorAssertResult());
+      });
+
+      it("creates an active mediated conditional request", async () => {
         await client.assertCredential(params, tab);
 
         expect(requestManager.newActiveRequest).toHaveBeenCalled();
@@ -627,6 +632,24 @@ describe("FidoAuthenticatorService", () => {
           }),
           tab,
         );
+      });
+
+      it("restarts the mediated conditional request if a user aborts the request", async () => {
+        authenticator.getAssertion.mockRejectedValueOnce(new SessionClosedError());
+
+        await client.assertCredential(params, tab);
+
+        expect(authenticator.getAssertion).toHaveBeenCalledTimes(2);
+      });
+
+      it("restarts the mediated conditional request if a the abort controller aborts the request", async () => {
+        const abortController = new AbortController();
+        abortController.abort();
+        authenticator.getAssertion.mockRejectedValueOnce(new DOMException("AbortError"));
+
+        await client.assertCredential(params, tab);
+
+        expect(authenticator.getAssertion).toHaveBeenCalledTimes(2);
       });
     });
 
