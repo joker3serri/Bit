@@ -1,7 +1,7 @@
 import { Component, HostBinding, Input, Optional, Self } from "@angular/core";
 import { NgControl, Validators } from "@angular/forms";
 
-import { BitFormControlAbstraction, FormControlComponent } from "../form-control";
+import { BitFormControlAbstraction } from "../form-control";
 
 @Component({
   selector: "input[type=checkbox][bitCheckbox]",
@@ -35,6 +35,11 @@ export class CheckboxComponent implements BitFormControlAbstraction {
 
     "hover:tw-border-2",
     "[&>label]:tw-border-2",
+
+    // if it exists, the parent form control handles focus
+    "[&:not(bit-form-control_*)]:focus-visible:tw-ring-2",
+    "[&:not(bit-form-control_*)]:focus-visible:tw-ring-offset-2",
+    "[&:not(bit-form-control_*)]:focus-visible:tw-ring-primary-500",
 
     "disabled:tw-cursor-auto",
     "disabled:tw-border",
@@ -72,19 +77,9 @@ export class CheckboxComponent implements BitFormControlAbstraction {
     "indeterminate:disabled:tw-border-secondary-100",
     "indeterminate:disabled:tw-bg-secondary-100",
     "indeterminate:disabled:before:tw-bg-text-muted",
-  ].concat(
-    // if it exists, the parent form control handles focus
-    !this.parentFormControl && [
-      "focus-visible:tw-ring-2",
-      "focus-visible:tw-ring-offset-2",
-      "focus-visible:tw-ring-primary-500",
-    ],
-  );
+  ];
 
-  constructor(
-    @Optional() @Self() private ngControl?: NgControl,
-    @Optional() private parentFormControl?: FormControlComponent,
-  ) {}
+  constructor(@Optional() @Self() private ngControl?: NgControl) {}
 
   @HostBinding("style.--mask-image")
   protected maskImage =
