@@ -1,14 +1,15 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, Location } from "@angular/common";
 import { Component } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ToastService } from "@bitwarden/components";
+import { ButtonModule, ToastService } from "@bitwarden/components";
 import { SendCreatedIcon } from "@bitwarden/send-ui";
 
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
+import { PopupFooterComponent } from "../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
 
@@ -17,12 +18,14 @@ import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page
   templateUrl: "./send-created.component.html",
   standalone: true,
   imports: [
+    ButtonModule,
     CommonModule,
     JslibModule,
     PopOutComponent,
     PopupHeaderComponent,
     PopupPageComponent,
     RouterLink,
+    PopupFooterComponent,
   ],
 })
 export class SendCreatedComponent {
@@ -33,7 +36,12 @@ export class SendCreatedComponent {
     private platformUtilsService: PlatformUtilsService,
     private route: ActivatedRoute,
     private toastService: ToastService,
+    private location: Location,
   ) {}
+
+  close() {
+    this.location.back();
+  }
 
   copyLink() {
     const link = this.route.snapshot.queryParamMap.get("link");

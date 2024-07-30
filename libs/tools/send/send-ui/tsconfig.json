@@ -1,5 +1,5 @@
 {
   "extends": "../../../shared/tsconfig.libs",
-  "include": ["src", "../../../../apps/browser/src/tools/popup/send-v2/send-created"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

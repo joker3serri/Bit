@@ -51,7 +51,7 @@ import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.componen
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
 import { SendCreatedComponent } from "../tools/popup/send-v2/send-created/send-created.component";
-// import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
+import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
 import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-page-v2.component";
 import { AboutPageComponent } from "../tools/popup/settings/about-page/about-page.component";
 import { MoreFromBitwardenPageV2Component } from "../tools/popup/settings/about-page/more-from-bitwarden-page-v2.component";
@@ -467,7 +467,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { state: "tabs_settings" },
       }),
-      ...extensionRefreshSwap(SendGroupingsComponent, SendCreatedComponent, {
+      ...extensionRefreshSwap(SendGroupingsComponent, SendV2Component, {
         path: "send",
         canActivate: [AuthGuard],
         data: { state: "tabs_send" },
