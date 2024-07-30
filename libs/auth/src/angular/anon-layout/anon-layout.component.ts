@@ -26,6 +26,12 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
   @Input() showReadonlyHostname: boolean;
   @Input() hideLogo: boolean = false;
   @Input() hideFooter: boolean = false;
+  /**
+   * Max width of the layout content
+   *
+   * @default 'md'
+   */
+  @Input() maxWidth: "md" | "3xl" = "md";
 
   protected logo: Icon;
 
@@ -48,6 +54,8 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
   }
 
   async ngOnInit() {
+    this.maxWidth = this.maxWidth ?? "md";
+
     this.theme = await firstValueFrom(this.themeStateService.selectedTheme$);
 
     if (this.theme === "dark") {
