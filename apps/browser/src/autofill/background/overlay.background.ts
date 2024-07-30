@@ -461,17 +461,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param cipher - The cipher to check
    */
   private showCipherAsPasskey(cipher: CipherView): boolean {
-    if (cipher.type !== CipherType.Login) {
-      return false;
-    }
-
-    if (!cipher.login.fido2Credentials?.[0]?.credentialId) {
-      return false;
-    }
-
     return (
-      this.inlineMenuFido2Credentials.size === 0 ||
-      this.inlineMenuFido2Credentials.has(cipher.login.fido2Credentials[0].credentialId)
+      cipher.type === CipherType.Login &&
+      cipher.login.fido2Credentials?.length > 0 &&
+      (this.inlineMenuFido2Credentials.size === 0 ||
+        this.inlineMenuFido2Credentials.has(cipher.login.fido2Credentials[0].credentialId))
     );
   }
 
