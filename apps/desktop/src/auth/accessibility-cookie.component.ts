@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { Component, NgZone } from "@angular/core";
 import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
@@ -11,7 +11,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
   selector: "app-accessibility-cookie",
   templateUrl: "accessibility-cookie.component.html",
 })
-export class AccessibilityCookieComponent implements OnInit, OnDestroy {
+export class AccessibilityCookieComponent {
   listenForCookie = false;
   hCaptchaWindow: Window;
 
