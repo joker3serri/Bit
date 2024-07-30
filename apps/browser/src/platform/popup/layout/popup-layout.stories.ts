@@ -43,6 +43,7 @@ class ExtensionContainerComponent {}
             {{ i }} of {{ data.length - 1 }}
             <span slot="secondary">Bar</span>
           </button>
+
           <ng-container slot="end">
             <bit-item-action>
               <button type="button" bitBadge variant="primary">Auto-fill</button>
