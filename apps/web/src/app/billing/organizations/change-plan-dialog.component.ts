@@ -531,7 +531,9 @@ export class ChangePlanDialogComponent implements OnInit {
 
   private async updateOrganization(orgId: string) {
     const request = new OrganizationUpgradeRequest();
-    request.additionalSeats = this.organization.seats;
+    if (this.selectedPlan.productTier !== ProductTierType.Families) {
+      request.additionalSeats = this.organization.seats;
+    }
     request.premiumAccessAddon =
       this.selectedPlan.PasswordManager.hasPremiumAccessOption &&
       this.formGroup.controls.premiumAccessAddon.value;
