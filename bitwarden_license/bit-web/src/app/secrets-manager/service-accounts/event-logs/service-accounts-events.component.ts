@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
@@ -20,7 +20,7 @@ export class ServiceAccountEventsComponent
   extends BaseEventsComponent
   implements OnInit, OnDestroy
 {
-  exportFileName = "service-account-events";
+  exportFileName = "machine-account-events";
   private destroy$ = new Subject<void>();
   private serviceAccountId: string;
 
@@ -53,7 +53,7 @@ export class ServiceAccountEventsComponent
   }
 
   async load() {
-    await this.loadEvents(true);
+    await this.refreshEvents();
     this.loaded = true;
   }
 
@@ -68,7 +68,7 @@ export class ServiceAccountEventsComponent
 
   protected getUserName() {
     return {
-      name: this.i18nService.t("serviceAccount") + " " + this.serviceAccountId,
+      name: this.i18nService.t("machineAccount") + " " + this.serviceAccountId,
       email: "",
     };
   }

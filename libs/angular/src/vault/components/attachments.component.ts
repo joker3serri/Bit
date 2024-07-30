@@ -1,6 +1,8 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
@@ -18,6 +20,7 @@ import { DialogService } from "@bitwarden/components";
 @Directive()
 export class AttachmentsComponent implements OnInit {
   @Input() cipherId: string;
+  @Input() viewOnly: boolean;
   @Output() onUploadedAttachment = new EventEmitter();
   @Output() onDeletedAttachment = new EventEmitter();
   @Output() onReuploadedAttachment = new EventEmitter();
@@ -42,6 +45,7 @@ export class AttachmentsComponent implements OnInit {
     protected stateService: StateService,
     protected fileDownloadService: FileDownloadService,
     protected dialogService: DialogService,
+    protected billingAccountProfileStateService: BillingAccountProfileStateService,
   ) {}
 
   async ngOnInit() {
@@ -185,7 +189,9 @@ export class AttachmentsComponent implements OnInit {
       await this.cipherService.getKeyForCipherKeyDecryption(this.cipherDomain),
     );
 
-    const canAccessPremium = await this.stateService.getCanAccessPremium();
+    const canAccessPremium = await firstValueFrom(
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
+    );
     this.canAccessAttachments = canAccessPremium || this.cipher.organizationId != null;
 
     if (!this.canAccessAttachments) {
@@ -197,7 +203,9 @@ export class AttachmentsComponent implements OnInit {
       });
 
       if (confirmed) {
-        this.platformUtilsService.launchUri("https://vault.bitwarden.com/#/?premium=purchase");
+        this.platformUtilsService.launchUri(
+          "https://vault.bitwarden.com/#/settings/subscription/premium",
+        );
       }
     }
   }

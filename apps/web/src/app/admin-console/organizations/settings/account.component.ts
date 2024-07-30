@@ -11,7 +11,7 @@ import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/
 import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/models/request/organization-update.request";
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -28,8 +28,6 @@ import { DeleteOrganizationDialogResult, openDeleteOrganizationDialog } from "./
   templateUrl: "account.component.html",
 })
 export class AccountComponent implements OnInit, OnDestroy {
-  @ViewChild("purgeOrganizationTemplate", { read: ViewContainerRef, static: true })
-  purgeModalRef: ViewContainerRef;
   @ViewChild("apiKeyTemplate", { read: ViewContainerRef, static: true })
   apiKeyModalRef: ViewContainerRef;
   @ViewChild("rotateApiKeyTemplate", { read: ViewContainerRef, static: true })
@@ -41,13 +39,9 @@ export class AccountComponent implements OnInit, OnDestroy {
   canUseApi = false;
   org: OrganizationResponse;
   taxFormPromise: Promise<unknown>;
-  flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollections,
-    false,
-  );
+
   flexibleCollectionsV1Enabled$ = this.configService.getFeatureFlag$(
     FeatureFlag.FlexibleCollectionsV1,
-    false,
   );
 
   // FormGroup validators taken from server Organization domain object
@@ -62,10 +56,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     billingEmail: this.formBuilder.control(
       { value: "", disabled: true },
       { validators: [Validators.required, Validators.email, Validators.maxLength(256)] },
-    ),
-    businessName: this.formBuilder.control(
-      { value: "", disabled: true },
-      { validators: [Validators.maxLength(50)] },
     ),
   });
 
@@ -93,7 +83,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     private organizationApiService: OrganizationApiServiceAbstraction,
     private dialogService: DialogService,
     private formBuilder: FormBuilder,
-    private configService: ConfigServiceAbstraction,
+    private configService: ConfigService,
   ) {}
 
   async ngOnInit() {
@@ -122,7 +112,6 @@ export class AccountComponent implements OnInit, OnDestroy {
         // Update disabled states - reactive forms prefers not using disabled attribute
         if (!this.selfHosted) {
           this.formGroup.get("orgName").enable();
-          this.formGroup.get("businessName").enable();
           this.collectionManagementFormGroup.get("limitCollectionCreationDeletion").enable();
           this.collectionManagementFormGroup.get("allowAdminAccessToAllCollectionItems").enable();
         }
@@ -141,7 +130,6 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.formGroup.patchValue({
           orgName: this.org.name,
           billingEmail: this.org.billingEmail,
-          businessName: this.org.businessName,
         });
         this.collectionManagementFormGroup.patchValue({
           limitCollectionCreationDeletion: this.org.limitCollectionCreationDeletion,
@@ -165,9 +153,17 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     const request = new OrganizationUpdateRequest();
-    request.name = this.formGroup.value.orgName;
-    request.businessName = this.formGroup.value.businessName;
-    request.billingEmail = this.formGroup.value.billingEmail;
+
+    /*
+     * When you disable a FormControl, it is removed from formGroup.values, so we have to use
+     * the original value.
+     * */
+    request.name = this.formGroup.get("orgName").disabled
+      ? this.org.name
+      : this.formGroup.value.orgName;
+    request.billingEmail = this.formGroup.get("billingEmail").disabled
+      ? this.org.billingEmail
+      : this.formGroup.value.billingEmail;
 
     // Backfill pub/priv key if necessary
     if (!this.org.hasPublicAndPrivateKeys) {
@@ -198,7 +194,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.platformUtilsService.showToast(
       "success",
       null,
-      this.i18nService.t("collectionManagementUpdated"),
+      this.i18nService.t("updatedCollectionManagement"),
     );
   };
 
@@ -213,42 +209,49 @@ export class AccountComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialog.closed);
 
     if (result === DeleteOrganizationDialogResult.Deleted) {
+      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.router.navigate(["/"]);
     }
   }
 
-  async purgeVault() {
-    await this.modalService.openViewRef(PurgeVaultComponent, this.purgeModalRef, (comp) => {
-      comp.organizationId = this.organizationId;
+  purgeVault = async () => {
+    const dialogRef = PurgeVaultComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organizationId,
+      },
     });
-  }
+    await lastValueFrom(dialogRef.closed);
+  };
 
   async viewApiKey() {
-    await this.modalService.openViewRef(ApiKeyComponent, this.apiKeyModalRef, (comp) => {
-      comp.keyType = "organization";
-      comp.entityId = this.organizationId;
-      comp.postKey = this.organizationApiService.getOrCreateApiKey.bind(
-        this.organizationApiService,
-      );
-      comp.scope = "api.organization";
-      comp.grantType = "client_credentials";
-      comp.apiKeyTitle = "apiKey";
-      comp.apiKeyWarning = "apiKeyWarning";
-      comp.apiKeyDescription = "apiKeyDesc";
+    await ApiKeyComponent.open(this.dialogService, {
+      data: {
+        keyType: "organization",
+        entityId: this.organizationId,
+        postKey: this.organizationApiService.getOrCreateApiKey.bind(this.organizationApiService),
+        scope: "api.organization",
+        grantType: "client_credentials",
+        apiKeyTitle: "apiKey",
+        apiKeyWarning: "apiKeyWarning",
+        apiKeyDescription: "apiKeyDesc",
+      },
     });
   }
 
   async rotateApiKey() {
-    await this.modalService.openViewRef(ApiKeyComponent, this.rotateApiKeyModalRef, (comp) => {
-      comp.keyType = "organization";
-      comp.isRotation = true;
-      comp.entityId = this.organizationId;
-      comp.postKey = this.organizationApiService.rotateApiKey.bind(this.organizationApiService);
-      comp.scope = "api.organization";
-      comp.grantType = "client_credentials";
-      comp.apiKeyTitle = "apiKey";
-      comp.apiKeyWarning = "apiKeyWarning";
-      comp.apiKeyDescription = "apiKeyRotateDesc";
+    await ApiKeyComponent.open(this.dialogService, {
+      data: {
+        keyType: "organization",
+        isRotation: true,
+        entityId: this.organizationId,
+        postKey: this.organizationApiService.rotateApiKey.bind(this.organizationApiService),
+        scope: "api.organization",
+        grantType: "client_credentials",
+        apiKeyTitle: "apiKey",
+        apiKeyWarning: "apiKeyWarning",
+        apiKeyDescription: "apiKeyRotateDesc",
+      },
     });
   }
 }

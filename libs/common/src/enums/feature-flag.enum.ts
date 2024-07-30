@@ -1,17 +1,73 @@
+/**
+ * Feature flags.
+ *
+ * Flags MUST be short lived and SHALL be removed once enabled.
+ */
 export enum FeatureFlag {
-  DisplayLowKdfIterationWarningFlag = "display-kdf-iteration-warning",
-  Fido2VaultCredentials = "fido2-vault-credentials",
-  TrustedDeviceEncryption = "trusted-device-encryption",
-  PasswordlessLogin = "passwordless-login",
-  AutofillV2 = "autofill-v2",
-  AutofillOverlay = "autofill-overlay",
   BrowserFilelessImport = "browser-fileless-import",
   ItemShare = "item-share",
-  FlexibleCollections = "flexible-collections",
   FlexibleCollectionsV1 = "flexible-collections-v-1", // v-1 is intentional
-  BulkCollectionAccess = "bulk-collection-access",
-  KeyRotationImprovements = "key-rotation-improvements",
+  GeneratorToolsModernization = "generator-tools-modernization",
+  ShowPaymentMethodWarningBanners = "show-payment-method-warning-banners",
+  EnableConsolidatedBilling = "enable-consolidated-billing",
+  AC1795_UpdatedSubscriptionStatusSection = "AC-1795_updated-subscription-status-section",
+  EnableDeleteProvider = "AC-1218-delete-provider",
+  ExtensionRefresh = "extension-refresh",
+  RestrictProviderAccess = "restrict-provider-access",
+  PM4154_BulkEncryptionService = "PM-4154-bulk-encryption-service",
+  UseTreeWalkerApiForPageDetailsCollection = "use-tree-walker-api-for-page-details-collection",
+  EmailVerification = "email-verification",
+  InlineMenuFieldQualification = "inline-menu-field-qualification",
+  MemberAccessReport = "ac-2059-member-access-report",
+  TwoFactorComponentRefactor = "two-factor-component-refactor",
+  EnableTimeThreshold = "PM-5864-dollar-threshold",
+  InlineMenuPositioningImprovements = "inline-menu-positioning-improvements",
+  ProviderClientVaultPrivacyBanner = "ac-2833-provider-client-vault-privacy-banner",
+  VaultBulkManagementAction = "vault-bulk-management-action",
+  AC2828_ProviderPortalMembersPage = "AC-2828_provider-portal-members-page",
+  DeviceTrustLogging = "pm-8285-device-trust-logging",
+  AuthenticatorTwoFactorToken = "authenticator-2fa-token",
+  EnableUpgradePasswordManagerSub = "AC-2708-upgrade-password-manager-sub",
 }
 
-// Replace this with a type safe lookup of the feature flag values in PM-2282
-export type FeatureFlagValue = number | string | boolean;
+export type AllowedFeatureFlagTypes = boolean | number | string;
+
+// Helper to ensure the value is treated as a boolean.
+const FALSE = false as boolean;
+
+/**
+ * Default value for feature flags.
+ *
+ * DO NOT enable previously disabled flags, REMOVE them instead.
+ * We support true as a value as we prefer flags to "enable" not "disable".
+ */
+export const DefaultFeatureFlagValue = {
+  [FeatureFlag.BrowserFilelessImport]: FALSE,
+  [FeatureFlag.ItemShare]: FALSE,
+  [FeatureFlag.FlexibleCollectionsV1]: FALSE,
+  [FeatureFlag.GeneratorToolsModernization]: FALSE,
+  [FeatureFlag.ShowPaymentMethodWarningBanners]: FALSE,
+  [FeatureFlag.EnableConsolidatedBilling]: FALSE,
+  [FeatureFlag.AC1795_UpdatedSubscriptionStatusSection]: FALSE,
+  [FeatureFlag.EnableDeleteProvider]: FALSE,
+  [FeatureFlag.ExtensionRefresh]: FALSE,
+  [FeatureFlag.RestrictProviderAccess]: FALSE,
+  [FeatureFlag.PM4154_BulkEncryptionService]: FALSE,
+  [FeatureFlag.UseTreeWalkerApiForPageDetailsCollection]: FALSE,
+  [FeatureFlag.EmailVerification]: FALSE,
+  [FeatureFlag.InlineMenuFieldQualification]: FALSE,
+  [FeatureFlag.MemberAccessReport]: FALSE,
+  [FeatureFlag.TwoFactorComponentRefactor]: FALSE,
+  [FeatureFlag.EnableTimeThreshold]: FALSE,
+  [FeatureFlag.InlineMenuPositioningImprovements]: FALSE,
+  [FeatureFlag.ProviderClientVaultPrivacyBanner]: FALSE,
+  [FeatureFlag.VaultBulkManagementAction]: FALSE,
+  [FeatureFlag.AC2828_ProviderPortalMembersPage]: FALSE,
+  [FeatureFlag.DeviceTrustLogging]: FALSE,
+  [FeatureFlag.AuthenticatorTwoFactorToken]: FALSE,
+  [FeatureFlag.EnableUpgradePasswordManagerSub]: FALSE,
+} satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
+
+export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
+
+export type FeatureFlagValueType<Flag extends FeatureFlag> = DefaultFeatureFlagValueType[Flag];

@@ -1,12 +1,19 @@
 export class AutoFillConstants {
-  static readonly UsernameFieldNames: string[] = [
+  static readonly EmailFieldNames: string[] = [
     // English
-    "username",
-    "user name",
     "email",
     "email address",
     "e-mail",
     "e-mail address",
+    // German
+    "email adresse",
+    "e-mail adresse",
+  ];
+
+  static readonly UsernameFieldNames: string[] = [
+    // English
+    "username",
+    "user name",
     "userid",
     "user id",
     "customer id",
@@ -15,10 +22,9 @@ export class AutoFillConstants {
     // German
     "benutzername",
     "benutzer name",
-    "email adresse",
-    "e-mail adresse",
     "benutzerid",
     "benutzer id",
+    ...AutoFillConstants.EmailFieldNames,
   ];
 
   static readonly TotpFieldNames: string[] = [
@@ -42,22 +48,33 @@ export class AutoFillConstants {
     "verificationCode",
   ];
 
-  static readonly PasswordFieldIgnoreList: string[] = [
+  static readonly SearchFieldNames: string[] = ["search", "query", "find", "go"];
+
+  static readonly FieldIgnoreList: string[] = ["captcha", "findanything", "forgot"];
+
+  static readonly PasswordFieldExcludeList: string[] = [
+    ...AutoFillConstants.FieldIgnoreList,
     "onetimepassword",
-    "captcha",
-    "findanything",
-    "forgot",
   ];
 
-  static readonly ExcludedAutofillTypes: string[] = [
-    "radio",
-    "checkbox",
+  static readonly ExcludedAutofillLoginTypes: string[] = [
     "hidden",
     "file",
     "button",
     "image",
     "reset",
     "search",
+  ];
+
+  static readonly ExcludedAutofillTypes: string[] = [
+    "radio",
+    "checkbox",
+    ...AutoFillConstants.ExcludedAutofillLoginTypes,
+  ];
+
+  static readonly ExcludedInlineMenuTypes: string[] = [
+    "textarea",
+    ...AutoFillConstants.ExcludedAutofillTypes,
   ];
 }
 

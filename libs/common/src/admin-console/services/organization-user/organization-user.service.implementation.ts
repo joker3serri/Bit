@@ -9,7 +9,6 @@ import {
   OrganizationUserInviteRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
-  OrganizationUserUpdateGroupsRequest,
   OrganizationUserUpdateRequest,
 } from "../../abstractions/organization-user/requests";
 import {
@@ -97,6 +96,20 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true,
     );
     return new OrganizationUserResetPasswordDetailsResponse(r);
+  }
+
+  async getManyOrganizationUserAccountRecoveryDetails(
+    organizationId: string,
+    ids: string[],
+  ): Promise<ListResponse<OrganizationUserResetPasswordDetailsResponse>> {
+    const r = await this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/account-recovery-details",
+      new OrganizationUserBulkRequest(ids),
+      true,
+      true,
+    );
+    return new ListResponse(r, OrganizationUserResetPasswordDetailsResponse);
   }
 
   postOrganizationUserInvite(
@@ -227,20 +240,6 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
     return this.apiService.send(
       "PUT",
       "/organizations/" + organizationId + "/users/" + id,
-      request,
-      true,
-      false,
-    );
-  }
-
-  putOrganizationUserGroups(
-    organizationId: string,
-    id: string,
-    request: OrganizationUserUpdateGroupsRequest,
-  ): Promise<void> {
-    return this.apiService.send(
-      "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/groups",
       request,
       true,
       false,

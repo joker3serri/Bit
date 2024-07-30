@@ -1,16 +1,26 @@
+import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
+import {
+  DialogService,
+  SimpleDialogOptions,
+  BreadcrumbsModule,
+  MenuModule,
+  SearchModule,
+} from "@bitwarden/components";
 
+import { HeaderModule } from "../../../layouts/header/header.module";
+import { SharedModule } from "../../../shared";
 import { CollectionAdminView } from "../../../vault/core/views/collection-admin.view";
 import { CollectionDialogTabType } from "../../components/collection-dialog";
 import { CollectionAdminService } from "../../core/collection-admin.service";
@@ -21,8 +31,18 @@ import {
 } from "../../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
 
 @Component({
+  standalone: true,
   selector: "app-org-vault-header",
   templateUrl: "./vault-header.component.html",
+  imports: [
+    CommonModule,
+    MenuModule,
+    SharedModule,
+    BreadcrumbsModule,
+    HeaderModule,
+    SearchModule,
+    JslibModule,
+  ],
 })
 export class VaultHeaderComponent implements OnInit {
   protected All = All;
@@ -43,6 +63,9 @@ export class VaultHeaderComponent implements OnInit {
   /** Currently selected collection */
   @Input() collection?: TreeNode<CollectionAdminView>;
 
+  /** The current search text in the header */
+  @Input() searchText: string;
+
   /** Emits an event when the new item button is clicked in the header */
   @Output() onAddCipher = new EventEmitter<void>();
 
@@ -50,15 +73,22 @@ export class VaultHeaderComponent implements OnInit {
   @Output() onAddCollection = new EventEmitter<void>();
 
   /** Emits an event when the edit collection button is clicked in the header */
-  @Output() onEditCollection = new EventEmitter<{ tab: CollectionDialogTabType }>();
+  @Output() onEditCollection = new EventEmitter<{
+    tab: CollectionDialogTabType;
+    readonly: boolean;
+  }>();
 
   /** Emits an event when the delete collection button is clicked in the header */
   @Output() onDeleteCollection = new EventEmitter<void>();
 
+  /** Emits an event when the search text changes in the header*/
+  @Output() searchTextChanged = new EventEmitter<string>();
+
   protected CollectionDialogTabType = CollectionDialogTabType;
   protected organizations$ = this.organizationService.organizations$;
 
-  private flexibleCollectionsEnabled: boolean;
+  protected flexibleCollectionsV1Enabled = false;
+  protected restrictProviderAccessFlag = false;
 
   constructor(
     private organizationService: OrganizationService,
@@ -66,17 +96,22 @@ export class VaultHeaderComponent implements OnInit {
     private dialogService: DialogService,
     private collectionAdminService: CollectionAdminService,
     private router: Router,
-    private configService: ConfigServiceAbstraction,
+    private configService: ConfigService,
   ) {}
 
   async ngOnInit() {
-    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
+    this.flexibleCollectionsV1Enabled = await firstValueFrom(
+      this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1),
+    );
+    this.restrictProviderAccessFlag = await this.configService.getFeatureFlag(
+      FeatureFlag.RestrictProviderAccess,
     );
   }
 
   get title() {
-    if (this.collection !== undefined) {
+    const headerType = this.i18nService.t("collections").toLowerCase();
+
+    if (this.collection != null) {
       return this.collection.node.name;
     }
 
@@ -84,7 +119,11 @@ export class VaultHeaderComponent implements OnInit {
       return this.i18nService.t("unassigned");
     }
 
-    return `${this.organization.name} ${this.i18nService.t("vault").toLowerCase()}`;
+    return `${this.organization?.name} ${headerType}`;
+  }
+
+  get icon() {
+    return this.filter.collectionId !== undefined ? "bwi-collection" : "";
   }
 
   protected get showBreadcrumbs() {
@@ -132,12 +171,16 @@ export class VaultHeaderComponent implements OnInit {
 
     const simpleDialog = this.dialogService.openSimpleDialogRef(orgUpgradeSimpleDialogOpts);
 
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     firstValueFrom(simpleDialog.closed).then((result: boolean | undefined) => {
       if (!result) {
         return;
       }
 
       if (result && this.organization.canEditSubscription) {
+        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
           queryParams: { upgrade: true },
         });
@@ -152,7 +195,7 @@ export class VaultHeaderComponent implements OnInit {
     }
 
     // Otherwise, check if we can edit the specified collection
-    return this.collection.node.canEdit(this.organization, this.flexibleCollectionsEnabled);
+    return this.collection.node.canEdit(this.organization, this.flexibleCollectionsV1Enabled);
   }
 
   addCipher() {
@@ -160,7 +203,7 @@ export class VaultHeaderComponent implements OnInit {
   }
 
   async addCollection() {
-    if (this.organization.planProductType === ProductType.Free) {
+    if (this.organization.productTierType === ProductTierType.Free) {
       const collections = await this.collectionAdminService.getAll(this.organization.id);
       if (collections.length === this.organization.maxCollections) {
         this.showFreeOrgUpgradeDialog();
@@ -171,8 +214,8 @@ export class VaultHeaderComponent implements OnInit {
     this.onAddCollection.emit();
   }
 
-  async editCollection(tab: CollectionDialogTabType): Promise<void> {
-    this.onEditCollection.emit({ tab });
+  async editCollection(tab: CollectionDialogTabType, readonly: boolean): Promise<void> {
+    this.onEditCollection.emit({ tab, readonly });
   }
 
   get canDeleteCollection(): boolean {
@@ -182,10 +225,37 @@ export class VaultHeaderComponent implements OnInit {
     }
 
     // Otherwise, check if we can delete the specified collection
-    return this.collection.node.canDelete(this.organization, this.flexibleCollectionsEnabled);
+    return this.collection.node.canDelete(this.organization, this.flexibleCollectionsV1Enabled);
+  }
+
+  get canViewCollectionInfo(): boolean {
+    return this.collection.node.canViewCollectionInfo(
+      this.organization,
+      this.flexibleCollectionsV1Enabled,
+    );
+  }
+
+  get canCreateCollection(): boolean {
+    return this.organization?.canCreateNewCollections;
+  }
+
+  get canCreateCipher(): boolean {
+    if (
+      this.organization?.isProviderUser &&
+      this.restrictProviderAccessFlag &&
+      !this.organization?.isMember
+    ) {
+      return false;
+    }
+    return true;
   }
 
   deleteCollection() {
     this.onDeleteCollection.emit();
+  }
+
+  onSearchTextChanged(t: string) {
+    this.searchText = t;
+    this.searchTextChanged.emit(t);
   }
 }

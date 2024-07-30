@@ -6,8 +6,6 @@ import { combineLatest, of, Subject, switchMap, takeUntil } from "rxjs";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
@@ -44,11 +42,6 @@ export enum BulkCollectionsDialogResult {
   standalone: true,
 })
 export class BulkCollectionsDialogComponent implements OnDestroy {
-  protected flexibleCollectionsEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.FlexibleCollections,
-    false,
-  );
-
   protected readonly PermissionMode = PermissionMode;
 
   protected formGroup = this.formBuilder.group({
@@ -71,7 +64,6 @@ export class BulkCollectionsDialogComponent implements OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private collectionAdminService: CollectionAdminService,
-    private configService: ConfigServiceAbstraction,
   ) {
     this.numCollections = this.params.collections.length;
     const organization$ = this.organizationService.get$(this.params.organizationId);

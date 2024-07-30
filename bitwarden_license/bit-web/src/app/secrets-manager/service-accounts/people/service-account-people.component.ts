@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { catchError, combineLatest, EMPTY, Subject, switchMap, takeUntil } from "rxjs";
+import { combineLatest, Subject, switchMap, takeUntil } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -11,7 +11,7 @@ import { DialogService } from "@bitwarden/components";
 import { AccessPolicySelectorService } from "../../shared/access-policies/access-policy-selector/access-policy-selector.service";
 import {
   ApItemValueType,
-  convertToServiceAccountPeopleAccessPoliciesView,
+  convertToPeopleAccessPoliciesView,
 } from "../../shared/access-policies/access-policy-selector/models/ap-item-value.type";
 import {
   ApItemViewType,
@@ -40,10 +40,6 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
           return convertToAccessPolicyItemViews(policies);
         }),
     ),
-    catchError(() => {
-      this.router.navigate(["/sm", this.organizationId, "service-accounts"]);
-      return EMPTY;
-    }),
   );
 
   private potentialGrantees$ = combineLatest([this.route.params]).pipe(
@@ -99,29 +95,32 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     if (this.isFormInvalid()) {
       return;
     }
+    const formValues = this.formGroup.value.accessPolicies;
+    this.formGroup.disable();
 
     const showAccessRemovalWarning =
       await this.accessPolicySelectorService.showAccessRemovalWarning(
         this.organizationId,
-        this.formGroup.value.accessPolicies,
+        formValues,
       );
 
     if (
       await this.handleAccessRemovalWarning(showAccessRemovalWarning, this.currentAccessPolicies)
     ) {
+      this.formGroup.enable();
       return;
     }
 
     try {
       const peoplePoliciesViews = await this.updateServiceAccountPeopleAccessPolicies(
         this.serviceAccountId,
-        this.formGroup.value.accessPolicies,
+        formValues,
       );
 
       await this.handleAccessTokenAvailableWarning(
         showAccessRemovalWarning,
         this.currentAccessPolicies,
-        this.formGroup.value.accessPolicies,
+        formValues,
       );
 
       this.currentAccessPolicies = convertToAccessPolicyItemViews(peoplePoliciesViews);
@@ -129,12 +128,13 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("serviceAccountAccessUpdated"),
+        this.i18nService.t("machineAccountAccessUpdated"),
       );
     } catch (e) {
       this.validationService.showError(e);
       this.setSelected(this.currentAccessPolicies);
     }
+    this.formGroup.enable();
   };
 
   private setSelected(policiesToSelect: ApItemViewType[]) {
@@ -180,10 +180,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     serviceAccountId: string,
     selectedPolicies: ApItemValueType[],
   ) {
-    const serviceAccountPeopleView = convertToServiceAccountPeopleAccessPoliciesView(
-      serviceAccountId,
-      selectedPolicies,
-    );
+    const serviceAccountPeopleView = convertToPeopleAccessPoliciesView(selectedPolicies);
     return await this.accessPolicyService.putServiceAccountPeopleAccessPolicies(
       serviceAccountId,
       serviceAccountPeopleView,
@@ -196,7 +193,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
     selectedPolicies: ApItemValueType[],
   ): Promise<void> {
     if (showAccessRemovalWarning) {
-      this.router.navigate(["sm", this.organizationId, "service-accounts"]);
+      await this.router.navigate(["sm", this.organizationId, "machine-accounts"]);
     } else if (
       this.accessPolicySelectorService.isAccessRemoval(currentAccessPolicies, selectedPolicies)
     ) {
@@ -206,8 +203,8 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
 
   private async showWarning(): Promise<boolean> {
     const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "smAccessRemovalWarningSaTitle" },
-      content: { key: "smAccessRemovalWarningSaMessage" },
+      title: { key: "smAccessRemovalWarningMaTitle" },
+      content: { key: "smAccessRemovalWarningMaMessage" },
       acceptButtonText: { key: "removeAccess" },
       cancelButtonText: { key: "cancel" },
       type: "warning",
@@ -218,7 +215,7 @@ export class ServiceAccountPeopleComponent implements OnInit, OnDestroy {
   private async showAccessTokenStillAvailableWarning(): Promise<void> {
     await this.dialogService.openSimpleDialog({
       title: { key: "saPeopleWarningTitle" },
-      content: { key: "saPeopleWarningMessage" },
+      content: { key: "maPeopleWarningMessage" },
       type: "warning",
       acceptButtonText: { key: "close" },
       cancelButtonText: null,

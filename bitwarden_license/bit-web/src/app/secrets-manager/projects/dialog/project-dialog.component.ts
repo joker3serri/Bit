@@ -82,7 +82,7 @@ export class ProjectDialogComponent implements OnInit {
     const projectView = this.getProjectView();
     if (this.data.operation === OperationType.Add) {
       const newProject = await this.createProject(projectView);
-      this.router.navigate(["sm", this.data.organizationId, "projects", newProject.id]);
+      await this.router.navigate(["sm", this.data.organizationId, "projects", newProject.id]);
     } else {
       projectView.id = this.data.projectId;
       await this.updateProject(projectView);

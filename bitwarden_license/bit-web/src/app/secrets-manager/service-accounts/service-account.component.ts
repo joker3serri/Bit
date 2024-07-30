@@ -1,15 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  EMPTY,
-  Subject,
-  catchError,
-  combineLatest,
-  filter,
-  startWith,
-  switchMap,
-  takeUntil,
-} from "rxjs";
+import { Subject, combineLatest, filter, startWith, switchMap, takeUntil } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -42,16 +33,6 @@ export class ServiceAccountComponent implements OnInit, OnDestroy {
         params.organizationId,
       ),
     ),
-    catchError(() => {
-      this.router.navigate(["/sm", this.organizationId, "service-accounts"]).then(() => {
-        this.platformUtilsService.showToast(
-          "error",
-          null,
-          this.i18nService.t("notFound", this.i18nService.t("serviceAccount")),
-        );
-      });
-      return EMPTY;
-    }),
   );
 
   constructor(

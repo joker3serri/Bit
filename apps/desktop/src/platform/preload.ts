@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 
 import { DeviceType } from "@bitwarden/common/enums";
-import { ThemeType, KeySuffixOptions } from "@bitwarden/common/platform/enums";
+import { ThemeType, KeySuffixOptions, LogLevelType } from "@bitwarden/common/platform/enums";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
 import {
@@ -11,7 +11,7 @@ import {
   UnencryptedMessageResponse,
 } from "../models/native-messaging";
 import { BiometricMessage, BiometricAction } from "../types/biometric-message";
-import { isDev, isWindowsStore } from "../utils";
+import { isDev, isMacAppStore, isWindowsStore } from "../utils";
 
 import { ClipboardWriteMessage } from "./types/clipboard";
 
@@ -59,6 +59,11 @@ const clipboard = {
   write: (message: ClipboardWriteMessage) => ipcRenderer.invoke("clipboard.write", message),
 };
 
+const powermonitor = {
+  isLockMonitorAvailable: (): Promise<boolean> =>
+    ipcRenderer.invoke("powermonitor.isLockMonitorAvailable"),
+};
+
 const nativeMessaging = {
   sendReply: (message: EncryptedMessageResponse | UnencryptedMessageResponse) => {
     ipcRenderer.send("nativeMessagingReply", message);
@@ -74,6 +79,24 @@ const nativeMessaging = {
   onMessage: (callback: (message: LegacyMessageWrapper | Message) => void) => {
     ipcRenderer.on("nativeMessaging", (_event, message) => callback(message));
   },
+
+  manifests: {
+    generate: (create: boolean): Promise<Error | null> =>
+      ipcRenderer.invoke("nativeMessaging.manifests", { create }),
+    generateDuckDuckGo: (create: boolean): Promise<Error | null> =>
+      ipcRenderer.invoke("nativeMessaging.ddgManifests", { create }),
+  },
+};
+
+const crypto = {
+  argon2: (
+    password: string | Uint8Array,
+    salt: string | Uint8Array,
+    iterations: number,
+    memory: number,
+    parallelism: number,
+  ): Promise<Uint8Array> =>
+    ipcRenderer.invoke("crypto.argon2", { password, salt, iterations, memory, parallelism }),
 };
 
 export default {
@@ -82,8 +105,11 @@ export default {
   },
   deviceType: deviceType(),
   isDev: isDev(),
+  isMacAppStore: isMacAppStore(),
   isWindowsStore: isWindowsStore(),
   reloadProcess: () => ipcRenderer.send("reload-process"),
+  log: (level: LogLevelType, message?: any, ...optionalParams: any[]) =>
+    ipcRenderer.invoke("ipc.log", { level, message, optionalParams }),
 
   openContextMenu: (
     menu: {
@@ -104,12 +130,21 @@ export default {
 
   sendMessage: (message: { command: string } & any) =>
     ipcRenderer.send("messagingService", message),
-  onMessage: (callback: (message: { command: string } & any) => void) => {
-    ipcRenderer.on("messagingService", (_event, message: any) => {
-      if (message.command) {
-        callback(message);
-      }
-    });
+  onMessage: {
+    addListener: (callback: (message: { command: string } & any) => void) => {
+      ipcRenderer.addListener("messagingService", (_event, message: any) => {
+        if (message.command) {
+          callback(message);
+        }
+      });
+    },
+    removeListener: (callback: (message: { command: string } & any) => void) => {
+      ipcRenderer.removeListener("messagingService", (_event, message: any) => {
+        if (message.command) {
+          callback(message);
+        }
+      });
+    },
   },
 
   launchUri: (uri: string) => ipcRenderer.invoke("launchUri", uri),
@@ -118,7 +153,9 @@ export default {
   passwords,
   biometric,
   clipboard,
+  powermonitor,
   nativeMessaging,
+  crypto,
 };
 
 function deviceType(): DeviceType {

@@ -86,8 +86,7 @@ export class EditCommand {
     cipherView = CipherExport.toView(req, cipherView);
     const encCipher = await this.cipherService.encrypt(cipherView);
     try {
-      await this.cipherService.updateWithServer(encCipher);
-      const updatedCipher = await this.cipherService.get(cipher.id);
+      const updatedCipher = await this.cipherService.updateWithServer(encCipher);
       const decCipher = await updatedCipher.decrypt(
         await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher),
       );
@@ -111,8 +110,7 @@ export class EditCommand {
 
     cipher.collectionIds = req;
     try {
-      await this.cipherService.saveCollectionsWithServer(cipher);
-      const updatedCipher = await this.cipherService.get(cipher.id);
+      const updatedCipher = await this.cipherService.saveCollectionsWithServer(cipher);
       const decCipher = await updatedCipher.decrypt(
         await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher),
       );
@@ -172,14 +170,21 @@ export class EditCommand {
           : req.groups.map(
               (g) => new SelectionReadOnlyRequest(g.id, g.readOnly, g.hidePasswords, g.manage),
             );
+      const users =
+        req.users == null
+          ? null
+          : req.users.map(
+              (u) => new SelectionReadOnlyRequest(u.id, u.readOnly, u.hidePasswords, u.manage),
+            );
       const request = new CollectionRequest();
       request.name = (await this.cryptoService.encrypt(req.name, orgKey)).encryptedString;
       request.externalId = req.externalId;
       request.groups = groups;
+      request.users = users;
       const response = await this.apiService.putCollection(req.organizationId, id, request);
       const view = CollectionExport.toView(req);
       view.id = response.id;
-      const res = new OrganizationCollectionResponse(view, groups);
+      const res = new OrganizationCollectionResponse(view, groups, users);
       return Response.success(res);
     } catch (e) {
       return Response.error(e);
