@@ -500,7 +500,7 @@ export class CipherService implements CipherServiceAbstraction {
     });
   }
 
-  async getAllDecryptedCiphersOfType(type: CipherType[]): Promise<CipherView[]> {
+  private async getAllDecryptedCiphersOfType(type: CipherType[]): Promise<CipherView[]> {
     const ciphers = await this.getAllDecrypted();
     return ciphers
       .filter((cipher) => cipher.deletedDate == null && type.includes(cipher.type))
