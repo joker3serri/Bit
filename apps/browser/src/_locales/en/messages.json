@@ -415,7 +415,7 @@
     "message": "Item added to favorites"
   },
   "itemRemovedFromFavorites": {
-      "message": "Item removed from favorites"
+    "message": "Item removed from favorites"
   },
   "notes": {
     "message": "Notes"
@@ -1967,6 +1967,12 @@
   "nativeMessagingWrongUserTitle": {
     "message": "Account missmatch"
   },
+  "nativeMessagingWrongUserKeyDesc": {
+    "message": "Biometric unlock failed. The biometric secret key failed to unlock the vault. Please try to set up biometrics again."
+  },
+  "nativeMessagingWrongUserKeyTitle": {
+    "message": "Biometric key missmatch"
+  },
   "biometricsNotEnabledTitle": {
     "message": "Biometrics not set up"
   },
@@ -3491,7 +3497,7 @@
     "message": "Auto-fill suggestions"
   },
   "autofillSuggestionsTip": {
-      "message": "Save a login item for this site to auto-fill"
+    "message": "Save a login item for this site to auto-fill"
   },
   "yourVaultIsEmpty": {
     "message": "Your vault is empty"

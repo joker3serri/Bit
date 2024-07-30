@@ -1037,6 +1037,7 @@ export default class MainBackground {
         this.logService,
         this.authService,
         this.biometricStateService,
+        this.accountService,
       );
       this.commandsBackground = new CommandsBackground(
         this,
