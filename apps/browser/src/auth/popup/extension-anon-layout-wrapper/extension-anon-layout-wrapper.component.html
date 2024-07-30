@@ -1,0 +1,23 @@
+<popup-page>
+  <popup-header [background]="'alt'" [showBackButton]="showBackButton" [pageTitle]="null">
+    <!-- new, simple bitwarden logo component or just plain HTML -->
+    <!-- <bitwarden-logo *ngIf="showLogo"></bitwarden-logo> -->
+    <div>Bitwarden</div>
+    <div slot="end">
+      <app-pop-out></app-pop-out>
+      <app-current-account *ngIf="showAcctSwitcher"></app-current-account>
+    </div>
+  </popup-header>
+
+  <auth-anon-layout
+    [title]="pageTitle"
+    [subtitle]="pageSubtitle"
+    [icon]="pageIcon"
+    [showReadonlyHostname]="showReadonlyHostname"
+    [hideLogo]="true"
+  >
+    <router-outlet></router-outlet>
+    <router-outlet slot="secondary" name="secondary"></router-outlet>
+    <router-outlet slot="environment-selector" name="environment-selector"></router-outlet>
+  </auth-anon-layout>
+</popup-page>

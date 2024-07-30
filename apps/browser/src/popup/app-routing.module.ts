@@ -24,6 +24,7 @@ import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-fa
 import { fido2AuthGuard } from "../auth/guards/fido2-auth.guard";
 import { AccountSwitcherComponent } from "../auth/popup/account-switching/account-switcher.component";
 import { EnvironmentComponent } from "../auth/popup/environment.component";
+import { ExtensionAnonLayoutWrapperComponent } from "../auth/popup/extension-anon-layout-wrapper/extension-anon-layout-wrapper.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
 import { LockComponent } from "../auth/popup/lock.component";
@@ -375,7 +376,7 @@ const routes: Routes = [
   },
   {
     path: "",
-    component: AnonLayoutWrapperComponent,
+    component: ExtensionAnonLayoutWrapperComponent,
     children: [
       {
         path: "signup",
