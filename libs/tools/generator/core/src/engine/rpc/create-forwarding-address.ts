@@ -30,7 +30,7 @@ export class CreateForwardingAddressRpc<
       headers: new Headers({
         ...token,
         "Content-Type": "application/json",
-        Accept: "application/json, text/plain;q=0.9",
+        Accept: "application/json",
       }),
       body,
     });
