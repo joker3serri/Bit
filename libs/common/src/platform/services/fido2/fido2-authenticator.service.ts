@@ -234,18 +234,8 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
-      const cipherContainsMasterPasswordReprompt = cipherOptions.some(
-        (cipher) => cipher.reprompt !== CipherRepromptType.None,
-      );
-
       let response;
-      if (
-        params.requireUserVerification ||
-        !params.assumeUserPresence ||
-        cipherOptions.length > 1 ||
-        cipherOptions.length === 0 ||
-        cipherContainsMasterPasswordReprompt
-      ) {
+      if (this.requiresUserVerificationPrompt(params, cipherOptions)) {
         response = await userInterfaceSession.pickCredential({
           cipherIds: cipherOptions.map((cipher) => cipher.id),
           userVerification: params.requireUserVerification,
@@ -323,6 +313,19 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
     } finally {
       userInterfaceSession.close();
     }
+  }
+
+  private requiresUserVerificationPrompt(
+    params: Fido2AuthenticatorGetAssertionParams,
+    cipherOptions: CipherView[],
+  ): boolean {
+    return (
+      params.requireUserVerification ||
+      !params.assumeUserPresence ||
+      cipherOptions.length > 1 ||
+      cipherOptions.length === 0 ||
+      cipherOptions.some((cipher) => cipher.reprompt !== CipherRepromptType.None)
+    );
   }
 
   async silentCredentialDiscovery(rpId: string): Promise<Fido2CredentialView[]> {
