@@ -380,6 +380,7 @@ export class NativeMessagingBackground {
                 if (this.resolver) {
                   this.resolver(message);
                 }
+                return;
               }
             } else {
               throw new Error("No key received");
