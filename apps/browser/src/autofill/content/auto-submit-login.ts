@@ -156,6 +156,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
     let currentElement = collectAutofillContentService.getAutofillFieldElementByOpid(
       fillScript.script[fillScript.script.length - 1][1],
     );
+
     const lastFieldIsPasswordInput =
       elementIsInputElement(currentElement) && currentElement.type === "password";
 
@@ -173,6 +174,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
     }
 
     if (!currentElement || currentElement.tagName === "HTML") {
+      endUpAutoSubmitLoginWorkflow();
       throw new Error("Unable to auto-submit form, no submit button or form element found.");
     }
   }

@@ -6,9 +6,11 @@ import {
   createAutofillScriptMock,
 } from "../spec/autofill-mocks";
 import { flushPromises, sendMockExtensionMessage } from "../spec/testing-utils";
+import { FormFieldElement } from "../types";
 
 let pageDetailsMock: AutofillPageDetails;
 let fillScriptMock: AutofillScript;
+let autofillFieldElementByOpidMock: FormFieldElement;
 
 jest.mock("../services/collect-autofill-content.service", () => {
   const module = jest.requireActual("../services/collect-autofill-content.service");
@@ -20,6 +22,18 @@ jest.mock("../services/collect-autofill-content.service", () => {
 
       deepQueryElements<T>(element: HTMLElement, queryString: string): T[] {
         return Array.from(element.querySelectorAll(queryString)) as T[];
+      }
+
+      getAutofillFieldElementByOpid(opid: string) {
+        const mockedEl = autofillFieldElementByOpidMock;
+        if (mockedEl) {
+          autofillFieldElementByOpidMock = null;
+          return mockedEl;
+        }
+
+        return Array.from(document.querySelectorAll(`*`)).find(
+          (el) => (el as any).opid === opid,
+        ) as FormFieldElement;
       }
     },
   };
@@ -102,15 +116,48 @@ describe("AutoSubmitLogin content script", () => {
             <input type="submit" value="Submit">
           </div>
         `;
+        const passwordElement = document.getElementById("password") as HTMLInputElement;
+        (passwordElement as any).opid = "password-field";
         await initAutoSubmitWorkflow();
       });
 
-      it("fills the fields and triggers the submit action on an element that contains a type=Submit attribute", async () => {
-        const passwordElement = document.getElementById("password") as HTMLInputElement;
-        (passwordElement as any).opid = "password-field";
+      it("triggers the submit action on an element that contains a type=Submit attribute", async () => {
         const submitButton = document.querySelector(
           ".submit-container input[type=submit]",
         ) as HTMLInputElement;
+        jest.spyOn(submitButton, "click");
+
+        sendMockExtensionMessage({
+          command: "triggerAutoSubmitLogin",
+          fillScript: fillScriptMock,
+          pageDetailsUrl: globalThis.location.href,
+        });
+        await flushPromises();
+
+        expect(submitButton.click).toHaveBeenCalled();
+      });
+
+      it("triggers the submit action on a button element if a type=Submit element does not exist", async () => {
+        const submitButton = document.createElement("button");
+        submitButton.innerHTML = "Submit";
+        const submitContainer = document.querySelector(".submit-container");
+        submitContainer.innerHTML = "";
+        submitContainer.appendChild(submitButton);
+        jest.spyOn(submitButton, "click");
+
+        sendMockExtensionMessage({
+          command: "triggerAutoSubmitLogin",
+          fillScript: fillScriptMock,
+          pageDetailsUrl: globalThis.location.href,
+        });
+        await flushPromises();
+
+        expect(submitButton.click).toHaveBeenCalled();
+      });
+
+      it("triggers the submit action when the field is within a shadowDOM", async () => {
+        createFormlessShadowRootFields();
+        const submitButton = document.querySelector("input[type=submit]") as HTMLInputElement;
         jest.spyOn(submitButton, "click");
 
         sendMockExtensionMessage({
@@ -137,4 +184,28 @@ function setupEnvironmentDefaults() {
 async function initAutoSubmitWorkflow() {
   jest.advanceTimersByTime(250);
   await flushPromises();
+}
+
+function createFormlessShadowRootFields() {
+  document.body.innerHTML = ``;
+  const wrapper = document.createElement("div");
+  const usernameShadowRoot = document.createElement("div");
+  usernameShadowRoot.attachShadow({ mode: "open" });
+  usernameShadowRoot.shadowRoot.innerHTML = `<input type="text" id="username" name="username">`;
+  const passwordShadowRoot = document.createElement("div");
+  passwordShadowRoot.attachShadow({ mode: "open" });
+  const passwordElement = document.createElement("input");
+  passwordElement.type = "password";
+  passwordElement.id = "password";
+  passwordElement.name = "password";
+  (passwordElement as any).opid = "password-field";
+  autofillFieldElementByOpidMock = passwordElement;
+  passwordShadowRoot.shadowRoot.appendChild(passwordElement);
+  const normalSubmitButton = document.createElement("input");
+  normalSubmitButton.type = "submit";
+
+  wrapper.appendChild(usernameShadowRoot);
+  wrapper.appendChild(passwordShadowRoot);
+  wrapper.appendChild(normalSubmitButton);
+  document.body.appendChild(wrapper);
 }
