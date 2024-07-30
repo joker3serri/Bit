@@ -234,10 +234,11 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
-      let response;
       const cipherContainsMasterPasswordReprompt = cipherOptions.some(
         (cipher) => cipher.reprompt !== CipherRepromptType.None,
       );
+
+      let response;
       if (
         params.requireUserVerification ||
         !params.assumeUserPresence ||
