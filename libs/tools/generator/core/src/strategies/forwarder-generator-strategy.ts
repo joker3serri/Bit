@@ -105,13 +105,12 @@ export class ForwarderGeneratorStrategy<
     );
 
     // the type parameter is explicit because type inference fails for `Omit<Options, "website">`
-    const secretState = SecretState.from<
-      Options,
-      void,
-      Options,
-      Record<keyof Options, never>,
-      Settings
-    >(userId, key, this.stateProvider, encryptor$);
+    const secretState = SecretState.from<Options, void, Options, Record<string, never>, Settings>(
+      userId,
+      key,
+      this.stateProvider,
+      encryptor$,
+    );
 
     // rollover should occur once the user key is available for decryption
     const canDecrypt$ = this.keyService.userKey$(userId).pipe(map((key) => key !== null));
