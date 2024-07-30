@@ -117,6 +117,7 @@ describe("AutoSubmitLoginBackground", () => {
           initiator: validIpdUrl1,
           url: validAutoSubmitUrl,
           type: "main_frame",
+          tabId: 1,
         });
         await autoSubmitLoginBackground.init();
       });
@@ -157,6 +158,14 @@ describe("AutoSubmitLoginBackground", () => {
             tabId: webRequestDetails.tabId,
             url: webRequestDetails.url,
           });
+        });
+
+        it("skips injecting the content script when the routed-to url is invalid", () => {
+          webNavigationDetails.url = "[invalid-host]";
+
+          triggerWebNavigationOnCompletedEvent(webNavigationDetails);
+
+          expect(scriptInjectorService.inject).not.toHaveBeenCalled();
         });
 
         it("skips injecting the content script when the extension is not unlocked", async () => {
@@ -266,6 +275,40 @@ describe("AutoSubmitLoginBackground", () => {
         expect(autoSubmitLoginBackground["mostRecentIdpHost"]).toStrictEqual({
           url: validIpdUrl1,
           tabId: tabId,
+        });
+      });
+
+      describe("requests that occur within a sub-frame", () => {
+        const webRequestDetails = mock<chrome.webRequest.WebRequestBodyDetails>({
+          url: validAutoSubmitUrl,
+          frameId: 1,
+        });
+
+        it("sets the initiator of the request to an empty value when the most recent IDP host has not be set", async () => {
+          jest.spyOn(BrowserApi, "getTabFromCurrentWindow").mockResolvedValue(null);
+          await autoSubmitLoginBackground.init();
+          await flushPromises();
+          autoSubmitLoginBackground["validAutoSubmitHosts"].add(validAutoSubmitHost);
+
+          triggerWebRequestOnBeforeRequestEvent(webRequestDetails);
+
+          expect(chrome.webNavigation.onCompleted.addListener).not.toHaveBeenCalledWith(
+            autoSubmitLoginBackground["handleAutoSubmitHostNavigationCompleted"],
+            { url: [{ hostEquals: validAutoSubmitHost }] },
+          );
+        });
+
+        it("treats the routed to url as the initiator of a request", async () => {
+          await autoSubmitLoginBackground.init();
+          await flushPromises();
+          autoSubmitLoginBackground["validAutoSubmitHosts"].add(validAutoSubmitHost);
+
+          triggerWebRequestOnBeforeRequestEvent(webRequestDetails);
+
+          expect(chrome.webNavigation.onCompleted.addListener).toBeCalledWith(
+            autoSubmitLoginBackground["handleAutoSubmitHostNavigationCompleted"],
+            { url: [{ hostEquals: validAutoSubmitHost }] },
+          );
         });
       });
 
@@ -387,73 +430,73 @@ describe("AutoSubmitLoginBackground", () => {
         });
       });
     });
-  });
 
-  describe("extension message listeners", () => {
-    let sender: chrome.runtime.MessageSender;
+    describe("extension message listeners", () => {
+      let sender: chrome.runtime.MessageSender;
 
-    beforeEach(async () => {
-      await autoSubmitLoginBackground.init();
-      autoSubmitLoginBackground["validAutoSubmitHosts"].add(validAutoSubmitHost);
-      autoSubmitLoginBackground["currentAutoSubmitHostData"] = {
-        url: validAutoSubmitUrl,
-        tabId: 1,
-      };
-      sender = mock<chrome.runtime.MessageSender>({
-        tab: mock<chrome.tabs.Tab>({ id: 1 }),
-        frameId: 0,
-        url: validAutoSubmitUrl,
-      });
-    });
-
-    it("skips acting on messages that do not come from the current auto-fill workflow's tab", () => {
-      sender.tab = mock<chrome.tabs.Tab>({ id: 2 });
-
-      sendMockExtensionMessage({ command: "triggerAutoSubmitLogin" }, sender);
-
-      expect(autofillService.doAutoFillOnTab).not.toHaveBeenCalled;
-    });
-
-    it("skips acting on messages whose command does not have a registered handler", () => {
-      sendMockExtensionMessage({ command: "someInvalidCommand" }, sender);
-
-      expect(autofillService.doAutoFillOnTab).not.toHaveBeenCalled;
-    });
-
-    describe("triggerAutoSubmitLogin extension message", () => {
-      it("triggers an autofill action with auto-submission on the sender of the message", async () => {
-        const message = {
-          command: "triggerAutoSubmitLogin",
-          pageDetails: mock<AutofillPageDetails>(),
+      beforeEach(async () => {
+        await autoSubmitLoginBackground.init();
+        autoSubmitLoginBackground["validAutoSubmitHosts"].add(validAutoSubmitHost);
+        autoSubmitLoginBackground["currentAutoSubmitHostData"] = {
+          url: validAutoSubmitUrl,
+          tabId: 1,
         };
-
-        sendMockExtensionMessage(message, sender);
-        await flushPromises();
-
-        expect(autofillService.doAutoFillOnTab).toBeCalledWith(
-          [
-            {
-              frameId: sender.frameId,
-              tab: sender.tab,
-              details: message.pageDetails,
-            },
-          ],
-          sender.tab,
-          true,
-          true,
-        );
+        sender = mock<chrome.runtime.MessageSender>({
+          tab: mock<chrome.tabs.Tab>({ id: 1 }),
+          frameId: 0,
+          url: validAutoSubmitUrl,
+        });
       });
-    });
 
-    describe("multiStepAutoSubmitLoginComplete extension message", () => {
-      it("removes the sender URL from the set of valid auto-submit hosts", () => {
-        const message = { command: "multiStepAutoSubmitLoginComplete" };
+      it("skips acting on messages that do not come from the current auto-fill workflow's tab", () => {
+        sender.tab = mock<chrome.tabs.Tab>({ id: 2 });
 
-        sendMockExtensionMessage(message, sender);
+        sendMockExtensionMessage({ command: "triggerAutoSubmitLogin" }, sender);
 
-        expect(autoSubmitLoginBackground["validAutoSubmitHosts"].has(validAutoSubmitHost)).toBe(
-          false,
-        );
+        expect(autofillService.doAutoFillOnTab).not.toHaveBeenCalled;
+      });
+
+      it("skips acting on messages whose command does not have a registered handler", () => {
+        sendMockExtensionMessage({ command: "someInvalidCommand" }, sender);
+
+        expect(autofillService.doAutoFillOnTab).not.toHaveBeenCalled;
+      });
+
+      describe("triggerAutoSubmitLogin extension message", () => {
+        it("triggers an autofill action with auto-submission on the sender of the message", async () => {
+          const message = {
+            command: "triggerAutoSubmitLogin",
+            pageDetails: mock<AutofillPageDetails>(),
+          };
+
+          sendMockExtensionMessage(message, sender);
+          await flushPromises();
+
+          expect(autofillService.doAutoFillOnTab).toBeCalledWith(
+            [
+              {
+                frameId: sender.frameId,
+                tab: sender.tab,
+                details: message.pageDetails,
+              },
+            ],
+            sender.tab,
+            true,
+            true,
+          );
+        });
+      });
+
+      describe("multiStepAutoSubmitLoginComplete extension message", () => {
+        it("removes the sender URL from the set of valid auto-submit hosts", () => {
+          const message = { command: "multiStepAutoSubmitLoginComplete" };
+
+          sendMockExtensionMessage(message, sender);
+
+          expect(autoSubmitLoginBackground["validAutoSubmitHosts"].has(validAutoSubmitHost)).toBe(
+            false,
+          );
+        });
       });
     });
   });
