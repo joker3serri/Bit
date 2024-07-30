@@ -31,7 +31,7 @@ import {
 } from "./abstractions/collect-autofill-content.service";
 import { DomElementVisibilityService } from "./abstractions/dom-element-visibility.service";
 
-class CollectAutofillContentService implements CollectAutofillContentServiceInterface {
+export class CollectAutofillContentService implements CollectAutofillContentServiceInterface {
   private readonly sendExtensionMessage = sendExtensionMessage;
   private readonly domElementVisibilityService: DomElementVisibilityService;
   private readonly autofillOverlayContentService: AutofillOverlayContentService;
@@ -1601,5 +1601,3 @@ class CollectAutofillContentService implements CollectAutofillContentServiceInte
     return Boolean(this.deepQueryElements(document, `input[type="password"]`)?.length);
   }
 }
-
-export default CollectAutofillContentService;

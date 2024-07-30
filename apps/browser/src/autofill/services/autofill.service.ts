@@ -797,7 +797,7 @@ export default class AutofillService implements AutofillServiceInterface {
       });
     }
 
-    const formElementsSet = new Set();
+    const formElementsSet = new Set<string>();
     usernames.forEach((u) => {
       // eslint-disable-next-line
       if (filledFields.hasOwnProperty(u.opid)) {

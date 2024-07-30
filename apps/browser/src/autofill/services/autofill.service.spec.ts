@@ -710,7 +710,6 @@ describe("AutofillService", () => {
         {
           command: "fillForm",
           fillScript: {
-            autosubmit: null,
             metadata: {},
             properties: {
               delay_between_operations: 20,
@@ -1558,7 +1557,6 @@ describe("AutofillService", () => {
 
       expect(autofillService["generateLoginFillScript"]).toHaveBeenCalledWith(
         {
-          autosubmit: null,
           metadata: {},
           properties: {},
           script: [
@@ -1597,7 +1595,6 @@ describe("AutofillService", () => {
 
       expect(autofillService["generateCardFillScript"]).toHaveBeenCalledWith(
         {
-          autosubmit: null,
           metadata: {},
           properties: {},
           script: [
@@ -1636,7 +1633,6 @@ describe("AutofillService", () => {
 
       expect(autofillService["generateIdentityFillScript"]).toHaveBeenCalledWith(
         {
-          autosubmit: null,
           metadata: {},
           properties: {},
           script: [

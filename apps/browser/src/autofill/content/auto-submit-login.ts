@@ -1,6 +1,8 @@
+import { EVENTS } from "@bitwarden/common/autofill/constants";
+
 import AutofillPageDetails from "../models/autofill-page-details";
 import AutofillScript from "../models/autofill-script";
-import CollectAutofillContentService from "../services/collect-autofill-content.service";
+import { CollectAutofillContentService } from "../services/collect-autofill-content.service";
 import DomElementVisibilityService from "../services/dom-element-visibility.service";
 import InsertAutofillContentService from "../services/insert-autofill-content.service";
 import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "../utils";
@@ -39,7 +41,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
       return;
     }
 
-    globalContext.document.addEventListener("DOMContentLoaded", triggerOnPageLoad);
+    globalContext.document.addEventListener(EVENTS.DOMCONTENTLOADED, triggerOnPageLoad);
   }
 
   /**
@@ -157,7 +159,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
     const lastFieldIsPasswordInput =
       elementIsInputElement(currentElement) && currentElement.type === "password";
 
-    while (currentElement && currentElement.tagName !== "BODY") {
+    while (currentElement && currentElement.tagName !== "HTML") {
       if (submitElementFoundAndClicked(currentElement, lastFieldIsPasswordInput)) {
         return;
       }
@@ -170,7 +172,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
       currentElement = currentElement.parentElement;
     }
 
-    if (!currentElement || currentElement.tagName === "BODY") {
+    if (!currentElement || currentElement.tagName === "HTML") {
       throw new Error("Unable to auto-submit form, no submit button or form element found.");
     }
   }
@@ -300,7 +302,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
    */
   function clearAutoSubmitLoginTimeout() {
     if (autoSubmitLoginTimeout) {
-      clearInterval(autoSubmitLoginTimeout);
+      globalContext.clearInterval(autoSubmitLoginTimeout);
     }
   }
 
