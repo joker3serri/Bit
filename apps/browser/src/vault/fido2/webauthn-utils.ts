@@ -42,7 +42,7 @@ export class WebauthnUtils {
           alg: Number(params.alg),
           type: params.type,
         }))
-        .filter((params) => isNaN(params.alg)),
+        .filter((params) => !isNaN(params.alg)),
       rp: {
         id: keyOptions.rp.id,
         name: keyOptions.rp.name,
