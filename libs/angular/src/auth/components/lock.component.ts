@@ -16,7 +16,6 @@ import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractio
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import {
@@ -316,8 +315,6 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async load(userId: UserId) {
-    // TODO: Investigate PM-3515
-
     // The loading of the lock component works as follows:
     //   1. If the user is unlocked, we're here in error so we navigate to the home page
     //   2. First, is locking a valid timeout action?  If not, we will log the user out.
@@ -326,17 +323,6 @@ export class LockComponent implements OnInit, OnDestroy {
     //        - If they have a PIN set, they will be presented with the PIN input
     //        - If they have a master password and no PIN, they will be presented with the master password input
     //        - If they have biometrics enabled, they will be presented with the biometric prompt
-
-    const isUnlocked = await firstValueFrom(
-      this.authService
-        .authStatusFor$(userId)
-        .pipe(map((status) => status === AuthenticationStatus.Unlocked)),
-    );
-    if (isUnlocked) {
-      // navigate to home
-      await this.router.navigate(["/"]);
-      return;
-    }
 
     const availableVaultTimeoutActions = await firstValueFrom(
       this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId),
