@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
 import { combineLatest } from "rxjs";
@@ -22,7 +22,7 @@ import { PopOutComponent } from "../../../platform/popup/components/pop-out.comp
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 
-enum SendState {
+export enum SendState {
   Empty,
   NoResults,
 }
@@ -64,7 +64,6 @@ export class SendV2Component implements OnInit, OnDestroy {
   constructor(
     protected sendItemsService: SendItemsService,
     protected sendListFiltersService: SendListFiltersService,
-    private cdr: ChangeDetectorRef,
   ) {
     combineLatest([
       this.sendItemsService.emptyList$,
@@ -90,7 +89,6 @@ export class SendV2Component implements OnInit, OnDestroy {
         }
 
         this.listState = null;
-        this.cdr.detectChanges();
       });
   }
 
