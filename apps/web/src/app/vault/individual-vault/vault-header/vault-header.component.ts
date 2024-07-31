@@ -49,6 +49,7 @@ export class VaultHeaderComponent implements OnInit {
   protected All = All;
   protected CollectionDialogTabType = CollectionDialogTabType;
   protected CipherType = CipherType;
+  protected extensionRefreshEnabled = false;
 
   /**
    * Boolean to determine the loading state of the header.
@@ -84,9 +85,6 @@ export class VaultHeaderComponent implements OnInit {
   @Output() onDeleteCollection = new EventEmitter<void>();
 
   private flexibleCollectionsV1Enabled = false;
-
-  /** Whether the extension refresh feature flag is enabled */
-  extensionRefreshEnabled = false;
 
   constructor(
     private i18nService: I18nService,
