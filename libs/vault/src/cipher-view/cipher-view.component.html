@@ -9,7 +9,11 @@
   </app-item-details-v2>
 
   <!-- LOGIN CREDENTIALS -->
-  <app-login-credentials-view *ngIf="hasLogin" [login]="cipher.login"></app-login-credentials-view>
+  <app-login-credentials-view
+    *ngIf="hasLogin"
+    [login]="cipher.login"
+    [viewPassword]="cipher.viewPassword"
+  ></app-login-credentials-view>
 
   <!-- CARD DETAILS -->
   <app-card-details-view *ngIf="hasCard" [card]="cipher.card"></app-card-details-view>
