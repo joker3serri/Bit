@@ -23,6 +23,7 @@ import { CardDetailsComponent } from "./card-details/card-details-view.component
 import { CustomFieldV2Component } from "./custom-fields/custom-fields-v2.component";
 import { ItemDetailsV2Component } from "./item-details/item-details-v2.component";
 import { ItemHistoryV2Component } from "./item-history/item-history-v2.component";
+import { LoginCredentialsViewComponent } from "./login-credentials/login-credentials-view.component";
 import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-identity-sections.component";
 
 @Component({
@@ -43,6 +44,7 @@ import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-ide
     CustomFieldV2Component,
     CardDetailsComponent,
     ViewIdentitySectionsComponent,
+    LoginCredentialsViewComponent,
   ],
 })
 export class CipherViewComponent implements OnInit {
@@ -69,6 +71,15 @@ export class CipherViewComponent implements OnInit {
   get hasCard() {
     const { cardholderName, code, expMonth, expYear, brand, number } = this.cipher.card;
     return cardholderName || code || expMonth || expYear || brand || number;
+  }
+
+  get hasLogin() {
+    const { username, password, totp } = this.cipher.login;
+    return username || password || totp;
+  }
+
+  get hasAutofill() {
+    return this.cipher.login.uris.length > 0;
   }
 
   async loadCipherData() {
