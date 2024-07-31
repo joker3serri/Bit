@@ -371,7 +371,7 @@ const routes: Routes = [
   {
     path: "send-created",
     component: SendCreatedComponent,
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     data: { state: "send" },
   },
   {
