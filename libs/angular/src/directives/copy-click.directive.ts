@@ -10,7 +10,7 @@ import { ToastVariant } from "@bitwarden/components/src/toast/toast.component";
 })
 export class CopyClickDirective {
   private _showToast = false;
-  private toastVariant: ToastVariant = "info";
+  private toastVariant: ToastVariant = "success";
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -21,7 +21,7 @@ export class CopyClickDirective {
   @Input("appCopyClick") valueToCopy = "";
 
   /**
-   * When set without a value, a info toast will be shown when the value is copied
+   * When set without a value, a success toast will be shown when the value is copied
    * @example
    * ```html
    *  <app-component [appCopyClick]="value to copy" showToast/></app-component>
@@ -30,7 +30,7 @@ export class CopyClickDirective {
    *
    * @example
    * ```html
-   *  <app-component [appCopyClick]="value to copy" showToast="success"/></app-component>
+   *  <app-component [appCopyClick]="value to copy" showToast="info"/></app-component>
    * ```
    */
   @Input() set showToast(value: ToastVariant | "") {

@@ -10,8 +10,8 @@ import { CopyClickDirective } from "./copy-click.directive";
 @Component({
   template: `
     <button appCopyClick="no toast shown" #noToast></button>
-    <button appCopyClick="info toast shown" showToast #infoToast></button>
-    <button appCopyClick="success toast shown" showToast="success" #successToast></button>
+    <button appCopyClick="info toast shown" showToast="info" #infoToast></button>
+    <button appCopyClick="success toast shown" showToast #successToast></button>
   `,
 })
 class TestCopyClickComponent {
@@ -66,17 +66,6 @@ describe("CopyClickDirective", () => {
     expect(showToast).not.toHaveBeenCalled();
   });
 
-  it("shows an info toast when showToast is present", () => {
-    const infoToastButton = fixture.componentInstance.infoToastButton.nativeElement;
-
-    infoToastButton.click();
-    expect(showToast).toHaveBeenCalledWith({
-      message: "copySuccessful",
-      title: null,
-      variant: "info",
-    });
-  });
-
   it("shows a success toast when showToast is present", () => {
     const successToastButton = fixture.componentInstance.successToastButton.nativeElement;
 
@@ -85,6 +74,17 @@ describe("CopyClickDirective", () => {
       message: "copySuccessful",
       title: null,
       variant: "success",
+    });
+  });
+
+  it("shows the toast variant when set with showToast", () => {
+    const infoToastButton = fixture.componentInstance.infoToastButton.nativeElement;
+
+    infoToastButton.click();
+    expect(showToast).toHaveBeenCalledWith({
+      message: "copySuccessful",
+      title: null,
+      variant: "info",
     });
   });
 });
