@@ -8,6 +8,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { VaultOnboardingMessages } from "@bitwarden/common/vault/enums/vault-onboarding.enum";
 
 import { VaultOnboardingService as VaultOnboardingServiceAbstraction } from "./services/abstraction/vault-onboarding.service";
@@ -176,6 +177,16 @@ describe("VaultOnboardingComponent", () => {
       await component.getMessages(eventData);
 
       expect(saveCompletedTasksSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("emitToAddCipher", () => {
+    it("always emits the `CipherType.Login` type when called", () => {
+      const emitSpy = jest.spyOn(component.onAddCipher, "emit");
+
+      component.emitToAddCipher();
+
+      expect(emitSpy).toHaveBeenCalledWith(CipherType.Login);
     });
   });
 });
