@@ -19,40 +19,41 @@ import { UserId } from "@bitwarden/common/types/guid";
 
 import { lockGuard } from "./lock.guard";
 
+interface SetupParams {
+  authStatus: AuthenticationStatus;
+  canLock?: boolean;
+  isLegacyUser?: boolean;
+  clientType?: ClientType;
+  everHadUserKey?: boolean;
+  supportsDeviceTrust?: boolean;
+  hasMasterPassword?: boolean;
+}
+
 describe("lockGuard", () => {
-  let messagingService: MockProxy<MessagingService>;
-  const setup = (
-    authStatus: AuthenticationStatus,
-    canLock: boolean = false,
-    isLegacyUser: boolean = false,
-    clientType: ClientType = ClientType.Web,
-    everHadUserKey: boolean = false,
-    supportsDeviceTrust: boolean = false,
-    hasMasterPassword: boolean = false,
-  ) => {
+  const setup = (setupParams: SetupParams) => {
     const authService: MockProxy<AuthService> = mock<AuthService>();
-    authService.authStatusFor$.mockReturnValue(of(authStatus));
+    authService.authStatusFor$.mockReturnValue(of(setupParams.authStatus));
 
     const vaultTimeoutSettingsService: MockProxy<VaultTimeoutSettingsService> =
       mock<VaultTimeoutSettingsService>();
-    vaultTimeoutSettingsService.canLock.mockResolvedValue(canLock);
+    vaultTimeoutSettingsService.canLock.mockResolvedValue(setupParams.canLock);
 
     const cryptoService: MockProxy<CryptoService> = mock<CryptoService>();
-    cryptoService.isLegacyUser.mockResolvedValue(isLegacyUser);
-    cryptoService.everHadUserKey$ = of(everHadUserKey);
+    cryptoService.isLegacyUser.mockResolvedValue(setupParams.isLegacyUser);
+    cryptoService.everHadUserKey$ = of(setupParams.everHadUserKey);
 
     const platformUtilService: MockProxy<PlatformUtilsService> = mock<PlatformUtilsService>();
-    platformUtilService.getClientType.mockReturnValue(clientType);
+    platformUtilService.getClientType.mockReturnValue(setupParams.clientType);
 
-    messagingService = mock<MessagingService>();
+    const messagingService: MockProxy<MessagingService> = mock<MessagingService>();
 
     const deviceTrustService: MockProxy<DeviceTrustServiceAbstraction> =
       mock<DeviceTrustServiceAbstraction>();
-    deviceTrustService.supportsDeviceTrust$ = of(supportsDeviceTrust);
+    deviceTrustService.supportsDeviceTrust$ = of(setupParams.supportsDeviceTrust);
 
     const userVerificationService: MockProxy<UserVerificationService> =
       mock<UserVerificationService>();
-    userVerificationService.hasMasterPassword.mockResolvedValue(hasMasterPassword);
+    userVerificationService.hasMasterPassword.mockResolvedValue(setupParams.hasMasterPassword);
 
     const accountService: MockProxy<AccountService> = mock<AccountService>();
     const activeAccountSubject = new BehaviorSubject<{ id: UserId } & AccountInfo>(null);
@@ -91,37 +92,52 @@ describe("lockGuard", () => {
 
     return {
       router: testBed.inject(Router),
+      messagingService,
     };
   };
 
   it("should be created", () => {
-    const { router } = setup(AuthenticationStatus.LoggedOut);
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+    });
     expect(router).toBeTruthy();
   });
 
   it("should redirect to the root route when the user is Unlocked", async () => {
-    const { router } = setup(AuthenticationStatus.Unlocked);
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Unlocked,
+    });
 
     await router.navigate(["lock"]);
     expect(router.url).toBe("/");
   });
 
   it("should redirect to the root route when the user is LoggedOut", async () => {
-    const { router } = setup(AuthenticationStatus.LoggedOut);
+    const { router } = setup({
+      authStatus: AuthenticationStatus.LoggedOut,
+    });
 
     await router.navigate(["lock"]);
     expect(router.url).toBe("/");
   });
 
   it("should allow navigation to the lock route when the user is Locked", async () => {
-    const { router } = setup(AuthenticationStatus.Locked);
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+    });
 
     await router.navigate(["lock"]);
     expect(router.url).toBe("/lock");
   });
 
   it("should log user out if they are a legacy user on a desktop client", async () => {
-    const { router } = setup(AuthenticationStatus.Locked, true, true, ClientType.Desktop);
+    const { router, messagingService } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+      isLegacyUser: true,
+      clientType: ClientType.Desktop,
+    });
 
     await router.navigate(["lock"]);
     expect(router.url).toBe("/");
@@ -129,7 +145,12 @@ describe("lockGuard", () => {
   });
 
   it("should log user out if they are a legacy user on a browser extension client", async () => {
-    const { router } = setup(AuthenticationStatus.Locked, true, true, ClientType.Desktop);
+    const { router, messagingService } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+      isLegacyUser: true,
+      clientType: ClientType.Browser,
+    });
 
     await router.navigate(["lock"]);
     expect(router.url).toBe("/");
@@ -137,9 +158,44 @@ describe("lockGuard", () => {
   });
 
   it("should send the user to migrate-legacy-encryption if they are a legacy user on a web client", async () => {
-    const { router } = setup(AuthenticationStatus.Locked, true, true, ClientType.Web);
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+      isLegacyUser: true,
+      clientType: ClientType.Web,
+    });
 
     await router.navigate(["lock"]);
     expect(router.url).toBe("/migrate-legacy-encryption");
+  });
+
+  it("should allow navigation to the lock route when device trust is supported, the user has a MP, and the user is coming from the login-initiated page", async () => {
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+      isLegacyUser: false,
+      clientType: ClientType.Web,
+      everHadUserKey: false,
+      supportsDeviceTrust: true,
+      hasMasterPassword: true,
+    });
+
+    await router.navigate(["lock"], { queryParams: { from: "login-initiated" } });
+    expect(router.url).toBe("/lock?from=login-initiated");
+  });
+
+  it("should not allow navigation to the lock route when device trust is supported and the user has not ever had a user key", async () => {
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+      isLegacyUser: false,
+      clientType: ClientType.Web,
+      everHadUserKey: false,
+      supportsDeviceTrust: true,
+      hasMasterPassword: false,
+    });
+
+    await router.navigate(["lock"]);
+    expect(router.url).toBe("/");
   });
 });
