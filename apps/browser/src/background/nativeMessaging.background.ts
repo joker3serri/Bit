@@ -370,10 +370,10 @@ export class NativeMessagingBackground {
                 activeUserId,
               );
               if (isUserKeyValid) {
-                await this.cryptoService.setUserKey(userKey);
+                await this.cryptoService.setUserKey(userKey, activeUserId);
               } else {
                 this.logService.error("Unable to verify biometric unlocked userkey");
-                await this.cryptoService.clearKeys();
+                await this.cryptoService.clearKeys(activeUserId);
                 this.showIncorrectUserKeyDialog();
 
                 // Exit early
