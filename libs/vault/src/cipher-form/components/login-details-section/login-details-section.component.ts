@@ -148,7 +148,7 @@ export class LoginDetailsSectionComponent implements OnInit {
   private async initNewCipher() {
     this.loginDetailsForm.patchValue({
       username: this.cipherFormContainer.config.initialValues?.username || "",
-      password: await this.generationService.generateInitialPassword(),
+      password: "",
     });
   }
 
