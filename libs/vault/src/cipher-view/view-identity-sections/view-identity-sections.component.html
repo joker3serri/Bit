@@ -4,7 +4,10 @@
   </bit-section-header>
 
   <bit-card>
-    <bit-form-field *ngIf="cipher.identity.fullName">
+    <bit-form-field
+      *ngIf="cipher.identity.fullName"
+      [disableMargin]="lastPersonalField === 'fullName'"
+    >
       <bit-label>{{ "name" | i18n }}</bit-label>
       <input bitInput [value]="cipher.identity.fullName" readonly data-testid="name" />
       <button
@@ -16,7 +19,10 @@
         showToast
       ></button>
     </bit-form-field>
-    <bit-form-field *ngIf="cipher.identity.username">
+    <bit-form-field
+      *ngIf="cipher.identity.username"
+      [disableMargin]="lastPersonalField === 'username'"
+    >
       <bit-label>{{ "username" | i18n }}</bit-label>
       <input bitInput [value]="cipher.identity.username" readonly data-testid="username" />
       <button
@@ -28,7 +34,10 @@
         showToast
       ></button>
     </bit-form-field>
-    <bit-form-field *ngIf="cipher.identity.company">
+    <bit-form-field
+      *ngIf="cipher.identity.company"
+      [disableMargin]="lastPersonalField === 'company'"
+    >
       <bit-label>{{ "company" | i18n }}</bit-label>
       <input bitInput [value]="cipher.identity.company" readonly data-testid="company" />
       <button
@@ -49,7 +58,7 @@
   </bit-section-header>
 
   <bit-card>
-    <bit-form-field *ngIf="cipher.identity.ssn">
+    <bit-form-field *ngIf="cipher.identity.ssn" [disableMargin]="lastIdentificationField === 'ssn'">
       <bit-label>{{ "ssn" | i18n }}</bit-label>
       <input bitInput type="password" [value]="cipher.identity.ssn" readonly data-testid="ssn" />
       <button
@@ -68,7 +77,10 @@
         showToast
       ></button>
     </bit-form-field>
-    <bit-form-field *ngIf="cipher.identity.passportNumber">
+    <bit-form-field
+      *ngIf="cipher.identity.passportNumber"
+      [disableMargin]="lastIdentificationField === 'passportNumber'"
+    >
       <bit-label>{{ "passportNumber" | i18n }}</bit-label>
       <input
         bitInput
@@ -93,7 +105,10 @@
         showToast
       ></button>
     </bit-form-field>
-    <bit-form-field *ngIf="cipher.identity.licenseNumber">
+    <bit-form-field
+      *ngIf="cipher.identity.licenseNumber"
+      [disableMargin]="lastIdentificationField === 'licenseNumber'"
+    >
       <bit-label>{{ "licenseNumber" | i18n }}</bit-label>
       <input bitInput [value]="cipher.identity.licenseNumber" readonly data-testid="license" />
       <button
@@ -114,7 +129,7 @@
   </bit-section-header>
 
   <bit-card>
-    <bit-form-field *ngIf="cipher.identity.email">
+    <bit-form-field *ngIf="cipher.identity.email" [disableMargin]="lastContactField === 'email'">
       <bit-label>{{ "email" | i18n }}</bit-label>
       <input bitInput [value]="cipher.identity.email" readonly data-testid="email" />
       <button
@@ -126,7 +141,7 @@
         showToast
       ></button>
     </bit-form-field>
-    <bit-form-field *ngIf="cipher.identity.phone">
+    <bit-form-field *ngIf="cipher.identity.phone" [disableMargin]="lastContactField === 'phone'">
       <bit-label>{{ "phone" | i18n }}</bit-label>
       <input bitInput [value]="cipher.identity.phone" readonly data-testid="phone" />
       <button
@@ -138,7 +153,7 @@
         showToast
       ></button>
     </bit-form-field>
-    <bit-form-field *ngIf="addressFields">
+    <bit-form-field *ngIf="addressFields" [disableMargin]="lastContactField === 'address'">
       <bit-label>{{ "address" | i18n }}</bit-label>
       <textarea
         bitInput

@@ -34,10 +34,15 @@ export class ViewIdentitySectionsComponent implements OnInit {
   showIdentificationDetails: boolean;
   showContactDetails: boolean;
 
+  lastPersonalField: "company" | "username" | "fullName" | null = null;
+  lastIdentificationField: "licenseNumber" | "passportNumber" | "ssn" | null = null;
+  lastContactField: "address" | "phone" | "email" | null = null;
+
   ngOnInit(): void {
     this.showPersonalDetails = this.hasPersonalDetails();
     this.showIdentificationDetails = this.hasIdentificationDetails();
     this.showContactDetails = this.hasContactDetails();
+    this.setLastFieldsInSections();
   }
 
   /** Returns all populated address fields */
@@ -68,5 +73,41 @@ export class ViewIdentitySectionsComponent implements OnInit {
     const { email, phone } = this.cipher.identity;
 
     return Boolean(email || phone || this.addressFields);
+  }
+
+  /**
+   * The last field populated in each section should not have bottom margin.
+   * Checks each field in reverse order to determine which field is the last populated.
+   */
+  private setLastFieldsInSections(): void {
+    const { fullName, username, company, ssn, passportNumber, licenseNumber, email, phone } =
+      this.cipher.identity;
+
+    // Personal details
+    if (company) {
+      this.lastPersonalField = "company";
+    } else if (username) {
+      this.lastPersonalField = "username";
+    } else if (fullName) {
+      this.lastPersonalField = "fullName";
+    }
+
+    // Identification details
+    if (licenseNumber) {
+      this.lastIdentificationField = "licenseNumber";
+    } else if (passportNumber) {
+      this.lastIdentificationField = "passportNumber";
+    } else if (ssn) {
+      this.lastIdentificationField = "ssn";
+    }
+
+    // Contact details
+    if (this.addressFields) {
+      this.lastContactField = "address";
+    } else if (phone) {
+      this.lastContactField = "phone";
+    } else if (email) {
+      this.lastContactField = "email";
+    }
   }
 }
