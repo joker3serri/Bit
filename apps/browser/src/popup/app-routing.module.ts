@@ -85,6 +85,7 @@ import { SyncComponent } from "../vault/popup/settings/sync.component";
 import { VaultSettingsV2Component } from "../vault/popup/settings/vault-settings-v2.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
+import { clearVaultSearchGuard } from "./../vault/guards/clear-search.guard";
 import { extensionRefreshRedirect, extensionRefreshSwap } from "./extension-refresh-route-utils";
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { TabsV2Component } from "./tabs-v2.component";
@@ -457,6 +458,7 @@ const routes: Routes = [
       ...extensionRefreshSwap(VaultFilterComponent, VaultV2Component, {
         path: "vault",
         canActivate: [authGuard],
+        canDeactivate: [clearVaultSearchGuard],
         data: { state: "tabs_vault" },
       }),
       {
