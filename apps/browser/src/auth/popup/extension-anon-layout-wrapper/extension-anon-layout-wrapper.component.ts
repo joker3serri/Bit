@@ -2,11 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { Subject, filter, switchMap, takeUntil, tap } from "rxjs";
 
-import {
-  AnonLayoutComponent,
-  AnonLayoutWrapperData,
-  AnonLayoutWrapperDataService,
-} from "@bitwarden/auth/angular";
+import { AnonLayoutComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Icon, IconModule } from "@bitwarden/components";
 
@@ -14,6 +10,8 @@ import { PopOutComponent } from "../../../platform/popup/components/pop-out.comp
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { CurrentAccountComponent } from "../account-switching/current-account.component";
+
+import { ExtensionAnonLayoutWrapperDataService } from "./extension-anon-layout-wrapper-data.service";
 
 export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
   showAcctSwitcher?: boolean;
@@ -37,8 +35,9 @@ export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
 export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  protected showBackButton = true;
   protected showAcctSwitcher = true;
+  protected showBackButton = true;
+  protected showLogo = true;
 
   protected pageTitle: string;
   protected pageSubtitle: string;
@@ -50,7 +49,7 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private i18nService: I18nService,
-    private anonLayoutWrapperDataService: AnonLayoutWrapperDataService,
+    private extensionAnonLayoutWrapperDataService: ExtensionAnonLayoutWrapperDataService,
   ) {}
 
   ngOnInit(): void {
@@ -94,18 +93,30 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
 
     this.showReadonlyHostname = Boolean(firstChildRouteData["showReadonlyHostname"]);
     this.maxWidth = firstChildRouteData["maxWidth"];
+
+    if (firstChildRouteData["showAcctSwitcher"] !== undefined) {
+      this.showAcctSwitcher = Boolean(firstChildRouteData["showAcctSwitcher"]);
+    }
+
+    if (firstChildRouteData["showBackButton"] !== undefined) {
+      this.showBackButton = Boolean(firstChildRouteData["showBackButton"]);
+    }
+
+    if (firstChildRouteData["showLogo"] !== undefined) {
+      this.showLogo = Boolean(firstChildRouteData["showLogo"]);
+    }
   }
 
   private listenForServiceDataChanges() {
-    this.anonLayoutWrapperDataService
+    this.extensionAnonLayoutWrapperDataService
       .anonLayoutWrapperData$()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((data: AnonLayoutWrapperData) => {
+      .subscribe((data: ExtensionAnonLayoutWrapperData) => {
         this.setAnonLayoutWrapperData(data);
       });
   }
 
-  private setAnonLayoutWrapperData(data: AnonLayoutWrapperData) {
+  private setAnonLayoutWrapperData(data: ExtensionAnonLayoutWrapperData) {
     if (!data) {
       return;
     }
@@ -125,6 +136,18 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     if (data.showReadonlyHostname) {
       this.showReadonlyHostname = data.showReadonlyHostname;
     }
+
+    if (data.showAcctSwitcher) {
+      this.showAcctSwitcher = data.showAcctSwitcher;
+    }
+
+    if (data.showBackButton) {
+      this.showBackButton = data.showBackButton;
+    }
+
+    if (data.showLogo) {
+      this.showLogo = data.showLogo;
+    }
   }
 
   private resetPageData() {
@@ -132,6 +155,9 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     this.pageSubtitle = null;
     this.pageIcon = null;
     this.showReadonlyHostname = null;
+    this.showAcctSwitcher = null;
+    this.showBackButton = null;
+    this.showLogo = null;
   }
 
   ngOnDestroy() {
