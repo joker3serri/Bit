@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { AppComponent as BaseAppComponent } from "@bitwarden/web-vault/app/app.component";
 
 import { ActivateAutofillPolicy } from "./admin-console/policies/activate-autofill.component";
@@ -19,7 +20,15 @@ export class AppComponent extends BaseAppComponent {
       new MaximumVaultTimeoutPolicy(),
       new DisablePersonalVaultExportPolicy(),
       new ActivateAutofillPolicy(),
-      new AutomaticAppLoginPolicy(),
     ]);
+
+    this.configService.getFeatureFlag(FeatureFlag.IdpAutoSubmitLogin).then((enabled) => {
+      if (
+        enabled &&
+        !this.policyListService.getPolicies().some((p) => p instanceof AutomaticAppLoginPolicy)
+      ) {
+        this.policyListService.addPolicies([new AutomaticAppLoginPolicy()]);
+      }
+    });
   }
 }
