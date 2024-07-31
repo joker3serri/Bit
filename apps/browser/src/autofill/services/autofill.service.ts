@@ -2148,8 +2148,7 @@ export default class AutofillService implements AutofillServiceInterface {
     const tabs = await BrowserApi.tabsQuery({});
     for (let index = 0; index < tabs.length; index++) {
       const tab = tabs[index];
-      const url = tab.url;
-      if (url && (url.startsWith("http") || url.startsWith("file"))) {
+      if (tab.url?.startsWith("http")) {
         const frames = await BrowserApi.getAllFrameDetails(tab.id);
         frames.forEach((frame) => this.injectAutofillScripts(tab, frame.frameId, false));
       }
