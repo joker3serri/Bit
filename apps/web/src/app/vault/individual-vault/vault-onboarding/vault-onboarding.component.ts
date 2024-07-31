@@ -17,6 +17,7 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { VaultOnboardingMessages } from "@bitwarden/common/vault/enums/vault-onboarding.enum";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LinkModule } from "@bitwarden/components";
@@ -41,7 +42,7 @@ import { VaultOnboardingService, VaultOnboardingTasks } from "./services/vault-o
 export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   @Input() ciphers: CipherView[];
   @Input() orgs: Organization[];
-  @Output() onAddCipher = new EventEmitter<void>();
+  @Output() onAddCipher = new EventEmitter<CipherType>();
 
   extensionUrl: string;
   isIndividualPolicyVault: boolean;
@@ -162,7 +163,7 @@ export class VaultOnboardingComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   emitToAddCipher() {
-    this.onAddCipher.emit();
+    this.onAddCipher.emit(CipherType.Login);
   }
 
   setInstallExtLink() {

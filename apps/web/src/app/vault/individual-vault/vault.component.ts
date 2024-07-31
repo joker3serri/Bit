@@ -579,7 +579,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async addCipher(cipherType?: CipherType) {
     const component = await this.editCipher(null);
-    component.type = this.activeFilter.cipherType || cipherType || null;
+    component.type = cipherType || this.activeFilter.cipherType;
     if (this.activeFilter.organizationId !== "MyVault") {
       component.organizationId = this.activeFilter.organizationId;
       component.collections = (
