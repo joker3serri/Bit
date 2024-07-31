@@ -658,7 +658,14 @@ export class InlineMenuFieldQualificationService
 
     return (
       !this.fieldContainsAutocompleteValues(field, this.autocompleteDisabledValues) &&
-      this.keywordsFoundInFieldData(field, IdentityAutoFillConstants.Address1FieldNames, false)
+      this.keywordsFoundInFieldData(
+        field,
+        [
+          ...IdentityAutoFillConstants.AddressFieldNames,
+          ...IdentityAutoFillConstants.Address1FieldNames,
+        ],
+        false,
+      )
     );
   };
 
@@ -722,7 +729,7 @@ export class InlineMenuFieldQualificationService
 
     return (
       !this.fieldContainsAutocompleteValues(field, this.autocompleteDisabledValues) &&
-      this.keywordsFoundInFieldData(field, IdentityAutoFillConstants.AddressFieldNames, false)
+      this.keywordsFoundInFieldData(field, IdentityAutoFillConstants.StateFieldNames, false)
     );
   };
 
