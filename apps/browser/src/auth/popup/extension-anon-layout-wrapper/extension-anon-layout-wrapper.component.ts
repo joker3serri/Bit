@@ -3,7 +3,11 @@ import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { Subject, filter, firstValueFrom, switchMap, takeUntil, tap } from "rxjs";
 
-import { AnonLayoutComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
+import {
+  AnonLayoutComponent,
+  AnonLayoutWrapperData,
+  AnonLayoutWrapperDataService,
+} from "@bitwarden/auth/angular";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { Icon, IconModule } from "@bitwarden/components";
@@ -12,8 +16,6 @@ import { PopOutComponent } from "../../../platform/popup/components/pop-out.comp
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { CurrentAccountComponent } from "../account-switching/current-account.component";
-
-// import { ExtensionAnonLayoutWrapperDataService } from "./extension-anon-layout-wrapper-data.service";
 
 export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
   showAcctSwitcher?: boolean;
@@ -54,7 +56,7 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private i18nService: I18nService,
-    // private extensionAnonLayoutWrapperDataService: ExtensionAnonLayoutWrapperDataService,
+    private extensionAnonLayoutWrapperDataService: AnonLayoutWrapperDataService,
     private themeStateService: ThemeStateService,
   ) {}
 
@@ -63,8 +65,8 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     this.setAnonLayoutWrapperDataFromRouteData(this.route.snapshot.firstChild?.data);
 
     // Listen for page changes and update the page data appropriately
-    // this.listenForPageDataChanges();
-    // this.listenForServiceDataChanges();
+    this.listenForPageDataChanges();
+    this.listenForServiceDataChanges();
 
     this.theme = await firstValueFrom(this.themeStateService.selectedTheme$);
   }
@@ -116,14 +118,14 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private listenForServiceDataChanges() {
-  //   this.extensionAnonLayoutWrapperDataService
-  //     .anonLayoutWrapperData$()
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe((data: ExtensionAnonLayoutWrapperData) => {
-  //       this.setAnonLayoutWrapperData(data);
-  //     });
-  // }
+  private listenForServiceDataChanges() {
+    this.extensionAnonLayoutWrapperDataService
+      .anonLayoutWrapperData$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: ExtensionAnonLayoutWrapperData) => {
+        this.setAnonLayoutWrapperData(data);
+      });
+  }
 
   private setAnonLayoutWrapperData(data: ExtensionAnonLayoutWrapperData) {
     if (!data) {

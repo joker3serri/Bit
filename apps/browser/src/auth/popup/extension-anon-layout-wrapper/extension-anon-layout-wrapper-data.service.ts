@@ -1,17 +1,23 @@
 import { Observable, Subject } from "rxjs";
 
-import { AnonLayoutWrapperDataService } from "@bitwarden/auth/angular";
+import {
+  AnonLayoutWrapperDataService,
+  DefaultAnonLayoutWrapperDataService,
+} from "@bitwarden/auth/angular";
 
 import { ExtensionAnonLayoutWrapperData } from "./extension-anon-layout-wrapper.component";
 
-export class ExtensionAnonLayoutWrapperDataService implements AnonLayoutWrapperDataService {
-  private anonLayoutWrapperDataSubject = new Subject<ExtensionAnonLayoutWrapperData>();
+export class ExtensionAnonLayoutWrapperDataService
+  extends DefaultAnonLayoutWrapperDataService
+  implements AnonLayoutWrapperDataService
+{
+  protected override anonLayoutWrapperDataSubject = new Subject<ExtensionAnonLayoutWrapperData>();
 
-  setAnonLayoutWrapperData(data: ExtensionAnonLayoutWrapperData): void {
+  override setAnonLayoutWrapperData(data: ExtensionAnonLayoutWrapperData): void {
     this.anonLayoutWrapperDataSubject.next(data);
   }
 
-  anonLayoutWrapperData$(): Observable<ExtensionAnonLayoutWrapperData> {
+  override anonLayoutWrapperData$(): Observable<ExtensionAnonLayoutWrapperData> {
     return this.anonLayoutWrapperDataSubject.asObservable();
   }
 }
