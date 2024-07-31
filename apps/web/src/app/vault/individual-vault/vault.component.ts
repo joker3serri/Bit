@@ -50,6 +50,7 @@ import { OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
@@ -576,9 +577,9 @@ export class VaultComponent implements OnInit, OnDestroy {
     openIndividualVaultCollectionsDialog(this.dialogService, { data: { cipherId: cipher.id } });
   }
 
-  async addCipher() {
+  async addCipher(cipherType?: CipherType) {
     const component = await this.editCipher(null);
-    component.type = this.activeFilter.cipherType;
+    component.type = this.activeFilter.cipherType || cipherType || null;
     if (this.activeFilter.organizationId !== "MyVault") {
       component.organizationId = this.activeFilter.organizationId;
       component.collections = (

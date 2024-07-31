@@ -6,7 +6,7 @@
   [organizations]="allOrganizations"
   [canCreateCollections]="canCreateCollections"
   [collection]="selectedCollection"
-  (onAddCipher)="addCipher()"
+  (onAddCipher)="addCipher($event)"
   (onAddCollection)="addCollection()"
   (onAddFolder)="addFolder()"
   (onEditCollection)="editCollection(selectedCollection.node, $event.tab)"
