@@ -65,12 +65,17 @@ import { StateFactory } from "@bitwarden/common/platform/factories/state-factory
 import { MessageSender } from "@bitwarden/common/platform/messaging";
 import { Account } from "@bitwarden/common/platform/models/domain/account";
 import { GlobalState } from "@bitwarden/common/platform/models/domain/global-state";
+import {
+  TaskSchedulerService,
+  DefaultTaskSchedulerService,
+} from "@bitwarden/common/platform/scheduling";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
 import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
 import { DefaultConfigService } from "@bitwarden/common/platform/services/config/default-config.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { CryptoService } from "@bitwarden/common/platform/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
+import { FallbackBulkEncryptService } from "@bitwarden/common/platform/services/cryptography/fallback-bulk-encrypt.service";
 import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
@@ -239,6 +244,7 @@ export class ServiceContainer {
   providerApiService: ProviderApiServiceAbstraction;
   userAutoUnlockKeyService: UserAutoUnlockKeyService;
   kdfConfigService: KdfConfigServiceAbstraction;
+  taskSchedulerService: TaskSchedulerService;
 
   constructor() {
     let p = null;
@@ -285,7 +291,10 @@ export class ServiceContainer {
       this.memoryStorageForStateProviders,
     );
 
-    this.globalStateProvider = new DefaultGlobalStateProvider(storageServiceProvider);
+    this.globalStateProvider = new DefaultGlobalStateProvider(
+      storageServiceProvider,
+      this.logService,
+    );
 
     const stateEventRegistrarService = new StateEventRegistrarService(
       this.globalStateProvider,
@@ -302,6 +311,7 @@ export class ServiceContainer {
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
       storageServiceProvider,
       stateEventRegistrarService,
+      this.logService,
     );
 
     this.messagingService = MessageSender.EMPTY;
@@ -528,6 +538,7 @@ export class ServiceContainer {
       this.secureStorageService,
       this.userDecryptionOptionsService,
       this.logService,
+      this.configService,
     );
 
     this.authRequestService = new AuthRequestService(
@@ -543,6 +554,7 @@ export class ServiceContainer {
       this.stateProvider,
     );
 
+    this.taskSchedulerService = new DefaultTaskSchedulerService(this.logService);
     this.loginStrategyService = new LoginStrategyService(
       this.accountService,
       this.masterPasswordService,
@@ -568,6 +580,7 @@ export class ServiceContainer {
       this.billingAccountProfileStateService,
       this.vaultTimeoutSettingsService,
       this.kdfConfigService,
+      this.taskSchedulerService,
     );
 
     this.authService = new AuthService(
@@ -586,6 +599,7 @@ export class ServiceContainer {
       this.environmentService,
       this.logService,
       this.stateProvider,
+      this.authService,
     );
 
     this.cipherService = new CipherService(
@@ -597,6 +611,7 @@ export class ServiceContainer {
       this.stateService,
       this.autofillSettingsService,
       this.encryptService,
+      new FallbackBulkEncryptService(this.encryptService),
       this.cipherFileUploadService,
       this.configService,
       this.stateProvider,
@@ -613,6 +628,8 @@ export class ServiceContainer {
 
     const lockedCallback = async (userId?: string) =>
       await this.cryptoService.clearStoredUserKey(KeySuffixOptions.Auto);
+
+    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
     this.userVerificationService = new UserVerificationService(
       this.cryptoService,
@@ -641,6 +658,8 @@ export class ServiceContainer {
       this.authService,
       this.vaultTimeoutSettingsService,
       this.stateEventRunnerService,
+      this.taskSchedulerService,
+      this.logService,
       lockedCallback,
       null,
     );
@@ -716,13 +735,12 @@ export class ServiceContainer {
 
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
 
-    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
-
     this.eventUploadService = new EventUploadService(
       this.apiService,
       this.stateProvider,
       this.logService,
       this.authService,
+      this.taskSchedulerService,
     );
 
     this.eventCollectionService = new EventCollectionService(

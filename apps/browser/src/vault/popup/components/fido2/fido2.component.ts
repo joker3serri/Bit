@@ -18,7 +18,7 @@ import { DomainSettingsService } from "@bitwarden/common/autofill/services/domai
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType, SecureNoteType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -143,8 +143,10 @@ export class Fido2Component implements OnInit, OnDestroy {
             this.ciphers = (await this.cipherService.getAllDecrypted()).filter(
               (cipher) => cipher.type === CipherType.Login && !cipher.isDeleted,
             );
-            this.displayedCiphers = this.ciphers.filter((cipher) =>
-              cipher.login.matchesUri(this.url, equivalentDomains),
+            this.displayedCiphers = this.ciphers.filter(
+              (cipher) =>
+                cipher.login.matchesUri(this.url, equivalentDomains) &&
+                this.hasNoOtherPasskeys(cipher, message.userHandle),
             );
 
             if (this.displayedCiphers.length > 0) {
@@ -309,6 +311,7 @@ export class Fido2Component implements OnInit, OnDestroy {
       queryParams: {
         name: data.credentialName || data.rpId,
         uri: this.url,
+        type: CipherType.Login.toString(),
         uilocation: "popout",
         username: data.userName,
         senderTabId: this.senderTabId,
@@ -403,6 +406,20 @@ export class Fido2Component implements OnInit, OnDestroy {
     BrowserFido2UserInterfaceSession.sendMessage({
       sessionId: this.sessionId,
       ...msg,
+    });
+  }
+
+  /**
+   * This methods returns true if a cipher either has no passkeys, or has a passkey matching with userHandle
+   * @param userHandle
+   */
+  private hasNoOtherPasskeys(cipher: CipherView, userHandle: string): boolean {
+    if (cipher.login.fido2Credentials == null || cipher.login.fido2Credentials.length === 0) {
+      return true;
+    }
+
+    return cipher.login.fido2Credentials.some((passkey) => {
+      passkey.userHandle === userHandle;
     });
   }
 }
