@@ -22,7 +22,6 @@ import {
   MasterPasswordVerification,
   MasterPasswordVerificationResponse,
 } from "@bitwarden/common/auth/types/verification";
-import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -315,23 +314,6 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async load(userId: UserId) {
-    // The loading of the lock component works as follows:
-    //   1. If the user is unlocked, we're here in error so we navigate to the home page
-    //   2. First, is locking a valid timeout action?  If not, we will log the user out.
-    //   3. If locking IS a valid timeout action, we proceed to show the user the lock screen.
-    //      The user will be able to unlock as follows:
-    //        - If they have a PIN set, they will be presented with the PIN input
-    //        - If they have a master password and no PIN, they will be presented with the master password input
-    //        - If they have biometrics enabled, they will be presented with the biometric prompt
-
-    const availableVaultTimeoutActions = await firstValueFrom(
-      this.vaultTimeoutSettingsService.availableVaultTimeoutActions$(userId),
-    );
-    const supportsLock = availableVaultTimeoutActions.includes(VaultTimeoutAction.Lock);
-    if (!supportsLock) {
-      return await this.vaultTimeoutService.logOut(userId);
-    }
-
     this.pinLockType = await this.pinService.getPinLockType(userId);
 
     const ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);

@@ -7,6 +7,8 @@ import {
 } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
+import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -35,10 +37,20 @@ export function lockGuard(): CanActivateFn {
     const messagingService = inject(MessagingService);
     const router = inject(Router);
     const userVerificationService = inject(UserVerificationService);
+    const vaultTimeoutSettingsService = inject(VaultTimeoutSettingsService);
+    const accountService = inject(AccountService);
 
-    const authStatus = await authService.getAuthStatus();
+    const activeUser = await firstValueFrom(accountService.activeAccount$);
+
+    const authStatus = await firstValueFrom(authService.authStatusFor$(activeUser.id));
     if (authStatus !== AuthenticationStatus.Locked) {
       return router.createUrlTree(["/"]);
+    }
+
+    // if user can't lock, they can't access the lock screen
+    const canLock = await vaultTimeoutSettingsService.canLock(activeUser.id);
+    if (!canLock) {
+      return false;
     }
 
     // If legacy user on web, redirect to migration page
