@@ -1,5 +1,4 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -90,7 +89,7 @@ describe("SendV2Component", () => {
         { provide: AvatarService, useValue: mock<AvatarService>() },
         {
           provide: BillingAccountProfileStateService,
-          useValue: mock<BillingAccountProfileStateService>(),
+          useValue: { hasPremiumFromAnySource$: of(false) },
         },
         { provide: ConfigService, useValue: mock<ConfigService>() },
         { provide: EnvironmentService, useValue: mock<EnvironmentService>() },
@@ -103,7 +102,6 @@ describe("SendV2Component", () => {
         { provide: SendItemsService, useValue: sendItemsService },
         { provide: I18nService, useValue: { t: (key: string) => key } },
         { provide: SendListFiltersService, useValue: sendListFiltersService },
-        { provide: ChangeDetectorRef, useValue: mock<ChangeDetectorRef>() },
       ],
     }).compileComponents();
 
