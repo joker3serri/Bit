@@ -36,6 +36,9 @@
   "notes": {
     "message": "Notes"
   },
+  "note": {
+    "message": "Note"
+  },
   "customFields": {
     "message": "Custom fields"
   },

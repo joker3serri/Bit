@@ -83,6 +83,9 @@ export class VaultHeaderComponent implements OnInit {
 
   private flexibleCollectionsV1Enabled = false;
 
+  /** Whether the extension refresh feature flag is enabled */
+  extensionRefreshEnabled = false;
+
   constructor(
     private i18nService: I18nService,
     private configService: ConfigService,
@@ -91,6 +94,9 @@ export class VaultHeaderComponent implements OnInit {
   async ngOnInit() {
     this.flexibleCollectionsV1Enabled = await firstValueFrom(
       this.configService.getFeatureFlag$(FeatureFlag.FlexibleCollectionsV1),
+    );
+    this.extensionRefreshEnabled = await firstValueFrom(
+      this.configService.getFeatureFlag$(FeatureFlag.ExtensionRefresh),
     );
   }
 
