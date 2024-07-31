@@ -1,9 +1,11 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
-import { Subject, filter, switchMap, takeUntil, tap } from "rxjs";
+import { Subject, filter, firstValueFrom, switchMap, takeUntil, tap } from "rxjs";
 
 import { AnonLayoutComponent, AnonLayoutWrapperData } from "@bitwarden/auth/angular";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { Icon, IconModule } from "@bitwarden/components";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
@@ -11,7 +13,7 @@ import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-heade
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { CurrentAccountComponent } from "../account-switching/current-account.component";
 
-import { ExtensionAnonLayoutWrapperDataService } from "./extension-anon-layout-wrapper-data.service";
+// import { ExtensionAnonLayoutWrapperDataService } from "./extension-anon-layout-wrapper-data.service";
 
 export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
   showAcctSwitcher?: boolean;
@@ -24,6 +26,7 @@ export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
   templateUrl: "extension-anon-layout-wrapper.component.html",
   imports: [
     AnonLayoutComponent,
+    CommonModule,
     CurrentAccountComponent,
     IconModule,
     PopOutComponent,
@@ -35,9 +38,9 @@ export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
 export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  protected showAcctSwitcher = true;
-  protected showBackButton = true;
-  protected showLogo = true;
+  @Input() showAcctSwitcher: boolean;
+  @Input() showBackButton: boolean;
+  @Input() showLogo: boolean;
 
   protected pageTitle: string;
   protected pageSubtitle: string;
@@ -45,19 +48,25 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
   protected showReadonlyHostname: boolean;
   protected maxWidth: "md" | "3xl";
 
+  protected theme: string;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private i18nService: I18nService,
-    private extensionAnonLayoutWrapperDataService: ExtensionAnonLayoutWrapperDataService,
+    // private extensionAnonLayoutWrapperDataService: ExtensionAnonLayoutWrapperDataService,
+    private themeStateService: ThemeStateService,
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // Set the initial page data on load
     this.setAnonLayoutWrapperDataFromRouteData(this.route.snapshot.firstChild?.data);
+
     // Listen for page changes and update the page data appropriately
-    this.listenForPageDataChanges();
-    this.listenForServiceDataChanges();
+    // this.listenForPageDataChanges();
+    // this.listenForServiceDataChanges();
+
+    this.theme = await firstValueFrom(this.themeStateService.selectedTheme$);
   }
 
   private listenForPageDataChanges() {
@@ -107,14 +116,14 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     }
   }
 
-  private listenForServiceDataChanges() {
-    this.extensionAnonLayoutWrapperDataService
-      .anonLayoutWrapperData$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data: ExtensionAnonLayoutWrapperData) => {
-        this.setAnonLayoutWrapperData(data);
-      });
-  }
+  // private listenForServiceDataChanges() {
+  //   this.extensionAnonLayoutWrapperDataService
+  //     .anonLayoutWrapperData$()
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe((data: ExtensionAnonLayoutWrapperData) => {
+  //       this.setAnonLayoutWrapperData(data);
+  //     });
+  // }
 
   private setAnonLayoutWrapperData(data: ExtensionAnonLayoutWrapperData) {
     if (!data) {

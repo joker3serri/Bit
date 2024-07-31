@@ -1,5 +1,6 @@
 import { Subject, filter, firstValueFrom, map, merge, timeout } from "rxjs";
 
+import { AnonLayoutWrapperDataService } from "@bitwarden/auth/angular";
 import {
   PinServiceAbstraction,
   PinService,
@@ -200,6 +201,7 @@ import {
   VaultExportServiceAbstraction,
 } from "@bitwarden/vault-export-core";
 
+import { ExtensionAnonLayoutWrapperDataService } from "../auth/popup/extension-anon-layout-wrapper/extension-anon-layout-wrapper-data.service";
 import { OverlayBackground as OverlayBackgroundInterface } from "../autofill/background/abstractions/overlay.background";
 import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
@@ -348,6 +350,7 @@ export default class MainBackground {
   offscreenDocumentService: OffscreenDocumentService;
   syncServiceListener: SyncServiceListener;
   themeStateService: DefaultThemeStateService;
+  extensionAnonLayoutWrapperDataService: AnonLayoutWrapperDataService;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -828,6 +831,8 @@ export default class MainBackground {
     this.avatarService = new AvatarService(this.apiService, this.stateProvider);
 
     this.providerService = new ProviderService(this.stateProvider);
+
+    this.extensionAnonLayoutWrapperDataService = new ExtensionAnonLayoutWrapperDataService();
 
     if (this.popupOnlyContext) {
       this.syncService = new ForegroundSyncService(
