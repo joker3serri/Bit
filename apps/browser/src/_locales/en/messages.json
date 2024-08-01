@@ -116,6 +116,21 @@
   "copySecurityCode": {
     "message": "Copy security code"
   },
+  "copyName": {
+    "message": "Copy name"
+  },
+  "copyCompany": {
+    "message": "Copy company"
+  },
+  "copySSN": {
+    "message": "Copy Social Security number"
+  },
+  "copyPassportNumber": {
+    "message": "Copy passport number"
+  },
+  "copyLicenseNumber": {
+    "message": "Copy license number"
+  },
   "autoFill": {
     "message": "Autofill"
   },
@@ -1327,8 +1342,14 @@
   "commandOpenSidebar": {
     "message": "Open vault in sidebar"
   },
-  "commandAutofillDesc": {
+  "commandAutofillLoginDesc": {
     "message": "Autofill the last used login for the current website"
+  },
+  "commandAutofillCardDesc": {
+    "message": "Autofill the last used card for the current website"
+  },
+  "commandAutofillIdentityDesc": {
+    "message": "Autofill the last used identity for the current website"
   },
   "commandGeneratePasswordDesc": {
     "message": "Generate and copy a new random password to the clipboard"
@@ -2758,14 +2779,17 @@
   "autofillKeyboardShortcutUpdateLabel": {
     "message": "Change shortcut"
   },
+  "autofillKeyboardManagerShortcutsLabel": {
+    "message": "Manage shortcuts"
+  },
   "autofillShortcut": {
     "message": "Autofill keyboard shortcut"
   },
-  "autofillShortcutNotSet": {
-    "message": "The autofill shortcut is not set. Change this in the browser's settings."
+  "autofillLoginShortcutNotSet": {
+    "message": "The autofill login shortcut is not set. Change this in the browser's settings."
   },
-  "autofillShortcutText": {
-    "message": "The autofill shortcut is: $COMMAND$. Change this in the browser's settings.",
+  "autofillLoginShortcutText": {
+    "message": "The autofill login shortcut is $COMMAND$. Manage all shortcuts in the browser's settings.",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -4013,5 +4037,11 @@
   },
   "itemLocation": {
     "message": "Item Location"
+  },
+  "bitwardenNewLook": {
+    "message": "Bitwarden has a new look!"
+  },
+  "bitwardenNewLookDesc": {
+    "message": "It's easier and more intuitive than ever to autofill and search from the Vault tab. Take a look around!"
   }
 }
