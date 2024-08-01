@@ -77,11 +77,10 @@ export function lockGuard(): CanActivateFn {
       return true;
     }
 
-    // If authN user with TDE directly navigates to lock, kick them upwards so redirect guard can
-    // properly route them to the login decryption options component.
+    // If authN user with TDE directly navigates to lock, reject that navigation
     const everHadUserKey = await firstValueFrom(cryptoService.everHadUserKey$);
     if (tdeEnabled && !everHadUserKey) {
-      return router.createUrlTree(["/"]);
+      return false;
     }
 
     return true;
