@@ -6,7 +6,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { BitFormFieldComponent, SectionHeaderComponent } from "@bitwarden/components";
+import { SectionHeaderComponent } from "@bitwarden/components";
 
 import { BitInputDirective } from "../../../../components/src/input/input.directive";
 
@@ -195,86 +195,6 @@ describe("ViewIdentitySectionsComponent", () => {
       textarea = fixture.debugElement.query(By.css("textarea"));
 
       expect(textarea.nativeElement.rows).toBe(2);
-    });
-  });
-
-  describe("disableMargin", () => {
-    it("on the last personal field", () => {
-      component.cipher = {
-        identity: {
-          fullName: "Mr Ron Burgundy",
-        },
-      } as CipherView;
-
-      component.ngOnInit();
-      fixture.detectChanges();
-
-      let fields = fixture.debugElement.queryAll(By.directive(BitFormFieldComponent));
-
-      expect(component.lastPersonalField).toBe("fullName");
-      expect(fields[0].componentInstance.disableMargin).toBe(true);
-
-      component.cipher.identity.username = "ron.burgundy";
-      component.ngOnInit();
-      fixture.detectChanges();
-
-      fields = fixture.debugElement.queryAll(By.directive(BitFormFieldComponent));
-
-      expect(component.lastPersonalField).toBe("username");
-      expect(fields[0].componentInstance.disableMargin).toBe(false);
-      expect(fields[1].componentInstance.disableMargin).toBe(true);
-    });
-
-    it("on the last identification field", () => {
-      component.cipher = {
-        identity: {
-          ssn: "123-45-6789",
-        },
-      } as CipherView;
-
-      component.ngOnInit();
-      fixture.detectChanges();
-
-      let fields = fixture.debugElement.queryAll(By.directive(BitFormFieldComponent));
-
-      expect(component.lastIdentificationField).toBe("ssn");
-      expect(fields[0].componentInstance.disableMargin).toBe(true);
-
-      component.cipher.identity.passportNumber = "998-765-4321";
-      component.ngOnInit();
-      fixture.detectChanges();
-
-      fields = fixture.debugElement.queryAll(By.directive(BitFormFieldComponent));
-
-      expect(component.lastIdentificationField).toBe("passportNumber");
-      expect(fields[0].componentInstance.disableMargin).toBe(false);
-      expect(fields[1].componentInstance.disableMargin).toBe(true);
-    });
-
-    it("on the last contact field", () => {
-      component.cipher = {
-        identity: {
-          email: "jack@gnn.com",
-        },
-      } as CipherView;
-
-      component.ngOnInit();
-      fixture.detectChanges();
-
-      let fields = fixture.debugElement.queryAll(By.directive(BitFormFieldComponent));
-
-      expect(component.lastContactField).toBe("email");
-      expect(fields[0].componentInstance.disableMargin).toBe(true);
-
-      component.cipher.identity.phone = "608-867-5309";
-      component.ngOnInit();
-      fixture.detectChanges();
-
-      fields = fixture.debugElement.queryAll(By.directive(BitFormFieldComponent));
-
-      expect(component.lastContactField).toBe("phone");
-      expect(fields[0].componentInstance.disableMargin).toBe(false);
-      expect(fields[1].componentInstance.disableMargin).toBe(true);
     });
   });
 });
