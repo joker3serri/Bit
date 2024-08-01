@@ -31,7 +31,7 @@ export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
     CommonModule,
     CurrentAccountComponent,
     IconModule,
-    // PopOutComponent,
+    PopOutComponent,
     PopupPageComponent,
     PopupHeaderComponent,
     RouterModule,

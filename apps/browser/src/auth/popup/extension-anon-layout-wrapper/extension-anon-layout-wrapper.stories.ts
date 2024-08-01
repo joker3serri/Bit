@@ -15,6 +15,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ClientType } from "@bitwarden/common/enums";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import {
   EnvironmentService,
   Environment,
@@ -95,6 +96,12 @@ const decorators = (options: {
           useValue: {
             avatarColor$: of("#ab134a"),
           } as Partial<AvatarService>,
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            getFeatureFlag: () => true,
+          },
         },
         {
           provide: EnvironmentService,
