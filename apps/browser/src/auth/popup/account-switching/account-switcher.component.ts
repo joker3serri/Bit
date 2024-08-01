@@ -1,7 +1,7 @@
 import { CommonModule, Location } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, firstValueFrom, map, of, switchMap, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, map, of, startWith, switchMap, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -87,6 +87,22 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
         ? of(null)
         : this.authService.activeAccountStatus$.pipe(map((s) => ({ ...a, status: s }))),
     ),
+  );
+
+  readonly showLockAll$ = this.availableAccounts$.pipe(
+    startWith([]),
+    map((accounts) => accounts.filter((a) => !a.isActive)),
+    switchMap((accounts) => {
+      // If account switching is disabled, don't show the lock all button
+      // as only one account should be shown.
+      if (!enableAccountSwitching()) {
+        return of(false);
+      }
+
+      // When there are an inactive accounts provide the option to lock all accounts
+      // Note: "Add account" is counted as an inactive account, so check for more than one account
+      return of(accounts.length > 1);
+    }),
   );
 
   async ngOnInit() {

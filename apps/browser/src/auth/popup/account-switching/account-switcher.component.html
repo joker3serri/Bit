@@ -80,7 +80,7 @@
             {{ "logOut" | i18n }}
           </button>
         </bit-item>
-        <bit-item>
+        <bit-item *ngIf="showLockAll$ | async">
           <button type="button" bit-item-content (click)="lockAll()">
             <i slot="start" class="bwi bwi-lock tw-text-2xl tw-text-main" aria-hidden="true"></i>
             {{ "lockAll" | i18n }}
