@@ -89,7 +89,6 @@ describe("SendService", () => {
       keyGenerationService,
       sendStateProvider,
       encryptService,
-      environmentService,
     );
   });
 
