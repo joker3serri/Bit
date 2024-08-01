@@ -121,7 +121,7 @@ describe("lockGuard", () => {
     expect(router.url).toBe("/");
   });
 
-  it("should allow navigation to the lock route when the user is Locked", async () => {
+  it("should allow navigation to the lock route when the user is Locked and they can lock", async () => {
     const { router } = setup({
       authStatus: AuthenticationStatus.Locked,
       canLock: true,
@@ -129,6 +129,27 @@ describe("lockGuard", () => {
 
     await router.navigate(["lock"]);
     expect(router.url).toBe("/lock");
+  });
+
+  it("should allow navigation to the lock route when the user is locked, they can lock, and device trust is not supported", async () => {
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+      supportsDeviceTrust: false,
+    });
+
+    await router.navigate(["lock"]);
+    expect(router.url).toBe("/lock");
+  });
+
+  it("should not allow navigation to the lock route when canLock is false", async () => {
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: false,
+    });
+
+    await router.navigate(["lock"]);
+    expect(router.url).toBe("/");
   });
 
   it("should log user out if they are a legacy user on a desktop client", async () => {
@@ -182,6 +203,19 @@ describe("lockGuard", () => {
 
     await router.navigate(["lock"], { queryParams: { from: "login-initiated" } });
     expect(router.url).toBe("/lock?from=login-initiated");
+  });
+
+  it("should allow navigation to the lock route when TDE is disabled, the user doesn't have a MP, and the user has had a user key", async () => {
+    const { router } = setup({
+      authStatus: AuthenticationStatus.Locked,
+      canLock: true,
+      supportsDeviceTrust: false,
+      hasMasterPassword: false,
+      everHadUserKey: true,
+    });
+
+    await router.navigate(["lock"]);
+    expect(router.url).toBe("/lock");
   });
 
   it("should not allow navigation to the lock route when device trust is supported and the user has not ever had a user key", async () => {
