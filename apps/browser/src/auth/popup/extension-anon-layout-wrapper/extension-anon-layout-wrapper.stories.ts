@@ -10,6 +10,10 @@ import {
 import { of } from "rxjs";
 
 import { AnonLayoutWrapperDataService, LockIcon } from "@bitwarden/auth/angular";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AvatarService } from "@bitwarden/common/auth/abstractions/avatar.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ClientType } from "@bitwarden/common/enums";
 import {
   EnvironmentService,
@@ -18,6 +22,7 @@ import {
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { UserId } from "@bitwarden/common/types/guid";
 import { ButtonModule } from "@bitwarden/components";
 
 import { PreloadedEnglishI18nModule } from "../../../../../../apps/web/src/app/core/tests";
@@ -67,6 +72,29 @@ const decorators = (options: {
         {
           provide: AnonLayoutWrapperDataService,
           useClass: ExtensionAnonLayoutWrapperDataService,
+        },
+        {
+          provide: AccountService,
+          useValue: {
+            activeAccount$: of({
+              id: "test-user-id" as UserId,
+              name: "Test User 1",
+              email: "test@email.com",
+              emailVerified: true,
+            }),
+          },
+        },
+        {
+          provide: AuthService,
+          useValue: {
+            activeAccountStatus$: of(AuthenticationStatus.Unlocked),
+          },
+        },
+        {
+          provide: AvatarService,
+          useValue: {
+            avatarColor$: of("#ab134a"),
+          } as Partial<AvatarService>,
         },
         {
           provide: EnvironmentService,
@@ -175,6 +203,7 @@ const initialData: ExtensionAnonLayoutWrapperData = {
   pageTitle: "setAStrongPassword",
   pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
   pageIcon: LockIcon,
+  showAcctSwitcher: true,
   showBackButton: true,
   showLogo: true,
 };
@@ -183,6 +212,7 @@ const changedData: ExtensionAnonLayoutWrapperData = {
   pageTitle: "enterpriseSingleSignOn",
   pageSubtitle: "checkYourEmail",
   pageIcon: RegistrationCheckEmailIcon,
+  showAcctSwitcher: true,
   showBackButton: true,
   showLogo: true,
 };
