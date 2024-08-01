@@ -60,7 +60,7 @@ import {
   GenerateFillScriptOptions,
   PageDetail,
 } from "./abstractions/autofill.service";
-import { AutoFillConstants, IdentityAutoFillConstants } from "./autofill-constants";
+import { AutoFillConstants } from "./autofill-constants";
 import AutofillService from "./autofill.service";
 
 const mockEquivalentDomains = [
@@ -3056,12 +3056,12 @@ describe("AutofillService", () => {
       options.cipher.identity = mock<IdentityView>();
     });
 
-    it("returns null if an identify is not found within the cipher", () => {
+    it("returns null if an identify is not found within the cipher", async () => {
       options.cipher.identity = null;
       jest.spyOn(autofillService as any, "makeScriptAction");
       jest.spyOn(autofillService as any, "makeScriptActionWithValue");
 
-      const value = autofillService["generateIdentityFillScript"](
+      const value = await autofillService["generateIdentityFillScript"](
         fillScript,
         pageDetails,
         filledFields,
@@ -3087,11 +3087,11 @@ describe("AutofillService", () => {
         jest.spyOn(autofillService as any, "makeScriptActionWithValue");
       });
 
-      it("will not attempt to match custom fields", () => {
+      it("will not attempt to match custom fields", async () => {
         const customField = createAutofillFieldMock({ tagName: "span" });
         pageDetails.fields.push(customField);
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
@@ -3104,11 +3104,11 @@ describe("AutofillService", () => {
         expect(value.script).toStrictEqual([]);
       });
 
-      it("will not attempt to match a field that is of an excluded type", () => {
+      it("will not attempt to match a field that is of an excluded type", async () => {
         const excludedField = createAutofillFieldMock({ type: "hidden" });
         pageDetails.fields.push(excludedField);
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
@@ -3124,11 +3124,11 @@ describe("AutofillService", () => {
         expect(value.script).toStrictEqual([]);
       });
 
-      it("will not attempt to match a field that is not viewable", () => {
+      it("will not attempt to match a field that is not viewable", async () => {
         const viewableField = createAutofillFieldMock({ viewable: false });
         pageDetails.fields.push(viewableField);
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
@@ -3141,25 +3141,20 @@ describe("AutofillService", () => {
         expect(value.script).toStrictEqual([]);
       });
 
-      it("will match a full name field to the vault item identity value", () => {
+      it("will match a full name field to the vault item identity value", async () => {
         const fullNameField = createAutofillFieldMock({ opid: "fullName", htmlName: "full-name" });
         pageDetails.fields = [fullNameField];
         options.cipher.identity.firstName = firstName;
         options.cipher.identity.middleName = middleName;
         options.cipher.identity.lastName = lastName;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
           options,
         );
 
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          fullNameField.htmlName,
-          IdentityAutoFillConstants.FullNameFieldNames,
-          IdentityAutoFillConstants.FullNameFieldNameValues,
-        );
         expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
           `${firstName} ${middleName} ${lastName}`,
@@ -3173,25 +3168,20 @@ describe("AutofillService", () => {
         ]);
       });
 
-      it("will match a full name field to the a vault item that only has a last name", () => {
+      it("will match a full name field to the a vault item that only has a last name", async () => {
         const fullNameField = createAutofillFieldMock({ opid: "fullName", htmlName: "full-name" });
         pageDetails.fields = [fullNameField];
         options.cipher.identity.firstName = "";
         options.cipher.identity.middleName = "";
         options.cipher.identity.lastName = lastName;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
           options,
         );
 
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          fullNameField.htmlName,
-          IdentityAutoFillConstants.FullNameFieldNames,
-          IdentityAutoFillConstants.FullNameFieldNameValues,
-        );
         expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
           lastName,
@@ -3201,7 +3191,7 @@ describe("AutofillService", () => {
         expect(value.script[2]).toStrictEqual(["fill_by_opid", fullNameField.opid, lastName]);
       });
 
-      it("will match first name, middle name, and last name fields to the vault item identity value", () => {
+      it("will match first name, middle name, and last name fields to the vault item identity value", async () => {
         const firstNameField = createAutofillFieldMock({
           opid: "firstName",
           htmlName: "first-name",
@@ -3216,52 +3206,37 @@ describe("AutofillService", () => {
         options.cipher.identity.middleName = middleName;
         options.cipher.identity.lastName = lastName;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
           options,
         );
 
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          firstNameField.htmlName,
-          IdentityAutoFillConstants.FirstnameFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          middleNameField.htmlName,
-          IdentityAutoFillConstants.MiddlenameFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          lastNameField.htmlName,
-          IdentityAutoFillConstants.LastnameFieldNames,
-        );
-        expect(autofillService["makeScriptAction"]).toHaveBeenCalledWith(
+        expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
-          options.cipher.identity,
-          expect.anything(),
+          options.cipher.identity.firstName,
+          firstNameField,
           filledFields,
-          firstNameField.opid,
         );
-        expect(autofillService["makeScriptAction"]).toHaveBeenCalledWith(
+        expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
-          options.cipher.identity,
-          expect.anything(),
+          options.cipher.identity.middleName,
+          middleNameField,
           filledFields,
-          middleNameField.opid,
         );
-        expect(autofillService["makeScriptAction"]).toHaveBeenCalledWith(
+        expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
-          options.cipher.identity,
-          expect.anything(),
+          options.cipher.identity.lastName,
+          lastNameField,
           filledFields,
-          lastNameField.opid,
         );
         expect(value.script[2]).toStrictEqual(["fill_by_opid", firstNameField.opid, firstName]);
         expect(value.script[5]).toStrictEqual(["fill_by_opid", middleNameField.opid, middleName]);
         expect(value.script[8]).toStrictEqual(["fill_by_opid", lastNameField.opid, lastName]);
       });
 
-      it("will match title and email fields to the vault item identity value", () => {
+      it("will match title and email fields to the vault item identity value", async () => {
         const titleField = createAutofillFieldMock({ opid: "title", htmlName: "title" });
         const emailField = createAutofillFieldMock({ opid: "email", htmlName: "email" });
         pageDetails.fields = [titleField, emailField];
@@ -3270,40 +3245,30 @@ describe("AutofillService", () => {
         options.cipher.identity.title = title;
         options.cipher.identity.email = email;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
           options,
         );
 
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          titleField.htmlName,
-          IdentityAutoFillConstants.TitleFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          emailField.htmlName,
-          IdentityAutoFillConstants.EmailFieldNames,
-        );
-        expect(autofillService["makeScriptAction"]).toHaveBeenCalledWith(
+        expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
-          options.cipher.identity,
-          expect.anything(),
+          options.cipher.identity.title,
+          titleField,
           filledFields,
-          titleField.opid,
         );
-        expect(autofillService["makeScriptAction"]).toHaveBeenCalledWith(
+        expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
-          options.cipher.identity,
-          expect.anything(),
+          options.cipher.identity.email,
+          emailField,
           filledFields,
-          emailField.opid,
         );
         expect(value.script[2]).toStrictEqual(["fill_by_opid", titleField.opid, title]);
         expect(value.script[5]).toStrictEqual(["fill_by_opid", emailField.opid, email]);
       });
 
-      it("will match a full address field to the vault item identity values", () => {
+      it("will match a full address field to the vault item identity values", async () => {
         const fullAddressField = createAutofillFieldMock({
           opid: "fullAddress",
           htmlName: "address",
@@ -3316,18 +3281,13 @@ describe("AutofillService", () => {
         options.cipher.identity.address2 = address2;
         options.cipher.identity.address3 = address3;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
           options,
         );
 
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          fullAddressField.htmlName,
-          IdentityAutoFillConstants.AddressFieldNames,
-          IdentityAutoFillConstants.AddressFieldNameValues,
-        );
         expect(autofillService["makeScriptActionWithValue"]).toHaveBeenCalledWith(
           fillScript,
           `${address1}, ${address2}, ${address3}`,
@@ -3341,7 +3301,7 @@ describe("AutofillService", () => {
         ]);
       });
 
-      it("will match address1, address2, address3, postalCode, city, state, country, phone, username, and company fields to their corresponding vault item identity values", () => {
+      it("will match address1, address2, address3, postalCode, city, state, country, phone, username, and company fields to their corresponding vault item identity values", async () => {
         const address1Field = createAutofillFieldMock({ opid: "address1", htmlName: "address-1" });
         const address2Field = createAutofillFieldMock({ opid: "address2", htmlName: "address-2" });
         const address3Field = createAutofillFieldMock({ opid: "address3", htmlName: "address-3" });
@@ -3372,8 +3332,8 @@ describe("AutofillService", () => {
         const address3 = "P.O. Box 123";
         const postalCode = "12345";
         const city = "City";
-        const state = "State";
-        const country = "Country";
+        const state = "TX";
+        const country = "US";
         const phone = "123-456-7890";
         const username = "username";
         const company = "Company";
@@ -3388,73 +3348,32 @@ describe("AutofillService", () => {
         options.cipher.identity.username = username;
         options.cipher.identity.company = company;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
           options,
         );
 
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          address1Field.htmlName,
-          IdentityAutoFillConstants.Address1FieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          address2Field.htmlName,
-          IdentityAutoFillConstants.Address2FieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          address3Field.htmlName,
-          IdentityAutoFillConstants.Address3FieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          postalCodeField.htmlName,
-          IdentityAutoFillConstants.PostalCodeFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          cityField.htmlName,
-          IdentityAutoFillConstants.CityFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          stateField.htmlName,
-          IdentityAutoFillConstants.StateFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          countryField.htmlName,
-          IdentityAutoFillConstants.CountryFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          phoneField.htmlName,
-          IdentityAutoFillConstants.PhoneFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          usernameField.htmlName,
-          IdentityAutoFillConstants.UserNameFieldNames,
-        );
-        expect(AutofillService["isFieldMatch"]).toHaveBeenCalledWith(
-          companyField.htmlName,
-          IdentityAutoFillConstants.CompanyFieldNames,
-        );
-        expect(autofillService["makeScriptAction"]).toHaveBeenCalled();
-        expect(value.script[2]).toStrictEqual(["fill_by_opid", address1Field.opid, address1]);
-        expect(value.script[5]).toStrictEqual(["fill_by_opid", address2Field.opid, address2]);
-        expect(value.script[8]).toStrictEqual(["fill_by_opid", address3Field.opid, address3]);
-        expect(value.script[11]).toStrictEqual(["fill_by_opid", cityField.opid, city]);
-        expect(value.script[14]).toStrictEqual(["fill_by_opid", postalCodeField.opid, postalCode]);
-        expect(value.script[17]).toStrictEqual(["fill_by_opid", companyField.opid, company]);
-        expect(value.script[20]).toStrictEqual(["fill_by_opid", phoneField.opid, phone]);
-        expect(value.script[23]).toStrictEqual(["fill_by_opid", usernameField.opid, username]);
-        expect(value.script[26]).toStrictEqual(["fill_by_opid", stateField.opid, state]);
-        expect(value.script[29]).toStrictEqual(["fill_by_opid", countryField.opid, country]);
+        expect(value.script).toContainEqual(["fill_by_opid", address1Field.opid, address1]);
+        expect(value.script).toContainEqual(["fill_by_opid", address2Field.opid, address2]);
+        expect(value.script).toContainEqual(["fill_by_opid", address3Field.opid, address3]);
+        expect(value.script).toContainEqual(["fill_by_opid", postalCodeField.opid, postalCode]);
+        expect(value.script).toContainEqual(["fill_by_opid", cityField.opid, city]);
+        expect(value.script).toContainEqual(["fill_by_opid", stateField.opid, state]);
+        expect(value.script).toContainEqual(["fill_by_opid", countryField.opid, country]);
+        expect(value.script).toContainEqual(["fill_by_opid", phoneField.opid, phone]);
+        expect(value.script).toContainEqual(["fill_by_opid", usernameField.opid, username]);
+        expect(value.script).toContainEqual(["fill_by_opid", companyField.opid, company]);
       });
 
-      it("will find the two character IsoState value for an identity cipher that contains the full name of a state", () => {
+      it("will find the two character IsoState value for an identity cipher that contains the full name of a state", async () => {
         const stateField = createAutofillFieldMock({ opid: "state", htmlName: "state" });
         pageDetails.fields = [stateField];
         const state = "California";
         options.cipher.identity.state = state;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
@@ -3470,13 +3389,13 @@ describe("AutofillService", () => {
         expect(value.script[2]).toStrictEqual(["fill_by_opid", stateField.opid, "CA"]);
       });
 
-      it("will find the two character IsoProvince value for an identity cipher that contains the full name of a province", () => {
+      it("will find the two character IsoProvince value for an identity cipher that contains the full name of a province", async () => {
         const stateField = createAutofillFieldMock({ opid: "state", htmlName: "state" });
         pageDetails.fields = [stateField];
         const state = "Ontario";
         options.cipher.identity.state = state;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,
@@ -3492,13 +3411,13 @@ describe("AutofillService", () => {
         expect(value.script[2]).toStrictEqual(["fill_by_opid", stateField.opid, "ON"]);
       });
 
-      it("will find the two character IsoCountry value for an identity cipher that contains the full name of a country", () => {
+      it("will find the two character IsoCountry value for an identity cipher that contains the full name of a country", async () => {
         const countryField = createAutofillFieldMock({ opid: "country", htmlName: "country" });
         pageDetails.fields = [countryField];
         const country = "Somalia";
         options.cipher.identity.country = country;
 
-        const value = autofillService["generateIdentityFillScript"](
+        const value = await autofillService["generateIdentityFillScript"](
           fillScript,
           pageDetails,
           filledFields,

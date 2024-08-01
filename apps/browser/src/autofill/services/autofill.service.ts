@@ -26,6 +26,7 @@ import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
+import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
@@ -654,7 +655,7 @@ export default class AutofillService implements AutofillServiceInterface {
         fillScript = this.generateCardFillScript(fillScript, pageDetails, filledFields, options);
         break;
       case CipherType.Identity:
-        fillScript = this.generateIdentityFillScript(
+        fillScript = await this.generateIdentityFillScript(
           fillScript,
           pageDetails,
           filledFields,
@@ -1243,12 +1244,20 @@ export default class AutofillService implements AutofillServiceInterface {
    * @returns {AutofillScript}
    * @private
    */
-  private generateIdentityFillScript(
+  private async generateIdentityFillScript(
     fillScript: AutofillScript,
     pageDetails: AutofillPageDetails,
     filledFields: { [id: string]: AutofillField },
     options: GenerateFillScriptOptions,
-  ): AutofillScript {
+  ): Promise<AutofillScript> {
+    const useGenerateIdentityFillScriptRefactor = await this.configService.getFeatureFlag(
+      FeatureFlag.GenerateIdentityFillScriptRefactor,
+    );
+
+    if (useGenerateIdentityFillScriptRefactor) {
+      return this._generateIdentityFillScript(fillScript, pageDetails, filledFields, options);
+    }
+
     if (!options.cipher.identity) {
       return null;
     }
@@ -1474,6 +1483,414 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     return fillScript;
+  }
+
+  private _generateIdentityFillScript(
+    fillScript: AutofillScript,
+    pageDetails: AutofillPageDetails,
+    filledFields: { [id: string]: AutofillField },
+    options: GenerateFillScriptOptions,
+  ): AutofillScript {
+    const identity = options.cipher.identity;
+    if (!identity) {
+      return null;
+    }
+
+    for (let fieldsIndex = 0; fieldsIndex < pageDetails.fields.length; fieldsIndex++) {
+      const field = pageDetails.fields[fieldsIndex];
+      if (this._excludeFieldFromIdentityFill(field)) {
+        continue;
+      }
+
+      const fieldKeywords = this._getIdentityAutofillFieldKeywords(field);
+      if (this._shouldMakeIdentityTitleFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.title, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityNameFillScript(filledFields, fieldKeywords)) {
+        this._makeIdentityNameFillScript(fillScript, filledFields, field, identity);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityFirstNameFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.firstName, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityMiddleNameFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.middleName, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityLastNameFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.lastName, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityEmailFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.email, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityAddressFillScript(filledFields, fieldKeywords)) {
+        this._makeIdentityAddressFillScript(fillScript, filledFields, field, identity);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityAddress1FillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.address1, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityAddress2FillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.address2, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityAddress3FillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.address3, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityPostalCodeFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.postalCode, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityCityFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.city, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityStateFillScript(filledFields, fieldKeywords)) {
+        this._makeIdentityStateFillScript(fillScript, filledFields, field, identity);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityCountryFillScript(filledFields, fieldKeywords)) {
+        this._makeIdentityCountryFillScript(fillScript, filledFields, field, identity);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityPhoneFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.phone, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityUserNameFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.username, field, filledFields);
+        continue;
+      }
+
+      if (this._shouldMakeIdentityCompanyFillScript(filledFields, fieldKeywords)) {
+        this.makeScriptActionWithValue(fillScript, identity.company, field, filledFields);
+      }
+    }
+
+    return fillScript;
+  }
+
+  private _excludeFieldFromIdentityFill(field: AutofillField): boolean {
+    return (
+      AutofillService.isExcludedFieldType(field, AutoFillConstants.ExcludedAutofillTypes) ||
+      AutoFillConstants.ExcludedIdentityAutocompleteTypes.has(field.autoCompleteType) ||
+      !field.viewable
+    );
+  }
+
+  private _getIdentityAutofillFieldKeywords(field: AutofillField): string {
+    const keywords: Set<string> = new Set();
+    for (let index = 0; index < IdentityAutoFillConstants.IdentityAttributes.length; index++) {
+      const attribute = IdentityAutoFillConstants.IdentityAttributes[index];
+      if (field[attribute]) {
+        keywords.add(
+          field[attribute]
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-zA-Z0-9]+/g, ""),
+        );
+      }
+    }
+
+    return Array.from(keywords).join(",");
+  }
+
+  private _shouldMakeIdentityTitleFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.title &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.TitleFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityNameFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.name &&
+      keywords
+        .split(",")
+        .some((keyword) =>
+          AutofillService.isFieldMatch(
+            keywords,
+            IdentityAutoFillConstants.FullNameFieldNames,
+            IdentityAutoFillConstants.FullNameFieldNameValues,
+          ),
+        )
+    );
+  }
+
+  private _shouldMakeIdentityFirstNameFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.firstName &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.FirstnameFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityMiddleNameFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.middleName &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.MiddlenameFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityLastNameFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.lastName &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.LastnameFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityEmailFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.email &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.EmailFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityAddressFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.address &&
+      keywords
+        .split(",")
+        .some((keyword) =>
+          AutofillService.isFieldMatch(
+            keyword,
+            IdentityAutoFillConstants.AddressFieldNames,
+            IdentityAutoFillConstants.AddressFieldNameValues,
+          ),
+        )
+    );
+  }
+
+  private _shouldMakeIdentityAddress1FillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.address1 &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.Address1FieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityAddress2FillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.address2 &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.Address2FieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityAddress3FillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.address3 &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.Address3FieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityPostalCodeFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.postalCode &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.PostalCodeFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityCityFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.city &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.CityFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityStateFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.state &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.StateFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityCountryFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.country &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.CountryFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityPhoneFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.phone &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.PhoneFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityUserNameFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.username &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.UserNameFieldNames)
+    );
+  }
+
+  private _shouldMakeIdentityCompanyFillScript(
+    filledFields: Record<string, AutofillField>,
+    keywords: string,
+  ): boolean {
+    return (
+      !filledFields.company &&
+      AutofillService.isFieldMatch(keywords, IdentityAutoFillConstants.CompanyFieldNames)
+    );
+  }
+
+  private _makeIdentityNameFillScript(
+    fillScript: AutofillScript,
+    filledFields: Record<string, AutofillField>,
+    field: AutofillField,
+    identity: IdentityView,
+  ) {
+    let name = "";
+    if (identity.firstName) {
+      name += identity.firstName;
+    }
+
+    if (identity.middleName) {
+      name += !name ? identity.middleName : ` ${identity.middleName}`;
+    }
+
+    if (identity.lastName) {
+      name += !name ? identity.lastName : ` ${identity.lastName}`;
+    }
+
+    this.makeScriptActionWithValue(fillScript, name, field, filledFields);
+  }
+
+  private _makeIdentityAddressFillScript(
+    fillScript: AutofillScript,
+    filledFields: Record<string, AutofillField>,
+    field: AutofillField,
+    identity: IdentityView,
+  ) {
+    if (!identity.address1) {
+      return;
+    }
+
+    let address = identity.address1;
+
+    if (identity.address2) {
+      address += `, ${identity.address2}`;
+    }
+
+    if (identity.address3) {
+      address += `, ${identity.address3}`;
+    }
+
+    this.makeScriptActionWithValue(fillScript, address, field, filledFields);
+  }
+
+  private _makeIdentityStateFillScript(
+    fillScript: AutofillScript,
+    filledFields: Record<string, AutofillField>,
+    field: AutofillField,
+    identity: IdentityView,
+  ) {
+    if (!identity.state) {
+      return;
+    }
+
+    if (identity.state.length <= 2) {
+      this.makeScriptActionWithValue(fillScript, identity.state, field, filledFields);
+      return;
+    }
+
+    const stateLower = identity.state.toLowerCase();
+    const isoState =
+      IdentityAutoFillConstants.IsoStates[stateLower] ||
+      IdentityAutoFillConstants.IsoProvinces[stateLower];
+    if (isoState) {
+      this.makeScriptActionWithValue(fillScript, isoState, field, filledFields);
+    }
+  }
+
+  private _makeIdentityCountryFillScript(
+    fillScript: AutofillScript,
+    filledFields: Record<string, AutofillField>,
+    field: AutofillField,
+    identity: IdentityView,
+  ) {
+    if (!identity.country) {
+      return;
+    }
+
+    if (identity.country.length <= 2) {
+      this.makeScriptActionWithValue(fillScript, identity.country, field, filledFields);
+      return;
+    }
+
+    const countryLower = identity.country.toLowerCase();
+    const isoCountry = IdentityAutoFillConstants.IsoCountries[countryLower];
+    if (isoCountry) {
+      this.makeScriptActionWithValue(fillScript, isoCountry, field, filledFields);
+    }
   }
 
   /**

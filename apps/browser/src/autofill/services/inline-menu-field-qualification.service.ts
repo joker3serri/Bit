@@ -1073,7 +1073,7 @@ export class InlineMenuFieldQualificationService
         autofillFieldData["label-top"],
       ];
       const keywordsSet = new Set<string>(keywords);
-      const stringValue = keywords.join(",").toLowerCase();
+      const stringValue = Array.from(keywordsSet).join(",").toLowerCase();
       this.autofillFieldKeywordsMap.set(autofillFieldData, { keywordsSet, stringValue });
     }
 
