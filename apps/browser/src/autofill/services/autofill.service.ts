@@ -479,6 +479,12 @@ export default class AutofillService implements AutofillServiceInterface {
     return totpCode;
   }
 
+  /**
+   * Checks if the cipher requires password reprompt and opens the password reprompt popout if necessary.
+   *
+   * @param cipher - The cipher to autofill
+   * @param tab - The tab to autofill
+   */
   async isPasswordRepromptRequired(cipher: CipherView, tab: chrome.tabs.Tab): Promise<boolean> {
     const userHasMasterPasswordAndKeyHash =
       await this.userVerificationService.hasMasterPasswordAndMasterKeyHash();
