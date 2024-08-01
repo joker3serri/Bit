@@ -1256,11 +1256,7 @@ export default class AutofillService implements AutofillServiceInterface {
     filledFields: { [id: string]: AutofillField },
     options: GenerateFillScriptOptions,
   ): Promise<AutofillScript> {
-    const useGenerateIdentityFillScriptRefactor = await this.configService.getFeatureFlag(
-      FeatureFlag.GenerateIdentityFillScriptRefactor,
-    );
-
-    if (useGenerateIdentityFillScriptRefactor) {
+    if (await this.configService.getFeatureFlag(FeatureFlag.GenerateIdentityFillScriptRefactor)) {
       return this._generateIdentityFillScript(fillScript, pageDetails, filledFields, options);
     }
 
