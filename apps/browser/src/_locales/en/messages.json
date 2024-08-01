@@ -116,6 +116,21 @@
   "copySecurityCode": {
     "message": "Copy security code"
   },
+  "copyName": {
+    "message": "Copy name"
+  },
+  "copyCompany": {
+    "message": "Copy company"
+  },
+  "copySSN": {
+    "message": "Copy Social Security number"
+  },
+  "copyPassportNumber": {
+    "message": "Copy passport number"
+  },
+  "copyLicenseNumber": {
+    "message": "Copy license number"
+  },
   "autoFill": {
     "message": "Autofill"
   },
@@ -1328,8 +1343,14 @@
   "commandOpenSidebar": {
     "message": "Open vault in sidebar"
   },
-  "commandAutofillDesc": {
-    "message": "Auto-fill the last used login for the current website"
+  "commandAutofillLoginDesc": {
+    "message": "Autofill the last used login for the current website"
+  },
+  "commandAutofillCardDesc": {
+    "message": "Autofill the last used card for the current website"
+  },
+  "commandAutofillIdentityDesc": {
+    "message": "Autofill the last used identity for the current website"
   },
   "commandGeneratePasswordDesc": {
     "message": "Generate and copy a new random password to the clipboard"
@@ -1633,6 +1654,10 @@
   },
   "baseDomain": {
     "message": "Base domain",
+    "description": "Domain name. Ex. website.com"
+  },
+  "baseDomainOptionRecommended": {
+    "message": "Base domain (recommended)",
     "description": "Domain name. Ex. website.com"
   },
   "domainName": {
@@ -2759,14 +2784,17 @@
   "autofillKeyboardShortcutUpdateLabel": {
     "message": "Change shortcut"
   },
+  "autofillKeyboardManagerShortcutsLabel": {
+    "message": "Manage shortcuts"
+  },
   "autofillShortcut": {
     "message": "Autofill keyboard shortcut"
   },
-  "autofillShortcutNotSet": {
-    "message": "The autofill shortcut is not set. Change this in the browser's settings."
+  "autofillLoginShortcutNotSet": {
+    "message": "The autofill login shortcut is not set. Change this in the browser's settings."
   },
-  "autofillShortcutText": {
-    "message": "The autofill shortcut is: $COMMAND$. Change this in the browser's settings.",
+  "autofillLoginShortcutText": {
+    "message": "The autofill login shortcut is $COMMAND$. Manage all shortcuts in the browser's settings.",
     "placeholders": {
       "command": {
         "content": "$1",
@@ -3800,6 +3828,52 @@
   "authenticatorKey": {
     "message": "Authenticator key"
   },
+  "autofillOptions": {
+    "message": "Auto-fill options"
+  },
+  "websiteUri": {
+    "message": "Website (URI)"
+  },
+  "websiteAdded": {
+    "message": "Website added"
+  },
+  "addWebsite": {
+    "message": "Add website"
+  },
+  "deleteWebsite": {
+    "message": "Delete website"
+  },
+  "defaultLabel": {
+    "message": "Default ($VALUE$)",
+    "description": "A label that indicates the default value for a field with the current default value in parentheses.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Base domain"
+      }
+    }
+  },
+  "showMatchDetection": {
+    "message": "Show match detection $WEBSITE$",
+    "placeholders": {
+      "website": {
+        "content": "$1",
+        "example": "https://example.com"
+      }
+    }
+  },
+  "hideMatchDetection": {
+    "message": "Hide match detection $WEBSITE$",
+    "placeholders": {
+      "website": {
+        "content": "$1",
+        "example": "https://example.com"
+      }
+    }
+  },
+  "autoFillOnPageLoad": {
+    "message": "Autofill on page load?"
+  },
   "cardDetails": {
     "message": "Card details"
   },
@@ -4014,5 +4088,11 @@
   },
   "itemLocation": {
     "message": "Item Location"
+  },
+  "bitwardenNewLook": {
+    "message": "Bitwarden has a new look!"
+  },
+  "bitwardenNewLookDesc": {
+    "message": "It's easier and more intuitive than ever to autofill and search from the Vault tab. Take a look around!"
   }
 }
