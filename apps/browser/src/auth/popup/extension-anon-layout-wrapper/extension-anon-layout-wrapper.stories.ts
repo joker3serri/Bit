@@ -20,13 +20,13 @@ import {
   EnvironmentService,
   Environment,
 } from "@bitwarden/common/platform/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { UserId } from "@bitwarden/common/types/guid";
-import { ButtonModule } from "@bitwarden/components";
+import { ButtonModule, I18nMockService } from "@bitwarden/components";
 
-import { PreloadedEnglishI18nModule } from "../../../../../../apps/web/src/app/core/tests";
 import { RegistrationCheckEmailIcon } from "../../../../../../libs/auth/src/angular/icons/registration-check-email.icon";
 
 import { ExtensionAnonLayoutWrapperDataService } from "./extension-anon-layout-wrapper-data.service";
@@ -125,13 +125,27 @@ const decorators = (options: {
             selectedTheme$: of(options.themeType || ThemeType.Light),
           } as Partial<ThemeStateService>,
         },
+        {
+          provide: I18nService,
+          useFactory: () => {
+            return new I18nMockService({
+              setAStrongPassword: "Set a strong password",
+              finishCreatingYourAccountBySettingAPassword:
+                "Finish creating your account by setting a password",
+              enterpriseSingleSignOn: "Enterprise single sign-on",
+              checkYourEmail: "Check your email",
+              loading: "Loading",
+              popOutNewWindow: "Pop out to a new window",
+              switchAccounts: "Switch accounts",
+              back: "Back",
+              activeAccount: "Active account",
+            });
+          },
+        },
       ],
     }),
     applicationConfig({
-      providers: [
-        importProvidersFrom(RouterModule.forRoot(options.routes)),
-        importProvidersFrom(PreloadedEnglishI18nModule),
-      ],
+      providers: [importProvidersFrom(RouterModule.forRoot(options.routes))],
     }),
   ];
 };
