@@ -1487,6 +1487,14 @@ export default class AutofillService implements AutofillServiceInterface {
     return fillScript;
   }
 
+  /**
+   * Generates the autofill script for the specified page details and identity cipher item.
+   *
+   * @param fillScript - Object to store autofill script, passed between method references
+   * @param pageDetails - The details of the page to autofill
+   * @param filledFields - The fields that have already been filled, passed between method references
+   * @param options - Contains data used to fill cipher items
+   */
   private _generateIdentityFillScript(
     fillScript: AutofillScript,
     pageDetails: AutofillPageDetails,
@@ -1500,93 +1508,93 @@ export default class AutofillService implements AutofillServiceInterface {
 
     for (let fieldsIndex = 0; fieldsIndex < pageDetails.fields.length; fieldsIndex++) {
       const field = pageDetails.fields[fieldsIndex];
-      if (this._excludeFieldFromIdentityFill(field)) {
+      if (this.excludeFieldFromIdentityFill(field)) {
         continue;
       }
 
-      const keywordsList = this._getIdentityAutofillFieldKeywords(field);
+      const keywordsList = this.getIdentityAutofillFieldKeywords(field);
       const keywordsCombined = keywordsList.join(",");
-      if (this._shouldMakeIdentityTitleFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityTitleFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.title, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityNameFillScript(filledFields, keywordsList)) {
-        this._makeIdentityNameFillScript(fillScript, filledFields, field, identity);
+      if (this.shouldMakeIdentityNameFillScript(filledFields, keywordsList)) {
+        this.makeIdentityNameFillScript(fillScript, filledFields, field, identity);
         continue;
       }
 
-      if (this._shouldMakeIdentityFirstNameFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityFirstNameFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.firstName, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityMiddleNameFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityMiddleNameFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.middleName, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityLastNameFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityLastNameFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.lastName, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityEmailFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityEmailFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.email, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityAddressFillScript(filledFields, keywordsList)) {
-        this._makeIdentityAddressFillScript(fillScript, filledFields, field, identity);
+      if (this.shouldMakeIdentityAddressFillScript(filledFields, keywordsList)) {
+        this.makeIdentityAddressFillScript(fillScript, filledFields, field, identity);
         continue;
       }
 
-      if (this._shouldMakeIdentityAddress1FillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityAddress1FillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.address1, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityAddress2FillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityAddress2FillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.address2, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityAddress3FillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityAddress3FillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.address3, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityPostalCodeFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityPostalCodeFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.postalCode, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityCityFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityCityFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.city, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityStateFillScript(filledFields, keywordsCombined)) {
-        this._makeIdentityStateFillScript(fillScript, filledFields, field, identity);
+      if (this.shouldMakeIdentityStateFillScript(filledFields, keywordsCombined)) {
+        this.makeIdentityStateFillScript(fillScript, filledFields, field, identity);
         continue;
       }
 
-      if (this._shouldMakeIdentityCountryFillScript(filledFields, keywordsCombined)) {
-        this._makeIdentityCountryFillScript(fillScript, filledFields, field, identity);
+      if (this.shouldMakeIdentityCountryFillScript(filledFields, keywordsCombined)) {
+        this.makeIdentityCountryFillScript(fillScript, filledFields, field, identity);
         continue;
       }
 
-      if (this._shouldMakeIdentityPhoneFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityPhoneFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.phone, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityUserNameFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityUserNameFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.username, field, filledFields);
         continue;
       }
 
-      if (this._shouldMakeIdentityCompanyFillScript(filledFields, keywordsCombined)) {
+      if (this.shouldMakeIdentityCompanyFillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.company, field, filledFields);
       }
     }
@@ -1594,7 +1602,12 @@ export default class AutofillService implements AutofillServiceInterface {
     return fillScript;
   }
 
-  private _excludeFieldFromIdentityFill(field: AutofillField): boolean {
+  /**
+   * Identifies if the current field should be excluded from triggering autofill of the identity cipher.
+   *
+   * @param field - The field to check
+   */
+  private excludeFieldFromIdentityFill(field: AutofillField): boolean {
     return (
       AutofillService.isExcludedFieldType(field, AutoFillConstants.ExcludedAutofillTypes) ||
       AutoFillConstants.ExcludedIdentityAutocompleteTypes.has(field.autoCompleteType) ||
@@ -1602,7 +1615,13 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _getIdentityAutofillFieldKeywords(field: AutofillField): string[] {
+  /**
+   * Gathers all unique keyword identifiers from a field that can be used to determine what
+   * identity value should be filled.
+   *
+   * @param field - The field to gather keywords from
+   */
+  private getIdentityAutofillFieldKeywords(field: AutofillField): string[] {
     const keywords: Set<string> = new Set();
     for (let index = 0; index < IdentityAutoFillConstants.IdentityAttributes.length; index++) {
       const attribute = IdentityAutoFillConstants.IdentityAttributes[index];
@@ -1619,7 +1638,14 @@ export default class AutofillService implements AutofillServiceInterface {
     return Array.from(keywords);
   }
 
-  private _shouldMakeIdentityTitleFillScript(
+  /**
+   * Identifies if a fill script action for the identity title
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityTitleFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1629,7 +1655,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityNameFillScript(
+  /**
+   * Identifies if a fill script action for the identity name
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityNameFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string[],
   ): boolean {
@@ -1645,7 +1678,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityFirstNameFillScript(
+  /**
+   * Identifies if a fill script action for the identity first name
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityFirstNameFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1655,7 +1695,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityMiddleNameFillScript(
+  /**
+   * Identifies if a fill script action for the identity middle name
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityMiddleNameFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1665,7 +1712,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityLastNameFillScript(
+  /**
+   * Identifies if a fill script action for the identity last name
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityLastNameFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1675,7 +1729,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityEmailFillScript(
+  /**
+   * Identifies if a fill script action for the identity email
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityEmailFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1685,7 +1746,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityAddressFillScript(
+  /**
+   * Identifies if a fill script action for the identity address
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityAddressFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string[],
   ): boolean {
@@ -1701,7 +1769,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityAddress1FillScript(
+  /**
+   * Identifies if a fill script action for the identity address1
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityAddress1FillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1711,7 +1786,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityAddress2FillScript(
+  /**
+   * Identifies if a fill script action for the identity address2
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityAddress2FillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1721,7 +1803,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityAddress3FillScript(
+  /**
+   * Identifies if a fill script action for the identity address3
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityAddress3FillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1731,7 +1820,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityPostalCodeFillScript(
+  /**
+   * Identifies if a fill script action for the identity postal code
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityPostalCodeFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1741,7 +1837,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityCityFillScript(
+  /**
+   * Identifies if a fill script action for the identity city
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityCityFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1751,7 +1854,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityStateFillScript(
+  /**
+   * Identifies if a fill script action for the identity state
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityStateFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1761,7 +1871,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityCountryFillScript(
+  /**
+   * Identifies if a fill script action for the identity country
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityCountryFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1771,7 +1888,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityPhoneFillScript(
+  /**
+   * Identifies if a fill script action for the identity phone
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityPhoneFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1781,7 +1905,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityUserNameFillScript(
+  /**
+   * Identifies if a fill script action for the identity username
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityUserNameFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1791,7 +1922,14 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _shouldMakeIdentityCompanyFillScript(
+  /**
+   * Identifies if a fill script action for the identity company
+   * field should be created for the provided field.
+   *
+   * @param filledFields - The fields that have already been filled
+   * @param keywords - The keywords from the field
+   */
+  private shouldMakeIdentityCompanyFillScript(
     filledFields: Record<string, AutofillField>,
     keywords: string,
   ): boolean {
@@ -1801,7 +1939,17 @@ export default class AutofillService implements AutofillServiceInterface {
     );
   }
 
-  private _makeIdentityNameFillScript(
+  /**
+   * Creates an identity name fill script action for the provided field. This is used
+   * when filling a `full name` field, using the first, middle, and last name from the
+   * identity cipher item.
+   *
+   * @param fillScript - The autofill script to add the action to
+   * @param filledFields - The fields that have already been filled
+   * @param field - The field to fill
+   * @param identity - The identity cipher item
+   */
+  private makeIdentityNameFillScript(
     fillScript: AutofillScript,
     filledFields: Record<string, AutofillField>,
     field: AutofillField,
@@ -1823,7 +1971,17 @@ export default class AutofillService implements AutofillServiceInterface {
     this.makeScriptActionWithValue(fillScript, name, field, filledFields);
   }
 
-  private _makeIdentityAddressFillScript(
+  /**
+   * Creates an identity address fill script action for the provided field. This is used
+   * when filling a generic `address` field, using the address1, address2, and address3
+   * from the identity cipher item.
+   *
+   * @param fillScript - The autofill script to add the action to
+   * @param filledFields - The fields that have already been filled
+   * @param field - The field to fill
+   * @param identity - The identity cipher item
+   */
+  private makeIdentityAddressFillScript(
     fillScript: AutofillScript,
     filledFields: Record<string, AutofillField>,
     field: AutofillField,
@@ -1846,7 +2004,17 @@ export default class AutofillService implements AutofillServiceInterface {
     this.makeScriptActionWithValue(fillScript, address, field, filledFields);
   }
 
-  private _makeIdentityStateFillScript(
+  /**
+   * Creates an identity state fill script action for the provided field. This is used
+   * when filling a `state` field, using the state value from the identity cipher item.
+   * If the state value is a full name, it will be converted to an ISO code.
+   *
+   * @param fillScript - The autofill script to add the action to
+   * @param filledFields - The fields that have already been filled
+   * @param field - The field to fill
+   * @param identity - The identity cipher item
+   */
+  private makeIdentityStateFillScript(
     fillScript: AutofillScript,
     filledFields: Record<string, AutofillField>,
     field: AutofillField,
@@ -1870,7 +2038,17 @@ export default class AutofillService implements AutofillServiceInterface {
     }
   }
 
-  private _makeIdentityCountryFillScript(
+  /**
+   * Creates an identity country fill script action for the provided field. This is used
+   * when filling a `country` field, using the country value from the identity cipher item.
+   * If the country value is a full name, it will be converted to an ISO code.
+   *
+   * @param fillScript - The autofill script to add the action to
+   * @param filledFields - The fields that have already been filled
+   * @param field - The field to fill
+   * @param identity - The identity cipher item
+   */
+  private makeIdentityCountryFillScript(
     fillScript: AutofillScript,
     filledFields: Record<string, AutofillField>,
     field: AutofillField,
