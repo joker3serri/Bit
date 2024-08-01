@@ -219,9 +219,9 @@ const changedData: ExtensionAnonLayoutWrapperData = {
   pageTitle: "enterpriseSingleSignOn",
   pageSubtitle: "checkYourEmail",
   pageIcon: RegistrationCheckEmailIcon,
-  showAcctSwitcher: true,
-  showBackButton: true,
-  showLogo: true,
+  showAcctSwitcher: false,
+  showBackButton: false,
+  showLogo: false,
 };
 
 @Component({

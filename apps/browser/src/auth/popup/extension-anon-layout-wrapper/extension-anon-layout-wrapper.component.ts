@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { Subject, filter, firstValueFrom, switchMap, takeUntil, tap } from "rxjs";
 
@@ -40,9 +40,9 @@ export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
 export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  @Input() showAcctSwitcher: boolean;
-  @Input() showBackButton: boolean;
-  @Input() showLogo: boolean;
+  protected showAcctSwitcher: boolean;
+  protected showBackButton: boolean;
+  protected showLogo: boolean;
 
   protected pageTitle: string;
   protected pageSubtitle: string;
@@ -144,19 +144,19 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
       this.pageIcon = data.pageIcon;
     }
 
-    if (data.showReadonlyHostname) {
+    if (data.showReadonlyHostname != null) {
       this.showReadonlyHostname = data.showReadonlyHostname;
     }
 
-    if (data.showAcctSwitcher) {
+    if (data.showAcctSwitcher != null) {
       this.showAcctSwitcher = data.showAcctSwitcher;
     }
 
-    if (data.showBackButton) {
+    if (data.showBackButton != null) {
       this.showBackButton = data.showBackButton;
     }
 
-    if (data.showLogo) {
+    if (data.showLogo != null) {
       this.showLogo = data.showLogo;
     }
   }
