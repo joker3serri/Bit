@@ -116,15 +116,17 @@
                 (loading)="loading = $event"
               ></auth-account>
             </li>
-            <div *ngIf="isFirst" class="tw-uppercase tw-text-muted">
-              {{ "availableAccounts" | i18n }}
-            </div>
-            <li *ngIf="!availableAccount.isActive" role="option">
-              <auth-account
-                [account]="availableAccount"
-                (loading)="loading = $event"
-              ></auth-account>
-            </li>
+            <ng-container *ngIf="enableAccountSwitching">
+              <div *ngIf="isFirst" class="tw-uppercase tw-text-muted">
+                {{ "availableAccounts" | i18n }}
+              </div>
+              <li *ngIf="!availableAccount.isActive" role="option">
+                <auth-account
+                  [account]="availableAccount"
+                  (loading)="loading = $event"
+                ></auth-account>
+              </li>
+            </ng-container>
           </ng-container>
         </ul>
         <!--
@@ -168,6 +170,7 @@
             type="button"
             class="account-switcher-row tw-flex tw-w-full tw-items-center tw-gap-3 tw-rounded-md tw-p-3"
             (click)="lockAll()"
+            *ngIf="showLockAll$ | async"
           >
             <i class="bwi bwi-lock tw-text-2xl" aria-hidden="true"></i>
             {{ "lockAll" | i18n }}
