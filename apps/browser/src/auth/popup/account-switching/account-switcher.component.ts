@@ -22,6 +22,7 @@ import {
   SectionHeaderComponent,
 } from "@bitwarden/components";
 
+import { enableAccountSwitching } from "../../../platform/flags";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { HeaderComponent } from "../../../platform/popup/header.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
@@ -57,6 +58,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
   loading = false;
   activeUserCanLock = false;
   extensionRefreshFlag = false;
+  enableAccountSwitching = true;
 
   constructor(
     private accountSwitcherService: AccountSwitcherService,
@@ -88,6 +90,7 @@ export class AccountSwitcherComponent implements OnInit, OnDestroy {
   );
 
   async ngOnInit() {
+    this.enableAccountSwitching = enableAccountSwitching();
     this.extensionRefreshFlag = await this.configService.getFeatureFlag(
       FeatureFlag.ExtensionRefresh,
     );

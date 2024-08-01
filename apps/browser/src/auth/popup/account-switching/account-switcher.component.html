@@ -8,9 +8,9 @@
     </popup-header>
 
     <ng-container *ngIf="availableAccounts$ | async as availableAccounts">
-      <bit-section>
+      <bit-section [disableMargin]="!enableAccountSwitching">
         <ng-container *ngFor="let availableAccount of availableAccounts; first as isFirst">
-          <div *ngIf="availableAccount.isActive" class="tw-mb-6">
+          <div *ngIf="availableAccount.isActive" [ngClass]="{ 'tw-mb-6': enableAccountSwitching }">
             <auth-account
               [account]="availableAccount"
               [extensionRefreshFlag]="extensionRefreshFlag"
@@ -18,17 +18,19 @@
             ></auth-account>
           </div>
 
-          <bit-section-header *ngIf="isFirst">
-            <h2 bitTypography="h6" class="tw-font-semibold">{{ "availableAccounts" | i18n }}</h2>
-          </bit-section-header>
+          <ng-container *ngIf="enableAccountSwitching">
+            <bit-section-header *ngIf="isFirst">
+              <h2 bitTypography="h6" class="tw-font-semibold">{{ "availableAccounts" | i18n }}</h2>
+            </bit-section-header>
 
-          <div *ngIf="!availableAccount.isActive">
-            <auth-account
-              [account]="availableAccount"
-              [extensionRefreshFlag]="extensionRefreshFlag"
-              (loading)="loading = $event"
-            ></auth-account>
-          </div>
+            <div *ngIf="!availableAccount.isActive">
+              <auth-account
+                [account]="availableAccount"
+                [extensionRefreshFlag]="extensionRefreshFlag"
+                (loading)="loading = $event"
+              ></auth-account>
+            </div>
+          </ng-container>
         </ng-container>
 
         <!--
