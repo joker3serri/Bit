@@ -17,6 +17,11 @@ import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-heade
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { CurrentAccountComponent } from "../account-switching/current-account.component";
 
+import {
+  ExtensionBitwardenLogoPrimary,
+  ExtensionBitwardenLogoWhite,
+} from "./extension-bitwarden-logo.icon";
+
 export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
   showAcctSwitcher?: boolean;
   showBackButton?: boolean;
@@ -42,7 +47,7 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
 
   protected showAcctSwitcher: boolean;
   protected showBackButton: boolean;
-  protected showLogo: boolean;
+  protected showLogo: boolean = true;
 
   protected pageTitle: string;
   protected pageSubtitle: string;
@@ -51,6 +56,7 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
   protected maxWidth: "md" | "3xl";
 
   protected theme: string;
+  protected logo: Icon;
 
   constructor(
     private router: Router,
@@ -69,6 +75,12 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     this.listenForServiceDataChanges();
 
     this.theme = await firstValueFrom(this.themeStateService.selectedTheme$);
+
+    if (this.theme === "dark") {
+      this.logo = ExtensionBitwardenLogoWhite;
+    } else {
+      this.logo = ExtensionBitwardenLogoPrimary;
+    }
   }
 
   private listenForPageDataChanges() {
