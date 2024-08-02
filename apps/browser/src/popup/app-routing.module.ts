@@ -63,6 +63,7 @@ import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-
 import { ImportBrowserComponent } from "../tools/popup/settings/import/import-browser.component";
 import { SettingsV2Component } from "../tools/popup/settings/settings-v2.component";
 import { SettingsComponent } from "../tools/popup/settings/settings.component";
+import { clearVaultStateGuard } from "../vault/guards/clear-vault-state.guard";
 import { Fido2Component } from "../vault/popup/components/fido2/fido2.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
@@ -85,7 +86,6 @@ import { SyncComponent } from "../vault/popup/settings/sync.component";
 import { VaultSettingsV2Component } from "../vault/popup/settings/vault-settings-v2.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
-import { clearVaultSearchGuard } from "./../vault/guards/clear-search.guard";
 import { extensionRefreshRedirect, extensionRefreshSwap } from "./extension-refresh-route-utils";
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { TabsV2Component } from "./tabs-v2.component";
@@ -458,7 +458,7 @@ const routes: Routes = [
       ...extensionRefreshSwap(VaultFilterComponent, VaultV2Component, {
         path: "vault",
         canActivate: [authGuard],
-        canDeactivate: [clearVaultSearchGuard],
+        canDeactivate: [clearVaultStateGuard],
         data: { state: "tabs_vault" },
       }),
       {
