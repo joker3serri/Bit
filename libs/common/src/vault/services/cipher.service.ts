@@ -571,7 +571,7 @@ export class CipherService implements CipherServiceAbstraction {
     return this.sortedCiphersCache.getNext(cacheKey);
   }
 
-  async getNextIdentityCipher() {
+  async getNextIdentityCipher(): Promise<CipherView> {
     const cacheKey = "identityCiphers";
 
     if (!this.sortedCiphersCache.isCached(cacheKey)) {
