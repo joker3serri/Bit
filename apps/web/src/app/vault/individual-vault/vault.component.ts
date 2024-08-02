@@ -87,7 +87,10 @@ import {
   BulkShareDialogResult,
   openBulkShareDialog,
 } from "./bulk-action-dialogs/bulk-share-dialog/bulk-share-dialog.component";
-import { openIndividualVaultCollectionsDialog } from "./collections.component";
+import {
+  CollectionsDialogResult,
+  openIndividualVaultCollectionsDialog,
+} from "./collections.component";
 import { FolderAddEditDialogResult, openFolderAddEditDialog } from "./folder-add-edit.component";
 import { ShareComponent } from "./share.component";
 import { VaultBannersComponent } from "./vault-banners/vault-banners.component";
@@ -576,7 +579,14 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async editCipherCollections(cipher: CipherView) {
-    openIndividualVaultCollectionsDialog(this.dialogService, { data: { cipherId: cipher.id } });
+    const dialog = openIndividualVaultCollectionsDialog(this.dialogService, {
+      data: { cipherId: cipher.id },
+    });
+    const result = await lastValueFrom(dialog.closed);
+
+    if (result === CollectionsDialogResult.Saved) {
+      this.refresh();
+    }
   }
 
   async addCipher(cipherType?: CipherType) {
