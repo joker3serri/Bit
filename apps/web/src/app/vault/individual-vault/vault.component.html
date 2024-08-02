@@ -83,7 +83,6 @@
         bitButton
         (click)="addCipher()"
         *ngIf="filter.type !== 'trash'"
-        [ngClass]="{ 'tw-rounded-full': extensionRefreshEnabled$ | async }"
       >
         <i class="bwi bwi-plus-f bwi-fw" aria-hidden="true"></i>
         {{ "newItem" | i18n }}
