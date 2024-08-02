@@ -41,7 +41,7 @@ export class CollectionAdminView extends CollectionView {
   /**
    * Returns true if the user can edit a collection (including user and group access) from the Admin Console.
    */
-  override canEdit(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+  override canEdit(org: Organization): boolean {
     return (
       org?.canEditAnyCollection() ||
       (this.unmanaged && org?.canEditUnmanagedCollections()) ||
