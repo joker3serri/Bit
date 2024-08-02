@@ -538,7 +538,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           }
 
           const canEditCipher =
-            organization.canEditAllCiphers(true, this.restrictProviderAccessEnabled) ||
+            organization.canEditAllCiphers(this.restrictProviderAccessEnabled) ||
             (await firstValueFrom(allCipherMap$))[cipherId] != undefined;
 
           if (canEditCipher) {
@@ -771,13 +771,13 @@ export class VaultComponent implements OnInit, OnDestroy {
         map((c) => {
           return c.sort((a, b) => {
             if (
-              a.canEditItems(this.organization, true, this.restrictProviderAccessEnabled) &&
-              !b.canEditItems(this.organization, true, this.restrictProviderAccessEnabled)
+              a.canEditItems(this.organization, this.restrictProviderAccessEnabled) &&
+              !b.canEditItems(this.organization, this.restrictProviderAccessEnabled)
             ) {
               return -1;
             } else if (
-              !a.canEditItems(this.organization, true, this.restrictProviderAccessEnabled) &&
-              b.canEditItems(this.organization, true, this.restrictProviderAccessEnabled)
+              !a.canEditItems(this.organization, this.restrictProviderAccessEnabled) &&
+              b.canEditItems(this.organization, this.restrictProviderAccessEnabled)
             ) {
               return 1;
             } else {

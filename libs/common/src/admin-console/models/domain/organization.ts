@@ -198,15 +198,7 @@ export class Organization {
     );
   }
 
-  canEditAllCiphers(
-    flexibleCollectionsV1Enabled: boolean,
-    restrictProviderAccessFlagEnabled: boolean,
-  ) {
-    // Before Flexible Collections V1, any admin or anyone with editAnyCollection permission could edit all ciphers
-    if (!flexibleCollectionsV1Enabled) {
-      return this.isAdmin || this.permissions.editAnyCollection;
-    }
-
+  canEditAllCiphers(restrictProviderAccessFlagEnabled: boolean) {
     // Providers can access items until the restrictProviderAccess flag is enabled
     // After the flag is enabled and removed, this block will be deleted
     // so that they permanently lose access to items
@@ -214,7 +206,7 @@ export class Organization {
       return true;
     }
 
-    // Post Flexible Collections V1, the allowAdminAccessToAllCollectionItems flag can restrict admins
+    // The allowAdminAccessToAllCollectionItems flag can restrict admins
     // Custom users with canEditAnyCollection are not affected by allowAdminAccessToAllCollectionItems flag
     return (
       (this.type === OrganizationUserType.Custom && this.permissions.editAnyCollection) ||
