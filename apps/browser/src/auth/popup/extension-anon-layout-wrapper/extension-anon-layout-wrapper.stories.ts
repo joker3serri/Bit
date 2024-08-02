@@ -195,7 +195,10 @@ export const DefaultContentExample: Story = {
         children: [
           {
             path: "default-example",
-            data: {},
+            data: {
+              showBackButton: true,
+              showLogo: true,
+            },
             children: [
               {
                 path: "",
