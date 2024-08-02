@@ -583,6 +583,27 @@ export class Utils {
     return Math.max(0, Math.floor(diffTime / msPerDay));
   }
 
+  /** Performs deep equality check between two values */
+  static compareValues<T>(value1: T, value2: T): boolean {
+    if (value1 == null && value2 == null) {
+      return true;
+    }
+
+    if (value1 && value2 == null) {
+      return false;
+    }
+
+    if (value1 == null && value2) {
+      return false;
+    }
+
+    if (typeof value1 !== "object" || typeof value2 !== "object") {
+      return value1 === value2;
+    }
+
+    return JSON.stringify(value1) === JSON.stringify(value2);
+  }
+
   private static isAppleMobile(win: Window) {
     return (
       win.navigator.userAgent.match(/iPhone/i) != null ||
