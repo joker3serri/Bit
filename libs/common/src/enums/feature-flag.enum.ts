@@ -55,7 +55,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.RestrictProviderAccess]: FALSE,
   [FeatureFlag.PM4154_BulkEncryptionService]: FALSE,
   [FeatureFlag.UseTreeWalkerApiForPageDetailsCollection]: FALSE,
-  [FeatureFlag.EmailVerification]: true,
+  [FeatureFlag.EmailVerification]: FALSE,
   [FeatureFlag.InlineMenuFieldQualification]: FALSE,
   [FeatureFlag.MemberAccessReport]: FALSE,
   [FeatureFlag.TwoFactorComponentRefactor]: FALSE,
