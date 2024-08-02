@@ -168,13 +168,8 @@ export class Organization {
     );
   }
 
-  canEditAnyCollection(flexibleCollectionsV1Enabled: boolean) {
-    if (!flexibleCollectionsV1Enabled) {
-      // Pre-Flexible Collections v1 logic
-      return this.isAdmin || this.permissions.editAnyCollection;
-    }
-
-    // Post Flexible Collections V1, the allowAdminAccessToAllCollectionItems flag can restrict admins
+  canEditAnyCollection() {
+    // The allowAdminAccessToAllCollectionItems flag can restrict admins
     // Providers and custom users with canEditAnyCollection are not affected by allowAdminAccessToAllCollectionItems flag
     return (
       this.isProviderUser ||

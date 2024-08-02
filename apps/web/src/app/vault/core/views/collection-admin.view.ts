@@ -43,9 +43,9 @@ export class CollectionAdminView extends CollectionView {
    */
   override canEdit(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
     return (
-      org?.canEditAnyCollection(flexibleCollectionsV1Enabled) ||
-      (flexibleCollectionsV1Enabled && this.unmanaged && org?.canEditUnmanagedCollections()) ||
-      super.canEdit(org, flexibleCollectionsV1Enabled)
+      org?.canEditAnyCollection() ||
+      (this.unmanaged && org?.canEditUnmanagedCollections()) ||
+      super.canEdit(org)
     );
   }
 
