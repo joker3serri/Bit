@@ -108,6 +108,7 @@ import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/v
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { VaultHeaderComponent } from "./vault-header/vault-header.component";
 import { VaultOnboardingComponent } from "./vault-onboarding/vault-onboarding.component";
+import { ViewComponent } from "./view.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -134,6 +135,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   folderAddEditModalRef: ViewContainerRef;
   @ViewChild("cipherAddEdit", { read: ViewContainerRef, static: true })
   cipherAddEditModalRef: ViewContainerRef;
+  @ViewChild("cipherView", { read: ViewContainerRef, static: true })
+  cipherViewModalRef: ViewContainerRef;
   @ViewChild("share", { read: ViewContainerRef, static: true }) shareModalRef: ViewContainerRef;
   @ViewChild("collectionsModal", { read: ViewContainerRef, static: true })
   collectionsModalRef: ViewContainerRef;
@@ -211,6 +214,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         await this.syncService.fullSync(false);
 
         const cipherId = getCipherIdFromParams(params);
+
         if (!cipherId) {
           return;
         }
@@ -339,9 +343,14 @@ export class VaultComponent implements OnInit, OnDestroy {
         switchMap(() => this.route.queryParams),
         switchMap(async (params) => {
           const cipherId = getCipherIdFromParams(params);
+
           if (cipherId) {
-            if ((await this.cipherService.get(cipherId)) != null) {
-              await this.editCipherId(cipherId);
+            if (await this.cipherService.get(cipherId)) {
+              if (params.action === "edit") {
+                await this.editCipherId(cipherId);
+              } else if (params.action === "view") {
+                await this.viewCipherId(cipherId);
+              }
             } else {
               this.toastService.showToast({
                 variant: "error",
@@ -629,6 +638,49 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const [modal, childComponent] = await this.modalService.openViewRef(
       AddEditComponent,
+      this.cipherAddEditModalRef,
+      (comp) => {
+        comp.cipherId = id;
+        comp.onSavedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
+          modal.close();
+          this.refresh();
+        });
+        comp.onDeletedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
+          modal.close();
+          this.refresh();
+        });
+        comp.onRestoredCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
+          modal.close();
+          this.refresh();
+        });
+      },
+    );
+
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    modal.onClosedPromise().then(() => {
+      this.go({ cipherId: null, itemId: null });
+    });
+
+    return childComponent;
+  }
+
+  async viewCipherId(id: string) {
+    const cipher = await this.cipherService.get(id);
+    // if cipher exists (cipher is null when new) and MP reprompt
+    // is on for this cipher, then show password reprompt
+    if (
+      cipher &&
+      cipher.reprompt !== 0 &&
+      !(await this.passwordRepromptService.showPasswordPrompt())
+    ) {
+      // didn't pass password prompt, so don't open add / edit modal
+      this.go({ cipherId: null, itemId: null });
+      return;
+    }
+
+    const [modal, childComponent] = await this.modalService.openViewRef(
+      ViewComponent,
       this.cipherAddEditModalRef,
       (comp) => {
         comp.cipherId = id;
