@@ -27,13 +27,9 @@ import { DialogService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
-import { CipherViewComponent } from "../../../../../../libs/vault/src/cipher-view";
-
 @Component({
   selector: "app-vault-view",
   templateUrl: "view.component.html",
-  standalone: true,
-  imports: [CipherViewComponent],
 })
 export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDestroy {
   canAccessPremium: boolean;
