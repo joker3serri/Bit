@@ -96,6 +96,10 @@ export type OverlayAddNewItemMessage = {
   identity?: NewIdentityCipherData;
 };
 
+export type CurrentAddNewItemData = OverlayAddNewItemMessage & {
+  sender: chrome.runtime.MessageSender;
+};
+
 export type CloseInlineMenuMessage = {
   forceCloseInlineMenu?: boolean;
   overlayElement?: string;
@@ -178,7 +182,7 @@ export type OverlayBackgroundExtensionMessageHandlers = {
   triggerAutofillOverlayReposition: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
   checkIsInlineMenuCiphersPopulated: ({ sender }: BackgroundSenderParam) => void;
   updateFocusedFieldData: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
-  updateIsFieldCurrentlyFocused: ({ message }: BackgroundMessageParam) => void;
+  updateIsFieldCurrentlyFocused: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
   checkIsFieldCurrentlyFocused: () => boolean;
   updateIsFieldCurrentlyFilling: ({ message }: BackgroundMessageParam) => void;
   checkIsFieldCurrentlyFilling: () => boolean;
