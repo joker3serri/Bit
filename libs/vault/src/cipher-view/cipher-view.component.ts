@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Observable, Subject, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -49,7 +49,7 @@ import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-ide
     AutofillOptionsViewComponent,
   ],
 })
-export class CipherViewComponent implements OnInit {
+export class CipherViewComponent implements OnInit, OnDestroy {
   @Input() cipher: CipherView;
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;

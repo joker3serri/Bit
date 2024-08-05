@@ -25,6 +25,7 @@ import {
 import { TotpCaptureService } from "@bitwarden/vault";
 
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
+import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
 import { BrowserTotpCaptureService } from "../../../services/browser-totp-capture.service";
 
 import { PopupFooterComponent } from "./../../../../../platform/popup/layout/popup-footer.component";
@@ -48,6 +49,7 @@ import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup
     IconButtonModule,
     CipherViewComponent,
     AsyncActionsModule,
+    PopOutComponent,
   ],
 })
 export class ViewV2Component {
