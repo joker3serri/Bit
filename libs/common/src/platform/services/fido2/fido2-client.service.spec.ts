@@ -1,8 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
-import { SessionClosedError } from "@bitwarden/browser/src/vault/fido2/browser-fido2-user-interface.service";
-
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
 import { DomainSettingsService } from "../../../autofill/services/domain-settings.service";
@@ -635,7 +633,7 @@ describe("FidoAuthenticatorService", () => {
       });
 
       it("restarts the mediated conditional request if a user aborts the request", async () => {
-        authenticator.getAssertion.mockRejectedValueOnce(new SessionClosedError());
+        authenticator.getAssertion.mockRejectedValueOnce(new Error());
 
         await client.assertCredential(params, tab);
 
