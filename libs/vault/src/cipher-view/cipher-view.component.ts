@@ -19,6 +19,7 @@ import { PopupPageComponent } from "../../../../apps/browser/src/platform/popup/
 
 import { AdditionalOptionsComponent } from "./additional-options/additional-options.component";
 import { AttachmentsV2ViewComponent } from "./attachments/attachments-v2-view.component";
+import { AutofillOptionsViewComponent } from "./autofill-options/autofill-options-view.component";
 import { CardDetailsComponent } from "./card-details/card-details-view.component";
 import { CustomFieldV2Component } from "./custom-fields/custom-fields-v2.component";
 import { ItemDetailsV2Component } from "./item-details/item-details-v2.component";
@@ -45,6 +46,7 @@ import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-ide
     CardDetailsComponent,
     ViewIdentitySectionsComponent,
     LoginCredentialsViewComponent,
+    AutofillOptionsViewComponent,
   ],
 })
 export class CipherViewComponent implements OnInit {

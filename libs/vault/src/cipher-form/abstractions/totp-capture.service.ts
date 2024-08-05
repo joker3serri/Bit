@@ -6,4 +6,5 @@ export abstract class TotpCaptureService {
    * Captures a TOTP secret and returns it as a string. Returns null if no TOTP secret was found.
    */
   abstract captureTotpSecret(): Promise<string | null>;
+  abstract openAutofillNewTab(loginUri: string): void;
 }

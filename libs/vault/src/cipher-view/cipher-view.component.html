@@ -15,6 +15,10 @@
     [viewPassword]="cipher.viewPassword"
   ></app-login-credentials-view>
 
+  <!-- AUTOFILL OPTIONS -->
+  <app-autofill-options-view *ngIf="hasAutofill" [loginUris]="cipher.login.uris">
+  </app-autofill-options-view>
+
   <!-- CARD DETAILS -->
   <app-card-details-view *ngIf="hasCard" [card]="cipher.card"></app-card-details-view>
 
