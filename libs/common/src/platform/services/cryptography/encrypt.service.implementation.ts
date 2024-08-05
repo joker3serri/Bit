@@ -114,7 +114,7 @@ export class EncryptServiceImplementation implements EncryptService {
     key = this.resolveLegacyKey(key, encThing);
 
     if (key.macKey != null && encThing.macBytes == null) {
-      this.logService.error("MAC required but not provided");
+      this.logService.error("MAC required but not provided.");
       return null;
     }
 
