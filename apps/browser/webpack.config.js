@@ -15,7 +15,7 @@ const ENV = (process.env.ENV = process.env.NODE_ENV);
 const manifestVersion = process.env.MANIFEST_VERSION == 3 ? 3 : 2;
 const browser = process.env.BROWSER;
 
-function modifyManifest(buffer) {
+function modifyManifestV3(buffer) {
   if (manifestVersion === 2 || browser === "chrome") {
     return buffer;
   }
@@ -168,7 +168,7 @@ const plugins = [
         ? {
             from: "./src/manifest.v3.json",
             to: "manifest.json",
-            transform: (content) => modifyManifest(content),
+            transform: (content) => modifyManifestV3(content),
           }
         : "./src/manifest.json",
       { from: "./src/managed_schema.json", to: "managed_schema.json" },
@@ -395,6 +395,9 @@ if (manifestVersion == 2) {
     plugins: [...requiredPlugins],
   };
 
+  // Safari's desktop build process requires a background.html and vendor.js file to exist
+  // within the root of the extension. This is a workaround to allow us to build Safari
+  // for manifest v2 and v3 without modifying the desktop project structure.
   if (browser === "safari") {
     backgroundConfig.plugins.push(
       new CopyWebpackPlugin({
