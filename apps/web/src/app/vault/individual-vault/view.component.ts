@@ -1,15 +1,8 @@
 import { DatePipe } from "@angular/common";
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  Output,
-  EventEmitter,
-  ViewChild,
-  ViewContainerRef,
-} from "@angular/core";
-import { firstValueFrom, takeUntil } from "rxjs";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
+
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -31,10 +24,10 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { PasswordRepromptService } from "@bitwarden/vault";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 @Component({
   selector: "app-vault-view",
