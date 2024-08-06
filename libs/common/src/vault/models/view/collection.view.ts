@@ -68,9 +68,9 @@ export class CollectionView implements View, ITreeNodeObject {
 
   /**
    * Returns true if the user can delete a collection from the individual vault.
-   * After FCv1, does not include admin permissions - see {@link CollectionAdminView.canDelete}.
+   * Does not include admin permissions - see {@link CollectionAdminView.canDelete}.
    */
-  canDelete(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
+  canDelete(org: Organization): boolean {
     if (org != null && org.id !== this.organizationId) {
       throw new Error(
         "Id of the organization provided does not match the org id of the collection.",
@@ -79,15 +79,8 @@ export class CollectionView implements View, ITreeNodeObject {
 
     const canDeleteManagedCollections = !org?.limitCollectionCreationDeletion || org.isAdmin;
 
-    if (flexibleCollectionsV1Enabled) {
-      // Only use individual permissions, not admin permissions
-      return canDeleteManagedCollections && this.manage;
-    }
-
-    return (
-      org?.canDeleteAnyCollection(flexibleCollectionsV1Enabled) ||
-      (canDeleteManagedCollections && this.manage)
-    );
+    // Only use individual permissions, not admin permissions
+    return canDeleteManagedCollections && this.manage;
   }
 
   /**
