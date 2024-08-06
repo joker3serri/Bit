@@ -3,8 +3,11 @@ import { Observable } from "rxjs";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { UserId } from "@bitwarden/common/types/guid";
 
+/** error emitted when the `SingleUserDependency` changes Ids */
 export type UserChangedError = {
+  /** the userId pinned by the single user dependency */
   expectedUserId: UserId;
+  /** the userId received in error */
   actualUserId: UserId;
 };
 
