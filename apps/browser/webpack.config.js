@@ -16,11 +16,20 @@ const manifestVersion = process.env.MANIFEST_VERSION == 3 ? 3 : 2;
 const browser = process.env.BROWSER;
 
 function modifyManifestV3(buffer) {
-  if (manifestVersion === 2 || browser === "chrome") {
+  if (manifestVersion === 2 || !browser) {
     return buffer;
   }
 
   const manifest = JSON.parse(buffer.toString());
+
+  if (browser === "chrome") {
+    // Remove unsupported properties
+    delete manifest.applications;
+    delete manifest.sidebar_action;
+    delete manifest.commands._execute_sidebar_action;
+
+    return JSON.stringify(manifest, null, 2);
+  }
 
   // // Update the background script reference to be an event page
   const backgroundScript = manifest.background.service_worker;
@@ -35,12 +44,17 @@ function modifyManifestV3(buffer) {
   manifest.permissions = manifest.permissions.filter((permission) => permission !== "offscreen");
 
   if (browser === "safari") {
-    manifest.permissions.push("nativeMessaging");
+    delete manifest.sidebar_action;
+    delete manifest.commands._execute_sidebar_action;
     delete manifest.optional_permissions;
+    manifest.permissions.push("nativeMessaging");
   }
 
   if (browser === "firefox") {
     delete manifest.storage;
+    manifest.optional_permissions = manifest.optional_permissions.filter(
+      (permission) => permission !== "privacy",
+    );
   }
 
   return JSON.stringify(manifest, null, 2);
