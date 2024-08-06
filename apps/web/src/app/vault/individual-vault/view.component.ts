@@ -1,7 +1,15 @@
 import { DatePipe } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { firstValueFrom } from "rxjs";
-
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ViewContainerRef,
+} from "@angular/core";
+import { firstValueFrom, takeUntil } from "rxjs";
+import { Router } from "@angular/router";
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -21,11 +29,12 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { DialogService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { PasswordRepromptService } from "@bitwarden/vault";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 @Component({
   selector: "app-vault-view",
@@ -41,11 +50,9 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
   showRevisionDate = false;
   hasPasswordHistory = false;
   viewingPasswordHistory = false;
-  viewOnly = false;
   showPasswordCount = false;
 
   protected totpInterval: number;
-  protected override componentName = "app-vault-view";
 
   constructor(
     cipherService: CipherService,
@@ -68,6 +75,7 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
     datePipe: DatePipe,
     configService: ConfigService,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
+    private router: Router,
   ) {
     super(
       cipherService,
@@ -94,11 +102,6 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
   async ngOnInit() {
     await super.ngOnInit();
     await this.load();
-    this.viewOnly = !this.cipher.edit && this.editMode;
-    // remove when all the title for all clients are updated to New Item
-    if (this.cloneMode || !this.editMode) {
-      this.title = this.i18nService.t("newItem");
-    }
     this.showRevisionDate = this.cipher.passwordRevisionDisplayDate != null;
     this.hasPasswordHistory = this.cipher.hasPasswordHistory;
     this.cleanUp();
@@ -166,25 +169,6 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
       null,
       this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey)),
     );
-
-    if (this.editMode) {
-      if (typeI18nKey === "password") {
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
-      } else if (typeI18nKey === "securityCode") {
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
-      } else if (aType === "H_Field") {
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.eventCollectionService.collect(
-          EventType.Cipher_ClientCopiedHiddenField,
-          this.cipherId,
-        );
-      }
-    }
 
     return true;
   }
@@ -261,14 +245,6 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
     }
   }
 
-  protected allowOwnershipAssignment() {
-    return (
-      (!this.editMode || this.cloneMode) &&
-      this.ownershipOptions != null &&
-      (this.ownershipOptions.length > 1 || !this.allowPersonal)
-    );
-  }
-
   protected showTotp() {
     return (
       this.cipher.type === CipherType.Login &&
@@ -287,6 +263,35 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
     this.totpLow = this.totpSec <= 7;
     if (mod === 0) {
       await this.totpUpdateCode();
+    }
+  }
+
+  async submit() {
+    await this.router.navigate([], {
+      queryParams: { itemId: this.cipher.id, action: "edit" },
+      queryParamsHandling: "merge",
+    });
+
+    return true;
+  }
+
+  getCipherTypeString(cipher: CipherView): string {
+    if (!cipher) {
+      return null;
+    }
+
+    const type = cipher.type;
+    switch (type) {
+      case CipherType.Login:
+        return "login";
+      case CipherType.SecureNote:
+        return "note";
+      case CipherType.Card:
+        return "card";
+      case CipherType.Identity:
+        return "identity";
+      default:
+        return null;
     }
   }
 }

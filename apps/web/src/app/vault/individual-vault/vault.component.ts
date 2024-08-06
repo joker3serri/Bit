@@ -222,7 +222,9 @@ export class VaultComponent implements OnInit, OnDestroy {
         cipherView.id = cipherId;
         if (params.action === "clone") {
           await this.cloneCipher(cipherView);
-        } else if (params.action === "edit") {
+        } else if (params.action === "view") {
+          await this.viewCipher(cipherView);
+        } else {
           await this.editCipher(cipherView);
         }
       }),
@@ -346,10 +348,10 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           if (cipherId) {
             if (await this.cipherService.get(cipherId)) {
-              if (params.action === "edit") {
-                await this.editCipherId(cipherId);
-              } else if (params.action === "view") {
+              if (params.action === "view") {
                 await this.viewCipherId(cipherId);
+              } else {
+                await this.editCipherId(cipherId);
               }
             } else {
               this.toastService.showToast({
@@ -659,10 +661,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     modal.onClosedPromise().then(() => {
-      this.go({ cipherId: null, itemId: null });
+      this.go({ cipherId: null, itemId: null, action: null });
     });
 
     return childComponent;
+  }
+
+  async viewCipher(cipher: CipherView) {
+    return this.viewCipherId(cipher.id);
   }
 
   async viewCipherId(id: string) {
@@ -681,18 +687,10 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const [modal, childComponent] = await this.modalService.openViewRef(
       ViewComponent,
-      this.cipherAddEditModalRef,
+      this.cipherViewModalRef,
       (comp) => {
         comp.cipherId = id;
-        comp.onSavedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.refresh();
-        });
         comp.onDeletedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.refresh();
-        });
-        comp.onRestoredCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
           modal.close();
           this.refresh();
         });
