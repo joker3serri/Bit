@@ -78,14 +78,7 @@ export class CollectionAdminView extends CollectionView {
   /**
    * Returns true if the user can view collection info and access in a read-only state from the Admin Console
    */
-  override canViewCollectionInfo(
-    org: Organization | undefined,
-    flexibleCollectionsV1Enabled: boolean,
-  ): boolean {
-    if (!flexibleCollectionsV1Enabled) {
-      return false;
-    }
-
+  override canViewCollectionInfo(org: Organization | undefined): boolean {
     if (this.isUnassignedCollection) {
       return false;
     }
