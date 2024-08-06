@@ -59,26 +59,19 @@ export class CollectionAdminView extends CollectionView {
   /**
    * Whether the user can modify user access to this collection
    */
-  canEditUserAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
-    const allowAdminAccessToAllCollectionItems =
-      !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
-
+  canEditUserAccess(org: Organization): boolean {
     return (
-      (org.permissions.manageUsers && allowAdminAccessToAllCollectionItems) ||
-      this.canEdit(org, flexibleCollectionsV1Enabled)
+      (org.permissions.manageUsers && org.allowAdminAccessToAllCollectionItems) || this.canEdit(org)
     );
   }
 
   /**
    * Whether the user can modify group access to this collection
    */
-  canEditGroupAccess(org: Organization, flexibleCollectionsV1Enabled: boolean): boolean {
-    const allowAdminAccessToAllCollectionItems =
-      !flexibleCollectionsV1Enabled || org.allowAdminAccessToAllCollectionItems;
-
+  canEditGroupAccess(org: Organization): boolean {
     return (
-      (org.permissions.manageGroups && allowAdminAccessToAllCollectionItems) ||
-      this.canEdit(org, flexibleCollectionsV1Enabled)
+      (org.permissions.manageGroups && org.allowAdminAccessToAllCollectionItems) ||
+      this.canEdit(org)
     );
   }
 
