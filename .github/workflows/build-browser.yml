@@ -358,24 +358,6 @@ jobs:
           path: apps/browser/dist/dist-safari.zip
           if-no-files-found: error
 
-      - name: Build Safari Manifest v3 extension
-        run: npm run dist:safari:mv3
-        working-directory: apps/browser
-
-      - name: Zip Safari build artifact
-        run: |
-          cd apps/browser/dist
-          zip dist-safari-mv3.zip ./Safari/**/build/Release/safari.appex -r
-          pwd
-          ls -la
-
-      - name: Upload Safari MV3 artifact (DO NOT USE FOR PROD)
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
-        with:
-          name: DO-NOT-USE-FOR-PROD-dist-safari-${{ env._BUILD_NUMBER }}.zip
-          path: apps/browser/dist/dist-safari-mv3.zip
-          if-no-files-found: error
-
   crowdin-push:
     name: Crowdin Push
     if: github.ref == 'refs/heads/main'
