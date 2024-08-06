@@ -61,6 +61,7 @@ import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { DialogService, Icons, NoItemsModule, ToastService } from "@bitwarden/components";
 import { CollectionAssignmentResult, PasswordRepromptService } from "@bitwarden/vault";
 
+
 import { GroupService, GroupView } from "../../admin-console/organizations/core";
 import { openEntityEventsDialog } from "../../admin-console/organizations/manage/entity-events.component";
 import { SharedModule } from "../../shared";
@@ -89,6 +90,7 @@ import {
   RoutedVaultFilterModel,
   Unassigned,
 } from "../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
+import { ViewComponent } from "../individual-vault/view.component";
 import { VaultHeaderComponent } from "../org-vault/vault-header/vault-header.component";
 import { getNestedCollectionTree } from "../utils/collection-utils";
 
@@ -133,6 +135,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   cipherAddEditModalRef: ViewContainerRef;
   @ViewChild("collectionsModal", { read: ViewContainerRef, static: true })
   collectionsModalRef: ViewContainerRef;
+  @ViewChild("cipherView", { read: ViewContainerRef, static: true })
+  cipherViewModalRef: ViewContainerRef;
 
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
@@ -589,7 +593,11 @@ export class VaultComponent implements OnInit, OnDestroy {
           }
 
           if (canEditCipher) {
-            await this.editCipherId(cipherId);
+            if (qParams.action === "view") {
+              await this.viewCipherId(cipherId);
+            } else {
+              await this.editCipherId(cipherId);
+            }
           } else {
             this.toastService.showToast({
               variant: "error",
@@ -933,8 +941,41 @@ export class VaultComponent implements OnInit, OnDestroy {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     modal.onClosedPromise().then(() => {
-      this.go({ cipherId: null, itemId: null });
+      this.go({ cipherId: null, itemId: null, action: null });
     });
+
+    return childComponent;
+  }
+
+  async viewCipher(cipher: CipherView) {
+    return this.viewCipherId(cipher.id);
+  }
+
+  async viewCipherId(id: string) {
+    const cipher = await this.cipherService.get(id);
+    // if cipher exists (cipher is null when new) and MP reprompt
+    // is on for this cipher, then show password reprompt
+    if (
+      cipher &&
+      cipher.reprompt !== 0 &&
+      !(await this.passwordRepromptService.showPasswordPrompt())
+    ) {
+      // didn't pass password prompt, so don't open add / edit modal
+      this.go({ cipherId: null, itemId: null });
+      return;
+    }
+
+    const [modal, childComponent] = await this.modalService.openViewRef(
+      ViewComponent,
+      this.cipherViewModalRef,
+      (comp) => {
+        comp.cipherId = id;
+        comp.onDeletedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
+          modal.close();
+          this.refresh();
+        });
+      },
+    );
 
     return childComponent;
   }
