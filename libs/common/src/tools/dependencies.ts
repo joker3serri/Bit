@@ -61,56 +61,21 @@ export type SingleUserDependency = {
   singleUserId$: Observable<UserId>;
 };
 
-type EmitMap<T> = T extends void
-  ? { emitMap: never }
-  : T extends boolean
-    ? {
-        /** Maps an arbitrary type T to a boolean. This method is required
-         *  when T is not a boolean.
-         */
-        emitMap?: (value: T) => boolean;
-      }
-    : {
-        /** Maps an arbitrary type T to a boolean. This method is required
-         *  when T is not a boolean.
-         */
-        emitMap: (value: T) => boolean;
-      };
-
 /** A pattern for types that emit values exclusively when the dependency
  *  emits a message.
  *
- *  Consumers of this dependency should emit when `when$` emits a true
- *  value. If `when$` completes, the consumer should also complete. If `when$`
+ *  Consumers of this dependency should emit when `when$` emits. If `when$`
+ *  completes, the consumer should also complete. If `when$`
  *  errors, the consumer should also emit the error.
  *
- *  @remarks This dependency is useful when you have an algorithm that you
- *  would like to run when an event occurs. Use `WhenDependency<T>`
- *  when your consumer determines its own emission schedule.
+ *  @remarks This dependency is useful when you have a nondeterministic
+ *  or stateful algorithm that you would like to run when an event occurs.
  */
-export type EmitDependency<T = void> = {
-  /** A stream that emits the value to wait upon when subscribed. This
-   *  stream should not emit undefined. When `T` is `void`, every emission
-   *  triggers a consumer emission. When `T` is boolean, `true`
-   *  emissions trigger an emission. When `T` is an arbitrary type,
-   *  `emitMap` determines when
+export type OnDependency = {
+  /** The stream that controls emissions
    */
-  emit$: Observable<T>;
-} & EmitMap<T>;
-
-type WhenMap<T> = T extends boolean
-  ? {
-      /** Maps an arbitrary type T to a boolean. This method is required
-       *  when T is not a boolean.
-       */
-      whenMap?: (value: T) => boolean;
-    }
-  : {
-      /** Maps an arbitrary type T to a boolean. This method is required
-       *  when T is not a boolean.
-       */
-      whenMap: (value: T) => boolean;
-    };
+  on$: Observable<void>;
+};
 
 /** A pattern for types that emit when a dependency is `true`.
  *
@@ -121,10 +86,10 @@ type WhenMap<T> = T extends boolean
  *  @remarks Check the consumer's documentation to determine how it
  *  responds to emissions.
  */
-export type WhenDependency<T = boolean> = {
+export type WhenDependency = {
   /** The stream to observe for true emissions. */
-  when$: Observable<T>;
-} & WhenMap<T>;
+  when$: Observable<boolean>;
+};
 
 /** A pattern for types that allow their managed settings to
  *  be overridden.
@@ -153,5 +118,5 @@ export type SettingsDependency<Settings> = {
  *  to find this information.
  */
 export type Dependencies<TCombine> = {
-  dependencies$: TCombine;
+  dependencies$: Observable<TCombine>;
 };
