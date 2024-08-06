@@ -583,7 +583,14 @@ export class Utils {
     return Math.max(0, Math.floor(diffTime / msPerDay));
   }
 
-  /** Performs deep equality check between two values */
+  /**
+   * Performs deep equality check between two values
+   *
+   * NOTE: This method uses JSON.stringify to compare objects, which may return false
+   * for objects with the same properties but in different order. If order-insensitive
+   * comparison becomes necessary in future, consider updating this method to use a comparison
+   * that checks for property existence and value equality without regard to order.
+   */
   static compareValues<T>(value1: T, value2: T): boolean {
     if (value1 == null && value2 == null) {
       return true;
