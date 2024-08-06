@@ -4,7 +4,10 @@
   "scripts": {
     "build": "cross-env MANIFEST_VERSION=3 webpack",
     "build:mv2": "webpack",
-    "build:watch": "cross-env MANIFEST_VERSION=3 webpack --watch",
+    "build:watch": "npm run build:watch:chrome",
+    "build:watch:chrome": "cross-env MANIFEST_VERSION=3 BROWSER=chrome webpack --watch",
+    "build:watch:firefox": "cross-env MANIFEST_VERSION=3 BROWSER=firefox webpack --watch",
+    "build:watch:safari": "cross-env MANIFEST_VERSION=3 BROWSER=safari webpack --watch",
     "build:watch:mv2": "webpack --watch",
     "build:prod": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\" webpack",
     "build:prod:beta": "cross-env BETA_BUILD=1 NODE_ENV=production webpack",
