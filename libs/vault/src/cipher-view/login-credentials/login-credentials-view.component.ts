@@ -39,6 +39,7 @@ export class LoginCredentialsViewComponent {
   @Input() viewPassword: boolean;
   isPremium$: Observable<boolean> = this.billingAccountProfileStateService.hasPremiumFromAnySource$;
   showPasswordCount: boolean = false;
+  passwordRevealed: boolean = false;
 
   constructor(
     private billingAccountProfileStateService: BillingAccountProfileStateService,
@@ -47,6 +48,10 @@ export class LoginCredentialsViewComponent {
 
   async getPremium() {
     await this.router.navigate(["/premium"]);
+  }
+
+  pwToggleValue(evt: boolean) {
+    this.passwordRevealed = evt;
   }
 
   togglePasswordCount() {
