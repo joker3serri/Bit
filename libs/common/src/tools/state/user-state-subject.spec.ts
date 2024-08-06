@@ -10,6 +10,52 @@ const SomeUser = "some user" as UserId;
 type TestType = { foo: string };
 
 describe("UserStateSubject", () => {
+  describe("dependencies", () => {
+    it("ignores repeated when$ emissions", async () => {
+      // this test looks for `nextValue` because a subscription isn't necessary for
+      // the subject to update
+      const initialValue: TestType = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const nextValue = jest.fn((_, next) => next);
+      const when$ = new BehaviorSubject(true);
+      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
+
+      // the interleaved await asyncs are only necessary b/c `nextValue` is called asynchronously
+      subject.next({ foo: "next" });
+      await awaitAsync();
+      when$.next(true);
+      await awaitAsync();
+      when$.next(true);
+      when$.next(true);
+      await awaitAsync();
+
+      expect(nextValue).toHaveBeenCalledTimes(1);
+    });
+
+    it("ignores repeated singleUserId$ emissions", async () => {
+      // this test looks for `nextValue` because a subscription isn't necessary for
+      // the subject to update
+      const initialValue: TestType = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const nextValue = jest.fn((_, next) => next);
+      const when$ = new BehaviorSubject(true);
+      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
+
+      // the interleaved await asyncs are only necessary b/c `nextValue` is called asynchronously
+      subject.next({ foo: "next" });
+      await awaitAsync();
+      singleUserId$.next(SomeUser);
+      await awaitAsync();
+      singleUserId$.next(SomeUser);
+      singleUserId$.next(SomeUser);
+      await awaitAsync();
+
+      expect(nextValue).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("next", () => {
     it("emits the next value", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
@@ -226,8 +272,6 @@ describe("UserStateSubject", () => {
 
   describe("subscribe", () => {
     it("completes when singleUserId$ completes", async () => {
-      // this test looks for `nextValue` because a subscription isn't necessary for
-      // the subject to update
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
@@ -246,8 +290,6 @@ describe("UserStateSubject", () => {
     });
 
     it("completes when when$ completes", async () => {
-      // this test looks for `nextValue` because a subscription isn't necessary for
-      // the subject to update
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
@@ -267,8 +309,6 @@ describe("UserStateSubject", () => {
     });
 
     it("errors when singleUserId$ errors", async () => {
-      // this test looks for `nextValue` because a subscription isn't necessary for
-      // the subject to update
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
@@ -288,8 +328,6 @@ describe("UserStateSubject", () => {
     });
 
     it("errors when when$ errors", async () => {
-      // this test looks for `nextValue` because a subscription isn't necessary for
-      // the subject to update
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
@@ -307,50 +345,6 @@ describe("UserStateSubject", () => {
       await awaitAsync();
 
       expect(actual).toEqual(expected);
-    });
-
-    it("ignores repeated when$ emissions", async () => {
-      // this test looks for `nextValue` because a subscription isn't necessary for
-      // the subject to update
-      const initialValue: TestType = { foo: "init" };
-      const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
-      const singleUserId$ = new BehaviorSubject(SomeUser);
-      const nextValue = jest.fn((_, next) => next);
-      const when$ = new BehaviorSubject(true);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
-
-      // the interleaved await asyncs are only necessary b/c `nextValue` is called asynchronously
-      subject.next({ foo: "next" });
-      await awaitAsync();
-      when$.next(true);
-      await awaitAsync();
-      when$.next(true);
-      when$.next(true);
-      await awaitAsync();
-
-      expect(nextValue).toHaveBeenCalledTimes(1);
-    });
-
-    it("ignores repeated singleUserId$ emissions", async () => {
-      // this test looks for `nextValue` because a subscription isn't necessary for
-      // the subject to update
-      const initialValue: TestType = { foo: "init" };
-      const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
-      const singleUserId$ = new BehaviorSubject(SomeUser);
-      const nextValue = jest.fn((_, next) => next);
-      const when$ = new BehaviorSubject(true);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
-
-      // the interleaved await asyncs are only necessary b/c `nextValue` is called asynchronously
-      subject.next({ foo: "next" });
-      await awaitAsync();
-      singleUserId$.next(SomeUser);
-      await awaitAsync();
-      singleUserId$.next(SomeUser);
-      singleUserId$.next(SomeUser);
-      await awaitAsync();
-
-      expect(nextValue).toHaveBeenCalledTimes(1);
     });
   });
 });
