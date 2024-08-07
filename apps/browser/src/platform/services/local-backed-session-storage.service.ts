@@ -8,8 +8,8 @@ import {
   ObservableStorageService,
   StorageUpdate,
 } from "@bitwarden/common/platform/abstractions/storage.service";
+import { compareValues } from "@bitwarden/common/platform/misc/compare-values";
 import { Lazy } from "@bitwarden/common/platform/misc/lazy";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { StorageOptions } from "@bitwarden/common/platform/models/domain/storage-options";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -191,7 +191,7 @@ export class LocalBackedSessionStorageService
 
   private compareValues<T>(value1: T, value2: T): boolean {
     try {
-      return Utils.compareValues(value1, value2);
+      return compareValues(value1, value2);
     } catch (e) {
       this.logService.error(
         `error comparing values\n${JSON.stringify(value1)}\n${JSON.stringify(value2)}`,
