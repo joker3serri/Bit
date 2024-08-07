@@ -9,19 +9,11 @@ import { Fido2ContentScript } from "../enums/fido2-content-script.enum";
     return;
   }
 
-  if (globalContext.document.readyState === "complete") {
-    loadScript();
-  } else {
-    globalContext.addEventListener("DOMContentLoaded", loadScript);
-  }
+  const script = globalContext.document.createElement("script");
+  script.src = chrome.runtime.getURL(Fido2ContentScript.PageScript);
+  script.addEventListener("load", () => script.remove());
 
-  function loadScript() {
-    const script = globalContext.document.createElement("script");
-    script.src = chrome.runtime.getURL(Fido2ContentScript.PageScript);
-    script.addEventListener("load", () => script.remove());
-
-    const scriptInsertionPoint =
-      globalContext.document.head || globalContext.document.documentElement;
-    scriptInsertionPoint.insertBefore(script, scriptInsertionPoint.firstChild);
-  }
+  const scriptInsertionPoint =
+    globalContext.document.head || globalContext.document.documentElement;
+  scriptInsertionPoint.insertBefore(script, scriptInsertionPoint.firstChild);
 })(globalThis);
