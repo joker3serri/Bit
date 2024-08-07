@@ -3,7 +3,10 @@
     <h2 bitTypography="h6">{{ setSectionTitle }}</h2>
   </bit-section-header>
   <bit-card>
-    <bit-form-field [disableMargin]="!card.number && !card.expiration && !card.code">
+    <bit-form-field
+      *ngIf="card.cardholderName"
+      [disableMargin]="!card.number && !card.expiration && !card.code"
+    >
       <bit-label>{{ "cardholderName" | i18n }}</bit-label>
       <input
         readonly
