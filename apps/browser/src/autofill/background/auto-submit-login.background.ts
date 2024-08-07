@@ -348,6 +348,10 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
       return;
     }
 
+    if (details.tabId < 0) {
+      return;
+    }
+
     const tab = await BrowserApi.getTab(details.tabId);
     if (this.isValidAutoSubmitHost(tab?.url)) {
       this.removeUrlFromAutoSubmitHosts(tab.url);
@@ -529,6 +533,10 @@ export class AutoSubmitLoginBackground implements AutoSubmitLoginBackgroundAbstr
    * @param activeInfo - The active tab information.
    */
   private handleSafariTabOnActivated = async (activeInfo: chrome.tabs.TabActiveInfo) => {
+    if (activeInfo.tabId < 0) {
+      return;
+    }
+
     const tab = await BrowserApi.getTab(activeInfo.tabId);
     if (tab) {
       this.setMostRecentIdpHost(tab.url, tab.id);

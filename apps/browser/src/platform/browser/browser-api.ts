@@ -115,7 +115,7 @@ export class BrowserApi {
    * @param tabId - The id of the tab to get.
    */
   static async getTab(tabId: number): Promise<chrome.tabs.Tab> | null {
-    if (!tabId || tabId < 0) {
+    if (!tabId) {
       return null;
     }
 
