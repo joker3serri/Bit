@@ -67,8 +67,8 @@ export type SingleUserDependency = {
 /** A pattern for types that emit values exclusively when the dependency
  *  emits a message.
  *
- *  Consumers of this dependency should emit when `when$` emits. If `when$`
- *  completes, the consumer should also complete. If `when$`
+ *  Consumers of this dependency should emit when `on$` emits. If `on$`
+ *  completes, the consumer should also complete. If `on$`
  *  errors, the consumer should also emit the error.
  *
  *  @remarks This dependency is useful when you have a nondeterministic
