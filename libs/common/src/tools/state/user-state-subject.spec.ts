@@ -73,6 +73,23 @@ describe("UserStateSubject", () => {
       expect(actual).toEqual(expected);
     });
 
+    it("ceases emissions once complete", async () => {
+      const initialState = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const subject = new UserStateSubject(state, { singleUserId$ });
+
+      let actual: TestType = null;
+      subject.subscribe((value) => {
+        actual = value;
+      });
+      subject.complete();
+      subject.next({ foo: "ignored" });
+      await awaitAsync();
+
+      expect(actual).toEqual(initialState);
+    });
+
     it("evaluates shouldUpdate", async () => {
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
@@ -249,6 +266,44 @@ describe("UserStateSubject", () => {
 
       expect(actual).toEqual(expected);
     });
+
+    it("ceases emissions once errored", async () => {
+      const initialState = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const subject = new UserStateSubject(state, { singleUserId$ });
+
+      let actual: TestType = null;
+      subject.subscribe({
+        error: (value) => {
+          actual = value;
+        },
+      });
+      subject.error("expectedError");
+      subject.error("ignored");
+      await awaitAsync();
+
+      expect(actual).toEqual("expectedError");
+    });
+
+    it("ceases emissions once complete", async () => {
+      const initialState = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const subject = new UserStateSubject(state, { singleUserId$ });
+
+      let shouldNotRun = false;
+      subject.subscribe({
+        error: () => {
+          shouldNotRun = true;
+        },
+      });
+      subject.complete();
+      subject.error("ignored");
+      await awaitAsync();
+
+      expect(shouldNotRun).toBeFalsy();
+    });
   });
 
   describe("complete", () => {
@@ -267,6 +322,46 @@ describe("UserStateSubject", () => {
       await awaitAsync();
 
       expect(actual).toBeTruthy();
+    });
+
+    it("ceases emissions once errored", async () => {
+      const initialState = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const subject = new UserStateSubject(state, { singleUserId$ });
+
+      let shouldNotRun = false;
+      subject.subscribe({
+        complete: () => {
+          shouldNotRun = true;
+        },
+        // prevent throw
+        error: () => {},
+      });
+      subject.error("occurred");
+      subject.complete();
+      await awaitAsync();
+
+      expect(shouldNotRun).toBeFalsy();
+    });
+
+    it("ceases emissions once complete", async () => {
+      const initialState = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const subject = new UserStateSubject(state, { singleUserId$ });
+
+      let timesRun = 0;
+      subject.subscribe({
+        complete: () => {
+          timesRun++;
+        },
+      });
+      subject.complete();
+      subject.complete();
+      await awaitAsync();
+
+      expect(timesRun).toEqual(1);
     });
   });
 
@@ -306,6 +401,28 @@ describe("UserStateSubject", () => {
       await awaitAsync();
 
       expect(actual).toBeTruthy();
+    });
+
+    // FIXME: add test for `this.state.catch` once `FakeSingleUserState` supports
+    // simulated errors
+
+    it("errors when singleUserId$ changes", async () => {
+      const initialValue: TestType = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const subject = new UserStateSubject(state, { singleUserId$ });
+      const errorUserId = "error" as UserId;
+
+      let error = false;
+      subject.subscribe({
+        error: (e) => {
+          error = e;
+        },
+      });
+      singleUserId$.next(errorUserId);
+      await awaitAsync();
+
+      expect(error).toEqual({ expectedUserId: SomeUser, actualUserId: errorUserId });
     });
 
     it("errors when singleUserId$ errors", async () => {
