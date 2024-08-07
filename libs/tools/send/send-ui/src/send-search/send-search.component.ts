@@ -14,7 +14,7 @@ const SearchTextDebounceInterval = 200;
 @Component({
   imports: [CommonModule, SearchModule, JslibModule, FormsModule],
   standalone: true,
-  selector: "app-send-search",
+  selector: "tools-send-search",
   templateUrl: "send-search.component.html",
 })
 export class SendSearchComponent {
