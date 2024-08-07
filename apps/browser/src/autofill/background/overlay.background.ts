@@ -597,9 +597,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param credentials - The FIDO2 credentials to store
    */
   private storeInlineMenuFido2Credentials(credentials: Fido2CredentialView[]) {
-    credentials
-      .map((credential) => credential.credentialId)
-      .forEach((credentialId) => this.inlineMenuFido2Credentials.add(credentialId));
+    credentials.forEach(
+      (credential) =>
+        credential?.credentialId && this.inlineMenuFido2Credentials.add(credential.credentialId),
+    );
   }
 
   /**
