@@ -9,3 +9,4 @@ APP_PATH=$(dirname $RAW_PATH)
 
 # pass through all args
 $APP_PATH/bitwarden-app "$@"
+
