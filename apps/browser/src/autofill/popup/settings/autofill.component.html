@@ -145,6 +145,7 @@
             type="checkbox"
             (change)="updateAutofillOnPageLoad()"
             [(ngModel)]="enableAutofillOnPageLoad"
+            [disabled]="autofillOnPageLoadFromPolicy$ | async"
           />
           <bit-label for="autofillOnPageLoad">{{ "enableAutoFillOnPageLoad" | i18n }}</bit-label>
         </bit-form-control>
