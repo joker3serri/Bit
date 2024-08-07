@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from "@angular/core";
+import { Injectable } from "@angular/core";
 import {
   BehaviorSubject,
   combineLatest,
@@ -94,7 +94,6 @@ export class SendItemsService {
     private sendService: SendService,
     private sendListFiltersService: SendListFiltersService,
     private searchService: SearchService,
-    private ngZone: NgZone,
   ) {}
 
   applyFilter(newSearchText: string) {
