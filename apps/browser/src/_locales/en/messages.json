@@ -4146,5 +4146,8 @@
   },
   "accountActions": {
     "message": "Account actions"
+  },
+  "showNumberOfAutofillSuggestions": {
+    "message": "Show number of login autofill suggestions on extension icon"
   }
 }
