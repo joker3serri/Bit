@@ -74,7 +74,7 @@ export class VaultV2Component implements OnInit, OnDestroy {
   /** Visual state of the vault */
   protected vaultState: VaultState | null = null;
 
-  protected vaultIcon = Icons.Vault;
+  protected vaultIcon = VaultIcons.Vault;
   protected deactivatedIcon = VaultIcons.DeactivatedOrg;
   protected noResultsIcon = Icons.NoResults;
 
