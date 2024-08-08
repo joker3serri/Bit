@@ -109,7 +109,6 @@ import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { VaultHeaderComponent } from "./vault-header/vault-header.component";
 import { VaultOnboardingComponent } from "./vault-onboarding/vault-onboarding.component";
 import { openViewCipherDialog, ViewComponent } from "./view.component";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -136,8 +135,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   folderAddEditModalRef: ViewContainerRef;
   @ViewChild("cipherAddEdit", { read: ViewContainerRef, static: true })
   cipherAddEditModalRef: ViewContainerRef;
-  @ViewChild("cipherView", { read: ViewContainerRef, static: true })
-  cipherViewModalRef: ViewContainerRef;
   @ViewChild("share", { read: ViewContainerRef, static: true }) shareModalRef: ViewContainerRef;
   @ViewChild("collectionsModal", { read: ViewContainerRef, static: true })
   collectionsModalRef: ViewContainerRef;
@@ -215,7 +212,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         await this.syncService.fullSync(false);
 
         const cipherId = getCipherIdFromParams(params);
-
         if (!cipherId) {
           return;
         }
