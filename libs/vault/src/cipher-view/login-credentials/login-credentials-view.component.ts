@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable, share } from "rxjs";
+import { Observable, shareReplay } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
@@ -38,7 +38,9 @@ export class LoginCredentialsViewComponent {
   @Input() login: LoginView;
   @Input() viewPassword: boolean;
   isPremium$: Observable<boolean> =
-    this.billingAccountProfileStateService.hasPremiumFromAnySource$.pipe(share());
+    this.billingAccountProfileStateService.hasPremiumFromAnySource$.pipe(
+      shareReplay({ refCount: true, bufferSize: 1 }),
+    );
   showPasswordCount: boolean = false;
   passwordRevealed: boolean = false;
 
