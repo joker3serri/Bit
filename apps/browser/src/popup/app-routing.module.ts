@@ -64,6 +64,7 @@ import { ImportBrowserV2Component } from "../tools/popup/settings/import/import-
 import { ImportBrowserComponent } from "../tools/popup/settings/import/import-browser.component";
 import { SettingsV2Component } from "../tools/popup/settings/settings-v2.component";
 import { SettingsComponent } from "../tools/popup/settings/settings.component";
+import { clearVaultStateGuard } from "../vault/guards/clear-vault-state.guard";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
 import { CollectionsComponent } from "../vault/popup/components/vault/collections.component";
@@ -81,6 +82,7 @@ import { ViewV2Component } from "../vault/popup/components/vault-v2/view-v2/view
 import { AppearanceV2Component } from "../vault/popup/settings/appearance-v2.component";
 import { AppearanceComponent } from "../vault/popup/settings/appearance.component";
 import { FolderAddEditComponent } from "../vault/popup/settings/folder-add-edit.component";
+import { FoldersV2Component } from "../vault/popup/settings/folders-v2.component";
 import { FoldersComponent } from "../vault/popup/settings/folders.component";
 import { SyncComponent } from "../vault/popup/settings/sync.component";
 import { VaultSettingsV2Component } from "../vault/popup/settings/vault-settings-v2.component";
@@ -303,12 +305,11 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { state: "vault-settings" },
   }),
-  {
+  ...extensionRefreshSwap(FoldersComponent, FoldersV2Component, {
     path: "folders",
-    component: FoldersComponent,
     canActivate: [authGuard],
     data: { state: "folders" },
-  },
+  }),
   {
     path: "add-folder",
     component: FolderAddEditComponent,
@@ -457,6 +458,7 @@ const routes: Routes = [
       ...extensionRefreshSwap(VaultFilterComponent, VaultV2Component, {
         path: "vault",
         canActivate: [authGuard],
+        canDeactivate: [clearVaultStateGuard],
         data: { state: "tabs_vault" },
       }),
       {
