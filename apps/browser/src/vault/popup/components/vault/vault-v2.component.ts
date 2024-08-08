@@ -8,6 +8,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, Icons, NoItemsModule } from "@bitwarden/components";
+import { VaultIcons } from "@bitwarden/vault";
 
 import { CurrentAccountComponent } from "../../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
@@ -74,7 +75,7 @@ export class VaultV2Component implements OnInit, OnDestroy {
   protected vaultState: VaultState | null = null;
 
   protected vaultIcon = Icons.Vault;
-  protected deactivatedIcon = Icons.DeactivatedOrg;
+  protected deactivatedIcon = VaultIcons.DeactivatedOrg;
   protected noResultsIcon = Icons.NoResults;
 
   protected VaultStateEnum = VaultState;
