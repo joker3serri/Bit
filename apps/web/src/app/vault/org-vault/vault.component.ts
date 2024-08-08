@@ -150,12 +150,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected collections: CollectionAdminView[];
   protected selectedCollection: TreeNode<CollectionAdminView> | undefined;
   protected isEmpty: boolean;
-  /**
-   * Used to show an old missing permission message for custom users with DeleteAnyCollection
-   * @deprecated Replaced with showCollectionAccessRestricted$ and this should be removed after flexible collections V1
-   * is released
-   */
-  protected showMissingCollectionPermissionMessage: boolean;
   protected showCollectionAccessRestricted: boolean;
   protected currentSearchText$: Observable<string>;
   /**
@@ -509,25 +503,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
-    const showMissingCollectionPermissionMessage$ = combineLatest([
-      filter$,
-      selectedCollection$,
-      organization$,
-    ]).pipe(
-      map(([filter, collection, organization]) => {
-        return (
-          // Filtering by unassigned, show message if not admin
-          (filter.collectionId === Unassigned &&
-            !organization.canEditUnassignedCiphers(this.restrictProviderAccessEnabled)) ||
-          // Filtering by a collection, so show message if user is not assigned
-          (collection != undefined &&
-            !collection.node.assigned &&
-            !organization.canEditAnyCollection)
-        );
-      }),
-      shareReplay({ refCount: true, bufferSize: 1 }),
-    );
-
     firstSetup$
       .pipe(
         switchMap(() => combineLatest([this.route.queryParams, organization$])),
@@ -599,7 +574,6 @@ export class VaultComponent implements OnInit, OnDestroy {
             ciphers$,
             collections$,
             selectedCollection$,
-            showMissingCollectionPermissionMessage$,
             showCollectionAccessRestricted$,
           ]),
         ),
@@ -614,7 +588,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           ciphers,
           collections,
           selectedCollection,
-          showMissingCollectionPermissionMessage,
           showCollectionAccessRestricted,
         ]) => {
           this.organization = organization;
@@ -624,7 +597,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.ciphers = ciphers;
           this.collections = collections;
           this.selectedCollection = selectedCollection;
-          this.showMissingCollectionPermissionMessage = showMissingCollectionPermissionMessage;
           this.showCollectionAccessRestricted = showCollectionAccessRestricted;
 
           this.isEmpty = collections?.length === 0 && ciphers?.length === 0;
@@ -765,7 +737,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   async editCipherCollections(cipher: CipherView) {
     let collections: CollectionAdminView[] = [];
 
-    // V1 limits admins to only adding items to collections they have access to.
+    // Admins limited to only adding items to collections they have access to.
     collections = await firstValueFrom(
       this.allCollectionsWithoutUnassigned$.pipe(
         map((c) => {
@@ -804,7 +776,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   async addCipher() {
     let collections: CollectionView[] = [];
 
-    // V1 limits admins to only adding items to collections they have access to.
+    // Admins limited to only adding items to collections they have access to.
     collections = await firstValueFrom(this.editableCollections$);
 
     await this.editCipher(null, (comp) => {
@@ -897,7 +869,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     let collections: CollectionView[] = [];
 
-    // V1 limits admins to only adding items to collections they have access to.
+    // Admins limited to only adding items to collections they have access to.
     collections = await firstValueFrom(this.editableCollections$);
 
     await this.editCipher(cipher, (comp) => {
