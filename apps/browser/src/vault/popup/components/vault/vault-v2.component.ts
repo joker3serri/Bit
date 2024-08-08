@@ -1,15 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
-import { combineLatest, filter, map, Observable, shareReplay, tap } from "rxjs";
+import { combineLatest, map, Observable, shareReplay } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { ButtonModule, Icons, NoItemsModule, ToastService } from "@bitwarden/components";
+import { ButtonModule, Icons, NoItemsModule } from "@bitwarden/components";
 
 import { CurrentAccountComponent } from "../../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
@@ -55,7 +53,6 @@ enum VaultState {
   providers: [VaultUiOnboardingService],
 })
 export class VaultV2Component implements OnInit, OnDestroy {
-  private destroyRef = inject(DestroyRef);
   cipherType = CipherType;
 
   protected favoriteCiphers$ = this.vaultPopupItemsService.favoriteCiphers$;
@@ -82,41 +79,10 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   protected VaultStateEnum = VaultState;
 
-  /** Show the autofill on page load policy toast */
-  private showAutoFillOrgPolicyToast$ = combineLatest([
-    this.autofillSettingsService.activateAutofillOnPageLoadFromPolicy$,
-    this.autofillSettingsService.autofillOnPageLoadPolicyToastHasDisplayed$,
-  ]).pipe(
-    filter(([autoFillOrgPolicy, toastDisplayed]) => autoFillOrgPolicy && !toastDisplayed),
-    tap(async () => {
-      this.toastService.showToast({
-        variant: "info",
-        title: null,
-        message: this.i18nService.t("autofillPageLoadPolicyActivated"),
-      });
-
-      await this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(true);
-    }),
-  );
-
-  /** Reset the autofill on page load policy toast has displayed flag */
-  private resetAutoFillOrgPolicyToastHasDisplayed$ = combineLatest([
-    this.autofillSettingsService.activateAutofillOnPageLoadFromPolicy$,
-    this.autofillSettingsService.autofillOnPageLoadPolicyToastHasDisplayed$,
-  ]).pipe(
-    filter(([autoFillOrgPolicy, toastDisplayed]) => !autoFillOrgPolicy && toastDisplayed),
-    tap(async () => {
-      await this.autofillSettingsService.setAutofillOnPageLoadPolicyToastHasDisplayed(false);
-    }),
-  );
-
   constructor(
     private vaultPopupItemsService: VaultPopupItemsService,
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
     private vaultUiOnboardingService: VaultUiOnboardingService,
-    private autofillSettingsService: AutofillSettingsServiceAbstraction,
-    private toastService: ToastService,
-    private i18nService: I18nService,
   ) {
     combineLatest([
       this.vaultPopupItemsService.emptyVault$,
@@ -144,11 +110,6 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.vaultUiOnboardingService.showOnboardingDialog();
-
-    this.showAutoFillOrgPolicyToast$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-    this.resetAutoFillOrgPolicyToastHasDisplayed$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
   }
 
   ngOnDestroy(): void {}
