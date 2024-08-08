@@ -7,7 +7,7 @@ import { combineLatest, map, Observable, shareReplay } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { ButtonModule, Icons, NoItemsModule } from "@bitwarden/components";
+import { ButtonModule, NoItemsModule } from "@bitwarden/components";
 import { VaultIcons } from "@bitwarden/vault";
 
 import { CurrentAccountComponent } from "../../../../auth/popup/account-switching/current-account.component";
@@ -76,7 +76,7 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
   protected vaultIcon = VaultIcons.Vault;
   protected deactivatedIcon = VaultIcons.DeactivatedOrg;
-  protected noResultsIcon = Icons.NoResults;
+  protected noResultsIcon = VaultIcons.NoResults;
 
   protected VaultStateEnum = VaultState;
 
