@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, Optional } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
@@ -32,7 +32,7 @@ import { TotpCaptureService } from "../../cipher-form";
 export class AutofillOptionsViewComponent {
   @Input() loginUris: LoginUriView[];
 
-  constructor(@Optional() private totpCaptureService: TotpCaptureService) {}
+  constructor(private totpCaptureService: TotpCaptureService) {}
 
   async openWebsite(selectedUri: string) {
     await this.totpCaptureService.openAutofillNewTab(selectedUri);

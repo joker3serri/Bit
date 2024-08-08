@@ -82,7 +82,7 @@ export class CipherViewComponent implements OnInit, OnDestroy {
   }
 
   get hasAutofill() {
-    return this.cipher.login.uris.length > 0;
+    return this.cipher.login?.uris.length > 0;
   }
 
   async loadCipherData() {
