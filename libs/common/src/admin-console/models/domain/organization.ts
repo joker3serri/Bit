@@ -178,7 +178,7 @@ export class Organization {
     );
   }
 
-  canEditUnmanagedCollections() {
+  get canEditUnmanagedCollections() {
     // Any admin or custom user with editAnyCollection permission can edit unmanaged collections
     return this.isAdmin || this.permissions.editAnyCollection;
   }
