@@ -218,7 +218,7 @@ export class Organization {
   /**
    * @returns True if the user can delete any collection
    */
-  canDeleteAnyCollection() {
+  get canDeleteAnyCollection() {
     // Providers and Users with DeleteAnyCollection permission can always delete collections
     if (this.isProviderUser || this.permissions.deleteAnyCollection) {
       return true;

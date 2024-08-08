@@ -53,7 +53,7 @@ export class CollectionAdminView extends CollectionView {
    * Returns true if the user can delete a collection from the Admin Console.
    */
   override canDelete(org: Organization): boolean {
-    return org?.canDeleteAnyCollection() || super.canDelete(org);
+    return org?.canDeleteAnyCollection || super.canDelete(org);
   }
 
   /**
