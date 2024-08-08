@@ -168,7 +168,7 @@ export class Organization {
     );
   }
 
-  canEditAnyCollection() {
+  get canEditAnyCollection() {
     // The allowAdminAccessToAllCollectionItems flag can restrict admins
     // Providers and custom users with canEditAnyCollection are not affected by allowAdminAccessToAllCollectionItems flag
     return (

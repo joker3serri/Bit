@@ -186,7 +186,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
   ]).pipe(
     map(
       ([org, allowAdminAccessToAllCollectionItems]) =>
-        org.canEditAnyCollection() ||
+        org.canEditAnyCollection ||
         // Manage Groups custom permission cannot edit any collection but they can assign access from this dialog
         // if permitted by collection management settings
         (org.permissions.manageGroups && allowAdminAccessToAllCollectionItems),

@@ -43,7 +43,7 @@ export class CollectionAdminView extends CollectionView {
    */
   override canEdit(org: Organization): boolean {
     return (
-      org?.canEditAnyCollection() ||
+      org?.canEditAnyCollection ||
       (this.unmanaged && org?.canEditUnmanagedCollections()) ||
       super.canEdit(org)
     );

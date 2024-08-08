@@ -204,7 +204,7 @@ export class MemberDialogComponent implements OnDestroy {
     ]).pipe(
       map(
         ([org, allowAdminAccessToAllCollectionItems]) =>
-          org.canEditAnyCollection() ||
+          org.canEditAnyCollection ||
           // Manage Users custom permission cannot edit any collection but they can assign access from this dialog
           // if permitted by collection management settings
           (org.permissions.manageUsers && allowAdminAccessToAllCollectionItems),

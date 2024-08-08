@@ -246,7 +246,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       switchMap(async ([organization]) => {
         this.organization = organization;
 
-        if (!organization.canEditAnyCollection()) {
+        if (!organization.canEditAnyCollection) {
           await this.syncService.fullSync(false);
         }
 
@@ -522,7 +522,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           // Filtering by a collection, so show message if user is not assigned
           (collection != undefined &&
             !collection.node.assigned &&
-            !organization.canEditAnyCollection())
+            !organization.canEditAnyCollection)
         );
       }),
       shareReplay({ refCount: true, bufferSize: 1 }),
@@ -927,7 +927,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     // Allow restore of an Unassigned Item
     try {
-      const asAdmin = this.organization?.canEditAnyCollection() || c.isUnassigned;
+      const asAdmin = this.organization?.canEditAnyCollection || c.isUnassigned;
       await this.cipherService.restoreWithServer(c.id, asAdmin);
       this.toastService.showToast({
         variant: "success",
@@ -1187,7 +1187,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       data: {
         organizationId: this.organization?.id,
         parentCollectionId: this.selectedCollection?.node.id,
-        limitNestedCollections: !this.organization.canEditAnyCollection(),
+        limitNestedCollections: !this.organization.canEditAnyCollection,
       },
     });
 
@@ -1212,7 +1212,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         initialTab: tab,
         readonly: readonly,
         isAddAccessCollection: c.unmanaged,
-        limitNestedCollections: !this.organization.canEditAnyCollection(),
+        limitNestedCollections: !this.organization.canEditAnyCollection,
       },
     });
 
