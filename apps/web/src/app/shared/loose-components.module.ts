@@ -6,7 +6,6 @@ import {
   VaultTimeoutInputComponent,
 } from "@bitwarden/auth/angular";
 import { LayoutComponent, NavigationModule } from "@bitwarden/components";
-import { CipherViewComponent } from "@bitwarden/vault";
 
 import { OrganizationLayoutComponent } from "../admin-console/organizations/layouts/organization-layout.component";
 import { EventsComponent as OrgEventsComponent } from "../admin-console/organizations/manage/events.component";
@@ -96,7 +95,6 @@ import { SharedModule } from "./shared.module";
 // If you are building new functionality, please create or extend a feature module instead.
 @NgModule({
   imports: [
-    CipherViewComponent,
     SharedModule,
     RegisterFormModule,
     ProductSwitcherModule,
