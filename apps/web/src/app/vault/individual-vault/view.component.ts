@@ -56,7 +56,7 @@ export class ViewComponent implements OnInit {
     private cipherService: CipherService,
     private toastService: ToastService,
     private organizationService: OrganizationService,
-    private router: Router, // Added this line
+    private router: Router,
   ) {}
 
   async ngOnInit() {

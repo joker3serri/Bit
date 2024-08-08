@@ -7,16 +7,16 @@
   </ng-container>
   <ng-container bitDialogFooter>
     <button
-      *ngIf="cipher.edit"
       bitButton
       bitFormButton
       (click)="edit()"
       buttonType="primary"
       type="button"
+      [disabled]="!cipher.edit"
     >
       {{ "edit" | i18n }}
     </button>
-    <div class="ml-auto" *ngIf="cipher.edit">
+    <div class="ml-auto">
       <button
         bitButton
         bitFormButton
@@ -24,6 +24,7 @@
         buttonType="secondary"
         class="btn-outline-danger"
         (click)="delete()"
+        [disabled]="!cipher.edit"
       >
         <i class="bwi bwi-trash bwi-lg bwi-fw" aria-hidden="true"></i>
       </button>

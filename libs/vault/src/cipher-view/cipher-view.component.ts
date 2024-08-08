@@ -59,7 +59,6 @@ export class CipherViewComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // console.log("cipher", this.cipher);
     await this.loadCipherData();
   }
   ngOnDestroy(): void {
