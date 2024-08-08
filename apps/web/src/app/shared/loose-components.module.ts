@@ -83,7 +83,6 @@ import { FolderAddEditComponent } from "../vault/individual-vault/folder-add-edi
 import { OrganizationBadgeModule } from "../vault/individual-vault/organization-badge/organization-badge.module";
 import { PipesModule } from "../vault/individual-vault/pipes/pipes.module";
 import { ShareComponent } from "../vault/individual-vault/share.component";
-import { ViewComponent } from "../vault/individual-vault/view.component";
 import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-edit.component";
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
@@ -188,7 +187,6 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     VerifyRecoverDeleteProviderComponent,
-    ViewComponent,
   ],
   exports: [
     UserVerificationModule,
@@ -262,7 +260,6 @@ import { SharedModule } from "./shared.module";
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
     VerifyRecoverDeleteProviderComponent,
-    ViewComponent,
     HeaderModule,
     DangerZoneComponent,
   ],

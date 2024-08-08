@@ -108,7 +108,8 @@ import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/v
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { VaultHeaderComponent } from "./vault-header/vault-header.component";
 import { VaultOnboardingComponent } from "./vault-onboarding/vault-onboarding.component";
-import { ViewComponent } from "./view.component";
+import { openViewCipherDialog, ViewComponent } from "./view.component";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -125,7 +126,7 @@ const SearchTextDebounceInterval = 200;
     VaultItemsModule,
     SharedModule,
   ],
-  providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
+  providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService, ViewComponent],
 })
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true }) filterComponent: VaultFilterComponent;
@@ -685,25 +686,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const [modal, childComponent] = await this.modalService.openViewRef(
-      ViewComponent,
-      this.cipherViewModalRef,
-      (comp) => {
-        comp.cipherId = id;
-        comp.onDeletedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.refresh();
-        });
-      },
-    );
-
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    modal.onClosedPromise().then(() => {
-      this.go({ cipherId: null, itemId: null });
-    });
-
-    return childComponent;
+    const cipherView = new CipherView(cipher);
+    const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
+    openViewCipherDialog(this.dialogService, { data: { cipher: cipherView, cipherTypeString } });
   }
 
   async addCollection() {

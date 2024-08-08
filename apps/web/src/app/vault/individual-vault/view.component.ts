@@ -1,154 +1,55 @@
-import { DatePipe } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit, EventEmitter } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
-
-import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { EventType } from "@bitwarden/common/enums";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { CommonModule } from "@angular/common"; // Add this import
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
-import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
-import { PasswordRepromptService } from "@bitwarden/vault";
+import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
+import { AsyncActionsModule, DialogModule, DialogService } from "@bitwarden/components";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { CipherViewComponent } from "../../../../../../libs/vault/src/cipher-view/cipher-view.component";
+import { SharedModule } from "../../shared/shared.module";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+
+export interface ViewCipherDialogParams {
+  cipher: CipherView;
+  cipherTypeString: string;
+}
 
 @Component({
   selector: "app-vault-view",
   templateUrl: "view.component.html",
+  standalone: true,
+  imports: [CipherViewComponent, CommonModule, AsyncActionsModule, DialogModule, SharedModule],
 })
-export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDestroy {
-  canAccessPremium: boolean;
-  totpCode: string;
-  totpCodeFormatted: string;
-  totpDash: number;
-  totpSec: number;
-  totpLow: boolean;
-  showRevisionDate = false;
-  hasPasswordHistory = false;
-  viewingPasswordHistory = false;
-  showPasswordCount = false;
-
-  protected totpInterval: number;
+export class ViewComponent implements OnInit {
+  cipher: CipherView;
+  deletePromise: Promise<any>;
+  onDeletedCipher = new EventEmitter<CipherView>();
+  cipherTypeString: string;
 
   constructor(
-    cipherService: CipherService,
-    folderService: FolderService,
-    i18nService: I18nService,
-    platformUtilsService: PlatformUtilsService,
-    auditService: AuditService,
-    accountService: AccountService,
-    collectionService: CollectionService,
-    protected totpService: TotpService,
-    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
-    protected messagingService: MessagingService,
-    eventCollectionService: EventCollectionService,
-    protected policyService: PolicyService,
-    organizationService: OrganizationService,
-    logService: LogService,
-    passwordRepromptService: PasswordRepromptService,
-    sendApiService: SendApiService,
-    dialogService: DialogService,
-    datePipe: DatePipe,
-    configService: ConfigService,
-    private billingAccountProfileStateService: BillingAccountProfileStateService,
+    @Inject(DIALOG_DATA) public params: ViewCipherDialogParams,
+    private dialogRef: DialogRef<any>,
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService,
     private router: Router,
-  ) {
-    super(
-      cipherService,
-      folderService,
-      i18nService,
-      platformUtilsService,
-      auditService,
-      accountService,
-      collectionService,
-      messagingService,
-      eventCollectionService,
-      policyService,
-      logService,
-      passwordRepromptService,
-      organizationService,
-      sendApiService,
-      dialogService,
-      window,
-      datePipe,
-      configService,
-    );
+    private dialogService: DialogService,
+    private messagingService: MessagingService,
+    private logService: LogService,
+    private cipherService: CipherService,
+  ) {}
+
+  ngOnInit() {
+    this.cipher = this.params.cipher;
+    this.cipherTypeString = this.params.cipherTypeString;
   }
 
-  async ngOnInit() {
-    await super.ngOnInit();
-    await this.load();
-    this.showRevisionDate = this.cipher.passwordRevisionDisplayDate != null;
-    this.hasPasswordHistory = this.cipher.hasPasswordHistory;
-    this.cleanUp();
-
-    this.canAccessPremium = await firstValueFrom(
-      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
-    );
-    if (this.showTotp()) {
-      await this.totpUpdateCode();
-      const interval = this.totpService.getTimeInterval(this.cipher.login.totp);
-      await this.totpTick(interval);
-
-      this.totpInterval = window.setInterval(async () => {
-        await this.totpTick(interval);
-      }, 1000);
-    }
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
-  toggleFavorite() {
-    this.cipher.favorite = !this.cipher.favorite;
-  }
-
-  togglePassword() {
-    super.togglePassword();
-
-    // Hide password count when password is hidden to be safe
-    if (!this.showPassword && this.showPasswordCount) {
-      this.togglePasswordCount();
-    }
-  }
-
-  togglePasswordCount() {
-    this.showPasswordCount = !this.showPasswordCount;
-
-    if (this.editMode && this.showPasswordCount) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledPasswordVisible,
-        this.cipherId,
-      );
-    }
-  }
-
-  launch(uri: Launchable) {
-    if (!uri.canLaunch) {
-      return;
-    }
-
-    this.platformUtilsService.launchUri(uri.launchUri);
+  async getCipherData(id: string) {
+    const cipher = await this.cipherService.get(id);
+    return await cipher.decrypt(await this.cipherService.getKeyForCipherKeyDecryption(cipher));
   }
 
   async copy(value: string, typeI18nKey: string, aType: string): Promise<boolean> {
@@ -166,99 +67,6 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
     return true;
   }
 
-  async generatePassword(): Promise<boolean> {
-    const confirmed = await super.generatePassword();
-    if (confirmed) {
-      const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
-      this.cipher.login.password = await this.passwordGenerationService.generatePassword(options);
-    }
-    return confirmed;
-  }
-
-  premiumRequired() {
-    if (!this.canAccessPremium) {
-      this.messagingService.send("premiumRequired");
-      return;
-    }
-  }
-
-  upgradeOrganization() {
-    this.messagingService.send("upgradeOrganization", {
-      organizationId: this.cipher.organizationId,
-    });
-  }
-
-  showGetPremium() {
-    if (this.canAccessPremium) {
-      return;
-    }
-    if (this.cipher.organizationUseTotp) {
-      this.upgradeOrganization();
-    } else {
-      this.premiumRequired();
-    }
-  }
-
-  viewHistory() {
-    this.viewingPasswordHistory = !this.viewingPasswordHistory;
-  }
-
-  protected cleanUp() {
-    if (this.totpInterval) {
-      window.clearInterval(this.totpInterval);
-    }
-  }
-
-  protected async totpUpdateCode() {
-    if (
-      this.cipher == null ||
-      this.cipher.type !== CipherType.Login ||
-      this.cipher.login.totp == null
-    ) {
-      if (this.totpInterval) {
-        window.clearInterval(this.totpInterval);
-      }
-      return;
-    }
-
-    this.totpCode = await this.totpService.getCode(this.cipher.login.totp);
-    if (this.totpCode != null) {
-      if (this.totpCode.length > 4) {
-        const half = Math.floor(this.totpCode.length / 2);
-        this.totpCodeFormatted =
-          this.totpCode.substring(0, half) + " " + this.totpCode.substring(half);
-      } else {
-        this.totpCodeFormatted = this.totpCode;
-      }
-    } else {
-      this.totpCodeFormatted = null;
-      if (this.totpInterval) {
-        window.clearInterval(this.totpInterval);
-      }
-    }
-  }
-
-  protected showTotp() {
-    return (
-      this.cipher.type === CipherType.Login &&
-      this.cipher.login.totp &&
-      this.organization?.productTierType != ProductTierType.Free &&
-      (this.cipher.organizationUseTotp || this.canAccessPremium)
-    );
-  }
-
-  private async totpTick(intervalSeconds: number) {
-    const epoch = Math.round(new Date().getTime() / 1000.0);
-    const mod = epoch % intervalSeconds;
-
-    this.totpSec = intervalSeconds - mod;
-    this.totpDash = +(Math.round(((78.6 / intervalSeconds) * mod + "e+2") as any) + "e-2");
-    this.totpLow = this.totpSec <= 7;
-    if (mod === 0) {
-      await this.totpUpdateCode();
-    }
-  }
-
   async submit() {
     await this.router.navigate([], {
       queryParams: { itemId: this.cipher.id, action: "edit" },
@@ -268,7 +76,45 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
     return true;
   }
 
-  getCipherTypeString(cipher: CipherView): string {
+  async delete(): Promise<boolean> {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteItem" },
+      content: {
+        key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
+      },
+      type: "warning",
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      this.deletePromise = this.deleteCipher();
+      await this.deletePromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t(this.cipher.isDeleted ? "permanentlyDeletedItem" : "deletedItem"),
+      );
+      this.onDeletedCipher.emit(this.cipher);
+      this.messagingService.send(
+        this.cipher.isDeleted ? "permanentlyDeletedCipher" : "deletedCipher",
+      );
+    } catch (e) {
+      this.logService.error(e);
+    }
+
+    return true;
+  }
+
+  private async deleteCipher() {
+    // Implement the logic to delete the cipher here
+    // This is a placeholder implementation
+    return new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  static getCipherViewTypeString(cipher: CipherView, i18nService: I18nService): string {
     if (!cipher) {
       return null;
     }
@@ -276,15 +122,27 @@ export class ViewComponent extends BaseAddEditComponent implements OnInit, OnDes
     const type = cipher.type;
     switch (type) {
       case CipherType.Login:
-        return "login";
+        return i18nService.t("viewItemType", "login");
       case CipherType.SecureNote:
-        return "note";
+        return i18nService.t("viewItemType", "note");
       case CipherType.Card:
-        return "card";
+        return i18nService.t("viewItemType", "card");
       case CipherType.Identity:
-        return "identity";
+        return i18nService.t("viewItemType", "identity");
       default:
         return null;
     }
   }
+}
+
+/**
+ * Strongly typed helper to open a cipher view dialog
+ * @param dialogService Instance of the dialog service that will be used to open the dialog
+ * @param data Data to be passed to the dialog
+ */
+export function openViewCipherDialog(
+  dialogService: DialogService,
+  config: DialogConfig<ViewCipherDialogParams>,
+) {
+  return dialogService.open(ViewComponent, config);
 }

@@ -9,6 +9,7 @@ import { CollectionBadgeModule } from "./collection-badge/collection-badge.modul
 import { GroupBadgeModule } from "./group-badge/group-badge.module";
 import { VaultRoutingModule } from "./vault-routing.module";
 import { VaultComponent } from "./vault.component";
+import { ViewComponent } from "../individual-vault/view.component";
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { VaultComponent } from "./vault.component";
     OrganizationBadgeModule,
     CollectionDialogModule,
     VaultComponent,
+    ViewComponent,
   ],
 })
 export class VaultModule {}

@@ -61,7 +61,6 @@ import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { DialogService, Icons, NoItemsModule, ToastService } from "@bitwarden/components";
 import { CollectionAssignmentResult, PasswordRepromptService } from "@bitwarden/vault";
 
-
 import { GroupService, GroupView } from "../../admin-console/organizations/core";
 import { openEntityEventsDialog } from "../../admin-console/organizations/manage/entity-events.component";
 import { SharedModule } from "../../shared";
@@ -90,7 +89,7 @@ import {
   RoutedVaultFilterModel,
   Unassigned,
 } from "../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
-import { ViewComponent } from "../individual-vault/view.component";
+import { openViewCipherDialog, ViewComponent } from "../individual-vault/view.component";
 import { VaultHeaderComponent } from "../org-vault/vault-header/vault-header.component";
 import { getNestedCollectionTree } from "../utils/collection-utils";
 
@@ -103,6 +102,7 @@ import {
 import { CollectionAccessRestrictedComponent } from "./collection-access-restricted.component";
 import { openOrgVaultCollectionsDialog } from "./collections.component";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 const BroadcasterSubscriptionId = "OrgVaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -123,6 +123,7 @@ enum AddAccessStatusType {
     VaultItemsModule,
     SharedModule,
     NoItemsModule,
+    SharedModule,
   ],
   providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
@@ -135,8 +136,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   cipherAddEditModalRef: ViewContainerRef;
   @ViewChild("collectionsModal", { read: ViewContainerRef, static: true })
   collectionsModalRef: ViewContainerRef;
-  @ViewChild("cipherView", { read: ViewContainerRef, static: true })
-  cipherViewModalRef: ViewContainerRef;
 
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
@@ -953,31 +952,18 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   async viewCipherId(id: string) {
     const cipher = await this.cipherService.get(id);
-    // if cipher exists (cipher is null when new) and MP reprompt
-    // is on for this cipher, then show password reprompt
     if (
       cipher &&
       cipher.reprompt !== 0 &&
       !(await this.passwordRepromptService.showPasswordPrompt())
     ) {
-      // didn't pass password prompt, so don't open add / edit modal
       this.go({ cipherId: null, itemId: null });
       return;
     }
 
-    const [modal, childComponent] = await this.modalService.openViewRef(
-      ViewComponent,
-      this.cipherViewModalRef,
-      (comp) => {
-        comp.cipherId = id;
-        comp.onDeletedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.refresh();
-        });
-      },
-    );
-
-    return childComponent;
+    const cipherView = new CipherView(cipher);
+    const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
+    openViewCipherDialog(this.dialogService, { data: { cipher: cipherView, cipherTypeString } });
   }
 
   async cloneCipher(cipher: CipherView) {
