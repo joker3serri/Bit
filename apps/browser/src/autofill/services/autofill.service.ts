@@ -345,6 +345,7 @@ export default class AutofillService implements AutofillServiceInterface {
           onlyVisibleFields: options.onlyVisibleFields || false,
           fillNewPassword: options.fillNewPassword || false,
           allowTotpAutofill: options.allowTotpAutofill || false,
+          autoSubmitLogin: options.autoSubmitLogin || false,
           cipher: options.cipher,
           tabUrl: tab.url,
           defaultUriMatch: defaultUriMatch,
@@ -378,7 +379,7 @@ export default class AutofillService implements AutofillServiceInterface {
         BrowserApi.tabSendMessage(
           tab,
           {
-            command: "fillForm",
+            command: options.autoSubmitLogin ? "triggerAutoSubmitLogin" : "fillForm",
             fillScript: fillScript,
             url: tab.url,
             pageDetailsUrl: pd.details.url,
@@ -423,12 +424,14 @@ export default class AutofillService implements AutofillServiceInterface {
    * @param {PageDetail[]} pageDetails The data scraped from the page
    * @param {chrome.tabs.Tab} tab The tab to be autofilled
    * @param {boolean} fromCommand Whether the autofill is triggered by a keyboard shortcut (`true`) or autofill on page load (`false`)
+   * @param {boolean} autoSubmitLogin Whether the autofill is for an auto-submit login
    * @returns {Promise<string | null>} The TOTP code of the successfully autofilled login, if any
    */
   async doAutoFillOnTab(
     pageDetails: PageDetail[],
     tab: chrome.tabs.Tab,
     fromCommand: boolean,
+    autoSubmitLogin = false,
   ): Promise<string | null> {
     let cipher: CipherView;
     if (fromCommand) {
@@ -468,6 +471,7 @@ export default class AutofillService implements AutofillServiceInterface {
       fillNewPassword: fromCommand,
       allowUntrustedIframe: fromCommand,
       allowTotpAutofill: fromCommand,
+      autoSubmitLogin,
     });
 
     // Update last used index as autofill has succeeded
@@ -793,6 +797,7 @@ export default class AutofillService implements AutofillServiceInterface {
       });
     }
 
+    const formElementsSet = new Set<string>();
     usernames.forEach((u) => {
       // eslint-disable-next-line
       if (filledFields.hasOwnProperty(u.opid)) {
@@ -801,6 +806,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
       filledFields[u.opid] = u;
       AutofillService.fillByOpid(fillScript, u, login.username);
+      formElementsSet.add(u.form);
     });
 
     passwords.forEach((p) => {
@@ -811,7 +817,12 @@ export default class AutofillService implements AutofillServiceInterface {
 
       filledFields[p.opid] = p;
       AutofillService.fillByOpid(fillScript, p, login.password);
+      formElementsSet.add(p.form);
     });
+
+    if (options.autoSubmitLogin && formElementsSet.size) {
+      fillScript.autosubmit = Array.from(formElementsSet);
+    }
 
     if (options.allowTotpAutofill) {
       await Promise.all(

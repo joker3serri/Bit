@@ -201,6 +201,7 @@ import {
 } from "@bitwarden/vault-export-core";
 
 import { OverlayBackground as OverlayBackgroundInterface } from "../autofill/background/abstractions/overlay.background";
+import { AutoSubmitLoginBackground } from "../autofill/background/auto-submit-login.background";
 import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
 import { OverlayBackground } from "../autofill/background/overlay.background";
@@ -348,6 +349,7 @@ export default class MainBackground {
   offscreenDocumentService: OffscreenDocumentService;
   syncServiceListener: SyncServiceListener;
   themeStateService: DefaultThemeStateService;
+  autoSubmitLoginBackground: AutoSubmitLoginBackground;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -1070,6 +1072,16 @@ export default class MainBackground {
         this.scriptInjectorService,
       );
 
+      this.autoSubmitLoginBackground = new AutoSubmitLoginBackground(
+        this.logService,
+        this.autofillService,
+        this.scriptInjectorService,
+        this.authService,
+        this.configService,
+        this.platformUtilsService,
+        this.policyService,
+      );
+
       const contextMenuClickedHandler = new ContextMenuClickedHandler(
         (options) => this.platformUtilsService.copyToClipboard(options.text),
         async (_tab) => {
@@ -1188,6 +1200,7 @@ export default class MainBackground {
     await this.idleBackground.init();
     this.webRequestBackground?.startListening();
     this.syncServiceListener?.listener$().subscribe();
+    await this.autoSubmitLoginBackground.init();
 
     if (
       BrowserApi.isManifestVersion(2) &&
