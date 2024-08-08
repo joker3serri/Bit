@@ -123,7 +123,6 @@ enum AddAccessStatusType {
     VaultItemsModule,
     SharedModule,
     NoItemsModule,
-    SharedModule,
   ],
   providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
@@ -962,8 +961,19 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     const cipherView = new CipherView(cipher);
+    const cipherEditUrl = `/#/${this.router
+      .createUrlTree([], {
+        queryParams: {
+          itemId: cipherView.id,
+          action: "edit",
+          organizationId: cipherView.organizationId,
+        },
+      })
+      .toString()}`;
     const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
-    openViewCipherDialog(this.dialogService, { data: { cipher: cipherView, cipherTypeString } });
+    openViewCipherDialog(this.dialogService, {
+      data: { cipher: cipherView, cipherTypeString, cipherEditUrl },
+    });
   }
 
   async cloneCipher(cipher: CipherView) {

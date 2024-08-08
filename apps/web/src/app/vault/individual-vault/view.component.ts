@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit, EventEmitter } from "@angular/core";
 import { Router } from "@angular/router";
-import { CommonModule } from "@angular/common"; // Add this import
+import { CommonModule } from "@angular/common";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
@@ -12,10 +12,12 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { CipherViewComponent } from "../../../../../../libs/vault/src/cipher-view/cipher-view.component";
 import { SharedModule } from "../../shared/shared.module";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { ToastService } from "@bitwarden/components";
 
 export interface ViewCipherDialogParams {
   cipher: CipherView;
   cipherTypeString: string;
+  cipherEditUrl: string;
 }
 
 @Component({
@@ -29,6 +31,7 @@ export class ViewComponent implements OnInit {
   deletePromise: Promise<any>;
   onDeletedCipher = new EventEmitter<CipherView>();
   cipherTypeString: string;
+  cipherEditUrl: string;
 
   constructor(
     @Inject(DIALOG_DATA) public params: ViewCipherDialogParams,
@@ -40,47 +43,20 @@ export class ViewComponent implements OnInit {
     private messagingService: MessagingService,
     private logService: LogService,
     private cipherService: CipherService,
+    private toastService: ToastService, // Add this injection
   ) {}
 
   ngOnInit() {
     this.cipher = this.params.cipher;
     this.cipherTypeString = this.params.cipherTypeString;
-  }
-
-  async getCipherData(id: string) {
-    const cipher = await this.cipherService.get(id);
-    return await cipher.decrypt(await this.cipherService.getKeyForCipherKeyDecryption(cipher));
-  }
-
-  async copy(value: string, typeI18nKey: string, aType: string): Promise<boolean> {
-    if (value == null) {
-      return false;
-    }
-
-    this.platformUtilsService.copyToClipboard(value, { window: window });
-    this.platformUtilsService.showToast(
-      "info",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey)),
-    );
-
-    return true;
-  }
-
-  async submit() {
-    await this.router.navigate([], {
-      queryParams: { itemId: this.cipher.id, action: "edit" },
-      queryParamsHandling: "merge",
-    });
-
-    return true;
+    this.cipherEditUrl = this.params.cipherEditUrl;
   }
 
   async delete(): Promise<boolean> {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteItem" },
       content: {
-        key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
+        key: "deleteItemConfirmation",
       },
       type: "warning",
     });
@@ -92,27 +68,23 @@ export class ViewComponent implements OnInit {
     try {
       this.deletePromise = this.deleteCipher();
       await this.deletePromise;
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t(this.cipher.isDeleted ? "permanentlyDeletedItem" : "deletedItem"),
-      );
+      this.toastService.showToast({
+        variant: "success",
+        title: this.i18nService.t("success"),
+        message: this.i18nService.t("deletedItem"),
+      });
       this.onDeletedCipher.emit(this.cipher);
-      this.messagingService.send(
-        this.cipher.isDeleted ? "permanentlyDeletedCipher" : "deletedCipher",
-      );
+      this.messagingService.send("deletedCipher");
     } catch (e) {
       this.logService.error(e);
     }
 
+    this.dialogRef.close();
+
     return true;
   }
 
-  private async deleteCipher() {
-    // Implement the logic to delete the cipher here
-    // This is a placeholder implementation
-    return new Promise((resolve) => setTimeout(resolve, 1000));
-  }
+  protected deleteCipher() {}
 
   static getCipherViewTypeString(cipher: CipherView, i18nService: I18nService): string {
     if (!cipher) {

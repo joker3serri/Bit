@@ -6,11 +6,20 @@
     <app-cipher-view [cipher]="cipher"></app-cipher-view>
   </ng-container>
   <ng-container bitDialogFooter>
-    <button bitButton bitFormButton type="submit" buttonType="primary">
+    <a *ngIf="cipher.edit" bitButton bitFormButton href="{{ cipherEditUrl }}" buttonType="primary">
       {{ "edit" | i18n }}
-    </button>
-    <button bitButton bitFormButton type="button" buttonType="secondary" bitDialogClose>
-      {{ "cancel" | i18n }}
-    </button>
+    </a>
+    <div class="ml-auto" *ngIf="cipher.edit">
+      <button
+        bitButton
+        bitFormButton
+        type="button"
+        buttonType="secondary"
+        class="btn-outline-danger"
+        (click)="delete()"
+      >
+        <i class="bwi bwi-trash bwi-lg bwi-fw" aria-hidden="true"></i>
+      </button>
+    </div>
   </ng-container>
 </bit-dialog>

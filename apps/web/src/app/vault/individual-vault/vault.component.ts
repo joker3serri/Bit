@@ -126,7 +126,7 @@ const SearchTextDebounceInterval = 200;
     VaultItemsModule,
     SharedModule,
   ],
-  providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService, ViewComponent],
+  providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true }) filterComponent: VaultFilterComponent;
@@ -688,7 +688,14 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const cipherView = new CipherView(cipher);
     const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
-    openViewCipherDialog(this.dialogService, { data: { cipher: cipherView, cipherTypeString } });
+    const cipherEditUrl = `/#/${this.router
+      .createUrlTree([], {
+        queryParams: { itemId: cipherView.id, action: "edit" },
+      })
+      .toString()}`;
+    openViewCipherDialog(this.dialogService, {
+      data: { cipher: cipherView, cipherTypeString, cipherEditUrl },
+    });
   }
 
   async addCollection() {
