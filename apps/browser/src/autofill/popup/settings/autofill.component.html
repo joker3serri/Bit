@@ -138,22 +138,20 @@
             {{ "learnMoreAboutAutofillOnPageLoadLinkText" | i18n }}
           </a>
         </bit-hint>
-        <ng-container *ngIf="autofillOnPageLoadFromPolicy$ | async as autofillOnPageLoadFromPolicy">
-          <bit-form-control>
-            <input
-              bitCheckbox
-              id="autofillOnPageLoad"
-              type="checkbox"
-              (change)="updateAutofillOnPageLoad()"
-              [(ngModel)]="enableAutofillOnPageLoad"
-              [disabled]="autofillOnPageLoadFromPolicy"
-            />
-            <bit-label for="autofillOnPageLoad">{{ "enableAutoFillOnPageLoad" | i18n }}</bit-label>
-            <bit-hint *ngIf="autofillOnPageLoadFromPolicy">{{
-              "enterprisePolicyRequirementsApplied" | i18n
-            }}</bit-hint>
-          </bit-form-control>
-        </ng-container>
+        <bit-form-control>
+          <input
+            bitCheckbox
+            id="autofillOnPageLoad"
+            type="checkbox"
+            (change)="updateAutofillOnPageLoad()"
+            [(ngModel)]="enableAutofillOnPageLoad"
+            [disabled]="autofillOnPageLoadFromPolicy$ | async"
+          />
+          <bit-label for="autofillOnPageLoad">{{ "enableAutoFillOnPageLoad" | i18n }}</bit-label>
+          <bit-hint class="tw-text-sm" *ngIf="autofillOnPageLoadFromPolicy$ | async">{{
+            "enterprisePolicyRequirementsApplied" | i18n
+          }}</bit-hint>
+        </bit-form-control>
         <bit-form-field disableMargin>
           <bit-label for="defaultAutofill">{{ "defaultAutoFillOnPageLoad" | i18n }}</bit-label>
           <select
