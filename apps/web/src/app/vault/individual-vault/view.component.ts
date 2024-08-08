@@ -19,7 +19,15 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 export interface ViewCipherDialogParams {
   cipher: CipherView;
   cipherTypeString: string;
-  cipherEditUrl: string;
+}
+
+export enum ViewCipherDialogResult {
+  edited = "edited",
+  deleted = "deleted",
+}
+
+export interface ViewCipherDialogCloseResult {
+  action: ViewCipherDialogResult;
 }
 
 @Component({
@@ -30,32 +38,30 @@ export interface ViewCipherDialogParams {
 })
 export class ViewComponent implements OnInit {
   cipher: CipherView;
-  deletePromise: Promise<any>;
+  deletePromise: Promise<void>;
   onDeletedCipher = new EventEmitter<CipherView>();
   cipherTypeString: string;
   cipherEditUrl: string;
-  organization: Organization; // Add this property
-  flexibleCollectionsV1Enabled = false; // Add this property
-  restrictProviderAccess = false; // Add this property
+  organization: Organization;
+  flexibleCollectionsV1Enabled = false;
+  restrictProviderAccess = false;
 
   constructor(
     @Inject(DIALOG_DATA) public params: ViewCipherDialogParams,
-    private dialogRef: DialogRef<any>,
-    private platformUtilsService: PlatformUtilsService,
+    private dialogRef: DialogRef<ViewCipherDialogCloseResult>,
     private i18nService: I18nService,
-    private router: Router,
     private dialogService: DialogService,
     private messagingService: MessagingService,
     private logService: LogService,
     private cipherService: CipherService,
     private toastService: ToastService,
-    private organizationService: OrganizationService, // Add this injection
+    private organizationService: OrganizationService,
+    private router: Router, // Added this line
   ) {}
 
   async ngOnInit() {
     this.cipher = this.params.cipher;
     this.cipherTypeString = this.params.cipherTypeString;
-    this.cipherEditUrl = this.params.cipherEditUrl;
     if (this.cipher.organizationId) {
       this.organization = await this.organizationService.get(this.cipher.organizationId);
     }
@@ -92,7 +98,7 @@ export class ViewComponent implements OnInit {
       this.logService.error(e);
     }
 
-    this.dialogRef.close();
+    this.dialogRef.close({ action: ViewCipherDialogResult.deleted });
 
     return true;
   }
@@ -107,6 +113,18 @@ export class ViewComponent implements OnInit {
     } else {
       await this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
     }
+  }
+
+  async edit(): Promise<boolean> {
+    this.dialogRef.close({ action: ViewCipherDialogResult.edited });
+    await this.router.navigate([], {
+      queryParams: {
+        itemId: this.cipher.id,
+        action: "edit",
+        organizationId: this.cipher.organizationId,
+      },
+    });
+    return true;
   }
 
   static getCipherViewTypeString(cipher: CipherView, i18nService: I18nService): string {
@@ -138,6 +156,6 @@ export class ViewComponent implements OnInit {
 export function openViewCipherDialog(
   dialogService: DialogService,
   config: DialogConfig<ViewCipherDialogParams>,
-) {
+): DialogRef<ViewCipherDialogCloseResult> {
   return dialogService.open(ViewComponent, config);
 }

@@ -89,7 +89,11 @@ import {
   RoutedVaultFilterModel,
   Unassigned,
 } from "../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
-import { openViewCipherDialog, ViewComponent } from "../individual-vault/view.component";
+import {
+  openViewCipherDialog,
+  ViewCipherDialogResult,
+  ViewComponent,
+} from "../individual-vault/view.component";
 import { VaultHeaderComponent } from "../org-vault/vault-header/vault-header.component";
 import { getNestedCollectionTree } from "../utils/collection-utils";
 
@@ -123,6 +127,7 @@ enum AddAccessStatusType {
     VaultItemsModule,
     SharedModule,
     NoItemsModule,
+    ViewComponent,
   ],
   providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
@@ -961,19 +966,17 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     const cipherView = new CipherView(cipher);
-    const cipherEditUrl = `/#/${this.router
-      .createUrlTree([], {
-        queryParams: {
-          itemId: cipherView.id,
-          action: "edit",
-          organizationId: cipherView.organizationId,
-        },
-      })
-      .toString()}`;
     const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
-    openViewCipherDialog(this.dialogService, {
-      data: { cipher: cipherView, cipherTypeString, cipherEditUrl },
+    const dialog = openViewCipherDialog(this.dialogService, {
+      data: { cipher: cipherView, cipherTypeString },
     });
+    const result = await lastValueFrom(dialog.closed);
+    if (result.action === ViewCipherDialogResult.deleted) {
+      this.refresh();
+    }
+    if (!result.action) {
+      this.go({ cipherId: null, itemId: null, action: null });
+    }
   }
 
   async cloneCipher(cipher: CipherView) {

@@ -6,9 +6,16 @@
     <app-cipher-view [cipher]="cipher"></app-cipher-view>
   </ng-container>
   <ng-container bitDialogFooter>
-    <a *ngIf="cipher.edit" bitButton bitFormButton href="{{ cipherEditUrl }}" buttonType="primary">
+    <button
+      *ngIf="cipher.edit"
+      bitButton
+      bitFormButton
+      (click)="edit()"
+      buttonType="primary"
+      type="button"
+    >
       {{ "edit" | i18n }}
-    </a>
+    </button>
     <div class="ml-auto" *ngIf="cipher.edit">
       <button
         bitButton

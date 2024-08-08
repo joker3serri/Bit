@@ -108,7 +108,12 @@ import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/v
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { VaultHeaderComponent } from "./vault-header/vault-header.component";
 import { VaultOnboardingComponent } from "./vault-onboarding/vault-onboarding.component";
-import { openViewCipherDialog, ViewComponent } from "./view.component";
+import {
+  openViewCipherDialog,
+  ViewCipherDialogCloseResult,
+  ViewCipherDialogResult,
+  ViewComponent,
+} from "./view.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 const SearchTextDebounceInterval = 200;
@@ -631,7 +636,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       !(await this.passwordRepromptService.showPasswordPrompt())
     ) {
       // didn't pass password prompt, so don't open add / edit modal
-      this.go({ cipherId: null, itemId: null });
+      this.go({ cipherId: null, itemId: null, action: null });
       return;
     }
 
@@ -684,14 +689,16 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const cipherView = new CipherView(cipher);
     const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
-    const cipherEditUrl = `/#/${this.router
-      .createUrlTree([], {
-        queryParams: { itemId: cipherView.id, action: "edit" },
-      })
-      .toString()}`;
-    openViewCipherDialog(this.dialogService, {
-      data: { cipher: cipherView, cipherTypeString, cipherEditUrl },
+    const dialogRef = openViewCipherDialog(this.dialogService, {
+      data: { cipher: cipherView, cipherTypeString },
     });
+    const result: ViewCipherDialogCloseResult = await lastValueFrom(dialogRef.closed);
+    if (result.action === ViewCipherDialogResult.deleted) {
+      this.refresh();
+    }
+    if (!result.action) {
+      this.go({ cipherId: null, itemId: null, action: null });
+    }
   }
 
   async addCollection() {
