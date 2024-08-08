@@ -13,6 +13,8 @@ import { CipherViewComponent } from "../../../../../../libs/vault/src/cipher-vie
 import { SharedModule } from "../../shared/shared.module";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { ToastService } from "@bitwarden/components";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 
 export interface ViewCipherDialogParams {
   cipher: CipherView;
@@ -32,6 +34,9 @@ export class ViewComponent implements OnInit {
   onDeletedCipher = new EventEmitter<CipherView>();
   cipherTypeString: string;
   cipherEditUrl: string;
+  organization: Organization; // Add this property
+  flexibleCollectionsV1Enabled = false; // Add this property
+  restrictProviderAccess = false; // Add this property
 
   constructor(
     @Inject(DIALOG_DATA) public params: ViewCipherDialogParams,
@@ -43,20 +48,24 @@ export class ViewComponent implements OnInit {
     private messagingService: MessagingService,
     private logService: LogService,
     private cipherService: CipherService,
-    private toastService: ToastService, // Add this injection
+    private toastService: ToastService,
+    private organizationService: OrganizationService, // Add this injection
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.cipher = this.params.cipher;
     this.cipherTypeString = this.params.cipherTypeString;
     this.cipherEditUrl = this.params.cipherEditUrl;
+    if (this.cipher.organizationId) {
+      this.organization = await this.organizationService.get(this.cipher.organizationId);
+    }
   }
 
   async delete(): Promise<boolean> {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteItem" },
       content: {
-        key: "deleteItemConfirmation",
+        key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
       },
       type: "warning",
     });
@@ -71,10 +80,14 @@ export class ViewComponent implements OnInit {
       this.toastService.showToast({
         variant: "success",
         title: this.i18nService.t("success"),
-        message: this.i18nService.t("deletedItem"),
+        message: this.i18nService.t(
+          this.cipher.isDeleted ? "permanentlyDeletedItem" : "deletedItem",
+        ),
       });
       this.onDeletedCipher.emit(this.cipher);
-      this.messagingService.send("deletedCipher");
+      this.messagingService.send(
+        this.cipher.isDeleted ? "permanentlyDeletedCipher" : "deletedCipher",
+      );
     } catch (e) {
       this.logService.error(e);
     }
@@ -84,7 +97,17 @@ export class ViewComponent implements OnInit {
     return true;
   }
 
-  protected deleteCipher() {}
+  protected async deleteCipher(): Promise<void> {
+    const asAdmin = this.organization?.canEditAllCiphers(
+      this.flexibleCollectionsV1Enabled,
+      this.restrictProviderAccess,
+    );
+    if (this.cipher.isDeleted) {
+      await this.cipherService.deleteWithServer(this.cipher.id, asAdmin);
+    } else {
+      await this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
+    }
+  }
 
   static getCipherViewTypeString(cipher: CipherView, i18nService: I18nService): string {
     if (!cipher) {
