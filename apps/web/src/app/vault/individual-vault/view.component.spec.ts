@@ -67,18 +67,9 @@ describe("ViewComponent", () => {
 
     fixture = TestBed.createComponent(ViewComponent);
     component = fixture.componentInstance;
-    TestBed.inject(DialogService);
-    TestBed.inject(CipherService);
-    TestBed.inject(ToastService);
-    TestBed.inject(MessagingService);
-    TestBed.inject(LogService);
-    organizationService = TestBed.inject(OrganizationService);
     router = TestBed.inject(Router);
-    TestBed.inject(CollectionService);
-    TestBed.inject(FolderService);
+    organizationService = TestBed.inject(OrganizationService);
     component.params = mockParams;
-    TestBed.inject(CryptoService);
-    TestBed.inject(BillingAccountProfileStateService);
     component.cipher = mockCipher;
   });
 
