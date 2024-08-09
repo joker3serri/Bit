@@ -24,7 +24,6 @@ import { SharedModule } from "../../shared/shared.module";
 
 export interface ViewCipherDialogParams {
   cipher: CipherView;
-  cipherTypeString: string;
 }
 
 export enum ViewCipherDialogResult {
@@ -75,7 +74,7 @@ export class ViewComponent implements OnInit, OnDestroy {
    */
   async ngOnInit() {
     this.cipher = this.params.cipher;
-    this.cipherTypeString = this.params.cipherTypeString;
+    this.cipherTypeString = this.getCipherViewTypeString();
     if (this.cipher.organizationId) {
       this.organization = await this.organizationService.get(this.cipher.organizationId);
     }
@@ -156,27 +155,24 @@ export class ViewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Static method to get cipher view type string, used for the dialog title.
+   * Method to get cipher view type string, used for the dialog title.
    * E.g. "View login" or "View note".
-   * @param cipher The cipher view object
-   * @param i18nService The internationalization service
    * @returns The localized string for the cipher type
    */
-  static getCipherViewTypeString(cipher: CipherView, i18nService: I18nService): string {
-    if (!cipher) {
+  getCipherViewTypeString(): string {
+    if (!this.cipher) {
       return null;
     }
 
-    const type = cipher.type;
-    switch (type) {
+    switch (this.cipher.type) {
       case CipherType.Login:
-        return i18nService.t("viewItemType", "login");
+        return this.i18nService.t("viewItemType", "login");
       case CipherType.SecureNote:
-        return i18nService.t("viewItemType", "note");
+        return this.i18nService.t("viewItemType", "note");
       case CipherType.Card:
-        return i18nService.t("viewItemType", "card");
+        return this.i18nService.t("viewItemType", "card");
       case CipherType.Identity:
-        return i18nService.t("viewItemType", "identity");
+        return this.i18nService.t("viewItemType", "identity");
       default:
         return null;
     }

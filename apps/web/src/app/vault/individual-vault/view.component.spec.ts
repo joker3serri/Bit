@@ -38,7 +38,6 @@ describe("ViewComponent", () => {
 
   const mockParams: ViewCipherDialogParams = {
     cipher: mockCipher,
-    cipherTypeString: "login",
   };
 
   beforeEach(async () => {
@@ -80,7 +79,6 @@ describe("ViewComponent", () => {
       await component.ngOnInit();
 
       expect(component.cipher).toEqual(mockCipher);
-      expect(component.cipherTypeString).toEqual("login");
       expect(component.organization).toEqual(mockOrganization);
     });
   });

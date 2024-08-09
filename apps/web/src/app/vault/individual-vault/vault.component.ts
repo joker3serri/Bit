@@ -113,7 +113,6 @@ import {
   openViewCipherDialog,
   ViewCipherDialogCloseResult,
   ViewCipherDialogResult,
-  ViewComponent,
 } from "./view.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
@@ -690,9 +689,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     const cipherView = await cipher.decrypt(
       await this.cipherService.getKeyForCipherKeyDecryption(cipher),
     );
-    const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
     const dialogRef = openViewCipherDialog(this.dialogService, {
-      data: { cipher: cipherView, cipherTypeString },
+      data: { cipher: cipherView },
     });
     const result: ViewCipherDialogCloseResult = await lastValueFrom(dialogRef.closed);
     if (result.action === ViewCipherDialogResult.deleted) {
