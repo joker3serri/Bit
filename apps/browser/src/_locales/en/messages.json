@@ -4191,5 +4191,8 @@
   },
   "systemDefault": {
     "message": "System default"
+  },
+  "enterprisePolicyRequirementsApplied": {
+    "message": "Enterprise policy requirements have been applied to this setting"
   }
 }
