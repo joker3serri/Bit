@@ -36,6 +36,9 @@ export interface ViewCipherDialogCloseResult {
   action: ViewCipherDialogResult;
 }
 
+/**
+ * Component for viewing a cipher, presented in a dialog.
+ */
 @Component({
   selector: "app-vault-view",
   templateUrl: "view.component.html",
@@ -67,6 +70,9 @@ export class ViewComponent implements OnInit, OnDestroy {
     private router: Router,
   ) {}
 
+  /**
+   * Lifecycle hook for component initialization.
+   */
   async ngOnInit() {
     this.cipher = this.params.cipher;
     this.cipherTypeString = this.params.cipherTypeString;
@@ -75,11 +81,17 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Lifecycle hook for component destruction.
+   */
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
+  /**
+   * Method to handle cipher deletion. Called when a user clicks the delete button.
+   */
   async delete(): Promise<void> {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteItem" },
@@ -114,6 +126,9 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.dialogRef.close({ action: ViewCipherDialogResult.deleted });
   }
 
+  /**
+   * Helper method to delete cipher.
+   */
   protected async deleteCipher(): Promise<void> {
     const asAdmin = this.organization?.canEditAllCiphers(
       this.flexibleCollectionsV1Enabled,
@@ -126,7 +141,10 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  async edit(): Promise<boolean> {
+  /**
+   * Method to handle cipher editing. Called when a user clicks the edit button.
+   */
+  async edit(): Promise<void> {
     this.dialogRef.close({ action: ViewCipherDialogResult.edited });
     await this.router.navigate([], {
       queryParams: {
@@ -135,9 +153,15 @@ export class ViewComponent implements OnInit, OnDestroy {
         organizationId: this.cipher.organizationId,
       },
     });
-    return true;
   }
 
+  /**
+   * Static method to get cipher view type string, used for the dialog title.
+   * E.g. "View login" or "View note".
+   * @param cipher The cipher view object
+   * @param i18nService The internationalization service
+   * @returns The localized string for the cipher type
+   */
   static getCipherViewTypeString(cipher: CipherView, i18nService: I18nService): string {
     if (!cipher) {
       return null;
@@ -162,7 +186,8 @@ export class ViewComponent implements OnInit, OnDestroy {
 /**
  * Strongly typed helper to open a cipher view dialog
  * @param dialogService Instance of the dialog service that will be used to open the dialog
- * @param data Data to be passed to the dialog
+ * @param config Configuration for the dialog
+ * @returns A reference to the opened dialog
  */
 export function openViewCipherDialog(
   dialogService: DialogService,
