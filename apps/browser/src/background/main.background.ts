@@ -1200,7 +1200,7 @@ export default class MainBackground {
     await (this.i18nService as I18nService).init();
     (this.eventUploadService as EventUploadService).init(true);
 
-    await this.popupViewCacheBackgroundService.init();
+    this.popupViewCacheBackgroundService.startObservingTabChanges();
 
     if (this.popupOnlyContext) {
       return;

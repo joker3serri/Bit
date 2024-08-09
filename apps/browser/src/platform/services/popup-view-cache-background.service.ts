@@ -23,7 +23,7 @@ export class PopupViewCacheBackgroundService {
 
   constructor(private globalStateProvider: GlobalStateProvider) {}
 
-  async init() {
+  startObservingTabChanges() {
     merge(
       // on tab changed, excluding extension tabs
       fromChromeEvent(chrome.tabs.onActivated).pipe(
