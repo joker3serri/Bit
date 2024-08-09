@@ -20,9 +20,11 @@ export class InlineMenuFieldQualificationService
   private usernameFieldTypes = new Set(["text", "email", "number", "tel"]);
   private usernameAutocompleteValue = "username";
   private emailAutocompleteValue = "email";
+  private webAuthnAutocompleteValue = "webauthn";
   private loginUsernameAutocompleteValues = new Set([
     this.usernameAutocompleteValue,
     this.emailAutocompleteValue,
+    this.webAuthnAutocompleteValue,
   ]);
   private fieldIgnoreListString = AutoFillConstants.FieldIgnoreList.join(",");
   private passwordFieldExcludeListString = AutoFillConstants.PasswordFieldExcludeList.join(",");
@@ -286,7 +288,10 @@ export class InlineMenuFieldQualificationService
       return true;
     }
 
-    return this.keywordsFoundInFieldData(field, this.identityFieldKeywords);
+    return (
+      !this.fieldContainsAutocompleteValues(field, this.autocompleteDisabledValues) &&
+      this.keywordsFoundInFieldData(field, this.identityFieldKeywords)
+    );
   }
 
   /**
