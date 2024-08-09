@@ -7,7 +7,7 @@ import {
   Router,
   UrlSerializer,
 } from "@angular/router";
-import { filter, firstValueFrom, switchMap } from "rxjs";
+import { filter, first, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
 
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
@@ -31,9 +31,9 @@ export class PopupRouterCacheService {
 
   constructor() {
     // init history with existing state
-    void this.getHistory().then((history) =>
-      history.forEach((location) => this.location.go(location)),
-    );
+    this.history$()
+      .pipe(first())
+      .subscribe((history) => history.forEach((location) => this.location.go(location)));
 
     // update state when route change occurs
     this.router.events
@@ -54,28 +54,31 @@ export class PopupRouterCacheService {
       .subscribe();
   }
 
-  async getHistory(): Promise<string[]> {
-    return firstValueFrom(this.state.state$);
+  history$(): Observable<string[]> {
+    return this.state.state$;
   }
 
   async setHistory(state: string[]): Promise<string[]> {
     return this.state.update(() => state);
   }
 
-  /** Get the last item from the history stack */
-  async last(): Promise<string> {
-    const history = await this.getHistory();
-    if (!history || history.length === 0) {
-      return null;
-    }
-    return history[history.length - 1];
+  /** Get the last item from the history stack, or `null` if empty */
+  last$(): Observable<string | null> {
+    return this.history$().pipe(
+      map((history) => {
+        if (!history || history.length === 0) {
+          return null;
+        }
+        return history[history.length - 1];
+      }),
+    );
   }
 
   /**
    * If in browser popup, push new route onto history stack
    */
   private async push(url: string): Promise<boolean> {
-    if (!BrowserPopupUtils.inPopup(window) || url === (await this.last())) {
+    if (!BrowserPopupUtils.inPopup(window) || url === (await firstValueFrom(this.last$()))) {
       return;
     }
     await this.state.update((prevState) => (prevState === null ? [url] : prevState.concat(url)));
@@ -103,20 +106,26 @@ export class PopupRouterCacheService {
  *
  * If `FeatureFlag.PersistPopupView` is disabled, do nothing.
  **/
-export const popupRouterCacheGuard = (async () => {
+export const popupRouterCacheGuard = (() => {
   const configService = inject(ConfigService);
   const popupHistoryService = inject(PopupRouterCacheService);
   const urlSerializer = inject(UrlSerializer);
 
-  if (!(await configService.getFeatureFlag(FeatureFlag.PersistPopupView))) {
-    return true;
-  }
+  return configService.getFeatureFlag$(FeatureFlag.PersistPopupView).pipe(
+    switchMap((featureEnabled) => {
+      if (!featureEnabled) {
+        return of(true);
+      }
 
-  const url = await popupHistoryService.last();
+      return popupHistoryService.last$().pipe(
+        map((url: string) => {
+          if (!url) {
+            return true;
+          }
 
-  if (!url) {
-    return true;
-  }
-
-  return urlSerializer.parse(url);
+          return urlSerializer.parse(url);
+        }),
+      );
+    }),
+  );
 }) satisfies CanActivateFn;
