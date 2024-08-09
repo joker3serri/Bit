@@ -78,7 +78,7 @@ export class PopupRouterCacheService {
     if (!BrowserPopupUtils.inPopup(window) || url === (await this.last())) {
       return;
     }
-    await this.state.update((prevState) => (prevState === null ? [url] : prevState.concat(url)));
+    await this.state.update((prevState) => (prevState == null ? [url] : prevState.concat(url)));
   }
 
   /**
