@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -223,6 +223,16 @@ export class NativeMessagingBackground {
     });
   }
 
+  showIncorrectUserKeyDialog() {
+    this.messagingService.send("showDialog", {
+      title: { key: "nativeMessagingWrongUserKeyTitle" },
+      content: { key: "nativeMessagingWrongUserKeyDesc" },
+      acceptButtonText: { key: "ok" },
+      cancelButtonText: null,
+      type: "danger",
+    });
+  }
+
   async send(message: Message) {
     if (!this.connected) {
       await this.connect();
@@ -345,13 +355,31 @@ export class NativeMessagingBackground {
         }
 
         if (message.response === "unlocked") {
-          const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
           try {
             if (message.userKeyB64) {
               const userKey = new SymmetricCryptoKey(
                 Utils.fromB64ToArray(message.userKeyB64),
               ) as UserKey;
-              await this.cryptoService.setUserKey(userKey, userId);
+              const activeUserId = await firstValueFrom(
+                this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+              );
+              const isUserKeyValid = await this.cryptoService.validateUserKey(
+                userKey,
+                activeUserId,
+              );
+              if (isUserKeyValid) {
+                await this.cryptoService.setUserKey(userKey, activeUserId);
+              } else {
+                this.logService.error("Unable to verify biometric unlocked userkey");
+                await this.cryptoService.clearKeys(activeUserId);
+                this.showIncorrectUserKeyDialog();
+
+                // Exit early
+                if (this.resolver) {
+                  this.resolver(message);
+                }
+                return;
+              }
             } else {
               throw new Error("No key received");
             }
@@ -364,21 +392,6 @@ export class NativeMessagingBackground {
               cancelButtonText: null,
               type: "danger",
             });
-
-            // Exit early
-            if (this.resolver) {
-              this.resolver(message);
-            }
-            return;
-          }
-
-          // Verify key is correct by attempting to decrypt a secret
-          try {
-            await this.cryptoService.getFingerprint(userId);
-          } catch (e) {
-            this.logService.error("Unable to verify key: " + e);
-            await this.cryptoService.clearKeys();
-            this.showWrongUserDialog();
 
             // Exit early
             if (this.resolver) {

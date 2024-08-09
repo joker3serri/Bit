@@ -7,7 +7,10 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { InlineMenuCipherData } from "../background/abstractions/overlay.background";
+import {
+  FocusedFieldData,
+  InlineMenuCipherData,
+} from "../background/abstractions/overlay.background";
 import AutofillField from "../models/autofill-field";
 import AutofillForm from "../models/autofill-form";
 import AutofillPageDetails from "../models/autofill-page-details";
@@ -184,7 +187,10 @@ export function createAutofillOverlayCipherDataMock(
   return {
     id: String(index),
     name: `website login ${index}`,
-    login: { username: `username${index}` },
+    login: {
+      username: `username${index}`,
+      passkey: null,
+    },
     type: CipherType.Login,
     reprompt: CipherRepromptType.None,
     favorite: false,
@@ -208,6 +214,7 @@ export function createInitAutofillInlineMenuListMessageMock(
     theme: ThemeType.Light,
     authStatus: AuthenticationStatus.Unlocked,
     portKey: "portKey",
+    filledByCipherType: CipherType.Login,
     ciphers: [
       createAutofillOverlayCipherDataMock(1, {
         icon: {
@@ -242,7 +249,9 @@ export function createInitAutofillInlineMenuListMessageMock(
   };
 }
 
-export function createFocusedFieldDataMock(customFields = {}) {
+export function createFocusedFieldDataMock(
+  customFields: Partial<FocusedFieldData> = {},
+): FocusedFieldData {
   return {
     focusedFieldRects: {
       top: 1,
@@ -254,6 +263,7 @@ export function createFocusedFieldDataMock(customFields = {}) {
       paddingRight: "6px",
       paddingLeft: "6px",
     },
+    filledByCipherType: CipherType.Login,
     tabId: 1,
     frameId: 2,
     ...customFields,

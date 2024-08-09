@@ -116,6 +116,7 @@ import { BulkEncryptServiceImplementation } from "@bitwarden/common/platform/ser
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
 import { FallbackBulkEncryptService } from "@bitwarden/common/platform/services/cryptography/fallback-bulk-encrypt.service";
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
+import { Fido2ActiveRequestManager } from "@bitwarden/common/platform/services/fido2/fido2-active-request-manager";
 import { Fido2AuthenticatorService } from "@bitwarden/common/platform/services/fido2/fido2-authenticator.service";
 import { Fido2ClientService } from "@bitwarden/common/platform/services/fido2/fido2-client.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
@@ -212,6 +213,7 @@ import { MainContextMenuHandler } from "../autofill/browser/main-context-menu-ha
 import LegacyOverlayBackground from "../autofill/deprecated/background/overlay.background.deprecated";
 import { Fido2Background as Fido2BackgroundAbstraction } from "../autofill/fido2/background/abstractions/fido2.background";
 import { Fido2Background } from "../autofill/fido2/background/fido2.background";
+import { BrowserFido2UserInterfaceService } from "../autofill/fido2/services/browser-fido2-user-interface.service";
 import { AutofillService as AutofillServiceAbstraction } from "../autofill/services/abstractions/autofill.service";
 import AutofillService from "../autofill/services/autofill.service";
 import { SafariApp } from "../browser/safariApp";
@@ -242,7 +244,6 @@ import { SyncServiceListener } from "../platform/sync/sync-service.listener";
 import { fromChromeRuntimeMessaging } from "../platform/utils/from-chrome-runtime-messaging";
 import VaultTimeoutService from "../services/vault-timeout/vault-timeout.service";
 import FilelessImporterBackground from "../tools/background/fileless-importer.background";
-import { BrowserFido2UserInterfaceService } from "../vault/fido2/browser-fido2-user-interface.service";
 import { VaultFilterService } from "../vault/services/vault-filter.service";
 
 import CommandsBackground from "./commands.background";
@@ -347,6 +348,7 @@ export default class MainBackground {
   kdfConfigService: kdfConfigServiceAbstraction;
   offscreenDocumentService: OffscreenDocumentService;
   syncServiceListener: SyncServiceListener;
+  themeStateService: DefaultThemeStateService;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -451,6 +453,9 @@ export default class MainBackground {
         return new ForegroundMemoryStorageService();
       }
 
+      // For local backed session storage, we expect that the encrypted data on disk will persist longer than the encryption key in memory
+      // and failures to decrypt because of that are completely expected. For this reason, we pass in `false` to the `EncryptServiceImplementation`
+      // so that MAC failures are not logged.
       return new LocalBackedSessionStorageService(
         sessionKey,
         this.storageService,
@@ -461,16 +466,21 @@ export default class MainBackground {
     };
 
     this.secureStorageService = this.storageService; // secure storage is not supported in browsers, so we use local storage and warn users when it is used
-    this.memoryStorageForStateProviders = BrowserApi.isManifestVersion(3)
-      ? new BrowserMemoryStorageService() // mv3 stores to storage.session
-      : popupOnlyContext
-        ? new ForegroundMemoryStorageService()
-        : new BackgroundMemoryStorageService(); // mv2 stores to memory
-    this.memoryStorageService = BrowserApi.isManifestVersion(3)
-      ? this.memoryStorageForStateProviders // manifest v3 can reuse the same storage. They are split for v2 due to lacking a good sync mechanism, which isn't true for v3
-      : popupOnlyContext
-        ? new ForegroundMemoryStorageService()
-        : new BackgroundMemoryStorageService();
+
+    if (BrowserApi.isManifestVersion(3)) {
+      // manifest v3 can reuse the same storage. They are split for v2 due to lacking a good sync mechanism, which isn't true for v3
+      this.memoryStorageForStateProviders = new BrowserMemoryStorageService(); // mv3 stores to storage.session
+      this.memoryStorageService = this.memoryStorageForStateProviders;
+    } else {
+      if (popupOnlyContext) {
+        this.memoryStorageForStateProviders = new ForegroundMemoryStorageService();
+        this.memoryStorageService = new ForegroundMemoryStorageService();
+      } else {
+        this.memoryStorageForStateProviders = new BackgroundMemoryStorageService(); // mv2 stores to memory
+        this.memoryStorageService = this.memoryStorageForStateProviders;
+      }
+    }
+
     this.largeObjectMemoryStorageForStateProviders = BrowserApi.isManifestVersion(3)
       ? mv3MemoryStorageCreator() // mv3 stores to local-backed session storage
       : this.memoryStorageForStateProviders; // mv2 stores to the same location
@@ -481,7 +491,10 @@ export default class MainBackground {
       this.largeObjectMemoryStorageForStateProviders,
     );
 
-    this.globalStateProvider = new DefaultGlobalStateProvider(storageServiceProvider);
+    this.globalStateProvider = new DefaultGlobalStateProvider(
+      storageServiceProvider,
+      this.logService,
+    );
 
     const stateEventRegistrarService = new StateEventRegistrarService(
       this.globalStateProvider,
@@ -504,6 +517,7 @@ export default class MainBackground {
     this.singleUserStateProvider = new DefaultSingleUserStateProvider(
       storageServiceProvider,
       stateEventRegistrarService,
+      this.logService,
     );
     this.accountService = new AccountServiceImplementation(
       this.messagingService,
@@ -568,7 +582,7 @@ export default class MainBackground {
       migrationRunner,
     );
 
-    const themeStateService = new DefaultThemeStateService(this.globalStateProvider);
+    this.themeStateService = new DefaultThemeStateService(this.globalStateProvider);
 
     this.masterPasswordService = new MasterPasswordService(
       this.stateProvider,
@@ -697,6 +711,7 @@ export default class MainBackground {
       this.secureStorageService,
       this.userDecryptionOptionsService,
       this.logService,
+      this.configService,
     );
 
     this.devicesService = new DevicesServiceImplementation(this.devicesApiService);
@@ -838,6 +853,7 @@ export default class MainBackground {
         this.sendService,
         this.sendApiService,
         messageListener,
+        this.stateProvider,
       );
     } else {
       this.syncService = new DefaultSyncService(
@@ -865,6 +881,7 @@ export default class MainBackground {
         this.billingAccountProfileStateService,
         this.tokenService,
         this.authService,
+        this.stateProvider,
       );
 
       this.syncServiceListener = new SyncServiceListener(
@@ -968,6 +985,7 @@ export default class MainBackground {
       this.syncService,
       this.logService,
     );
+    const fido2ActiveRequestManager = new Fido2ActiveRequestManager();
     this.fido2ClientService = new Fido2ClientService(
       this.fido2AuthenticatorService,
       this.configService,
@@ -975,6 +993,7 @@ export default class MainBackground {
       this.vaultSettingsService,
       this.domainSettingsService,
       this.taskSchedulerService,
+      fido2ActiveRequestManager,
       this.logService,
     );
 
@@ -1009,6 +1028,7 @@ export default class MainBackground {
         this.fido2ClientService,
         this.vaultSettingsService,
         this.scriptInjectorService,
+        this.configService,
       );
       this.runtimeBackground = new RuntimeBackground(
         this,
@@ -1054,7 +1074,7 @@ export default class MainBackground {
         this.domainSettingsService,
         this.environmentService,
         this.logService,
-        themeStateService,
+        this.themeStateService,
         this.configService,
       );
 
@@ -1146,47 +1166,6 @@ export default class MainBackground {
     }
 
     this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
-
-    this.configService
-      .getFeatureFlag(FeatureFlag.InlineMenuPositioningImprovements)
-      .then(async (enabled) => {
-        if (!enabled) {
-          this.overlayBackground = new LegacyOverlayBackground(
-            this.cipherService,
-            this.autofillService,
-            this.authService,
-            this.environmentService,
-            this.domainSettingsService,
-            this.autofillSettingsService,
-            this.i18nService,
-            this.platformUtilsService,
-            themeStateService,
-          );
-        } else {
-          this.overlayBackground = new OverlayBackground(
-            this.logService,
-            this.cipherService,
-            this.autofillService,
-            this.authService,
-            this.environmentService,
-            this.domainSettingsService,
-            this.autofillSettingsService,
-            this.i18nService,
-            this.platformUtilsService,
-            themeStateService,
-          );
-        }
-
-        this.tabsBackground = new TabsBackground(
-          this,
-          this.notificationBackground,
-          this.overlayBackground,
-        );
-
-        await this.overlayBackground.init();
-        await this.tabsBackground.init();
-      })
-      .catch((error) => this.logService.error(`Error initializing OverlayBackground: ${error}`));
   }
 
   async bootstrap() {
@@ -1237,11 +1216,13 @@ export default class MainBackground {
       );
     }
 
+    await this.initOverlayAndTabsBackground();
+
     return new Promise<void>((resolve) => {
       setTimeout(async () => {
         await this.refreshBadge();
         await this.fullSync(true);
-        await this.taskSchedulerService.setInterval(
+        this.taskSchedulerService.setInterval(
           ScheduledTaskNames.scheduleNextSyncInterval,
           5 * 60 * 1000, // check every 5 minutes
         );
@@ -1278,6 +1259,13 @@ export default class MainBackground {
     }
   }
 
+  async updateOverlayCiphers() {
+    // overlayBackground null in popup only contexts
+    if (this.overlayBackground) {
+      await this.overlayBackground.updateOverlayCiphers();
+    }
+  }
+
   /**
    * Switch accounts to indicated userId -- null is no active user
    */
@@ -1306,7 +1294,7 @@ export default class MainBackground {
       if (userId == null) {
         await this.refreshBadge();
         await this.refreshMenu();
-        await this.overlayBackground?.updateOverlayCiphers(); // null in popup only contexts
+        await this.updateOverlayCiphers();
         this.messagingService.send("goHome");
         return;
       }
@@ -1329,7 +1317,7 @@ export default class MainBackground {
         this.messagingService.send("unlocked", { userId: userId });
         await this.refreshBadge();
         await this.refreshMenu();
-        await this.overlayBackground?.updateOverlayCiphers(); // null in popup only contexts
+        await this.updateOverlayCiphers();
         await this.syncService.fullSync(false);
       }
     } finally {
@@ -1379,7 +1367,6 @@ export default class MainBackground {
     );
 
     await Promise.all([
-      this.syncService.setLastSync(new Date(0), userBeingLoggedOut),
       this.cryptoService.clearKeys(userBeingLoggedOut),
       this.cipherService.clear(userBeingLoggedOut),
       this.folderService.clear(userBeingLoggedOut),
@@ -1507,5 +1494,62 @@ export default class MainBackground {
     if (override || lastSyncAgo >= syncInternal) {
       await this.syncService.fullSync(override);
     }
+  }
+
+  /**
+   * Temporary solution to handle initialization of the overlay background behind a feature flag.
+   * Will be reverted to instantiation within the constructor once the feature flag is removed.
+   */
+  async initOverlayAndTabsBackground() {
+    if (
+      this.popupOnlyContext ||
+      this.overlayBackground ||
+      this.tabsBackground ||
+      (await firstValueFrom(this.authService.activeAccountStatus$)) ===
+        AuthenticationStatus.LoggedOut
+    ) {
+      return;
+    }
+
+    const inlineMenuPositioningImprovementsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.InlineMenuPositioningImprovements,
+    );
+
+    if (!inlineMenuPositioningImprovementsEnabled) {
+      this.overlayBackground = new LegacyOverlayBackground(
+        this.cipherService,
+        this.autofillService,
+        this.authService,
+        this.environmentService,
+        this.domainSettingsService,
+        this.autofillSettingsService,
+        this.i18nService,
+        this.platformUtilsService,
+        this.themeStateService,
+      );
+    } else {
+      this.overlayBackground = new OverlayBackground(
+        this.logService,
+        this.cipherService,
+        this.autofillService,
+        this.authService,
+        this.environmentService,
+        this.domainSettingsService,
+        this.autofillSettingsService,
+        this.i18nService,
+        this.platformUtilsService,
+        this.fido2ClientService,
+        this.themeStateService,
+      );
+    }
+
+    this.tabsBackground = new TabsBackground(
+      this,
+      this.notificationBackground,
+      this.overlayBackground,
+    );
+
+    await this.overlayBackground.init();
+    await this.tabsBackground.init();
   }
 }

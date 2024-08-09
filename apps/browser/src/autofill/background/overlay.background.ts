@@ -1,5 +1,13 @@
-import { firstValueFrom, merge, Subject, throttleTime } from "rxjs";
-import { debounceTime, switchMap } from "rxjs/operators";
+import {
+  firstValueFrom,
+  merge,
+  ReplaySubject,
+  Subject,
+  throttleTime,
+  switchMap,
+  debounceTime,
+} from "rxjs";
+import { parse } from "tldts";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -10,7 +18,9 @@ import {
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
 import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
+import { NeverDomains } from "@bitwarden/common/models/domain/domain-service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { Fido2ClientService } from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -19,7 +29,10 @@ import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-stat
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { buildCipherIcon } from "@bitwarden/common/vault/icon/build-cipher-icon";
+import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { Fido2CredentialView } from "@bitwarden/common/vault/models/view/fido2-credential.view";
+import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
@@ -39,20 +52,25 @@ import { generateRandomChars } from "../utils";
 
 import { LockedVaultPendingNotificationsData } from "./abstractions/notification.background";
 import {
+  BuildCipherDataParams,
+  CloseInlineMenuMessage,
+  CurrentAddNewItemData,
   FocusedFieldData,
+  InlineMenuButtonPortMessageHandlers,
+  InlineMenuCipherData,
+  InlineMenuListPortMessageHandlers,
+  InlineMenuPosition,
+  NewCardCipherData,
+  NewIdentityCipherData,
+  NewLoginCipherData,
   OverlayAddNewItemMessage,
   OverlayBackground as OverlayBackgroundInterface,
   OverlayBackgroundExtensionMessage,
   OverlayBackgroundExtensionMessageHandlers,
-  InlineMenuButtonPortMessageHandlers,
-  InlineMenuCipherData,
-  InlineMenuListPortMessageHandlers,
   OverlayPortMessage,
   PageDetailsForTab,
   SubFrameOffsetData,
   SubFrameOffsetsForTab,
-  CloseInlineMenuMessage,
-  InlineMenuPosition,
   ToggleInlineMenuHiddenMessage,
 } from "./abstractions/overlay.background";
 
@@ -60,6 +78,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private readonly openUnlockPopout = openUnlockPopout;
   private readonly openViewVaultItemPopout = openViewVaultItemPopout;
   private readonly openAddEditVaultItemPopout = openAddEditVaultItemPopout;
+  private readonly storeInlineMenuFido2CredentialsSubject = new ReplaySubject<number>(1);
   private pageDetailsForTab: PageDetailsForTab = {};
   private subFrameOffsetsForTab: SubFrameOffsetsForTab = {};
   private portKeyForTab: Record<number, string> = {};
@@ -67,8 +86,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private inlineMenuButtonPort: chrome.runtime.Port;
   private inlineMenuListPort: chrome.runtime.Port;
   private inlineMenuCiphers: Map<string, CipherView> = new Map();
+  private inlineMenuFido2Credentials: Set<string> = new Set();
   private inlineMenuPageTranslations: Record<string, string>;
   private inlineMenuPosition: InlineMenuPosition = {};
+  private cardAndIdentityCiphers: Set<CipherView> | null = null;
+  private currentInlineMenuCiphersCount: number = 0;
   private delayedCloseTimeout: number | NodeJS.Timeout;
   private startInlineMenuFadeInSubject = new Subject<void>();
   private cancelInlineMenuFadeInSubject = new Subject<boolean>();
@@ -76,11 +98,14 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private cancelUpdateInlineMenuPositionSubject = new Subject<void>();
   private repositionInlineMenuSubject = new Subject<chrome.runtime.MessageSender>();
   private rebuildSubFrameOffsetsSubject = new Subject<chrome.runtime.MessageSender>();
+  private addNewVaultItemSubject = new Subject<CurrentAddNewItemData>();
+  private currentAddNewItemData: CurrentAddNewItemData;
   private focusedFieldData: FocusedFieldData;
   private isFieldCurrentlyFocused: boolean = false;
   private isFieldCurrentlyFilling: boolean = false;
   private isInlineMenuButtonVisible: boolean = false;
   private isInlineMenuListVisible: boolean = false;
+  private showPasskeysLabelsWithinInlineMenu: boolean = false;
   private iconsServerUrl: string;
   private readonly extensionMessageHandlers: OverlayBackgroundExtensionMessageHandlers = {
     autofillOverlayElementClosed: ({ message, sender }) =>
@@ -90,7 +115,8 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     checkIsInlineMenuCiphersPopulated: ({ sender }) =>
       this.checkIsInlineMenuCiphersPopulated(sender),
     updateFocusedFieldData: ({ message, sender }) => this.setFocusedFieldData(message, sender),
-    updateIsFieldCurrentlyFocused: ({ message }) => this.updateIsFieldCurrentlyFocused(message),
+    updateIsFieldCurrentlyFocused: ({ message, sender }) =>
+      this.updateIsFieldCurrentlyFocused(message, sender),
     checkIsFieldCurrentlyFocused: () => this.checkIsFieldCurrentlyFocused(),
     updateIsFieldCurrentlyFilling: ({ message }) => this.updateIsFieldCurrentlyFilling(message),
     checkIsFieldCurrentlyFilling: () => this.checkIsFieldCurrentlyFilling(),
@@ -113,14 +139,13 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       this.triggerDestroyInlineMenuListeners(sender.tab, message.subFrameData.frameId),
     collectPageDetailsResponse: ({ message, sender }) => this.storePageDetails(message, sender),
     unlockCompleted: ({ message }) => this.unlockCompleted(message),
-    doFullSync: () => this.updateOverlayCiphers(),
     addedCipher: () => this.updateOverlayCiphers(),
     addEditCipherSubmitted: () => this.updateOverlayCiphers(),
     editedCipher: () => this.updateOverlayCiphers(),
     deletedCipher: () => this.updateOverlayCiphers(),
   };
   private readonly inlineMenuButtonPortMessageHandlers: InlineMenuButtonPortMessageHandlers = {
-    triggerDelayedAutofillInlineMenuClosure: ({ port }) => this.triggerDelayedInlineMenuClosure(),
+    triggerDelayedAutofillInlineMenuClosure: () => this.triggerDelayedInlineMenuClosure(),
     autofillInlineMenuButtonClicked: ({ port }) => this.handleInlineMenuButtonClicked(port),
     autofillInlineMenuBlurred: () => this.checkInlineMenuListFocused(),
     redirectAutofillInlineMenuFocusOut: ({ message, port }) =>
@@ -132,7 +157,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     autofillInlineMenuBlurred: () => this.checkInlineMenuButtonFocused(),
     unlockVault: ({ port }) => this.unlockVault(port),
     fillAutofillInlineMenuCipher: ({ message, port }) => this.fillInlineMenuCipher(message, port),
-    addNewVaultItem: ({ port }) => this.getNewVaultItemDetails(port),
+    addNewVaultItem: ({ message, port }) => this.getNewVaultItemDetails(message, port),
     viewSelectedCipher: ({ message, port }) => this.viewSelectedCipher(message, port),
     redirectAutofillInlineMenuFocusOut: ({ message, port }) =>
       this.redirectInlineMenuFocusOut(message, port),
@@ -149,6 +174,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
+    private fido2ClientService: Fido2ClientService,
     private themeStateService: ThemeStateService,
   ) {
     this.initOverlayEventObservables();
@@ -168,6 +194,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * Initializes event observables that handle events which affect the overlay's behavior.
    */
   private initOverlayEventObservables() {
+    this.storeInlineMenuFido2CredentialsSubject
+      .pipe(switchMap((tabId) => this.fido2ClientService.availableAutofillCredentials$(tabId)))
+      .subscribe((credentials) => this.storeInlineMenuFido2Credentials(credentials));
     this.repositionInlineMenuSubject
       .pipe(
         debounceTime(1000),
@@ -178,6 +207,14 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       .pipe(
         throttleTime(100),
         switchMap((sender) => this.rebuildSubFrameOffsets(sender)),
+      )
+      .subscribe();
+    this.addNewVaultItemSubject
+      .pipe(
+        debounceTime(100),
+        switchMap((addNewItemData) =>
+          this.buildCipherAndOpenAddEditVaultItemPopout(addNewItemData),
+        ),
       )
       .subscribe();
 
@@ -220,24 +257,29 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * Queries all ciphers for the given url, and sorts them by last used. Will not update the
    * list of ciphers if the extension is not unlocked.
    */
-  async updateOverlayCiphers() {
+  async updateOverlayCiphers(updateAllCipherTypes = true) {
     const authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
     if (authStatus !== AuthenticationStatus.Unlocked) {
       if (this.focusedFieldData) {
-        void this.closeInlineMenuAfterCiphersUpdate();
+        this.closeInlineMenuAfterCiphersUpdate().catch((error) => this.logService.error(error));
       }
       return;
     }
 
     const currentTab = await BrowserApi.getTabFromCurrentWindowId();
     if (this.focusedFieldData && currentTab?.id !== this.focusedFieldData.tabId) {
-      void this.closeInlineMenuAfterCiphersUpdate();
+      this.closeInlineMenuAfterCiphersUpdate().catch((error) => this.logService.error(error));
     }
 
+    if (!currentTab) {
+      return;
+    }
+
+    this.inlineMenuFido2Credentials.clear();
+    this.storeInlineMenuFido2CredentialsSubject.next(currentTab.id);
+
     this.inlineMenuCiphers = new Map();
-    const ciphersViews = (
-      await this.cipherService.getAllDecryptedForUrl(currentTab?.url || "")
-    ).sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+    const ciphersViews = await this.getCipherViews(currentTab, updateAllCipherTypes);
     for (let cipherIndex = 0; cipherIndex < ciphersViews.length; cipherIndex++) {
       this.inlineMenuCiphers.set(`inline-menu-cipher-${cipherIndex}`, ciphersViews[cipherIndex]);
     }
@@ -246,7 +288,66 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     this.inlineMenuListPort?.postMessage({
       command: "updateAutofillInlineMenuListCiphers",
       ciphers,
+      showInlineMenuAccountCreation: this.showInlineMenuAccountCreation(),
+      showPasskeysLabels: this.showPasskeysLabelsWithinInlineMenu,
     });
+  }
+
+  /**
+   * Gets the decrypted ciphers within a user's vault based on the current tab's URL.
+   *
+   * @param currentTab - The current tab
+   * @param updateAllCipherTypes - Identifies credit card and identity cipher types should also be updated
+   */
+  private async getCipherViews(
+    currentTab: chrome.tabs.Tab,
+    updateAllCipherTypes: boolean,
+  ): Promise<CipherView[]> {
+    if (updateAllCipherTypes || !this.cardAndIdentityCiphers) {
+      return this.getAllCipherTypeViews(currentTab);
+    }
+
+    const cipherViews = (await this.cipherService.getAllDecryptedForUrl(currentTab.url || "")).sort(
+      (a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b),
+    );
+
+    return this.cardAndIdentityCiphers
+      ? cipherViews.concat(...this.cardAndIdentityCiphers)
+      : cipherViews;
+  }
+
+  /**
+   * Queries all cipher types from the user's vault returns them sorted by last used.
+   *
+   * @param currentTab - The current tab
+   */
+  private async getAllCipherTypeViews(currentTab: chrome.tabs.Tab): Promise<CipherView[]> {
+    if (!this.cardAndIdentityCiphers) {
+      this.cardAndIdentityCiphers = new Set([]);
+    }
+
+    this.cardAndIdentityCiphers.clear();
+    const cipherViews = (
+      await this.cipherService.getAllDecryptedForUrl(currentTab.url || "", [
+        CipherType.Card,
+        CipherType.Identity,
+      ])
+    ).sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+    for (let cipherIndex = 0; cipherIndex < cipherViews.length; cipherIndex++) {
+      const cipherView = cipherViews[cipherIndex];
+      if (
+        !this.cardAndIdentityCiphers.has(cipherView) &&
+        [CipherType.Card, CipherType.Identity].includes(cipherView.type)
+      ) {
+        this.cardAndIdentityCiphers.add(cipherView);
+      }
+    }
+
+    if (!this.cardAndIdentityCiphers.size) {
+      this.cardAndIdentityCiphers = null;
+    }
+
+    return cipherViews;
   }
 
   /**
@@ -256,24 +357,282 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private async getInlineMenuCipherData(): Promise<InlineMenuCipherData[]> {
     const showFavicons = await firstValueFrom(this.domainSettingsService.showFavicons$);
     const inlineMenuCiphersArray = Array.from(this.inlineMenuCiphers);
+    let inlineMenuCipherData: InlineMenuCipherData[];
+    this.showPasskeysLabelsWithinInlineMenu = false;
+
+    if (this.showInlineMenuAccountCreation()) {
+      inlineMenuCipherData = this.buildInlineMenuAccountCreationCiphers(
+        inlineMenuCiphersArray,
+        true,
+      );
+    } else {
+      inlineMenuCipherData = await this.buildInlineMenuCiphers(
+        inlineMenuCiphersArray,
+        showFavicons,
+      );
+    }
+
+    this.currentInlineMenuCiphersCount = inlineMenuCipherData.length;
+    return inlineMenuCipherData;
+  }
+
+  /**
+   * Builds the inline menu ciphers for a form field that is meant for account creation.
+   *
+   * @param inlineMenuCiphersArray - Array of inline menu ciphers
+   * @param showFavicons - Identifies whether favicons should be shown
+   */
+  private buildInlineMenuAccountCreationCiphers(
+    inlineMenuCiphersArray: [string, CipherView][],
+    showFavicons: boolean,
+  ) {
     const inlineMenuCipherData: InlineMenuCipherData[] = [];
+    const accountCreationLoginCiphers: InlineMenuCipherData[] = [];
 
     for (let cipherIndex = 0; cipherIndex < inlineMenuCiphersArray.length; cipherIndex++) {
       const [inlineMenuCipherId, cipher] = inlineMenuCiphersArray[cipherIndex];
 
-      inlineMenuCipherData.push({
-        id: inlineMenuCipherId,
-        name: cipher.name,
-        type: cipher.type,
-        reprompt: cipher.reprompt,
-        favorite: cipher.favorite,
-        icon: buildCipherIcon(this.iconsServerUrl, cipher, showFavicons),
-        login: cipher.type === CipherType.Login ? { username: cipher.login.username } : null,
-        card: cipher.type === CipherType.Card ? cipher.card.subTitle : null,
-      });
+      if (cipher.type === CipherType.Login) {
+        accountCreationLoginCiphers.push(
+          this.buildCipherData({
+            inlineMenuCipherId,
+            cipher,
+            showFavicons,
+            showInlineMenuAccountCreation: true,
+          }),
+        );
+        continue;
+      }
+
+      if (cipher.type !== CipherType.Identity || !this.focusedFieldData?.accountCreationFieldType) {
+        continue;
+      }
+
+      const identity = this.getIdentityCipherData(cipher, true);
+      if (!identity?.username) {
+        continue;
+      }
+
+      inlineMenuCipherData.push(
+        this.buildCipherData({
+          inlineMenuCipherId,
+          cipher,
+          showFavicons,
+          showInlineMenuAccountCreation: true,
+          identityData: identity,
+        }),
+      );
+    }
+
+    if (accountCreationLoginCiphers.length) {
+      return inlineMenuCipherData.concat(accountCreationLoginCiphers);
     }
 
     return inlineMenuCipherData;
+  }
+
+  /**
+   * Builds the inline menu ciphers for a form field that is not meant for account creation.
+   *
+   * @param inlineMenuCiphersArray - Array of inline menu ciphers
+   * @param showFavicons - Identifies whether favicons should be shown
+   */
+  private async buildInlineMenuCiphers(
+    inlineMenuCiphersArray: [string, CipherView][],
+    showFavicons: boolean,
+  ) {
+    const inlineMenuCipherData: InlineMenuCipherData[] = [];
+    const passkeyCipherData: InlineMenuCipherData[] = [];
+    const domainExclusions = await this.getExcludedDomains();
+    let domainExclusionsSet: Set<string> | null = null;
+    if (domainExclusions) {
+      domainExclusionsSet = new Set(Object.keys(await this.getExcludedDomains()));
+    }
+
+    for (let cipherIndex = 0; cipherIndex < inlineMenuCiphersArray.length; cipherIndex++) {
+      const [inlineMenuCipherId, cipher] = inlineMenuCiphersArray[cipherIndex];
+      if (this.focusedFieldData?.filledByCipherType !== cipher.type) {
+        continue;
+      }
+
+      if (this.showCipherAsPasskey(cipher, domainExclusionsSet)) {
+        passkeyCipherData.push(
+          this.buildCipherData({
+            inlineMenuCipherId,
+            cipher,
+            showFavicons,
+            hasPasskey: true,
+          }),
+        );
+      }
+
+      inlineMenuCipherData.push(this.buildCipherData({ inlineMenuCipherId, cipher, showFavicons }));
+    }
+
+    if (passkeyCipherData.length) {
+      this.showPasskeysLabelsWithinInlineMenu =
+        passkeyCipherData.length > 0 && inlineMenuCipherData.length > 0;
+      return passkeyCipherData.concat(inlineMenuCipherData);
+    }
+
+    return inlineMenuCipherData;
+  }
+
+  /**
+   * Identifies whether we should show the cipher as a passkey in the inline menu list.
+   *
+   * @param cipher - The cipher to check
+   * @param domainExclusions - The domain exclusions to check against
+   */
+  private showCipherAsPasskey(cipher: CipherView, domainExclusions: Set<string> | null): boolean {
+    if (cipher.type !== CipherType.Login) {
+      return false;
+    }
+
+    const fido2Credentials = cipher.login.fido2Credentials;
+    if (!fido2Credentials?.length) {
+      return false;
+    }
+
+    const credentialId = fido2Credentials[0].credentialId;
+    const rpId = fido2Credentials[0].rpId;
+    const parsedRpId = parse(rpId, { allowPrivateDomains: true });
+    if (domainExclusions?.has(parsedRpId.domain)) {
+      return false;
+    }
+
+    return (
+      this.inlineMenuFido2Credentials.size === 0 ||
+      this.inlineMenuFido2Credentials.has(credentialId)
+    );
+  }
+
+  /**
+   * Builds the cipher data for the inline menu list.
+   *
+   * @param inlineMenuCipherId - The ID of the inline menu cipher
+   * @param cipher - The cipher to build data for
+   * @param showFavicons - Identifies whether favicons should be shown
+   * @param showInlineMenuAccountCreation - Identifies whether the inline menu is for account creation
+   * @param hasPasskey - Identifies whether the cipher has a FIDO2 credential
+   * @param identityData - Pre-created identity data
+   */
+  private buildCipherData({
+    inlineMenuCipherId,
+    cipher,
+    showFavicons,
+    showInlineMenuAccountCreation,
+    hasPasskey,
+    identityData,
+  }: BuildCipherDataParams): InlineMenuCipherData {
+    const inlineMenuData: InlineMenuCipherData = {
+      id: inlineMenuCipherId,
+      name: cipher.name,
+      type: cipher.type,
+      reprompt: cipher.reprompt,
+      favorite: cipher.favorite,
+      icon: buildCipherIcon(this.iconsServerUrl, cipher, showFavicons),
+      accountCreationFieldType: this.focusedFieldData?.accountCreationFieldType,
+    };
+
+    if (cipher.type === CipherType.Login) {
+      inlineMenuData.login = {
+        username: cipher.login.username,
+        passkey: hasPasskey
+          ? {
+              rpName: cipher.login.fido2Credentials[0].rpName,
+              userName: cipher.login.fido2Credentials[0].userName,
+            }
+          : null,
+      };
+      return inlineMenuData;
+    }
+
+    if (cipher.type === CipherType.Card) {
+      inlineMenuData.card = cipher.card.subTitle;
+      return inlineMenuData;
+    }
+
+    inlineMenuData.identity =
+      identityData || this.getIdentityCipherData(cipher, showInlineMenuAccountCreation);
+    return inlineMenuData;
+  }
+
+  /**
+   * Gets the identity data for a cipher based on whether the inline menu is for account creation.
+   *
+   * @param cipher - The cipher to get the identity data for
+   * @param showInlineMenuAccountCreation - Identifies whether the inline menu is for account creation
+   */
+  private getIdentityCipherData(
+    cipher: CipherView,
+    showInlineMenuAccountCreation: boolean = false,
+  ): { fullName: string; username?: string } {
+    const { firstName, lastName } = cipher.identity;
+
+    let fullName = "";
+    if (firstName) {
+      fullName += firstName;
+    }
+
+    if (lastName) {
+      fullName += ` ${lastName}`;
+      fullName = fullName.trim();
+    }
+
+    if (
+      !showInlineMenuAccountCreation ||
+      !this.focusedFieldData?.accountCreationFieldType ||
+      this.focusedFieldData.accountCreationFieldType === "password"
+    ) {
+      return { fullName };
+    }
+
+    return {
+      fullName,
+      username:
+        this.focusedFieldData.accountCreationFieldType === "email"
+          ? cipher.identity.email
+          : cipher.identity.username,
+    };
+  }
+
+  /**
+   * Identifies whether the inline menu is being shown on an account creation field.
+   */
+  private showInlineMenuAccountCreation(): boolean {
+    if (typeof this.focusedFieldData?.showInlineMenuAccountCreation !== "undefined") {
+      return this.focusedFieldData?.showInlineMenuAccountCreation;
+    }
+
+    if (this.focusedFieldData?.filledByCipherType !== CipherType.Login) {
+      return false;
+    }
+
+    if (this.cardAndIdentityCiphers) {
+      return this.inlineMenuCiphers.size === this.cardAndIdentityCiphers.size;
+    }
+
+    return this.inlineMenuCiphers.size === 0;
+  }
+
+  /**
+   * Stores the credential ids associated with a FIDO2 conditional mediated ui request.
+   *
+   * @param credentials - The FIDO2 credentials to store
+   */
+  private storeInlineMenuFido2Credentials(credentials: Fido2CredentialView[]) {
+    credentials.forEach(
+      (credential) =>
+        credential?.credentialId && this.inlineMenuFido2Credentials.add(credential.credentialId),
+    );
+  }
+
+  /**
+   * Gets the neverDomains setting from the domain settings service.
+   */
+  async getExcludedDomains(): Promise<NeverDomains> {
+    return await firstValueFrom(this.domainSettingsService.neverDomains$);
   }
 
   /**
@@ -302,10 +661,14 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     };
 
     if (pageDetails.frameId !== 0 && pageDetails.details.fields.length) {
-      void this.buildSubFrameOffsets(pageDetails.tab, pageDetails.frameId, pageDetails.details.url);
-      void BrowserApi.tabSendMessage(pageDetails.tab, {
+      this.buildSubFrameOffsets(
+        pageDetails.tab,
+        pageDetails.frameId,
+        pageDetails.details.url,
+      ).catch((error) => this.logService.error(error));
+      BrowserApi.tabSendMessage(pageDetails.tab, {
         command: "setupRebuildSubFrameOffsetsListeners",
-      });
+      }).catch((error) => this.logService.error(error));
     }
 
     const pageDetailsMap = this.pageDetailsForTab[sender.tab.id];
@@ -395,11 +758,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
       if (!subFrameOffset) {
         subFrameOffsetsForTab.set(frameId, null);
-        void BrowserApi.tabSendMessage(
+        BrowserApi.tabSendMessage(
           tab,
           { command: "getSubFrameOffsetsFromWindowMessage", subFrameId: frameId },
           { frameId },
-        );
+        ).catch((error) => this.logService.error(error));
         return;
       }
 
@@ -431,11 +794,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       frameId,
     );
 
-    void BrowserApi.tabSendMessage(
+    BrowserApi.tabSendMessage(
       tab,
       { command: "destroyAutofillInlineMenuListeners" },
       { frameId },
-    );
+    ).catch((error) => this.logService.error(error));
   }
 
   /**
@@ -471,13 +834,15 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     if (!this.checkIsInlineMenuButtonVisible()) {
-      void this.toggleInlineMenuHidden(
+      this.toggleInlineMenuHidden(
         { isInlineMenuHidden: false, setTransparentInlineMenu: true },
         sender,
-      );
+      ).catch((error) => this.logService.error(error));
     }
 
-    void this.updateInlineMenuPosition({ overlayElement: AutofillOverlayElement.Button }, sender);
+    this.updateInlineMenuPosition({ overlayElement: AutofillOverlayElement.Button }, sender).catch(
+      (error) => this.logService.error(error),
+    );
 
     const mostRecentlyFocusedFieldHasValue = await BrowserApi.tabSendMessage(
       sender.tab,
@@ -497,7 +862,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
-    void this.updateInlineMenuPosition({ overlayElement: AutofillOverlayElement.List }, sender);
+    this.updateInlineMenuPosition({ overlayElement: AutofillOverlayElement.List }, sender).catch(
+      (error) => this.logService.error(error),
+    );
   }
 
   /**
@@ -505,10 +872,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * the selected cipher at the top of the list of ciphers.
    *
    * @param inlineMenuCipherId - Cipher ID corresponding to the inlineMenuCiphers map. Does not correspond to the actual cipher's ID.
+   * @param usePasskey - Identifies whether the cipher has a FIDO2 credential
    * @param sender - The sender of the port message
    */
   private async fillInlineMenuCipher(
-    { inlineMenuCipherId }: OverlayPortMessage,
+    { inlineMenuCipherId, usePasskey }: OverlayPortMessage,
     { sender }: chrome.runtime.Port,
   ) {
     const pageDetails = this.pageDetailsForTab[sender.tab.id];
@@ -517,6 +885,16 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     const cipher = this.inlineMenuCiphers.get(inlineMenuCipherId);
+
+    if (usePasskey && cipher.login?.hasFido2Credentials) {
+      await this.fido2ClientService.autofillCredential(
+        sender.tab.id,
+        cipher.login.fido2Credentials[0].credentialId,
+      );
+      this.updateLastUsedInlineMenuCipher(inlineMenuCipherId, cipher);
+
+      return;
+    }
 
     if (await this.autofillService.isPasswordRepromptRequired(cipher, sender.tab)) {
       return;
@@ -533,6 +911,16 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       this.platformUtilsService.copyToClipboard(totpCode);
     }
 
+    this.updateLastUsedInlineMenuCipher(inlineMenuCipherId, cipher);
+  }
+
+  /**
+   * Sets the most recently used cipher at the top of the list of ciphers.
+   *
+   * @param inlineMenuCipherId - The ID of the inline menu cipher
+   * @param cipher - The cipher to set as the most recently used
+   */
+  private updateLastUsedInlineMenuCipher(inlineMenuCipherId: string, cipher: CipherView) {
     this.inlineMenuCiphers = new Map([[inlineMenuCipherId, cipher], ...this.inlineMenuCiphers]);
   }
 
@@ -582,7 +970,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     const command = "closeAutofillInlineMenu";
     const sendOptions = { frameId: 0 };
     if (forceCloseInlineMenu) {
-      void BrowserApi.tabSendMessage(sender.tab, { command, overlayElement }, sendOptions);
+      BrowserApi.tabSendMessage(sender.tab, { command, overlayElement }, sendOptions).catch(
+        (error) => this.logService.error(error),
+      );
       this.isInlineMenuButtonVisible = false;
       this.isInlineMenuListVisible = false;
       return;
@@ -593,11 +983,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     if (this.isFieldCurrentlyFilling) {
-      void BrowserApi.tabSendMessage(
+      BrowserApi.tabSendMessage(
         sender.tab,
         { command, overlayElement: AutofillOverlayElement.List },
         sendOptions,
-      );
+      ).catch((error) => this.logService.error(error));
       this.isInlineMenuListVisible = false;
       return;
     }
@@ -615,7 +1005,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       this.isInlineMenuListVisible = false;
     }
 
-    void BrowserApi.tabSendMessage(sender.tab, { command, overlayElement }, sendOptions);
+    BrowserApi.tabSendMessage(sender.tab, { command, overlayElement }, sendOptions).catch((error) =>
+      this.logService.error(error),
+    );
   }
 
   /**
@@ -866,15 +1258,57 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     { focusedFieldData }: OverlayBackgroundExtensionMessage,
     sender: chrome.runtime.MessageSender,
   ) {
-    if (this.focusedFieldData?.frameId && this.focusedFieldData.frameId !== sender.frameId) {
-      void BrowserApi.tabSendMessage(
+    if (this.focusedFieldData && !this.senderFrameHasFocusedField(sender)) {
+      BrowserApi.tabSendMessage(
         sender.tab,
         { command: "unsetMostRecentlyFocusedField" },
         { frameId: this.focusedFieldData.frameId },
-      );
+      ).catch((error) => this.logService.error(error));
     }
 
+    const previousFocusedFieldData = this.focusedFieldData;
     this.focusedFieldData = { ...focusedFieldData, tabId: sender.tab.id, frameId: sender.frameId };
+    this.isFieldCurrentlyFocused = true;
+
+    const accountCreationFieldBlurred =
+      previousFocusedFieldData?.showInlineMenuAccountCreation &&
+      !this.focusedFieldData.showInlineMenuAccountCreation;
+
+    if (accountCreationFieldBlurred || this.showInlineMenuAccountCreation()) {
+      this.updateIdentityCiphersOnLoginField(previousFocusedFieldData).catch((error) =>
+        this.logService.error(error),
+      );
+      return;
+    }
+
+    if (previousFocusedFieldData?.filledByCipherType !== focusedFieldData?.filledByCipherType) {
+      const updateAllCipherTypes = focusedFieldData.filledByCipherType !== CipherType.Login;
+      this.updateOverlayCiphers(updateAllCipherTypes).catch((error) =>
+        this.logService.error(error),
+      );
+    }
+  }
+
+  /**
+   * Triggers an update of populated identity ciphers when a login field is focused.
+   *
+   * @param previousFocusedFieldData - The data set of the previously focused field
+   */
+  private async updateIdentityCiphersOnLoginField(previousFocusedFieldData: FocusedFieldData) {
+    if (
+      !previousFocusedFieldData ||
+      !this.isInlineMenuButtonVisible ||
+      (await this.getAuthStatus()) !== AuthenticationStatus.Unlocked
+    ) {
+      return;
+    }
+
+    this.inlineMenuListPort?.postMessage({
+      command: "updateAutofillInlineMenuListCiphers",
+      ciphers: await this.getInlineMenuCipherData(),
+      showInlineMenuAccountCreation: this.showInlineMenuAccountCreation(),
+      showPasskeysLabels: this.showPasskeysLabelsWithinInlineMenu,
+    });
   }
 
   /**
@@ -925,6 +1359,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private async openInlineMenu(isFocusingFieldElement = false, isOpeningFullInlineMenu = false) {
     this.clearDelayedInlineMenuClosure();
     const currentTab = await BrowserApi.getTabFromCurrentWindowId();
+    if (!currentTab) {
+      return;
+    }
 
     await BrowserApi.tabSendMessage(
       currentTab,
@@ -935,8 +1372,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         authStatus: await this.getAuthStatus(),
       },
       {
-        frameId:
-          this.focusedFieldData?.tabId === currentTab?.id ? this.focusedFieldData.frameId : 0,
+        frameId: this.focusedFieldData?.tabId === currentTab.id ? this.focusedFieldData.frameId : 0,
       },
     );
   }
@@ -1062,14 +1498,25 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         buttonPageTitle: this.i18nService.translate("bitwardenOverlayButton"),
         toggleBitwardenVaultOverlay: this.i18nService.translate("toggleBitwardenVaultOverlay"),
         listPageTitle: this.i18nService.translate("bitwardenVault"),
-        unlockYourAccount: this.i18nService.translate("unlockYourAccountToViewMatchingLogins"),
+        unlockYourAccount: this.i18nService.translate("unlockYourAccountToViewAutofillSuggestions"),
         unlockAccount: this.i18nService.translate("unlockAccount"),
+        unlockAccountAria: this.i18nService.translate("unlockAccountAria"),
         fillCredentialsFor: this.i18nService.translate("fillCredentialsFor"),
         username: this.i18nService.translate("username")?.toLowerCase(),
         view: this.i18nService.translate("view"),
         noItemsToShow: this.i18nService.translate("noItemsToShow"),
         newItem: this.i18nService.translate("newItem"),
         addNewVaultItem: this.i18nService.translate("addNewVaultItem"),
+        newLogin: this.i18nService.translate("newLogin"),
+        addNewLoginItem: this.i18nService.translate("addNewLoginItemAria"),
+        newCard: this.i18nService.translate("newCard"),
+        addNewCardItem: this.i18nService.translate("addNewCardItemAria"),
+        newIdentity: this.i18nService.translate("newIdentity"),
+        addNewIdentityItem: this.i18nService.translate("addNewIdentityItemAria"),
+        cardNumberEndsWith: this.i18nService.translate("cardNumberEndsWith"),
+        passkeys: this.i18nService.translate("passkeys"),
+        passwords: this.i18nService.translate("passwords"),
+        logInWithPasskey: this.i18nService.translate("logInWithPasskeyAriaLabel"),
       };
     }
 
@@ -1091,47 +1538,237 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
-    void BrowserApi.tabSendMessageData(sender.tab, "redirectAutofillInlineMenuFocusOut", {
+    BrowserApi.tabSendMessageData(sender.tab, "redirectAutofillInlineMenuFocusOut", {
       direction,
-    });
+    }).catch((error) => this.logService.error(error));
   }
 
   /**
    * Triggers adding a new vault item from the overlay. Gathers data
    * input by the user before calling to open the add/edit window.
    *
+   * @param addNewCipherType - The type of cipher to add
    * @param sender - The sender of the port message
    */
-  private getNewVaultItemDetails({ sender }: chrome.runtime.Port) {
-    if (!this.senderTabHasFocusedField(sender)) {
+  private getNewVaultItemDetails(
+    { addNewCipherType }: OverlayPortMessage,
+    { sender }: chrome.runtime.Port,
+  ) {
+    if (!addNewCipherType || !this.senderTabHasFocusedField(sender)) {
       return;
     }
 
-    void BrowserApi.tabSendMessage(
-      sender.tab,
-      { command: "addNewVaultItemFromOverlay" },
-      {
-        frameId: this.focusedFieldData.frameId || 0,
-      },
-    );
+    this.currentAddNewItemData = { addNewCipherType, sender };
+    BrowserApi.tabSendMessage(sender.tab, {
+      command: "addNewVaultItemFromOverlay",
+      addNewCipherType,
+    }).catch((error) => this.logService.error(error));
   }
 
   /**
    * Handles adding a new vault item from the overlay. Gathers data login
    * data captured in the extension message.
    *
+   * @param addNewCipherType - The type of cipher to add
    * @param login - The login data captured from the extension message
+   * @param card - The card data captured from the extension message
+   * @param identity - The identity data captured from the extension message
    * @param sender - The sender of the extension message
    */
   private async addNewVaultItem(
-    { login }: OverlayAddNewItemMessage,
+    { addNewCipherType, login, card, identity }: OverlayAddNewItemMessage,
     sender: chrome.runtime.MessageSender,
   ) {
-    if (!login) {
+    if (
+      !this.currentAddNewItemData ||
+      sender.tab.id !== this.currentAddNewItemData.sender.tab.id ||
+      !addNewCipherType ||
+      this.currentAddNewItemData.addNewCipherType !== addNewCipherType
+    ) {
       return;
     }
 
-    this.closeInlineMenu(sender);
+    if (login && this.isAddingNewLogin()) {
+      this.updateCurrentAddNewItemLogin(login);
+    }
+
+    if (card && this.isAddingNewCard()) {
+      this.updateCurrentAddNewItemCard(card);
+    }
+
+    if (identity && this.isAddingNewIdentity()) {
+      this.updateCurrentAddNewItemIdentity(identity);
+    }
+
+    this.addNewVaultItemSubject.next(this.currentAddNewItemData);
+  }
+
+  /**
+   * Identifies if the current add new item data is for adding a new login.
+   */
+  private isAddingNewLogin() {
+    return this.currentAddNewItemData.addNewCipherType === CipherType.Login;
+  }
+
+  /**
+   * Identifies if the current add new item data is for adding a new card.
+   */
+  private isAddingNewCard() {
+    return this.currentAddNewItemData.addNewCipherType === CipherType.Card;
+  }
+
+  /**
+   * Identifies if the current add new item data is for adding a new identity.
+   */
+  private isAddingNewIdentity() {
+    return this.currentAddNewItemData.addNewCipherType === CipherType.Identity;
+  }
+
+  /**
+   * Updates the current add new item data with the provided login data. If the
+   * login data is already present, the data will be merged with the existing data.
+   *
+   * @param login - The login data captured from the extension message
+   */
+  private updateCurrentAddNewItemLogin(login: NewLoginCipherData) {
+    if (!this.currentAddNewItemData.login) {
+      this.currentAddNewItemData.login = login;
+      return;
+    }
+
+    const currentLoginData = this.currentAddNewItemData.login;
+    this.currentAddNewItemData.login = {
+      uri: login.uri || currentLoginData.uri,
+      hostname: login.hostname || currentLoginData.hostname,
+      username: login.username || currentLoginData.username,
+      password: login.password || currentLoginData.password,
+    };
+  }
+
+  /**
+   * Updates the current add new item data with the provided card data. If the
+   * card data is already present, the data will be merged with the existing data.
+   *
+   * @param card - The card data captured from the extension message
+   */
+  private updateCurrentAddNewItemCard(card: NewCardCipherData) {
+    if (!this.currentAddNewItemData.card) {
+      this.currentAddNewItemData.card = card;
+      return;
+    }
+
+    const currentCardData = this.currentAddNewItemData.card;
+    this.currentAddNewItemData.card = {
+      cardholderName: card.cardholderName || currentCardData.cardholderName,
+      number: card.number || currentCardData.number,
+      expirationMonth: card.expirationMonth || currentCardData.expirationMonth,
+      expirationYear: card.expirationYear || currentCardData.expirationYear,
+      expirationDate: card.expirationDate || currentCardData.expirationDate,
+      cvv: card.cvv || currentCardData.cvv,
+    };
+  }
+
+  /**
+   * Updates the current add new item data with the provided identity data. If the
+   * identity data is already present, the data will be merged with the existing data.
+   *
+   * @param identity - The identity data captured from the extension message
+   */
+  private updateCurrentAddNewItemIdentity(identity: NewIdentityCipherData) {
+    if (!this.currentAddNewItemData.identity) {
+      this.currentAddNewItemData.identity = identity;
+      return;
+    }
+
+    const currentIdentityData = this.currentAddNewItemData.identity;
+    this.currentAddNewItemData.identity = {
+      title: identity.title || currentIdentityData.title,
+      firstName: identity.firstName || currentIdentityData.firstName,
+      middleName: identity.middleName || currentIdentityData.middleName,
+      lastName: identity.lastName || currentIdentityData.lastName,
+      fullName: identity.fullName || currentIdentityData.fullName,
+      address1: identity.address1 || currentIdentityData.address1,
+      address2: identity.address2 || currentIdentityData.address2,
+      address3: identity.address3 || currentIdentityData.address3,
+      city: identity.city || currentIdentityData.city,
+      state: identity.state || currentIdentityData.state,
+      postalCode: identity.postalCode || currentIdentityData.postalCode,
+      country: identity.country || currentIdentityData.country,
+      company: identity.company || currentIdentityData.company,
+      phone: identity.phone || currentIdentityData.phone,
+      email: identity.email || currentIdentityData.email,
+      username: identity.username || currentIdentityData.username,
+    };
+  }
+
+  /**
+   * Handles building a new cipher and opening the add/edit vault item popout.
+   *
+   * @param login - The login data captured from the extension message
+   * @param card - The card data captured from the extension message
+   * @param identity - The identity data captured from the extension message
+   * @param sender - The sender of the extension message
+   */
+  private async buildCipherAndOpenAddEditVaultItemPopout({
+    login,
+    card,
+    identity,
+    sender,
+  }: CurrentAddNewItemData) {
+    const cipherView: CipherView = this.buildNewVaultItemCipherView({
+      login,
+      card,
+      identity,
+    });
+
+    if (!cipherView) {
+      this.currentAddNewItemData = null;
+      return;
+    }
+
+    try {
+      this.closeInlineMenu(sender);
+      await this.cipherService.setAddEditCipherInfo({
+        cipher: cipherView,
+        collectionIds: cipherView.collectionIds,
+      });
+
+      await this.openAddEditVaultItemPopout(sender.tab, { cipherId: cipherView.id });
+      await BrowserApi.sendMessage("inlineAutofillMenuRefreshAddEditCipher");
+    } catch (error) {
+      this.logService.error("Error building cipher and opening add/edit vault item popout", error);
+    }
+
+    this.currentAddNewItemData = null;
+  }
+
+  /**
+   * Builds and returns a new cipher view with the provided vault item data.
+   *
+   * @param login - The login data captured from the extension message
+   * @param card - The card data captured from the extension message
+   * @param identity - The identity data captured from the extension message
+   */
+  private buildNewVaultItemCipherView({ login, card, identity }: OverlayAddNewItemMessage) {
+    if (login && this.isAddingNewLogin()) {
+      return this.buildLoginCipherView(login);
+    }
+
+    if (card && this.isAddingNewCard()) {
+      return this.buildCardCipherView(card);
+    }
+
+    if (identity && this.isAddingNewIdentity()) {
+      return this.buildIdentityCipherView(identity);
+    }
+  }
+
+  /**
+   * Builds a new login cipher view with the provided login data.
+   *
+   * @param login - The login data captured from the extension message
+   */
+  private buildLoginCipherView(login: NewLoginCipherData) {
     const uriView = new LoginUriView();
     uriView.uri = login.uri;
 
@@ -1146,21 +1783,108 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     cipherView.type = CipherType.Login;
     cipherView.login = loginView;
 
-    await this.cipherService.setAddEditCipherInfo({
-      cipher: cipherView,
-      collectionIds: cipherView.collectionIds,
-    });
+    return cipherView;
+  }
 
-    await this.openAddEditVaultItemPopout(sender.tab, { cipherId: cipherView.id });
-    await BrowserApi.sendMessage("inlineAutofillMenuRefreshAddEditCipher");
+  /**
+   * Builds a new card cipher view with the provided card data.
+   *
+   * @param card - The card data captured from the extension message
+   */
+  private buildCardCipherView(card: NewCardCipherData) {
+    const cardView = new CardView();
+    cardView.cardholderName = card.cardholderName || "";
+    cardView.number = card.number || "";
+    cardView.expMonth = card.expirationMonth || "";
+    cardView.expYear = card.expirationYear || "";
+    cardView.code = card.cvv || "";
+    cardView.brand = card.number ? CardView.getCardBrandByPatterns(card.number) : "";
+
+    const cipherView = new CipherView();
+    cipherView.name = "";
+    cipherView.folderId = null;
+    cipherView.type = CipherType.Card;
+    cipherView.card = cardView;
+
+    return cipherView;
+  }
+
+  /**
+   * Builds a new identity cipher view with the provided identity data.
+   *
+   * @param identity - The identity data captured from the extension message
+   */
+  private buildIdentityCipherView(identity: NewIdentityCipherData) {
+    const identityView = new IdentityView();
+    identityView.title = identity.title || "";
+    identityView.firstName = identity.firstName || "";
+    identityView.middleName = identity.middleName || "";
+    identityView.lastName = identity.lastName || "";
+    identityView.address1 = identity.address1 || "";
+    identityView.address2 = identity.address2 || "";
+    identityView.address3 = identity.address3 || "";
+    identityView.city = identity.city || "";
+    identityView.state = identity.state || "";
+    identityView.postalCode = identity.postalCode || "";
+    identityView.country = identity.country || "";
+    identityView.company = identity.company || "";
+    identityView.phone = identity.phone || "";
+    identityView.email = identity.email || "";
+    identityView.username = identity.username || "";
+
+    if (identity.fullName && !identityView.firstName && !identityView.lastName) {
+      this.buildIdentityNameParts(identity, identityView);
+    }
+
+    const cipherView = new CipherView();
+    cipherView.name = "";
+    cipherView.folderId = null;
+    cipherView.type = CipherType.Identity;
+    cipherView.identity = identityView;
+
+    return cipherView;
+  }
+
+  /**
+   * Splits the identity full name into first, middle, and last name parts.
+   *
+   * @param identity - The identity data captured from the extension message
+   * @param identityView - The identity view to update
+   */
+  private buildIdentityNameParts(identity: NewIdentityCipherData, identityView: IdentityView) {
+    const fullNameParts = identity.fullName.split(" ");
+    if (fullNameParts.length === 1) {
+      identityView.firstName = fullNameParts[0] || "";
+
+      return;
+    }
+
+    if (fullNameParts.length === 2) {
+      identityView.firstName = fullNameParts[0] || "";
+      identityView.lastName = fullNameParts[1] || "";
+
+      return;
+    }
+
+    identityView.firstName = fullNameParts[0] || "";
+    identityView.middleName = fullNameParts[1] || "";
+    identityView.lastName = fullNameParts[2] || "";
   }
 
   /**
    * Updates the property that identifies if a form field set up for the inline menu is currently focused.
    *
    * @param message - The message received from the web page
+   * @param sender - The sender of the port message
    */
-  private updateIsFieldCurrentlyFocused(message: OverlayBackgroundExtensionMessage) {
+  private updateIsFieldCurrentlyFocused(
+    message: OverlayBackgroundExtensionMessage,
+    sender: chrome.runtime.MessageSender,
+  ) {
+    if (this.focusedFieldData && !this.senderFrameHasFocusedField(sender)) {
+      return;
+    }
+
     this.isFieldCurrentlyFocused = message.isFieldCurrentlyFocused;
   }
 
@@ -1209,7 +1933,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param sender - The sender of the message
    */
   private checkIsInlineMenuCiphersPopulated(sender: chrome.runtime.MessageSender) {
-    return this.senderTabHasFocusedField(sender) && this.inlineMenuCiphers.size > 0;
+    return this.senderTabHasFocusedField(sender) && this.currentInlineMenuCiphersCount > 0;
   }
 
   /**
@@ -1252,7 +1976,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return false;
     }
 
-    if (this.focusedFieldData?.frameId === sender.frameId) {
+    if (this.senderFrameHasFocusedField(sender)) {
       return true;
     }
 
@@ -1278,6 +2002,15 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   }
 
   /**
+   * Identifies if the sender frame is the same as the focused field's frame.
+   *
+   * @param sender - The sender of the message
+   */
+  private senderFrameHasFocusedField(sender: chrome.runtime.MessageSender) {
+    return sender.frameId === this.focusedFieldData?.frameId;
+  }
+
+  /**
    * Triggers when a scroll or resize event occurs within a tab. Will reposition the inline menu
    * if the focused field is within the viewport.
    *
@@ -1290,7 +2023,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     this.resetFocusedFieldSubFrameOffsets(sender);
     this.cancelInlineMenuFadeInAndPositionUpdate();
-    void this.toggleInlineMenuHidden({ isInlineMenuHidden: true }, sender);
+    this.toggleInlineMenuHidden({ isInlineMenuHidden: true }, sender).catch((error) =>
+      this.logService.error(error),
+    );
     this.repositionInlineMenuSubject.next(sender);
   }
 
@@ -1403,7 +2138,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     Promise.resolve(messageResponse)
       .then((response) => sendResponse(response))
-      .catch(this.logService.error);
+      .catch((error) => this.logService.error(error));
     return true;
   };
 
@@ -1477,15 +2212,18 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       portName: isInlineMenuListPort
         ? AutofillOverlayPort.ListMessageConnector
         : AutofillOverlayPort.ButtonMessageConnector,
+      filledByCipherType: this.focusedFieldData?.filledByCipherType,
+      showInlineMenuAccountCreation: this.showInlineMenuAccountCreation(),
+      showPasskeysLabels: this.showPasskeysLabelsWithinInlineMenu,
     });
-    void this.updateInlineMenuPosition(
+    this.updateInlineMenuPosition(
       {
         overlayElement: isInlineMenuListPort
           ? AutofillOverlayElement.List
           : AutofillOverlayElement.Button,
       },
       port.sender,
-    );
+    ).catch((error) => this.logService.error(error));
   };
 
   /**

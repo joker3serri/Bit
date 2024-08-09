@@ -2,6 +2,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherFormConfig } from "@bitwarden/vault";
 
 import { AdditionalOptionsSectionComponent } from "./components/additional-options/additional-options-section.component";
+import { AutofillOptionsComponent } from "./components/autofill-options/autofill-options.component";
 import { CardDetailsSectionComponent } from "./components/card-details-section/card-details-section.component";
 import { CustomFieldsComponent } from "./components/custom-fields/custom-fields.component";
 import { IdentitySectionComponent } from "./components/identity/identity.component";
@@ -16,6 +17,7 @@ export type CipherForm = {
   itemDetails?: ItemDetailsSectionComponent["itemDetailsForm"];
   additionalOptions?: AdditionalOptionsSectionComponent["additionalOptionsForm"];
   loginDetails?: LoginDetailsSectionComponent["loginDetailsForm"];
+  autoFillOptions?: AutofillOptionsComponent["autofillOptionsForm"];
   cardDetails?: CardDetailsSectionComponent["cardDetailsForm"];
   identityDetails?: IdentitySectionComponent["identityForm"];
   customFields?: CustomFieldsComponent["customFieldsForm"];
@@ -46,5 +48,9 @@ export abstract class CipherFormContainer {
     group: Exclude<CipherForm[K], undefined>,
   ): void;
 
-  abstract patchCipher(cipher: Partial<CipherView>): void;
+  /**
+   * Method to update the cipherView with the new values. This method should be called by the child form components
+   * @param updateFn - A function that takes the current cipherView and returns the updated cipherView
+   */
+  abstract patchCipher(updateFn: (current: CipherView) => CipherView): void;
 }

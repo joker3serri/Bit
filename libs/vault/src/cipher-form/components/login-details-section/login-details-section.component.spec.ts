@@ -1,4 +1,5 @@
 import { DatePipe } from "@angular/common";
+import { Component } from "@angular/core";
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 
@@ -12,8 +13,16 @@ import { ToastService } from "@bitwarden/components";
 import { CipherFormGenerationService } from "../../abstractions/cipher-form-generation.service";
 import { TotpCaptureService } from "../../abstractions/totp-capture.service";
 import { CipherFormContainer } from "../../cipher-form-container";
+import { AutofillOptionsComponent } from "../autofill-options/autofill-options.component";
 
 import { LoginDetailsSectionComponent } from "./login-details-section.component";
+
+@Component({
+  standalone: true,
+  selector: "vault-autofill-options",
+  template: "",
+})
+class MockAutoFillOptionsComponent {}
 
 describe("LoginDetailsSectionComponent", () => {
   let component: LoginDetailsSectionComponent;
@@ -45,7 +54,16 @@ describe("LoginDetailsSectionComponent", () => {
         { provide: TotpCaptureService, useValue: totpCaptureService },
         { provide: I18nService, useValue: i18nService },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(LoginDetailsSectionComponent, {
+        remove: {
+          imports: [AutofillOptionsComponent],
+        },
+        add: {
+          imports: [MockAutoFillOptionsComponent],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(LoginDetailsSectionComponent);
     component = fixture.componentInstance;
@@ -70,13 +88,14 @@ describe("LoginDetailsSectionComponent", () => {
       totp: "123456",
     });
 
-    expect(cipherFormContainer.patchCipher).toHaveBeenLastCalledWith({
-      login: expect.objectContaining({
-        username: "new-username",
-        password: "secret-password",
-        totp: "123456",
-      }),
-    });
+    expect(cipherFormContainer.patchCipher).toHaveBeenCalled();
+    const patchFn = cipherFormContainer.patchCipher.mock.lastCall[0];
+
+    const updatedCipher = patchFn(new CipherView());
+
+    expect(updatedCipher.login.username).toBe("new-username");
+    expect(updatedCipher.login.password).toBe("secret-password");
+    expect(updatedCipher.login.totp).toBe("123456");
   });
 
   it("disables 'loginDetailsForm' when in partial-edit mode", async () => {
@@ -104,14 +123,6 @@ describe("LoginDetailsSectionComponent", () => {
       password: "original-password",
       totp: "original-totp",
     });
-  });
-
-  it("initializes 'loginDetailsForm' with generated password when creating a new cipher", async () => {
-    generationService.generateInitialPassword.mockResolvedValue("generated-password");
-
-    await component.ngOnInit();
-
-    expect(component.loginDetailsForm.controls.password.value).toBe("generated-password");
   });
 
   describe("viewHiddenFields", () => {
@@ -154,12 +165,13 @@ describe("LoginDetailsSectionComponent", () => {
         username: "new-username",
       });
 
-      expect(cipherFormContainer.patchCipher).toHaveBeenLastCalledWith({
-        login: expect.objectContaining({
-          username: "new-username",
-          password: "original-password",
-        }),
-      });
+      expect(cipherFormContainer.patchCipher).toHaveBeenCalled();
+      const patchFn = cipherFormContainer.patchCipher.mock.lastCall[0];
+
+      const updatedCipher = patchFn(new CipherView());
+
+      expect(updatedCipher.login.username).toBe("new-username");
+      expect(updatedCipher.login.password).toBe("original-password");
     });
   });
 
@@ -450,6 +462,8 @@ describe("LoginDetailsSectionComponent", () => {
 
       fixture = TestBed.createComponent(LoginDetailsSectionComponent);
       component = fixture.componentInstance;
+
+      jest.spyOn(component, "viewHiddenFields", "get").mockReturnValue(true);
     });
 
     it("renders the passkey field when available", () => {
@@ -467,11 +481,19 @@ describe("LoginDetailsSectionComponent", () => {
     it("renders the passkey remove button when editable", () => {
       fixture.detectChanges();
 
-      expect(getRemovePasskeyBtn).not.toBeNull();
+      expect(getRemovePasskeyBtn()).not.toBeNull();
     });
 
     it("does not render the passkey remove button when not editable", () => {
       cipherFormContainer.config.mode = "partial-edit";
+
+      fixture.detectChanges();
+
+      expect(getRemovePasskeyBtn()).toBeNull();
+    });
+
+    it("does not render the passkey remove button when viewHiddenFields is false", () => {
+      jest.spyOn(component, "viewHiddenFields", "get").mockReturnValue(false);
 
       fixture.detectChanges();
 
@@ -493,11 +515,13 @@ describe("LoginDetailsSectionComponent", () => {
 
       tick();
 
-      expect(cipherFormContainer.patchCipher).toHaveBeenLastCalledWith({
-        login: expect.objectContaining({
-          fido2Credentials: null,
-        }),
-      });
+      expect(cipherFormContainer.patchCipher).toHaveBeenCalled();
+      const patchFn = cipherFormContainer.patchCipher.mock.lastCall[0];
+
+      const updatedCipher = patchFn(new CipherView());
+
+      expect(updatedCipher.login.fido2Credentials).toBeNull();
+      expect(component.hasPasskey).toBe(false);
     }));
   });
 });

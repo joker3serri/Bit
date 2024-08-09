@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -24,7 +25,6 @@ import { FileDownloadService } from "@bitwarden/common/platform/abstractions/fil
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncryptedExportType } from "@bitwarden/common/tools/enums/encrypted-export-type.enum";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import {
   AsyncActionsModule,
@@ -39,6 +39,8 @@ import {
   ToastService,
 } from "@bitwarden/components";
 import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
+
+import { EncryptedExportType } from "../enums/encrypted-export-type.enum";
 
 import { ExportScopeCalloutComponent } from "./export-scope-callout.component";
 
@@ -62,7 +64,7 @@ import { ExportScopeCalloutComponent } from "./export-scope-callout.component";
     PasswordStrengthV2Component,
   ],
 })
-export class ExportComponent implements OnInit, OnDestroy {
+export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
   private _organizationId: string;
 
   get organizationId(): string {
