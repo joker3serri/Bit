@@ -964,7 +964,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const cipherView = new CipherView(cipher);
+    const cipherView = await cipher.decrypt(
+      await this.cipherService.getKeyForCipherKeyDecryption(cipher),
+    );
     const cipherTypeString = ViewComponent.getCipherViewTypeString(cipherView, this.i18nService);
     const dialog = openViewCipherDialog(this.dialogService, {
       data: { cipher: cipherView, cipherTypeString },
