@@ -38,10 +38,7 @@ export const BILLING_DISK = new StateDefinition("billing", "disk");
 
 // Auth
 
-export const ACCOUNT_DISK = new StateDefinition("account", "disk", {
-  // DO-NOT-MERGE: For testing only
-  browser: "disk-backup-local-storage",
-});
+export const ACCOUNT_DISK = new StateDefinition("account", "disk");
 export const ACCOUNT_MEMORY = new StateDefinition("account", "memory");
 export const AUTH_REQUEST_DISK_LOCAL = new StateDefinition("authRequestLocal", "disk", {
   web: "disk-local",
