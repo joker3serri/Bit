@@ -194,6 +194,9 @@ export default class RuntimeBackground {
   }
 
   async processMessage(msg: any) {
+    const extensionRefreshFlagEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.ExtensionRefresh,
+    );
     switch (msg.command) {
       case "loggedIn":
       case "unlocked": {
@@ -229,7 +232,7 @@ export default class RuntimeBackground {
         await this.main.refreshBadge();
         await this.main.refreshMenu(false);
 
-        if (await this.configService.getFeatureFlag(FeatureFlag.ExtensionRefresh)) {
+        if (extensionRefreshFlagEnabled) {
           await this.autofillService.setAutoFillOnPageLoadOrgPolicy();
         }
         break;
@@ -252,7 +255,7 @@ export default class RuntimeBackground {
           await this.configService.ensureConfigFetched();
           await this.main.updateOverlayCiphers();
 
-          if (await this.configService.getFeatureFlag(FeatureFlag.ExtensionRefresh)) {
+          if (extensionRefreshFlagEnabled) {
             await this.autofillService.setAutoFillOnPageLoadOrgPolicy();
           }
         }
