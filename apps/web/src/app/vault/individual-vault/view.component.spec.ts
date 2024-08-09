@@ -21,7 +21,6 @@ import { ViewComponent, ViewCipherDialogParams } from "./view.component";
 describe("ViewComponent", () => {
   let component: ViewComponent;
   let fixture: ComponentFixture<ViewComponent>;
-  let organizationService: OrganizationService;
   let router: Router;
 
   const mockCipher: CipherView = {
@@ -52,7 +51,10 @@ describe("ViewComponent", () => {
         { provide: ToastService, useValue: mock<ToastService>() },
         { provide: MessagingService, useValue: mock<MessagingService>() },
         { provide: LogService, useValue: mock<LogService>() },
-        { provide: OrganizationService, useValue: mock<OrganizationService>() },
+        {
+          provide: OrganizationService,
+          useValue: { get: jest.fn().mockResolvedValue(mockOrganization) },
+        },
         { provide: Router, useValue: mock<Router>() },
         { provide: CollectionService, useValue: mock<CollectionService>() },
         { provide: FolderService, useValue: mock<FolderService>() },
@@ -67,15 +69,12 @@ describe("ViewComponent", () => {
     fixture = TestBed.createComponent(ViewComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    organizationService = TestBed.inject(OrganizationService);
     component.params = mockParams;
     component.cipher = mockCipher;
   });
 
   describe("ngOnInit", () => {
     it("initializes the component with cipher and organization", async () => {
-      jest.spyOn(organizationService, "get").mockResolvedValue(mockOrganization);
-
       await component.ngOnInit();
 
       expect(component.cipher).toEqual(mockCipher);
