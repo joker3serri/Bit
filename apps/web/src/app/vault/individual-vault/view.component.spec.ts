@@ -42,8 +42,6 @@ describe("ViewComponent", () => {
   };
 
   beforeEach(async () => {
-    jest.useFakeTimers();
-
     await TestBed.configureTestingModule({
       imports: [ViewComponent],
       providers: [
@@ -82,10 +80,6 @@ describe("ViewComponent", () => {
     TestBed.inject(CryptoService);
     TestBed.inject(BillingAccountProfileStateService);
     component.cipher = mockCipher;
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   describe("ngOnInit", () => {
