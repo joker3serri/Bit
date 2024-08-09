@@ -106,7 +106,6 @@ import {
 import { CollectionAccessRestrictedComponent } from "./collection-access-restricted.component";
 import { openOrgVaultCollectionsDialog } from "./collections.component";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 const BroadcasterSubscriptionId = "OrgVaultComponent";
 const SearchTextDebounceInterval = 200;

@@ -1,20 +1,25 @@
-import { Component, Inject, OnDestroy, OnInit, EventEmitter } from "@angular/core";
-import { Router } from "@angular/router";
+import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
+import { Component, Inject, OnInit, EventEmitter } from "@angular/core";
+import { Router } from "@angular/router";
+
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { AsyncActionsModule, DialogModule, DialogService } from "@bitwarden/components";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import {
+  AsyncActionsModule,
+  DialogModule,
+  DialogService,
+  ToastService,
+} from "@bitwarden/components";
+
 import { CipherViewComponent } from "../../../../../../libs/vault/src/cipher-view/cipher-view.component";
 import { SharedModule } from "../../shared/shared.module";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { ToastService } from "@bitwarden/components";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 
 export interface ViewCipherDialogParams {
   cipher: CipherView;
