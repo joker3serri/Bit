@@ -350,7 +350,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           if (cipherId) {
             if (await this.cipherService.get(cipherId)) {
               if (params.action === "view") {
-                await this.viewCipherId(cipherId);
+                await this.viewCipherById(cipherId);
               } else {
                 await this.editCipherId(cipherId);
               }
@@ -668,34 +668,53 @@ export class VaultComponent implements OnInit, OnDestroy {
     return childComponent;
   }
 
-  async viewCipher(cipher: CipherView) {
-    return this.viewCipherId(cipher.id);
+  /**
+   * Takes a CipherView and opens a dialog where it can be viewed (wraps viewCipherById).
+   * @param cipher - CipherView
+   * @returns Promise<void>
+   */
+  viewCipher(cipher: CipherView) {
+    return this.viewCipherById(cipher.id);
   }
 
-  async viewCipherId(id: string) {
+  /**
+   * Takes a CipherView id and opens a dialog where it can be viewed.
+   * @param id - string
+   * @returns Promise<void>
+   */
+  async viewCipherById(id: string) {
     const cipher = await this.cipherService.get(id);
-    // if cipher exists (cipher is null when new) and MP reprompt
-    // is on for this cipher, then show password reprompt
+    // If cipher exists (cipher is null when new) and MP reprompt
+    // is on for this cipher, then show password reprompt.
     if (
       cipher &&
       cipher.reprompt !== 0 &&
       !(await this.passwordRepromptService.showPasswordPrompt())
     ) {
-      // didn't pass password prompt, so don't open add / edit modal
+      // Didn't pass password prompt, so don't open add / edit modal.
       this.go({ cipherId: null, itemId: null });
       return;
     }
 
+    // Decrypt the cipher.
     const cipherView = await cipher.decrypt(
       await this.cipherService.getKeyForCipherKeyDecryption(cipher),
     );
+
+    // Open the dialog.
     const dialogRef = openViewCipherDialog(this.dialogService, {
       data: { cipher: cipherView },
     });
+
+    // Wait for the dialog to close.
     const result: ViewCipherDialogCloseResult = await lastValueFrom(dialogRef.closed);
+
+    // If the dialog was closed by deleting the cipher, refresh the vault.
     if (result.action === ViewCipherDialogResult.deleted) {
       this.refresh();
     }
+
+    // If the dialog was closed by any other action (close button, escape key, etc), navigate back to the vault.
     if (!result.action) {
       this.go({ cipherId: null, itemId: null, action: null });
     }
