@@ -504,7 +504,6 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: DISK_BACKUP_LOCAL_STORAGE,
-    // TODO: Message for localStorage
     useFactory: (diskStorage: AbstractStorageService & ObservableStorageService) =>
       new PrimarySecondaryStorageService(diskStorage, new WindowStorageService(self.localStorage)),
     deps: [OBSERVABLE_DISK_STORAGE],
