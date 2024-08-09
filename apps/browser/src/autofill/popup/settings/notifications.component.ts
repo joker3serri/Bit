@@ -47,6 +47,7 @@ export class NotificationsSettingsComponent implements OnInit {
   enableAddLoginNotification = false;
   enableChangedPasswordNotification = false;
   enablePasskeys = true;
+  enableExpiredPaymentCipherWarning = true;
 
   constructor(
     private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
@@ -63,6 +64,10 @@ export class NotificationsSettingsComponent implements OnInit {
     );
 
     this.enablePasskeys = await firstValueFrom(this.vaultSettingsService.enablePasskeys$);
+
+    this.enableExpiredPaymentCipherWarning = await firstValueFrom(
+      this.userNotificationSettingsService.enableExpiredPaymentCipherWarning$,
+    );
   }
 
   async updateAddLoginNotification() {
@@ -79,5 +84,11 @@ export class NotificationsSettingsComponent implements OnInit {
 
   async updateEnablePasskeys() {
     await this.vaultSettingsService.setEnablePasskeys(this.enablePasskeys);
+  }
+
+  async updateEnableExpiredPaymentCipherWarning() {
+    await this.userNotificationSettingsService.setEnableExpiredPaymentCipherWarning(
+      this.enableExpiredPaymentCipherWarning,
+    );
   }
 }
