@@ -27,7 +27,7 @@ export type ClientLocations = {
    *
    * "memory-large-object" is used to store non-countable objects in memory. This exists due to limited persistent memory available to browser extensions.
    */
-  browser: StorageLocation | "memory-large-object";
+  browser: StorageLocation | "memory-large-object" | "disk-backup-local-storage";
   /**
    * Overriding storage location for desktop clients.
    */
