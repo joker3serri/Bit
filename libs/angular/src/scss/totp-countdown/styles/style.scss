@@ -1,0 +1,54 @@
+.totp-v2 {
+  .totp-code {
+    font-family: $font-family-monospace;
+    font-size: 3em;
+  }
+
+  .totp-countdown {
+    .totp-sec {
+      font-size: 12px;
+      position: absolute;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      transform: rotate(-90deg);
+    }
+
+    .totp-circle {
+      fill: none;
+
+      @include themify($themes) {
+        stroke: themed("totpStrokeColor");
+      }
+
+      &.inner {
+        stroke-width: 3;
+        stroke-dasharray: 78.6;
+        stroke-dashoffset: 0;
+      }
+
+      &.outer {
+        stroke-width: 2;
+        stroke-dasharray: 88;
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+
+  &.low {
+    .totp-sec,
+    .totp-code {
+      @include themify($themes) {
+        color: themed("dangerColor");
+      }
+    }
+
+    .totp-circle {
+      @include themify($themes) {
+        stroke: themed("dangerColor");
+      }
+    }
+  }
+}

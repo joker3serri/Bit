@@ -11,6 +11,7 @@
   <!-- LOGIN CREDENTIALS -->
   <app-login-credentials-view
     *ngIf="hasLogin"
+    [cipher]="cipher"
     [login]="cipher.login"
     [viewPassword]="cipher.viewPassword"
   ></app-login-credentials-view>

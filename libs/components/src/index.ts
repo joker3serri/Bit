@@ -34,5 +34,6 @@ export * from "./table";
 export * from "./tabs";
 export * from "./toast";
 export * from "./toggle-group";
+export * from "./totp-countdown";
 export * from "./typography";
 export * from "./utils";

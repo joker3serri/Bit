@@ -5,6 +5,7 @@ import { Observable, shareReplay } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import {
   CardComponent,
@@ -15,6 +16,7 @@ import {
   IconButtonModule,
   BadgeModule,
   ColorPasswordModule,
+  TotpCountdownModule,
 } from "@bitwarden/components";
 
 @Component({
@@ -32,9 +34,11 @@ import {
     IconButtonModule,
     BadgeModule,
     ColorPasswordModule,
+    TotpCountdownModule,
   ],
 })
 export class LoginCredentialsViewComponent {
+  @Input() cipher: CipherView;
   @Input() login: LoginView;
   @Input() viewPassword: boolean;
   isPremium$: Observable<boolean> =
