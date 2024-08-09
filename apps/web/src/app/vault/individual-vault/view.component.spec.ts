@@ -126,9 +126,7 @@ describe("ViewComponent", () => {
 
   describe("delete", () => {
     it("calls the delete method on delete", async () => {
-      const deleteSpy = jest
-        .spyOn(component, "delete")
-        .mockImplementation(() => Promise.resolve(true));
+      const deleteSpy = jest.spyOn(component, "delete").mockImplementation(() => Promise.resolve());
 
       await component.delete();
 

@@ -80,7 +80,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  async delete(): Promise<boolean> {
+  async delete(): Promise<void> {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteItem" },
       content: {
@@ -90,7 +90,7 @@ export class ViewComponent implements OnInit, OnDestroy {
     });
 
     if (!confirmed) {
-      return false;
+      return;
     }
 
     try {
@@ -112,8 +112,6 @@ export class ViewComponent implements OnInit, OnDestroy {
     }
 
     this.dialogRef.close({ action: ViewCipherDialogResult.deleted });
-
-    return true;
   }
 
   protected async deleteCipher(): Promise<void> {
