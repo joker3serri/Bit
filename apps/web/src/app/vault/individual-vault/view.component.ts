@@ -1,7 +1,8 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, Inject, OnInit, EventEmitter } from "@angular/core";
+import { Component, Inject, OnInit, EventEmitter, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
+import { Subject } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -41,7 +42,7 @@ export interface ViewCipherDialogCloseResult {
   standalone: true,
   imports: [CipherViewComponent, CommonModule, AsyncActionsModule, DialogModule, SharedModule],
 })
-export class ViewComponent implements OnInit {
+export class ViewComponent implements OnInit, OnDestroy {
   cipher: CipherView;
   deletePromise: Promise<void>;
   onDeletedCipher = new EventEmitter<CipherView>();
@@ -50,6 +51,8 @@ export class ViewComponent implements OnInit {
   organization: Organization;
   flexibleCollectionsV1Enabled = false;
   restrictProviderAccess = false;
+
+  protected destroy$ = new Subject<void>();
 
   constructor(
     @Inject(DIALOG_DATA) public params: ViewCipherDialogParams,
@@ -70,6 +73,11 @@ export class ViewComponent implements OnInit {
     if (this.cipher.organizationId) {
       this.organization = await this.organizationService.get(this.cipher.organizationId);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   async delete(): Promise<boolean> {

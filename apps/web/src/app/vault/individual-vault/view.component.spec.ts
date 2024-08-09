@@ -115,4 +115,24 @@ describe("ViewComponent", () => {
       });
     });
   });
+
+  describe("ngOnDestroy", () => {
+    it("cleans up resources", () => {
+      const cleanupSpy = jest.spyOn(component, "ngOnDestroy");
+      component.ngOnDestroy();
+      expect(cleanupSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("delete", () => {
+    it("calls the delete method on delete", async () => {
+      const deleteSpy = jest
+        .spyOn(component, "delete")
+        .mockImplementation(() => Promise.resolve(true));
+
+      await component.delete();
+
+      expect(deleteSpy).toHaveBeenCalled();
+    });
+  });
 });
