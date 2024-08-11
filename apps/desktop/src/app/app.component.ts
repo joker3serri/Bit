@@ -403,7 +403,6 @@ export class AppComponent implements OnInit, OnDestroy {
             // Clear sequentialized caches
             clearCaches();
             if (message.userId != null) {
-              await this.stateService.clearDecryptedData(message.userId);
               await this.accountService.switchAccount(message.userId);
             }
             const locked =
@@ -423,12 +422,13 @@ export class AppComponent implements OnInit, OnDestroy {
             } else {
               this.messagingService.send("unlocked");
               this.loading = true;
-              await this.syncService.fullSync(true);
+              await this.syncService.fullSync(false);
               this.loading = false;
               // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               this.router.navigate(["vault"]);
             }
+            this.messagingService.send("finishSwitchAccount");
             break;
           }
           case "systemSuspended":
@@ -650,7 +650,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
       // Provide the userId of the user to upload events for
       await this.eventUploadService.uploadEvents(userBeingLoggedOut);
-      await this.syncService.setLastSync(new Date(0), userBeingLoggedOut);
       await this.cryptoService.clearKeys(userBeingLoggedOut);
       await this.cipherService.clear(userBeingLoggedOut);
       await this.folderService.clear(userBeingLoggedOut);

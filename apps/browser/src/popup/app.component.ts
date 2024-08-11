@@ -9,6 +9,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { AnimationControlService } from "@bitwarden/common/platform/abstractions/animation-control.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { MessageListener } from "@bitwarden/common/platform/messaging";
 import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -20,7 +21,6 @@ import {
 } from "@bitwarden/components";
 
 import { BrowserApi } from "../platform/browser/browser-api";
-import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
 import { BrowserSendStateService } from "../tools/popup/services/browser-send-state.service";
 import { VaultBrowserStateService } from "../vault/services/vault-browser-state.service";
 
@@ -47,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private i18nService: I18nService,
     private router: Router,
-    private stateService: BrowserStateService,
+    private stateService: StateService,
     private browserSendStateService: BrowserSendStateService,
     private vaultBrowserStateService: VaultBrowserStateService,
     private cipherService: CipherService,
