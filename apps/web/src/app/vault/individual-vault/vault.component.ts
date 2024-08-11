@@ -678,7 +678,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Takes a CipherView id and opens a dialog where it can be viewed.
+   * Takes a cipher id and opens a dialog where it can be viewed.
    * @param id - string
    * @returns Promise<void>
    */
