@@ -54,7 +54,6 @@ import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup
 })
 export class ViewV2Component {
   headerText: string;
-  cipherId: string;
   cipher: CipherView;
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
