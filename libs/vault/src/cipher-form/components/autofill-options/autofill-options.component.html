@@ -29,7 +29,7 @@
       {{ "addWebsite" | i18n }}
     </button>
 
-    <bit-form-field>
+    <bit-form-field *ngIf="autofillOnPageLoadEnabled$ | async">
       <bit-label>{{ "autoFillOnPageLoad" | i18n }}</bit-label>
       <bit-select formControlName="autofillOnPageLoad" [items]="autofillOptions"></bit-select>
     </bit-form-field>
