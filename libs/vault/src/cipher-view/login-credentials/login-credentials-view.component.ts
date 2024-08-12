@@ -6,7 +6,6 @@ import { Observable, shareReplay } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import {
   CardComponent,
   FormFieldModule,
@@ -39,8 +38,7 @@ import {
 })
 export class LoginCredentialsViewComponent {
   @Input() cipher: CipherView;
-  @Input() login: LoginView;
-  @Input() viewPassword: boolean;
+
   isPremium$: Observable<boolean> =
     this.billingAccountProfileStateService.hasPremiumFromAnySource$.pipe(
       shareReplay({ refCount: true, bufferSize: 1 }),
