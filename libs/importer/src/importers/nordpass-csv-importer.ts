@@ -1,4 +1,4 @@
-import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
+import { SecureNoteType, CipherType, FieldType } from "@bitwarden/common/vault/enums";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
@@ -30,6 +30,13 @@ type nordPassCsvParsed = {
   country: string;
   state: string;
   type: string;
+  custom_fields: nordPassCustomField[];
+};
+
+type nordPassCustomField = {
+  label: string;
+  type: string;
+  value: string;
 };
 
 export class NordPassCsvImporter extends BaseImporter implements Importer {
@@ -54,6 +61,24 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
       const cipher = new CipherView();
       cipher.name = this.getValueOrDefault(record.name, "--");
       cipher.notes = this.getValueOrDefault(record.note);
+
+      if (record.custom_fields && record.custom_fields.length > 0) {
+        record.custom_fields.forEach((field) => {
+          let fieldType: undefined | FieldType = undefined;
+
+          if (field.type == "text") {
+            fieldType = FieldType.Text;
+          }
+          if (field.type == "hidden") {
+            fieldType = FieldType.Hidden;
+          }
+          if (fieldType == undefined) {
+            return;
+          }
+
+          this.processKvp(cipher, field.label, field.value, fieldType);
+        });
+      }
 
       switch (recordType) {
         case CipherType.Login:
