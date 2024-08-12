@@ -1,20 +1,28 @@
-<div
-  class="tw-flex tw-items-center tw-justify-center totp-v2"
-  [ngClass]="{ low: totpLow }"
-  *ngIf="cipher.login.totp && totpCode"
->
-  <span class="totp-countdown tw-flex tw-justify-center tw-items-center" aria-hidden="true">
-    <span class="totp-sec">{{ totpSec }}</span>
+<div class="tw-flex tw-items-center tw-justify-center totp-v2">
+  <span class="tw-relative tw-flex tw-justify-center tw-items-center" aria-hidden="true">
+    <span
+      class="tw-absolute"
+      [ngClass]="{ 'tw-text-main': !totpLow, 'tw-text-danger': totpLow }"
+      bitTypography="helper"
+      >{{ totpSec }}</span
+    >
     <svg>
       <g>
         <circle
-          class="totp-circle inner"
-          r="9.6"
-          cy="13"
-          cx="13"
+          class="totp-circle tw-fill-none inner"
+          [ngClass]="{ 'tw-stroke-text-main': !totpLow, 'tw-stroke-danger-600': totpLow }"
+          r="9.5"
+          cy="11.8"
+          cx="11.8"
           [ngStyle]="{ 'stroke-dashoffset.px': totpDash }"
         ></circle>
-        <circle class="totp-circle outer" r="11" cy="13" cx="13"></circle>
+        <circle
+          class="totp-circle tw-fill-none outer"
+          [ngClass]="{ 'tw-stroke-text-main': !totpLow, 'tw-stroke-danger-600': totpLow }"
+          r="11"
+          cy="11.8"
+          cx="11.8"
+        ></circle>
       </g>
     </svg>
   </span>

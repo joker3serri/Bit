@@ -47,6 +47,7 @@ export class LoginCredentialsViewComponent {
     );
   showPasswordCount: boolean = false;
   passwordRevealed: boolean = false;
+  totpCopyCode: string;
 
   constructor(
     private billingAccountProfileStateService: BillingAccountProfileStateService,
@@ -63,5 +64,9 @@ export class LoginCredentialsViewComponent {
 
   togglePasswordCount() {
     this.showPasswordCount = !this.showPasswordCount;
+  }
+
+  setTotpCopyCode(e: any) {
+    this.totpCopyCode = e;
   }
 }

@@ -1,54 +1,21 @@
 .totp-v2 {
-  .totp-code {
-    font-family: $font-family-monospace;
-    font-size: 3em;
+  svg {
+    width: 24px;
+    height: 24px;
+    transform: rotate(-90deg);
   }
 
-  .totp-countdown {
-    .totp-sec {
-      font-size: 12px;
-      position: absolute;
+  .totp-circle {
+    &.inner {
+      stroke-width: 2;
+      stroke-dasharray: 60;
+      stroke-dashoffset: 0;
     }
 
-    svg {
-      width: 24px;
-      height: 24px;
-      transform: rotate(-90deg);
-    }
-
-    .totp-circle {
-      fill: none;
-
-      @include themify($themes) {
-        stroke: themed("totpStrokeColor");
-      }
-
-      &.inner {
-        stroke-width: 3;
-        stroke-dasharray: 78.6;
-        stroke-dashoffset: 0;
-      }
-
-      &.outer {
-        stroke-width: 2;
-        stroke-dasharray: 88;
-        stroke-dashoffset: 0;
-      }
-    }
-  }
-
-  &.low {
-    .totp-sec,
-    .totp-code {
-      @include themify($themes) {
-        color: themed("dangerColor");
-      }
-    }
-
-    .totp-circle {
-      @include themify($themes) {
-        stroke: themed("dangerColor");
-      }
+    &.outer {
+      stroke-width: 1;
+      stroke-dasharray: 71;
+      stroke-dashoffset: 0;
     }
   }
 }
