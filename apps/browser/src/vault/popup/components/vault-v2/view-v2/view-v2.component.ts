@@ -1,4 +1,4 @@
-import { CommonModule, Location } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
@@ -59,9 +59,6 @@ export class ViewV2Component {
   folder$: Observable<FolderView>;
   collections$: Observable<CollectionView[]>;
 
-  /** True when the view route is navigated to after creation of a new cipher */
-  isNewCipher = false;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -70,7 +67,6 @@ export class ViewV2Component {
     private dialogService: DialogService,
     private logService: LogService,
     private toastService: ToastService,
-    private location: Location,
   ) {
     this.subscribeToParams();
   }
@@ -78,17 +74,14 @@ export class ViewV2Component {
   subscribeToParams(): void {
     this.route.queryParams
       .pipe(
-        switchMap(async (params): Promise<[CipherView, boolean]> => {
-          const cipher = await this.getCipherData(params.cipherId);
-          const isNewCipher = params.newCipher === "true";
-          return [cipher, isNewCipher];
+        switchMap(async (params): Promise<CipherView> => {
+          return await this.getCipherData(params.cipherId);
         }),
         takeUntilDestroyed(),
       )
-      .subscribe(([cipher, isNewCipher]) => {
+      .subscribe((cipher) => {
         this.cipher = cipher;
         this.headerText = this.setHeader(cipher.type);
-        this.isNewCipher = isNewCipher;
       });
   }
 
@@ -106,18 +99,6 @@ export class ViewV2Component {
       case CipherType.SecureNote:
         return this.i18nService.t("viewItemHeader", this.i18nService.t("note").toLowerCase());
     }
-  }
-
-  /** Handle the back button within the popout header */
-  async handleBack() {
-    if (this.isNewCipher) {
-      // For new ciphers the last item in the history will be the add/edit page
-      // Navigate back to the vault in these cases
-      await this.router.navigate(["/vault"]);
-      return;
-    }
-
-    this.location.back();
   }
 
   async getCipherData(id: string) {

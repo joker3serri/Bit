@@ -229,7 +229,8 @@ export class AddEditV2Component implements OnInit {
     }
 
     await this.router.navigate(["/view-cipher"], {
-      queryParams: { cipherId: cipher.id, newCipher: true },
+      replaceUrl: true,
+      queryParams: { cipherId: cipher.id },
     });
   }
 

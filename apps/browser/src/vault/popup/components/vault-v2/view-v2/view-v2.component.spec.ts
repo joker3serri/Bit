@@ -1,4 +1,3 @@
-import { Location } from "@angular/common";
 import { ComponentFixture, fakeAsync, flush, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { mock } from "jest-mock-extended";
@@ -75,20 +74,6 @@ describe("ViewV2Component", () => {
       expect(component.cipher).toEqual(mockCipher);
     }));
 
-    it("sets isNewCipher to true when newCipher is true", fakeAsync(() => {
-      params$.next({ cipherId: "122-333-444", newCipher: "true" });
-
-      flush(); // Resolve all promises
-
-      expect(component.isNewCipher).toBe(true);
-
-      params$.next({ cipherId: "122-333-444" });
-
-      flush(); // Resolve all promises
-
-      expect(component.isNewCipher).toBe(false);
-    }));
-
     it("sets the correct header text", fakeAsync(() => {
       // Set header text for a login
       mockCipher.type = CipherType.Login;
@@ -118,26 +103,5 @@ describe("ViewV2Component", () => {
 
       expect(component.headerText).toEqual("viewItemHeader note");
     }));
-  });
-
-  describe("handleBack", () => {
-    it("navigates to /vault when isNewCipher is true", async () => {
-      component.isNewCipher = true;
-
-      await component.handleBack();
-
-      expect(mockNavigate).toHaveBeenCalledWith(["/vault"]);
-    });
-
-    it("calls location.back when isNewCipher is false", async () => {
-      component.isNewCipher = false;
-      const location = TestBed.inject(Location);
-      const backSpy = jest.spyOn(location, "back");
-
-      await component.handleBack();
-
-      expect(mockNavigate).not.toHaveBeenCalled();
-      expect(backSpy).toHaveBeenCalled();
-    });
   });
 });
