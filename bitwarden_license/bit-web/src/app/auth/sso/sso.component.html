@@ -53,7 +53,7 @@
           id="memberDecryptionKey"
           [value]="memberDecryptionType.KeyConnector"
           [disabled]="!organization.useKeyConnector || null"
-          *ngIf="true"
+          *ngIf="showKeyConnectorOptions"
         >
           <bit-label>
             {{ "keyConnector" | i18n }}
