@@ -11,12 +11,18 @@ export class PrimarySecondaryStorageService
     private readonly primaryStorageService: AbstractStorageService & ObservableStorageService,
     // Secondary service doesn't need to be observable as the only `updates$` are listened to from the primary store
     private readonly secondaryStorageService: AbstractStorageService,
-  ) {}
+  ) {
+    if (
+      primaryStorageService.valuesRequireDeserialization !==
+      secondaryStorageService.valuesRequireDeserialization
+    ) {
+      throw new Error(
+        "Differing values for valuesRequireDeserialization between storage services is not supported.",
+      );
+    }
+  }
   get valuesRequireDeserialization(): boolean {
-    return (
-      this.primaryStorageService.valuesRequireDeserialization ||
-      this.secondaryStorageService.valuesRequireDeserialization
-    );
+    return this.primaryStorageService.valuesRequireDeserialization;
   }
 
   async get<T>(key: string, options?: StorageOptions): Promise<T> {
