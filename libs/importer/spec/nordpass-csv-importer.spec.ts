@@ -1,4 +1,4 @@
-import { SecureNoteType, CipherType } from "@bitwarden/common/vault/enums";
+import { SecureNoteType, CipherType, FieldType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 
@@ -63,6 +63,8 @@ function expectLogin(cipher: CipherView) {
   expect(cipher.name).toBe("SomeVaultItemName");
   expect(cipher.notes).toBe("Some note for the VaultItem");
   expect(cipher.login.uri).toBe("https://example.com");
+  expect(cipher.login.uris.length).toBe(2);
+  expect(cipher.login.uris[1].uri).toBe("https://example.net");
   expect(cipher.login.username).toBe("hello@bitwarden.com");
   expect(cipher.login.password).toBe("someStrongPassword");
 }
@@ -107,6 +109,16 @@ function expectSecureNote(cipher: CipherView) {
   expect(cipher.notes).toBe("MySuperSecureNote");
 }
 
+function expectFields(cipher: CipherView) {
+  expect(cipher.fields.length).toBe(2);
+  expect(cipher.fields[0].name).toBe("textLabel");
+  expect(cipher.fields[0].value).toBe("text value");
+  expect(cipher.fields[0].type).toBe(FieldType.Text);
+  expect(cipher.fields[1].name).toBe("hiddenLabel");
+  expect(cipher.fields[1].value).toBe("hidden value");
+  expect(cipher.fields[1].type).toBe(FieldType.Hidden);
+}
+
 describe("NordPass CSV Importer", () => {
   let importer: NordPassCsvImporter;
   beforeEach(() => {
@@ -121,6 +133,7 @@ describe("NordPass CSV Importer", () => {
     expect(result.ciphers.length).toBe(1);
     const cipher = result.ciphers[0];
     expectLogin(cipher);
+    expectFields(cipher); //for custom fields
   });
 
   it("should parse credit card records", async () => {
