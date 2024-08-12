@@ -75,14 +75,14 @@ export class ViewV2Component {
   subscribeToParams(): void {
     this.route.queryParams
       .pipe(
-        switchMap((param) => {
-          return this.getCipherData(param.cipherId);
+        switchMap((params) => {
+          return this.getCipherData(params.cipherId);
         }),
         takeUntilDestroyed(),
       )
-      .subscribe((data) => {
-        this.cipher = data;
-        this.headerText = this.setHeader(data.type);
+      .subscribe((cipher) => {
+        this.cipher = cipher;
+        this.headerText = this.setHeader(cipher.type);
       });
   }
 
