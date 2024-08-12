@@ -11,6 +11,7 @@ import { Importer } from "./importer";
 type nodePassCsvParsed = {
   name: string;
   url: string;
+  additional_urls: string[];
   username: string;
   password: string;
   note: string;
@@ -59,7 +60,12 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
           cipher.login = new LoginView();
           cipher.login.username = this.getValueOrDefault(record.username);
           cipher.login.password = this.getValueOrDefault(record.password);
-          cipher.login.uris = this.makeUriArray(record.url);
+          if (record.additional_urls && record.additional_urls.length > 0) {
+            const uris = [record.url, ...record.additional_urls];
+            cipher.login.uris = this.makeUriArray(uris);
+          } else {
+            cipher.login.uris = this.makeUriArray(record.url);
+          }
           break;
         case CipherType.Card:
           cipher.type = CipherType.Card;
