@@ -29,6 +29,7 @@ type nodePassCsvParsed = {
   city: string;
   country: string;
   state: string;
+  type: string;
 };
 
 export class NordPassCsvImporter extends BaseImporter implements Importer {
@@ -113,20 +114,15 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
   }
 
   private evaluateType(record: nodePassCsvParsed): CipherType {
-    if (!this.isNullOrWhitespace(record.username)) {
-      return CipherType.Login;
-    }
-
-    if (!this.isNullOrWhitespace(record.cardnumber)) {
-      return CipherType.Card;
-    }
-
-    if (!this.isNullOrWhitespace(record.full_name)) {
-      return CipherType.Identity;
-    }
-
-    if (!this.isNullOrWhitespace(record.note)) {
-      return CipherType.SecureNote;
+    switch (record.type) {
+      case "password":
+        return CipherType.Login;
+      case "credit_card":
+        return CipherType.Card;
+      case "note":
+        return CipherType.SecureNote;
+      case "identity":
+        return CipherType.Identity;
     }
 
     return undefined;
