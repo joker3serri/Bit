@@ -12,8 +12,8 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 
 import { ViewV2Component } from "./view-v2.component";
 
-// 'qrcode-parser' is used by `BrowserTotpCaptureService` but is an es6 module that jest doesn't like
-// mocking it here to prevent jest from throwing an error. I wasn't able to find a way to mock the
+// 'qrcode-parser' is used by `BrowserTotpCaptureService` but is an es6 module that jest can't compile.
+// Mock the entire module here to prevent jest from throwing an error. I wasn't able to find a way to mock the
 // `BrowserTotpCaptureService` where jest would not load the file in the first place.
 jest.mock("qrcode-parser", () => {});
 
