@@ -34,7 +34,6 @@ export class VaultCollectionRowComponent {
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
   @Input() showPermissionsColumn: boolean;
-  @Input() flexibleCollectionsV1Enabled: boolean;
   @Input() restrictProviderAccess: boolean;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
@@ -57,10 +56,6 @@ export class VaultCollectionRowComponent {
   }
 
   get showAddAccess() {
-    if (!this.flexibleCollectionsV1Enabled) {
-      return false;
-    }
-
     if (this.collection.id == Unassigned) {
       return false;
     }
@@ -114,10 +109,6 @@ export class VaultCollectionRowComponent {
   }
 
   protected get showCheckbox() {
-    if (this.flexibleCollectionsV1Enabled) {
-      return this.collection?.id !== Unassigned;
-    }
-
-    return this.canDeleteCollection;
+    return this.collection?.id !== Unassigned;
   }
 }
