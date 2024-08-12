@@ -11,7 +11,7 @@ import { Importer } from "./importer";
 type nordPassCsvParsed = {
   name: string;
   url: string;
-  additional_urls: string[];
+  additional_urls: string;
   username: string;
   password: string;
   note: string;
@@ -89,8 +89,9 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
           cipher.login = new LoginView();
           cipher.login.username = this.getValueOrDefault(record.username);
           cipher.login.password = this.getValueOrDefault(record.password);
-          if (record.additional_urls && record.additional_urls.length > 0) {
-            const uris = [record.url, ...record.additional_urls];
+          if (record.additional_urls) {
+            const additionalUrlsParsed: string[] = JSON.parse(record.additional_urls);
+            const uris = [record.url, ...additionalUrlsParsed];
             cipher.login.uris = this.makeUriArray(uris);
           } else {
             cipher.login.uris = this.makeUriArray(record.url);
