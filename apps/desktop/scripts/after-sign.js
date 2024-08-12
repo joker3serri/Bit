@@ -50,14 +50,26 @@ async function run(context) {
 
   if (macBuild) {
     console.log("### Notarizing " + appPath);
-    const appleId = process.env.APPLE_ID_USERNAME || process.env.APPLEID;
-    const appleIdPassword = process.env.APPLE_ID_PASSWORD || `@keychain:AC_PASSWORD`;
-    return await notarize({
-      tool: "notarytool",
-      appPath: appPath,
-      teamId: "LTZ2PFU5D6",
-      appleId: appleId,
-      appleIdPassword: appleIdPassword,
-    });
+    if (process.env.APP_STORE_CONNECT_TEAM_ISSUER) {
+      const appleApiIssuer = process.env.APP_STORE_CONNECT_TEAM_ISSUER;
+      const appleApiKey = process.env.APP_STORE_CONNECT_AUTH_KEY_PATH;
+      return await notarize({
+        tool: "notarytool",
+        appPath: appPath,
+        teamId: "LTZ2PFU5D6",
+        appleApiIssuer: appleApiIssuer,
+        appleApiKey: appleApiKey,
+      });
+    } else {
+      const appleId = process.env.APPLE_ID_USERNAME || process.env.APPLEID;
+      const appleIdPassword = process.env.APPLE_ID_PASSWORD || `@keychain:AC_PASSWORD`;
+      return await notarize({
+        tool: "notarytool",
+        appPath: appPath,
+        teamId: "LTZ2PFU5D6",
+        appleId: appleId,
+        appleIdPassword: appleIdPassword,
+      });
+    }
   }
 }
