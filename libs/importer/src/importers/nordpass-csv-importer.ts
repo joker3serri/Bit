@@ -8,7 +8,7 @@ import { ImportResult } from "../models/import-result";
 import { BaseImporter } from "./base-importer";
 import { Importer } from "./importer";
 
-type nodePassCsvParsed = {
+type nordPassCsvParsed = {
   name: string;
   url: string;
   additional_urls: string[];
@@ -35,7 +35,7 @@ type nodePassCsvParsed = {
 export class NordPassCsvImporter extends BaseImporter implements Importer {
   parse(data: string): Promise<ImportResult> {
     const result = new ImportResult();
-    const results: nodePassCsvParsed[] = this.parseCsv(data, true);
+    const results: nordPassCsvParsed[] = this.parseCsv(data, true);
     if (results == null) {
       result.success = false;
       return Promise.resolve(result);
@@ -113,7 +113,7 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
     return Promise.resolve(result);
   }
 
-  private evaluateType(record: nodePassCsvParsed): CipherType {
+  private evaluateType(record: nordPassCsvParsed): CipherType {
     switch (record.type) {
       case "password":
         return CipherType.Login;
