@@ -30,7 +30,7 @@ type nordPassCsvParsed = {
   country: string;
   state: string;
   type: string;
-  custom_fields: nordPassCustomField[];
+  custom_fields: string;
 };
 
 type nordPassCustomField = {
@@ -62,22 +62,25 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
       cipher.name = this.getValueOrDefault(record.name, "--");
       cipher.notes = this.getValueOrDefault(record.note);
 
-      if (record.custom_fields && record.custom_fields.length > 0) {
-        record.custom_fields.forEach((field) => {
-          let fieldType: undefined | FieldType = undefined;
+      if (record.custom_fields) {
+        const customFieldsParsed: nordPassCustomField[] = JSON.parse(record.custom_fields);
+        if (customFieldsParsed && customFieldsParsed.length > 0) {
+          customFieldsParsed.forEach((field) => {
+            let fieldType: undefined | FieldType = undefined;
 
-          if (field.type == "text") {
-            fieldType = FieldType.Text;
-          }
-          if (field.type == "hidden") {
-            fieldType = FieldType.Hidden;
-          }
-          if (fieldType == undefined) {
-            return;
-          }
+            if (field.type == "text") {
+              fieldType = FieldType.Text;
+            }
+            if (field.type == "hidden") {
+              fieldType = FieldType.Hidden;
+            }
+            if (fieldType == undefined) {
+              return;
+            }
 
-          this.processKvp(cipher, field.label, field.value, fieldType);
-        });
+            this.processKvp(cipher, field.label, field.value, fieldType);
+          });
+        }
       }
 
       switch (recordType) {
