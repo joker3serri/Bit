@@ -6,22 +6,27 @@
       bitTypography="helper"
       >{{ totpSec }}</span
     >
-    <svg>
+    <svg class="tw-w-7 tw-h-7" transform="rotate(-90)">
       <g>
         <circle
-          class="totp-circle tw-fill-none inner"
+          class="tw-fill-none"
           [ngClass]="{ 'tw-stroke-text-main': !totpLow, 'tw-stroke-danger-600': totpLow }"
           r="9.5"
           cy="11.8"
           cx="11.8"
+          stroke-width="2"
+          stroke-dasharray="60"
           [ngStyle]="{ 'stroke-dashoffset.px': totpDash }"
         ></circle>
         <circle
-          class="totp-circle tw-fill-none outer"
+          class="tw-fill-none"
           [ngClass]="{ 'tw-stroke-text-main': !totpLow, 'tw-stroke-danger-600': totpLow }"
           r="11"
           cy="11.8"
           cx="11.8"
+          stroke-width="1"
+          stroke-dasharray="71"
+          stroke-dashoffset="0"
         ></circle>
       </g>
     </svg>

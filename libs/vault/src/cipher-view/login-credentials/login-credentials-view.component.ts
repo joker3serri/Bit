@@ -15,8 +15,9 @@ import {
   IconButtonModule,
   BadgeModule,
   ColorPasswordModule,
-  TotpCountdownModule,
 } from "@bitwarden/components";
+
+import { BitTotpCountdownComponent } from "../../components/totp-countdown/totp-countdown.component";
 
 @Component({
   selector: "app-login-credentials-view",
@@ -33,7 +34,7 @@ import {
     IconButtonModule,
     BadgeModule,
     ColorPasswordModule,
-    TotpCountdownModule,
+    BitTotpCountdownComponent,
   ],
 })
 export class LoginCredentialsViewComponent {

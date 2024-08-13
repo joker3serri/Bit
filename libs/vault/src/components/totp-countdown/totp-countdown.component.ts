@@ -1,12 +1,16 @@
+import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { TypographyModule } from "@bitwarden/components";
 
 @Component({
   selector: "button[bitTotpCountdown]:not(button[bitButton])",
   templateUrl: "totp-countdown.component.html",
+  standalone: true,
+  imports: [CommonModule, TypographyModule],
 })
 export class BitTotpCountdownComponent implements OnInit {
   @Input() cipher: CipherView;
