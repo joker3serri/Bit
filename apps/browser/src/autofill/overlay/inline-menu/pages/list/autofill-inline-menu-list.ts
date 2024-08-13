@@ -169,8 +169,13 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       return;
     }
 
+    const cipherListClasses = ["inline-menu-list-actions"];
+    if (ciphers.length > 2) {
+      cipherListClasses.push("inline-menu-list-actions--scrollbar");
+    }
+
     this.ciphersList = globalThis.document.createElement("ul");
-    this.ciphersList.classList.add("inline-menu-list-actions");
+    this.ciphersList.classList.add(...cipherListClasses);
     this.ciphersList.setAttribute("role", "list");
     this.setupCipherListScrollListeners();
 
