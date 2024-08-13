@@ -53,11 +53,13 @@ async function run(context) {
     if (process.env.APP_STORE_CONNECT_TEAM_ISSUER) {
       const appleApiIssuer = process.env.APP_STORE_CONNECT_TEAM_ISSUER;
       const appleApiKey = process.env.APP_STORE_CONNECT_AUTH_KEY_PATH;
+      const appleApiKeyId = process.env.APP_STORE_CONNECT_AUTH_KEY;
       return await notarize({
         tool: "notarytool",
         appPath: appPath,
         appleApiIssuer: appleApiIssuer,
         appleApiKey: appleApiKey,
+        appleApiKeyId: appleApiKeyId,
       });
     } else {
       const appleId = process.env.APPLE_ID_USERNAME || process.env.APPLEID;
