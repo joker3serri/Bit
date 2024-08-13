@@ -56,7 +56,6 @@ async function run(context) {
       return await notarize({
         tool: "notarytool",
         appPath: appPath,
-        teamId: "LTZ2PFU5D6",
         appleApiIssuer: appleApiIssuer,
         appleApiKey: appleApiKey,
       });
