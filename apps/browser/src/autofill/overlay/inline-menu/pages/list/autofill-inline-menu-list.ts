@@ -169,19 +169,15 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       return;
     }
 
-    const cipherListClasses = ["inline-menu-list-actions"];
-    if (ciphers.length > 2) {
-      cipherListClasses.push("inline-menu-list-actions--scrollbar");
-    }
-
     this.ciphersList = globalThis.document.createElement("ul");
-    this.ciphersList.classList.add(...cipherListClasses);
+    this.ciphersList.classList.add("inline-menu-list-actions");
     this.ciphersList.setAttribute("role", "list");
     this.setupCipherListScrollListeners();
 
     this.loadPageOfCiphers();
 
     this.inlineMenuListContainer.appendChild(this.ciphersList);
+    this.toggleScrollClass();
 
     if (!this.showInlineMenuAccountCreation) {
       return;
@@ -978,13 +974,19 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
    *
    * @param height - The height of the inline menu list actions container.
    */
-  private toggleScrollClass = (height: number) => {
+  private toggleScrollClass = (height?: number) => {
     if (!this.ciphersList) {
       return;
     }
     const scrollbarClass = "inline-menu-list-actions--scrollbar";
 
-    if (height >= 170) {
+    let containerHeight = height;
+    if (!containerHeight) {
+      const inlineMenuListContainerRects = this.inlineMenuListContainer.getBoundingClientRect();
+      containerHeight = inlineMenuListContainerRects.height;
+    }
+
+    if (containerHeight >= 170) {
       this.ciphersList.classList.add(scrollbarClass);
       return;
     }
