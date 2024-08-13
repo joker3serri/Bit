@@ -19,6 +19,7 @@ import { PopOutComponent } from "../../../../platform/popup/components/pop-out.c
 import { PopupFooterComponent } from "../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
+import { PopupRouterCacheService } from "../../../../platform/popup/view-cache/popup-router-cache.service";
 
 import { SendCreatedComponent } from "./send-created.component";
 
@@ -87,6 +88,7 @@ describe("SendCreatedComponent", () => {
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: ConfigService, useValue: mock<ConfigService>() },
         { provide: EnvironmentService, useValue: environmentService },
+        { provide: PopupRouterCacheService, useValue: mock<PopupRouterCacheService>() },
       ],
     }).compileComponents();
   });
