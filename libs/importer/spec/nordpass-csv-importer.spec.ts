@@ -7,6 +7,7 @@ import { NordPassCsvImporter } from "../src/importers";
 
 import { data as creditCardData } from "./test-data/nordpass-csv/nordpass.card.csv";
 import { data as identityData } from "./test-data/nordpass-csv/nordpass.identity.csv";
+import { data as loginDataWithAdditionalUrls } from "./test-data/nordpass-csv/nordpass.login-with-additinal-urls.csv";
 import { data as loginData } from "./test-data/nordpass-csv/nordpass.login.csv";
 import { data as secureNoteData } from "./test-data/nordpass-csv/nordpass.secure-note.csv";
 
@@ -64,7 +65,20 @@ function expectLogin(cipher: CipherView) {
   expect(cipher.name).toBe("SomeVaultItemName");
   expect(cipher.notes).toBe("Some note for the VaultItem");
   expect(cipher.login.uri).toBe("https://example.com");
+  expect(cipher.login.uris.length).toBe(1);
+  expect(cipher.login.uris[0].uri).toBe("https://example.com");
+  expect(cipher.login.username).toBe("hello@bitwarden.com");
+  expect(cipher.login.password).toBe("someStrongPassword");
+}
+
+function expectLoginWithAdditionalUrls(cipher: CipherView) {
+  expect(cipher.type).toBe(CipherType.Login);
+
+  expect(cipher.name).toBe("SomeVaultItemName");
+  expect(cipher.notes).toBe("Some note for the VaultItem");
+  expect(cipher.login.uri).toBe("https://example.com");
   expect(cipher.login.uris.length).toBe(2);
+  expect(cipher.login.uris[0].uri).toBe("https://example.com");
   expect(cipher.login.uris[1].uri).toBe("https://example.net");
   expect(cipher.login.username).toBe("hello@bitwarden.com");
   expect(cipher.login.password).toBe("someStrongPassword");
@@ -142,6 +156,16 @@ describe("NordPass CSV Importer", () => {
     const cipher = result.ciphers[0];
     expectLogin(cipher);
     expectFields(cipher); //for custom fields
+  });
+
+  it("should parse login records with additinal urls", async () => {
+    const result = await importer.parse(loginDataWithAdditionalUrls);
+
+    expect(result).not.toBeNull();
+    expect(result.success).toBe(true);
+    expect(result.ciphers.length).toBe(1);
+    const cipher = result.ciphers[0];
+    expectLoginWithAdditionalUrls(cipher);
   });
 
   it("should parse credit card records", async () => {
