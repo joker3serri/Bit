@@ -236,6 +236,7 @@ import I18nService from "../platform/services/i18n.service";
 import { LocalBackedSessionStorageService } from "../platform/services/local-backed-session-storage.service";
 import { BackgroundPlatformUtilsService } from "../platform/services/platform-utils/background-platform-utils.service";
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
+import { PopupViewCacheBackgroundService } from "../platform/services/popup-view-cache-background.service";
 import { BackgroundTaskSchedulerService } from "../platform/services/task-scheduler/background-task-scheduler.service";
 import { ForegroundTaskSchedulerService } from "../platform/services/task-scheduler/foreground-task-scheduler.service";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
@@ -370,6 +371,8 @@ export default class MainBackground {
   private syncTimeout: any;
   private isSafari: boolean;
   private nativeMessagingBackground: NativeMessagingBackground;
+
+  private popupViewCacheBackgroundService: PopupViewCacheBackgroundService;
 
   constructor(public popupOnlyContext: boolean = false) {
     // Services
@@ -569,6 +572,10 @@ export default class MainBackground {
       this.encryptService,
       this.logService,
       logoutCallback,
+    );
+
+    this.popupViewCacheBackgroundService = new PopupViewCacheBackgroundService(
+      this.globalStateProvider,
     );
 
     const migrationRunner = new MigrationRunner(
@@ -1063,7 +1070,6 @@ export default class MainBackground {
         this.messagingService,
         this.appIdService,
         this.platformUtilsService,
-        this.stateService,
         this.logService,
         this.authService,
         this.biometricStateService,
@@ -1205,6 +1211,8 @@ export default class MainBackground {
     await (this.i18nService as I18nService).init();
     (this.eventUploadService as EventUploadService).init(true);
 
+    this.popupViewCacheBackgroundService.startObservingTabChanges();
+
     if (this.popupOnlyContext) {
       return;
     }
@@ -1299,6 +1307,7 @@ export default class MainBackground {
           }),
         ),
       );
+      await this.popupViewCacheBackgroundService.clearState();
       await this.accountService.switchAccount(userId);
       await switchPromise;
       // Clear sequentialized caches
@@ -1387,6 +1396,7 @@ export default class MainBackground {
       this.vaultTimeoutSettingsService.clear(userBeingLoggedOut),
       this.vaultFilterService.clear(),
       this.biometricStateService.logout(userBeingLoggedOut),
+      this.popupViewCacheBackgroundService.clearState(),
       /* We intentionally do not clear:
        *  - autofillSettingsService
        *  - badgeSettingsService
