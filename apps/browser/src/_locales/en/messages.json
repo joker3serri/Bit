@@ -1079,26 +1079,20 @@
   "premiumSignUpAndGet": {
     "message": "Sign up for a Premium membership and get:"
   },
-  "premiumFeatures": {
-    "message": "Upgrade to Premium and receive:"
+  "ppremiumSignUpStorage": {
+    "message": "1 GB encrypted storage for file attachments."
   },
-  "premiumSignUpStorage": {
-    "message": "1 GB encrypted storage for file attachments"
+  "premiumSignUpTwoStepOptions": {
+    "message": "Proprietary two-step login options such as YubiKey and Duo."
   },
-  "premiumSignUpEmergency": {
-    "message": "Emergency access"
+  "ppremiumSignUpReports": {
+    "message": "Password hygiene, account health, and data breach reports to keep your vault safe."
   },
-  "ppremiumSignUpTwoStepOptions": {
-    "message": "Proprietary two-step login options such as YubiKey and Duo"
+  "ppremiumSignUpTotp": {
+    "message": "TOTP verification code (2FA) generator for logins in your vault."
   },
-  "premiumSignUpReports": {
-    "message": "Password hygiene, account health, and data breach reports to keep your vault safe"
-  },
-  "premiumSignUpTotp": {
-    "message": "TOTP verification code (2FA) generator for logins in your vault"
-  },
-  "premiumSignUpSupport": {
-    "message": "Priority customer support"
+  "ppremiumSignUpSupport": {
+    "message": "Priority customer support."
   },
   "ppremiumSignUpFuture": {
     "message": "All future Premium features. More coming soon!"
@@ -1108,9 +1102,6 @@
   },
   "premiumPurchaseAlert": {
     "message": "You can purchase Premium membership on the bitwarden.com web vault. Do you want to visit the website now?"
-  },
-  "premiumPurchaseAlertV2": {
-    "message": "You can purchase Premium from your account settings on the Bitwarden web app."
   },
   "premiumCurrentMember": {
     "message": "You are a Premium member!"
