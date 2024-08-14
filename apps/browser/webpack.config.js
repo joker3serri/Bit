@@ -229,6 +229,7 @@ const mainConfig = {
     "content/bootstrap-legacy-autofill-overlay":
       "./src/autofill/deprecated/content/bootstrap-legacy-autofill-overlay.ts",
     "content/autofiller": "./src/autofill/content/autofiller.ts",
+    "content/auto-submit-login": "./src/autofill/content/auto-submit-login.ts",
     "content/notificationBar": "./src/autofill/content/notification-bar.ts",
     "content/contextMenuHandler": "./src/autofill/content/context-menu-handler.ts",
     "content/content-message-handler": "./src/autofill/content/content-message-handler.ts",
@@ -351,6 +352,8 @@ if (manifestVersion == 2) {
     "./src/tools/content/lp-suppress-import-download-script-append.mv2.ts";
   mainConfig.entry["content/fido2-page-script-append-mv2"] =
     "./src/autofill/fido2/content/fido2-page-script-append.mv2.ts";
+  mainConfig.entry["content/fido2-page-script-delay-append-mv2"] =
+    "./src/autofill/fido2/content/fido2-page-script-delay-append.mv2.ts";
 
   configs.push(mainConfig);
 } else {
