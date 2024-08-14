@@ -108,7 +108,7 @@ export class AddEditComponent extends BaseAddEditComponent {
     return cipher;
   }
 
-  protected async encryptCipher(userId: UserId) {
+  protected encryptCipher(userId: UserId) {
     if (!this.organization.canEditAllCiphers(this.restrictProviderAccess)) {
       return super.encryptCipher(userId);
     }

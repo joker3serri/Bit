@@ -671,10 +671,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     return this.cipherService.get(this.cipherId);
   }
 
-  protected async encryptCipher(userId: UserId) {
-    // const activeUserId = await firstValueFrom(
-    //   this.accountService.activeAccount$.pipe(map((a) => a?.id)),
-    // );
+  protected encryptCipher(userId: UserId) {
     return this.cipherService.encrypt(this.cipher, userId);
   }
 
