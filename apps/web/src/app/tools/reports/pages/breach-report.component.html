@@ -12,7 +12,7 @@
       {{ "checkBreaches" | i18n }}
     </button>
   </form>
-  <div class="mt-4" *ngIf="!loading && checkedUsername">
+  <div class="tw-mt-4" *ngIf="!loading && checkedUsername">
     <p *ngIf="error">{{ "reportError" | i18n }}...</p>
     <ng-container *ngIf="!error">
       <app-callout type="success" title="{{ 'goodNews' | i18n }}" *ngIf="!breachedAccounts.length">
@@ -24,13 +24,13 @@
       <ul class="list-group list-group-breach" *ngIf="breachedAccounts.length">
         <li *ngFor="let a of breachedAccounts" class="list-group-item min-height-fix">
           <div class="row">
-            <div class="col-2 text-center">
+            <div class="col-2 tw-text-center">
               <img [src]="a.logoPath" alt="" class="img-fluid" />
             </div>
             <div class="col-7">
               <h3 class="text-lg">{{ a.title }}</h3>
               <p [innerHTML]="a.description"></p>
-              <p class="mb-1">{{ "compromisedData" | i18n }}:</p>
+              <p class="tw-mb-1">{{ "compromisedData" | i18n }}:</p>
               <ul>
                 <li *ngFor="let d of a.dataClasses">{{ d }}</li>
               </ul>
