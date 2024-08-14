@@ -8,7 +8,7 @@ import { ImportResult } from "../models/import-result";
 import { BaseImporter } from "./base-importer";
 import { Importer } from "./importer";
 
-type nordPassCsvParsed = {
+type NordPassCsvParsed = {
   name: string;
   url: string;
   additional_urls: string;
@@ -33,7 +33,7 @@ type nordPassCsvParsed = {
   custom_fields: string;
 };
 
-type nordPassCustomField = {
+type NordPassCustomField = {
   label: string;
   type: string;
   value: string;
@@ -42,7 +42,7 @@ type nordPassCustomField = {
 export class NordPassCsvImporter extends BaseImporter implements Importer {
   parse(data: string): Promise<ImportResult> {
     const result = new ImportResult();
-    const results: nordPassCsvParsed[] = this.parseCsv(data, true);
+    const results: NordPassCsvParsed[] = this.parseCsv(data, true);
     if (results == null) {
       result.success = false;
       return Promise.resolve(result);
@@ -63,7 +63,7 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
       cipher.notes = this.getValueOrDefault(record.note);
 
       if (record.custom_fields) {
-        const customFieldsParsed: nordPassCustomField[] = JSON.parse(record.custom_fields);
+        const customFieldsParsed: NordPassCustomField[] = JSON.parse(record.custom_fields);
         if (customFieldsParsed && customFieldsParsed.length > 0) {
           customFieldsParsed.forEach((field) => {
             let fieldType: undefined | FieldType = undefined;
@@ -142,7 +142,7 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
     return Promise.resolve(result);
   }
 
-  private evaluateType(record: nordPassCsvParsed): CipherType {
+  private evaluateType(record: NordPassCsvParsed): CipherType {
     switch (record.type) {
       case "password":
         return CipherType.Login;
