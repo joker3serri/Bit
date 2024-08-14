@@ -126,6 +126,13 @@ describe("NordPass CSV Importer", () => {
     importer = new NordPassCsvImporter();
   });
 
+  it("should return false when not able to parse data", async () => {
+    const result = await importer.parse("");
+
+    expect(result).not.toBeNull();
+    expect(result.success).toBe(false);
+  });
+
   it("should parse login records", async () => {
     const result = await importer.parse(loginData);
 
