@@ -31,7 +31,7 @@ function modifyManifestV3(buffer) {
     return JSON.stringify(manifest, null, 2);
   }
 
-  // // Update the background script reference to be an event page
+  // Update the background script reference to be an event page
   const backgroundScript = manifest.background.service_worker;
   delete manifest.background.service_worker;
   manifest.background.scripts = [backgroundScript];
