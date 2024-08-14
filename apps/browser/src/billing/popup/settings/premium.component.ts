@@ -9,7 +9,6 @@ import { EnvironmentService } from "@bitwarden/common/platform/abstractions/envi
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DialogService } from "@bitwarden/components";
 
 @Component({
@@ -24,7 +23,6 @@ export class PremiumComponent extends BasePremiumComponent {
     platformUtilsService: PlatformUtilsService,
     apiService: ApiService,
     configService: ConfigService,
-    stateService: StateService,
     logService: LogService,
     private location: Location,
     private currencyPipe: CurrencyPipe,
@@ -38,7 +36,6 @@ export class PremiumComponent extends BasePremiumComponent {
       apiService,
       configService,
       logService,
-      stateService,
       dialogService,
       environmentService,
       billingAccountProfileStateService,

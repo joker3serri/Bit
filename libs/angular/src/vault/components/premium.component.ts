@@ -9,7 +9,6 @@ import { EnvironmentService } from "@bitwarden/common/platform/abstractions/envi
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 
 @Directive()
@@ -26,7 +25,6 @@ export class PremiumComponent implements OnInit {
     protected apiService: ApiService,
     protected configService: ConfigService,
     private logService: LogService,
-    protected stateService: StateService,
     protected dialogService: DialogService,
     private environmentService: EnvironmentService,
     billingAccountProfileStateService: BillingAccountProfileStateService,
