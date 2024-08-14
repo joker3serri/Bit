@@ -27,6 +27,7 @@ export abstract class CipherService implements UserKeyRotationDataProvider<Ciphe
   clearCache: (userId?: string) => Promise<void>;
   encrypt: (
     model: CipherView,
+    userId: UserId,
     keyForEncryption?: SymmetricCryptoKey,
     keyForCipherKeyDecryption?: SymmetricCryptoKey,
     originalCipher?: Cipher,
@@ -92,12 +93,14 @@ export abstract class CipherService implements UserKeyRotationDataProvider<Ciphe
   saveAttachmentWithServer: (
     cipher: Cipher,
     unencryptedFile: any,
+    userId: UserId,
     admin?: boolean,
   ) => Promise<Cipher>;
   saveAttachmentRawWithServer: (
     cipher: Cipher,
     filename: string,
     data: ArrayBuffer,
+    userId: UserId,
     admin?: boolean,
   ) => Promise<Cipher>;
   /**
@@ -147,7 +150,7 @@ export abstract class CipherService implements UserKeyRotationDataProvider<Ciphe
   ) => Promise<any>;
   restoreWithServer: (id: string, asAdmin?: boolean) => Promise<any>;
   restoreManyWithServer: (ids: string[], orgId?: string) => Promise<void>;
-  getKeyForCipherKeyDecryption: (cipher: Cipher) => Promise<any>;
+  getKeyForCipherKeyDecryption: (cipher: Cipher, userId: UserId) => Promise<any>;
   setAddEditCipherInfo: (value: AddEditCipherInfo) => Promise<void>;
   /**
    * Returns user ciphers re-encrypted with the new user key.
