@@ -46,8 +46,10 @@ export class PremiumComponent implements OnInit {
 
   async purchase() {
     const confirmed = await this.dialogService.openSimpleDialog({
-      title: { key: "premiumPurchase" },
-      content: { key: "premiumPurchaseAlert" },
+      title: { key: "continueToBitwardenDotCom" },
+      content: { key: "ppremiumPurchaseAlert" },
+      acceptButtonText: { key: "continue" },
+      cancelButtonText: { key: "close" },
       type: "info",
     });
 

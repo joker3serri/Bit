@@ -2231,6 +2231,9 @@
   "premiumUpgradeUnlockFeatures": {
     "message": "Upgrade your account to a Premium membership and unlock some great additional features."
   },
+  "premiumFeatures": {
+    "message": "Upgrade to Premium and receive:"
+  },
   "premiumSignUpStorage": {
     "message": "1 GB encrypted storage for file attachments."
   },
