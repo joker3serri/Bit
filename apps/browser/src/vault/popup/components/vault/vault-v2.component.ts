@@ -2,19 +2,22 @@ import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
-import { combineLatest, map, Observable, shareReplay } from "rxjs";
+import { combineLatest, Observable, shareReplay, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, Icons, NoItemsModule } from "@bitwarden/components";
+import { VaultIcons } from "@bitwarden/vault";
 
 import { CurrentAccountComponent } from "../../../../auth/popup/account-switching/current-account.component";
+import { BrowserApi } from "../../../../platform/browser/browser-api";
 import { PopOutComponent } from "../../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
 import { VaultPopupItemsService } from "../../services/vault-popup-items.service";
 import { VaultPopupListFiltersService } from "../../services/vault-popup-list-filters.service";
+import { VaultUiOnboardingService } from "../../services/vault-ui-onboarding.service";
 import { AutofillVaultListItemsComponent, VaultListItemsContainerComponent } from "../vault-v2";
 import {
   NewItemDropdownV2Component,
@@ -49,28 +52,35 @@ enum VaultState {
     VaultV2SearchComponent,
     NewItemDropdownV2Component,
   ],
+  providers: [VaultUiOnboardingService],
 })
 export class VaultV2Component implements OnInit, OnDestroy {
   cipherType = CipherType;
+
   protected favoriteCiphers$ = this.vaultPopupItemsService.favoriteCiphers$;
   protected remainingCiphers$ = this.vaultPopupItemsService.remainingCiphers$;
+  protected loading$ = this.vaultPopupItemsService.loading$;
 
   protected newItemItemValues$: Observable<NewItemInitialValues> =
     this.vaultPopupListFiltersService.filters$.pipe(
-      map((filter) => ({
-        organizationId: (filter.organization?.id ||
-          filter.collection?.organizationId) as OrganizationId,
-        collectionId: filter.collection?.id as CollectionId,
-        folderId: filter.folder?.id,
-      })),
+      switchMap(
+        async (filter) =>
+          ({
+            organizationId: (filter.organization?.id ||
+              filter.collection?.organizationId) as OrganizationId,
+            collectionId: filter.collection?.id as CollectionId,
+            folderId: filter.folder?.id,
+            uri: (await BrowserApi.getTabFromCurrentWindow())?.url,
+          }) as NewItemInitialValues,
+      ),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
   /** Visual state of the vault */
   protected vaultState: VaultState | null = null;
 
-  protected vaultIcon = Icons.Vault;
-  protected deactivatedIcon = Icons.DeactivatedOrg;
+  protected vaultIcon = VaultIcons.Vault;
+  protected deactivatedIcon = VaultIcons.DeactivatedOrg;
   protected noResultsIcon = Icons.NoResults;
 
   protected VaultStateEnum = VaultState;
@@ -78,6 +88,7 @@ export class VaultV2Component implements OnInit, OnDestroy {
   constructor(
     private vaultPopupItemsService: VaultPopupItemsService,
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
+    private vaultUiOnboardingService: VaultUiOnboardingService,
   ) {
     combineLatest([
       this.vaultPopupItemsService.emptyVault$,
@@ -103,7 +114,9 @@ export class VaultV2Component implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit(): void {}
+  async ngOnInit() {
+    await this.vaultUiOnboardingService.showOnboardingDialog();
+  }
 
   ngOnDestroy(): void {}
 }

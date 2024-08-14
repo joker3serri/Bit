@@ -22,9 +22,11 @@ import {
   DialogService,
   ToastService,
 } from "@bitwarden/components";
-import { PasswordRepromptService } from "@bitwarden/vault";
+import { TotpCaptureService } from "@bitwarden/vault";
 
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
+import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
+import { BrowserTotpCaptureService } from "../../../services/browser-totp-capture.service";
 
 import { PopupFooterComponent } from "./../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "./../../../../../platform/popup/layout/popup-header.component";
@@ -34,6 +36,7 @@ import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup
   selector: "app-view-v2",
   templateUrl: "view-v2.component.html",
   standalone: true,
+  providers: [{ provide: TotpCaptureService, useClass: BrowserTotpCaptureService }],
   imports: [
     CommonModule,
     SearchModule,
@@ -46,23 +49,21 @@ import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup
     IconButtonModule,
     CipherViewComponent,
     AsyncActionsModule,
+    PopOutComponent,
   ],
 })
 export class ViewV2Component {
   headerText: string;
-  cipherId: string;
   cipher: CipherView;
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
   collections$: Observable<CollectionView[]>;
-  private passwordReprompted = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private i18nService: I18nService,
     private cipherService: CipherService,
-    private passwordRepromptService: PasswordRepromptService,
     private dialogService: DialogService,
     private logService: LogService,
     private toastService: ToastService,
@@ -73,27 +74,30 @@ export class ViewV2Component {
   subscribeToParams(): void {
     this.route.queryParams
       .pipe(
-        switchMap((param) => {
-          return this.getCipherData(param.cipherId);
+        switchMap(async (params): Promise<CipherView> => {
+          return await this.getCipherData(params.cipherId);
         }),
         takeUntilDestroyed(),
       )
-      .subscribe((data) => {
-        this.cipher = data;
-        this.headerText = this.setHeader(data.type);
+      .subscribe((cipher) => {
+        this.cipher = cipher;
+        this.headerText = this.setHeader(cipher.type);
       });
   }
 
   setHeader(type: CipherType) {
     switch (type) {
       case CipherType.Login:
-        return this.i18nService.t("viewItemHeader", this.i18nService.t("typeLogin"));
+        return this.i18nService.t("viewItemHeader", this.i18nService.t("typeLogin").toLowerCase());
       case CipherType.Card:
-        return this.i18nService.t("viewItemHeader", this.i18nService.t("typeCard"));
+        return this.i18nService.t("viewItemHeader", this.i18nService.t("typeCard").toLowerCase());
       case CipherType.Identity:
-        return this.i18nService.t("viewItemHeader", this.i18nService.t("typeIdentity"));
+        return this.i18nService.t(
+          "viewItemHeader",
+          this.i18nService.t("typeIdentity").toLowerCase(),
+        );
       case CipherType.SecureNote:
-        return this.i18nService.t("viewItemHeader", this.i18nService.t("note"));
+        return this.i18nService.t("viewItemHeader", this.i18nService.t("note").toLowerCase());
     }
   }
 
@@ -102,20 +106,7 @@ export class ViewV2Component {
     return await cipher.decrypt(await this.cipherService.getKeyForCipherKeyDecryption(cipher));
   }
 
-  async checkForPasswordReprompt() {
-    this.passwordReprompted =
-      this.passwordReprompted ||
-      (await this.passwordRepromptService.passwordRepromptCheck(this.cipher));
-    if (!this.passwordReprompted) {
-      return false;
-    }
-    return true;
-  }
-
   async editCipher() {
-    if (!(await this.checkForPasswordReprompt())) {
-      return;
-    }
     if (this.cipher.isDeleted) {
       return false;
     }
@@ -126,10 +117,6 @@ export class ViewV2Component {
   }
 
   delete = async (): Promise<boolean> => {
-    if (!(await this.checkForPasswordReprompt())) {
-      return;
-    }
-
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteItem" },
       content: {
