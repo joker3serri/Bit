@@ -1109,7 +1109,7 @@
   "premiumPurchaseAlert": {
     "message": "You can purchase Premium membership on the bitwarden.com web vault. Do you want to visit the website now?"
   },
-  "ppremiumPurchaseAlert": {
+  "premiumPurchaseAlertV2": {
     "message": "You can purchase Premium from your account settings on the Bitwarden web app."
   },
   "premiumCurrentMember": {

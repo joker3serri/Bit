@@ -3,12 +3,14 @@ import { firstValueFrom, Observable } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, SimpleDialogOptions } from "@bitwarden/components";
 
 @Directive()
 export class PremiumComponent implements OnInit {
@@ -16,11 +18,13 @@ export class PremiumComponent implements OnInit {
   price = 10;
   refreshPromise: Promise<any>;
   cloudWebVaultUrl: string;
+  extensionRefreshFlagEnabled: boolean;
 
   constructor(
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
     protected apiService: ApiService,
+    protected configService: ConfigService,
     private logService: LogService,
     protected stateService: StateService,
     protected dialogService: DialogService,
@@ -32,6 +36,9 @@ export class PremiumComponent implements OnInit {
 
   async ngOnInit() {
     this.cloudWebVaultUrl = await firstValueFrom(this.environmentService.cloudWebVaultUrl$);
+    this.extensionRefreshFlagEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.ExtensionRefresh,
+    );
   }
 
   async refresh() {
@@ -45,13 +52,20 @@ export class PremiumComponent implements OnInit {
   }
 
   async purchase() {
-    const confirmed = await this.dialogService.openSimpleDialog({
+    const dialogOpts: SimpleDialogOptions = {
       title: { key: "continueToBitwardenDotCom" },
-      content: { key: "ppremiumPurchaseAlert" },
-      acceptButtonText: { key: "continue" },
-      cancelButtonText: { key: "close" },
+      content: {
+        key: this.extensionRefreshFlagEnabled ? "premiumPurchaseAlertV2" : "premiumPurchaseAlert",
+      },
       type: "info",
-    });
+    };
+
+    if (this.extensionRefreshFlagEnabled) {
+      dialogOpts.acceptButtonText = { key: "continue" };
+      dialogOpts.cancelButtonText = { key: "close" };
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog(dialogOpts);
 
     if (confirmed) {
       this.platformUtilsService.launchUri(
