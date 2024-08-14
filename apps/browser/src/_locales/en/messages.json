@@ -1082,23 +1082,23 @@
   "premiumFeatures": {
     "message": "Upgrade to Premium and receive:"
   },
-  "ppremiumSignUpStorage": {
-    "message": "1 GB encrypted storage for file attachments."
+  "premiumSignUpStorage": {
+    "message": "1 GB encrypted storage for file attachments"
   },
   "premiumSignUpEmergency": {
     "message": "Emergency access"
   },
-  "premiumSignUpTwoStepOptions": {
-    "message": "Proprietary two-step login options such as YubiKey and Duo."
+  "ppremiumSignUpTwoStepOptions": {
+    "message": "Proprietary two-step login options such as YubiKey and Duo"
   },
-  "ppremiumSignUpReports": {
-    "message": "Password hygiene, account health, and data breach reports to keep your vault safe."
+  "premiumSignUpReports": {
+    "message": "Password hygiene, account health, and data breach reports to keep your vault safe"
   },
-  "ppremiumSignUpTotp": {
-    "message": "TOTP verification code (2FA) generator for logins in your vault."
+  "premiumSignUpTotp": {
+    "message": "TOTP verification code (2FA) generator for logins in your vault"
   },
-  "ppremiumSignUpSupport": {
-    "message": "Priority customer support."
+  "premiumSignUpSupport": {
+    "message": "Priority customer support"
   },
   "ppremiumSignUpFuture": {
     "message": "All future Premium features. More coming soon!"
