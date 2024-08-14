@@ -54,9 +54,7 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
         return;
       }
 
-      if (!this.organization) {
-        this.processFolder(result, record.folder);
-      }
+      this.processFolder(result, record.folder);
 
       const cipher = new CipherView();
       cipher.name = this.getValueOrDefault(record.name, "--");

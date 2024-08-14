@@ -1,3 +1,4 @@
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SecureNoteType, CipherType, FieldType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
@@ -190,5 +191,16 @@ describe("NordPass CSV Importer", () => {
     expect(result.folders.length).toBe(1);
     const folder = result.folders[0];
     expect(folder.name).toBe("notesFolder");
+  });
+
+  it("should parse an item and create a collection if organizationId is set", async () => {
+    importer.organizationId = Utils.newGuid();
+    const result = await importer.parse(secureNoteData);
+
+    expect(result).not.toBeNull();
+    expect(result.success).toBe(true);
+    expect(result.collections.length).toBe(1);
+    const collection = result.collections[0];
+    expect(collection.name).toBe("notesFolder");
   });
 });
