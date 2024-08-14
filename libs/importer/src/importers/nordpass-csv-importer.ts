@@ -64,16 +64,10 @@ export class NordPassCsvImporter extends BaseImporter implements Importer {
         const customFieldsParsed: NordPassCustomField[] = JSON.parse(record.custom_fields);
         if (customFieldsParsed && customFieldsParsed.length > 0) {
           customFieldsParsed.forEach((field) => {
-            let fieldType: undefined | FieldType = undefined;
+            let fieldType = FieldType.Text;
 
-            if (field.type == "text") {
-              fieldType = FieldType.Text;
-            }
             if (field.type == "hidden") {
               fieldType = FieldType.Hidden;
-            }
-            if (fieldType == undefined) {
-              return;
             }
 
             this.processKvp(cipher, field.label, field.value, fieldType);
