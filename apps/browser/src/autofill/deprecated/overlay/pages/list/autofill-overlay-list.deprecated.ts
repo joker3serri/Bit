@@ -411,13 +411,14 @@ class AutofillOverlayList extends AutofillOverlayPageElement {
       }
     }
 
-    if (!cipher.icon?.icon) {
-      cipherIcon.append(buildSvgDomElement(globeIcon));
+    if (cipher.icon?.icon) {
+      const iconClasses = cipher.icon.icon.split(" ");
+      cipherIcon.classList.add("cipher-icon", "bwi", ...iconClasses);
+
       return cipherIcon;
     }
 
-    const iconClasses = cipher.icon.icon.split(" ");
-    cipherIcon.classList.add("cipher-icon", "bwi", ...iconClasses);
+    cipherIcon.append(buildSvgDomElement(globeIcon));
     return cipherIcon;
   }
 
