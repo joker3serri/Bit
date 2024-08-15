@@ -3,3 +3,18 @@
 @tailwind utilities;
 
 @import "../../../../../libs/components/src/tw-theme.css";
+
+/*
+ * FireFox applies default styles to extensions, one of which is `text-align: start`.
+ * This causes some elements to not inherit the `text-align` property from their parent,
+ * as they would in other browser implementations.
+ *
+ * Apply `text-align: inherit` to all elements to ensure they inherit the `text-align` property from their parent.
+ *
+ * Note:
+ * - The full `extension.css` that is applied can be viewed here: https://hg.mozilla.org/mozilla-central/file/tip/browser/components/extensions/extension.css#l8
+ * - According to the documentation within the css file, this will be obsolete for MV3 extensions.
+ */
+body * {
+  text-align: inherit;
+}
