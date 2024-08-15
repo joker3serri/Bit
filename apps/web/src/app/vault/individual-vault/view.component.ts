@@ -163,10 +163,7 @@ export class ViewComponent implements OnInit, OnDestroy {
       case CipherType.Login:
         return this.i18nService.t("viewItemType", this.i18nService.t("typeLogin").toLowerCase());
       case CipherType.SecureNote:
-        return this.i18nService.t(
-          "viewItemType",
-          this.i18nService.t("typeSecureNote").toLowerCase(),
-        );
+        return this.i18nService.t("viewItemType", this.i18nService.t("note").toLowerCase());
       case CipherType.Card:
         return this.i18nService.t("viewItemType", this.i18nService.t("typeCard").toLowerCase());
       case CipherType.Identity:
