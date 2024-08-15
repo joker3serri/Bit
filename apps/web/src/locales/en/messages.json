@@ -333,9 +333,6 @@
   "delete": {
     "message": "Delete"
   },
-  "deleteCipher": {
-    "message": "Delete cipher"
-  },
   "favorite": {
     "message": "Favorite"
   },
