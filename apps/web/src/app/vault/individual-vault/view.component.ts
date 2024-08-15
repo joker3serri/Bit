@@ -129,10 +129,7 @@ export class ViewComponent implements OnInit, OnDestroy {
    * Helper method to delete cipher.
    */
   protected async deleteCipher(): Promise<void> {
-    const asAdmin = this.organization?.canEditAllCiphers(
-      this.flexibleCollectionsV1Enabled,
-      this.restrictProviderAccess,
-    );
+    const asAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
     if (this.cipher.isDeleted) {
       await this.cipherService.deleteWithServer(this.cipher.id, asAdmin);
     } else {
