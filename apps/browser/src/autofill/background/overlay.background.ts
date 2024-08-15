@@ -1648,6 +1648,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     const currentLoginData = this.currentAddNewItemData.login;
+    if (sender.frameId === 0 && currentLoginData.hostname && !username && !password) {
+      login.uri = "";
+      login.hostname = "";
+    }
+
     this.currentAddNewItemData.login = {
       uri: login.uri || currentLoginData.uri,
       hostname: login.hostname || currentLoginData.hostname,

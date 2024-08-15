@@ -1551,26 +1551,26 @@ describe("OverlayBackground", () => {
             "buildLoginCipherView",
           );
           const addNewCipherType = CipherType.Login;
-          const topLevelLoginCipherData = {
-            uri: "https://top-frame-test.com",
-            hostname: "top-frame-test.com",
-            username: "",
-            password: "",
-          };
           const loginCipherData = {
             uri: "https://tacos.com",
             hostname: "tacos.com",
             username: "username",
             password: "password",
           };
+          const topLevelLoginCipherData = {
+            uri: "https://top-frame-test.com",
+            hostname: "top-frame-test.com",
+            username: "",
+            password: "",
+          };
 
-          sendMockExtensionMessage(
-            { command, addNewCipherType, login: topLevelLoginCipherData },
-            sender,
-          );
           sendMockExtensionMessage(
             { command, addNewCipherType, login: loginCipherData },
             subFrameSender,
+          );
+          sendMockExtensionMessage(
+            { command, addNewCipherType, login: topLevelLoginCipherData },
+            sender,
           );
           jest.advanceTimersByTime(100);
           await flushPromises();
