@@ -16,7 +16,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { ViewComponent, ViewCipherDialogParams } from "./view.component";
+import { ViewComponent, ViewCipherDialogParams, ViewCipherDialogResult } from "./view.component";
 
 describe("ViewComponent", () => {
   let component: ViewComponent;
@@ -45,7 +45,7 @@ describe("ViewComponent", () => {
       providers: [
         { provide: DIALOG_DATA, useValue: mockParams },
         { provide: DialogRef, useValue: mock<DialogRef>() },
-        { provide: I18nService, useValue: mock<I18nService>() },
+        { provide: I18nService, useValue: { t: jest.fn().mockReturnValue("login") } },
         { provide: DialogService, useValue: mock<DialogService>() },
         { provide: CipherService, useValue: mock<CipherService>() },
         { provide: ToastService, useValue: mock<ToastService>() },
@@ -83,8 +83,9 @@ describe("ViewComponent", () => {
   });
 
   describe("edit", () => {
-    it("navigates to the edit route", async () => {
+    it("navigates to the edit route and closes the dialog with the proper arguments", async () => {
       jest.spyOn(router, "navigate").mockResolvedValue(true);
+      const dialogRefCloseSpy = jest.spyOn(component["dialogRef"], "close");
 
       await component.edit();
 
@@ -95,16 +96,20 @@ describe("ViewComponent", () => {
           organizationId: mockCipher.organizationId,
         },
       });
+      expect(dialogRefCloseSpy).toHaveBeenCalledWith({ action: ViewCipherDialogResult.edited });
     });
   });
 
   describe("delete", () => {
-    it("calls the delete method on delete", async () => {
-      const deleteSpy = jest.spyOn(component, "delete").mockImplementation(() => Promise.resolve());
+    it("calls the delete method on delete and closes the dialog with the proper arguments", async () => {
+      const deleteSpy = jest.spyOn(component, "delete");
+      const dialogRefCloseSpy = jest.spyOn(component["dialogRef"], "close");
+      jest.spyOn(component["dialogService"], "openSimpleDialog").mockResolvedValue(true);
 
       await component.delete();
 
       expect(deleteSpy).toHaveBeenCalled();
+      expect(dialogRefCloseSpy).toHaveBeenCalledWith({ action: ViewCipherDialogResult.deleted });
     });
   });
 });
