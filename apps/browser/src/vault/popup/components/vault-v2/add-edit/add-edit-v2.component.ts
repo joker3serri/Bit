@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { firstValueFrom, map, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -155,6 +155,7 @@ export class AddEditV2Component implements OnInit {
     private i18nService: I18nService,
     private addEditFormConfigService: CipherFormConfigService,
     private popupCloseWarningService: PopupCloseWarningService,
+    private router: Router,
   ) {
     this.subscribeToParams();
   }
@@ -222,7 +223,10 @@ export class AddEditV2Component implements OnInit {
       return;
     }
 
-    await this.popupRouterCacheService.back();
+    await this.router.navigate(["/view-cipher"], {
+      replaceUrl: true,
+      queryParams: { cipherId: cipher.id },
+    });
   }
 
   subscribeToParams(): void {
