@@ -30,7 +30,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CipherId, CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -164,6 +164,7 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
   private get selectedOrgId(): OrganizationId {
     return this.formGroup.getRawValue().selectedOrg || this.params.organizationId;
   }
+  private activeUserId: UserId;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -180,6 +181,10 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
   async ngOnInit() {
     const restrictProviderAccess = await this.configService.getFeatureFlag(
       FeatureFlag.RestrictProviderAccess,
+    );
+
+    this.activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
     );
 
     const onlyPersonalItems = this.params.ciphers.every((c) => c.organizationId == null);
@@ -423,6 +428,7 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
       shareableCiphers,
       organizationId,
       selectedCollectionIds,
+      this.activeUserId,
     );
 
     this.toastService.showToast({
@@ -463,10 +469,7 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
   private async updateAssignedCollections(cipherView: CipherView) {
     const { collections } = this.formGroup.getRawValue();
     cipherView.collectionIds = collections.map((i) => i.id as CollectionId);
-    const activeUserId = await firstValueFrom(
-      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
-    );
-    const cipher = await this.cipherService.encrypt(cipherView, activeUserId);
+    const cipher = await this.cipherService.encrypt(cipherView, this.activeUserId);
     await this.cipherService.saveCollectionsWithServer(cipher);
   }
 }

@@ -84,11 +84,13 @@ export abstract class CipherService implements UserKeyRotationDataProvider<Ciphe
     cipher: CipherView,
     organizationId: string,
     collectionIds: string[],
+    userId: UserId,
   ) => Promise<any>;
   shareManyWithServer: (
     ciphers: CipherView[],
     organizationId: string,
     collectionIds: string[],
+    userId: UserId,
   ) => Promise<any>;
   saveAttachmentWithServer: (
     cipher: Cipher,

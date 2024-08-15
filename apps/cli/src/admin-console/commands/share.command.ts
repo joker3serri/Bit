@@ -59,7 +59,7 @@ export class ShareCommand {
       await this.cipherService.getKeyForCipherKeyDecryption(cipher, activeUserId),
     );
     try {
-      await this.cipherService.shareWithServer(cipherView, organizationId, req);
+      await this.cipherService.shareWithServer(cipherView, organizationId, req, activeUserId);
       const updatedCipher = await this.cipherService.get(cipher.id);
       const decCipher = await updatedCipher.decrypt(
         await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher, activeUserId),

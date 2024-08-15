@@ -719,6 +719,7 @@ export class CipherService implements CipherServiceAbstraction {
     cipher: CipherView,
     organizationId: string,
     collectionIds: string[],
+    userId: UserId,
   ): Promise<any> {
     const attachmentPromises: Promise<any>[] = [];
     if (cipher.attachments != null) {
@@ -734,7 +735,7 @@ export class CipherService implements CipherServiceAbstraction {
 
     cipher.organizationId = organizationId;
     cipher.collectionIds = collectionIds;
-    const encCipher = await this.encryptSharedCipher(cipher);
+    const encCipher = await this.encryptSharedCipher(cipher, userId);
     const request = new CipherShareRequest(encCipher);
     const response = await this.apiService.putShareCipher(cipher.id, request);
     const data = new CipherData(response, collectionIds);
@@ -745,6 +746,7 @@ export class CipherService implements CipherServiceAbstraction {
     ciphers: CipherView[],
     organizationId: string,
     collectionIds: string[],
+    userId: UserId,
   ): Promise<any> {
     const promises: Promise<any>[] = [];
     const encCiphers: Cipher[] = [];
@@ -752,7 +754,7 @@ export class CipherService implements CipherServiceAbstraction {
       cipher.organizationId = organizationId;
       cipher.collectionIds = collectionIds;
       promises.push(
-        this.encryptSharedCipher(cipher).then((c) => {
+        this.encryptSharedCipher(cipher, userId).then((c) => {
           encCiphers.push(c);
         }),
       );
@@ -1267,9 +1269,9 @@ export class CipherService implements CipherServiceAbstraction {
 
   // In the case of a cipher that is being shared with an organization, we want to decrypt the
   // cipher key with the user's key and then re-encrypt it with the organization's key.
-  private async encryptSharedCipher(model: CipherView): Promise<Cipher> {
+  private async encryptSharedCipher(model: CipherView, userId: UserId): Promise<Cipher> {
     const keyForCipherKeyDecryption = await this.cryptoService.getUserKeyWithLegacySupport();
-    return await this.encrypt(model, null, keyForCipherKeyDecryption);
+    return await this.encrypt(model, userId, null, keyForCipherKeyDecryption);
   }
 
   private async updateModelfromExistingCipher(

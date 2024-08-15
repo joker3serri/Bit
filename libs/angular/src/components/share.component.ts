@@ -112,7 +112,7 @@ export class ShareComponent implements OnInit, OnDestroy {
 
     try {
       this.formPromise = this.cipherService
-        .shareWithServer(cipherView, this.organizationId, selectedCollectionIds)
+        .shareWithServer(cipherView, this.organizationId, selectedCollectionIds, activeUserId)
         .then(async () => {
           this.onSharedCipher.emit();
           this.platformUtilsService.showToast(
