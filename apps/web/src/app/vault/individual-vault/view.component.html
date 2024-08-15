@@ -6,20 +6,12 @@
     <app-cipher-view [cipher]="cipher"></app-cipher-view>
   </ng-container>
   <ng-container bitDialogFooter>
-    <button
-      bitButton
-      bitFormButton
-      (click)="edit()"
-      buttonType="primary"
-      type="button"
-      [disabled]="!cipher.edit"
-    >
+    <button bitButton (click)="edit()" buttonType="primary" type="button" [disabled]="!cipher.edit">
       {{ "edit" | i18n }}
     </button>
     <div class="ml-auto">
       <button
         bitButton
-        bitFormButton
         type="button"
         buttonType="danger"
         [appA11yTitle]="'delete' | i18n"
