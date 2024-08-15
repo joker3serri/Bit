@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { TypographyModule } from "@bitwarden/components";
 
@@ -36,23 +35,15 @@ export class BitTotpCountdownComponent implements OnInit {
   }
 
   private async totpUpdateCode() {
-    if (
-      this.cipher == null ||
-      this.cipher.type !== CipherType.Login ||
-      this.cipher.login.totp == null
-    ) {
-      if (this.totpInterval) {
-        clearInterval(this.totpInterval);
-      }
+    if (this.cipher.login.totp == null) {
+      this.clearTotp();
       return;
     }
 
     this.totpCode = await this.totpService.getCode(this.cipher.login.totp);
     if (this.totpCode != null) {
       if (this.totpCode.length > 4) {
-        const half = Math.floor(this.totpCode.length / 2);
-        this.totpCodeFormatted =
-          this.totpCode.substring(0, half) + " " + this.totpCode.substring(half);
+        this.totpCodeFormatted = this.formatTotpCode();
         this.sendCopyCode.emit(this.totpCodeFormatted);
       } else {
         this.totpCodeFormatted = this.totpCode;
@@ -60,9 +51,7 @@ export class BitTotpCountdownComponent implements OnInit {
     } else {
       this.totpCodeFormatted = null;
       this.sendCopyCode.emit(this.totpCodeFormatted);
-      if (this.totpInterval) {
-        clearInterval(this.totpInterval);
-      }
+      this.clearTotp();
     }
   }
 
@@ -75,6 +64,17 @@ export class BitTotpCountdownComponent implements OnInit {
     this.totpLow = this.totpSec <= 7;
     if (mod === 0) {
       await this.totpUpdateCode();
+    }
+  }
+
+  private formatTotpCode(): string {
+    const half = Math.floor(this.totpCode.length / 2);
+    return this.totpCode.substring(0, half) + " " + this.totpCode.substring(half);
+  }
+
+  private clearTotp() {
+    if (this.totpInterval) {
+      clearInterval(this.totpInterval);
     }
   }
 }
