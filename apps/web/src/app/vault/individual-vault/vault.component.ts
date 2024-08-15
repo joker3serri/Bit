@@ -714,7 +714,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     // If the dialog was closed by deleting the cipher, refresh the vault.
     if (result.action === ViewCipherDialogResult.deleted) {
-      await this.deleteCipher(cipherView, false);
       this.refresh();
     }
 
@@ -949,14 +948,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Deletes a cipher, either permanently or "softly", depending on whether the cipher is in the trash.
-   * Optionally prompts the user for confirmation before deleting.
-   *
-   * @param c The CipherView to delete
-   * @param confirm Whether to show a confirmation dialog before deleting. Defaults to true.
-   */
-  async deleteCipher(c: CipherView, confirm: boolean = true): Promise<void | boolean> {
+  async deleteCipher(c: CipherView): Promise<boolean> {
     if (!(await this.repromptCipher([c]))) {
       return;
     }
@@ -968,19 +960,14 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const permanent = c.isDeleted;
 
-    if (confirm) {
-      // Show a confirmation dialog before deleting
-      const confirmed = await this.dialogService.openSimpleDialog({
-        title: { key: permanent ? "permanentlyDeleteItem" : "deleteItem" },
-        content: {
-          key: permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
-        },
-        type: "warning",
-      });
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: permanent ? "permanentlyDeleteItem" : "deleteItem" },
+      content: { key: permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation" },
+      type: "warning",
+    });
 
-      if (!confirmed) {
-        return false;
-      }
+    if (!confirmed) {
+      return false;
     }
 
     try {

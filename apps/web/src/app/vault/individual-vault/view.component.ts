@@ -103,8 +103,37 @@ export class ViewComponent implements OnInit, OnDestroy {
       return;
     }
 
+    try {
+      await this.deleteCipher();
+      this.toastService.showToast({
+        variant: "success",
+        title: this.i18nService.t("success"),
+        message: this.i18nService.t(
+          this.cipher.isDeleted ? "permanentlyDeletedItem" : "deletedItem",
+        ),
+      });
+      this.onDeletedCipher.emit(this.cipher);
+      this.messagingService.send(
+        this.cipher.isDeleted ? "permanentlyDeletedCipher" : "deletedCipher",
+      );
+    } catch (e) {
+      this.logService.error(e);
+    }
+
     this.dialogRef.close({ action: ViewCipherDialogResult.deleted });
   };
+
+  /**
+   * Helper method to delete cipher.
+   */
+  protected async deleteCipher(): Promise<void> {
+    const asAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
+    if (this.cipher.isDeleted) {
+      await this.cipherService.deleteWithServer(this.cipher.id, asAdmin);
+    } else {
+      await this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
+    }
+  }
 
   /**
    * Method to handle cipher editing. Called when a user clicks the edit button.
