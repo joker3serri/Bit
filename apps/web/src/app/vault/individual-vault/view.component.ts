@@ -46,7 +46,6 @@ export interface ViewCipherDialogCloseResult {
 })
 export class ViewComponent implements OnInit, OnDestroy {
   cipher: CipherView;
-  deletePromise: Promise<void>;
   onDeletedCipher = new EventEmitter<CipherView>();
   cipherTypeString: string;
   cipherEditUrl: string;
@@ -91,7 +90,7 @@ export class ViewComponent implements OnInit, OnDestroy {
   /**
    * Method to handle cipher deletion. Called when a user clicks the delete button.
    */
-  async delete(): Promise<void> {
+  delete = async () => {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteItem" },
       content: {
@@ -104,38 +103,8 @@ export class ViewComponent implements OnInit, OnDestroy {
       return;
     }
 
-    try {
-      this.deletePromise = this.deleteCipher();
-      await this.deletePromise;
-      this.toastService.showToast({
-        variant: "success",
-        title: this.i18nService.t("success"),
-        message: this.i18nService.t(
-          this.cipher.isDeleted ? "permanentlyDeletedItem" : "deletedItem",
-        ),
-      });
-      this.onDeletedCipher.emit(this.cipher);
-      this.messagingService.send(
-        this.cipher.isDeleted ? "permanentlyDeletedCipher" : "deletedCipher",
-      );
-    } catch (e) {
-      this.logService.error(e);
-    }
-
     this.dialogRef.close({ action: ViewCipherDialogResult.deleted });
-  }
-
-  /**
-   * Helper method to delete cipher.
-   */
-  protected async deleteCipher(): Promise<void> {
-    const asAdmin = this.organization?.canEditAllCiphers(this.flexibleCollectionsV1Enabled);
-    if (this.cipher.isDeleted) {
-      await this.cipherService.deleteWithServer(this.cipher.id, asAdmin);
-    } else {
-      await this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
-    }
-  }
+  };
 
   /**
    * Method to handle cipher editing. Called when a user clicks the edit button.

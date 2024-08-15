@@ -15,7 +15,7 @@
         type="button"
         buttonType="danger"
         [appA11yTitle]="'delete' | i18n"
-        (click)="delete()"
+        [bitAction]="delete"
         [disabled]="!cipher.edit"
       >
         <i class="bwi bwi-trash bwi-lg bwi-fw" aria-hidden="true"></i>
