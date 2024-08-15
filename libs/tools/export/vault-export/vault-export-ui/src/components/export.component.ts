@@ -38,6 +38,7 @@ import {
   SelectModule,
   ToastService,
 } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 
 import { EncryptedExportType } from "../enums/encrypted-export-type.enum";
@@ -157,6 +158,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
     protected toastService: ToastService,
     protected exportService: VaultExportServiceAbstraction,
     protected eventCollectionService: EventCollectionService,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     private policyService: PolicyService,
     private logService: LogService,
     private formBuilder: UntypedFormBuilder,
@@ -271,6 +273,13 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
       this.logService.error(e);
     }
   }
+
+  generatePassword = async () => {
+    const options = await this.passwordGenerationService.getOptions();
+    this.filePasswordValue = await this.passwordGenerationService.generatePassword(options);
+    this.exportForm.get("filePassword").setValue(this.filePasswordValue);
+    this.exportForm.get("confirmFilePassword").setValue(this.filePasswordValue);
+  };
 
   submit = async () => {
     if (this.isFileEncryptedExport && this.filePassword != this.confirmFilePassword) {
@@ -393,6 +402,8 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
   get fileEncryptionType() {
     return this.exportForm.get("fileEncryptionType").value;
   }
+
+  generateFilePassword() {}
 
   adjustValidators() {
     this.exportForm.get("confirmFilePassword").reset();
