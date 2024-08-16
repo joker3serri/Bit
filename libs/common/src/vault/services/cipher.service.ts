@@ -1270,7 +1270,7 @@ export class CipherService implements CipherServiceAbstraction {
   // In the case of a cipher that is being shared with an organization, we want to decrypt the
   // cipher key with the user's key and then re-encrypt it with the organization's key.
   private async encryptSharedCipher(model: CipherView, userId: UserId): Promise<Cipher> {
-    const keyForCipherKeyDecryption = await this.cryptoService.getUserKeyWithLegacySupport();
+    const keyForCipherKeyDecryption = await this.cryptoService.getUserKeyWithLegacySupport(userId);
     return await this.encrypt(model, userId, null, keyForCipherKeyDecryption);
   }
 
