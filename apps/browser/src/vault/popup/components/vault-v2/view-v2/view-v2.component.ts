@@ -1,9 +1,9 @@
 import { CommonModule, Location } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component, DestroyRef, Inject, OnDestroy } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { firstValueFrom, Observable, Subject, Subscription, switchMap, takeUntil } from "rxjs";
+import { firstValueFrom, Observable, Subject, Subscription, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
@@ -30,6 +30,8 @@ import {
   ToastService,
 } from "@bitwarden/components";
 import { PasswordRepromptService, TotpCaptureService } from "@bitwarden/vault";
+
+import { PageDetail } from "src/autofill/services/abstractions/autofill.service";
 
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
 import AutofillService from "../../../../../autofill/services/autofill.service";
@@ -78,8 +80,8 @@ export class ViewV2Component implements OnDestroy {
   private destroy$ = new Subject<void>();
   private collectPageDetailsSubscription: Subscription;
   uilocation?: "popout" | "popup" | "sidebar" | "tab";
-  pageDetails: any[] = [];
-  tab: any;
+  pageDetails: PageDetail[] | null = [];
+  tab: chrome.tabs.Tab | null;
   senderTabId?: number;
   private fido2PopoutSessionData$ = fido2PopoutSessionData$();
   inPopout = false;
@@ -102,6 +104,7 @@ export class ViewV2Component implements OnDestroy {
     private location: Location,
     private autofillService: AutofillService,
     private messagingService: MessagingService,
+    private destroyRef: DestroyRef,
     @Inject(WINDOW) protected win: Window,
   ) {
     this.subscribeToParams();
@@ -218,8 +221,10 @@ export class ViewV2Component implements OnDestroy {
 
     this.collectPageDetailsSubscription = this.autofillService
       .collectPageDetailsFromTab$(this.tab)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pageDetails) => (this.pageDetails = pageDetails));
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((pageDetails) => {
+        this.pageDetails = pageDetails;
+      });
   }
 
   async close() {
