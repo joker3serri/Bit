@@ -1,9 +1,9 @@
 import { CommonModule, Location } from "@angular/common";
-import { ChangeDetectorRef, Component, DestroyRef, Inject, OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component, DestroyRef, Inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { firstValueFrom, Observable, Subject, Subscription, switchMap } from "rxjs";
+import { Observable, Subscription, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
@@ -38,14 +38,12 @@ import AutofillService from "../../../../../autofill/services/autofill.service";
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
-import { fido2PopoutSessionData$ } from "../../../../../vault/popup/utils/fido2-popout-session-data";
 import {
   closeViewVaultItemPopout,
   VaultPopoutType,
 } from "../../../../../vault/popup/utils/vault-popout-window";
 import { BrowserTotpCaptureService } from "../../../services/browser-totp-capture.service";
 
-import { BrowserFido2UserInterfaceSession } from "./../../../../../autofill/fido2/services/browser-fido2-user-interface.service";
 import { PopupFooterComponent } from "./../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "./../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup-page.component";
@@ -70,24 +68,22 @@ import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup
     PopOutComponent,
   ],
 })
-export class ViewV2Component implements OnDestroy {
+export class ViewV2Component {
   headerText: string;
   cipher: CipherView;
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
   collections$: Observable<CollectionView[]>;
 
-  private destroy$ = new Subject<void>();
-  private collectPageDetailsSubscription: Subscription;
   uilocation?: "popout" | "popup" | "sidebar" | "tab";
   pageDetails: PageDetail[] | null = [];
   tab: chrome.tabs.Tab | null;
   senderTabId?: number;
-  private fido2PopoutSessionData$ = fido2PopoutSessionData$();
-  inPopout = false;
-  private passwordReprompted = false;
   totpCode: string;
   loadAction: typeof AUTOFILL_ID | typeof SHOW_AUTOFILL_BUTTON;
+  inPopout = false;
+  private passwordReprompted = false;
+  private collectPageDetailsSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -108,11 +104,6 @@ export class ViewV2Component implements OnDestroy {
     @Inject(WINDOW) protected win: Window,
   ) {
     this.subscribeToParams();
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   subscribeToParams(): void {
@@ -228,12 +219,6 @@ export class ViewV2Component implements OnDestroy {
   }
 
   async close() {
-    const sessionData = await firstValueFrom(this.fido2PopoutSessionData$);
-    if (this.inPopout && sessionData.isFido2Session) {
-      BrowserFido2UserInterfaceSession.abortPopout(sessionData.sessionId);
-      return;
-    }
-
     if (
       BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) &&
       this.senderTabId
