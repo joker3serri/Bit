@@ -223,12 +223,8 @@ export class ViewV2Component {
       BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) &&
       this.senderTabId
     ) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      BrowserApi.focusTab(this.senderTabId);
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      closeViewVaultItemPopout(`${VaultPopoutType.viewVaultItem}_${this.cipher.id}`);
+      await BrowserApi.focusTab(this.senderTabId);
+      await closeViewVaultItemPopout(`${VaultPopoutType.viewVaultItem}_${this.cipher.id}`);
       return;
     }
 
