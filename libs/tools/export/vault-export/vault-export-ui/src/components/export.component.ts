@@ -275,7 +275,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   generatePassword = async () => {
-    const options = await this.passwordGenerationService.getOptions();
+    const [options] = await this.passwordGenerationService.getOptions();
     this.filePasswordValue = await this.passwordGenerationService.generatePassword(options);
     this.exportForm.get("filePassword").setValue(this.filePasswordValue);
     this.exportForm.get("confirmFilePassword").setValue(this.filePasswordValue);
@@ -402,8 +402,6 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
   get fileEncryptionType() {
     return this.exportForm.get("fileEncryptionType").value;
   }
-
-  generateFilePassword() {}
 
   adjustValidators() {
     this.exportForm.get("confirmFilePassword").reset();
