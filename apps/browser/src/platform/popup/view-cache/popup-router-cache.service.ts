@@ -92,7 +92,8 @@ export class PopupRouterCacheService {
 
     const url = this.router.url;
     this.location.back();
-    if (url !== this.router.url) {
+
+    if (url === this.router.url) {
       return;
     }
 
