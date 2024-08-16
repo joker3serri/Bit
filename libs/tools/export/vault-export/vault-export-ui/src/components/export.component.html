@@ -74,9 +74,13 @@
             bitPasswordInputToggle
             [(toggled)]="showFilePassword"
           ></button>
-          <button type="button" appStopClick bitSuffix (click)="generatePassword()">
-            <i class="bwi bwi-generate" aria-hidden="true"></i>
-          </button>
+          <button
+            type="button"
+            bitIconButton="bwi-generate"
+            appStopClick
+            bitSuffix
+            (click)="generatePassword()"
+          ></button>
           <bit-hint>{{ "exportPasswordDescription" | i18n }}</bit-hint>
         </bit-form-field>
         <tools-password-strength [password]="filePassword" [showText]="true">
