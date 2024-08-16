@@ -31,9 +31,8 @@ import {
 } from "@bitwarden/components";
 import { PasswordRepromptService, TotpCaptureService } from "@bitwarden/vault";
 
-import { PageDetail } from "src/autofill/services/abstractions/autofill.service";
-
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
+import { PageDetail } from "../../../../../autofill/services/abstractions/autofill.service";
 import AutofillService from "../../../../../autofill/services/autofill.service";
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
