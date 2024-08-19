@@ -7,7 +7,6 @@ import { Observable, Subscription, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AUTOFILL_ID, SHOW_AUTOFILL_BUTTON } from "@bitwarden/common/autofill/constants";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -95,7 +94,6 @@ export class ViewV2Component {
     private platformUtilsService: PlatformUtilsService,
     private changeDetectorRef: ChangeDetectorRef,
     private passwordRepromptService: PasswordRepromptService,
-    protected eventCollectionService: EventCollectionService,
     private location: Location,
     private autofillService: AutofillService,
     private messagingService: MessagingService,
@@ -247,7 +245,7 @@ export class ViewV2Component {
     }
   }
 
-  private async doAutofill() {
+  async doAutofill() {
     const originalTabURL = this.tab.url?.length && new URL(this.tab.url);
 
     if (!(await this.promptPassword())) {
@@ -313,10 +311,6 @@ export class ViewV2Component {
     const didAutofill = await this.doAutofill();
 
     if (didAutofill) {
-      if (this.tab == null) {
-        throw new Error("No tab found.");
-      }
-
       if (this.cipher.login.uris == null) {
         this.cipher.login.uris = [];
       } else {
