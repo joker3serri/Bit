@@ -1,4 +1,4 @@
-import { CommonModule, Location } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
@@ -27,6 +27,7 @@ import { PopOutComponent } from "../../../../../platform/popup/components/pop-ou
 import { PopupFooterComponent } from "../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../../platform/popup/layout/popup-page.component";
+import { PopupRouterCacheService } from "../../../../../platform/popup/view-cache/popup-router-cache.service";
 import { PopupCloseWarningService } from "../../../../../popup/services/popup-close-warning.service";
 import { BrowserCipherFormGenerationService } from "../../../services/browser-cipher-form-generation.service";
 import { BrowserTotpCaptureService } from "../../../services/browser-totp-capture.service";
@@ -150,11 +151,11 @@ export class AddEditV2Component implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
     private i18nService: I18nService,
     private addEditFormConfigService: CipherFormConfigService,
     private router: Router,
     private popupCloseWarningService: PopupCloseWarningService,
+    private popupRouterCacheService: PopupRouterCacheService,
   ) {
     this.subscribeToParams();
   }
@@ -182,11 +183,7 @@ export class AddEditV2Component implements OnInit {
   };
 
   /**
-   * Navigates to previous view or view-cipher path
-   * depending on the history length.
-   *
-   * This can happen when history is lost due to the extension being
-   * forced into a popout window.
+   * Handle back button
    */
   async handleBackButton() {
     if (this.inFido2PopoutWindow) {
@@ -200,13 +197,7 @@ export class AddEditV2Component implements OnInit {
       return;
     }
 
-    if (history.length === 1) {
-      await this.router.navigate(["/view-cipher"], {
-        queryParams: { cipherId: this.originalCipherId },
-      });
-    } else {
-      this.location.back();
-    }
+    await this.popupRouterCacheService.back();
   }
 
   async onCipherSaved(cipher: CipherView) {
@@ -228,10 +219,17 @@ export class AddEditV2Component implements OnInit {
       return;
     }
 
-    await this.router.navigate(["/view-cipher"], {
-      replaceUrl: true,
-      queryParams: { cipherId: cipher.id },
-    });
+    // When the cipher is in edit / partial edit, the previous page was the view-cipher page.
+    // In this case, we want to go back to the view-cipher page while also removing it from the
+    // the history.
+    if (this.config.mode === "edit" || this.config.mode === "partial-edit") {
+      await this.popupRouterCacheService.back();
+    } else {
+      await this.router.navigate(["/view-cipher"], {
+        replaceUrl: true,
+        queryParams: { cipherId: cipher.id },
+      });
+    }
   }
 
   subscribeToParams(): void {
