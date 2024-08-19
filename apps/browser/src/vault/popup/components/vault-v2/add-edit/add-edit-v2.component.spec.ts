@@ -10,6 +10,7 @@ import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherFormConfig, CipherFormConfigService, CipherFormMode } from "@bitwarden/vault";
 
+import { BrowserFido2UserInterfaceSession } from "../../../../../autofill/fido2/services/browser-fido2-user-interface.service";
 import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
 import { PopupRouterCacheService } from "../../../../../platform/popup/view-cache/popup-router-cache.service";
 import { PopupCloseWarningService } from "../../../../../popup/services/popup-close-warning.service";
@@ -154,6 +155,37 @@ describe("AddEditV2Component", () => {
       await component.onCipherSaved({ id: "123-456-789" } as CipherView);
 
       expect(navigate).not.toHaveBeenCalled();
+      expect(back).toHaveBeenCalled();
+    });
+  });
+
+  describe("handleBackButton", () => {
+    it("disables warning and aborts fido2 popout", async () => {
+      // @ts-expect-error - `inFido2PopoutWindow` is a private getter, mock the response here
+      // for the test rather than setting up the dependencies.
+      jest.spyOn(component, "inFido2PopoutWindow", "get").mockReturnValueOnce(true);
+      jest.spyOn(BrowserFido2UserInterfaceSession, "abortPopout");
+
+      await component.handleBackButton();
+
+      expect(disable).toHaveBeenCalled();
+      expect(BrowserFido2UserInterfaceSession.abortPopout).toHaveBeenCalled();
+      expect(back).not.toHaveBeenCalled();
+    });
+
+    it("closes single action popout", async () => {
+      jest.spyOn(BrowserPopupUtils, "inSingleActionPopout").mockReturnValueOnce(true);
+      jest.spyOn(BrowserPopupUtils, "closeSingleActionPopout").mockResolvedValue();
+
+      await component.handleBackButton();
+
+      expect(BrowserPopupUtils.closeSingleActionPopout).toHaveBeenCalled();
+      expect(back).not.toHaveBeenCalled();
+    });
+
+    it("navigates the user backwards", async () => {
+      await component.handleBackButton();
+
       expect(back).toHaveBeenCalled();
     });
   });
