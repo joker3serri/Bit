@@ -6,12 +6,13 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import {
   BannerModule,
+  CalloutModule,
   CardComponent,
+  FormFieldModule,
+  IconButtonModule,
   SectionComponent,
   SectionHeaderComponent,
   TypographyModule,
-  FormFieldModule,
-  IconButtonModule,
 } from "@bitwarden/components";
 
 @Component({
@@ -20,6 +21,7 @@ import {
   standalone: true,
   imports: [
     BannerModule,
+    CalloutModule,
     CommonModule,
     JslibModule,
     CardComponent,
