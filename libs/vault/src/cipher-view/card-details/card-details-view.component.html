@@ -1,8 +1,4 @@
-<bit-banner
-  *ngIf="cardIsExpired && enableExpiredPaymentCipherWarning"
-  bannerType="warning"
-  [showClose]="false"
->
+<bit-banner *ngIf="cardIsExpired" bannerType="warning" [showClose]="false">
   <h2 bitTypography="body2">Based on the provided values, this card may be expired</h2>
 </bit-banner>
 <br />

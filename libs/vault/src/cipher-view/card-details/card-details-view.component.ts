@@ -1,9 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
-import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import {
@@ -35,19 +33,11 @@ import {
 export class CardDetailsComponent implements OnInit {
   @Input() card: CardView;
   cardIsExpired: boolean = false;
-  enableExpiredPaymentCipherWarning = true;
 
-  constructor(
-    private i18nService: I18nService,
-    private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
-  ) {}
+  constructor(private i18nService: I18nService) {}
 
   async ngOnInit() {
     this.cardIsExpired = this.isCardExpiryInThePast();
-
-    this.enableExpiredPaymentCipherWarning = await firstValueFrom(
-      this.userNotificationSettingsService.enableExpiredPaymentCipherWarning$,
-    );
   }
 
   get setSectionTitle() {
