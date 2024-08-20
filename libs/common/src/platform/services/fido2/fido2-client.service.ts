@@ -535,5 +535,6 @@ function mapToGetAssertionParams({
     extensions: {},
     fallbackSupported: params.fallbackSupported,
     assumeUserPresence,
+    conditionalMediatedAuth: params.mediation === "conditional",
   };
 }

@@ -145,6 +145,9 @@ export interface Fido2AuthenticatorGetAssertionParams {
 
   // Bypass the UI and assume that the user has already interacted with the authenticator
   assumeUserPresence?: boolean;
+
+  // Used to bypass interaction with the authenticator when the request is initiated by conditional mediation
+  conditionalMediatedAuth?: boolean;
 }
 
 export interface Fido2AuthenticatorGetAssertionResult {
