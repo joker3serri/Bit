@@ -153,9 +153,9 @@ export class AddEditV2Component implements OnInit {
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private addEditFormConfigService: CipherFormConfigService,
-    private router: Router,
     private popupCloseWarningService: PopupCloseWarningService,
     private popupRouterCacheService: PopupRouterCacheService,
+    private router: Router,
   ) {
     this.subscribeToParams();
   }
