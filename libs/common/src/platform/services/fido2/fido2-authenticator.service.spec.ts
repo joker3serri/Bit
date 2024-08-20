@@ -577,6 +577,20 @@ describe("FidoAuthenticatorService", () => {
         });
       });
 
+      it("should skip asking for credentials when the FIDO2 request is for a conditional mediated authentication", async () => {
+        params.conditionalMediatedAuth = true;
+        cipherService.getAllDecrypted.mockResolvedValue([
+          await createCipherView(
+            { type: CipherType.Login },
+            { credentialId: credentialIds[0], rpId: RpId, discoverable: false },
+          ),
+        ]);
+
+        await authenticator.getAssertion(params, tab);
+
+        expect(userInterfaceSession.pickCredential).not.toHaveBeenCalled();
+      });
+
       for (const userVerification of [true, false]) {
         /** Spec: Prompt the user to select a public key credential source selectedCredential from credentialOptions. */
         it(`should request confirmation from user when user verification is ${userVerification}`, async () => {
