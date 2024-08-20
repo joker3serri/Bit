@@ -1054,7 +1054,6 @@ const safeProviders: SafeProvider[] = [
       UserDecryptionOptionsServiceAbstraction,
       LogService,
       ConfigService,
-      ToastService,
     ],
   }),
   safeProvider({
