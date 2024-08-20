@@ -1,3 +1,4 @@
+import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CommonModule } from "@angular/common";
 import { booleanAttribute, Component, EventEmitter, Input, Output } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
@@ -20,6 +21,10 @@ import { PopupCipherView } from "../../../views/popup-cipher.view";
 import { ItemCopyActionsComponent } from "../item-copy-action/item-copy-actions.component";
 import { ItemMoreOptionsComponent } from "../item-more-options/item-more-options.component";
 
+// Fixed manual item height required for cdk-virtual-scroll
+export const ItemHeightClass = `tw-h-[52px]`;
+export const ItemHeight = 58.25; // 52px + 5.25px bottom margin + 1px border
+
 @Component({
   imports: [
     CommonModule,
@@ -35,12 +40,16 @@ import { ItemMoreOptionsComponent } from "../item-more-options/item-more-options
     ItemCopyActionsComponent,
     ItemMoreOptionsComponent,
     OrgIconDirective,
+    ScrollingModule,
   ],
   selector: "app-vault-list-items-container",
   templateUrl: "vault-list-items-container.component.html",
   standalone: true,
 })
 export class VaultListItemsContainerComponent {
+  protected ItemHeightClass = ItemHeightClass;
+  protected ItemHeight = ItemHeight;
+
   /**
    * The list of ciphers to display.
    */
