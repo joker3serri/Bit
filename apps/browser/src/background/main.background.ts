@@ -959,6 +959,7 @@ export default class MainBackground {
       this.collectionService,
       this.cryptoService,
       this.pinService,
+      this.accountService,
     );
 
     this.individualVaultExportService = new IndividualVaultExportService(
@@ -978,6 +979,7 @@ export default class MainBackground {
       this.cryptoFunctionService,
       this.collectionService,
       this.kdfConfigService,
+      this.accountService,
     );
 
     this.exportService = new VaultExportService(
@@ -1003,6 +1005,7 @@ export default class MainBackground {
       this.cipherService,
       this.fido2UserInterfaceService,
       this.syncService,
+      this.accountService,
       this.logService,
     );
     const fido2ActiveRequestManager = new Fido2ActiveRequestManager();
@@ -1096,6 +1099,7 @@ export default class MainBackground {
         this.logService,
         this.themeStateService,
         this.configService,
+        this.accountService,
       );
 
       this.filelessImporterBackground = new FilelessImporterBackground(

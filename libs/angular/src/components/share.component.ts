@@ -4,6 +4,7 @@ import { firstValueFrom, map, Observable, Subject, takeUntil } from "rxjs";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -38,6 +39,7 @@ export class ShareComponent implements OnInit, OnDestroy {
     private logService: LogService,
     protected organizationService: OrganizationService,
     private toastService: ToastService,
+    protected accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -69,8 +71,11 @@ export class ShareComponent implements OnInit, OnDestroy {
     });
 
     const cipherDomain = await this.cipherService.get(this.cipherId);
+    const activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
     this.cipher = await cipherDomain.decrypt(
-      await this.cipherService.getKeyForCipherKeyDecryption(cipherDomain),
+      await this.cipherService.getKeyForCipherKeyDecryption(cipherDomain, activeUserId),
     );
   }
 
@@ -97,8 +102,11 @@ export class ShareComponent implements OnInit, OnDestroy {
     }
 
     const cipherDomain = await this.cipherService.get(this.cipherId);
+    const activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
     const cipherView = await cipherDomain.decrypt(
-      await this.cipherService.getKeyForCipherKeyDecryption(cipherDomain),
+      await this.cipherService.getKeyForCipherKeyDecryption(cipherDomain, activeUserId),
     );
     const orgs = await firstValueFrom(this.organizations$);
     const orgName =
@@ -106,7 +114,7 @@ export class ShareComponent implements OnInit, OnDestroy {
 
     try {
       this.formPromise = this.cipherService
-        .shareWithServer(cipherView, this.organizationId, selectedCollectionIds)
+        .shareWithServer(cipherView, this.organizationId, selectedCollectionIds, activeUserId)
         .then(async () => {
           this.onSharedCipher.emit();
           this.toastService.showToast({
