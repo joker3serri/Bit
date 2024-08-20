@@ -12,7 +12,6 @@ import { HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { UserId } from "@bitwarden/common/types/guid";
-import { ToastService } from "@bitwarden/components";
 
 import { AuthRequestServiceAbstraction } from "../abstractions";
 import { SsoLoginCredentials } from "../models/domain/login-credentials";
@@ -72,7 +71,6 @@ export class SsoLoginStrategy extends LoginStrategy {
     private deviceTrustService: DeviceTrustServiceAbstraction,
     private authRequestService: AuthRequestServiceAbstraction,
     private i18nService: I18nService,
-    private toastService: ToastService,
     ...sharedDeps: ConstructorParameters<typeof LoginStrategy>
   ) {
     super(...sharedDeps);
@@ -278,11 +276,7 @@ export class SsoLoginStrategy extends LoginStrategy {
         // TODO: eventually we post and clean up DB as well once consumed on client
         await this.authRequestService.clearAdminAuthRequest(userId);
 
-        this.toastService.showToast({
-          variant: "success",
-          title: null,
-          message: this.i18nService.t("loginApproved"),
-        });
+        this.platformUtilsService.showToast("success", null, this.i18nService.t("loginApproved"));
       }
     }
   }

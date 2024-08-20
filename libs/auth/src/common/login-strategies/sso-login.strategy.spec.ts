@@ -29,7 +29,6 @@ import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/sp
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { DeviceKey, UserKey, MasterKey } from "@bitwarden/common/types/key";
-import { ToastService } from "@bitwarden/components";
 
 import {
   AuthRequestServiceAbstraction,
@@ -61,7 +60,6 @@ describe("SsoLoginStrategy", () => {
   let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
   let vaultTimeoutSettingsService: MockProxy<VaultTimeoutSettingsService>;
   let kdfConfigService: MockProxy<KdfConfigService>;
-  let toastService: MockProxy<ToastService>;
 
   let ssoLoginStrategy: SsoLoginStrategy;
   let credentials: SsoLoginCredentials;
@@ -93,7 +91,6 @@ describe("SsoLoginStrategy", () => {
     deviceTrustService = mock<DeviceTrustServiceAbstraction>();
     authRequestService = mock<AuthRequestServiceAbstraction>();
     i18nService = mock<I18nService>();
-    toastService = mock<ToastService>();
     billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
     vaultTimeoutSettingsService = mock<VaultTimeoutSettingsService>();
     kdfConfigService = mock<KdfConfigService>();
@@ -125,7 +122,6 @@ describe("SsoLoginStrategy", () => {
       deviceTrustService,
       authRequestService,
       i18nService,
-      toastService,
       accountService,
       masterPasswordService,
       cryptoService,
