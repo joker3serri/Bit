@@ -93,6 +93,7 @@ describe("SsoLoginStrategy", () => {
     deviceTrustService = mock<DeviceTrustServiceAbstraction>();
     authRequestService = mock<AuthRequestServiceAbstraction>();
     i18nService = mock<I18nService>();
+    toastService = mock<ToastService>();
     billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
     vaultTimeoutSettingsService = mock<VaultTimeoutSettingsService>();
     kdfConfigService = mock<KdfConfigService>();
