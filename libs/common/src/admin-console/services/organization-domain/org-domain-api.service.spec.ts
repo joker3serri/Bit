@@ -1,6 +1,8 @@
 import { mock } from "jest-mock-extended";
 import { lastValueFrom } from "rxjs";
 
+import { ToastService } from "@bitwarden/components";
+
 import { ApiService } from "../../../abstractions/api.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";
@@ -90,9 +92,10 @@ describe("Org Domain API Service", () => {
 
   const platformUtilService = mock<PlatformUtilsService>();
   const i18nService = mock<I18nService>();
+  const toastService = mock<ToastService>();
 
   beforeEach(() => {
-    orgDomainService = new OrgDomainService(platformUtilService, i18nService);
+    orgDomainService = new OrgDomainService(platformUtilService, i18nService, toastService);
     jest.resetAllMocks();
 
     orgDomainApiService = new OrgDomainApiService(orgDomainService, apiService);

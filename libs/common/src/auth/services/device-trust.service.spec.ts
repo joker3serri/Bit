@@ -2,6 +2,7 @@ import { matches, mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+import { ToastService } from "@bitwarden/components";
 
 import { UserDecryptionOptions } from "../../../../auth/src/common/models/domain/user-decryption-options";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
@@ -52,6 +53,7 @@ describe("deviceTrustService", () => {
   const secureStorageService = mock<AbstractStorageService>();
   const logService = mock<LogService>();
   const configService = mock<ConfigService>();
+  const toastService = mock<ToastService>();
 
   const userDecryptionOptionsService = mock<UserDecryptionOptionsServiceAbstraction>();
   const decryptionOptions = new BehaviorSubject<UserDecryptionOptions>(null);
@@ -760,6 +762,7 @@ describe("deviceTrustService", () => {
       userDecryptionOptionsService,
       logService,
       configService,
+      toastService,
     );
   }
 });
