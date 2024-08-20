@@ -288,7 +288,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
     this.toastService.showToast({
       variant: "success",
       title: null,
-      message: this.i18nService.t("passwordCopied"),
+      message: this.i18nService.t("valueCopied", this.i18nService.t("password")),
     });
   };
 
