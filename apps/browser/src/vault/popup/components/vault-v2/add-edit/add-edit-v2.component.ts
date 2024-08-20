@@ -220,8 +220,9 @@ export class AddEditV2Component implements OnInit {
     }
 
     // When the cipher is in edit / partial edit, the previous page was the view-cipher page.
-    // In this case, we want to go back to the view-cipher page while also removing it from the
-    // the history.
+    // In the case of creating a new cipher, the user should go view-cipher page but we need to also
+    // remove it from the history stack. This avoids the user having to click back twice on the
+    // view-cipher page.
     if (this.config.mode === "edit" || this.config.mode === "partial-edit") {
       await this.popupRouterCacheService.back();
     } else {
