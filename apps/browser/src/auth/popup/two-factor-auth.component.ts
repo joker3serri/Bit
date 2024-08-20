@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
@@ -42,6 +42,7 @@ import {
 import { BrowserApi } from "../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 
+import { TwoFactorAuthDuoComponent } from "./two-factor-auth-duo.component";
 import { TwoFactorAuthEmailComponent } from "./two-factor-auth-email.component";
 
 @Component({
@@ -65,11 +66,15 @@ import { TwoFactorAuthEmailComponent } from "./two-factor-auth-email.component";
     TwoFactorAuthEmailComponent,
     TwoFactorAuthAuthenticatorComponent,
     TwoFactorAuthYubikeyComponent,
+    TwoFactorAuthDuoComponent,
     TwoFactorAuthWebAuthnComponent,
   ],
   providers: [I18nPipe],
 })
-export class TwoFactorAuthComponent extends BaseTwoFactorAuthComponent implements OnInit {
+export class TwoFactorAuthComponent
+  extends BaseTwoFactorAuthComponent
+  implements OnInit, OnDestroy
+{
   constructor(
     protected loginStrategyService: LoginStrategyServiceAbstraction,
     protected router: Router,
