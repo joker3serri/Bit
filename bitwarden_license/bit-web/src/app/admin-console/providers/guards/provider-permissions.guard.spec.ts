@@ -7,6 +7,7 @@ import { ProviderUserType } from "@bitwarden/common/admin-console/enums";
 import { Provider } from "@bitwarden/common/admin-console/models/domain/provider";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ToastService } from "@bitwarden/components";
 
 import { providerPermissionsGuard } from "./provider-permissions.guard";
 
@@ -23,11 +24,13 @@ const providerFactory = (props: Partial<Provider> = {}) =>
 
 describe("Provider Permissions Guard", () => {
   let providerService: MockProxy<ProviderService>;
+  let toastService: MockProxy<ToastService>;
   let route: MockProxy<ActivatedRouteSnapshot>;
   let state: MockProxy<RouterStateSnapshot>;
 
   beforeEach(() => {
     providerService = mock<ProviderService>();
+    toastService = mock<ToastService>();
     route = mock<ActivatedRouteSnapshot>({
       params: {
         providerId: providerFactory().id,
@@ -39,6 +42,7 @@ describe("Provider Permissions Guard", () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: ProviderService, useValue: providerService },
+        { provide: ToastService, useValue: toastService },
         { provide: PlatformUtilsService, useValue: mock<PlatformUtilsService>() },
         { provide: I18nService, useValue: mock<I18nService>() },
         { provide: Router, useValue: mock<Router>() },

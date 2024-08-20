@@ -24,6 +24,7 @@ import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/c
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -59,6 +60,7 @@ describe("SsoComponent", () => {
   let mockLoginStrategyService: MockProxy<LoginStrategyServiceAbstraction>;
   let mockRouter: MockProxy<Router>;
   let mockI18nService: MockProxy<I18nService>;
+  let mockPlatformUtilsService: MockProxy<PlatformUtilsService>;
 
   let mockQueryParams: Observable<any>;
   let mockActivatedRoute: ActivatedRoute;
@@ -107,6 +109,7 @@ describe("SsoComponent", () => {
     mockLoginStrategyService = mock<LoginStrategyServiceAbstraction>();
     mockRouter = mock<Router>();
     mockI18nService = mock<I18nService>();
+    mockPlatformUtilsService = mock<PlatformUtilsService>();
 
     // Default mockQueryParams
     mockQueryParams = of({ code: "code", state: "state" });
@@ -197,7 +200,7 @@ describe("SsoComponent", () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: StateService, useValue: mockStateService },
         { provide: ToastService, useValue: mockToastService },
-
+        { provide: PlatformUtilsService, useValue: mockPlatformUtilsService },
         { provide: ApiService, useValue: mockApiService },
         { provide: CryptoFunctionService, useValue: mockCryptoFunctionService },
         { provide: EnvironmentService, useValue: mockEnvironmentService },
@@ -595,11 +598,11 @@ describe("SsoComponent", () => {
       expect(mockLogService.error).toHaveBeenCalledWith(error);
 
       expect(mockToastService.showToast).toHaveBeenCalledTimes(1);
-      expect(mockToastService.showToast).toHaveBeenCalledWith(
-        "error",
-        null,
-        "ssoKeyConnectorError",
-      );
+      expect(mockToastService.showToast).toHaveBeenCalledWith({
+        variant: "error",
+        title: null,
+        message: "ssoKeyConnectorError",
+      });
 
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     });

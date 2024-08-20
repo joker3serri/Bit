@@ -183,6 +183,6 @@ describe("Org Domain Service", () => {
   it("copyDnsTxt copies DNS TXT to clipboard and shows toast", () => {
     orgDomainService.copyDnsTxt("fakeTxt");
     expect(jest.spyOn(platformUtilService, "copyToClipboard")).toHaveBeenCalled();
-    expect(jest.spyOn(platformUtilService, "showToast")).toHaveBeenCalled();
+    expect(jest.spyOn(toastService, "showToast")).toHaveBeenCalled();
   });
 });
