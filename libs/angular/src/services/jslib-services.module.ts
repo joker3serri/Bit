@@ -416,7 +416,6 @@ const safeProviders: SafeProvider[] = [
       VaultTimeoutSettingsServiceAbstraction,
       KdfConfigServiceAbstraction,
       TaskSchedulerService,
-      ToastService,
     ],
   }),
   safeProvider({
@@ -1007,7 +1006,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: ValidationServiceAbstraction,
     useClass: ValidationService,
-    deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction, ToastService],
+    deps: [I18nServiceAbstraction, PlatformUtilsServiceAbstraction],
   }),
   safeProvider({
     provide: LoginEmailServiceAbstraction,
@@ -1017,7 +1016,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: OrgDomainInternalServiceAbstraction,
     useClass: OrgDomainService,
-    deps: [PlatformUtilsServiceAbstraction, I18nServiceAbstraction, ToastService],
+    deps: [PlatformUtilsServiceAbstraction, I18nServiceAbstraction],
   }),
   safeProvider({
     provide: OrgDomainServiceAbstraction,
