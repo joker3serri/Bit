@@ -242,11 +242,12 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
-      // NOTE: For now, we are defaulting to a userVerified status of `true`. This will allow for mediated conditional
-      // authentication to function without requiring user interaction. This is a product decision, rather than
-      //  a decision based on the expected technical specifications. This will be updated to have a conditional
-      // of `params.requireUserVerification || !params.assumeUserPresence` once the notification bar rework
-      // check is implemented.
+      // NOTE: For now, we are defaulting to a userVerified status of `true` when the request
+      // is for a conditionally mediated authentication. This will allow for mediated conditional
+      // authentication to function without requiring user interaction. This is a product
+      // decision, rather than a decision based on the expected technical specifications. This
+      // will be updated to have a conditional of `params.requireUserVerification || !params.assumeUserPresence`
+      // once the notification bar rework check is implemented.
       let response = {
         cipherId: cipherOptions[0].id,
         userVerified: params.conditionalMediatedAuth,
