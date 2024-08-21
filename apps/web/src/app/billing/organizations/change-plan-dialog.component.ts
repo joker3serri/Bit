@@ -516,6 +516,13 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
       : 0;
   }
 
+  get passwordManagerSeats() {
+    if (this.selectedPlan.productTier === ProductTierType.Families) {
+      return this.selectedPlan.PasswordManager.baseSeats;
+    }
+    return this.organization.seats;
+  }
+
   get total() {
     if (this.organization.useSecretsManager) {
       return this.passwordManagerSubtotal + this.secretsManagerSubtotal + this.taxCharges || 0;
