@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import {
+  combineLatest,
   firstValueFrom,
   map,
   Observable,
@@ -26,20 +28,29 @@ import {
 } from "../../../autofill/services/abstractions/autofill.service";
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
+import { closeViewVaultItemPopout, VaultPopoutType } from "../utils/vault-popout-window";
 
 @Injectable({
   providedIn: "root",
 })
 export class VaultPopupAutofillService {
   private _refreshCurrentTab$ = new Subject<void>();
+  private senderTabId?: number;
 
   /**
-   * Observable that contains the current tab to be considered for autofill. If there is no current tab
-   * or the popup is in a popout window, this will be null.
+   * Observable that contains the current tab to be considered for autofill. This Observable also looks for
+   * the tab that was opened from form field inputs.
    */
-  currentAutofillTab$: Observable<chrome.tabs.Tab | null> = this._refreshCurrentTab$.pipe(
-    startWith(null),
-    switchMap(async () => {
+  currentAutofillTab$: Observable<chrome.tabs.Tab | null> = combineLatest([
+    this.route.queryParams,
+    this._refreshCurrentTab$.pipe(startWith(null)),
+  ]).pipe(
+    switchMap(async ([params, tab]) => {
+      this.senderTabId = params?.senderTabId ? parseInt(params.senderTabId, 10) : undefined;
+      if (this.senderTabId) {
+        return await BrowserApi.getTab(this.senderTabId);
+      }
+
       if (BrowserPopupUtils.inPopout(window)) {
         return null;
       }
@@ -72,16 +83,23 @@ export class VaultPopupAutofillService {
     private passwordRepromptService: PasswordRepromptService,
     private cipherService: CipherService,
     private messagingService: MessagingService,
+    private route: ActivatedRoute,
   ) {
     this._currentPageDetails$.subscribe();
   }
 
+  /**
+   * hasPasswordReprompted is a value that we use to check if the MP reprompt dialog has
+   * already been shown from the vault-list-items-container, and therefore will not need to be called again
+   */
   private async _internalDoAutofill(
     cipher: CipherView,
     tab: chrome.tabs.Tab,
     pageDetails: PageDetail[],
+    hasPasswordReprompted?: boolean,
   ): Promise<boolean> {
     if (
+      !hasPasswordReprompted &&
       cipher.reprompt !== CipherRepromptType.None &&
       !(await this.passwordRepromptService.showPasswordPrompt())
     ) {
@@ -122,7 +140,24 @@ export class VaultPopupAutofillService {
     return true;
   }
 
-  private _closePopup() {
+  private _closePopup(cipher?: CipherView) {
+    if (
+      BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) &&
+      this.senderTabId
+    ) {
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("autoFillSuccess"),
+      });
+      setTimeout(async () => {
+        await BrowserApi.focusTab(this.senderTabId);
+        await closeViewVaultItemPopout(`${VaultPopoutType.viewVaultItem}_${cipher.id}`);
+      }, 1000);
+
+      return;
+    }
+
     if (!BrowserPopupUtils.inPopup(window)) {
       return;
     }
@@ -149,14 +184,23 @@ export class VaultPopupAutofillService {
    * @param cipher
    * @param closePopup If true, will close the popup window after successful autofill. Defaults to true.
    */
-  async doAutofill(cipher: CipherView, closePopup = true): Promise<boolean> {
+  async doAutofill(
+    cipher: CipherView,
+    closePopup = true,
+    hasPasswordReprompted = false,
+  ): Promise<boolean> {
     const tab = await firstValueFrom(this.currentAutofillTab$);
     const pageDetails = await firstValueFrom(this._currentPageDetails$);
 
-    const didAutofill = await this._internalDoAutofill(cipher, tab, pageDetails);
+    const didAutofill = await this._internalDoAutofill(
+      cipher,
+      tab,
+      pageDetails,
+      hasPasswordReprompted,
+    );
 
     if (didAutofill && closePopup) {
-      this._closePopup();
+      this._closePopup(cipher);
     }
 
     return didAutofill;

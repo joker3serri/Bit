@@ -1,25 +1,19 @@
-import { CommonModule, Location } from "@angular/common";
-import { ChangeDetectorRef, Component, DestroyRef, Inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, Subscription, switchMap } from "rxjs";
+import { Observable, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { AUTOFILL_ID, SHOW_AUTOFILL_BUTTON } from "@bitwarden/common/autofill/constants";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import {
   AsyncActionsModule,
   SearchModule,
@@ -28,23 +22,16 @@ import {
   DialogService,
   ToastService,
 } from "@bitwarden/components";
-import { PasswordRepromptService, TotpCaptureService } from "@bitwarden/vault";
+import { TotpCaptureService } from "@bitwarden/vault";
 
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
-import { PageDetail } from "../../../../../autofill/services/abstractions/autofill.service";
-import AutofillService from "../../../../../autofill/services/autofill.service";
-import { BrowserApi } from "../../../../../platform/browser/browser-api";
-import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
-import {
-  closeViewVaultItemPopout,
-  VaultPopoutType,
-} from "../../../../../vault/popup/utils/vault-popout-window";
 import { BrowserTotpCaptureService } from "../../../services/browser-totp-capture.service";
 
 import { PopupFooterComponent } from "./../../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "./../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup-page.component";
+import { VaultPopupAutofillService } from "./../../../services/vault-popup-autofill.service";
 
 @Component({
   selector: "app-view-v2",
@@ -72,16 +59,7 @@ export class ViewV2Component {
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
   collections$: Observable<CollectionView[]>;
-
-  uilocation?: "popout" | "popup" | "sidebar" | "tab";
-  pageDetails: PageDetail[] | null = [];
-  tab: chrome.tabs.Tab | null;
-  senderTabId?: number;
-  totpCode: string;
-  loadAction: typeof AUTOFILL_ID | typeof SHOW_AUTOFILL_BUTTON;
-  inPopout = false;
-  private passwordReprompted = false;
-  private collectPageDetailsSubscription: Subscription;
+  hasPasswordReprompted?: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -91,14 +69,7 @@ export class ViewV2Component {
     private dialogService: DialogService,
     private logService: LogService,
     private toastService: ToastService,
-    private platformUtilsService: PlatformUtilsService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private passwordRepromptService: PasswordRepromptService,
-    private location: Location,
-    private autofillService: AutofillService,
-    private messagingService: MessagingService,
-    private destroyRef: DestroyRef,
-    @Inject(WINDOW) protected win: Window,
+    private vaultPopupAutofillService: VaultPopupAutofillService,
   ) {
     this.subscribeToParams();
   }
@@ -107,9 +78,7 @@ export class ViewV2Component {
     this.route.queryParams
       .pipe(
         switchMap(async (params): Promise<CipherView> => {
-          this.loadAction = params.action;
-          this.uilocation = params?.uilocation;
-          this.senderTabId = params?.senderTabId ? parseInt(params.senderTabId, 10) : undefined;
+          this.hasPasswordReprompted = params?.passwordReprompted;
           return await this.getCipherData(params.cipherId);
         }),
         takeUntilDestroyed(),
@@ -119,13 +88,11 @@ export class ViewV2Component {
         this.cipher = cipher;
         this.headerText = this.setHeader(cipher.type);
 
-        this.inPopout = this.uilocation === "popout" || BrowserPopupUtils.inPopout(this.win);
-
-        await this.loadPageDetails();
-
-        if (this.loadAction === AUTOFILL_ID || this.loadAction === SHOW_AUTOFILL_BUTTON) {
-          await this.handleLoadAction();
-        }
+        await this.vaultPopupAutofillService.doAutofill(
+          this.cipher,
+          true,
+          this.hasPasswordReprompted,
+        );
       });
   }
 
@@ -194,157 +161,5 @@ export class ViewV2Component {
     return this.cipher.isDeleted
       ? this.cipherService.deleteWithServer(this.cipher.id)
       : this.cipherService.softDeleteWithServer(this.cipher.id);
-  }
-
-  private async loadPageDetails() {
-    this.collectPageDetailsSubscription?.unsubscribe();
-    this.pageDetails = [];
-    this.tab = this.senderTabId
-      ? await BrowserApi.getTab(this.senderTabId)
-      : await BrowserApi.getTabFromCurrentWindow();
-
-    if (!this.tab) {
-      return;
-    }
-
-    this.collectPageDetailsSubscription = this.autofillService
-      .collectPageDetailsFromTab$(this.tab)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((pageDetails) => {
-        this.pageDetails = pageDetails;
-      });
-  }
-
-  async close() {
-    if (
-      BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) &&
-      this.senderTabId
-    ) {
-      await BrowserApi.focusTab(this.senderTabId);
-      await closeViewVaultItemPopout(`${VaultPopoutType.viewVaultItem}_${this.cipher.id}`);
-      return;
-    }
-
-    this.location.back();
-  }
-
-  protected async promptPassword() {
-    if (this.cipher.reprompt === CipherRepromptType.None || this.passwordReprompted) {
-      return true;
-    }
-
-    return (this.passwordReprompted = await this.passwordRepromptService.showPasswordPrompt());
-  }
-
-  private async handleLoadAction() {
-    let loadActionSuccess = false;
-    loadActionSuccess = await this.fillCipher();
-
-    if (this.inPopout) {
-      setTimeout(() => this.close(), loadActionSuccess ? 1000 : 0);
-    }
-  }
-
-  async doAutofill() {
-    const originalTabURL = this.tab.url?.length && new URL(this.tab.url);
-
-    if (!(await this.promptPassword())) {
-      return false;
-    }
-
-    const currentTabURL = this.tab.url?.length && new URL(this.tab.url);
-
-    const originalTabHostPath =
-      originalTabURL && `${originalTabURL.origin}${originalTabURL.pathname}`;
-    const currentTabHostPath = currentTabURL && `${currentTabURL.origin}${currentTabURL.pathname}`;
-
-    const tabUrlChanged = originalTabHostPath !== currentTabHostPath;
-
-    if (this.pageDetails == null || this.pageDetails.length === 0 || tabUrlChanged) {
-      this.toastService.showToast({
-        variant: "error",
-        title: null,
-        message: this.i18nService.t("autofillError"),
-      });
-      return false;
-    }
-
-    try {
-      this.totpCode = await this.autofillService.doAutoFill({
-        tab: this.tab,
-        cipher: this.cipher,
-        pageDetails: this.pageDetails,
-        doc: window.document,
-        fillNewPassword: true,
-        allowTotpAutofill: true,
-      });
-      if (this.totpCode != null) {
-        this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
-      }
-    } catch {
-      this.toastService.showToast({
-        variant: "error",
-        title: null,
-        message: this.i18nService.t("autofillError"),
-      });
-      this.changeDetectorRef.detectChanges();
-      return false;
-    }
-
-    return true;
-  }
-
-  async fillCipher() {
-    const didAutofill = await this.doAutofill();
-    if (didAutofill) {
-      this.toastService.showToast({
-        variant: "success",
-        title: null,
-        message: this.i18nService.t("autoFillSuccess"),
-      });
-    }
-
-    return didAutofill;
-  }
-
-  async fillCipherAndSave() {
-    const didAutofill = await this.doAutofill();
-
-    if (didAutofill) {
-      if (this.cipher.login.uris == null) {
-        this.cipher.login.uris = [];
-      } else {
-        if (this.cipher.login.uris.some((uri) => uri.uri === this.tab.url)) {
-          this.toastService.showToast({
-            variant: "success",
-            title: null,
-            message: this.i18nService.t("autoFillSuccessAndSavedUri"),
-          });
-          return;
-        }
-      }
-
-      const loginUri = new LoginUriView();
-      loginUri.uri = this.tab.url;
-      this.cipher.login.uris.push(loginUri);
-
-      try {
-        const cipher: Cipher = await this.cipherService.encrypt(this.cipher);
-        await this.cipherService.updateWithServer(cipher);
-
-        this.toastService.showToast({
-          variant: "success",
-          title: null,
-          message: this.i18nService.t("autoFillSuccessAndSavedUri"),
-        });
-        this.messagingService.send("editedCipher");
-      } catch {
-        this.toastService.showToast({
-          variant: "error",
-          title: null,
-          message: this.i18nService.t("unexpectedError"),
-        });
-      }
-    }
   }
 }

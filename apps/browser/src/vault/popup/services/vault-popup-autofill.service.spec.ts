@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
 import { mock } from "jest-mock-extended";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -30,6 +31,9 @@ describe("VaultPopupAutofillService", () => {
   let service: VaultPopupAutofillService;
 
   const mockCurrentTab = { url: "https://example.com" } as chrome.tabs.Tab;
+  const mockActivatedRoute = {
+    queryParams: of({}),
+  } as any;
 
   // Create mocks for VaultPopupAutofillService
   const mockAutofillService = mock<AutofillService>();
@@ -55,6 +59,7 @@ describe("VaultPopupAutofillService", () => {
         { provide: PasswordRepromptService, useValue: mockPasswordRepromptService },
         { provide: CipherService, useValue: mockCipherService },
         { provide: MessagingService, useValue: mockMessagingService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     });
 
