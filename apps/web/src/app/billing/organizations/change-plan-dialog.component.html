@@ -271,23 +271,23 @@
             </ng-template>
           </div>
         </div>
+        <br />
+        <bit-callout
+          *ngIf="organization.useSecretsManager && !isSecretsManagerTrial()"
+          type="info"
+          title="INFO"
+        >
+          {{ "secretsManagerSubInfo" | i18n }}
+        </bit-callout>
+        <bit-callout
+          *ngIf="organization.useSecretsManager && isSecretsManagerTrial()"
+          type="info"
+          title="INFO"
+        >
+          {{ "secretsManagerWithFreePasswordManagerInfo" | i18n }}
+        </bit-callout>
+        <br />
       </ng-container>
-      <br />
-      <bit-callout
-        *ngIf="organization.useSecretsManager && !isSecretsManagerTrial()"
-        type="info"
-        title="INFO"
-      >
-        {{ "secretsManagerSubInfo" | i18n }}
-      </bit-callout>
-      <bit-callout
-        *ngIf="organization.useSecretsManager && isSecretsManagerTrial()"
-        type="info"
-        title="INFO"
-      >
-        {{ "secretsManagerWithFreePasswordManagerInfo" | i18n }}
-      </bit-callout>
-      <br />
       <!-- Payment info -->
       <ng-container *ngIf="formGroup.value.productTier !== productTypes.Free">
         <h2 bitTypography="h4">{{ "paymentMethod" | i18n }}</h2>
