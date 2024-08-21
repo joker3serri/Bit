@@ -76,16 +76,22 @@ jobs:
         run: npm test -- --coverage --maxWorkers=3
 
       - name: Report test results
-        uses: dorny/test-reporter@eaa763f6ffc21c7a37837f56cd5f9737f27fc6c8 # v1.8.0
-        if: ${{ needs.check-test-secrets.outputs.available == 'true' }} && always()
+        uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5 # v1.9.1
+        if: ${{ needs.check-test-secrets.outputs.available == 'true' && !cancelled() }}
         with:
           name: Test Results
           path: "junit.xml"
           reporter: jest-junit
           fail-on-error: true
 
-      - name: Upload to codecov.io
+      - name: Upload coverage to codecov.io
         uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab # v4.1.0
+        if: ${{ needs.check-test-secrets.outputs.available == 'true' }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload results to codecov.io
+        uses: codecov/test-results-action@1b5b448b98e58ba90d1a1a1d9fcb72ca2263be46 # v1.0.0
         if: ${{ needs.check-test-secrets.outputs.available == 'true' }}
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
