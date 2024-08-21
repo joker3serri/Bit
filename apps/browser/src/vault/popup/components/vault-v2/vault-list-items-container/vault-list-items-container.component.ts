@@ -7,6 +7,8 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import {
   BadgeModule,
+  BitItemHeight,
+  BitItemHeightClass,
   ButtonModule,
   IconButtonModule,
   ItemModule,
@@ -20,10 +22,6 @@ import { VaultPopupAutofillService } from "../../../services/vault-popup-autofil
 import { PopupCipherView } from "../../../views/popup-cipher.view";
 import { ItemCopyActionsComponent } from "../item-copy-action/item-copy-actions.component";
 import { ItemMoreOptionsComponent } from "../item-more-options/item-more-options.component";
-
-// Fixed manual item height required for cdk-virtual-scroll
-export const ItemHeightClass = `tw-h-[52px]`;
-export const ItemHeight = 58.25; // 52px + 5.25px bottom margin + 1px border
 
 @Component({
   imports: [
@@ -47,8 +45,8 @@ export const ItemHeight = 58.25; // 52px + 5.25px bottom margin + 1px border
   standalone: true,
 })
 export class VaultListItemsContainerComponent {
-  protected ItemHeightClass = ItemHeightClass;
-  protected ItemHeight = ItemHeight;
+  protected ItemHeightClass = BitItemHeightClass;
+  protected ItemHeight = BitItemHeight;
 
   /**
    * The list of ciphers to display.
