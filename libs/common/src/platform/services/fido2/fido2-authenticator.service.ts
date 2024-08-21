@@ -243,11 +243,18 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
       }
 
       let response = { cipherId: cipherOptions[0].id, userVerified: false };
-      if (this.requiresUserVerificationPrompt(params, cipherOptions)) {
+      const masterPasswordRepromptSet = cipherOptions.some(
+        (cipher) => cipher.reprompt !== CipherRepromptType.None,
+      );
+
+      if (this.requiresUserVerificationPrompt(params, cipherOptions, masterPasswordRepromptSet)) {
         response = await userInterfaceSession.pickCredential({
           cipherIds: cipherOptions.map((cipher) => cipher.id),
           userVerification: params.requireUserVerification,
-          conditionalMediatedAuth: params.conditionalMediatedAuth,
+          skipUserVerification:
+            params.conditionalMediatedAuth &&
+            cipherOptions.length === 1 &&
+            !masterPasswordRepromptSet,
         });
       }
 
@@ -329,13 +336,14 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
   private requiresUserVerificationPrompt(
     params: Fido2AuthenticatorGetAssertionParams,
     cipherOptions: CipherView[],
+    masterPasswordRepromptSet: boolean,
   ): boolean {
     return (
       params.requireUserVerification ||
       !params.assumeUserPresence ||
       cipherOptions.length > 1 ||
       cipherOptions.length === 0 ||
-      cipherOptions.some((cipher) => cipher.reprompt !== CipherRepromptType.None)
+      masterPasswordRepromptSet
     );
   }
 

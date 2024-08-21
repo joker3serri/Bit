@@ -44,7 +44,7 @@ export interface PickCredentialParams {
   /**
    * Identifies if we are in a conditional mediated authentication flow.
    */
-  conditionalMediatedAuth?: boolean;
+  skipUserVerification?: boolean;
 }
 
 /**
