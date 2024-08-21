@@ -40,6 +40,11 @@ export interface PickCredentialParams {
    * Whether or not the user must be verified before completing the operation.
    */
   userVerification: boolean;
+
+  /**
+   * Identifies if we are in a conditional mediated authentication flow.
+   */
+  conditionalMediatedAuth?: boolean;
 }
 
 /**

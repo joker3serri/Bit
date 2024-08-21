@@ -242,20 +242,12 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
         throw new Fido2AuthenticatorError(Fido2AuthenticatorErrorCode.NotAllowed);
       }
 
-      // NOTE: For now, we are defaulting to a userVerified status of `true` when the request
-      // is for a conditionally mediated authentication. This will allow for mediated conditional
-      // authentication to function without requiring user interaction. This is a product
-      // decision, rather than a decision based on the expected technical specifications. This
-      // will be updated to have a conditional of `params.requireUserVerification || !params.assumeUserPresence`
-      // once the notification bar rework check is implemented.
-      let response = {
-        cipherId: cipherOptions[0].id,
-        userVerified: params.conditionalMediatedAuth,
-      };
+      let response = { cipherId: cipherOptions[0].id, userVerified: false };
       if (this.requiresUserVerificationPrompt(params, cipherOptions)) {
         response = await userInterfaceSession.pickCredential({
           cipherIds: cipherOptions.map((cipher) => cipher.id),
           userVerification: params.requireUserVerification,
+          conditionalMediatedAuth: params.conditionalMediatedAuth,
         });
       }
 
@@ -338,12 +330,9 @@ export class Fido2AuthenticatorService implements Fido2AuthenticatorServiceAbstr
     params: Fido2AuthenticatorGetAssertionParams,
     cipherOptions: CipherView[],
   ): boolean {
-    const requiresUserVerification =
-      !params.conditionalMediatedAuth &&
-      (params.requireUserVerification || !params.assumeUserPresence);
-
     return (
-      requiresUserVerification ||
+      params.requireUserVerification ||
+      !params.assumeUserPresence ||
       cipherOptions.length > 1 ||
       cipherOptions.length === 0 ||
       cipherOptions.some((cipher) => cipher.reprompt !== CipherRepromptType.None)

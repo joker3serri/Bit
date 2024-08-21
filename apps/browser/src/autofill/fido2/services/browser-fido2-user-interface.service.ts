@@ -241,7 +241,16 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
   async pickCredential({
     cipherIds,
     userVerification,
+    conditionalMediatedAuth,
   }: PickCredentialParams): Promise<{ cipherId: string; userVerified: boolean }> {
+    // NOTE: For now, we are defaulting to a userVerified status of `true` when the request
+    // is for a conditionally mediated authentication. This will allow for mediated conditional
+    // authentication to function without requiring user interaction. This is a product
+    // decision, rather than a decision based on the expected technical specifications.
+    if (conditionalMediatedAuth) {
+      return { cipherId: cipherIds[0], userVerified: true };
+    }
+
     const data: BrowserFido2Message = {
       type: BrowserFido2MessageTypes.PickCredentialRequest,
       cipherIds,
