@@ -42,9 +42,9 @@ export interface PickCredentialParams {
   userVerification: boolean;
 
   /**
-   * Identifies if we are in a conditional mediated authentication flow.
+   * Bypass the UI and assume that the user has already interacted with the authenticator.
    */
-  skipUserVerification?: boolean;
+  assumeUserPresence?: boolean;
 }
 
 /**
