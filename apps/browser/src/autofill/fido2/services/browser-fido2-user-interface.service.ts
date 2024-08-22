@@ -247,7 +247,7 @@ export class BrowserFido2UserInterfaceSession implements Fido2UserInterfaceSessi
     // is for a conditionally mediated authentication. This will allow for mediated conditional
     // authentication to function without requiring user interaction. This is a product
     // decision, rather than a decision based on the expected technical specifications.
-    if (assumeUserPresence && cipherIds.length === 0) {
+    if (assumeUserPresence && cipherIds.length === 1) {
       return { cipherId: cipherIds[0], userVerified: userVerification };
     }
 
