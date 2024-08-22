@@ -48,7 +48,7 @@ export class VaultPopupAutofillService {
     this.senderTabId$,
     this._refreshCurrentTab$.pipe(startWith(null)),
   ]).pipe(
-    switchMap(async ([senderTabId, tab]) => {
+    switchMap(async ([senderTabId]) => {
       if (senderTabId) {
         return await BrowserApi.getTab(senderTabId);
       }
@@ -137,16 +137,15 @@ export class VaultPopupAutofillService {
     return true;
   }
 
-  private async _closePopup(cipher: CipherView) {
-    const tabId = await firstValueFrom(this.senderTabId$);
-    if (BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) && tabId) {
+  private async _closePopup(cipher: CipherView, tab: chrome.tabs.Tab | null) {
+    if (BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) && tab.id) {
       this.toastService.showToast({
         variant: "success",
         title: null,
         message: this.i18nService.t("autoFillSuccess"),
       });
       setTimeout(async () => {
-        await BrowserApi.focusTab(tabId);
+        await BrowserApi.focusTab(tab.id);
         await closeViewVaultItemPopout(`${VaultPopoutType.viewVaultItem}_${cipher.id}`);
       }, 1000);
 
@@ -186,7 +185,7 @@ export class VaultPopupAutofillService {
     const didAutofill = await this._internalDoAutofill(cipher, tab, pageDetails);
 
     if (didAutofill && closePopup) {
-      await this._closePopup(cipher);
+      await this._closePopup(cipher, tab);
     }
 
     return didAutofill;
@@ -221,7 +220,7 @@ export class VaultPopupAutofillService {
     }
 
     if (closePopup) {
-      await this._closePopup(cipher);
+      await this._closePopup(cipher, tab);
     } else {
       this.toastService.showToast({
         variant: "success",

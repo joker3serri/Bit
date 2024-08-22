@@ -266,7 +266,7 @@ describe("VaultPopupAutofillService", () => {
 
         it("should show a successful toast message if login form is populated", async () => {
           jest.spyOn(BrowserPopupUtils, "inSingleActionPopout").mockReturnValue(true);
-          (service as any).senderTabId$ = of(true);
+          (service as any).currentAutofillTab$ = of({ id: 1234 });
           await service.doAutofill(mockCipher);
           expect(mockToastService.showToast).toHaveBeenCalledWith({
             variant: "success",
