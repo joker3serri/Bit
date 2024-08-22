@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       release-version: ${{ steps.version-output.outputs.version }}
-      deployment-id: ${{ steps.deployment.outputs.deployment-id }}
+      deployment-id: ${{ steps.deployment.outputs.deployment_id }}
     steps:
       - name: Branch check
         if: ${{ inputs.publish_type != 'Dry Run' }}
