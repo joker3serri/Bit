@@ -80,7 +80,6 @@ describe("ViewV2Component", () => {
 
     fixture = TestBed.createComponent(ViewV2Component);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 

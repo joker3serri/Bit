@@ -8,6 +8,7 @@ import { firstValueFrom, map, Observable, switchMap } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AUTOFILL_ID, SHOW_AUTOFILL_BUTTON } from "@bitwarden/common/autofill/constants";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -33,7 +34,6 @@ import { PopupFooterComponent } from "./../../../../../platform/popup/layout/pop
 import { PopupHeaderComponent } from "./../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup-page.component";
 import { VaultPopupAutofillService } from "./../../../services/vault-popup-autofill.service";
-import { AUTOFILL_ID, SHOW_AUTOFILL_BUTTON } from "@bitwarden/common/autofill/constants";
 
 @Component({
   selector: "app-view-v2",
@@ -61,7 +61,6 @@ export class ViewV2Component {
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
   collections$: Observable<CollectionView[]>;
-  hasPasswordReprompted?: boolean;
   loadAction: typeof AUTOFILL_ID | typeof SHOW_AUTOFILL_BUTTON;
 
   constructor(
@@ -83,14 +82,13 @@ export class ViewV2Component {
       .pipe(
         switchMap(async (params): Promise<CipherView> => {
           this.loadAction = params.action;
-          this.hasPasswordReprompted = params?.passwordReprompted;
           return await this.getCipherData(params.cipherId);
         }),
         switchMap(async (cipher) => {
           this.cipher = cipher;
           this.headerText = this.setHeader(cipher.type);
           if (this.loadAction === AUTOFILL_ID || this.loadAction === SHOW_AUTOFILL_BUTTON) {
-            await this.vaultPopupAutofillService.doAutofill(this.cipher, true);
+            await this.vaultPopupAutofillService.doAutofill(this.cipher);
           }
         }),
         takeUntilDestroyed(),
