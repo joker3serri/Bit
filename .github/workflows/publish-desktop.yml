@@ -145,7 +145,7 @@ jobs:
 
       - name: Set staged rollout percentage
         env:
-          RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
+          RELEASE_CHANNEL: ${{ needs.setup.outputs.release-channel }}
           ROLLOUT_PCT: ${{ inputs.rollout_percentage }}
         run: |
           echo "stagingPercentage: ${ROLLOUT_PCT}" >> apps/desktop/artifacts/${RELEASE_CHANNEL}.yml
