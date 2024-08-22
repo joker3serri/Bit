@@ -36,20 +36,21 @@ import { closeViewVaultItemPopout, VaultPopoutType } from "../utils/vault-popout
 })
 export class VaultPopupAutofillService {
   private _refreshCurrentTab$ = new Subject<void>();
-  private senderTabId?: number;
-
+  private senderTabId$: Observable<number | undefined> = this.route.queryParams.pipe(
+    map((params) => (params?.senderTabId ? parseInt(params.senderTabId, 10) : undefined)),
+  );
   /**
-   * Observable that contains the current tab to be considered for autofill. This Observable also looks for
-   * the tab that was opened from form field inputs.
+   * Observable that contains the current tab to be considered for autofill.
+   * This can be the tab from the current window if opened in a Popup OR
+   * the sending tab when opened the single action Popout (specified by the senderTabId route query parameter)
    */
   currentAutofillTab$: Observable<chrome.tabs.Tab | null> = combineLatest([
-    this.route.queryParams,
+    this.senderTabId$,
     this._refreshCurrentTab$.pipe(startWith(null)),
   ]).pipe(
-    switchMap(async ([params, tab]) => {
-      this.senderTabId = params?.senderTabId ? parseInt(params.senderTabId, 10) : undefined;
-      if (this.senderTabId) {
-        return await BrowserApi.getTab(this.senderTabId);
+    switchMap(async ([senderTabId, tab]) => {
+      if (senderTabId) {
+        return await BrowserApi.getTab(senderTabId);
       }
 
       if (BrowserPopupUtils.inPopout(window)) {
@@ -90,18 +91,12 @@ export class VaultPopupAutofillService {
     this._currentPageDetails$.subscribe();
   }
 
-  /**
-   * hasPasswordReprompted is a value that we use to check if the MP reprompt dialog has
-   * already been shown from the vault-list-items-container, and therefore will not need to be called again
-   */
   private async _internalDoAutofill(
     cipher: CipherView,
     tab: chrome.tabs.Tab,
     pageDetails: PageDetail[],
-    hasPasswordReprompted?: boolean,
   ): Promise<boolean> {
     if (
-      !hasPasswordReprompted &&
       cipher.reprompt !== CipherRepromptType.None &&
       !(await this.passwordRepromptService.showPasswordPrompt())
     ) {
@@ -142,18 +137,16 @@ export class VaultPopupAutofillService {
     return true;
   }
 
-  private _closePopup(cipher?: CipherView) {
-    if (
-      BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) &&
-      this.senderTabId
-    ) {
+  private async _closePopup(cipher: CipherView) {
+    const tabId = await firstValueFrom(this.senderTabId$);
+    if (BrowserPopupUtils.inSingleActionPopout(window, VaultPopoutType.viewVaultItem) && tabId) {
       this.toastService.showToast({
         variant: "success",
         title: null,
         message: this.i18nService.t("autoFillSuccess"),
       });
       setTimeout(async () => {
-        await BrowserApi.focusTab(this.senderTabId);
+        await BrowserApi.focusTab(tabId);
         await closeViewVaultItemPopout(`${VaultPopoutType.viewVaultItem}_${cipher.id}`);
       }, 1000);
 
@@ -186,23 +179,14 @@ export class VaultPopupAutofillService {
    * @param cipher
    * @param closePopup If true, will close the popup window after successful autofill. Defaults to true.
    */
-  async doAutofill(
-    cipher: CipherView,
-    closePopup = true,
-    hasPasswordReprompted = false,
-  ): Promise<boolean> {
+  async doAutofill(cipher: CipherView, closePopup = true): Promise<boolean> {
     const tab = await firstValueFrom(this.currentAutofillTab$);
     const pageDetails = await firstValueFrom(this._currentPageDetails$);
 
-    const didAutofill = await this._internalDoAutofill(
-      cipher,
-      tab,
-      pageDetails,
-      hasPasswordReprompted,
-    );
+    const didAutofill = await this._internalDoAutofill(cipher, tab, pageDetails);
 
     if (didAutofill && closePopup) {
-      this._closePopup(cipher);
+      await this._closePopup(cipher);
     }
 
     return didAutofill;
@@ -237,7 +221,7 @@ export class VaultPopupAutofillService {
     }
 
     if (closePopup) {
-      this._closePopup();
+      await this._closePopup(cipher);
     } else {
       this.toastService.showToast({
         variant: "success",

@@ -115,7 +115,7 @@ export class VaultListItemsContainerComponent {
     }
 
     await this.router.navigate(["/view-cipher"], {
-      queryParams: { cipherId: cipher.id, type: cipher.type, passwordReprompted: repromptPassed },
+      queryParams: { cipherId: cipher.id, type: cipher.type },
     });
   }
 }

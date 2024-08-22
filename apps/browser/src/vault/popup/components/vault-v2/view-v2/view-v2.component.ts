@@ -33,6 +33,7 @@ import { PopupFooterComponent } from "./../../../../../platform/popup/layout/pop
 import { PopupHeaderComponent } from "./../../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "./../../../../../platform/popup/layout/popup-page.component";
 import { VaultPopupAutofillService } from "./../../../services/vault-popup-autofill.service";
+import { AUTOFILL_ID, SHOW_AUTOFILL_BUTTON } from "@bitwarden/common/autofill/constants";
 
 @Component({
   selector: "app-view-v2",
@@ -61,6 +62,7 @@ export class ViewV2Component {
   folder$: Observable<FolderView>;
   collections$: Observable<CollectionView[]>;
   hasPasswordReprompted?: boolean;
+  loadAction: typeof AUTOFILL_ID | typeof SHOW_AUTOFILL_BUTTON;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,22 +82,20 @@ export class ViewV2Component {
     this.route.queryParams
       .pipe(
         switchMap(async (params): Promise<CipherView> => {
+          this.loadAction = params.action;
           this.hasPasswordReprompted = params?.passwordReprompted;
           return await this.getCipherData(params.cipherId);
         }),
+        switchMap(async (cipher) => {
+          this.cipher = cipher;
+          this.headerText = this.setHeader(cipher.type);
+          if (this.loadAction === AUTOFILL_ID || this.loadAction === SHOW_AUTOFILL_BUTTON) {
+            await this.vaultPopupAutofillService.doAutofill(this.cipher, true);
+          }
+        }),
         takeUntilDestroyed(),
       )
-      // eslint-disable-next-line rxjs/no-async-subscribe
-      .subscribe(async (cipher) => {
-        this.cipher = cipher;
-        this.headerText = this.setHeader(cipher.type);
-
-        await this.vaultPopupAutofillService.doAutofill(
-          this.cipher,
-          true,
-          this.hasPasswordReprompted,
-        );
-      });
+      .subscribe();
   }
 
   setHeader(type: CipherType) {
