@@ -126,15 +126,6 @@ jobs:
             aws-electron-access-key,
             aws-electron-bucket-name"
 
-      - name: Download all artifacts
-        if: ${{ inputs.publish_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
-        with:
-          workflow: build-desktop.yml
-          workflow_conclusion: success
-          branch: ${{ github.ref_name }}
-          path: apps/desktop/artifacts
-
       - name: Download artifacts
         env:
           GH_TOKEN: ${{ github.token }}
