@@ -139,7 +139,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         working-directory: apps/desktop/artifacts
-        run: gh release download ${{ env._RELEASE_TAG }} -R bitwarden/desktop
+        run: gh release download ${{ env._RELEASE_TAG }} -R bitwarden/clients
 
       - name: Set staged rollout percentage
         env:
