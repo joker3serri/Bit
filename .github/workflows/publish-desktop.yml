@@ -15,7 +15,7 @@ on:
           - Republish
           - Dry Run
       version:
-        description: 'Version to publish (default: latest cli release)'
+        description: 'Version to publish (default: latest desktop release)'
         required: true
         type: string
         default: latest
