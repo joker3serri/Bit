@@ -125,6 +125,9 @@ jobs:
           secrets: "aws-electron-access-id,
             aws-electron-access-key,
             aws-electron-bucket-name"
+      
+      - name: Create artifacts directory
+        run: mkdir -p apps/desktop/artifacts
 
       - name: Download artifacts
         env:
