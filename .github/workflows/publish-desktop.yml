@@ -136,6 +136,8 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Download artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
         working-directory: apps/desktop/artifacts
         run: gh release download ${{ env._RELEASE_TAG }} -R bitwarden/desktop
 
