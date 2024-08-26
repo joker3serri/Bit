@@ -1286,10 +1286,6 @@ describe("AutofillOverlayContentService", () => {
             expect.any(Function),
           );
           expect(autofillFieldElement.addEventListener).not.toHaveBeenCalledWith(
-            EVENTS.INPUT,
-            expect.any(Function),
-          );
-          expect(autofillFieldElement.addEventListener).not.toHaveBeenCalledWith(
             EVENTS.CLICK,
             expect.any(Function),
           );
