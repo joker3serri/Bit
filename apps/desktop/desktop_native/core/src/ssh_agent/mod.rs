@@ -1,6 +1,11 @@
 use std::sync::Arc;
 
 use anyhow::Error;
+#[cfg(windows)]
+use async_stream::stream;
+#[cfg(windows)]
+use futures::stream::{Stream, StreamExt};
+
 use ssh_agent::Key;
 use std::collections::HashMap;
 use std::sync::RwLock;
@@ -9,6 +14,8 @@ use tokio::sync::Mutex;
 pub mod msg;
 pub mod ssh_agent;
 pub mod russh_encoding;
+#[cfg(windows)]
+pub mod namedpipelistenerstream;
 
 #[cfg(unix)]
 use tokio::net::UnixListener;
@@ -77,14 +84,19 @@ pub async fn start_server(
 }
 
 #[cfg(windows)]
-use tokio::net::windows::named_pipe::ServerOptions;
-
-#[cfg(windows)]
 pub async fn start_server(
     auth_request_tx: tokio::sync::mpsc::Sender<String>,
     auth_response_rx: Arc<Mutex<tokio::sync::mpsc::Receiver<bool>>>,
 ) -> Result<(), anyhow::Error> {
-    println!("[SSH Agent Native Module] Windows is not supported yet");
+    let stream = namedpipelistenerstream::NamedPipeServerStream::new();
+    ssh_agent::serve(
+        stream,
+        SecureAgent {
+            send_tx: auth_request_tx,
+            response_rx: auth_response_rx,
+        },
+        KEYSTORE.clone(),
+    ).await?;
     Ok(())
 }
 
