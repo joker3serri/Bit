@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, NgModule, NgZone } from "@angular/core";
 import { Subject, merge, of } from "rxjs";
 
+import { ViewCacheService } from "@bitwarden/angular/platform/abstractions/view-cache.service";
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
 import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
@@ -15,6 +16,7 @@ import {
   CLIENT_TYPE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
+import { AnonLayoutWrapperDataService } from "@bitwarden/auth/angular";
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
@@ -40,6 +42,10 @@ import {
 } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ClientType } from "@bitwarden/common/enums";
+import {
+  AnimationControlService,
+  DefaultAnimationControlService,
+} from "@bitwarden/common/platform/abstractions/animation-control.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
@@ -72,6 +78,8 @@ import {
 } from "@bitwarden/common/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- Used for dependency injection
 import { InlineDerivedStateProvider } from "@bitwarden/common/platform/state/implementations/inline-derived-state";
+import { PrimarySecondaryStorageService } from "@bitwarden/common/platform/storage/primary-secondary-storage.service";
+import { WindowStorageService } from "@bitwarden/common/platform/storage/window-storage.service";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -82,6 +90,7 @@ import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
+import { ExtensionAnonLayoutWrapperDataService } from "../../auth/popup/extension-anon-layout-wrapper/extension-anon-layout-wrapper-data.service";
 import { AutofillService as AutofillServiceAbstraction } from "../../autofill/services/abstractions/autofill.service";
 import AutofillService from "../../autofill/services/autofill.service";
 import MainBackground from "../../background/main.background";
@@ -94,6 +103,7 @@ import { OffscreenDocumentService } from "../../platform/offscreen-document/abst
 import { DefaultOffscreenDocumentService } from "../../platform/offscreen-document/offscreen-document.service";
 import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 import { BrowserFileDownloadService } from "../../platform/popup/services/browser-file-download.service";
+import { PopupViewCacheService } from "../../platform/popup/view-cache/popup-view-cache.service";
 import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
 import { BrowserCryptoService } from "../../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../../platform/services/browser-environment.service";
@@ -119,6 +129,10 @@ import { PopupCloseWarningService } from "./popup-close-warning.service";
 const OBSERVABLE_LARGE_OBJECT_MEMORY_STORAGE = new SafeInjectionToken<
   AbstractStorageService & ObservableStorageService
 >("OBSERVABLE_LARGE_OBJECT_MEMORY_STORAGE");
+
+const DISK_BACKUP_LOCAL_STORAGE = new SafeInjectionToken<
+  AbstractStorageService & ObservableStorageService
+>("DISK_BACKUP_LOCAL_STORAGE");
 
 const needsBackgroundInit = BrowserPopupUtils.backgroundInitializationRequired();
 const mainBackground: MainBackground = needsBackgroundInit
@@ -292,6 +306,11 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: AutofillServiceAbstraction,
     useExisting: AutofillService,
+  }),
+  safeProvider({
+    provide: ViewCacheService,
+    useExisting: PopupViewCacheService,
+    deps: [],
   }),
   safeProvider({
     provide: AutofillService,
@@ -495,12 +514,19 @@ const safeProviders: SafeProvider[] = [
     deps: [],
   }),
   safeProvider({
+    provide: DISK_BACKUP_LOCAL_STORAGE,
+    useFactory: (diskStorage: AbstractStorageService & ObservableStorageService) =>
+      new PrimarySecondaryStorageService(diskStorage, new WindowStorageService(self.localStorage)),
+    deps: [OBSERVABLE_DISK_STORAGE],
+  }),
+  safeProvider({
     provide: StorageServiceProvider,
     useClass: BrowserStorageServiceProvider,
     deps: [
       OBSERVABLE_DISK_STORAGE,
       OBSERVABLE_MEMORY_STORAGE,
       OBSERVABLE_LARGE_OBJECT_MEMORY_STORAGE,
+      DISK_BACKUP_LOCAL_STORAGE,
     ],
   }),
   safeProvider({
@@ -513,12 +539,22 @@ const safeProviders: SafeProvider[] = [
     deps: [PasswordRepromptService, UserVerificationService, DialogService],
   }),
   safeProvider({
+    provide: AnimationControlService,
+    useClass: DefaultAnimationControlService,
+    deps: [GlobalStateProvider],
+  }),
+  safeProvider({
     provide: TaskSchedulerService,
     useExisting: ForegroundTaskSchedulerService,
   }),
   safeProvider({
     provide: ForegroundTaskSchedulerService,
     useFactory: getBgService<ForegroundTaskSchedulerService>("taskSchedulerService"),
+    deps: [],
+  }),
+  safeProvider({
+    provide: AnonLayoutWrapperDataService,
+    useClass: ExtensionAnonLayoutWrapperDataService,
     deps: [],
   }),
 ];
