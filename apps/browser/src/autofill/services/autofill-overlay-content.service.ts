@@ -47,8 +47,6 @@ import { DomQueryService } from "./abstractions/dom-query.service";
 import { InlineMenuFieldQualificationService } from "./abstractions/inline-menu-field-qualifications.service";
 import { AutoFillConstants } from "./autofill-constants";
 
-import KeyboardEvent = chrome.input.ime.KeyboardEvent;
-
 export class AutofillOverlayContentService implements AutofillOverlayContentServiceInterface {
   pageDetailsUpdateRequired = false;
   inlineMenuVisibility: number;
@@ -1171,6 +1169,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
   ) {
     this.hiddenFormFieldElements.set(formFieldElement, autofillFieldData);
     formFieldElement.addEventListener(EVENTS.FOCUS, this.handleHiddenFieldFocusEvent);
+    formFieldElement.addEventListener(EVENTS.INPUT, this.handleHiddenFieldInputEvent);
   }
 
   /**
@@ -1181,6 +1180,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    */
   private removeHiddenFieldFallbackListener(formFieldElement: ElementWithOpId<FormFieldElement>) {
     formFieldElement.removeEventListener(EVENTS.FOCUS, this.handleHiddenFieldFocusEvent);
+    formFieldElement.removeEventListener(EVENTS.INPUT, this.handleHiddenFieldInputEvent);
     this.hiddenFormFieldElements.delete(formFieldElement);
   }
 
@@ -1192,6 +1192,30 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    */
   private handleHiddenFieldFocusEvent = (event: FocusEvent) => {
     const formFieldElement = event.target as ElementWithOpId<FormFieldElement>;
+    this.handleHiddenElementFallbackEvent(formFieldElement);
+  };
+
+  /**
+   * Handles an input event on a hidden field. When triggered, the inline menu is set up on the
+   * field. We also capture the input value for the field to facilitate presentation of the value
+   * for the field in the notification bar.
+   *
+   * @param event - The input event.
+   */
+  private handleHiddenFieldInputEvent = async (event: InputEvent) => {
+    const formFieldElement = event.target as ElementWithOpId<FormFieldElement>;
+    this.handleHiddenElementFallbackEvent(formFieldElement);
+    await this.triggerFormFieldInput(formFieldElement);
+  };
+
+  /**
+   * Handles updating the hidden element when a fallback event is triggered.
+   *
+   * @param formFieldElement - The form field element that triggered the focus event.
+   */
+  private handleHiddenElementFallbackEvent = (
+    formFieldElement: ElementWithOpId<FormFieldElement>,
+  ) => {
     const autofillFieldData = this.hiddenFormFieldElements.get(formFieldElement);
     if (autofillFieldData) {
       autofillFieldData.readonly = getAttributeBoolean(formFieldElement, "disabled");
