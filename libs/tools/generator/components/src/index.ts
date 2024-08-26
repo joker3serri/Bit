@@ -1,1 +1,1 @@
-export { PassphraseComponent } from "./passphrase.component";
+export { PassphraseSettingsComponent } from "./passphrase-settings.component";
