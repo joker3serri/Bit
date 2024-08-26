@@ -1,7 +1,10 @@
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
 import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/expanded-tax-info-update.request";
+import { UpdatePaymentMethodRequest } from "@bitwarden/common/billing/models/request/update-payment-method.request";
+import { VerifyBankAccountRequest } from "@bitwarden/common/billing/models/request/verify-bank-account.request";
 import { InvoicesResponse } from "@bitwarden/common/billing/models/response/invoices.response";
+import { PaymentMethodResponse } from "@bitwarden/common/billing/models/response/payment-method.response";
 
 import { SubscriptionCancellationRequest } from "../../billing/models/request/subscription-cancellation.request";
 import { OrganizationBillingMetadataResponse } from "../../billing/models/response/organization-billing-metadata.response";
@@ -30,6 +33,8 @@ export abstract class BillingApiServiceAbstraction {
     organizationId: string,
   ) => Promise<OrganizationBillingMetadataResponse>;
 
+  getOrganizationPaymentMethod: (organizationId: string) => Promise<PaymentMethodResponse>;
+
   getPlans: () => Promise<ListResponse<PlanResponse>>;
 
   getProviderClientInvoiceReport: (providerId: string, invoiceId: string) => Promise<string>;
@@ -42,6 +47,16 @@ export abstract class BillingApiServiceAbstraction {
 
   getProviderSubscription: (providerId: string) => Promise<ProviderSubscriptionResponse>;
 
+  updateOrganizationPaymentMethod: (
+    organizationId: string,
+    request: UpdatePaymentMethodRequest,
+  ) => Promise<void>;
+
+  updateOrganizationTaxInformation: (
+    organizationId: string,
+    request: ExpandedTaxInfoUpdateRequest,
+  ) => Promise<void>;
+
   updateProviderClientOrganization: (
     providerId: string,
     organizationId: string,
@@ -51,5 +66,10 @@ export abstract class BillingApiServiceAbstraction {
   updateProviderTaxInformation: (
     providerId: string,
     request: ExpandedTaxInfoUpdateRequest,
+  ) => Promise<void>;
+
+  verifyOrganizationBankAccount: (
+    organizationId: string,
+    request: VerifyBankAccountRequest,
   ) => Promise<void>;
 }

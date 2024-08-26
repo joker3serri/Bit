@@ -1,5 +1,8 @@
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
+import { UpdatePaymentMethodRequest } from "@bitwarden/common/billing/models/request/update-payment-method.request";
+import { VerifyBankAccountRequest } from "@bitwarden/common/billing/models/request/verify-bank-account.request";
 import { InvoicesResponse } from "@bitwarden/common/billing/models/response/invoices.response";
+import { PaymentMethodResponse } from "@bitwarden/common/billing/models/response/payment-method.response";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ToastService } from "@bitwarden/components";
@@ -82,6 +85,19 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return new OrganizationBillingMetadataResponse(r);
   }
 
+  async getOrganizationPaymentMethod(organizationId: string): Promise<PaymentMethodResponse> {
+    const response = await this.execute(() =>
+      this.apiService.send(
+        "GET",
+        "/organizations/" + organizationId + "/billing/payment-method",
+        null,
+        true,
+        true,
+      ),
+    );
+    return new PaymentMethodResponse(response);
+  }
+
   async getPlans(): Promise<ListResponse<PlanResponse>> {
     const r = await this.apiService.send("GET", "/plans", null, false, true);
     return new ListResponse(r, PlanResponse);
@@ -133,6 +149,32 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return new ProviderSubscriptionResponse(response);
   }
 
+  async updateOrganizationPaymentMethod(
+    organizationId: string,
+    request: UpdatePaymentMethodRequest,
+  ): Promise<void> {
+    return await this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/billing/payment-method",
+      request,
+      true,
+      false,
+    );
+  }
+
+  async updateOrganizationTaxInformation(
+    organizationId: string,
+    request: ExpandedTaxInfoUpdateRequest,
+  ): Promise<void> {
+    return await this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/billing/tax-information",
+      request,
+      true,
+      false,
+    );
+  }
+
   async updateProviderClientOrganization(
     providerId: string,
     organizationId: string,
@@ -151,6 +193,19 @@ export class BillingApiService implements BillingApiServiceAbstraction {
     return await this.apiService.send(
       "PUT",
       "/providers/" + providerId + "/billing/tax-information",
+      request,
+      true,
+      false,
+    );
+  }
+
+  async verifyOrganizationBankAccount(
+    organizationId: string,
+    request: VerifyBankAccountRequest,
+  ): Promise<void> {
+    return await this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/billing/payment-method/verify-bank-account",
       request,
       true,
       false,
