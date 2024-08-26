@@ -284,15 +284,20 @@ describe("AutofillOverlayContentService", () => {
         expect(autofillFieldElement.removeEventListener).toHaveBeenNthCalledWith(
           2,
           "input",
-          inputHandler,
+          expect.any(Function),
         );
         expect(autofillFieldElement.removeEventListener).toHaveBeenNthCalledWith(
           3,
+          "input",
+          inputHandler,
+        );
+        expect(autofillFieldElement.removeEventListener).toHaveBeenNthCalledWith(
+          4,
           "click",
           clickHandler,
         );
         expect(autofillFieldElement.removeEventListener).toHaveBeenNthCalledWith(
-          4,
+          5,
           "focus",
           focusHandler,
         );
