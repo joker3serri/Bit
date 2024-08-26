@@ -3995,6 +3995,9 @@
       }
     }
   },
+  "enableAnimations": {
+    "message": "Enable animations"
+  },
   "addAccount": {
     "message": "Add account"
   },
