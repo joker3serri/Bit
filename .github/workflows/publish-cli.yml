@@ -188,10 +188,6 @@ jobs:
           mkdir -p build
           wget https://github.com/bitwarden/clients/releases/download/cli-v${{ env._PKG_VERSION }}/bitwarden-cli-${{ env._PKG_VERSION }}-npm-build.zip
           unzip bitwarden-cli-${{ env._PKG_VERSION }}-npm-build.zip -d build
-          ls -alh
-          echo "***********"
-          ls -alh build/
-          exit 1
 
       - name: Setup NPM
         run: |
