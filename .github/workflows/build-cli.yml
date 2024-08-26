@@ -289,13 +289,16 @@ jobs:
           name: bitwarden-cli.${{ env._PACKAGE_VERSION }}.nupkg
           path: apps/cli/dist/chocolatey/bitwarden-cli.${{ env._PACKAGE_VERSION }}.nupkg
           if-no-files-found: error
+      
+      - name: Zip NPM Build Artifact
+        run: Get-ChildItem -Path .\build | Compress-Archive -DestinationPath .\bitwarden-cli-${{ env._PACKAGE_VERSION }}-npm-build.zip
 
       - name: Upload NPM Build Directory asset
         if: matrix.license_type.build_prefix == 'bit'
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
           name: bitwarden-cli-${{ env._PACKAGE_VERSION }}-npm-build.zip
-          path: apps/cli/build
+          path: apps/cli/bitwarden-cli-${{ env._PACKAGE_VERSION }}-npm-build.zip
           if-no-files-found: error
 
   snap:
