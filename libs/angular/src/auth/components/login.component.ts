@@ -23,6 +23,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { UserId } from "@bitwarden/common/types/guid";
 import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
@@ -40,7 +41,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
   showPassword = false;
   formPromise: Promise<AuthResult>;
   onSuccessfulLogin: () => Promise<any>;
-  onSuccessfulLoginNavigate: () => Promise<any>;
+  onSuccessfulLoginNavigate: (userId: UserId) => Promise<any>;
   onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
   showLoginWithDevice: boolean;
@@ -191,7 +192,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit,
         if (this.onSuccessfulLoginNavigate != null) {
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.onSuccessfulLoginNavigate();
+          this.onSuccessfulLoginNavigate(response.userId);
         } else {
           this.loginEmailService.clearValues();
           // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
