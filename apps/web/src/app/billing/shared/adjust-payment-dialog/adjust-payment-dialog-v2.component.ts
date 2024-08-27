@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { Component, Inject, ViewChild } from "@angular/core";
+import { forwardRef, Component, Inject, ViewChild } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
@@ -27,7 +27,7 @@ export enum AdjustPaymentDialogV2ResultType {
 })
 export class AdjustPaymentDialogV2Component {
   @ViewChild(PaymentV2Component) paymentComponent: PaymentV2Component;
-  @ViewChild(TaxInfoComponent) taxInfoComponent: TaxInfoComponent;
+  @ViewChild(forwardRef(() => TaxInfoComponent)) taxInfoComponent: TaxInfoComponent;
 
   protected readonly PaymentMethodType = PaymentMethodType;
   protected readonly ResultType = AdjustPaymentDialogV2ResultType;
