@@ -210,7 +210,6 @@ const routes: Routes = [
         path: "send/:sendId/:key",
         data: {
           pageTitle: "viewSend",
-          pageSubtitle: "sendAccessCreatorIdentifier",
           showReadonlyHostname: true,
         } satisfies DataProperties & AnonLayoutWrapperData,
         children: [
