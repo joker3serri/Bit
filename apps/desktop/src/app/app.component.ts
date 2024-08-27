@@ -67,7 +67,6 @@ import { KeyService, BiometricStateService } from "@bitwarden/key-management";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { LoginApprovalComponent } from "../auth/login/login-approval.component";
-import { DesktopAutofillService } from "../autofill/services/desktop-autofill.service";
 import { MenuAccount, MenuUpdateRequest } from "../main/menu/menu.updater";
 import { flagEnabled } from "../platform/flags";
 import { PremiumComponent } from "../vault/app/accounts/premium.component";
@@ -168,7 +167,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private sdkService: SdkService,
     private organizationService: OrganizationService,
-    private autofillService: DesktopAutofillService,
   ) {
     if (flagEnabled("sdk")) {
       // Warn if the SDK for some reason can't be initialized
@@ -191,8 +189,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    void this.autofillService.init();
-
     this.accountService.activeAccount$.pipe(takeUntil(this.destroy$)).subscribe((account) => {
       this.activeUserId = account?.id;
     });
