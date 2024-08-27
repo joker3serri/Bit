@@ -97,6 +97,7 @@ import {
   BiometricStateService,
   DefaultBiometricStateService,
 } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { BiometricsService } from "@bitwarden/common/platform/biometrics/biometric.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { Message, MessageListener, MessageSender } from "@bitwarden/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports -- Used for dependency creation
@@ -230,6 +231,7 @@ import { ChromeMessageSender } from "../platform/messaging/chrome-message.sender
 import { OffscreenDocumentService } from "../platform/offscreen-document/abstractions/offscreen-document";
 import { DefaultOffscreenDocumentService } from "../platform/offscreen-document/offscreen-document.service";
 import { BrowserTaskSchedulerService } from "../platform/services/abstractions/browser-task-scheduler.service";
+import { BackgroundBrowserBiometricsService } from "../platform/services/background-browser-biometrics.service";
 import { BrowserCryptoService } from "../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
 import BrowserLocalStorageService from "../platform/services/browser-local-storage.service";
@@ -345,6 +347,7 @@ export default class MainBackground {
   organizationVaultExportService: OrganizationVaultExportServiceAbstraction;
   vaultSettingsService: VaultSettingsServiceAbstraction;
   biometricStateService: BiometricStateService;
+  biometricsService: BiometricsService;
   stateEventRunnerService: StateEventRunnerService;
   ssoLoginService: SsoLoginServiceAbstraction;
   billingAccountProfileStateService: BillingAccountProfileStateService;
@@ -432,7 +435,6 @@ export default class MainBackground {
     this.platformUtilsService = new BackgroundPlatformUtilsService(
       this.messagingService,
       (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
-      async () => this.biometricUnlock(),
       self,
       this.offscreenDocumentService,
     );
@@ -580,6 +582,7 @@ export default class MainBackground {
     );
 
     this.popupViewCacheBackgroundService = new PopupViewCacheBackgroundService(
+      messageListener,
       this.globalStateProvider,
     );
 
@@ -613,6 +616,8 @@ export default class MainBackground {
 
     this.i18nService = new I18nService(BrowserApi.getUILanguage(), this.globalStateProvider);
 
+    this.biometricsService = new BackgroundBrowserBiometricsService(this.nativeMessagingBackground);
+
     this.kdfConfigService = new KdfConfigService(this.stateProvider);
 
     this.pinService = new PinService(
@@ -639,6 +644,7 @@ export default class MainBackground {
       this.accountService,
       this.stateProvider,
       this.biometricStateService,
+      this.biometricsService,
       this.kdfConfigService,
     );
 
@@ -1245,9 +1251,9 @@ export default class MainBackground {
     await this.notificationBackground.init();
     this.overlayNotificationsBackground.init();
     this.filelessImporterBackground.init();
-    await this.commandsBackground.init();
+    this.commandsBackground.init();
     this.contextMenusBackground?.init();
-    await this.idleBackground.init();
+    this.idleBackground.init();
     this.webRequestBackground?.startListening();
     this.syncServiceListener?.listener$().subscribe();
     await this.autoSubmitLoginBackground.init();
@@ -1516,17 +1522,6 @@ export default class MainBackground {
     if (this.systemService != null) {
       await this.systemService.clearClipboard(clipboardValue, clearMs);
     }
-  }
-
-  async biometricUnlock(): Promise<boolean> {
-    if (this.nativeMessagingBackground == null) {
-      return false;
-    }
-
-    const responsePromise = this.nativeMessagingBackground.getResponse();
-    await this.nativeMessagingBackground.send({ command: "biometricUnlock" });
-    const response = await responsePromise;
-    return response.response === "unlocked";
   }
 
   private async fullSync(override = false) {

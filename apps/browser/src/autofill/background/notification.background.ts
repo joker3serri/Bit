@@ -96,7 +96,7 @@ export default class NotificationBackground {
     private accountService: AccountService,
   ) {}
 
-  async init() {
+  init() {
     if (chrome.runtime == null) {
       return;
     }
