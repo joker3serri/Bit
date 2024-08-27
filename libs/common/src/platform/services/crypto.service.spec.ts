@@ -20,6 +20,7 @@ import { OrganizationId, UserId } from "../../types/guid";
 import { UserKey, MasterKey } from "../../types/key";
 import { VaultTimeoutStringType } from "../../types/vault-timeout.type";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
+import { UserPrivateKeyDecryptionFailedError } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { KeyGenerationService } from "../abstractions/key-generation.service";
 import { LogService } from "../abstractions/log.service";
@@ -359,7 +360,7 @@ describe("cryptoService", () => {
 
       await expect(
         cryptoService.setUserKeys(mockUserKey, mockEncPrivateKey, mockUserId),
-      ).rejects.toThrow("Could not decrypt encPrivateKey with userKey.");
+      ).rejects.toThrow(UserPrivateKeyDecryptionFailedError);
     });
 
     // We already have tests for setUserKey, so we just need to test that the correct methods are called

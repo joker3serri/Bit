@@ -38,6 +38,7 @@ import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import {
   CipherDecryptionKeys,
   CryptoService as CryptoServiceAbstraction,
+  UserPrivateKeyDecryptionFailedError,
 } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { KeyGenerationService } from "../abstractions/key-generation.service";
@@ -121,7 +122,7 @@ export class CryptoService implements CryptoServiceAbstraction {
 
     const decryptedPrivateKey = await this.decryptPrivateKey(encPrivateKey, userKey);
     if (decryptedPrivateKey == null) {
-      throw new Error("Could not decrypt encPrivateKey with userKey.");
+      throw new UserPrivateKeyDecryptionFailedError();
     }
 
     await this.setUserKey(userKey, userId);
