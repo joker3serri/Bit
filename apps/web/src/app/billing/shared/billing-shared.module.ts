@@ -5,7 +5,7 @@ import { SharedModule } from "../../shared";
 
 import { AddCreditDialogComponent } from "./add-credit-dialog.component";
 import { AdjustPaymentDialogV2Component } from "./adjust-payment-dialog/adjust-payment-dialog-v2.component";
-import { AdjustPaymentDialogComponent } from "./adjust-payment-dialog.component";
+import { AdjustPaymentDialogComponent } from "./adjust-payment-dialog/adjust-payment-dialog.component";
 import { AdjustStorageComponent } from "./adjust-storage.component";
 import { BillingHistoryComponent } from "./billing-history.component";
 import { OffboardingSurveyComponent } from "./offboarding-survey.component";
