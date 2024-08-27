@@ -1394,6 +1394,10 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
       }
 
       cachedAutofillFieldElement.viewable = true;
+      if (this.autofillOverlayContentService) {
+        this.autofillOverlayContentService.pageDetailsUpdateRequired = true;
+      }
+
       this.setupInlineMenu(formFieldElement, cachedAutofillFieldElement);
 
       this.intersectionObserver?.unobserve(entry.target);
