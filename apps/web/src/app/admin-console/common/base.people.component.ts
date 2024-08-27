@@ -127,7 +127,7 @@ export abstract class BasePeopleComponent<
     protected userNamePipe: UserNamePipe,
     protected dialogService: DialogService,
     protected organizationManagementPreferencesService: OrganizationManagementPreferencesService,
-    private toastService: ToastService,
+    protected toastService: ToastService,
   ) {}
 
   abstract edit(user: UserType): void;
