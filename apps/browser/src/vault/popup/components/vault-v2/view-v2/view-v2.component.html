@@ -5,7 +5,7 @@
 
   <app-cipher-view *ngIf="cipher" [cipher]="cipher"></app-cipher-view>
 
-  <popup-footer slot="footer" *ngIf="!cipher.isDeleted">
+  <popup-footer slot="footer" *ngIf="cipher && !cipher.isDeleted">
     <button buttonType="primary" type="button" bitButton (click)="editCipher()">
       {{ "edit" | i18n }}
     </button>
