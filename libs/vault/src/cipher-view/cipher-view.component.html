@@ -1,4 +1,9 @@
 <ng-container *ngIf="!!cipher">
+  <!-- HELPER TEXT -->
+  <p class="tw-text-sm tw-text-muted" bitTypography="helper" *ngIf="cipher.isDeleted">
+    {{ "noEditPermissions" | i18n }}
+  </p>
+
   <!-- ITEM DETAILS -->
   <app-item-details-v2
     [cipher]="cipher"
