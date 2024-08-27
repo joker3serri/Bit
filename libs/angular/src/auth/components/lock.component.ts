@@ -30,6 +30,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { BiometricsService } from "@bitwarden/common/platform/biometrics/biometric.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -84,6 +85,7 @@ export class LockComponent implements OnInit, OnDestroy {
     protected userVerificationService: UserVerificationService,
     protected pinService: PinServiceAbstraction,
     protected biometricStateService: BiometricStateService,
+    protected biometricsService: BiometricsService,
     protected accountService: AccountService,
     protected authService: AuthService,
     protected kdfConfigService: KdfConfigService,
@@ -144,6 +146,13 @@ export class LockComponent implements OnInit, OnDestroy {
     }
 
     return !!userKey;
+  }
+
+  async isBiometricUnlockAvailable(): Promise<boolean> {
+    if (!(await this.biometricsService.supportsBiometric())) {
+      return false;
+    }
+    return this.biometricsService.isBiometricUnlockAvailable();
   }
 
   togglePassword() {
@@ -323,14 +332,11 @@ export class LockComponent implements OnInit, OnDestroy {
   private async load(userId: UserId) {
     this.pinLockType = await this.pinService.getPinLockType(userId);
 
-    const ephemeralPinSet = await this.pinService.getPinKeyEncryptedUserKeyEphemeral(userId);
-
-    this.pinEnabled =
-      (this.pinLockType === "EPHEMERAL" && !!ephemeralPinSet) || this.pinLockType === "PERSISTENT";
+    this.pinEnabled = await this.pinService.isPinDecryptionAvailable(userId);
 
     this.masterPasswordEnabled = await this.userVerificationService.hasMasterPassword();
 
-    this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
+    this.supportsBiometric = await this.biometricsService.supportsBiometric();
     this.biometricLock =
       (await this.vaultTimeoutSettingsService.isBiometricLockSet()) &&
       ((await this.cryptoService.hasUserKeyStored(KeySuffixOptions.Biometric)) ||

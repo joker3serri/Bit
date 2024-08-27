@@ -406,7 +406,6 @@ describe("BrowserApi", () => {
         target: {
           tabId: tabId,
           allFrames: injectDetails.allFrames,
-          frameIds: null,
         },
         files: [injectDetails.file],
         injectImmediately: true,
@@ -432,7 +431,6 @@ describe("BrowserApi", () => {
       expect(chrome.scripting.executeScript).toHaveBeenCalledWith({
         target: {
           tabId: tabId,
-          allFrames: injectDetails.allFrames,
           frameIds: [frameId],
         },
         files: [injectDetails.file],
@@ -459,7 +457,6 @@ describe("BrowserApi", () => {
         target: {
           tabId: tabId,
           allFrames: injectDetails.allFrames,
-          frameIds: null,
         },
         files: null,
         injectImmediately: true,

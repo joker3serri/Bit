@@ -97,6 +97,7 @@ import {
   BiometricStateService,
   DefaultBiometricStateService,
 } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { BiometricsService } from "@bitwarden/common/platform/biometrics/biometric.service";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { Message, MessageListener, MessageSender } from "@bitwarden/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports -- Used for dependency creation
@@ -204,6 +205,7 @@ import {
 } from "@bitwarden/vault-export-core";
 
 import { OverlayBackground as OverlayBackgroundInterface } from "../autofill/background/abstractions/overlay.background";
+import { AutoSubmitLoginBackground } from "../autofill/background/auto-submit-login.background";
 import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
 import { OverlayBackground } from "../autofill/background/overlay.background";
@@ -227,6 +229,7 @@ import { ChromeMessageSender } from "../platform/messaging/chrome-message.sender
 import { OffscreenDocumentService } from "../platform/offscreen-document/abstractions/offscreen-document";
 import { DefaultOffscreenDocumentService } from "../platform/offscreen-document/offscreen-document.service";
 import { BrowserTaskSchedulerService } from "../platform/services/abstractions/browser-task-scheduler.service";
+import { BackgroundBrowserBiometricsService } from "../platform/services/background-browser-biometrics.service";
 import { BrowserCryptoService } from "../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
 import BrowserLocalStorageService from "../platform/services/browser-local-storage.service";
@@ -342,6 +345,7 @@ export default class MainBackground {
   organizationVaultExportService: OrganizationVaultExportServiceAbstraction;
   vaultSettingsService: VaultSettingsServiceAbstraction;
   biometricStateService: BiometricStateService;
+  biometricsService: BiometricsService;
   stateEventRunnerService: StateEventRunnerService;
   ssoLoginService: SsoLoginServiceAbstraction;
   billingAccountProfileStateService: BillingAccountProfileStateService;
@@ -353,6 +357,7 @@ export default class MainBackground {
   offscreenDocumentService: OffscreenDocumentService;
   syncServiceListener: SyncServiceListener;
   themeStateService: DefaultThemeStateService;
+  autoSubmitLoginBackground: AutoSubmitLoginBackground;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -427,7 +432,6 @@ export default class MainBackground {
     this.platformUtilsService = new BackgroundPlatformUtilsService(
       this.messagingService,
       (clipboardValue, clearMs) => this.clearClipboard(clipboardValue, clearMs),
-      async () => this.biometricUnlock(),
       self,
       this.offscreenDocumentService,
     );
@@ -575,6 +579,7 @@ export default class MainBackground {
     );
 
     this.popupViewCacheBackgroundService = new PopupViewCacheBackgroundService(
+      messageListener,
       this.globalStateProvider,
     );
 
@@ -608,6 +613,8 @@ export default class MainBackground {
 
     this.i18nService = new I18nService(BrowserApi.getUILanguage(), this.globalStateProvider);
 
+    this.biometricsService = new BackgroundBrowserBiometricsService(this.nativeMessagingBackground);
+
     this.kdfConfigService = new KdfConfigService(this.stateProvider);
 
     this.pinService = new PinService(
@@ -634,6 +641,7 @@ export default class MainBackground {
       this.accountService,
       this.stateProvider,
       this.biometricStateService,
+      this.biometricsService,
       this.kdfConfigService,
     );
 
@@ -954,6 +962,7 @@ export default class MainBackground {
       this.collectionService,
       this.cryptoService,
       this.pinService,
+      this.accountService,
     );
 
     this.individualVaultExportService = new IndividualVaultExportService(
@@ -973,6 +982,7 @@ export default class MainBackground {
       this.cryptoFunctionService,
       this.collectionService,
       this.kdfConfigService,
+      this.accountService,
     );
 
     this.exportService = new VaultExportService(
@@ -998,6 +1008,7 @@ export default class MainBackground {
       this.cipherService,
       this.fido2UserInterfaceService,
       this.syncService,
+      this.accountService,
       this.logService,
     );
     const fido2ActiveRequestManager = new Fido2ActiveRequestManager();
@@ -1087,6 +1098,7 @@ export default class MainBackground {
         this.logService,
         this.themeStateService,
         this.configService,
+        this.accountService,
       );
 
       this.filelessImporterBackground = new FilelessImporterBackground(
@@ -1097,6 +1109,16 @@ export default class MainBackground {
         this.importService,
         this.syncService,
         this.scriptInjectorService,
+      );
+
+      this.autoSubmitLoginBackground = new AutoSubmitLoginBackground(
+        this.logService,
+        this.autofillService,
+        this.scriptInjectorService,
+        this.authService,
+        this.configService,
+        this.platformUtilsService,
+        this.policyService,
       );
 
       const contextMenuClickedHandler = new ContextMenuClickedHandler(
@@ -1219,6 +1241,7 @@ export default class MainBackground {
     await this.idleBackground.init();
     this.webRequestBackground?.startListening();
     this.syncServiceListener?.listener$().subscribe();
+    await this.autoSubmitLoginBackground.init();
 
     if (
       BrowserApi.isManifestVersion(2) &&
@@ -1484,17 +1507,6 @@ export default class MainBackground {
     if (this.systemService != null) {
       await this.systemService.clearClipboard(clipboardValue, clearMs);
     }
-  }
-
-  async biometricUnlock(): Promise<boolean> {
-    if (this.nativeMessagingBackground == null) {
-      return false;
-    }
-
-    const responsePromise = this.nativeMessagingBackground.getResponse();
-    await this.nativeMessagingBackground.send({ command: "biometricUnlock" });
-    const response = await responsePromise;
-    return response.response === "unlocked";
   }
 
   private async fullSync(override = false) {
