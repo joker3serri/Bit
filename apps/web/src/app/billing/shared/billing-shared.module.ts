@@ -16,9 +16,17 @@ import { SecretsManagerSubscribeComponent } from "./sm-subscribe.component";
 import { TaxInfoComponent } from "./tax-info.component";
 import { UpdateLicenseDialogComponent } from "./update-license-dialog.component";
 import { UpdateLicenseComponent } from "./update-license.component";
+import { VerifyBankAccountComponent } from "./verify-bank-account/verify-bank-account.component";
 
 @NgModule({
-  imports: [SharedModule, PaymentComponent, TaxInfoComponent, HeaderModule, PaymentV2Component],
+  imports: [
+    SharedModule,
+    PaymentComponent,
+    TaxInfoComponent,
+    HeaderModule,
+    PaymentV2Component,
+    VerifyBankAccountComponent,
+  ],
   declarations: [
     AddCreditDialogComponent,
     AdjustPaymentDialogComponent,
@@ -41,6 +49,7 @@ import { UpdateLicenseComponent } from "./update-license.component";
     UpdateLicenseComponent,
     UpdateLicenseDialogComponent,
     OffboardingSurveyComponent,
+    VerifyBankAccountComponent,
   ],
 })
 export class BillingSharedModule {}
