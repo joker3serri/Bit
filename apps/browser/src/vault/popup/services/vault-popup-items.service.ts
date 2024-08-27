@@ -74,7 +74,7 @@ export class VaultPopupItemsService {
    * Observable that contains the list of all decrypted ciphers.
    * @private
    */
-  private _cipherList$: Observable<PopupCipherView[]> = merge(
+  private _allDecryptedCiphers$: Observable<CipherView[]> = merge(
     this.cipherService.ciphers$,
     this.cipherService.localData$,
   ).pipe(
@@ -83,6 +83,10 @@ export class VaultPopupItemsService {
     switchMap(() => Utils.asyncToObservable(() => this.syncService.getLastSync())),
     filter((lastSync) => lastSync !== null), // Only attempt to load ciphers if we performed a sync
     switchMap(() => Utils.asyncToObservable(() => this.cipherService.getAllDecrypted())),
+    shareReplay({ refCount: true, bufferSize: 1 }),
+  );
+
+  private _activeCipherList$: Observable<PopupCipherView[]> = this._allDecryptedCiphers$.pipe(
     switchMap((ciphers) =>
       combineLatest([
         this.organizationService.organizations$,
@@ -104,11 +108,10 @@ export class VaultPopupItemsService {
         }),
       ),
     ),
-    shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
   private _filteredCipherList$: Observable<PopupCipherView[]> = combineLatest([
-    this._cipherList$,
+    this._activeCipherList$,
     this._searchText$,
     this.vaultPopupListFiltersService.filterFunction$,
   ]).pipe(
@@ -207,7 +210,9 @@ export class VaultPopupItemsService {
   /**
    * Observable that indicates whether the user's vault is empty.
    */
-  emptyVault$: Observable<boolean> = this._cipherList$.pipe(map((ciphers) => !ciphers.length));
+  emptyVault$: Observable<boolean> = this._activeCipherList$.pipe(
+    map((ciphers) => !ciphers.length),
+  );
 
   /**
    * Observable that indicates whether there are no ciphers to show with the current filter.
@@ -229,6 +234,14 @@ export class VaultPopupItemsService {
       const org = orgs.find((o) => o.id === filters.organization.id);
       return org ? !org.enabled : false;
     }),
+  );
+
+  /**
+   * Observable that contains the list of ciphers that have been deleted.
+   */
+  deletedCiphers$: Observable<PopupCipherView[]> = this._allDecryptedCiphers$.pipe(
+    map((ciphers) => ciphers.filter((c) => c.isDeleted).map((c) => new PopupCipherView(c))),
+    shareReplay({ refCount: false, bufferSize: 1 }),
   );
 
   constructor(
