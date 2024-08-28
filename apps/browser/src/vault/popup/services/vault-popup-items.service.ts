@@ -240,8 +240,8 @@ export class VaultPopupItemsService {
   /**
    * Observable that contains the list of ciphers that have been deleted.
    */
-  deletedCiphers$: Observable<PopupCipherView[]> = this._allDecryptedCiphers$.pipe(
-    map((ciphers) => ciphers.filter((c) => c.isDeleted).map((c) => new PopupCipherView(c))),
+  deletedCiphers$: Observable<CipherView[]> = this._allDecryptedCiphers$.pipe(
+    map((ciphers) => ciphers.filter((c) => c.isDeleted)),
     shareReplay({ refCount: false, bufferSize: 1 }),
   );
 
