@@ -638,6 +638,9 @@
   "newAccountCreated": {
     "message": "Your new account has been created! You may now log in."
   },
+  "newAccountCreatedAndYouHaveBeenLoggedIn": {
+    "message": "Your new account has been created and you have been logged in!"
+  },
   "youSuccessfullyLoggedIn": {
     "message": "You successfully logged in"
   },

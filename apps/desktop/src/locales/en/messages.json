@@ -603,6 +603,9 @@
   "newAccountCreated": {
     "message": "Your new account has been created! You may now log in."
   },
+  "newAccountCreatedAndYouHaveBeenLoggedIn": {
+    "message": "Your new account has been created and you have been logged in!"
+  },
   "masterPassSent": {
     "message": "We've sent you an email with your master password hint."
   },

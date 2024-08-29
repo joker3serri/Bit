@@ -105,12 +105,6 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.toastService.showToast({
-      variant: "success",
-      title: null,
-      message: this.i18nService.t("newAccountCreated"),
-    });
-
     // login with the new account
     try {
       const credentials = new PasswordLoginCredentials(
@@ -121,6 +115,14 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
       );
 
       await this.loginStrategyService.logIn(credentials);
+
+      // TODO: should we have 2 toasts or 1? Talk with design?
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("newAccountCreatedAndYouHaveBeenLoggedIn"),
+      });
+
       await this.router.navigate(["/vault"]);
     } catch (e) {
       this.validationService.showError(e);
