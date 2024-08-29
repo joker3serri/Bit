@@ -10,6 +10,7 @@ import { RegisterVerificationEmailClickedRequest } from "@bitwarden/common/auth/
 import { HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { ToastService } from "@bitwarden/components";
 
@@ -48,6 +49,7 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
     private validationService: ValidationService,
     private accountApiService: AccountApiService,
     private loginStrategyService: LoginStrategyServiceAbstraction,
+    private logService: LogService,
   ) {}
 
   async ngOnInit() {
@@ -105,6 +107,13 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Show acct created toast
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("newAccountCreated2"),
+    });
+
     // login with the new account
     try {
       const credentials = new PasswordLoginCredentials(
@@ -116,16 +125,17 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
 
       await this.loginStrategyService.logIn(credentials);
 
-      // TODO: should we have 2 toasts or 1? Talk with design?
       this.toastService.showToast({
         variant: "success",
         title: null,
-        message: this.i18nService.t("newAccountCreatedAndYouHaveBeenLoggedIn"),
+        message: this.i18nService.t("youHaveBeenLoggedIn"),
       });
 
       await this.router.navigate(["/vault"]);
     } catch (e) {
-      this.validationService.showError(e);
+      // If login errors, redirect to login page per product. Don't show error
+      this.logService.error("Error logging in after registration", e.message);
+      await this.router.navigate(["/login"]);
     }
     this.submitting = false;
   }
