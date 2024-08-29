@@ -134,8 +134,8 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
       await this.router.navigate(["/vault"]);
     } catch (e) {
       // If login errors, redirect to login page per product. Don't show error
-      this.logService.error("Error logging in after registration", e.message);
-      await this.router.navigate(["/login"]);
+      this.logService.error("Error logging in after registration: ", e.message);
+      await this.router.navigate(["/login"], { queryParams: { email: this.email } });
     }
     this.submitting = false;
   }
