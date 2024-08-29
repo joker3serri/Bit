@@ -13,6 +13,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { ToastService } from "@bitwarden/components";
 
+import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "../../../common";
 import { InputPasswordComponent } from "../../input-password/input-password.component";
 import { PasswordInputResult } from "../../input-password/password-input-result";
 
@@ -46,6 +47,7 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
     private registrationFinishService: RegistrationFinishService,
     private validationService: ValidationService,
     private accountApiService: AccountApiService,
+    private loginStrategyService: LoginStrategyServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -90,8 +92,9 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
 
   async handlePasswordFormSubmit(passwordInputResult: PasswordInputResult) {
     this.submitting = true;
+    let captchaBypassToken: string = null;
     try {
-      await this.registrationFinishService.finishRegistration(
+      captchaBypassToken = await this.registrationFinishService.finishRegistration(
         this.email,
         passwordInputResult,
         this.emailVerificationToken,
@@ -108,8 +111,21 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
       message: this.i18nService.t("newAccountCreated"),
     });
 
+    // login with the new account
+    try {
+      const credentials = new PasswordLoginCredentials(
+        this.email,
+        passwordInputResult.password,
+        captchaBypassToken,
+        null,
+      );
+
+      await this.loginStrategyService.logIn(credentials);
+      await this.router.navigate(["/vault"]);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
     this.submitting = false;
-    await this.router.navigate(["/login"], { queryParams: { email: this.email } });
   }
 
   private async registerVerificationEmailClicked(email: string, emailVerificationToken: string) {
