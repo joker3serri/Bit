@@ -4,7 +4,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { PaymentMethodComponent } from "../shared";
 
 import { BillingHistoryViewComponent } from "./billing-history-view.component";
-import { PremiumComponent } from "./premium.component";
+import { PremiumComponent } from "./premium/premium.component";
 import { SubscriptionComponent } from "./subscription.component";
 import { UserSubscriptionComponent } from "./user-subscription.component";
 
