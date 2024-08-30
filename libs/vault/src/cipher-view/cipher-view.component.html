@@ -4,7 +4,11 @@
   </bit-callout>
 
   <!-- HELPER TEXT -->
-  <p class="tw-text-sm tw-text-muted" bitTypography="helper" *ngIf="cipher.isDeleted">
+  <p
+    class="tw-text-sm tw-text-muted"
+    bitTypography="helper"
+    *ngIf="cipher?.isDeleted && !cipher?.edit"
+  >
     {{ "noEditPermissions" | i18n }}
   </p>
 

@@ -66,6 +66,12 @@ export class TrashListItemsContainerComponent {
   }
 
   async delete(cipher: CipherView) {
+    const repromptPassed = await this.passwordRepromptService.passwordRepromptCheck(cipher);
+
+    if (!repromptPassed) {
+      return;
+    }
+
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteItem" },
       content: { key: "permanentlyDeleteItemConfirmation" },
@@ -73,7 +79,7 @@ export class TrashListItemsContainerComponent {
     });
 
     if (!confirmed) {
-      return false;
+      return;
     }
 
     try {
