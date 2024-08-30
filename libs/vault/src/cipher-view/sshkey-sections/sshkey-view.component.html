@@ -2,7 +2,7 @@
   <bit-section-header>
     <h2 bitTypography="h6">{{ "typeSSHKey" | i18n }}</h2>
   </bit-section-header>
-  <bit-card>
+  <bit-card class="[&_bit-form-field:last-of-type]:tw-mb-0">
     <bit-form-field>
       <bit-label>{{ "sshPublicKey" | i18n }}</bit-label>
       <input readonly bitInput [value]="sshKey.publicKey" aria-readonly="true" />

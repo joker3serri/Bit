@@ -80,6 +80,10 @@ export class CipherViewComponent implements OnInit, OnDestroy {
     return this.cipher.login?.uris.length > 0;
   }
 
+  get hasSshKey() {
+    return this.cipher.sshKey?.privateKey;
+  }
+
   async loadCipherData() {
     if (this.cipher.collectionIds.length > 0) {
       this.collections$ = this.collectionService
