@@ -12,9 +12,27 @@ export class SecureSafeCsvImporter extends BaseImporter implements Importer {
       return Promise.resolve(result);
     }
 
+    // SecureSafe currently exports CSV files with headers that are surrounded by slashes - 09/02/2024
+    // This removes the slashes, if present.
+    const headers = Object.keys(results[0]);
+    const transformedHeaders = headers.map((header) =>
+      header.startsWith("/") && header.endsWith("/") ? header.slice(1, -1) : header,
+    );
+    const remappedResults = results.map((row) => {
+      const remappedRow: any = {};
+      transformedHeaders.forEach((header, index) => {
+        let value = row[headers[index]];
+        if (typeof value === "string" && value.startsWith("/") && value.endsWith("/")) {
+          value = value.slice(1, -1);
+        }
+        remappedRow[header] = value;
+      });
+      return remappedRow;
+    });
+
     // The url field can be in different case formats.
-    const urlField = Object.keys(results[0]).find((k) => /url/i.test(k));
-    results.forEach((value) => {
+    const urlField = Object.keys(remappedResults[0]).find((k) => /url/i.test(k));
+    remappedResults.forEach((value) => {
       const cipher = this.initLoginCipher();
       cipher.name = this.getValueOrDefault(value.Title);
       cipher.notes = this.getValueOrDefault(value.Comment);
