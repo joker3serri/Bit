@@ -49,8 +49,8 @@ export class MembersComponent extends BaseMembersComponent<ProviderUser> {
   dataSource = new MembersTableDataSource();
   loading = true;
   providerId: string;
-  rowHeight = 62;
-  rowHeightClass = `tw-h-[62px]`;
+  rowHeight = 69;
+  rowHeightClass = `tw-h-[69px]`;
   status: ProviderUserStatusType = null;
 
   userStatusType = ProviderUserStatusType;
@@ -190,7 +190,7 @@ export class MembersComponent extends BaseMembersComponent<ProviderUser> {
     await this.apiService.postProviderUserConfirm(this.providerId, user.id, request);
   }
 
-  deleteUser = (id: string): Promise<void> =>
+  removeUser = (id: string): Promise<void> =>
     this.apiService.deleteProviderUser(this.providerId, id);
 
   edit = async (user: ProviderUser | null): Promise<void> => {
