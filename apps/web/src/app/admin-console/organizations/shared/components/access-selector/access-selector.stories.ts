@@ -91,7 +91,7 @@ const memberCollectionAccessItems = itemsFactory(5, AccessItemType.Collection).c
     labelName: "Collection 1",
     listName: "Collection 1",
     viaGroupName: "Group 1",
-    readonlyPermission: CollectionPermission.View,
+    viaGroupPermission: CollectionPermission.View,
     readonly: true,
   },
   {
@@ -100,7 +100,7 @@ const memberCollectionAccessItems = itemsFactory(5, AccessItemType.Collection).c
     labelName: "Collection 1",
     listName: "Collection 1",
     viaGroupName: "Group 2",
-    readonlyPermission: CollectionPermission.ViewExceptPass,
+    viaGroupPermission: CollectionPermission.ViewExceptPass,
     readonly: true,
   },
 ]);
