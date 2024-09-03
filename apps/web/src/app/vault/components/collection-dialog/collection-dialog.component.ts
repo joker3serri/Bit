@@ -26,11 +26,7 @@ import { CollectionResponse } from "@bitwarden/common/vault/models/response/coll
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { BitValidators, DialogService } from "@bitwarden/components";
 
-import {
-  CollectionAccessSelectionView,
-  GroupService,
-  GroupView,
-} from "../../../admin-console/organizations/core";
+import { GroupService, GroupView } from "../../../admin-console/organizations/core";
 import { PermissionMode } from "../../../admin-console/organizations/shared/components/access-selector/access-selector.component";
 import {
   AccessItemType,
@@ -39,6 +35,8 @@ import {
   CollectionPermission,
   convertToPermission,
   convertToSelectionView,
+  mapGroupToAccessItemView,
+  mapUserToAccessItemView,
 } from "../../../admin-console/organizations/shared/components/access-selector/access-selector.models";
 import { CollectionAdminService } from "../../core/collection-admin.service";
 import { CollectionAdminView } from "../../core/views/collection-admin.view";
@@ -157,14 +155,14 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       collections: this.collectionAdminService.getAll(orgId),
       groups: groups$,
       // Collection(s) needed to map readonlypermission for (potential) access selector disabled state
-      users: this.organizationUserApiService.getAllUsers(orgId, { includeCollections: true }),
+      users: this.organizationUserApiService.getAllUsers(orgId),
     })
       .pipe(takeUntil(this.formGroup.controls.selectedOrg.valueChanges), takeUntil(this.destroy$))
       .subscribe(({ organization, collections: allCollections, groups, users }) => {
         this.organization = organization;
         this.accessItems = [].concat(
-          groups.map((group) => mapGroupToAccessItemView(group, this.collectionId)),
-          users.data.map((user) => mapUserToAccessItemView(user, this.collectionId)),
+          groups.map((group) => mapGroupToAccessItemView(group)),
+          users.data.map((user) => mapUserToAccessItemView(user)),
         );
 
         // Force change detection to update the access selector's items
@@ -415,54 +413,6 @@ function validateCanManagePermission(control: AbstractControl) {
   const hasManagePermission = access.some((a) => a.permission === CollectionPermission.Manage);
 
   return hasManagePermission ? null : { managePermissionRequired: true };
-}
-
-/**
- *
- * @param group Current group being used to translate object into AccessItemView
- * @param collectionId Current collection being viewed/edited
- * @returns AccessItemView customized to set a readonlyPermission to be displayed if the access selector is in a disabled state
- */
-function mapGroupToAccessItemView(group: GroupView, collectionId: string): AccessItemView {
-  return {
-    id: group.id,
-    type: AccessItemType.Group,
-    listName: group.name,
-    labelName: group.name,
-    readonly: false,
-    readonlyPermission:
-      collectionId != null
-        ? convertToPermission(group.collections.find((gc) => gc.id == collectionId))
-        : undefined,
-  };
-}
-
-/**
- *
- * @param user Current user being used to translate object into AccessItemView
- * @param collectionId Current collection being viewed/edited
- * @returns AccessItemView customized to set a readonlyPermission to be displayed if the access selector is in a disabled state
- */
-function mapUserToAccessItemView(
-  user: OrganizationUserUserDetailsResponse,
-  collectionId: string,
-): AccessItemView {
-  return {
-    id: user.id,
-    type: AccessItemType.Member,
-    email: user.email,
-    role: user.type,
-    listName: user.name?.length > 0 ? `${user.name} (${user.email})` : user.email,
-    labelName: user.name ?? user.email,
-    status: user.status,
-    readonly: false,
-    readonlyPermission:
-      collectionId != null
-        ? convertToPermission(
-            new CollectionAccessSelectionView(user.collections.find((uc) => uc.id == collectionId)),
-          )
-        : undefined,
-  };
 }
 
 /**
