@@ -378,7 +378,7 @@ export default class MainBackground {
 
   private syncTimeout: any;
   private isSafari: boolean;
-  nativeMessagingBackground: NativeMessagingBackground;
+  private nativeMessagingBackground: NativeMessagingBackground;
 
   private popupViewCacheBackgroundService: PopupViewCacheBackgroundService;
 

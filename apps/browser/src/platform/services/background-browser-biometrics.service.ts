@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { NativeMessagingBackground } from "src/background/nativeMessaging.background";
+import { NativeMessagingBackground } from "../../background/nativeMessaging.background";
 
 import { BrowserBiometricsService } from "./browser-biometrics.service";
 
