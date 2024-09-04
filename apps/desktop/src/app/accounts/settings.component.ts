@@ -20,6 +20,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { BiometricsService } from "@bitwarden/common/platform/biometrics/biometric.service";
 import { KeySuffixOptions, ThemeType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
@@ -55,6 +56,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   requireEnableTray = false;
   showDuckDuckGoIntegrationOption = false;
   isWindows: boolean;
+  isLinux: boolean;
 
   enableTrayText: string;
   enableTrayDescText: string;
@@ -132,6 +134,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private userVerificationService: UserVerificationServiceAbstraction,
     private desktopSettingsService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
+    private biometricsService: BiometricsService,
     private desktopAutofillSettingsService: DesktopAutofillSettingsService,
     private pinService: PinServiceAbstraction,
     private logService: LogService,
@@ -197,6 +200,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.userHasMasterPassword = await this.userVerificationService.hasMasterPassword();
 
     this.isWindows = (await this.platformUtilsService.getDevice()) === DeviceType.WindowsDesktop;
+    this.isLinux = (await this.platformUtilsService.getDevice()) === DeviceType.LinuxDesktop;
 
     if ((await this.stateService.getUserId()) == null) {
       return;
@@ -285,7 +289,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     // Non-form values
     this.showMinToTray = this.platformUtilsService.getDevice() !== DeviceType.LinuxDesktop;
     this.showAlwaysShowDock = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
-    this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
+    this.supportsBiometric = await this.biometricsService.supportsBiometric();
     this.previousVaultTimeout = this.form.value.vaultTimeout;
 
     this.refreshTimeoutSettings$
@@ -464,9 +468,35 @@ export class SettingsComponent implements OnInit, OnDestroy {
         return;
       }
 
+      const needsSetup = await this.biometricsService.biometricsNeedsSetup();
+      const supportsBiometricAutoSetup = await this.biometricsService.biometricsSupportsAutoSetup();
+
+      if (needsSetup) {
+        if (supportsBiometricAutoSetup) {
+          await this.biometricsService.biometricsSetup();
+        } else {
+          const confirmed = await this.dialogService.openSimpleDialog({
+            title: { key: "biometricsManualSetupTitle" },
+            content: { key: "biometricsManualSetupDesc" },
+            type: "warning",
+          });
+          if (confirmed) {
+            this.platformUtilsService.launchUri("https://bitwarden.com/help/biometrics/");
+          }
+          return;
+        }
+      }
+
       await this.biometricStateService.setBiometricUnlockEnabled(true);
       if (this.isWindows) {
         // Recommended settings for Windows Hello
+        this.form.controls.requirePasswordOnStart.setValue(true);
+        this.form.controls.autoPromptBiometrics.setValue(false);
+        await this.biometricStateService.setPromptAutomatically(false);
+        await this.biometricStateService.setRequirePasswordOnStart(true);
+        await this.biometricStateService.setDismissedRequirePasswordOnStartCallout();
+      } else if (this.isLinux) {
+        // Similar to Windows
         this.form.controls.requirePasswordOnStart.setValue(true);
         this.form.controls.autoPromptBiometrics.setValue(false);
         await this.biometricStateService.setPromptAutomatically(false);
@@ -624,7 +654,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
       this.form.controls.enableBrowserIntegration.setValue(false);
       return;
-    } else if (ipc.platform.deviceType === DeviceType.LinuxDesktop) {
+    } else if (ipc.platform.isSnapStore || ipc.platform.isFlatpak) {
       await this.dialogService.openSimpleDialog({
         title: { key: "browserIntegrationUnsupportedTitle" },
         content: { key: "browserIntegrationLinuxDesc" },
@@ -735,6 +765,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         return "unlockWithTouchId";
       case DeviceType.WindowsDesktop:
         return "unlockWithWindowsHello";
+      case DeviceType.LinuxDesktop:
+        return "unlockWithPolkit";
       default:
         throw new Error("Unsupported platform");
     }
@@ -746,6 +778,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         return "autoPromptTouchId";
       case DeviceType.WindowsDesktop:
         return "autoPromptWindowsHello";
+      case DeviceType.LinuxDesktop:
+        return "autoPromptPolkit";
       default:
         throw new Error("Unsupported platform");
     }

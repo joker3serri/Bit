@@ -2,13 +2,14 @@ import { filter, firstValueFrom, Observable, scan, startWith } from "rxjs";
 import { pairwise } from "rxjs/operators";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AutofillOverlayVisibility } from "@bitwarden/common/autofill/constants";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { UserNotificationSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/user-notification-settings.service";
 import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EventType } from "@bitwarden/common/enums";
@@ -20,6 +21,7 @@ import {
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessageListener } from "@bitwarden/common/platform/messaging";
+import { UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { FieldType, CipherType } from "@bitwarden/common/vault/enums";
@@ -27,6 +29,7 @@ import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-repromp
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
+import { normalizeExpiryYearFormat } from "@bitwarden/common/vault/utils";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
@@ -71,6 +74,7 @@ export default class AutofillService implements AutofillServiceInterface {
     private accountService: AccountService,
     private authService: AuthService,
     private configService: ConfigService,
+    private userNotificationSettingsService: UserNotificationSettingsServiceAbstraction,
     private messageListener: MessageListener,
   ) {}
 
@@ -164,25 +168,14 @@ export default class AutofillService implements AutofillServiceInterface {
     const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
     const authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
     const accountIsUnlocked = authStatus === AuthenticationStatus.Unlocked;
-    let inlineMenuVisibility: InlineMenuVisibilitySetting = AutofillOverlayVisibility.Off;
     let autoFillOnPageLoadIsEnabled = false;
+    const addLoginImprovementsFlagActive = await this.configService.getFeatureFlag(
+      FeatureFlag.NotificationBarAddLoginImprovements,
+    );
 
-    if (activeAccount) {
-      inlineMenuVisibility = await this.getInlineMenuVisibility();
-    }
-
-    let mainAutofillScript = "bootstrap-autofill.js";
-
-    if (inlineMenuVisibility) {
-      const inlineMenuPositioningImprovements = await this.configService.getFeatureFlag(
-        FeatureFlag.InlineMenuPositioningImprovements,
-      );
-      mainAutofillScript = inlineMenuPositioningImprovements
-        ? "bootstrap-autofill-overlay.js"
-        : "bootstrap-legacy-autofill-overlay.js";
-    }
-
-    const injectedScripts = [mainAutofillScript];
+    const injectedScripts = [
+      await this.getBootstrapAutofillContentScript(activeAccount, addLoginImprovementsFlagActive),
+    ];
 
     if (activeAccount && accountIsUnlocked) {
       autoFillOnPageLoadIsEnabled = await this.getAutofillOnPageLoad();
@@ -199,7 +192,11 @@ export default class AutofillService implements AutofillServiceInterface {
       });
     }
 
-    injectedScripts.push("notificationBar.js", "contextMenuHandler.js");
+    if (!addLoginImprovementsFlagActive) {
+      injectedScripts.push("notificationBar.js");
+    }
+
+    injectedScripts.push("contextMenuHandler.js");
 
     for (const injectedScript of injectedScripts) {
       await this.scriptInjectorService.inject({
@@ -211,6 +208,55 @@ export default class AutofillService implements AutofillServiceInterface {
         },
       });
     }
+  }
+
+  /**
+   * Identifies the correct autofill script to inject based on whether the
+   * inline menu is enabled, and whether the user has the notification bar
+   * enabled.
+   *
+   * @param activeAccount - The active account
+   * @param addLoginImprovementsFlagActive - Whether the add login improvements feature flag is active
+   */
+  private async getBootstrapAutofillContentScript(
+    activeAccount: { id: UserId | undefined } & AccountInfo,
+    addLoginImprovementsFlagActive = false,
+  ): Promise<string> {
+    let inlineMenuVisibility: InlineMenuVisibilitySetting = AutofillOverlayVisibility.Off;
+
+    if (activeAccount) {
+      inlineMenuVisibility = await this.getInlineMenuVisibility();
+    }
+
+    const inlineMenuPositioningImprovements = await this.configService.getFeatureFlag(
+      FeatureFlag.InlineMenuPositioningImprovements,
+    );
+    if (!inlineMenuPositioningImprovements) {
+      return "bootstrap-legacy-autofill-overlay.js";
+    }
+
+    const enableChangedPasswordPrompt = await firstValueFrom(
+      this.userNotificationSettingsService.enableChangedPasswordPrompt$,
+    );
+    const enableAddedLoginPrompt = await firstValueFrom(
+      this.userNotificationSettingsService.enableAddedLoginPrompt$,
+    );
+    const isNotificationBarEnabled =
+      addLoginImprovementsFlagActive && (enableChangedPasswordPrompt || enableAddedLoginPrompt);
+
+    if (!inlineMenuVisibility && !isNotificationBarEnabled) {
+      return "bootstrap-autofill.js";
+    }
+
+    if (!inlineMenuVisibility && isNotificationBarEnabled) {
+      return "bootstrap-autofill-overlay-notifications.js";
+    }
+
+    if (inlineMenuVisibility && !isNotificationBarEnabled) {
+      return "bootstrap-autofill-overlay-menu.js";
+    }
+
+    return "bootstrap-autofill-overlay.js";
   }
 
   /**
@@ -346,6 +392,7 @@ export default class AutofillService implements AutofillServiceInterface {
           onlyVisibleFields: options.onlyVisibleFields || false,
           fillNewPassword: options.fillNewPassword || false,
           allowTotpAutofill: options.allowTotpAutofill || false,
+          autoSubmitLogin: options.autoSubmitLogin || false,
           cipher: options.cipher,
           tabUrl: tab.url,
           defaultUriMatch: defaultUriMatch,
@@ -379,7 +426,7 @@ export default class AutofillService implements AutofillServiceInterface {
         BrowserApi.tabSendMessage(
           tab,
           {
-            command: "fillForm",
+            command: options.autoSubmitLogin ? "triggerAutoSubmitLogin" : "fillForm",
             fillScript: fillScript,
             url: tab.url,
             pageDetailsUrl: pd.details.url,
@@ -424,12 +471,14 @@ export default class AutofillService implements AutofillServiceInterface {
    * @param {PageDetail[]} pageDetails The data scraped from the page
    * @param {chrome.tabs.Tab} tab The tab to be autofilled
    * @param {boolean} fromCommand Whether the autofill is triggered by a keyboard shortcut (`true`) or autofill on page load (`false`)
+   * @param {boolean} autoSubmitLogin Whether the autofill is for an auto-submit login
    * @returns {Promise<string | null>} The TOTP code of the successfully autofilled login, if any
    */
   async doAutoFillOnTab(
     pageDetails: PageDetail[],
     tab: chrome.tabs.Tab,
     fromCommand: boolean,
+    autoSubmitLogin = false,
   ): Promise<string | null> {
     let cipher: CipherView;
     if (fromCommand) {
@@ -469,6 +518,7 @@ export default class AutofillService implements AutofillServiceInterface {
       fillNewPassword: fromCommand,
       allowUntrustedIframe: fromCommand,
       allowTotpAutofill: fromCommand,
+      autoSubmitLogin,
     });
 
     // Update last used index as autofill has succeeded
@@ -568,6 +618,19 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     return totpCode;
+  }
+
+  /**
+   * Activates the autofill on page load org policy.
+   */
+  async setAutoFillOnPageLoadOrgPolicy(): Promise<void> {
+    const autofillOnPageLoadOrgPolicy = await firstValueFrom(
+      this.autofillSettingsService.activateAutofillOnPageLoadFromPolicy$,
+    );
+
+    if (autofillOnPageLoadOrgPolicy) {
+      await this.autofillSettingsService.setAutofillOnPageLoad(true);
+    }
   }
 
   /**
@@ -820,6 +883,7 @@ export default class AutofillService implements AutofillServiceInterface {
       });
     }
 
+    const formElementsSet = new Set<string>();
     usernames.forEach((u) => {
       // eslint-disable-next-line
       if (filledFields.hasOwnProperty(u.opid)) {
@@ -828,6 +892,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
       filledFields[u.opid] = u;
       AutofillService.fillByOpid(fillScript, u, login.username);
+      formElementsSet.add(u.form);
     });
 
     passwords.forEach((p) => {
@@ -838,7 +903,12 @@ export default class AutofillService implements AutofillServiceInterface {
 
       filledFields[p.opid] = p;
       AutofillService.fillByOpid(fillScript, p, login.password);
+      formElementsSet.add(p.form);
     });
+
+    if (options.autoSubmitLogin && formElementsSet.size) {
+      fillScript.autosubmit = Array.from(formElementsSet);
+    }
 
     if (options.allowTotpAutofill) {
       await Promise.all(
@@ -1026,7 +1096,7 @@ export default class AutofillService implements AutofillServiceInterface {
         fillFields.expYear.maxLength === 4
       ) {
         if (expYear.length === 2) {
-          expYear = "20" + expYear;
+          expYear = normalizeExpiryYearFormat(expYear);
         }
       } else if (
         this.fieldAttrsContain(fillFields.expYear, "yy") ||
@@ -1052,7 +1122,7 @@ export default class AutofillService implements AutofillServiceInterface {
       let partYear: string = null;
       if (fullYear.length === 2) {
         partYear = fullYear;
-        fullYear = "20" + fullYear;
+        fullYear = normalizeExpiryYearFormat(fullYear);
       } else if (fullYear.length === 4) {
         partYear = fullYear.substr(2, 2);
       }
