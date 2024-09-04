@@ -318,18 +318,23 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     return this.permissionMode == PermissionMode.Edit && !item.readonly;
   }
 
-  protected readonlyPermissionLabelId(
-    item: AccessItemView,
-    value?: Partial<AccessItemValue>,
-  ): string {
-    if (item.type === AccessItemType.Collection && item.viaGroupName != null) {
+  /**
+   * Returns the i18n key for a collection permission, used to display the permission in a read-only state.
+   * @param index The index of the item in the FormSelectionList.selectedItems
+   * @returns An i18n key for use with the i18n pipe
+   */
+  protected readonlyPermissionLabelId(index: number): string {
+    const itemView = this.selectionList.selectedItems.at(index);
+    if (itemView.type === AccessItemType.Collection && itemView.viaGroupName != null) {
       // Access is via a group - use the AccessItemView.readonlyPermission
       // because there is no corresponding AccessItemValue
-      return this._permissionLabelId(item.viaGroupPermission);
+      return this._permissionLabelId(itemView.viaGroupPermission);
     }
 
-    // Otherwise use the AccessItemValue.permission (all other cases)
-    return this._permissionLabelId(value?.permission);
+    // Otherwise use the AccessItemValue.permission
+    // Note these are parallel arrays so we use the same index
+    const itemValue = this.formGroup.controls.items.at(index)?.getRawValue();
+    return this._permissionLabelId(itemValue?.permission);
   }
 
   private _permissionLabelId(perm: CollectionPermission) {

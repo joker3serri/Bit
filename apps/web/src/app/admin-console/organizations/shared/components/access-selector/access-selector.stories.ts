@@ -105,12 +105,7 @@ const memberCollectionAccessItems = itemsFactory(5, AccessItemType.Collection).c
   },
 ]);
 
-// Simulate the current user not having permission to change access to this collection
-// TODO: currently the member dialog duplicates the AccessItemValue.permission on the
-// AccessItemView.readonlyPermission, this will be refactored to reduce this duplication:
-// https://bitwarden.atlassian.net/browse/PM-11590
 memberCollectionAccessItems[4].readonly = true;
-memberCollectionAccessItems[4].readonlyPermission = CollectionPermission.Manage;
 
 /**
  * Displays a member's collection access.
@@ -226,15 +221,12 @@ export const CollectionAccess: Story = {
   render,
 };
 
-// TODO: currently the collection dialog duplicates the AccessItemValue.permission on the
-// AccessItemView.readonlyPermission, this will be refactored to reduce this duplication:
-// https://bitwarden.atlassian.net/browse/PM-11590
 const disabledMembers = itemsFactory(3, AccessItemType.Member);
-disabledMembers[1].readonlyPermission = CollectionPermission.Manage;
-disabledMembers[2].readonlyPermission = CollectionPermission.View;
-
 const disabledGroups = itemsFactory(2, AccessItemType.Group);
-disabledGroups[0].readonlyPermission = CollectionPermission.ViewExceptPass;
+
+// TODO: this is working in the app but not in Storybook for some reason; the FormSelectionList FormArray
+// is not returning the permission value, possibly because it is disabled?
+// but then why is it working in the app?
 
 /**
  * Displays the members and groups assigned to a collection when the control is in a disabled state.
