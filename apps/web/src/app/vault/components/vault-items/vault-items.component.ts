@@ -48,6 +48,7 @@ export class VaultItemsComponent {
   @Input() addAccessToggle: boolean;
   @Input() restrictProviderAccess: boolean;
   @Input() vaultBulkManagementActionEnabled = false;
+  @Input() activeCollection: CollectionView | undefined;
 
   private _ciphers?: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
@@ -218,6 +219,19 @@ export class VaultItemsComponent {
     );
   }
 
+  protected canManageCollection(cipher: CipherView) {
+    if (cipher.organizationId == null) {
+      return true;
+    }
+
+    if (this.activeCollection) {
+      return this.activeCollection.manage;
+    }
+
+    const collections = this.allCollections.filter((c) => cipher.collectionIds.includes(c.id));
+    return collections.every((collection) => collection.manage);
+  }
+
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
     const ciphers: VaultItem[] = this.ciphers.map((cipher) => ({ cipher }));
@@ -294,20 +308,16 @@ export class VaultItemsComponent {
 
     const hasPersonalItems = this.hasPersonalItems();
     const uniqueCipherOrgIds = this.getUniqueOrganizationIds();
-    const organizations = Array.from(uniqueCipherOrgIds, (orgId) =>
-      this.allOrganizations.find((o) => o.id === orgId),
-    );
 
-    const canEditOrManageAllCiphers =
-      organizations.length > 0 &&
-      organizations.every((org) => org?.canEditAllCiphers(this.restrictProviderAccess));
+    const canManageCollectionCiphers = this.selection.selected
+      .filter((item) => item.cipher)
+      .every(({ cipher }) => this.canManageCollection(cipher));
 
     const canDeleteCollections = this.selection.selected
       .filter((item) => item.collection)
       .every((item) => item.collection && this.canDeleteCollection(item.collection));
 
-    const userCanDeleteAccess =
-      (canEditOrManageAllCiphers || this.allCiphersHaveEditAccess()) && canDeleteCollections;
+    const userCanDeleteAccess = canManageCollectionCiphers && canDeleteCollections;
 
     if (
       userCanDeleteAccess ||
