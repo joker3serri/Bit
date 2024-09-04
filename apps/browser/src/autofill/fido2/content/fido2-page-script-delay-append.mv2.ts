@@ -14,7 +14,7 @@
   // We are ensuring that the script injection is delayed in the event that we are loading
   // within an iframe element. This prevents an issue with web mail clients that load content
   // using ajax within iframes. In particular, Zimbra web mail client was observed to have this issue.
-  // https://github.com/bitwarden/clients/issues/9618
+  // @see https://github.com/bitwarden/clients/issues/9618
   const delayScriptInjection =
     globalContext.window.top !== globalContext.window &&
     globalContext.document.readyState !== "complete";
