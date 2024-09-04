@@ -1340,7 +1340,7 @@ export default class AutofillService implements AutofillServiceInterface {
     let doesContainValue = false;
     CreditCardAutoFillConstants.CardAttributesExtended.forEach((attributeName) => {
       // eslint-disable-next-line no-prototype-builtins
-      if (doesContainValue || !field.hasOwnProperty(attributeName) || !field[attributeName]) {
+      if (doesContainValue || !field[attributeName]) {
         return;
       }
 
@@ -1355,11 +1355,9 @@ export default class AutofillService implements AutofillServiceInterface {
   /**
    * Returns a string value representation of the combined card expiration month and year values
    * in a format matching discovered guidance within the field attributes (typically provided for users).
-   * @private
+   *
    * @param {CardView} cardCipher
    * @param {AutofillField} field
-   * @returns {string}
-   * @memberof AutofillService
    */
   private generateCombinedExpiryValue(cardCipher: CardView, field: AutofillField): string {
     /*
@@ -1385,7 +1383,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
     // Because users are allowed to store truncated years, we need to make assumptions
     // about the full year format when called for
-    const fallbackYearLongformPrefix = "20";
+    const currentCentury = `${new Date().getFullYear()}`.slice(0, 2);
 
     // Note, we construct the output rather than doing string replacement against the
     // format guidance pattern to avoid edge cases that would output invalid values
@@ -1434,7 +1432,7 @@ export default class AutofillService implements AutofillServiceInterface {
       : // Handle zero-padded stored month values, even though they are not _expected_ to be as such
         cardCipher.expMonth.replaceAll("0", "");
     // Note: assumes the user entered an `expYear` value with a length of either 2 or 4
-    const year = (fallbackYearLongformPrefix + cardCipher.expYear).slice(useYearFull ? -4 : -2);
+    const year = (currentCentury + cardCipher.expYear).slice(useYearFull ? -4 : -2);
 
     const combinedExpiryFillValue = (orderByYear ? [year, month] : [month, year]).join(delimiter);
 
@@ -1443,10 +1441,8 @@ export default class AutofillService implements AutofillServiceInterface {
 
   /**
    * Returns a string value representation of discovered guidance for a combined month and year expiration value from the field attributes
-   * @private
+   *
    * @param {AutofillField} field
-   * @returns {([string | null, CardExpiryDateFormat | null])}
-   * @memberof AutofillService
    */
   private getExpectedExpiryDateFormat(
     field: AutofillField,
