@@ -224,10 +224,6 @@ export const CollectionAccess: Story = {
 const disabledMembers = itemsFactory(3, AccessItemType.Member);
 const disabledGroups = itemsFactory(2, AccessItemType.Group);
 
-// TODO: this is working in the app but not in Storybook for some reason; the FormSelectionList FormArray
-// is not returning the permission value, possibly because it is disabled?
-// but then why is it working in the app?
-
 /**
  * Displays the members and groups assigned to a collection when the control is in a disabled state.
  */

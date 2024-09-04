@@ -13,10 +13,7 @@ import {
 } from "rxjs";
 import { first } from "rxjs/operators";
 
-import {
-  OrganizationUserApiService,
-  OrganizationUserUserDetailsResponse,
-} from "@bitwarden/admin-console/common";
+import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -154,7 +151,6 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
       organization: organization$,
       collections: this.collectionAdminService.getAll(orgId),
       groups: groups$,
-      // Collection(s) needed to map readonlypermission for (potential) access selector disabled state
       users: this.organizationUserApiService.getAllUsers(orgId),
     })
       .pipe(takeUntil(this.formGroup.controls.selectedOrg.valueChanges), takeUntil(this.destroy$))
