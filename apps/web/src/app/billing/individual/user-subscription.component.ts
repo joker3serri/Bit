@@ -15,9 +15,13 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { DialogService, ToastService } from "@bitwarden/components";
 
 import {
+  AdjustStorageDialogV2Component,
+  AdjustStorageDialogV2ResultType,
+} from "../shared/adjust-storage-dialog/adjust-storage-dialog-v2.component";
+import {
   AdjustStorageDialogResult,
   openAdjustStorageDialog,
-} from "../shared/adjust-storage.component";
+} from "../shared/adjust-storage-dialog/adjust-storage-dialog.component";
 import {
   OffboardingSurveyDialogResultType,
   openOffboardingSurvey,
@@ -42,6 +46,10 @@ export class UserSubscriptionComponent implements OnInit {
   reinstatePromise: Promise<any>;
   protected enableTimeThreshold$ = this.configService.getFeatureFlag$(
     FeatureFlag.EnableTimeThreshold,
+  );
+
+  protected deprecateStripeSourcesAPI$ = this.configService.getFeatureFlag$(
+    FeatureFlag.AC2476_DeprecateStripeSourcesAPI,
   );
 
   constructor(
@@ -158,15 +166,33 @@ export class UserSubscriptionComponent implements OnInit {
   };
 
   adjustStorage = async (add: boolean) => {
-    const dialogRef = openAdjustStorageDialog(this.dialogService, {
-      data: {
-        storageGbPrice: 4,
-        add: add,
-      },
-    });
-    const result = await lastValueFrom(dialogRef.closed);
-    if (result === AdjustStorageDialogResult.Adjusted) {
-      await this.load();
+    const deprecateStripeSourcesAPI = await firstValueFrom(this.deprecateStripeSourcesAPI$);
+
+    if (deprecateStripeSourcesAPI) {
+      const dialogRef = AdjustStorageDialogV2Component.open(this.dialogService, {
+        data: {
+          price: 4,
+          cadence: "year",
+          type: add ? "Add" : "Remove",
+        },
+      });
+
+      const result = await lastValueFrom(dialogRef.closed);
+
+      if (result === AdjustStorageDialogV2ResultType.Submitted) {
+        await this.load();
+      }
+    } else {
+      const dialogRef = openAdjustStorageDialog(this.dialogService, {
+        data: {
+          storageGbPrice: 4,
+          add: add,
+        },
+      });
+      const result = await lastValueFrom(dialogRef.closed);
+      if (result === AdjustStorageDialogResult.Adjusted) {
+        await this.load();
+      }
     }
   };
 
