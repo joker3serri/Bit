@@ -1016,6 +1016,7 @@ export class InlineMenuFieldQualificationService
     if (!this.submitButtonKeywordsMap.has(element)) {
       const keywords = [
         element.textContent,
+        element.getAttribute("type"),
         element.getAttribute("value"),
         element.getAttribute("aria-label"),
         element.getAttribute("aria-labelledby"),
