@@ -1,5 +1,5 @@
 {
   "extends": "../../../../shared/tsconfig.libs",
-  "include": ["src"],
+  "include": ["src", "../../components/src/icons"],
   "exclude": ["node_modules", "dist"]
 }
