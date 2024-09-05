@@ -57,13 +57,15 @@ export class VaultTimeoutInputComponent
     return this.form.get("vaultTimeout").value === VaultTimeoutInputComponent.CUSTOM_VALUE;
   }
 
-  get exceedsMinimumTimout(): boolean {
+  get exceedsMinimumTimeout(): boolean {
+    return true;
     return (
       !this.showCustom || this.customTimeInMinutes() > VaultTimeoutInputComponent.MIN_CUSTOM_MINUTES
     );
   }
 
   get exceedsMaximumTimeout(): boolean {
+    return true;
     return (
       this.showCustom &&
       this.customTimeInMinutes() >
@@ -229,7 +231,7 @@ export class VaultTimeoutInputComponent
       return { policyError: true };
     }
 
-    if (!this.exceedsMinimumTimout) {
+    if (!this.exceedsMinimumTimeout) {
       return { minTimeoutError: true };
     }
 

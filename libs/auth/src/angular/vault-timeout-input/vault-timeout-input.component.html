@@ -12,21 +12,34 @@
   <div class="tw-grid tw-grid-cols-12 tw-gap-4" *ngIf="showCustom" formGroupName="custom">
     <bit-form-field class="tw-col-span-6" disableMargin>
       <bit-label>{{ "customVaultTimeout" | i18n }}</bit-label>
-      <input bitInput type="number" min="0" formControlName="hours" />
+      <input
+        bitInput
+        type="number"
+        min="0"
+        formControlName="hours"
+        aria-labelledby="maximum-error"
+      />
       <bit-label>{{ "hours" | i18n }}</bit-label>
     </bit-form-field>
     <bit-form-field class="tw-col-span-6 tw-self-end" disableMargin>
-      <input bitInput type="number" min="0" name="minutes" formControlName="minutes" />
+      <input
+        bitInput
+        type="number"
+        min="0"
+        name="minutes"
+        formControlName="minutes"
+        aria-labelledby="maximum-error"
+      />
       <bit-label>{{ "minutes" | i18n }}</bit-label>
     </bit-form-field>
   </div>
   <bit-hint *ngIf="vaultTimeoutPolicy != null && !exceedsMaximumTimeout">
     {{ "vaultTimeoutPolicyInEffect" | i18n: vaultTimeoutPolicyHours : vaultTimeoutPolicyMinutes }}
   </bit-hint>
-  <small *ngIf="!exceedsMinimumTimout" class="tw-text-danger">
+  <small *ngIf="!exceedsMinimumTimeout" class="tw-text-danger">
     <i class="bwi bwi-error" aria-hidden="true"></i> {{ "vaultCustomTimeoutMinimum" | i18n }}
   </small>
-  <small class="tw-text-danger" *ngIf="exceedsMaximumTimeout">
+  <small class="tw-text-danger" *ngIf="exceedsMaximumTimeout" id="maximum-error">
     <i class="bwi bwi-error" aria-hidden="true"></i>
     {{
       "vaultTimeoutPolicyMaximumError" | i18n: vaultTimeoutPolicyHours : vaultTimeoutPolicyMinutes
