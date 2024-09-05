@@ -110,7 +110,8 @@
         id="newItemDropdown"
         appA11yTitle="{{ 'new' | i18n }}"
       >
-        {{ "new" | i18n }}<i class="bwi bwi-angle-down tw-ml-2" aria-hidden="true"></i>
+        <i class="bwi bwi-plus-f" aria-hidden="true"></i>
+        {{ "new" | i18n }}<i class="bwi tw-ml-2" aria-hidden="true"></i>
       </button>
       <bit-menu #addOptions aria-labelledby="newItemDropdown">
         <ng-container [ngSwitch]="extensionRefreshEnabled">
