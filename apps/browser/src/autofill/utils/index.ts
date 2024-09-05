@@ -360,3 +360,42 @@ export function throttle(callback: (_args: any) => any, limit: number) {
     }
   };
 }
+
+/**
+ * Gathers and normalizes keywords from a potential submit button element. Used
+ * to verify if the element submits a login or change password form.
+ *
+ * @param element - The element to gather keywords from.
+ */
+export function getSubmitButtonKeywordsSet(element: HTMLElement): Set<string> {
+  const keywords = [
+    element.textContent,
+    element.getAttribute("type"),
+    element.getAttribute("value"),
+    element.getAttribute("aria-label"),
+    element.getAttribute("aria-labelledby"),
+    element.getAttribute("aria-describedby"),
+    element.getAttribute("title"),
+    element.getAttribute("id"),
+    element.getAttribute("name"),
+    element.getAttribute("class"),
+  ];
+
+  const keywordsSet = new Set<string>();
+  for (let i = 0; i < keywords.length; i++) {
+    if (typeof keywords[i] === "string") {
+      keywords[i]
+        .toLowerCase()
+        .replace(/[-\s]/g, "")
+        .replace(/[^a-zA-Z0-9]+/g, "|")
+        .split("|")
+        .forEach((keyword) => {
+          if (keyword) {
+            keywordsSet.add(keyword);
+          }
+        });
+    }
+  }
+
+  return keywordsSet;
+}

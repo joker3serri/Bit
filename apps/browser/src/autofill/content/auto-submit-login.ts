@@ -7,7 +7,12 @@ import { CollectAutofillContentService } from "../services/collect-autofill-cont
 import DomElementVisibilityService from "../services/dom-element-visibility.service";
 import { DomQueryService } from "../services/dom-query.service";
 import InsertAutofillContentService from "../services/insert-autofill-content.service";
-import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "../utils";
+import {
+  elementIsInputElement,
+  getSubmitButtonKeywordsSet,
+  nodeIsFormElement,
+  sendExtensionMessage,
+} from "../utils";
 
 (function (globalContext) {
   const domQueryService = new DomQueryService();
@@ -241,34 +246,7 @@ import { elementIsInputElement, nodeIsFormElement, sendExtensionMessage } from "
    * @param element - The element to check
    */
   function isLoginButton(element: HTMLElement) {
-    const keywords = [
-      element.textContent,
-      element.getAttribute("type"),
-      element.getAttribute("value"),
-      element.getAttribute("aria-label"),
-      element.getAttribute("aria-labelledby"),
-      element.getAttribute("aria-describedby"),
-      element.getAttribute("title"),
-      element.getAttribute("id"),
-      element.getAttribute("name"),
-      element.getAttribute("class"),
-    ];
-
-    const keywordsSet = new Set<string>();
-    for (let i = 0; i < keywords.length; i++) {
-      if (typeof keywords[i] === "string") {
-        keywords[i]
-          .toLowerCase()
-          .replace(/[-\s]/g, "")
-          .replace(/[^a-zA-Z0-9]+/g, "|")
-          .split("|")
-          .forEach((keyword) => {
-            if (keyword) {
-              keywordsSet.add(keyword);
-            }
-          });
-      }
-    }
+    const keywordsSet = getSubmitButtonKeywordsSet(element);
     const keywordValues = Array.from(keywordsSet).join(",");
 
     return SubmitLoginButtonNames.some((keyword) => keywordValues.indexOf(keyword) > -1);
