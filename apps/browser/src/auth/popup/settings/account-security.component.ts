@@ -216,9 +216,8 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     this.form.controls.vaultTimeoutAction.valueChanges
       .pipe(
         startWith(initialValues.vaultTimeoutAction), // emit to init pairwise
-        pairwise(),
-        concatMap(async ([previousValue, newValue]) => {
-          await this.saveVaultTimeoutAction(previousValue, newValue);
+        map(async (value) => {
+          await this.saveVaultTimeoutAction(value);
         }),
         takeUntil(this.destroy$),
       )
@@ -344,8 +343,8 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     }
   }
 
-  async saveVaultTimeoutAction(previousValue: VaultTimeoutAction, newValue: VaultTimeoutAction) {
-    if (newValue === VaultTimeoutAction.LogOut) {
+  async saveVaultTimeoutAction(value: VaultTimeoutAction) {
+    if (value === VaultTimeoutAction.LogOut) {
       const confirmed = await this.dialogService.openSimpleDialog({
         title: { key: "vaultTimeoutLogOutConfirmationTitle" },
         content: { key: "vaultTimeoutLogOutConfirmation" },
@@ -353,7 +352,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
       });
 
       if (!confirmed) {
-        this.form.controls.vaultTimeoutAction.setValue(previousValue, {
+        this.form.controls.vaultTimeoutAction.setValue(VaultTimeoutAction.Lock, {
           emitEvent: false,
         });
         return;
@@ -374,7 +373,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     await this.vaultTimeoutSettingsService.setVaultTimeoutOptions(
       activeAccount.id,
       this.form.value.vaultTimeout,
-      newValue,
+      value,
     );
     this.refreshTimeoutSettings$.next();
   }

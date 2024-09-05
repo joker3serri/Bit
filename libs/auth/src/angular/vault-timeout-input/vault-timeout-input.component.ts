@@ -146,7 +146,7 @@ export class VaultTimeoutInputComponent
         takeUntil(this.destroy$),
       )
       .subscribe((value) => {
-        const current = Math.max(value, 0);
+        const current = Math.max(value, 1);
 
         // This cannot emit an event b/c it would cause form.valueChanges to fire again
         // and we are already handling that above so just silently update

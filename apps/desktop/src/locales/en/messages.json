@@ -924,6 +924,9 @@
   "vaultTimeout": {
     "message": "Vault timeout"
   },
+  "vaultTimeout1": {
+    "message": "Timeout"
+  },
   "vaultTimeoutDesc": {
     "message": "Choose when your vault will take the vault timeout action."
   },
