@@ -1818,6 +1818,9 @@
   "setYourPinButton": {
     "message": "Set PIN"
   },
+  "setYourPinCode": {
+    "message": "Set your PIN code for unlocking Bitwarden. Your PIN settings will be reset if you ever fully log out of the application."
+  },
   "setYourPinCode1": {
     "message": "Your PIN will be used to unlock Bitwarden instead of your master password. Your PIN will reset if you ever fully log out of Bitwarden."
   },
