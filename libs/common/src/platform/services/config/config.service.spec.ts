@@ -4,7 +4,7 @@
  */
 
 import { matches, mock } from "jest-mock-extended";
-import { BehaviorSubject, Subject, bufferCount, firstValueFrom, of } from "rxjs";
+import { BehaviorSubject, Subject, bufferCount, firstValueFrom, of, take } from "rxjs";
 
 import {
   FakeGlobalState,
@@ -37,6 +37,8 @@ import {
   USER_SERVER_CONFIG,
   SLOW_EMISSION_GUARD,
 } from "./default-config.service";
+import { ConfigService } from "../../abstractions/config/config.service";
+import { FeatureFlag } from "../../../enums/feature-flag.enum";
 
 describe("ConfigService", () => {
   const configApiService = mock<ConfigApiServiceAbstraction>();
@@ -274,6 +276,48 @@ describe("ConfigService", () => {
         expect(actual).toEqual(expected);
         spy.unsubscribe();
       });
+    });
+  });
+
+  describe("userCachedFeatureFlag$", () => {
+    it("maps saved user config to a feature flag", async () => {
+      const updateFeature = (value: boolean) => {
+        return new ServerConfig(
+          new ServerConfigData({
+            featureStates: {
+              "test-feature": value,
+            },
+          }),
+        );
+      };
+
+      const configService = new DefaultConfigService(
+        configApiService,
+        environmentService,
+        logService,
+        stateProvider,
+        authService,
+      );
+
+      userState.nextState(null);
+
+      const promise = firstValueFrom(
+        configService
+          .userCachedFeatureFlag$("test-feature" as FeatureFlag, userId)
+          .pipe(bufferCount(3)),
+      );
+
+      userState.nextState(updateFeature(true));
+      userState.nextState(updateFeature(false));
+
+      const values = await promise;
+
+      // We wouldn't normally expect this to be undefined, the logic
+      // should normally return the feature flags default value but since
+      // we are faking a feature flag key, undefined is expected
+      expect(values[0]).toBe(undefined);
+      expect(values[1]).toBe(true);
+      expect(values[2]).toBe(false);
     });
   });
 
