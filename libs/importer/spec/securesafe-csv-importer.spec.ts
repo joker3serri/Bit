@@ -54,7 +54,7 @@ const CipherData = [
     }),
   },
   {
-    title: "should remove surrounding slashes if present",
+    title: "should change headers to english and remove surrounding slashes if present",
     csv: data_surrounding_slashes,
     expected: Object.assign(new CipherView(), {
       id: null,
@@ -63,14 +63,14 @@ const CipherData = [
       name: "Gmail",
       login: Object.assign(new LoginView(), {
         username: "test@gmail.com",
-        password: "test",
+        password: "/test",
         uris: [
           Object.assign(new LoginUriView(), {
             uri: "https://gmail.com",
           }),
         ],
       }),
-      notes: "comment",
+      notes: "comment/",
       type: 1,
     }),
   },
