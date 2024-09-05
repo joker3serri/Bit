@@ -1,5 +1,6 @@
 import {
   AfterContentChecked,
+  booleanAttribute,
   Component,
   ContentChild,
   ElementRef,
@@ -7,7 +8,6 @@ import {
   HostListener,
   Input,
   ViewChild,
-  booleanAttribute,
   signal,
 } from "@angular/core";
 
