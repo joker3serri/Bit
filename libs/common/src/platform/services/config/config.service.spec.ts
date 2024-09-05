@@ -4,7 +4,7 @@
  */
 
 import { matches, mock } from "jest-mock-extended";
-import { BehaviorSubject, Subject, bufferCount, firstValueFrom, of, take } from "rxjs";
+import { BehaviorSubject, Subject, bufferCount, firstValueFrom, of } from "rxjs";
 
 import {
   FakeGlobalState,
@@ -16,6 +16,7 @@ import {
 import { subscribeTo } from "../../../../spec/observable-tracker";
 import { AuthService } from "../../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../../auth/enums/authentication-status";
+import { FeatureFlag } from "../../../enums/feature-flag.enum";
 import { UserId } from "../../../types/guid";
 import { ConfigApiServiceAbstraction } from "../../abstractions/config/config-api.service.abstraction";
 import { ServerConfig } from "../../abstractions/config/server-config";
@@ -37,8 +38,6 @@ import {
   USER_SERVER_CONFIG,
   SLOW_EMISSION_GUARD,
 } from "./default-config.service";
-import { ConfigService } from "../../abstractions/config/config.service";
-import { FeatureFlag } from "../../../enums/feature-flag.enum";
 
 describe("ConfigService", () => {
   const configApiService = mock<ConfigApiServiceAbstraction>();
