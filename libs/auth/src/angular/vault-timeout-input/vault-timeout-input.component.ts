@@ -58,14 +58,12 @@ export class VaultTimeoutInputComponent
   }
 
   get exceedsMinimumTimeout(): boolean {
-    return true;
     return (
       !this.showCustom || this.customTimeInMinutes() > VaultTimeoutInputComponent.MIN_CUSTOM_MINUTES
     );
   }
 
   get exceedsMaximumTimeout(): boolean {
-    return true;
     return (
       this.showCustom &&
       this.customTimeInMinutes() >
