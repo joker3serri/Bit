@@ -1,4 +1,5 @@
 name: Scorecard supply-chain security
+
 on:
   schedule:
     - cron: '0 5 * * 1'
