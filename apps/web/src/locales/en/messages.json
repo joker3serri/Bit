@@ -9015,9 +9015,6 @@
   },
   "additionalStorageGbMessage": {
     "message": "GB additional storage"
-<<<<<<< HEAD
-  }  
-=======
   },
   "premiumAccounts": {
     "message": "6 premium accounts"
@@ -9083,5 +9080,4 @@
   "editAccess": {
     "message": "Edit access"
   }
->>>>>>> main
 }
