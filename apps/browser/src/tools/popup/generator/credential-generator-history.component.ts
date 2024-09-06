@@ -11,11 +11,7 @@ import {
   CredentialGeneratorHistoryComponent as CredentialGeneratorHistoryToolsComponent,
   EmptyCredentialHistoryComponent,
 } from "@bitwarden/generator-components";
-import {
-  GeneratedCredential,
-  GeneratedPasswordHistory,
-  GeneratorHistoryService,
-} from "@bitwarden/generator-history";
+import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupFooterComponent } from "../../../platform/popup/layout/popup-footer.component";
@@ -59,7 +55,7 @@ export class CredentialGeneratorHistoryComponent {
       .pipe(
         takeUntilDestroyed(),
         switchMap((id) => id && this.history.credentials$(id)),
-        map((credentials) => !!credentials),
+        map((credentials) => credentials.length > 0),
       )
       .subscribe(this.hasHistory$);
   }
@@ -67,8 +63,4 @@ export class CredentialGeneratorHistoryComponent {
   clear = async () => {
     await this.history.clear(await firstValueFrom(this.userId$));
   };
-
-  toGeneratedPasswordHistory(value: GeneratedCredential) {
-    return new GeneratedPasswordHistory(value.credential, value.generationDate.valueOf());
-  }
 }
