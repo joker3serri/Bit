@@ -386,9 +386,7 @@ export function getSubmitButtonKeywordsSet(element: HTMLElement): Set<string> {
     if (typeof keywords[i] === "string") {
       keywords[i]
         .toLowerCase()
-        .replace(/[-\s]/g, "")
-        .replace(/[^a-zA-Z0-9]+/g, "|")
-        .split("|")
+        .split(/[^\p{L}]+/gu)
         .forEach((keyword) => {
           if (keyword) {
             keywordsSet.add(keyword);
