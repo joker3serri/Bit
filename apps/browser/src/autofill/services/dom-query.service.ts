@@ -130,11 +130,9 @@ export class DomQueryService implements DomQueryServiceInterface {
     root: Document | ShadowRoot | Element,
     depth: number = 0,
   ): ShadowRoot[] {
-    // TODO
     if (!this.pageContainsShadowDom) {
       return [];
     }
-    // END
 
     if (depth >= MAX_DEEP_QUERY_RECURSION_DEPTH) {
       throw new Error("Max recursion depth reached");
