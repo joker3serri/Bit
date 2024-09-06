@@ -34,6 +34,7 @@ async function run(context) {
 
   if (["darwin", "mas"].includes(context.electronPlatformName)) {
     const identities = getIdentities(process.env.CSC_NAME ?? "");
+    console.log("Available identities", identities);
     if (identities.length === 0) {
       throw new Error("No valid identities found");
     }
@@ -43,7 +44,7 @@ async function run(context) {
 
     const appName = context.packager.appInfo.productFilename;
     const appPath = `${context.appOutDir}/${appName}.app`;
-    const proxyPath = path.join(appPath, "Contents", "MacOS", "desktop_proxy");
+    const proxyPath = path.join(appPath, "Contents", "Helpers", "desktop_proxy");
 
     const packageId = "com.bitwarden.desktop";
     const entitlementsName = "entitlements.desktop_proxy.plist";

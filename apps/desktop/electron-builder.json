@@ -76,10 +76,10 @@
     "extraFiles": [
       {
         "from": "desktop_native/dist/desktop_proxy.${platform}-${arch}",
-        "to": "MacOS/desktop_proxy"
+        "to": "Helpers/desktop_proxy"
       }
     ],
-    "signIgnore": ["MacOS/desktop_proxy"],
+    "signIgnore": ["Helpers/desktop_proxy"],
     "target": ["dmg", "zip"]
   },
   "win": {
