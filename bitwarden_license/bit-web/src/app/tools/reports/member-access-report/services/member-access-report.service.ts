@@ -38,6 +38,8 @@ export class MemberAccessReportService {
       collectionsCount: userData.collectionsCount,
       groupsCount: userData.groupsCount,
       itemsCount: userData.totalItemCount,
+      userGuid: userData.userGuid,
+      usesKeyConnector: userData.usesKeyConnector,
     }));
     return memberAccessReportViewCollection;
   }
@@ -97,9 +99,8 @@ export class MemberAccessReportService {
       hidePasswords: accessDetails.hidePasswords,
       manage: accessDetails.manage,
     });
-    const labelText = this.i18nService.t(
+    return this.i18nService.t(
       permissionList.find((p) => p.perm === convertToPermission(collectionSelectionView))?.labelId,
     );
-    return labelText;
   }
 }

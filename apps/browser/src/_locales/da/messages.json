@@ -25,9 +25,6 @@
   "finishCreatingYourAccountBySettingAPassword": {
     "message": "Afslut kontooprettelsen med at indstille en adgangskode"
   },
-  "login": {
-    "message": "Log ind"
-  },
   "enterpriseSingleSignOn": {
     "message": "Virksomheds Single-Sign-On"
   },
@@ -305,22 +302,22 @@
     "message": "Redigér mappe"
   },
   "newFolder": {
-    "message": "New folder"
+    "message": "Ny mappe"
   },
   "folderName": {
-    "message": "Folder name"
+    "message": "Mappenavn"
   },
   "folderHintText": {
-    "message": "Nest a folder by adding the parent folder's name followed by a “/”. Example: Social/Forums"
+    "message": "Indlejr en mappe ved at tilføje den overordnede mappes navn efterfulgt af en “/”. F.eks.: Social/Fora"
   },
   "noFoldersAdded": {
-    "message": "No folders added"
+    "message": "Ingen mapper tilføjet"
   },
   "createFoldersToOrganize": {
-    "message": "Create folders to organize your vault items"
+    "message": "Opret mapper for at organisere boks-emner"
   },
   "deleteFolderPermanently": {
-    "message": "Are you sure you want to permanently delete this folder?"
+    "message": "Sikker på, at denne mappe skal slettes permanent?"
   },
   "deleteFolder": {
     "message": "Slet mappe"
@@ -387,16 +384,56 @@
     "message": "Minimumslængde på adgangskode"
   },
   "uppercase": {
-    "message": "Store bogstaver (A-Z)"
+    "message": "Store bogstaver (A-Z)",
+    "description": "deprecated. Use uppercaseLabel instead."
   },
   "lowercase": {
-    "message": "Små bogstaver (a-z)"
+    "message": "Små bogstaver (a-z)",
+    "description": "deprecated. Use lowercaseLabel instead."
   },
   "numbers": {
-    "message": "Tal (0-9)"
+    "message": "Tal (0-9)",
+    "description": "deprecated. Use numbersLabel instead."
   },
   "specialCharacters": {
-    "message": "Specialtegn (!@#$%^&*)"
+    "message": "Specialtegn (!@#$%^&*)",
+    "description": "deprecated. Use specialCharactersLabel instead."
+  },
+  "include": {
+    "message": "Inkludér",
+    "description": "Card header for password generator include block"
+  },
+  "uppercaseDescription": {
+    "message": "Inkludér majuskler",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Inkludér minuskler",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Inkludér tal",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Inkludér specialtegn",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
   },
   "numWords": {
     "message": "Antal ord"
@@ -418,7 +455,12 @@
     "message": "Mindste antal specialtegn"
   },
   "avoidAmbChar": {
-    "message": "Undgå tvetydige tegn"
+    "message": "Undgå tvetydige tegn",
+    "description": "deprecated. Use avoidAmbiguous instead."
+  },
+  "avoidAmbiguous": {
+    "message": "Undgå tvetydige tegn",
+    "description": "Label for the avoid ambiguous characters checkbox."
   },
   "searchVault": {
     "message": "Søg i boks"
@@ -641,6 +683,12 @@
   "newAccountCreated": {
     "message": "Din nye konto er oprettet! Du kan nu logge ind."
   },
+  "newAccountCreated2": {
+    "message": "Din nye konto er oprettet!"
+  },
+  "youHaveBeenLoggedIn": {
+    "message": "Du er blevet logget ind!"
+  },
   "youSuccessfullyLoggedIn": {
     "message": "Du er nu logget ind"
   },
@@ -689,6 +737,9 @@
   },
   "totpHelperWithCapture": {
     "message": "Bitwarden kan gemme og udfylde 2-trinsbekræftelseskoder. Vælg kameraikonet for at tage et skærmfoto af dette websteds godkendelses-QR-kode, eller kopiér og indsæt nøglen i dette felt."
+  },
+  "learnMoreAboutAuthenticators": {
+    "message": "Læs mere om autentifikatorer"
   },
   "copyTOTP": {
     "message": "Kopiér godkendelsesnøgle (TOTP)"
@@ -1079,6 +1130,9 @@
   "ppremiumSignUpStorage": {
     "message": "1 GB krypteret lager til vedhæftede filer."
   },
+  "premiumSignUpEmergency": {
+    "message": "Nødadgang"
+  },
   "premiumSignUpTwoStepOptions": {
     "message": "Proprietære totrins-login muligheder, såsom YubiKey og Duo."
   },
@@ -1100,14 +1154,29 @@
   "premiumPurchaseAlert": {
     "message": "Du kan købe premium-medlemskab i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
+  "premiumPurchaseAlertV2": {
+    "message": "Der kan købes Premium fra kontoindstillingerne via Bitwarden web-appen."
+  },
   "premiumCurrentMember": {
     "message": "Du er premium-medlem!"
   },
   "premiumCurrentMemberThanks": {
     "message": "Tak fordi du støtter Bitwarden."
   },
+  "premiumFeatures": {
+    "message": "Opgradér til Premium og modtag:"
+  },
   "premiumPrice": {
     "message": "Alt dette for kun $PRICE$ /år!",
+    "placeholders": {
+      "price": {
+        "content": "$1",
+        "example": "$10"
+      }
+    }
+  },
+  "premiumPriceV2": {
+    "message": "Alt dette for kun $PRICE$ pr. år!",
     "placeholders": {
       "price": {
         "content": "$1",
@@ -2065,6 +2134,12 @@
   "biometricsNotUnlockedDesc": {
     "message": "Oplås denne bruger op i computerprogrammet og forsøg igen."
   },
+  "biometricsNotAvailableTitle": {
+    "message": "Biometrisk oplåsning utilgængelig"
+  },
+  "biometricsNotAvailableDesc": {
+    "message": "Biometrisk oplåsning er p.t. ikke tilgængelig. Prøv igen senere."
+  },
   "biometricsFailedTitle": {
     "message": "Biometri mislykkedes"
   },
@@ -2162,7 +2237,7 @@
     "message": "Kodeordsbeskyttet"
   },
   "copyLink": {
-    "message": "Copy link"
+    "message": "Kopier link"
   },
   "copySendLink": {
     "message": "Kopiér Send link",
@@ -2293,6 +2368,24 @@
   },
   "createdSend": {
     "message": "Send oprettet",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "createdSendSuccessfully": {
+    "message": "Send er hermed oprettet!",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendAvailability": {
+    "message": "Denne Send vil være tilgængelig for alle med linket i de næste $DAYS$ dage.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "placeholders": {
+      "days": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "sendLinkCopied": {
+    "message": "Send-link kopieret",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "editedSend": {
@@ -3384,7 +3477,7 @@
   "passkeyFeatureIsNotImplementedForAccountsWithoutMasterPassword": {
     "message": "Bekræftelse krævet af startwebstedet. Denne funktion er endnu ikke implementeret for konti uden hovedadgangskode."
   },
-  "logInWithPasskey": {
+  "logInWithPasskeyQuestion": {
     "message": "Log ind med adgangsnøgle?"
   },
   "passkeyAlreadyExists": {
@@ -3396,6 +3489,9 @@
   "noMatchingPasskeyLogin": {
     "message": "Der er intet matchende login til dette websted."
   },
+  "noMatchingLoginsForSite": {
+    "message": "Ingen matchende logins for dette websted"
+  },
   "confirm": {
     "message": "Bekræft"
   },
@@ -3405,8 +3501,11 @@
   "savePasskeyNewLogin": {
     "message": "Gem adgangsnøgle som nyt login"
   },
-  "choosePasskey": {
+  "chooseCipherForPasskeySave": {
     "message": "Vælg et login at gemme denne adgangsnøgle til"
+  },
+  "chooseCipherForPasskeyAuth": {
+    "message": "Vælg en adgangsnøgle at logge ind med"
   },
   "passkeyItem": {
     "message": "Adgangsnøgleemne"
@@ -3603,8 +3702,16 @@
     "message": "Legitimationsoplysninger er gemt!",
     "description": "Notification message for when saving credentials has succeeded."
   },
+  "passwordSaved": {
+    "message": "Adgangskode gemt!",
+    "description": "Notification message for when saving credentials has succeeded."
+  },
   "updateCipherAttemptSuccess": {
     "message": "Legitimationsoplysninger er opdateret!",
+    "description": "Notification message for when updating credentials has succeeded."
+  },
+  "passwordUpdated": {
+    "message": "Adgangskode opdateret!",
     "description": "Notification message for when updating credentials has succeeded."
   },
   "saveCipherAttemptFailed": {
@@ -3878,10 +3985,20 @@
     "message": "Godkendelsesnøgle"
   },
   "autofillOptions": {
-    "message": "Auto-fill options"
+    "message": "Autofill options"
   },
   "websiteUri": {
     "message": "Website (URI)"
+  },
+  "websiteUriCount": {
+    "message": "Websted (URI) $COUNT$",
+    "description": "Label for an input field that contains a website URI. The input field is part of a list of fields, and the count indicates the position of the field in the list.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
   },
   "websiteAdded": {
     "message": "Website added"
@@ -3921,7 +4038,13 @@
     }
   },
   "autoFillOnPageLoad": {
-    "message": "Autofill on page load?"
+    "message": "Autoudfyld ved sideindlæsning?"
+  },
+  "cardExpiredTitle": {
+    "message": "Udløbet kort"
+  },
+  "cardExpiredMessage": {
+    "message": "Er det blevet fornyet, opdatér venligst kortoplysningerne"
   },
   "cardDetails": {
     "message": "Kortoplysninger"
@@ -3934,6 +4057,9 @@
         "example": "Visa"
       }
     }
+  },
+  "enableAnimations": {
+    "message": "Aktivér animationer"
   },
   "addAccount": {
     "message": "Tilføj konto"
@@ -4166,9 +4292,36 @@
     "message": "Kontohandlinger"
   },
   "showNumberOfAutofillSuggestions": {
-    "message": "Show number of login autofill suggestions on extension icon"
+    "message": "Vis antal login-autoudfyldningsforslag på udvidelsesikon"
   },
   "systemDefault": {
-    "message": "System default"
+    "message": "Systemstandard"
+  },
+  "enterprisePolicyRequirementsApplied": {
+    "message": "Virksomhedspolitikkrav er anvendt på denne indstilling"
+  },
+  "additionalContentAvailable": {
+    "message": "Yderligere indhold er tilgængeligt"
+  },
+  "itemsInTrash": {
+    "message": "Emner i papirkurv"
+  },
+  "noItemsInTrash": {
+    "message": "Ingen emner i papirkurv"
+  },
+  "noItemsInTrashDesc": {
+    "message": "Emner, som slettes, vil fremgå her og slettes permanent efter 30 dage"
+  },
+  "trashWarning": {
+    "message": "Emner, som har været i papirkurven i over 30 dage, slettes automatisk"
+  },
+  "restore": {
+    "message": "Gendan"
+  },
+  "deleteForever": {
+    "message": "Slet permanent"
+  },
+  "noEditPermissions": {
+    "message": "Ingen tilladelse til at redigere dette emne"
   }
 }
