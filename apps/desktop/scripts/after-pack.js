@@ -90,8 +90,6 @@ function getIdentities() {
     .execSync("/usr/bin/security find-identity -v -p codesigning")
     .toString();
 
-  console.log("## Available identities:", ids);
-
   return ids
     .split("\n")
     .filter((line) => {
