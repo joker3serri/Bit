@@ -19,16 +19,12 @@ let nextId = 0;
 })
 export class ToolsSliderDirective {
   @HostBinding("class") @Input() get classList() {
-    return [
-      "tw-block",
-      "tw-w-full",
-      this.hasError ? "tools-range-danger-600" : "tools-range-primary-600",
-      "focus:tools-range-primary-700",
-      "disabled:tools-range-secondary-600",
-    ].filter((s) => s != "");
+    return [this.hasError ? "tools-range-danger-600" : "tools-range-primary-600"].filter(
+      (s) => s != "",
+    );
   }
 
-  @HostBinding() @Input() id = `tools-slider-${nextId++}`;
+  @HostBinding() @Input() id = `bit-slider-${nextId++}`;
 
   @HostBinding("attr.aria-describedby") ariaDescribedBy: string;
 
@@ -56,19 +52,11 @@ export class ToolsSliderDirective {
 
   @HostListener("input")
   onInput() {
-    this.ngControl?.control?.markAsUntouched();
+    this.ngControl?.control?.markAsTouched();
   }
 
   get hasError() {
-    if (this.showErrorsWhenDisabled) {
-      return (
-        (this.ngControl?.status === "INVALID" || this.ngControl?.status === "DISABLED") &&
-        this.ngControl?.touched &&
-        this.ngControl?.errors != null
-      );
-    } else {
-      return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
-    }
+    return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
   }
 
   get error(): [string, any] {

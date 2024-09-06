@@ -1,7 +1,30 @@
-<div class="tw-w-full tw-flex tw-bg-background-alt tw-flex-col tw-my-5 tw-p-4">
-  <input toolsSlider [min]="min" [max]="max" [step]="step" ngModel #rangeSlider />
-  <div class="tw-w-full tw-flex tw-justify-between">
-    <span *ngIf="min !== undefined" role="none" class="justify-self-start">{{ min }}</span>
-    <span *ngIf="max !== undefined" role="none" class="justify-self-end">{{ max }}</span>
+<div class="tw-w-full tw-flex tw-bg-background-alt tw-my-5 tw-p-4 tw-gap-3">
+  <div class="tw-flex-col tw-pt-4">
+    <input
+      toolsSlider
+      [min]="min"
+      [max]="max"
+      [step]="step"
+      [formControl]="sliderValueControl"
+      (ngModelChange)="setTrackColor($event)"
+      [disabled]="disabled"
+    />
+    <div class="tw-w-full tw-flex tw-justify-between tw-mt-1">
+      <small *ngIf="min !== undefined" role="none" class="tw-text-muted justify-self-start">{{
+        min
+      }}</small>
+      <small *ngIf="max !== undefined" role="none" class="tw-text-muted justify-self-end">{{
+        max
+      }}</small>
+    </div>
+  </div>
+  <div class="tw-flex tw-justify-center tw-items-center">
+    <input
+      bitInput
+      class="tw-rounded-lg tw-w-20 tw-text-center tw-p-2 tw-text-muted"
+      type="number"
+      [formControl]="sliderValueControl"
+      (ngModelChange)="setTrackColor($event)"
+    />
   </div>
 </div>

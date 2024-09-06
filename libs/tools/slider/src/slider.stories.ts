@@ -1,3 +1,4 @@
+import { ReactiveFormsModule } from "@angular/forms";
 import { moduleMetadata, Meta, StoryObj } from "@storybook/angular";
 
 import { SliderComponent } from "./slider.component";
@@ -7,21 +8,9 @@ export default {
   component: SliderComponent,
   decorators: [
     moduleMetadata({
-      imports: [SliderComponent],
+      imports: [SliderComponent, ReactiveFormsModule],
     }),
   ],
-  argTypes: {
-    minValue: {
-      control: { type: "number" },
-      description: "Minimum value for the slider",
-      defaultValue: 0,
-    },
-    maxValue: {
-      control: { type: "number" },
-      description: "Maximum value for the slider",
-      defaultValue: 1000,
-    },
-  },
 } as Meta<SliderComponent>;
 
 type Story = StoryObj<SliderComponent>;
@@ -31,12 +20,12 @@ export const Default: Story = {
     min: 0,
     max: 100,
   },
-
-  render: (args) => {
-    return {
-      props: {
-        ...args,
-      },
-    };
-  },
+  render: (args) => ({
+    props: {
+      ...args,
+    },
+    template: `
+      <bit-slider [min]="min" [max]="max"></bit-slider>
+    `,
+  }),
 };
