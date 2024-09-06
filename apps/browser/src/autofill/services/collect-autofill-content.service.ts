@@ -39,7 +39,6 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
   private readonly getPropertyOrAttribute = getPropertyOrAttribute;
   private noFieldsFound = false;
   private domRecentlyMutated = true;
-  private pageContainsShadowDom: boolean;
   private _autofillFormElements: AutofillFormElements = new Map();
   private autofillFieldElements: AutofillFieldElements = new Map();
   private currentLocationHref = "";
