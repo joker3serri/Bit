@@ -384,14 +384,13 @@ export function getSubmitButtonKeywordsSet(element: HTMLElement): Set<string> {
   const keywordsSet = new Set<string>();
   for (let i = 0; i < keywords.length; i++) {
     if (typeof keywords[i] === "string") {
-      keywords[i]
-        .toLowerCase()
-        .split(/[^\p{L}]+/gu)
-        .forEach((keyword) => {
-          if (keyword) {
-            keywordsSet.add(keyword);
-          }
-        });
+      // Iterate over all keywords metadata and split them by non-letter characters.
+      // This ensures we check against individual words and not the entire string.
+      keywords[i].split(/[^\p{L}]+/gu).forEach((keyword) => {
+        if (keyword) {
+          keywordsSet.add(keyword);
+        }
+      });
     }
   }
 
