@@ -334,6 +334,10 @@ export class NativeMessagingMain {
       );
     }
 
+    if (process.platform === "darwin") {
+      return path.join(path.dirname(this.exePath), "..", "Resources", "bin", "desktop_proxy");
+    }
+
     return path.join(path.dirname(this.exePath), `desktop_proxy${ext}`);
   }
 
