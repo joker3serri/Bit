@@ -29,7 +29,7 @@ export class DomQueryService implements DomQueryServiceInterface {
     mutationObserver?: MutationObserver,
     forceDeepQueryAttempt?: boolean,
   ): T[] {
-    if (!forceDeepQueryAttempt && this.shouldUseTreeWalkerStrategy()) {
+    if (!forceDeepQueryAttempt && this.pageContainsShadowDomElements()) {
       return this.queryAllTreeWalkerNodes<T>(root, treeWalkerFilter, mutationObserver);
     }
 
@@ -38,6 +38,20 @@ export class DomQueryService implements DomQueryServiceInterface {
     } catch {
       return this.queryAllTreeWalkerNodes<T>(root, treeWalkerFilter, mutationObserver);
     }
+  }
+
+  /**
+   * Checks if the page contains any shadow DOM elements.
+   */
+  checkPageContainsShadowDom = (): void => {
+    this.pageContainsShadowDom = this.queryShadowRoots(globalThis.document.body, true).length > 0;
+  };
+
+  /**
+   * Determines whether to use the treeWalker strategy for querying the DOM.
+   */
+  pageContainsShadowDomElements(): boolean {
+    return this.useTreeWalkerStrategyFlagSet || this.pageContainsShadowDom;
   }
 
   /**
@@ -59,20 +73,6 @@ export class DomQueryService implements DomQueryServiceInterface {
   }
 
   /**
-   * Checks if the page contains any shadow DOM elements.
-   */
-  private checkPageContainsShadowDom = (): void => {
-    this.pageContainsShadowDom = this.queryShadowRoots(globalThis.document.body, true).length > 0;
-  };
-
-  /**
-   * Determines whether to use the treeWalker strategy for querying the DOM.
-   */
-  private shouldUseTreeWalkerStrategy(): boolean {
-    return this.useTreeWalkerStrategyFlagSet || this.pageContainsShadowDom;
-  }
-
-  /**
    * Queries all elements in the DOM that match the given query string.
    * Also, recursively queries all shadow roots for the element.
    *
@@ -86,12 +86,6 @@ export class DomQueryService implements DomQueryServiceInterface {
     mutationObserver?: MutationObserver,
   ): T[] {
     let elements = this.queryElements<T>(root, queryString);
-
-    // TODO
-    if (!this.pageContainsShadowDom) {
-      this.pageContainsShadowDom = this.queryShadowRoots(root, true).length > 0;
-    }
-    // END
 
     const shadowRoots = this.recursivelyQueryShadowRoots(root);
     for (let index = 0; index < shadowRoots.length; index++) {

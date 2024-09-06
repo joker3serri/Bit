@@ -957,6 +957,11 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
    */
   private processMutations = () => {
     const queueLength = this.mutationsQueue.length;
+
+    if (!this.domQueryService.pageContainsShadowDomElements()) {
+      this.domQueryService.checkPageContainsShadowDom();
+    }
+
     for (let queueIndex = 0; queueIndex < queueLength; queueIndex++) {
       const mutations = this.mutationsQueue[queueIndex];
       const processMutationRecords = () => {
@@ -974,7 +979,7 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
   };
 
   /**
-   * Processes a mutation record and updates the autofill elements if necessary.
+   * Processes all mutation records encountered by the mutation observer.
    *
    * @param mutations - The mutation record to process
    */
@@ -986,6 +991,11 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
     }
   }
 
+  /**
+   * Processes a single mutation record and updates the autofill elements if necessary.
+   * @param mutation
+   * @private
+   */
   private processMutationRecord(mutation: MutationRecord) {
     if (
       mutation.type === "childList" &&
