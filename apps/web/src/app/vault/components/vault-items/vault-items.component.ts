@@ -224,12 +224,22 @@ export class VaultItemsComponent {
       return true;
     }
 
+    // Check for admin access in AC vault
+    if (this.showAdminActions) {
+      const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
+
+      if (organization?.allowAdminAccessToAllCollectionItems) {
+        return true;
+      }
+    }
+
     if (this.activeCollection) {
       return this.activeCollection.manage;
     }
 
-    const collections = this.allCollections.filter((c) => cipher.collectionIds.includes(c.id));
-    return collections.every((collection) => collection.manage);
+    return this.allCollections
+      .filter((c) => cipher.collectionIds.includes(c.id))
+      .some((collection) => collection.manage);
   }
 
   private refreshItems() {
