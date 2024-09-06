@@ -2,12 +2,14 @@ import { EVENTS } from "@bitwarden/common/autofill/constants";
 
 import AutofillPageDetails from "../models/autofill-page-details";
 import AutofillScript from "../models/autofill-script";
+import { SubmitLoginButtonNames } from "../services/autofill-constants";
 import { CollectAutofillContentService } from "../services/collect-autofill-content.service";
 import DomElementVisibilityService from "../services/dom-element-visibility.service";
 import { DomQueryService } from "../services/dom-query.service";
 import InsertAutofillContentService from "../services/insert-autofill-content.service";
 import {
   elementIsInputElement,
+  getSubmitButtonKeywordsSet,
   nodeIsButtonElement,
   nodeIsFormElement,
   nodeIsTypeSubmitElement,
@@ -25,17 +27,6 @@ import {
     domElementVisibilityService,
     collectAutofillContentService,
   );
-  const loginKeywords = [
-    "login",
-    "log in",
-    "log-in",
-    "signin",
-    "sign in",
-    "sign-in",
-    "submit",
-    "continue",
-    "next",
-  ];
   let autoSubmitLoginTimeout: number | NodeJS.Timeout;
 
   init();
@@ -200,27 +191,53 @@ import {
     element: HTMLElement,
     lastFieldIsPasswordInput = false,
   ): boolean {
-    const genericSubmitElement = domQueryService.query<HTMLButtonElement>(
+    const genericSubmitElement = querySubmitButtonElement(
       element,
       "[type='submit']",
       (node: Node) => nodeIsTypeSubmitElement(node),
     );
-    if (genericSubmitElement[0]) {
-      clickSubmitElement(genericSubmitElement[0], lastFieldIsPasswordInput);
+    if (genericSubmitElement) {
+      clickSubmitElement(genericSubmitElement, lastFieldIsPasswordInput);
       return true;
     }
 
-    const buttons = domQueryService.query<HTMLButtonElement>(element, "button", (node: Node) =>
-      nodeIsButtonElement(node),
+    const buttonElement = querySubmitButtonElement(
+      element,
+      "button, [type='button']",
+      (node: Node) => nodeIsButtonElement(node),
     );
-    for (let i = 0; i < buttons.length; i++) {
-      if (isLoginButton(buttons[i])) {
-        clickSubmitElement(buttons[i], lastFieldIsPasswordInput);
-        return true;
-      }
+    if (buttonElement) {
+      clickSubmitElement(buttonElement, lastFieldIsPasswordInput);
+      return true;
     }
 
     return false;
+  }
+
+  /**
+   * Queries the element for a submit button element. If an element is found and has keywords
+   * that indicate a login action, the element is returned.
+   *
+   * @param element - The element to query for submit buttons
+   * @param selector - The selector to query for submit buttons
+   * @param treeWalkerFilter - The callback used to filter treeWalker results
+   */
+  function querySubmitButtonElement(
+    element: HTMLElement,
+    selector: string,
+    treeWalkerFilter: CallableFunction,
+  ) {
+    const submitButtonElements = domQueryService.query<HTMLButtonElement>(
+      element,
+      selector,
+      treeWalkerFilter,
+    );
+    for (let index = 0; index < submitButtonElements.length; index++) {
+      const submitElement = submitButtonElements[index];
+      if (isLoginButton(submitElement)) {
+        return submitElement;
+      }
+    }
   }
 
   /**
@@ -245,21 +262,10 @@ import {
    * @param element - The element to check
    */
   function isLoginButton(element: HTMLElement) {
-    const keywordValues = [
-      element.textContent,
-      element.getAttribute("value"),
-      element.getAttribute("aria-label"),
-      element.getAttribute("aria-labelledby"),
-      element.getAttribute("aria-describedby"),
-      element.getAttribute("title"),
-      element.getAttribute("id"),
-      element.getAttribute("name"),
-      element.getAttribute("class"),
-    ]
-      .join(",")
-      .toLowerCase();
+    const keywordsSet = getSubmitButtonKeywordsSet(element);
+    const keywordValues = Array.from(keywordsSet).join(",");
 
-    return loginKeywords.some((keyword) => keywordValues.includes(keyword));
+    return SubmitLoginButtonNames.some((keyword) => keywordValues.indexOf(keyword) > -1);
   }
 
   /**
