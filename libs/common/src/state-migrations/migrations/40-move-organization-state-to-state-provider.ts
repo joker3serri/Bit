@@ -27,6 +27,8 @@ type PermissionsApi = {
   createNewCollections: boolean;
   editAnyCollection: boolean;
   deleteAnyCollection: boolean;
+  editAssignedCollections: boolean;
+  deleteAssignedCollections: boolean;
   manageCiphers: boolean;
   manageGroups: boolean;
   manageSso: boolean;
