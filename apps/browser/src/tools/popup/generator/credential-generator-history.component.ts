@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
-import { concatMap, firstValueFrom, map, timeout } from "rxjs";
+import { Component } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { BehaviorSubject, distinctUntilChanged, firstValueFrom, map, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -8,7 +9,7 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { ButtonModule, ContainerComponent } from "@bitwarden/components";
 import {
   CredentialGeneratorHistoryComponent as CredentialGeneratorHistoryToolsComponent,
-  CredentialGeneratorHistoryEmptyListComponent,
+  EmptyCredentialHistoryComponent,
 } from "@bitwarden/generator-components";
 import {
   GeneratedCredential,
@@ -22,7 +23,7 @@ import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-heade
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 
 @Component({
-  selector: "bit-credential-generator-history",
+  selector: "app-credential-generator-history",
   templateUrl: "credential-generator-history.component.html",
   standalone: true,
   imports: [
@@ -34,39 +35,37 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
     PopupHeaderComponent,
     PopupPageComponent,
     CredentialGeneratorHistoryToolsComponent,
-    CredentialGeneratorHistoryEmptyListComponent,
+    EmptyCredentialHistoryComponent,
     PopupFooterComponent,
   ],
 })
-export class CredentialGeneratorHistoryComponent implements OnInit {
-  protected userId: UserId;
-  protected credentials: GeneratedPasswordHistory[] = [];
+export class CredentialGeneratorHistoryComponent {
+  protected readonly hasHistory$ = new BehaviorSubject<boolean>(false);
+  protected readonly userId$ = new BehaviorSubject<UserId>(null);
 
   constructor(
     private accountService: AccountService,
     private history: GeneratorHistoryService,
-  ) {}
+  ) {
+    this.accountService.activeAccount$
+      .pipe(
+        takeUntilDestroyed(),
+        map(({ id }) => id),
+        distinctUntilChanged(),
+      )
+      .subscribe(this.userId$);
 
-  async ngOnInit() {
-    const history = this.accountService.activeAccount$.pipe(
-      concatMap((account) => {
-        this.userId = account.id;
-        return this.history.credentials$(account.id);
-      }),
-      timeout({
-        // timeout after 1 second
-        each: 1000,
-        with() {
-          return [];
-        },
-      }),
-      map((history) => history.map(this.toGeneratedPasswordHistory)),
-    );
-    this.credentials = await firstValueFrom(history);
+    this.userId$
+      .pipe(
+        takeUntilDestroyed(),
+        switchMap((id) => id && this.history.credentials$(id)),
+        map((credentials) => !!credentials),
+      )
+      .subscribe(this.hasHistory$);
   }
 
   clear = async () => {
-    await this.history.clear(this.userId);
+    await this.history.clear(await firstValueFrom(this.userId$));
   };
 
   toGeneratedPasswordHistory(value: GeneratedCredential) {

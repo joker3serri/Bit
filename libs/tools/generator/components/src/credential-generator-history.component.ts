@@ -1,34 +1,28 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
-import { concatMap, firstValueFrom, map, timeout } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import {
   CardComponent,
+  IconButtonModule,
   NoItemsModule,
   SectionComponent,
   SectionHeaderComponent,
-  ToastService,
 } from "@bitwarden/components";
-import {
-  GeneratedCredential,
-  GeneratedPasswordHistory,
-  GeneratorHistoryService,
-} from "@bitwarden/generator-history";
-
-import { NoCredentialsIcon } from "./icons/no-credentials.icon";
+import { GeneratedCredential, GeneratorHistoryService } from "@bitwarden/generator-history";
 
 @Component({
   standalone: true,
-  selector: "tools-credential-generator-history",
+  selector: "bit-credential-generator-history",
   templateUrl: "credential-generator-history.component.html",
   imports: [
     CommonModule,
+    IconButtonModule,
     NoItemsModule,
     JslibModule,
     RouterLink,
@@ -37,51 +31,28 @@ import { NoCredentialsIcon } from "./icons/no-credentials.icon";
     SectionHeaderComponent,
   ],
 })
-export class CredentialGeneratorHistoryComponent implements OnInit {
-  noCredentialssIcon = NoCredentialsIcon;
-  protected userId: UserId;
-  protected credentials: GeneratedPasswordHistory[] = [];
+export class CredentialGeneratorHistoryComponent {
+  protected readonly userId$ = new BehaviorSubject<UserId>(null);
+  protected readonly credentials$ = new BehaviorSubject<GeneratedCredential[]>([]);
 
   constructor(
     private accountService: AccountService,
-    private readonly platformUtilsService: PlatformUtilsService,
-    private readonly toastService: ToastService,
-    private readonly i18nService: I18nService,
     private history: GeneratorHistoryService,
-  ) {}
+  ) {
+    this.accountService.activeAccount$
+      .pipe(
+        takeUntilDestroyed(),
+        map(({ id }) => id),
+        distinctUntilChanged(),
+      )
+      .subscribe(this.userId$);
 
-  async ngOnInit() {
-    const history = this.accountService.activeAccount$.pipe(
-      concatMap((account) => {
-        this.userId = account.id;
-        return this.history.credentials$(account.id);
-      }),
-      timeout({
-        // timeout after 1 second
-        each: 1000,
-        with() {
-          return [];
-        },
-      }),
-      map((history) => history.map(this.toGeneratedPasswordHistory)),
-    );
-    return (this.credentials = await firstValueFrom(history));
-  }
-
-  toGeneratedPasswordHistory(value: GeneratedCredential) {
-    return new GeneratedPasswordHistory(value.credential, value.generationDate.valueOf());
-  }
-
-  async copy(credential: string) {
-    if (credential == null) {
-      return;
-    }
-
-    this.platformUtilsService.copyToClipboard(credential, { window: window });
-    this.toastService.showToast({
-      variant: "success",
-      title: null,
-      message: this.i18nService.t("valueCopied", this.i18nService.t("password")),
-    });
+    this.userId$
+      .pipe(
+        takeUntilDestroyed(),
+        switchMap((id) => id && this.history.credentials$(id)),
+        map((credentials) => credentials),
+      )
+      .subscribe(this.credentials$);
   }
 }
