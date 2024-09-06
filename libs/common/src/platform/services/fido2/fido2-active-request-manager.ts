@@ -88,6 +88,16 @@ export class Fido2ActiveRequestManager implements Fido2ActiveRequestManagerAbstr
   }
 
   /**
+   * Removes and aborts all active requests.
+   */
+  removeAllActiveRequests() {
+    Object.keys(this.activeRequests$.value).forEach((tabId) => {
+      this.abortActiveRequest(Number(tabId));
+    });
+    this.updateRequests(() => ({}));
+  }
+
+  /**
    * Aborts the active request associated with a given tab id.
    *
    * @param tabId - The tab id to abort the active request for.

@@ -31,4 +31,5 @@ export abstract class Fido2ActiveRequestManager {
     abortController: AbortController,
   ) => Promise<RequestResult>;
   removeActiveRequest: (tabId: number) => void;
+  removeAllActiveRequests: () => void;
 }
