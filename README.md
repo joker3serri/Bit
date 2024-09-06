@@ -7,6 +7,7 @@
   <a href="https://github.com/bitwarden/clients/actions/workflows/build-desktop.yml?query=branch:main" target="_blank"><img src="https://github.com/bitwarden/clients/actions/workflows/build-desktop.yml/badge.svg?branch=main" alt="GitHub Workflow desktop build on main" /></a>
   <a href="https://github.com/bitwarden/clients/actions/workflows/build-web.yml?query=branch:main" target="_blank"><img src="https://github.com/bitwarden/clients/actions/workflows/build-web.yml/badge.svg?branch=main" alt="GitHub Workflow web build on main" /></a>
   <a href="https://gitter.im/bitwarden/Lobby" target="_blank"><img src="https://badges.gitter.im/bitwarden/Lobby.svg" alt="gitter chat" /></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/bitwarden/clients" target="_blank"><img src="https://api.scorecard.dev/projects/github.com/bitwarden/clients/badge" alt="OpenSSF Scorecard" /></a>
 </p>
 
 ---
