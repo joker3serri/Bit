@@ -86,6 +86,13 @@ export class DomQueryService implements DomQueryServiceInterface {
     mutationObserver?: MutationObserver,
   ): T[] {
     let elements = this.queryElements<T>(root, queryString);
+
+    // TODO
+    if (!this.pageContainsShadowDom) {
+      this.pageContainsShadowDom = this.queryShadowRoots(root, true).length > 0;
+    }
+    // END
+
     const shadowRoots = this.recursivelyQueryShadowRoots(root);
     for (let index = 0; index < shadowRoots.length; index++) {
       const shadowRoot = shadowRoots[index];
@@ -129,6 +136,12 @@ export class DomQueryService implements DomQueryServiceInterface {
     root: Document | ShadowRoot | Element,
     depth: number = 0,
   ): ShadowRoot[] {
+    // TODO
+    if (!this.pageContainsShadowDom) {
+      return [];
+    }
+    // END
+
     if (depth >= MAX_DEEP_QUERY_RECURSION_DEPTH) {
       throw new Error("Max recursion depth reached");
     }
