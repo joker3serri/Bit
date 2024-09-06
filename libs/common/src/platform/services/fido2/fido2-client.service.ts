@@ -376,21 +376,23 @@ export class Fido2ClientService implements Fido2ClientServiceAbstraction {
       this.logService?.info(
         `[Fido2Client] started mediated request, available credentials: ${availableCredentials.length}`,
       );
-      const credentialId = await this.requestManager.newActiveRequest(
+      const requestResult = await this.requestManager.newActiveRequest(
         tab.id,
         availableCredentials,
         abortController,
       );
 
-      if (credentialId === Fido2ActiveRequestEvents.Refresh) {
+      if (requestResult.type === Fido2ActiveRequestEvents.Refresh) {
         continue;
       }
 
-      if (credentialId === Fido2ActiveRequestEvents.Abort) {
+      if (requestResult.type === Fido2ActiveRequestEvents.Abort) {
         break;
       }
 
-      params.allowedCredentialIds = [Fido2Utils.bufferToString(guidToRawFormat(credentialId))];
+      params.allowedCredentialIds = [
+        Fido2Utils.bufferToString(guidToRawFormat(requestResult.credentialId)),
+      ];
       assumeUserPresence = true;
 
       const clientDataHash = await crypto.subtle.digest({ name: "SHA-256" }, clientDataJSONBytes);

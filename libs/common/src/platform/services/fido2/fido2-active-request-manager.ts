@@ -15,6 +15,7 @@ import {
   RequestCollection,
   Fido2ActiveRequestManager as Fido2ActiveRequestManagerAbstraction,
   Fido2ActiveRequestEvents,
+  RequestResult,
 } from "../../abstractions/fido2/fido2-active-request-manager.abstraction";
 
 export class Fido2ActiveRequestManager implements Fido2ActiveRequestManagerAbstraction {
@@ -54,7 +55,7 @@ export class Fido2ActiveRequestManager implements Fido2ActiveRequestManagerAbstr
     tabId: number,
     credentials: Fido2CredentialView[],
     abortController: AbortController,
-  ): Promise<string> {
+  ): Promise<RequestResult> {
     const newRequest: ActiveRequest = {
       credentials,
       subject: new Subject(),
@@ -66,10 +67,10 @@ export class Fido2ActiveRequestManager implements Fido2ActiveRequestManagerAbstr
 
     const abortListener = () => this.abortActiveRequest(tabId);
     abortController.signal.addEventListener("abort", abortListener);
-    const credentialId = firstValueFrom(newRequest.subject);
+    const requestResult = firstValueFrom(newRequest.subject);
     abortController.signal.removeEventListener("abort", abortListener);
 
-    return credentialId;
+    return requestResult;
   }
 
   /**
@@ -92,7 +93,7 @@ export class Fido2ActiveRequestManager implements Fido2ActiveRequestManagerAbstr
    * @param tabId - The tab id to abort the active request for.
    */
   private abortActiveRequest(tabId: number): void {
-    this.activeRequests$.value[tabId]?.subject.next(Fido2ActiveRequestEvents.Abort);
+    this.activeRequests$.value[tabId]?.subject.next({ type: Fido2ActiveRequestEvents.Abort });
     this.activeRequests$.value[tabId]?.subject.error(
       new DOMException("The operation either timed out or was not allowed.", "AbortError"),
     );

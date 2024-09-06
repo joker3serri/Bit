@@ -289,7 +289,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     const request = this.fido2ActiveRequestManager.getActiveRequest(currentTab.id);
     if (request) {
-      request.subject.next(Fido2ActiveRequestEvents.Refresh);
+      request.subject.next({ type: Fido2ActiveRequestEvents.Refresh });
     }
 
     this.inlineMenuFido2Credentials.clear();
@@ -980,7 +980,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
-    request.subject.next(credentialId);
+    request.subject.next({ type: Fido2ActiveRequestEvents.Continue, credentialId });
   }
 
   /**

@@ -9,6 +9,7 @@ import { VaultSettingsService } from "../../../vault/abstractions/vault-settings
 import { ConfigService } from "../../abstractions/config/config.service";
 import {
   ActiveRequest,
+  Fido2ActiveRequestEvents,
   Fido2ActiveRequestManager,
 } from "../../abstractions/fido2/fido2-active-request-manager.abstraction";
 import {
@@ -614,7 +615,10 @@ describe("FidoAuthenticatorService", () => {
       });
 
       beforeEach(() => {
-        requestManager.newActiveRequest.mockResolvedValue(crypto.randomUUID());
+        requestManager.newActiveRequest.mockResolvedValue({
+          type: Fido2ActiveRequestEvents.Continue,
+          credentialId: crypto.randomUUID(),
+        });
         authenticator.getAssertion.mockResolvedValue(createAuthenticatorAssertResult());
       });
 
