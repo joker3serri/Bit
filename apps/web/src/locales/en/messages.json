@@ -8685,16 +8685,16 @@
   "memberAccessReportNoGroup": {
     "message": "(No Group)"
   },
-  "memberAccessReporttwoFactorEnabledTrue": {
+  "memberAccessReportTwoFactorEnabledTrue": {
     "message": "On"
   },
-  "memberAccessReporttwoFactorEnabledFalse": {
+  "memberAccessReportTwoFactorEnabledFalse": {
     "message": "Off"
   },
-  "memberAccessReportauthenticationEnabledTrue": {
+  "memberAccessReportAuthenticationEnabledTrue": {
     "message": "On"
   },
-  "memberAccessReportauthenticationEnabledFalse": {
+  "memberAccessReportAuthenticationEnabledFalse": {
     "message": "Off"
   },
   "higherKDFIterations": {
