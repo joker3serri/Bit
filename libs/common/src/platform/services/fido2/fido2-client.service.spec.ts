@@ -11,6 +11,7 @@ import {
   ActiveRequest,
   Fido2ActiveRequestEvents,
   Fido2ActiveRequestManager,
+  RequestResult,
 } from "../../abstractions/fido2/fido2-active-request-manager.abstraction";
 import {
   Fido2AuthenticatorError,
@@ -56,7 +57,10 @@ describe("FidoAuthenticatorService", () => {
     domainSettingsService = mock<DomainSettingsService>();
     taskSchedulerService = mock<TaskSchedulerService>();
     activeRequest = mock<ActiveRequest>({
-      subject: new BehaviorSubject<string>(""),
+      subject: new BehaviorSubject<RequestResult>({
+        type: Fido2ActiveRequestEvents.Continue,
+        credentialId: "",
+      }),
     });
     requestManager = mock<Fido2ActiveRequestManager>({
       getActiveRequest$: (tabId: number) => new BehaviorSubject(activeRequest),
