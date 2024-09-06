@@ -43,6 +43,7 @@ import {
   AccessItemView,
   convertToPermission,
   convertToSelectionView,
+  mapGroupToAccessItemView,
   PermissionMode,
 } from "../../../shared/components/access-selector";
 
@@ -604,15 +605,6 @@ function mapCollectionToAccessItemView(
     readonly: group !== undefined || !collection.canEditUserAccess(organization),
     viaGroupPermission: accessSelection ? convertToPermission(accessSelection) : undefined,
     viaGroupName: group?.name,
-  };
-}
-
-function mapGroupToAccessItemView(group: GroupView): AccessItemView {
-  return {
-    type: AccessItemType.Group,
-    id: group.id,
-    labelName: group.name,
-    listName: group.name,
   };
 }
 
