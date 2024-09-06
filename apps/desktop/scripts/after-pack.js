@@ -67,9 +67,9 @@ const appleCertificatePrefixes = [
 ];
 
 function getIdentities(csc_name) {
-  const ids = child_process
-    .execSync("/usr/bin/security find-identity -v -p codesigning")
-    .toString();
+  const ids = child_process.execSync("/usr/bin/security find-identity -v").toString();
+
+  console.log("## Available identities:", ids);
 
   return ids
     .split("\n")
