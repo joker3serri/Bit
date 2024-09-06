@@ -73,8 +73,6 @@ export class PasswordHintComponent implements OnInit {
       message: this.i18nService.t("masterPassSent"),
     });
 
-    this.loginEmailService.setLoginEmail(this.email); // TODO-rr-bw: do I need this?
-
     await this.router.navigate(["login"]);
   };
 
