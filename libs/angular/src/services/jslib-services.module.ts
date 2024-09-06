@@ -246,6 +246,10 @@ import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
 import { ToastService } from "@bitwarden/components";
 import {
+  credentialGenerationServiceFactory,
+  GeneratorHistoryService,
+} from "@bitwarden/generator-history";
+import {
   legacyPasswordGenerationServiceFactory,
   legacyUsernameGenerationServiceFactory,
   PasswordGenerationServiceAbstraction,
@@ -593,6 +597,11 @@ const safeProviders: SafeProvider[] = [
       AccountServiceAbstraction,
       StateProvider,
     ],
+  }),
+  safeProvider({
+    provide: GeneratorHistoryService,
+    useFactory: credentialGenerationServiceFactory,
+    deps: [EncryptService, CryptoServiceAbstraction, StateProvider],
   }),
   safeProvider({
     provide: UsernameGenerationServiceAbstraction,

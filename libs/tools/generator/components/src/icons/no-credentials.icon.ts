@@ -1,6 +1,6 @@
 import { svgIcon } from "@bitwarden/components";
 
-export const NoPasswordsIcon = svgIcon`
+export const NoCredentialsIcon = svgIcon`
   <svg xmlns="http://www.w3.org/2000/svg" width="119" height="114" viewBox="0 0 119 114" fill="none">
     <g clip-path="url(#clip0_201_7924)">
       <path fill="#020F66" fill-rule="evenodd" clip-rule="evenodd" d="M35.2098 52.2486C35.9068 52.2486 36.4719 52.8137 36.4719 53.5107V58.2685C36.4719 58.9655 35.9068 59.5306 35.2098 59.5306C34.5128 59.5306 33.9478 58.9655 33.9478 58.2685V53.5107C33.9478 52.8137 34.5128 52.2486 35.2098 52.2486Z" />

@@ -53,9 +53,9 @@ import { PremiumV2Component } from "../billing/popup/settings/premium-v2.compone
 import { PremiumComponent } from "../billing/popup/settings/premium.component";
 import BrowserPopupUtils from "../platform/popup/browser-popup-utils";
 import { popupRouterCacheGuard } from "../platform/popup/view-cache/popup-router-cache.service";
+import { CredentialGeneratorHistoryComponent } from "../tools/popup/generator/credential-generator-history.component";
 import { CredentialGeneratorComponent } from "../tools/popup/generator/credential-generator.component";
 import { GeneratorComponent } from "../tools/popup/generator/generator.component";
-import { PasswordGeneratorHistoryV2Component } from "../tools/popup/generator/password-generator-history-v2.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
@@ -276,7 +276,7 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { state: "generator" },
   },
-  ...extensionRefreshSwap(PasswordGeneratorHistoryComponent, PasswordGeneratorHistoryV2Component, {
+  ...extensionRefreshSwap(PasswordGeneratorHistoryComponent, CredentialGeneratorHistoryComponent, {
     path: "generator-history",
     canActivate: [authGuard],
     data: { state: "generator-history" },
