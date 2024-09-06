@@ -25,9 +25,6 @@
   "finishCreatingYourAccountBySettingAPassword": {
     "message": "Завршите креирање налога постављањем лозинке"
   },
-  "login": {
-    "message": "Пријавите се"
-  },
   "enterpriseSingleSignOn": {
     "message": "Enterprise Једна Пријава"
   },
@@ -305,22 +302,22 @@
     "message": "Уреди фасциклу"
   },
   "newFolder": {
-    "message": "New folder"
+    "message": "Нова фасцикла"
   },
   "folderName": {
-    "message": "Folder name"
+    "message": "Име фасцикле"
   },
   "folderHintText": {
-    "message": "Nest a folder by adding the parent folder's name followed by a “/”. Example: Social/Forums"
+    "message": "Угнездите фасциклу додавањем имена надређене фасцкле праћеног знаком „/“. Пример: Друштвени/Форуми"
   },
   "noFoldersAdded": {
-    "message": "No folders added"
+    "message": "Нису додате фасцикле"
   },
   "createFoldersToOrganize": {
-    "message": "Create folders to organize your vault items"
+    "message": "Креирајте фасцикле да бисте организовали своје ставке у сефу"
   },
   "deleteFolderPermanently": {
-    "message": "Are you sure you want to permanently delete this folder?"
+    "message": "Да ли сте сигурни да желите да трајно избришете ову фасциклу?"
   },
   "deleteFolder": {
     "message": "Избриши фасциклу"
@@ -387,16 +384,56 @@
     "message": "Минимална дужина лозинке"
   },
   "uppercase": {
-    "message": "Велика слова (A-Z)"
+    "message": "Велика слова (A-Z)",
+    "description": "deprecated. Use uppercaseLabel instead."
   },
   "lowercase": {
-    "message": "Мала слова (a-z)"
+    "message": "Мала слова (a-z)",
+    "description": "deprecated. Use lowercaseLabel instead."
   },
   "numbers": {
-    "message": "Цифре (0-9)"
+    "message": "Цифре (0-9)",
+    "description": "deprecated. Use numbersLabel instead."
   },
   "specialCharacters": {
-    "message": "Специјална слова (!@#$%^&*)"
+    "message": "Специјална слова (!@#$%^&*)",
+    "description": "deprecated. Use specialCharactersLabel instead."
+  },
+  "include": {
+    "message": "Укључити",
+    "description": "Card header for password generator include block"
+  },
+  "uppercaseDescription": {
+    "message": "Укључити велика слова",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "А-Ш",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Укључити мала слова",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "а-ш",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Укључит ибројеве",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Укључити специјална слова",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
   },
   "numWords": {
     "message": "Број речи"
@@ -418,7 +455,12 @@
     "message": "Минимално специјалних знакова"
   },
   "avoidAmbChar": {
-    "message": "Избегавај двосмислене карактере"
+    "message": "Избегавај двосмислене карактере",
+    "description": "deprecated. Use avoidAmbiguous instead."
+  },
+  "avoidAmbiguous": {
+    "message": "Избегавај двосмислене карактере",
+    "description": "Label for the avoid ambiguous characters checkbox."
   },
   "searchVault": {
     "message": "Претражи сеф"
@@ -641,6 +683,12 @@
   "newAccountCreated": {
     "message": "Ваш налог је креиран! Сада се можете пријавити."
   },
+  "newAccountCreated2": {
+    "message": "Ваш нови налог је направљен!"
+  },
+  "youHaveBeenLoggedIn": {
+    "message": "Пријављени сте!"
+  },
   "youSuccessfullyLoggedIn": {
     "message": "Успешно сте се пријавили"
   },
@@ -689,6 +737,9 @@
   },
   "totpHelperWithCapture": {
     "message": "Bitwarden може да чува и попуњава верификационе кодове у 2 корака. Изаберите икону камере да бисте направили снимак екрана QR кода за аутентификацију ове веб локације или копирајте и налепите кључ у ово поље."
+  },
+  "learnMoreAboutAuthenticators": {
+    "message": "Сазнајте више о аутентификаторима"
   },
   "copyTOTP": {
     "message": "Копирати једнократни кôд (TOTP)"
@@ -1079,6 +1130,9 @@
   "ppremiumSignUpStorage": {
     "message": "1ГБ шифровано складиште за прилоге."
   },
+  "premiumSignUpEmergency": {
+    "message": "Хитан приступ."
+  },
   "premiumSignUpTwoStepOptions": {
     "message": "Приоритарне опције пријаве у два корака као што су YubiKey и Duo."
   },
@@ -1100,14 +1154,29 @@
   "premiumPurchaseAlert": {
     "message": "Можете купити премијум претплату на bitwarden.com. Да ли желите да посетите веб сајт сада?"
   },
+  "premiumPurchaseAlertV2": {
+    "message": "Можете да купите Премиум у подешавањима налога у веб апликацији Bitwarden."
+  },
   "premiumCurrentMember": {
     "message": "Ви сте премијум члан!"
   },
   "premiumCurrentMemberThanks": {
     "message": "Хвала Вам за подршку Bitwarden-а."
   },
+  "premiumFeatures": {
+    "message": "Надоградите на премиум и добијте:"
+  },
   "premiumPrice": {
     "message": "Све за само $PRICE$ годишње!",
+    "placeholders": {
+      "price": {
+        "content": "$1",
+        "example": "$10"
+      }
+    }
+  },
+  "premiumPriceV2": {
+    "message": "Све то за само $PRICE$ годишње!",
     "placeholders": {
       "price": {
         "content": "$1",
@@ -1822,26 +1891,26 @@
     "message": "Једна или више смерница организације утичу на поставке вашег генератора."
   },
   "passwordGenerator": {
-    "message": "Password generator"
+    "message": "Генератор Лозинке"
   },
   "usernameGenerator": {
-    "message": "Username generator"
+    "message": "Генератор корисничког имена"
   },
   "useThisPassword": {
-    "message": "Use this password"
+    "message": "Употреби ову лозинку"
   },
   "useThisUsername": {
-    "message": "Use this username"
+    "message": "Употреби ово корисничко име"
   },
   "securePasswordGenerated": {
-    "message": "Secure password generated! Don't forget to also update your password on the website."
+    "message": "Сигурна лозинка је генерисана! Не заборавите да ажурирате и своју лозинку на веб локацији."
   },
   "useGeneratorHelpTextPartOne": {
-    "message": "Use the generator",
+    "message": "Употребити генератор",
     "description": "This will be used as part of a larger sentence, broken up to include the generator icon. The full sentence will read 'Use the generator [GENERATOR_ICON] to create a strong unique password'"
   },
   "useGeneratorHelpTextPartTwo": {
-    "message": "to create a strong unique password",
+    "message": "да креирате јаку јединствену лозинку",
     "description": "This will be used as part of a larger sentence, broken up to include the generator icon. The full sentence will read 'Use the generator [GENERATOR_ICON] to create a strong unique password'"
   },
   "vaultTimeoutAction": {
@@ -2042,10 +2111,10 @@
     "message": "Неподударање налога"
   },
   "nativeMessagingWrongUserKeyDesc": {
-    "message": "Biometric unlock failed. The biometric secret key failed to unlock the vault. Please try to set up biometrics again."
+    "message": "Биометријско откључавање није успело. Биометријски тајни кључ није успео да откључа сеф. Покушајте поново да подесите биометрију."
   },
   "nativeMessagingWrongUserKeyTitle": {
-    "message": "Biometric key missmatch"
+    "message": "Неподударање биометријског кључа"
   },
   "biometricsNotEnabledTitle": {
     "message": "Биометрија није омогућена"
@@ -2064,6 +2133,12 @@
   },
   "biometricsNotUnlockedDesc": {
     "message": "Откључајте овог корисника у десктоп апликацији и покушајте поново."
+  },
+  "biometricsNotAvailableTitle": {
+    "message": "Биометријско откључавање није доступно"
+  },
+  "biometricsNotAvailableDesc": {
+    "message": "Биометријско откључавање тренутно није доступно. Покушајте поново касније."
   },
   "biometricsFailedTitle": {
     "message": "Биометрија није успела"
@@ -2293,6 +2368,24 @@
   },
   "createdSend": {
     "message": "Креирано слање",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "createdSendSuccessfully": {
+    "message": "Send је успешно направљен!",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendAvailability": {
+    "message": "The Send will be available to anyone with the link for the next $DAYS$ days.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "placeholders": {
+      "days": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "sendLinkCopied": {
+    "message": "Send линк је копиран",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "editedSend": {
@@ -3191,7 +3284,7 @@
     "description": "Button text to display within inline menu when there are no matching items on an identity field"
   },
   "addNewIdentityItemAria": {
-    "message": "Add new vault identity item, opens in a new window",
+    "message": "Додај нов идентитет у сеф, отвара се у новом прозору",
     "description": "Screen reader text (aria-label) for new identity button within inline menu"
   },
   "bitwardenOverlayMenuAvailable": {
@@ -3311,7 +3404,7 @@
     "message": "Неважећа лозинка за датотеку, користите лозинку коју сте унели када сте креирали датотеку за извоз."
   },
   "destination": {
-    "message": "Destination"
+    "message": "Одредиште"
   },
   "learnAboutImportOptions": {
     "message": "Сазнајте више о опцијама увоза"
@@ -3384,7 +3477,7 @@
   "passkeyFeatureIsNotImplementedForAccountsWithoutMasterPassword": {
     "message": "Верификацију захтева сајт који покреће. Ова функција још увек није имплементирана за налоге без главне лозинке."
   },
-  "logInWithPasskey": {
+  "logInWithPasskeyQuestion": {
     "message": "Пријавите се са приступачним кључем?"
   },
   "passkeyAlreadyExists": {
@@ -3396,6 +3489,9 @@
   "noMatchingPasskeyLogin": {
     "message": "Немате одговарајућу пријаву за овај сајт."
   },
+  "noMatchingLoginsForSite": {
+    "message": "Нема одговарајућих пријава за овај сајт"
+  },
   "confirm": {
     "message": "Потврди"
   },
@@ -3405,8 +3501,11 @@
   "savePasskeyNewLogin": {
     "message": "Сачувати приступни кључ као нову пријаву"
   },
-  "choosePasskey": {
+  "chooseCipherForPasskeySave": {
     "message": "Изаберите пријаву да бисте сачували овај приступни кључ"
+  },
+  "chooseCipherForPasskeyAuth": {
+    "message": "Изаберите приступни кључ за пријаву"
   },
   "passkeyItem": {
     "message": "Ставка приступачног кључа"
@@ -3603,8 +3702,16 @@
     "message": "Акредитиви су успешно сачувани!",
     "description": "Notification message for when saving credentials has succeeded."
   },
+  "passwordSaved": {
+    "message": "Лозинка је сачувана!",
+    "description": "Notification message for when saving credentials has succeeded."
+  },
   "updateCipherAttemptSuccess": {
     "message": "Акредитиви су успешно ажурирани!",
+    "description": "Notification message for when updating credentials has succeeded."
+  },
+  "passwordUpdated": {
+    "message": "Лозинка је ажурирана!",
     "description": "Notification message for when updating credentials has succeeded."
   },
   "saveCipherAttemptFailed": {
@@ -3883,6 +3990,16 @@
   "websiteUri": {
     "message": "Вебсајт (URI)"
   },
+  "websiteUriCount": {
+    "message": "Сајт (URI) $COUNT$",
+    "description": "Label for an input field that contains a website URI. The input field is part of a list of fields, and the count indicates the position of the field in the list.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "websiteAdded": {
     "message": "Вебсајт додат"
   },
@@ -3923,6 +4040,12 @@
   "autoFillOnPageLoad": {
     "message": "Ауто-попуњавање при учитавању странице?"
   },
+  "cardExpiredTitle": {
+    "message": "Картица је истекла"
+  },
+  "cardExpiredMessage": {
+    "message": "Ако сте је обновили, ажурирајте податке о картици"
+  },
   "cardDetails": {
     "message": "Детаљи картице"
   },
@@ -3935,6 +4058,9 @@
       }
     }
   },
+  "enableAnimations": {
+    "message": "Омогући анимације"
+  },
   "addAccount": {
     "message": "Додај налог"
   },
@@ -3945,15 +4071,15 @@
     "message": "Подаци"
   },
   "passkeys": {
-    "message": "Passkeys",
+    "message": "Приступачни кључеви",
     "description": "A section header for a list of passkeys."
   },
   "passwords": {
-    "message": "Passwords",
+    "message": "Лозинке",
     "description": "A section header for a list of passwords."
   },
   "logInWithPasskeyAriaLabel": {
-    "message": "Log in with passkey",
+    "message": "Пријавите се са приступачним кључем",
     "description": "ARIA label for the inline menu button that logs in with a passkey."
   },
   "assign": {
@@ -4067,7 +4193,7 @@
     "message": "1 ставка биће трајно пребачена у изабрану организацију. Више нећете имати ову ставку."
   },
   "personalItemsTransferWarningPlural": {
-    "message": "$PERSONAL_ITEMS_COUNT$ items will be permanently transferred to the selected organization. You will no longer own these items.",
+    "message": "$PERSONAL_ITEMS_COUNT$ ставке биће трајно пребачени у изабрану организацију. Више нећете имати ове ставке.",
     "placeholders": {
       "personal_items_count": {
         "content": "$1",
@@ -4151,10 +4277,10 @@
     "message": "Смештај ставке"
   },
   "fileSends": {
-    "message": "File Sends"
+    "message": "Датотека „Send“"
   },
   "textSends": {
-    "message": "Text Sends"
+    "message": "Текст „Send“"
   },
   "bitwardenNewLook": {
     "message": "Bitwarden има нови изглед!"
@@ -4166,9 +4292,36 @@
     "message": "Акције везане за налог"
   },
   "showNumberOfAutofillSuggestions": {
-    "message": "Show number of login autofill suggestions on extension icon"
+    "message": "Прикажи број предлога за ауто-попуњавање пријаве на икони додатка"
   },
   "systemDefault": {
-    "message": "System default"
+    "message": "Системски подразумевано"
+  },
+  "enterprisePolicyRequirementsApplied": {
+    "message": "Захтеви политике предузећа су примењени на ово подешавање"
+  },
+  "additionalContentAvailable": {
+    "message": "Додатни садржај је доступан"
+  },
+  "itemsInTrash": {
+    "message": "Ставке у смећу"
+  },
+  "noItemsInTrash": {
+    "message": "Нема ставки у смећу"
+  },
+  "noItemsInTrashDesc": {
+    "message": "Ставке које избришете ће се појавити овде и биће трајно избрисане након 30 дана"
+  },
+  "trashWarning": {
+    "message": "Ставке које су биле у смећу више од 30 дана биће аутоматски избрисане"
+  },
+  "restore": {
+    "message": "Поврати"
+  },
+  "deleteForever": {
+    "message": "Уклонити заувек"
+  },
+  "noEditPermissions": {
+    "message": "Немате дозволу да уређујете ову ставку"
   }
 }

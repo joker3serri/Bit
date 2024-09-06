@@ -55,13 +55,7 @@ export class PasswordHintComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.loginEmailService.setInMemoryEmail();
-
-    const email =
-      this.loginEmailService.getEmail() ??
-      (await firstValueFrom(this.loginEmailService.inMemoryEmail$)) ??
-      "";
-
+    const email = (await firstValueFrom(this.loginEmailService.loginEmail$)) ?? "";
     this.formGroup.controls.email.setValue(email);
   }
 
@@ -79,16 +73,13 @@ export class PasswordHintComponent implements OnInit {
       message: this.i18nService.t("masterPassSent"),
     });
 
-    this.loginEmailService.setEmail(this.email);
-    this.loginEmailService.setInMemoryEmail();
+    this.loginEmailService.setLoginEmail(this.email); // TODO-rr-bw: do I need this?
 
     await this.router.navigate(["login"]);
   };
 
   protected async cancel() {
-    this.loginEmailService.setEmail(this.email);
-    this.loginEmailService.setInMemoryEmail();
-
+    this.loginEmailService.setLoginEmail(this.email);
     await this.router.navigate(["login"]);
   }
 

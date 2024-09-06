@@ -11,7 +11,8 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { SearchModule } from "@bitwarden/components";
+import { isCardExpired } from "@bitwarden/common/vault/utils";
+import { SearchModule, CalloutModule } from "@bitwarden/components";
 
 import { AdditionalOptionsComponent } from "./additional-options/additional-options.component";
 import { AttachmentsV2ViewComponent } from "./attachments/attachments-v2-view.component";
@@ -28,6 +29,7 @@ import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-ide
   templateUrl: "cipher-view.component.html",
   standalone: true,
   imports: [
+    CalloutModule,
     CommonModule,
     SearchModule,
     JslibModule,
@@ -48,6 +50,7 @@ export class CipherViewComponent implements OnInit, OnDestroy {
   folder$: Observable<FolderView>;
   collections$: Observable<CollectionView[]>;
   private destroyed$: Subject<void> = new Subject();
+  cardIsExpired: boolean = false;
 
   constructor(
     private organizationService: OrganizationService,
@@ -57,6 +60,8 @@ export class CipherViewComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.loadCipherData();
+
+    this.cardIsExpired = isCardExpired(this.cipher.card);
   }
 
   ngOnDestroy(): void {
@@ -65,8 +70,8 @@ export class CipherViewComponent implements OnInit, OnDestroy {
   }
 
   get hasCard() {
-    const { cardholderName, code, expMonth, expYear, brand, number } = this.cipher.card;
-    return cardholderName || code || expMonth || expYear || brand || number;
+    const { cardholderName, code, expMonth, expYear, number } = this.cipher.card;
+    return cardholderName || code || expMonth || expYear || number;
   }
 
   get hasLogin() {

@@ -50,10 +50,10 @@ export const DEVICE_TRUST_DISK_LOCAL = new StateDefinition("deviceTrust", "disk"
 });
 export const KDF_CONFIG_DISK = new StateDefinition("kdfConfig", "disk");
 export const KEY_CONNECTOR_DISK = new StateDefinition("keyConnector", "disk");
-export const LOGIN_EMAIL_MEMORY = new StateDefinition("loginEmail", "memory");
 export const LOGIN_EMAIL_DISK = new StateDefinition("loginEmail", "disk", {
   web: "disk-local",
 });
+export const LOGIN_EMAIL_MEMORY = new StateDefinition("loginEmail", "memory");
 export const LOGIN_STRATEGY_MEMORY = new StateDefinition("loginStrategy", "memory");
 export const MASTER_PASSWORD_DISK = new StateDefinition("masterPassword", "disk");
 export const MASTER_PASSWORD_MEMORY = new StateDefinition("masterPassword", "memory");
@@ -118,6 +118,7 @@ export const POPUP_VIEW_MEMORY = new StateDefinition("popupView", "memory", {
 export const SYNC_DISK = new StateDefinition("sync", "disk", { web: "memory" });
 export const THEMING_DISK = new StateDefinition("theming", "disk", { web: "disk-local" });
 export const TRANSLATION_DISK = new StateDefinition("translation", "disk", { web: "disk-local" });
+export const ANIMATION_DISK = new StateDefinition("animation", "disk");
 export const TASK_SCHEDULER_DISK = new StateDefinition("taskScheduler", "disk");
 
 // Secrets Manager

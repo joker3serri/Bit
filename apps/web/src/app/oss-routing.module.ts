@@ -71,6 +71,7 @@ import { PreferencesComponent } from "./settings/preferences.component";
 import { GeneratorComponent } from "./tools/generator.component";
 import { ReportsModule } from "./tools/reports";
 import { AccessComponent } from "./tools/send/access.component";
+import { SendAccessExplainerComponent } from "./tools/send/send-access-explainer.component";
 import { SendComponent } from "./tools/send/send.component";
 import { VaultModule } from "./vault/individual-vault/vault.module";
 
@@ -147,11 +148,6 @@ const routes: Routes = [
         component: VerifyRecoverDeleteProviderComponent,
         canActivate: [unauthGuardFn()],
         data: { titleId: "deleteAccount" } satisfies DataProperties,
-      },
-      {
-        path: "send/:sendId/:key",
-        component: AccessComponent,
-        data: { titleId: "Bitwarden Send" } satisfies DataProperties,
       },
       {
         path: "update-temp-password",
@@ -253,6 +249,24 @@ const routes: Routes = [
           {
             path: "",
             component: RegistrationFinishComponent,
+          },
+        ],
+      },
+      {
+        path: "send/:sendId/:key",
+        data: {
+          pageTitle: "viewSend",
+          showReadonlyHostname: true,
+        } satisfies DataProperties & AnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: AccessComponent,
+          },
+          {
+            path: "",
+            outlet: "secondary",
+            component: SendAccessExplainerComponent,
           },
         ],
       },

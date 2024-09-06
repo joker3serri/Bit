@@ -603,6 +603,12 @@
   "newAccountCreated": {
     "message": "Yeni hesabınız yaradıldı! İndi giriş edə bilərsiniz."
   },
+  "newAccountCreated2": {
+    "message": "Yeni hesabınız yaradıldı!"
+  },
+  "youHaveBeenLoggedIn": {
+    "message": "Giriş etdiniz!"
+  },
   "masterPassSent": {
     "message": "Ana parol məsləhətini ehtiva edən bir e-poçt göndərdik."
   },
@@ -1173,6 +1179,9 @@
   },
   "premiumPurchaseAlert": {
     "message": "Premium üzvlüyü bitwarden.com veb anbarında satın ala bilərsiniz. İndi saytı ziyarət etmək istəyirsiniz?"
+  },
+  "premiumPurchaseAlertV2": {
+    "message": "Bitwarden veb tətbiqindəki hesab ayarlarınızda Premium satın ala bilərsiniz."
   },
   "premiumCurrentMember": {
     "message": "Premium üzvsünüz!"
@@ -3049,5 +3058,8 @@
   },
   "textSends": {
     "message": "Mətn \"Send\"ləri"
+  },
+  "ssoError": {
+    "message": "SSO giriş üçün açıq port tapıla bilmədi."
   }
 }
