@@ -33,32 +33,13 @@ async function run(context) {
   }
 
   if (["darwin", "mas"].includes(context.electronPlatformName)) {
-    const is_mas = context.electronPlatformName === "mas";
-    const is_mas_dev = context.targets.some((e) => e.name === "mas-dev");
-
-    let id;
-
-    // Only use the Bitwarden Identities on CI
-    if (process.env.GITHUB_ACTIONS === "true") {
-      if (is_mas) {
-        id = is_mas_dev
-          ? "E7C9978F6FBCE0553429185C405E61F5380BE8EB"
-          : "3rd Party Mac Developer Application: Bitwarden Inc";
-      } else {
-        id = "Developer ID Application: 8bit Solutions LLC";
-      }
-      // Locally, use the first valid code signing identity, unless CSC_NAME is set
-    } else if (process.env.CSC_NAME) {
-      id = process.env.CSC_NAME;
-    } else {
-      const identities = getIdentities();
-      if (identities.length === 0) {
-        throw new Error("No valid identities found");
-      }
-      id = identities[0].id;
+    const identities = getIdentities(process.env.CSC_NAME ?? "");
+    if (identities.length === 0) {
+      throw new Error("No valid identities found");
     }
+    const id = identities[0].id;
 
-    console.log(`Signing proxy binary before the main bundle, using identity '${id}'`);
+    console.log("Signing proxy binary before the main bundle, using identity", id);
 
     const appName = context.packager.appInfo.productFilename;
     const appPath = `${context.appOutDir}/${appName}.app`;
@@ -68,7 +49,7 @@ async function run(context) {
     const entitlementsName = "entitlements.desktop_proxy.plist";
     const entitlementsPath = path.join(__dirname, "..", "resources", entitlementsName);
     child_process.execSync(
-      `codesign -s '${id}' -i ${packageId} -f --timestamp --options runtime --entitlements ${entitlementsPath} ${proxyPath}`,
+      `codesign -s ${id} -i ${packageId} -f --timestamp --options runtime --entitlements ${entitlementsPath} ${proxyPath}`,
     );
   }
 }
@@ -85,7 +66,7 @@ const appleCertificatePrefixes = [
   "Apple Development:",
 ];
 
-function getIdentities() {
+function getIdentities(csc_name) {
   const ids = child_process
     .execSync("/usr/bin/security find-identity -v -p codesigning")
     .toString();
@@ -100,6 +81,7 @@ function getIdentities() {
       }
       return false;
     })
+    .filter((line) => line.includes(csc_name))
     .map((line) => {
       const split = line.trim().split(" ");
       const id = split[1];
