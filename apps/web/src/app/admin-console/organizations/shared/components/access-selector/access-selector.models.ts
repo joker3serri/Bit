@@ -77,6 +77,11 @@ export type Permission = {
   labelId: string;
 };
 
+export const isCollectionAccessViaGroup = (
+  item: AccessItemView,
+): item is AccessItemView & { type: AccessItemType.Collection } =>
+  item.type === AccessItemType.Collection && item.readonly && item.viaGroupName != null;
+
 export const getPermissionList = (): Permission[] => {
   const permissions = [
     { perm: CollectionPermission.View, labelId: "canView" },

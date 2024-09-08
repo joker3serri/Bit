@@ -19,6 +19,7 @@ import {
   AccessItemView,
   CollectionPermission,
   getPermissionList,
+  isCollectionAccessViaGroup,
   Permission,
 } from "./access-selector.models";
 
@@ -242,8 +243,11 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
     // Always clear the internal selection list on a new value
     this.selectionList.deselectAll();
 
-    // We need to also select any read only items to appear in the table
-    this.selectionList.selectItems(this.items.filter((m) => m.readonly).map((m) => m.id));
+    // Collection access via group is always readonly and always selected.
+    // It is never patched in via writeValue so we select it here based solely on the AccessItemView.
+    this.selectionList.selectItems(
+      this.items.filter((i) => isCollectionAccessViaGroup(i)).map((m) => m.id),
+    );
 
     // If the new value is null, then we're done
     if (selectedItems == null) {
@@ -325,14 +329,12 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
    */
   protected readonlyPermissionLabelId(index: number): string {
     const itemView = this.selectionList.selectedItems.at(index);
-    if (itemView.type === AccessItemType.Collection && itemView.viaGroupName != null) {
-      // Access is via a group - use the AccessItemView.readonlyPermission
-      // because there is no corresponding AccessItemValue
+    if (isCollectionAccessViaGroup(itemView)) {
+      // Access is via a group - use the AccessItemView because the AccessItemValue.permission is unused in this case
       return this._permissionLabelId(itemView.viaGroupPermission);
     }
 
-    // Otherwise use the AccessItemValue.permission
-    // Note these are parallel arrays so we use the same index
+    // Otherwise use AccessItemValue.permission (note these are parallel arrays)
     const itemValue = this.formGroup.controls.items.at(index)?.getRawValue();
     return this._permissionLabelId(itemValue?.permission);
   }
