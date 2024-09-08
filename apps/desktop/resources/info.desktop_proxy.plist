@@ -4,5 +4,7 @@
 	<dict>
 		<key>CFBundleIdentifier</key>
 		<string>com.bitwarden.desktop</string>
+		<key>LSMinimumSystemVersion</key>
+		<string>10.15</string>
 	</dict>
 </plist>
