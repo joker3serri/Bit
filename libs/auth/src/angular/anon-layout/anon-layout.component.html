@@ -16,12 +16,18 @@
       <bit-icon [icon]="icon"></bit-icon>
     </div>
 
-    <div class="tw-mx-auto tw-max-w-md">
-      <h1 *ngIf="title" bitTypography="h3" class="tw-mt-2 sm:tw-text-2xl">
+    <ng-container *ngIf="title">
+      <!-- Small screens -->
+      <h1 bitTypography="h3" class="tw-mt-2 sm:tw-hidden">
         {{ title }}
       </h1>
-      <div *ngIf="subtitle" class="tw-text-sm sm:tw-text-base">{{ subtitle }}</div>
-    </div>
+      <!-- Medium to Larger screens -->
+      <h1 bitTypography="h2" class="tw-mt-2 tw-hidden sm:tw-block">
+        {{ title }}
+      </h1>
+    </ng-container>
+
+    <div *ngIf="subtitle" class="tw-text-sm sm:tw-text-base">{{ subtitle }}</div>
   </div>
 
   <div
