@@ -228,7 +228,10 @@ export class VaultItemsComponent {
     if (this.showAdminActions) {
       const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
 
-      if (organization?.allowAdminAccessToAllCollectionItems) {
+      if (
+        organization?.allowAdminAccessToAllCollectionItems &&
+        (organization.isAdmin || organization.permissions.editAnyCollection)
+      ) {
         return true;
       }
     }
