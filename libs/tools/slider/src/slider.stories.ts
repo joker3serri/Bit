@@ -2,7 +2,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { moduleMetadata, Meta, StoryObj } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { I18nMockService } from "@bitwarden/components";
+import { CardComponent, I18nMockService, InputModule } from "@bitwarden/components";
 
 import { SliderComponent } from "./slider.component";
 
@@ -11,7 +11,7 @@ export default {
   component: SliderComponent,
   decorators: [
     moduleMetadata({
-      imports: [SliderComponent, ReactiveFormsModule],
+      imports: [CardComponent, InputModule, SliderComponent, ReactiveFormsModule],
       providers: [
         {
           provide: I18nService,
@@ -29,36 +29,52 @@ export default {
 type Story = StoryObj<SliderComponent>;
 
 export const Default: Story = {
-  args: {
-    min: 0,
-    max: 100,
-  },
-  render: (args) => ({
+  render: () => ({
     props: {
-      ...args,
+      min: 0,
+      max: 100,
     },
     template: `
-      <div style='width: 17rem'>
+      <bit-card>
         <bit-slider [min]="min" [max]="max"></bit-slider>
-      </div>
+      </bit-card>
     `,
   }),
 };
 
 export const ErrorState: Story = {
-  args: {
-    min: 0,
-    max: 100,
-    initialValue: 150,
-  },
-  render: (args) => ({
+  render: () => ({
     props: {
-      ...args,
+      min: 0,
+      max: 100,
+      initialValue: 150,
     },
     template: `
-      <div style='width: 17rem'>
+      <bit-card>
         <bit-slider [min]="min" [max]="max" [initialValue]="initialValue"></bit-slider>
-      </div>
+      </bit-card>
+    `,
+  }),
+};
+
+export const InputOnly: Story = {
+  render: () => ({
+    props: {
+      min: 0,
+      max: 100,
+    },
+    template: `
+      <bit-card>
+        <input
+          toolsSlider
+          id="rangeSlider"
+          [min]="0"
+          [max]="100"
+          [step]="1"
+          value="50"
+          class="range-slider"
+        />
+      </bit-card>
     `,
   }),
 };

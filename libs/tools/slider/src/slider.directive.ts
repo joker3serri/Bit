@@ -1,7 +1,15 @@
-import { Directive, HostBinding, HostListener, Input, Optional, Self } from "@angular/core";
+import {
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+  OnInit,
+  Optional,
+  Self,
+} from "@angular/core";
 import { NgControl } from "@angular/forms";
 
-// Increments for each instance of this component
 let nextId = 0;
 
 @Directive({
@@ -9,17 +17,19 @@ let nextId = 0;
   standalone: true,
   exportAs: "toolsSlider",
 })
-export class ToolsSliderDirective {
+export class ToolsSliderDirective implements OnInit {
+  @Input() min: number = 0;
+  @Input() max: number = 100;
+
+  @HostBinding() @Input() id = `bit-slider-${nextId++}`;
+
   @HostBinding("class") @Input() get classList() {
     return [this.hasError ? "tools-range-danger-600" : "tools-range-primary-600"].filter(
       (s) => s != "",
     );
   }
 
-  @HostBinding() @Input() id = `bit-slider-${nextId++}`;
-
   @HostBinding("attr.aria-describedby") ariaDescribedBy: string;
-
   @HostBinding("attr.aria-invalid") get ariaInvalid() {
     return this.hasError ? true : undefined;
   }
@@ -29,16 +39,26 @@ export class ToolsSliderDirective {
   @HostListener("input")
   onInput() {
     this.ngControl?.control?.markAsTouched();
+    this.updateTrackColor();
   }
 
   get hasError() {
     return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
   }
 
-  get error(): [string, any] {
-    const key = Object.keys(this.ngControl.errors)[0];
-    return [key, this.ngControl.errors[key]];
+  constructor(
+    @Optional() @Self() private ngControl: NgControl,
+    private elementRef: ElementRef<HTMLInputElement>,
+  ) {}
+
+  updateTrackColor() {
+    const value = Number(this.elementRef.nativeElement.value);
+    const progress = ((value - this.min) / (this.max - this.min)) * 100;
+
+    this.elementRef.nativeElement.style.setProperty("--range-fill-value", `${progress}%`);
   }
 
-  constructor(@Optional() @Self() private ngControl: NgControl) {}
+  ngOnInit() {
+    this.updateTrackColor();
+  }
 }

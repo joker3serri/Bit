@@ -3,28 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(255, 255, 255);
-  --color-outline: rgb(var(--color-primary-500));
-  --range-fill-color: rgb(var(--color-primary-600));
-  --thumb-color: rgb(var(--color-primary-600));
+  --range-color-bg: rgb(255, 255, 255);
+  --range-color-outline: rgb(var(--color-primary-500));
+  --range-thumb-size: 1.1rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: rgb(32, 39, 51);
+    --range-color-bg: rgb(32, 39, 51);
   }
 }
 
-.tools-range-primary-700 {
-  --range-fill-color: rgb(var(--color-primary-700));
-  --thumb-color: rgb(var(--color-primary-700));
+.tools-range-primary-600 {
+  --range-fill-color: rgb(var(--color-primary-600));
+  --range-thumb-color: rgb(var(--color-primary-600));
 }
 
 .tools-range-danger-600 {
   --range-fill-color: rgb(var(--color-danger-600));
-  --thumb-color: rgb(var(--color-danger-600));
-  --color-outline: rgb(var(--color-danger-600));
-  --color-bg: rgb(var(--color-danger-600));
+  --range-thumb-color: rgb(var(--color-danger-600));
+  --range-color-outline: rgb(var(--color-danger-600));
+  --range-color-bg: rgb(var(--color-danger-600));
 }
 
 @property --range-fill-value {
@@ -39,15 +38,14 @@
   initial-value: rgb(var(--color-primary-600));
 }
 
-input[type="range"] {
-  --thumb-size: 1.1rem;
+.range-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   cursor: pointer;
   outline: none;
-  border-radius: var(--thumb-size);
-  color: var(--color-bg);
+  border-radius: var(--range-thumb-size);
+  color: var(--range-color-bg);
   height: 6px;
   background: linear-gradient(
     to right,
@@ -56,21 +54,21 @@ input[type="range"] {
   );
 }
 
-input[type="range"]::-webkit-slider-thumb {
+.range-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: var(--thumb-size);
-  width: var(--thumb-size);
-  background-color: var(--thumb-color);
+  height: var(--range-thumb-size);
+  width: var(--range-thumb-size);
+  background-color: var(--range-thumb-color);
   border-radius: 50%;
   border: none;
 
   transition: 0.2s ease-in-out;
 }
 
-input[type="range"]::-moz-range-thumb {
-  height: var(--thumb-size);
-  width: var(--thumb-size);
+.range-slider::-moz-range-thumb {
+  height: var(--range-thumb-size);
+  width: var(--range-thumb-size);
   background-color: rgb(var(--color-primary-600));
   border-radius: 50%;
   border: none;
@@ -78,26 +76,23 @@ input[type="range"]::-moz-range-thumb {
   transition: 0.2s ease-in-out;
 }
 
-input[type="range"]::-webkit-slider-thumb:hover {
-  --range-fill-color: rgb(var(--color-primary-700));
-  --thumb-color: rgb(var(--color-primary-700));
+.range-slider::-webkit-slider-thumb:hover {
+  background-color: var(--range-thumb-color);
 }
 
-input[type="range"]:focus::-webkit-slider-thumb {
-  height: calc(var(--thumb-size) - 2px);
-  width: calc(var(--thumb-size) - 2px);
-  --range-fill-color: rgb(var(--color-primary-600));
-  --thumb-color: rgb(var(--color-primary-600));
+.range-slider:focus::-webkit-slider-thumb {
+  height: calc(var(--range-thumb-size) - 2px);
+  width: calc(var(--range-thumb-size) - 2px);
+  background-color: var(--range-thumb-color);
   box-shadow:
-    inset 0 0 0 0.75px var(--color-bg),
-    0 0 0 1.25px var(--color-outline);
+    inset 0 0 0 0.75px var(--range-color-bg),
+    0 0 0 1.25px var(--range-color-outline);
 }
 
-input[type="range"]::-moz-range-thumb:hover {
-  --range-fill-color: rgb(var(--color-primary-700));
-  --thumb-color: rgb(var(--color-primary-700));
+.range-slider::-moz-range-thumb:hover {
+  background-color: var(--range-fill-color);
 }
 
-input[type="range"]:focus::-moz-range-thumb {
+.range-slider:focus::-moz-range-thumb {
   background-color: var(--range-fill-color);
 }

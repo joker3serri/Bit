@@ -1,4 +1,4 @@
-<div class="tw-w-full tw-flex-col tw-bg-background-alt tw-my-5 tw-p-4 tw-gap-2 tw-flex">
+<div class="tw-w-full tw-flex-col tw-gap-2 tw-flex">
   <div class="tw-flex tw-gap-3">
     <div class="tw-flex-col tw-pt-4">
       <input
@@ -10,7 +10,11 @@
         [step]="step"
         [formControl]="sliderValueControl"
         [disabled]="disabled"
+        class="range-slider"
         value="{{ sliderValueControl.value }}"
+        [attr.aria-valuemin]="min"
+        [attr.aria-valuemax]="max"
+        [attr.aria-valuenow]="sliderValueControl.value"
       />
       <div class="tw-w-full tw-flex tw-justify-between tw-mt-1">
         <small *ngIf="min !== undefined" role="none" class="tw-text-muted justify-self-start">{{
@@ -26,7 +30,7 @@
         bitInput
         class="tw-rounded-lg tw-w-20 tw-text-center tw-p-2 tw-text-muted"
         type="number"
-        value="{{ roundedSliderValue }}"
+        value="{{ sliderValueControl.value }}"
         [formControl]="sliderValueControl"
         [min]="min"
         [max]="max"
