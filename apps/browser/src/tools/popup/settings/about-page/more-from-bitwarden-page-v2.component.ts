@@ -1,9 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
-import { Observable, firstValueFrom } from "rxjs";
+import { BehaviorSubject, Observable, firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { DialogService, ItemModule } from "@bitwarden/components";
@@ -28,13 +30,21 @@ import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page
 })
 export class MoreFromBitwardenPageV2Component {
   canAccessPremium$: Observable<boolean>;
+  protected familySponsorshipAvailable$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private dialogService: DialogService,
     billingAccountProfileStateService: BillingAccountProfileStateService,
     private environmentService: EnvironmentService,
+    private organizationService: OrganizationService,
   ) {
     this.canAccessPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
+    this.organizationService.organizations$
+      .pipe(
+        takeUntilDestroyed(),
+        map((orgs) => orgs.some((o) => o.familySponsorshipAvailable)),
+      )
+      .subscribe(this.familySponsorshipAvailable$);
   }
 
   async openFreeBitwardenFamiliesPage() {
