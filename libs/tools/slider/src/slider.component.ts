@@ -33,7 +33,7 @@ export class SliderComponent implements AfterViewInit, OnInit {
   /**
    * Maximum value for the slider.
    */
-  @Input() max: number;
+  @Input({ required: true }) max: number;
 
   /**
    * Step value for the slider.
