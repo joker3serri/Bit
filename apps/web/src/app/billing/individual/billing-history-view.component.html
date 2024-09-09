@@ -13,7 +13,13 @@
 </ng-container>
 <ng-container *ngIf="invoices || transactions">
   <app-billing-history [invoices]="invoices" [transactions]="transactions"></app-billing-history>
-  <button bitButton buttonType="secondary" (click)="load()" *ngIf="hasAdditionalHistory">
+  <button
+    type="button"
+    bitButton
+    buttonType="secondary"
+    (click)="load()"
+    *ngIf="hasAdditionalHistory"
+  >
     {{ "loadMore" | i18n }}
   </button>
 </ng-container>
