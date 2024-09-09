@@ -4240,6 +4240,19 @@
   "systemDefault": {
     "message": "System default"
   },
+  "rangeSliderOutOfRange": {
+    "message": "Value must be between $MIN$ and $MAX$",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "1"
+      },
+      "max": {
+        "content": "$2",
+        "example": "10"
+      }
+    }
+  },
   "enterprisePolicyRequirementsApplied": {
     "message": "Enterprise policy requirements have been applied to this setting"
   }
