@@ -5,6 +5,8 @@ import { Subject, takeUntil } from "rxjs";
 import { AbstractThemingService } from "@bitwarden/angular/platform/services/theming/theming.service.abstraction";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 import { SharedModule } from "../../../shared";
@@ -63,14 +65,15 @@ export class PaymentComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private logService: LogService,
     private themingService: AbstractThemingService,
+    private configService: ConfigService,
   ) {
     this.stripeScript = window.document.createElement("script");
     this.stripeScript.src = "https://js.stripe.com/v3/?advancedFraudSignals=false";
     this.stripeScript.async = true;
-    this.stripeScript.onload = () => {
+    this.stripeScript.onload = async () => {
       this.stripe = (window as any).Stripe(process.env.STRIPE_KEY);
       this.stripeElements = this.stripe.elements();
-      this.setStripeElement();
+      await this.setStripeElement();
     };
     this.btScript = window.document.createElement("script");
     this.btScript.src = `scripts/dropin.js?cache=${process.env.CACHE_TAG}`;
@@ -187,7 +190,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
         );
       }, 250);
     } else {
-      this.setStripeElement();
+      void this.setStripeElement();
     }
   }
 
@@ -267,7 +270,17 @@ export class PaymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setStripeElement() {
+  private async setStripeElement() {
+    const extensionRefreshFlag = await this.configService.getFeatureFlag(
+      FeatureFlag.ExtensionRefresh,
+    );
+
+    // Apply unique styles for extension refresh
+    if (extensionRefreshFlag) {
+      this.StripeElementStyle.base.fontWeight = "500";
+      this.StripeElementClasses.base = "v2";
+    }
+
     window.setTimeout(() => {
       if (this.showMethods && this.method === PaymentMethodType.Card) {
         if (this.stripeCardNumberElement == null) {
