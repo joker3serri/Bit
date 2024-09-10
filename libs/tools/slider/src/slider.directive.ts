@@ -21,12 +21,15 @@ export class ToolsSliderDirective implements OnInit {
   @Input() min: number = 0;
   @Input() max: number = 100;
 
-  @HostBinding() @Input() id = `bit-slider-${nextId++}`;
+  @HostBinding() @Input() id = `tools-slider-${nextId++}`;
 
   @HostBinding("class") @Input() get classList() {
-    return [this.hasError ? "tools-range-danger-600" : "tools-range-primary-600"].filter(
-      (s) => s != "",
-    );
+    return [
+      this.hasError ? "tools-range-danger-600" : "tools-range-primary-600",
+      "focus:tools-range-primary-700",
+      "disabled:tools-range-secondary-600",
+      "hover:tools-range-primary-700",
+    ].filter((s) => s != "");
   }
 
   @HostBinding("attr.aria-describedby") ariaDescribedBy: string;

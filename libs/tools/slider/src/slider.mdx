@@ -11,6 +11,13 @@ value by manipulating a thumb along a track with a defined min and max values. I
 accompying number field for keyboard input. Keyboard input via left and right arrow is also
 supported for the slider when the element is in focus.
 
+## Note
+
+Because Storybook isn't currently set up to handle Tailwind's PostCSS processing the styling is not
+currently fully conformant to our theme/designs.
+
+https://bitwarden.atlassian.net/browse/PM-11938
+
 <Primary />
 
 <Controls include={["minValue", "maxValue", "initialValue"]} />

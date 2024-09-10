@@ -16,7 +16,7 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ToolsSliderDirective } from "./slider.directive";
 
 @Component({
-  selector: "bit-slider",
+  selector: "tools-slider",
   templateUrl: "./slider.component.html",
   standalone: true,
   imports: [JslibModule, CommonModule, ReactiveFormsModule, ToolsSliderDirective],

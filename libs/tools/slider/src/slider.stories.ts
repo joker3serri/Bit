@@ -36,7 +36,7 @@ export const Default: Story = {
     },
     template: `
       <bit-card>
-        <bit-slider [min]="min" [max]="max"></bit-slider>
+        <tools-slider [min]="min" [max]="max"></tools-slider>
       </bit-card>
     `,
   }),
@@ -51,7 +51,7 @@ export const ErrorState: Story = {
     },
     template: `
       <bit-card>
-        <bit-slider [min]="min" [max]="max" [initialValue]="initialValue"></bit-slider>
+        <tools-slider [min]="min" [max]="max" [initialValue]="initialValue"></tools-slider>
       </bit-card>
     `,
   }),
@@ -67,12 +67,10 @@ export const InputOnly: Story = {
       <bit-card>
         <input
           toolsSlider
-          id="rangeSlider"
           [min]="0"
           [max]="100"
           [step]="1"
           value="50"
-          class="range-slider"
         />
       </bit-card>
     `,
