@@ -232,7 +232,7 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
         selected: false,
       },
     ];
-    this.discountPercentageFromSub = this.sub?.customerDiscount?.percentOff;
+    this.discountPercentageFromSub = this.sub?.customerDiscount?.percentOff ?? 0;
 
     this.setInitialPlanSelection();
     this.loading = false;
@@ -449,6 +449,10 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  get storageGb() {
+    return this.organization?.maxStorageGb - 1;
+  }
+
   passwordManagerSeatTotal(plan: PlanResponse): number {
     if (!plan.PasswordManager.hasAdditionalSeatsOption || this.isSecretsManagerTrial()) {
       return 0;
@@ -473,7 +477,7 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
 
     return (
       plan.PasswordManager.additionalStoragePricePerGb *
-      Math.abs(this.organization.maxStorageGb || 0)
+      Math.abs(this.organization.maxStorageGb - 1 || 0)
     );
   }
 
@@ -764,6 +768,16 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
 
   toggleTotalOpened() {
     this.totalOpened = !this.totalOpened;
+  }
+
+  calculateTotalAppliedDiscount() {
+    const discountPercent =
+      this.selectedInterval == PlanInterval.Annually
+        ? this.discountPercentage + this.discountPercentageFromSub
+        : this.discountPercentageFromSub;
+
+    const discountedTotal = this.total / (1 - discountPercent / 100);
+    return discountedTotal;
   }
 
   get paymentSourceClasses() {

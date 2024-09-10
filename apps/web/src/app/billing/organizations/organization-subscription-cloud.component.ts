@@ -464,6 +464,11 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.load();
   }
 
+  calculateTotalAppliedDiscount(total: number) {
+    const discountedTotal = total / (1 - this.customerDiscount?.percentOff / 100);
+    return discountedTotal;
+  }
+
   adjustStorage = (add: boolean) => {
     return async () => {
       const deprecateStripeSourcesAPI = await firstValueFrom(this.deprecateStripeSourcesAPI$);
