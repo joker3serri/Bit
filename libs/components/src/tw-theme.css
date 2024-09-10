@@ -4,7 +4,7 @@
   --color-transparent-hover: rgb(0 0 0 / 0.02);
 
   --color-background: 255 255 255;
-  --color-background-alt: 246 247 249;
+  --color-background-alt: 243 246 249;
   --color-background-alt2: 23 92 219;
   --color-background-alt3: 18 82 163;
   --color-background-alt4: 13 60 119;
@@ -83,13 +83,13 @@
 
   --color-danger-100: 149 27 42;
   --color-danger-600: 255 78 99;
-  --color-danger-700: 255 133 148;
+  --color-danger-700: 255 236 239;
 
   --color-warning-100: 172 88 0;
   --color-warning-600: 255 191 0;
   --color-warning-700: 255 248 228;
 
-  --color-info-100: 26 66 172;
+  --color-info-100: 26 65 172;
   --color-info-600: 121 161 233;
   --color-info-700: 219 229 246;
 
