@@ -1,4 +1,4 @@
-import { switchMap, merge, delay, filter, concatMap, map } from "rxjs";
+import { switchMap, merge, delay, filter, concatMap, map, firstValueFrom } from "rxjs";
 
 import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
 import {
@@ -61,7 +61,20 @@ export class PopupViewCacheBackgroundService {
     merge(
       // on tab changed, excluding extension tabs
       fromChromeEvent(chrome.tabs.onActivated).pipe(
-        switchMap(([tabInfo]) => BrowserApi.getTab(tabInfo.tabId)),
+        switchMap(async (tabs) => {
+          const tab = await BrowserApi.getTab(tabs[0].tabId);
+
+          // FireFox sets the `url` to "about:blank" and won't populate the `url` until the `onUpdated` event
+          if (tab.url !== "about:blank") {
+            return tab;
+          }
+
+          return firstValueFrom(
+            fromChromeEvent(chrome.tabs.onUpdated).pipe(
+              switchMap(([tabId]) => BrowserApi.getTab(tabId)),
+            ),
+          );
+        }),
         map((tab) => tab.url || tab.pendingUrl),
         filter((url) => !url.startsWith(chrome.runtime.getURL(""))),
       ),
