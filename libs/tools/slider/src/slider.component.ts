@@ -1,14 +1,5 @@
 import { CommonModule } from "@angular/common";
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-  AfterViewInit,
-} from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
 import { ReactiveFormsModule, FormControl } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -23,7 +14,7 @@ import { ToolsSliderDirective } from "./slider.directive";
   styleUrls: ["./slider.component.css"],
   encapsulation: ViewEncapsulation.None,
 })
-export class SliderComponent implements AfterViewInit, OnInit {
+export class SliderComponent implements OnInit {
   /**
    * Minimum value for the slider.
    * @default 0
@@ -69,24 +60,7 @@ export class SliderComponent implements AfterViewInit, OnInit {
     }
   }
 
-  constructor() {
-    this.sliderValueControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
-      this.setTrackColor(value);
-    });
-  }
-
-  ngAfterViewInit() {
-    this.setTrackColor(this.sliderValueControl.value);
-  }
-
-  setTrackColor(value: number) {
-    if (!this.sliderEl) {
-      return;
-    }
-
-    const progress = (value / this.max) * 100;
-    this.sliderEl.nativeElement.style.setProperty("--range-fill-value", `${progress}%`);
-  }
+  constructor() {}
 
   validateRange(control: FormControl) {
     const value = control.value;

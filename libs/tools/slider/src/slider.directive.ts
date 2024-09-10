@@ -4,11 +4,13 @@ import {
   HostBinding,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
   Optional,
   Self,
 } from "@angular/core";
 import { NgControl } from "@angular/forms";
+import { Subscription } from "rxjs";
 
 let nextId = 0;
 
@@ -17,7 +19,7 @@ let nextId = 0;
   standalone: true,
   exportAs: "toolsSlider",
 })
-export class ToolsSliderDirective implements OnInit {
+export class ToolsSliderDirective implements OnInit, OnDestroy {
   @Input() min: number = 0;
   @Input() max: number = 100;
 
@@ -42,8 +44,9 @@ export class ToolsSliderDirective implements OnInit {
   @HostListener("input")
   onInput() {
     this.ngControl?.control?.markAsTouched();
-    this.updateTrackColor();
   }
+
+  private formControlValueChangesSub: Subscription;
 
   get hasError() {
     return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
@@ -54,14 +57,28 @@ export class ToolsSliderDirective implements OnInit {
     private elementRef: ElementRef<HTMLInputElement>,
   ) {}
 
-  updateTrackColor() {
-    const value = Number(this.elementRef.nativeElement.value);
-    const progress = ((value - this.min) / (this.max - this.min)) * 100;
-
-    this.elementRef.nativeElement.style.setProperty("--range-fill-value", `${progress}%`);
+  initializeTrackColor() {
+    this.updateTrackColorOnValueChange(Number(this.elementRef.nativeElement.value));
   }
 
   ngOnInit() {
-    this.updateTrackColor();
+    this.initializeTrackColor();
+
+    if (this.ngControl?.control) {
+      this.formControlValueChangesSub = this.ngControl.control.valueChanges.subscribe((value) => {
+        this.updateTrackColorOnValueChange(value);
+      });
+    }
+  }
+
+  private updateTrackColorOnValueChange(value: number) {
+    const progress = ((value - this.min) / (this.max - this.min)) * 100;
+    this.elementRef.nativeElement.style.setProperty("--range-fill-value", `${progress}%`);
+  }
+
+  ngOnDestroy() {
+    if (this.formControlValueChangesSub) {
+      this.formControlValueChangesSub.unsubscribe();
+    }
   }
 }
