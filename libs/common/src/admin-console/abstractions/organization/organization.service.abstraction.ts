@@ -113,6 +113,10 @@ export abstract class OrganizationService {
    * https://bitwarden.atlassian.net/browse/AC-2252.
    */
   getFromState: (id: string) => Promise<Organization>;
+  /**
+   * Returns true if the user is eligible for free bitwarden families.
+   * Determined by the user's organization's ability to manage sponsorships
+   */
   canManageSponsorships$: Observable<boolean>;
   hasOrganizations: () => Promise<boolean>;
   get$: (id: string) => Observable<Organization | undefined>;
