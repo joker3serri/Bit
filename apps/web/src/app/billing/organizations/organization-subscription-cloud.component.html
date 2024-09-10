@@ -92,7 +92,7 @@
                   {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} &#64;
                   {{ i.amount | currency: "$" }}
                 </td>
-                <td bitCell class="tw-text-right tw-vertical-top">
+                <td bitCell class="tw-text-right">
                   <ng-container
                     *ngIf="
                       sub?.customerDiscount?.appliesTo?.includes(i.productId);
