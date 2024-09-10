@@ -11,11 +11,13 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 
 import { SharedModule } from "../../../shared";
 
+import { PaymentLabelV2 } from "./payment-label-v2.component";
+
 @Component({
   selector: "app-payment",
   templateUrl: "payment.component.html",
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, PaymentLabelV2],
 })
 export class PaymentComponent implements OnInit, OnDestroy {
   @Input() showMethods = true;
