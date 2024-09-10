@@ -1,0 +1,20 @@
+<ng-template #defaultContent>
+  <ng-content></ng-content>
+</ng-template>
+
+<ng-container *ngIf="extensionRefreshFlag; else defaultLabel">
+  <bit-label
+    [attr.for]="for"
+    class="tw-bg-background tw-px-1 tw-text-sm tw-text-muted tw-translate-y-3 tw-translate-x-3 tw-mb-0 tw-max-w-full tw-pointer-events-auto"
+  >
+    <ng-container *ngTemplateOutlet="defaultContent"></ng-container>
+    <span class="tw-text-xs tw-font-normal">({{ "required" | i18n }})</span>
+  </bit-label>
+</ng-container>
+
+<ng-template #defaultLabel>
+  <label [attr.for]="for">
+    <ng-container *ngTemplateOutlet="defaultContent"></ng-container>
+    <span class="tw-text-xs tw-font-normal">({{ "required" | i18n }})</span>
+  </label>
+</ng-template>
