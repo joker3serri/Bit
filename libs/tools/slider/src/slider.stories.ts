@@ -36,7 +36,7 @@ export const Default: Story = {
     },
     template: `
       <bit-card>
-        <tools-slider [min]="min" [max]="max"></tools-slider>
+        <tools-slider label="Default" [min]="min" [max]="max"></tools-slider>
       </bit-card>
     `,
   }),
@@ -51,7 +51,7 @@ export const ErrorState: Story = {
     },
     template: `
       <bit-card>
-        <tools-slider [min]="min" [max]="max" [initialValue]="initialValue"></tools-slider>
+        <tools-slider label="Error" [min]="min" [max]="max" [initialValue]="initialValue"></tools-slider>
       </bit-card>
     `,
   }),

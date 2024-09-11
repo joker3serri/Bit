@@ -1,6 +1,9 @@
-<div class="tw-w-full tw-flex-col tw-gap-2 tw-flex">
+<div class="tw-w-full tw-flex-col tw-flex">
+  <div bitTypography="body2" class="tw-flex tw-text-muted" *ngIf="label">
+    {{ label }}
+  </div>
   <div class="tw-flex tw-gap-3">
-    <div class="tw-flex-col tw-pt-4">
+    <div class="tw-flex-col">
       <input
         toolsSlider
         #rangeSlider
@@ -10,19 +13,28 @@
         [step]="step"
         [formControl]="sliderValueControl"
         [disabled]="disabled"
-        class="range-slider"
         value="{{ sliderValueControl.value }}"
         [attr.aria-valuemin]="min"
         [attr.aria-valuemax]="max"
         [attr.aria-valuenow]="sliderValueControl.value"
       />
       <div class="tw-w-full tw-flex tw-justify-between tw-mt-1">
-        <small *ngIf="min !== undefined" role="none" class="tw-text-muted justify-self-start">{{
-          min
-        }}</small>
-        <small *ngIf="max !== undefined" role="none" class="tw-text-muted justify-self-end">{{
-          max
-        }}</small>
+        <div
+          bitTypography="helper"
+          *ngIf="min !== undefined"
+          role="none"
+          class="tw-text-muted tw-justify-self-start"
+        >
+          {{ min }}
+        </div>
+        <div
+          bitTypography="helper"
+          *ngIf="max !== undefined"
+          role="none"
+          class="tw-text-muted tw-justify-self-end"
+        >
+          {{ max }}
+        </div>
       </div>
     </div>
     <div class="tw-flex tw-justify-center tw-items-center">
@@ -38,7 +50,7 @@
     </div>
   </div>
   <div
-    class="tw-flex tw-text-sm tw-text-danger tw-flex tw-flex-wrap tw-break-words"
+    class="tw-flex tw-text-sm tw-text-danger tw-flex tw-flex-wrap tw-break-words mt-2"
     *ngIf="sliderDirective.hasError"
   >
     <span>

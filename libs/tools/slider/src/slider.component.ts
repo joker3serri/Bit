@@ -1,8 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { ReactiveFormsModule, FormControl } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { FormControlModule } from "@bitwarden/components/src/form-control";
 
 import { ToolsSliderDirective } from "./slider.directive";
 
@@ -10,9 +11,14 @@ import { ToolsSliderDirective } from "./slider.directive";
   selector: "tools-slider",
   templateUrl: "./slider.component.html",
   standalone: true,
-  imports: [JslibModule, CommonModule, ReactiveFormsModule, ToolsSliderDirective],
+  imports: [
+    JslibModule,
+    CommonModule,
+    FormControlModule,
+    ReactiveFormsModule,
+    ToolsSliderDirective,
+  ],
   styleUrls: ["./slider.component.css"],
-  encapsulation: ViewEncapsulation.None,
 })
 export class SliderComponent implements OnInit {
   /**
@@ -44,6 +50,11 @@ export class SliderComponent implements OnInit {
    * Can be used to set the starting value for the slider component.
    */
   @Input() initialValue: number;
+
+  /**
+   * Label for the slider.
+   */
+  @Input() label: string;
 
   @ViewChild("rangeSlider", { static: false }) sliderEl: ElementRef<HTMLInputElement>;
 
