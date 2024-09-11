@@ -865,21 +865,24 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleKeydown(event: KeyboardEvent, index: number) {
-    const intervals = this.getPlanIntervals();
-    const key = event.key;
+  handleKeyDown(event: KeyboardEvent, planIntervalValue: number): void {
+    const intervals = this.getPlanIntervals().map((interval) => interval.value);
+    const currentIndex = intervals.indexOf(planIntervalValue);
 
-    if (key === "ArrowRight" || key === "ArrowDown") {
-      event.preventDefault();
-      const nextIndex = (index + 1) % intervals.length;
-      this.updateInterval(intervals[nextIndex].value);
-    } else if (key === "ArrowLeft" || key === "ArrowUp") {
-      event.preventDefault();
-      const prevIndex = (index - 1 + intervals.length) % intervals.length;
-      this.updateInterval(intervals[prevIndex].value);
-    } else if (key === "Enter" || key === " ") {
-      event.preventDefault();
-      this.updateInterval(intervals[index].value);
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      const nextIndex = (currentIndex + 1) % intervals.length;
+      this.updateInterval(intervals[nextIndex]);
+      const nextElement = document.querySelector(`[value="${intervals[nextIndex]}"]`);
+      if (nextElement) {
+        (nextElement as HTMLElement).focus();
+      }
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      const prevIndex = (currentIndex - 1 + intervals.length) % intervals.length;
+      this.updateInterval(intervals[prevIndex]);
+      const prevElement = document.querySelector(`[value="${intervals[prevIndex]}"]`);
+      if (prevElement) {
+        (prevElement as HTMLElement).focus();
+      }
     }
   }
 }

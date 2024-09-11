@@ -35,9 +35,11 @@
               <bit-toggle
                 *ngFor="let planInterval of getPlanIntervals(); let i = index"
                 [value]="planInterval.value"
-                [attr.tabindex]="selectedInterval === planInterval.value ? '0' : '-1'"
-                (keydown)="handleKeydown($event, i)"
                 role="radio"
+                tabindex="0"
+                [attr.aria-checked]="planInterval.value === selectedInterval"
+                (keydown)="handleKeyDown($event, planInterval.value)"
+                (click)="updateInterval(planInterval.value)"
               >
                 {{ planInterval.name }}
               </bit-toggle>
