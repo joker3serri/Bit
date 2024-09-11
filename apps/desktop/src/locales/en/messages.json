@@ -1556,7 +1556,7 @@
     "message": "Recommended for security."
   },
   "lockWithMasterPassOnRestart1": {
-    "message": "lockWithMasterPassOnRestart1"
+    "message": "Lock with master password on restart"
   },
   "deleteAccount": {
     "message": "Delete account"
