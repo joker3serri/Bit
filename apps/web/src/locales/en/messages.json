@@ -5473,9 +5473,6 @@
       }
     }
   },
-  "customVaultTimeout": {
-    "message": "Custom vault timeout"
-  },
   "vaultTimeoutToLarge": {
     "message": "Your vault timeout exceeds the restriction set by your organization."
   },
