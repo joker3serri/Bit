@@ -5,7 +5,7 @@
   <bit-card>
     <div
       class="tw-border-secondary-300 [&_bit-form-field:last-of-type]:tw-mb-0"
-      *ngFor="let field of fields; let last = last"
+      *ngFor="let field of cipher.fields; let last = last"
       [ngClass]="{ 'tw-mb-4': !last }"
     >
       <bit-form-field *ngIf="field.type === fieldType.Text" [disableReadOnlyBorder]="last">

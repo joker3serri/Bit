@@ -8,7 +8,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { CipherType, FieldType, LinkedIdType } from "@bitwarden/common/vault/enums";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import {
@@ -40,7 +39,6 @@ import {
   ],
 })
 export class CustomFieldV2Component implements OnInit {
-  @Input() fields: FieldView[];
   @Input() cipher: CipherView;
   fieldType = FieldType;
   fieldOptions: any;
