@@ -109,6 +109,9 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        crate:
+          - core
+          - napi
 
     steps:
       - name: Check Rust version
@@ -129,7 +132,7 @@ jobs:
 
       - name: Test Ubuntu
         if: ${{ matrix.os=='ubuntu-latest' }}
-        working-directory: ./apps/desktop/desktop_native
+        working-directory: ./apps/desktop/desktop_native/${{ matrix.crate }}
         run: |
           eval "$(dbus-launch --sh-syntax)"
           mkdir -p ~/.cache
@@ -138,7 +141,12 @@ jobs:
           eval "$(printf '\n' | /usr/bin/gnome-keyring-daemon --start)"
           cargo test -- --test-threads=1
 
-      - name: Test Windows / macOS
-        if: ${{ matrix.os!='ubuntu-latest' }}
-        working-directory: ./apps/desktop/desktop_native
+      - name: Test macOS
+        if: ${{ matrix.os=='macos-latest' }}
+        working-directory: ./apps/desktop/desktop_native/${{ matrix.crate }}
+        run: cargo test -- --test-threads=1
+
+      - name: Test Windows
+        if: ${{ matrix.os=='windows-latest' && matrix.crate!='napi' }}
+        working-directory: ./apps/desktop/desktop_native/${{ matrix.crate }}
         run: cargo test -- --test-threads=1
