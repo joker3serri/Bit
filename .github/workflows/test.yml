@@ -98,7 +98,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   rust:
-    name: Run Rust tests on ${{ matrix.os }}
+    name: Run Rust tests on ${{ matrix.os }} for ${{ matrix.crate }}
     runs-on: ${{ matrix.os || 'ubuntu-latest' }}
     permissions:
       contents: read
