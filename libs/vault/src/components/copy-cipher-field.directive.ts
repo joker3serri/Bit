@@ -1,7 +1,5 @@
 import { Directive, HostBinding, HostListener, Input, OnChanges, Optional } from "@angular/core";
 
-import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { EventType } from "@bitwarden/common/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { MenuItemDirective } from "@bitwarden/components";
 import { CopyAction, CopyCipherFieldService } from "@bitwarden/vault";
@@ -34,7 +32,6 @@ export class CopyCipherFieldDirective implements OnChanges {
 
   constructor(
     private copyCipherFieldService: CopyCipherFieldService,
-    private eventCollectionService: EventCollectionService,
     @Optional() private menuItemDirective?: MenuItemDirective,
   ) {}
 
@@ -54,7 +51,6 @@ export class CopyCipherFieldDirective implements OnChanges {
   async copy() {
     const value = this.getValueToCopy();
     await this.copyCipherFieldService.copy(value, this.action, this.cipher);
-    await this.conditionallyLogEvent();
   }
 
   async ngOnChanges() {
@@ -97,24 +93,6 @@ export class CopyCipherFieldDirective implements OnChanges {
         return this.cipher.notes;
       default:
         return null;
-    }
-  }
-
-  private async conditionallyLogEvent() {
-    if (this.action === "password") {
-      await this.eventCollectionService.collect(
-        EventType.Cipher_ClientCopiedPassword,
-        this.cipher.id,
-        false,
-        this.cipher.organizationId,
-      );
-    } else if (this.action === "securityCode") {
-      await this.eventCollectionService.collect(
-        EventType.Cipher_ClientCopiedCardCode,
-        this.cipher.id,
-        false,
-        this.cipher.organizationId,
-      );
     }
   }
 }
