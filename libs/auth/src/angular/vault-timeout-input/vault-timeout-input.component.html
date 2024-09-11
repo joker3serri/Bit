@@ -33,7 +33,7 @@
     </bit-form-field>
   </div>
   <bit-hint *ngIf="vaultTimeoutPolicy != null && !exceedsMaximumTimeout">
-    {{ "vaultTimeoutPolicyInEffect" | i18n: vaultTimeoutPolicyHours : vaultTimeoutPolicyMinutes }}
+    {{ "vaultTimeoutPolicyInEffect1" | i18n: vaultTimeoutPolicyHours : vaultTimeoutPolicyMinutes }}
   </bit-hint>
   <small *ngIf="!exceedsMinimumTimeout" class="tw-text-danger">
     <i class="bwi bwi-error" aria-hidden="true"></i> {{ "vaultCustomTimeoutMinimum" | i18n }}
