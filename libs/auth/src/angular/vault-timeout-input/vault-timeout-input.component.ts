@@ -77,7 +77,7 @@ export class VaultTimeoutInputComponent
 
   get filteredVaultTimeoutOptions(): VaultTimeoutOption[] {
     // by policy max value
-    if (this.vaultTimeoutPolicy == null) {
+    if (this.vaultTimeoutPolicy == null || this.vaultTimeoutPolicy.data == null) {
       return this.vaultTimeoutOptions;
     }
 
@@ -91,7 +91,7 @@ export class VaultTimeoutInputComponent
   }
 
   static CUSTOM_VALUE = -100;
-  static MIN_CUSTOM_MINUTES = 1;
+  static MIN_CUSTOM_MINUTES = 0;
 
   form: VaultTimeoutForm = this.formBuilder.group({
     vaultTimeout: [null],
@@ -150,10 +150,7 @@ export class VaultTimeoutInputComponent
         takeUntil(this.destroy$),
       )
       .subscribe((value) => {
-        const current =
-          typeof value === "string"
-            ? VaultTimeoutInputComponent.MIN_CUSTOM_MINUTES
-            : Math.max(value, VaultTimeoutInputComponent.MIN_CUSTOM_MINUTES);
+        const current = typeof value === "string" ? 0 : Math.max(value, 0);
 
         // This cannot emit an event b/c it would cause form.valueChanges to fire again
         // and we are already handling that above so just silently update
