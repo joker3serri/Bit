@@ -24,7 +24,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { normalizeExpiryYearFormat } from "@bitwarden/common/vault/utils";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { BrowserFido2UserInterfaceSession } from "../../../../autofill/fido2/services/browser-fido2-user-interface.service";
@@ -72,6 +72,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
     datePipe: DatePipe,
     configService: ConfigService,
     private fido2UserVerificationService: Fido2UserVerificationService,
+    protected toastService: ToastService,
   ) {
     super(
       cipherService,
@@ -92,6 +93,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
       window,
       datePipe,
       configService,
+      toastService,
     );
   }
 
@@ -355,19 +357,19 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
     }
 
     if (this.reprompt) {
-      this.platformUtilsService.showToast(
-        "info",
-        null,
-        this.i18nService.t("passwordRepromptDisabledAutofillOnPageLoad"),
-      );
+      this.toastService.showToast({
+        variant: "info",
+        title: null,
+        message: this.i18nService.t("passwordRepromptDisabledAutofillOnPageLoad"),
+      });
       return;
     }
 
-    this.platformUtilsService.showToast(
-      "info",
-      null,
-      this.i18nService.t("autofillOnPageLoadSetToDefault"),
-    );
+    this.toastService.showToast({
+      variant: "info",
+      title: null,
+      message: this.i18nService.t("autofillOnPageLoadSetToDefault"),
+    });
   }
 
   private inAddEditPopoutWindow() {
@@ -381,18 +383,18 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
       const url = new URL(data.toString());
       if (url.protocol == "otpauth:" && url.searchParams.has("secret")) {
         this.cipher.login.totp = data.toString();
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("totpCaptureSuccess"),
-        );
+        this.toastService.showToast({
+          variant: "success",
+          title: null,
+          message: this.i18nService.t("totpCaptureSuccess"),
+        });
       }
     } catch (e) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("totpCaptureError"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccurred"),
+        message: this.i18nService.t("totpCaptureError"),
+      });
     }
   }
 
