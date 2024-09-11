@@ -7,9 +7,9 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { ToastService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 import { SharedModule } from "../../shared";
 import { UserKeyRotationModule } from "../key-rotation/user-key-rotation.module";
@@ -31,12 +31,13 @@ export class MigrateFromLegacyEncryptionComponent {
     private accountService: AccountService,
     private keyRotationService: UserKeyRotationService,
     private i18nService: I18nService,
-    private platformUtilsService: PlatformUtilsService,
     private cryptoService: CryptoService,
     private messagingService: MessagingService,
     private logService: LogService,
     private syncService: SyncService,
     private toastService: ToastService,
+    private dialogService: DialogService,
+    private folderApiService: FolderApiServiceAbstraction,
   ) {}
 
   submit = async () => {
@@ -69,8 +70,30 @@ export class MigrateFromLegacyEncryptionComponent {
       });
       this.messagingService.send("logout");
     } catch (e) {
-      this.logService.error(e);
-      throw e;
+      // If the error is due to missing folders, we can delete all folders and try again
+      if (e.message === "All existing folders must be included in the rotation.") {
+        const deleteFolders = await this.dialogService.openSimpleDialog({
+          type: "danger",
+          title: { key: "encryptionKeyUpdateFailed" },
+          content: { key: "decryptionErrorDeleteAllFolders" },
+          acceptButtonText: { key: "ok" },
+          cancelButtonText: { key: "cancel" },
+        });
+
+        if (deleteFolders) {
+          await this.folderApiService.deleteAll();
+          await this.syncService.fullSync(true, true);
+          this.toastService.showToast({
+            variant: "success",
+            title: this.i18nService.t("foldersDeleted"),
+            message: this.i18nService.t("pleaseAttemptEncryptionKeyUpdate"),
+            timeout: 15000,
+          });
+        }
+      } else {
+        this.logService.error(e);
+        throw e;
+      }
     }
   };
 }

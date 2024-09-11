@@ -3894,6 +3894,18 @@
       }
     }
   },
+  "encryptionKeyUpdateFailed": {
+    "message": "Encryption key update failed."
+  },
+  "decryptionErrorDeleteAllFolders": {
+    "message": "During migration of your data, some of your folders were not decryptable. Would you like to delete them in order to access your vault? Note: Vault entries of the removed folders will be moved into the default folder."
+  },
+  "foldersDeleted": {
+    "message": "Folders deleted"
+  },
+  "pleaseAttemptEncryptionKeyUpdate": {
+    "message": "Please attempt the encryption key update again."
+  },
   "keyUpdated": {
     "message": "Key updated"
   },
