@@ -562,6 +562,9 @@
       }
     }
   },
+  "copySuccessful": {
+    "message": "Copy Successful"
+  },
   "copyValue": {
     "message": "Copy value",
     "description": "Copy value to clipboard"
@@ -9082,7 +9085,7 @@
   },
   "hideCharacterCount": {
     "message": "Hide character count"
-  },
+  },  
   "editAccess": {
     "message": "Edit access"
   }
