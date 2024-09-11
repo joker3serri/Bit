@@ -33,10 +33,16 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
   submitting = false;
   email: string;
 
-  // Note: this token is the email verification token. It is always supplied as a query param, but
+  // Note: this token is the email verification token. When it is supplied as a query param,
   // it either comes from the email verification email or, if email verification is disabled server side
   // via global settings, it comes directly from the registration-start component directly.
+  // It is not provided when the user is coming from another emailed invite (ex: org invite or enterprise
+  // org sponsored free family plan invite).
   emailVerificationToken: string;
+
+  // this token is provided when the user is coming from an emailed invite to
+  // setup a free family plan sponsored by an organization but they don't have an account yet.
+  orgSponsoredFreeFamilyPlanToken: string;
 
   masterPasswordPolicyOptions: MasterPasswordPolicyOptions | null = null;
 
@@ -68,6 +74,10 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
 
           if (qParams.token != null) {
             this.emailVerificationToken = qParams.token;
+          }
+
+          if (qParams.orgSponsoredFreeFamilyPlanToken != null) {
+            this.orgSponsoredFreeFamilyPlanToken = qParams.orgSponsoredFreeFamilyPlanToken;
           }
         }),
         switchMap((qParams: Params) => {
