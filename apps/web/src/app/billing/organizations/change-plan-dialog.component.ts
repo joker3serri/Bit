@@ -241,12 +241,7 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
   }
 
   setInitialPlanSelection() {
-    if (
-      this.organization.useSecretsManager &&
-      this.currentPlan.productTier == ProductTierType.Free
-    ) {
-      this.selectPlan(this.getPlanByType(ProductTierType.Enterprise));
-    }
+    this.selectPlan(this.getPlanByType(ProductTierType.Enterprise));
   }
 
   getPlanByType(productTier: ProductTierType) {
@@ -821,6 +816,24 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
         return this.i18nService.t("planNameFamilies");
       case ProductTierType.Teams:
         return this.i18nService.t("planNameTeams");
+    }
+  }
+
+  handleKeydown(event: KeyboardEvent, index: number) {
+    const intervals = this.getPlanIntervals();
+    const key = event.key;
+
+    if (key === "ArrowRight" || key === "ArrowDown") {
+      event.preventDefault();
+      const nextIndex = (index + 1) % intervals.length;
+      this.updateInterval(intervals[nextIndex].value);
+    } else if (key === "ArrowLeft" || key === "ArrowUp") {
+      event.preventDefault();
+      const prevIndex = (index - 1 + intervals.length) % intervals.length;
+      this.updateInterval(intervals[prevIndex].value);
+    } else if (key === "Enter" || key === " ") {
+      event.preventDefault();
+      this.updateInterval(intervals[index].value);
     }
   }
 }

@@ -33,8 +33,11 @@
               (selectedChange)="updateInterval($event)"
             >
               <bit-toggle
-                *ngFor="let planInterval of getPlanIntervals()"
+                *ngFor="let planInterval of getPlanIntervals(); let i = index"
                 [value]="planInterval.value"
+                [attr.tabindex]="selectedInterval === planInterval.value ? '0' : '-1'"
+                (keydown)="handleKeydown($event, i)"
+                role="radio"
               >
                 {{ planInterval.name }}
               </bit-toggle>
