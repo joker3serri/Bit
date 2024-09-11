@@ -689,9 +689,9 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
     if (this.selectedPlan.productTier !== ProductTierType.Families) {
       request.additionalSeats = this.sub?.seats;
     }
-    if (this.organization.maxStorageGb > this.selectedPlan.PasswordManager.baseStorageGb) {
+    if (this.sub?.maxStorageGb > this.selectedPlan.PasswordManager.baseStorageGb) {
       request.additionalStorageGb =
-        this.organization.maxStorageGb - this.selectedPlan.PasswordManager.baseStorageGb;
+        this.sub?.maxStorageGb - this.selectedPlan.PasswordManager.baseStorageGb;
     }
     request.premiumAccessAddon =
       this.selectedPlan.PasswordManager.hasPremiumAccessOption &&
