@@ -430,6 +430,14 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     }
   }
 
+  isSecretsManagerTrial(): boolean {
+    return (
+      this.sub?.subscription?.items?.some((item) =>
+        this.sub?.customerDiscount?.appliesTo?.includes(item.productId),
+      ) ?? false
+    );
+  }
+
   closeChangePlan() {
     this.showChangePlan = false;
   }

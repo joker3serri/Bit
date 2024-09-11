@@ -73,7 +73,7 @@
           >{{ "details" | i18n
           }}<span
             class="tw-ml-3"
-            *ngIf="customerDiscount?.percentOff > 0"
+            *ngIf="customerDiscount?.percentOff > 0 && !isSecretsManagerTrial()"
             bitBadge
             variant="success"
             >{{ "providerDiscount" | i18n: customerDiscount?.percentOff }}</span
@@ -86,7 +86,7 @@
                 <td
                   bitCell
                   [ngClass]="{ 'tw-pl-20': i.addonSubscriptionItem }"
-                  class="tw-align-top"
+                  class="tw-align-middle"
                 >
                   <span *ngIf="!i.addonSubscriptionItem">{{ i.productName | i18n }} -</span>
                   {{ i.name }} {{ i.quantity > 1 ? "&times;" + i.quantity : "" }} &#64;
@@ -107,7 +107,7 @@
                         {{ i.quantity * i.amount | currency: "$" }} /{{ i.interval | i18n }}
                       </span>
                       <span
-                        *ngIf="customerDiscount?.percentOff"
+                        *ngIf="customerDiscount?.percentOff && !isSecretsManagerTrial()"
                         class="tw-line-through !tw-text-muted"
                         >{{
                           calculateTotalAppliedDiscount(i.quantity * i.amount) | currency: "$"
