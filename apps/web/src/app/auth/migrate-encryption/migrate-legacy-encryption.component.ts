@@ -73,9 +73,9 @@ export class MigrateFromLegacyEncryptionComponent {
       // If the error is due to missing folders, we can delete all folders and try again
       if (e.message === "All existing folders must be included in the rotation.") {
         const deleteFolders = await this.dialogService.openSimpleDialog({
-          type: "danger",
-          title: { key: "encryptionKeyUpdateFailed" },
-          content: { key: "decryptionErrorDeleteAllFolders" },
+          type: "warning",
+          title: { key: "encryptionKeyUpdateCannotProceed" },
+          content: { key: "keyUpdateFoldersFailed" },
           acceptButtonText: { key: "ok" },
           cancelButtonText: { key: "cancel" },
         });
@@ -83,17 +83,12 @@ export class MigrateFromLegacyEncryptionComponent {
         if (deleteFolders) {
           await this.folderApiService.deleteAll();
           await this.syncService.fullSync(true, true);
-          this.toastService.showToast({
-            variant: "success",
-            title: this.i18nService.t("foldersDeleted"),
-            message: this.i18nService.t("pleaseAttemptEncryptionKeyUpdate"),
-            timeout: 15000,
-          });
+          await this.submit();
+          return;
         }
-      } else {
-        this.logService.error(e);
-        throw e;
       }
+      this.logService.error(e);
+      throw e;
     }
   };
 }
