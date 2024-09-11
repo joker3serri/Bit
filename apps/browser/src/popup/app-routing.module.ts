@@ -10,6 +10,7 @@ import {
 } from "@bitwarden/angular/auth/guards";
 import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
 import { generatorSwap } from "@bitwarden/angular/tools/generator/generator-swap";
+import { extensionRefreshRedirect } from "@bitwarden/angular/utils/extension-refresh-redirect";
 import { extensionRefreshSwap } from "@bitwarden/angular/utils/extension-refresh-swap";
 import {
   AnonLayoutWrapperComponent,
@@ -54,12 +55,14 @@ import { PremiumV2Component } from "../billing/popup/settings/premium-v2.compone
 import { PremiumComponent } from "../billing/popup/settings/premium.component";
 import BrowserPopupUtils from "../platform/popup/browser-popup-utils";
 import { popupRouterCacheGuard } from "../platform/popup/view-cache/popup-router-cache.service";
+import { CredentialGeneratorHistoryComponent } from "../tools/popup/generator/credential-generator-history.component";
 import { CredentialGeneratorComponent } from "../tools/popup/generator/credential-generator.component";
 import { GeneratorComponent } from "../tools/popup/generator/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
 import { SendAddEditComponent } from "../tools/popup/send/send-add-edit.component";
 import { SendGroupingsComponent } from "../tools/popup/send/send-groupings.component";
 import { SendTypeComponent } from "../tools/popup/send/send-type.component";
+import { SendAddEditComponent as SendAddEditV2Component } from "../tools/popup/send-v2/add-edit/send-add-edit.component";
 import { SendCreatedComponent } from "../tools/popup/send-v2/send-created/send-created.component";
 import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
 import { AboutPageV2Component } from "../tools/popup/settings/about-page/about-page-v2.component";
@@ -97,7 +100,6 @@ import { TrashComponent } from "../vault/popup/settings/trash.component";
 import { VaultSettingsV2Component } from "../vault/popup/settings/vault-settings-v2.component";
 import { VaultSettingsComponent } from "../vault/popup/settings/vault-settings.component";
 
-import { extensionRefreshRedirect } from "./extension-refresh-route-utils";
 import { debounceNavigationGuard } from "./services/debounce-navigation.service";
 import { TabsV2Component } from "./tabs-v2.component";
 import { TabsComponent } from "./tabs.component";
@@ -276,12 +278,11 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { state: "generator" },
   },
-  {
+  ...extensionRefreshSwap(PasswordGeneratorHistoryComponent, CredentialGeneratorHistoryComponent, {
     path: "generator-history",
-    component: PasswordGeneratorHistoryComponent,
     canActivate: [authGuard],
     data: { state: "generator-history" },
-  },
+  }),
   ...extensionRefreshSwap(ImportBrowserComponent, ImportBrowserV2Component, {
     path: "import",
     canActivate: [authGuard],
@@ -362,18 +363,16 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { state: "send-type" },
   },
-  {
+  ...extensionRefreshSwap(SendAddEditComponent, SendAddEditV2Component, {
     path: "add-send",
-    component: SendAddEditComponent,
     canActivate: [authGuard],
     data: { state: "add-send" },
-  },
-  {
+  }),
+  ...extensionRefreshSwap(SendAddEditComponent, SendAddEditV2Component, {
     path: "edit-send",
-    component: SendAddEditComponent,
     canActivate: [authGuard],
     data: { state: "edit-send" },
-  },
+  }),
   {
     path: "send-created",
     component: SendCreatedComponent,
