@@ -3,7 +3,6 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { ReactiveFormsModule, FormControl } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { FormControlModule } from "@bitwarden/components/src/form-control";
 
 import { ToolsSliderDirective } from "./slider.directive";
 
@@ -11,13 +10,7 @@ import { ToolsSliderDirective } from "./slider.directive";
   selector: "tools-slider",
   templateUrl: "./slider.component.html",
   standalone: true,
-  imports: [
-    JslibModule,
-    CommonModule,
-    FormControlModule,
-    ReactiveFormsModule,
-    ToolsSliderDirective,
-  ],
+  imports: [JslibModule, CommonModule, ReactiveFormsModule, ToolsSliderDirective],
   styleUrls: ["./slider.component.css"],
 })
 export class SliderComponent implements OnInit {
