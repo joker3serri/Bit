@@ -305,6 +305,10 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
     ];
   }
 
+  optimizedNgForRender(index: number) {
+    return index;
+  }
+
   protected getPlanCardContainerClasses(plan: PlanResponse, index: number) {
     let cardState: PlanCardState;
 
@@ -862,27 +866,6 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
         return this.i18nService.t("planNameFamilies");
       case ProductTierType.Teams:
         return this.i18nService.t("planNameTeams");
-    }
-  }
-
-  handleKeyDown(event: KeyboardEvent, planIntervalValue: number): void {
-    const intervals = this.getPlanIntervals().map((interval) => interval.value);
-    const currentIndex = intervals.indexOf(planIntervalValue);
-
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      const nextIndex = (currentIndex + 1) % intervals.length;
-      this.updateInterval(intervals[nextIndex]);
-      const nextElement = document.querySelector(`[value="${intervals[nextIndex]}"]`);
-      if (nextElement) {
-        (nextElement as HTMLElement).focus();
-      }
-    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-      const prevIndex = (currentIndex - 1 + intervals.length) % intervals.length;
-      this.updateInterval(intervals[prevIndex]);
-      const prevElement = document.querySelector(`[value="${intervals[prevIndex]}"]`);
-      if (prevElement) {
-        (prevElement as HTMLElement).focus();
-      }
     }
   }
 }

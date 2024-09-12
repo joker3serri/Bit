@@ -33,13 +33,12 @@
               (selectedChange)="updateInterval($event)"
             >
               <bit-toggle
-                *ngFor="let planInterval of getPlanIntervals(); let i = index"
+                *ngFor="
+                  let planInterval of getPlanIntervals();
+                  trackBy: optimizedNgForRender;
+                  let i = index
+                "
                 [value]="planInterval.value"
-                role="radio"
-                tabindex="0"
-                [attr.aria-checked]="planInterval.value === selectedInterval"
-                (keydown)="handleKeyDown($event, planInterval.value)"
-                (click)="updateInterval(planInterval.value)"
               >
                 {{ planInterval.name }}
               </bit-toggle>
