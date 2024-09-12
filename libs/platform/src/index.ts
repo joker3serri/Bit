@@ -1,1 +1,1 @@
-export * from "./services/browserService";
+export * from "./services/browser-service";

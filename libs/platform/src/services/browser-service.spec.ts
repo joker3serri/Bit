@@ -1,6 +1,6 @@
-import { isBrowserSafariApi } from "./browserService";
+import { isBrowserSafariApi } from "./browser-service";
 
-describe("browserService", () => {
+describe("browser-service", () => {
   describe("isBrowserSafariApi", () => {
     it.only("returns true if browser is safari", () => {
       jest
