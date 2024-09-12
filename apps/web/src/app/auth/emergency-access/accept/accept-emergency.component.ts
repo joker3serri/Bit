@@ -19,7 +19,6 @@ import { EmergencyAccessService } from "../services/emergency-access.service";
 })
 export class AcceptEmergencyComponent extends BaseAcceptComponent {
   name: string;
-  email: string;
   emergencyAccessId: string;
   acceptEmergencyAccessInviteToken: string;
 
