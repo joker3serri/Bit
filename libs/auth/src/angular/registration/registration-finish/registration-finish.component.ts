@@ -110,6 +110,7 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
         this.email,
         passwordInputResult,
         this.emailVerificationToken,
+        this.orgSponsoredFreeFamilyPlanToken,
       );
     } catch (e) {
       this.validationService.showError(e);
