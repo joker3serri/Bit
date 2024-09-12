@@ -277,14 +277,7 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
   }
 
   planTypeChanged() {
-    if (
-      this.organization.useSecretsManager &&
-      this.currentPlan.productTier == ProductTierType.Free
-    ) {
-      this.selectPlan(this.getPlanByType(ProductTierType.Teams));
-    } else {
-      this.selectPlan(this.getPlanByType(ProductTierType.Enterprise));
-    }
+    this.selectPlan(this.getPlanByType(ProductTierType.Enterprise));
   }
 
   updateInterval(event: number) {
