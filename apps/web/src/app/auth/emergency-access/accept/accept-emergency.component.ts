@@ -60,10 +60,6 @@ export class AcceptEmergencyComponent extends BaseAcceptComponent {
       this.name = this.name.replace(/\+/g, " ");
     }
 
-    if (qParams.email) {
-      this.email = qParams.email;
-    }
-
     if (qParams.id) {
       this.emergencyAccessId = qParams.id;
     }
