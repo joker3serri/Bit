@@ -158,8 +158,6 @@ describe("CopyCipherFieldService", () => {
       expect(eventCollectionService.collect).toHaveBeenCalledWith(
         EventType.Cipher_ClientCopiedPassword,
         cipher.id,
-        false,
-        cipher.organizationId,
       );
     });
   });

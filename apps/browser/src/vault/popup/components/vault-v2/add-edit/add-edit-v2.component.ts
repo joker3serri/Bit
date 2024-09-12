@@ -6,8 +6,6 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import { firstValueFrom, map, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { EventType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -162,7 +160,6 @@ export class AddEditV2Component implements OnInit {
     private popupRouterCacheService: PopupRouterCacheService,
     private router: Router,
     private cipherService: CipherService,
-    private eventCollectionService: EventCollectionService,
   ) {
     this.subscribeToParams();
   }
@@ -276,15 +273,6 @@ export class AddEditV2Component implements OnInit {
             };
             // Be sure to clear the "cached" cipher info, so it doesn't get used again
             await this.cipherService.setAddEditCipherInfo(null);
-          }
-
-          if (["edit", "partial-edit"].includes(config.mode) && config.originalCipher?.id) {
-            await this.eventCollectionService.collect(
-              EventType.Cipher_ClientViewed,
-              config.originalCipher.id,
-              false,
-              config.originalCipher.organizationId,
-            );
           }
 
           return config;

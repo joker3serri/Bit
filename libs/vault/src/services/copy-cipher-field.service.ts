@@ -125,12 +125,7 @@ export class CopyCipherFieldService {
     });
 
     if (action.event !== undefined) {
-      await this.eventCollectionService.collect(
-        action.event,
-        cipher.id,
-        false,
-        cipher.organizationId,
-      );
+      await this.eventCollectionService.collect(action.event, cipher.id);
     }
   }
 

@@ -2,12 +2,10 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { EventType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherType, FieldType, LinkedIdType } from "@bitwarden/common/vault/enums";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import {
@@ -39,14 +37,12 @@ import {
   ],
 })
 export class CustomFieldV2Component implements OnInit {
-  @Input() cipher: CipherView;
+  @Input() fields: FieldView[];
+  @Input() cipherType: CipherType;
   fieldType = FieldType;
   fieldOptions: any;
 
-  constructor(
-    private i18nService: I18nService,
-    private eventCollectionService: EventCollectionService,
-  ) {}
+  constructor(private i18nService: I18nService) {}
 
   ngOnInit(): void {
     this.fieldOptions = this.getLinkedFieldsOptionsForCipher();
@@ -57,28 +53,8 @@ export class CustomFieldV2Component implements OnInit {
     return this.i18nService.t(linkedType.i18nKey);
   }
 
-  async logHiddenEvent(hiddenFieldVisible: boolean) {
-    if (hiddenFieldVisible) {
-      await this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledHiddenFieldVisible,
-        this.cipher.id,
-        false,
-        this.cipher.organizationId,
-      );
-    }
-  }
-
-  async logCopyEvent() {
-    await this.eventCollectionService.collect(
-      EventType.Cipher_ClientCopiedHiddenField,
-      this.cipher.id,
-      false,
-      this.cipher.organizationId,
-    );
-  }
-
   private getLinkedFieldsOptionsForCipher() {
-    switch (this.cipher.type) {
+    switch (this.cipherType) {
       case CipherType.Login:
         return LoginView.prototype.linkedFieldOptions;
       case CipherType.Card:
