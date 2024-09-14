@@ -160,6 +160,9 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
   showPayment: boolean = false;
   totalOpened: boolean = false;
   currentPlan: PlanResponse;
+  currentFocusIndex = 0;
+  isCardStateDisabled = false;
+  focusedIndex: number | null = null;
 
   deprecateStripeSourcesAPI: boolean;
 
@@ -255,6 +258,7 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
   }
 
   setInitialPlanSelection() {
+    this.focusedIndex = this.selectableProducts.length - 1;
     this.selectPlan(this.getPlanByType(ProductTierType.Enterprise));
   }
 
@@ -307,15 +311,22 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
 
     if (plan == this.currentPlan) {
       cardState = PlanCardState.Disabled;
+      this.isCardStateDisabled = true;
+      this.focusedIndex = index;
     } else if (plan == this.selectedPlan) {
       cardState = PlanCardState.Selected;
+      this.isCardStateDisabled = false;
+      this.focusedIndex = index;
     } else if (
       this.selectedInterval === PlanInterval.Monthly &&
       plan.productTier == ProductTierType.Families
     ) {
       cardState = PlanCardState.Disabled;
+      this.isCardStateDisabled = true;
+      this.focusedIndex = this.selectableProducts.length - 1;
     } else {
       cardState = PlanCardState.NotSelected;
+      this.isCardStateDisabled = false;
     }
 
     switch (cardState) {
@@ -860,5 +871,45 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
       case ProductTierType.Teams:
         return this.i18nService.t("planNameTeams");
     }
+  }
+
+  onKeydown(event: KeyboardEvent, index: number) {
+    const cardElements = Array.from(document.querySelectorAll(".product-card")) as HTMLElement[];
+    let newIndex = index;
+    const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
+
+    if (["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(event.key)) {
+      do {
+        newIndex = (newIndex + direction + cardElements.length) % cardElements.length;
+      } while (this.isCardDisabled(newIndex) && newIndex !== index);
+
+      event.preventDefault();
+
+      setTimeout(() => {
+        const card = cardElements[newIndex];
+        if (
+          !(
+            card.classList.contains("tw-bg-secondary-100") &&
+            card.classList.contains("tw-text-muted")
+          )
+        ) {
+          card?.focus();
+        }
+      }, 0);
+    }
+  }
+
+  onFocus(index: number) {
+    this.focusedIndex = index;
+    this.selectPlan(this.selectableProducts[index]);
+  }
+
+  isCardDisabled(index: number): boolean {
+    const card = this.selectableProducts[index];
+    return card === (this.currentPlan || this.isCardStateDisabled);
+  }
+
+  manageSelectableProduct(index: number) {
+    return index;
   }
 }
