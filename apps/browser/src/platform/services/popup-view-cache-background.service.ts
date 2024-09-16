@@ -1,4 +1,4 @@
-import { switchMap, merge, delay, filter, concatMap, map, first, of, from } from "rxjs";
+import { switchMap, merge, delay, filter, concatMap, map, first, of } from "rxjs";
 
 import { CommandDefinition, MessageListener } from "@bitwarden/common/platform/messaging";
 import {
@@ -70,7 +70,7 @@ export class PopupViewCacheBackgroundService {
 
           return fromChromeEvent(chrome.tabs.onUpdated).pipe(
             first(),
-            switchMap(([tabId]) => from(BrowserApi.getTab(tabId))),
+            switchMap(([tabId]) => BrowserApi.getTab(tabId)),
           );
         }),
         map((tab) => tab.url || tab.pendingUrl),
