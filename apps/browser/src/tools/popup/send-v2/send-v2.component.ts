@@ -99,7 +99,7 @@ export class SendV2Component implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.shouldShowFilePopoutMessage = !this.filePopoutUtilsService.showFilePopoutMessage(window);
+    this.shouldShowFilePopoutMessage = this.filePopoutUtilsService.showFilePopoutMessage(window);
   }
 
   ngOnDestroy(): void {}
