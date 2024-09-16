@@ -2,7 +2,7 @@ import { isBrowserSafariApi } from "./browser-service";
 
 describe("browser-service", () => {
   describe("isBrowserSafariApi", () => {
-    it.only("returns true if browser is safari", () => {
+    it("returns true if browser is safari", () => {
       jest
         .spyOn(navigator, "userAgent", "get")
         .mockReturnValue(
