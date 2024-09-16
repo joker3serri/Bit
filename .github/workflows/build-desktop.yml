@@ -1031,7 +1031,6 @@ jobs:
         env:
           APP_STORE_CONNECT_TEAM_ISSUER: ${{ secrets.APP_STORE_CONNECT_TEAM_ISSUER }}
           APP_STORE_CONNECT_AUTH_KEY: 6TV9MKN3GP
-          BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
         run: |
           xcrun altool \
             --upload-app \
