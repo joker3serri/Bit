@@ -1027,8 +1027,7 @@ jobs:
         if: |
             (github.ref == 'refs/heads/main'
             || github.ref == 'refs/heads/rc'
-            || github.ref == 'refs/heads/hotfix-rc-desktop'
-            || github.ref == 'refs/heads/vgrassia/test-upload-testflight')
+            || github.ref == 'refs/heads/hotfix-rc-desktop')
         env:
           APP_STORE_CONNECT_TEAM_ISSUER: ${{ secrets.APP_STORE_CONNECT_TEAM_ISSUER }}
           APP_STORE_CONNECT_AUTH_KEY: 6TV9MKN3GP
@@ -1050,8 +1049,7 @@ jobs:
         if: |
             (github.ref == 'refs/heads/main'
             || github.ref == 'refs/heads/rc'
-            || github.ref == 'refs/heads/hotfix-rc-desktop'
-            || github.ref == 'refs/heads/vgrassia/test-upload-testflight')
+            || github.ref == 'refs/heads/hotfix-rc-desktop')
         uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
         with:
           channel-id: C074F5UESQ0
