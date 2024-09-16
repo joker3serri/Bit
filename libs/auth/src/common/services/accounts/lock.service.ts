@@ -39,7 +39,9 @@ export class DefaultLockService implements LockService {
       await this.vaultTimeoutService.lock(otherAccount);
     }
 
-    // Always prefer to do the active account first
+    // Do the active account last in case we ever try to route the user on lock
+    // that way this whole operation will be complete before that routing
+    // could take place.
     if (accounts.activeAccount != null) {
       await this.vaultTimeoutService.lock(accounts.activeAccount);
     }
