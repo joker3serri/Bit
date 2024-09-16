@@ -18,7 +18,7 @@
           [appCopyClick]="field.value"
           showToast
           [valueLabel]="field.name"
-          [appA11yTitle]="'copyValue' | i18n"
+          [appA11yTitle]="'copyCustomField' | i18n: field.name"
         ></button>
       </bit-form-field>
       <bit-form-field *ngIf="field.type === fieldType.Hidden" [disableReadOnlyBorder]="last">
@@ -38,7 +38,7 @@
           [appCopyClick]="field.value"
           showToast
           [valueLabel]="field.name"
-          [appA11yTitle]="'copyValue' | i18n"
+          [appA11yTitle]="'copyCustomField' | i18n: field.name"
           (click)="logCopyEvent()"
         ></button>
       </bit-form-field>
