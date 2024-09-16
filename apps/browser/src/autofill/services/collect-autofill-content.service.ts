@@ -638,6 +638,10 @@ export class CollectAutofillContentService implements CollectAutofillContentServ
     }
 
     const tableDataElementIndex = tableDataElement.cellIndex;
+    if (tableDataElementIndex < 0) {
+      return null;
+    }
+
     const parentSiblingTableRowElement = tableDataElement.closest("tr")
       ?.previousElementSibling as HTMLTableRowElement;
 
