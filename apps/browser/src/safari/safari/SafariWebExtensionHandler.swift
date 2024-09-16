@@ -213,8 +213,7 @@ extension LAContext {
 
         if let e = error, e.code != kLAErrorBiometryLockout {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
