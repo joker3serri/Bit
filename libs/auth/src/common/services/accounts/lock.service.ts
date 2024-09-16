@@ -1,7 +1,7 @@
 import { combineLatest, firstValueFrom, map } from "rxjs";
 
+import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
 import { UserId } from "@bitwarden/common/types/guid";
 
 export abstract class LockService {
@@ -35,13 +35,13 @@ export class DefaultLockService implements LockService {
       ),
     );
 
+    for (const otherAccount of accounts.otherAccounts) {
+      await this.vaultTimeoutService.lock(otherAccount);
+    }
+
     // Always prefer to do the active account first
     if (accounts.activeAccount != null) {
       await this.vaultTimeoutService.lock(accounts.activeAccount);
-    }
-
-    for (const otherAccount of accounts.otherAccounts) {
-      await this.vaultTimeoutService.lock(otherAccount);
     }
   }
 }
