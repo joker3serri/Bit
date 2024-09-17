@@ -154,18 +154,31 @@ module.exports = {
         {},
       );
     }),
-    plugin(function ({ addVariant }) {
-      for (const state of [
-        "active",
-        "hover",
-        "focus",
-        "focus-within",
-        "focus-visible",
-        "target",
-        "visited",
-      ]) {
-        addVariant(state, [`&:${state}`, `&.test-${state}`]);
-      }
+    plugin(function ({ addBase }) {
+      addBase({
+        // Chrome & Safari support
+        "::-webkit-scrollbar": {
+          overflow: "auto",
+        },
+        "::-webkit-scrollbar-thumb": {
+          border: "4px solid transparent",
+          "background-clip": "content-box",
+          "border-radius": "10px",
+          "background-color": "rgb(var(--color-secondary-500))",
+        },
+        "::-webkit-scrollbar-track": {
+          "background-color": "rgb(var(--color-background))",
+        },
+        "::-webkit-scrollbar-thumb:hover": {
+          "background-color": "rgb(var(--color-secondary-600))",
+        },
+        // FireFox support
+        "*": {
+          "@supports (-moz-appearance:none)": {
+            "scrollbar-color": "rgb(var(--color-secondary-500)) rgb(var(--color-background))",
+          },
+        },
+      });
     }),
   ],
 };
