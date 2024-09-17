@@ -4900,12 +4900,6 @@
   "deleteAnyCollection": {
     "message": "Delete any collection"
   },
-  "editAssignedCollections": {
-    "message": "Edit assigned collections"
-  },
-  "deleteAssignedCollections": {
-    "message": "Delete assigned collections"
-  },
   "manageGroups": {
     "message": "Manage groups"
   },
