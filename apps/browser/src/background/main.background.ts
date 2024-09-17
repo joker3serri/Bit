@@ -9,6 +9,7 @@ import {
   AuthRequestService,
   LoginEmailServiceAbstraction,
   LogoutReason,
+  DefaultLockService,
 } from "@bitwarden/auth/common";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -79,6 +80,7 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { Fido2ActiveRequestManager as Fido2ActiveRequestManagerAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
 import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
 import { Fido2ClientService as Fido2ClientServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-client.service.abstraction";
 import { Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-user-interface.service.abstraction";
@@ -324,6 +326,7 @@ export default class MainBackground {
   userVerificationApiService: UserVerificationApiServiceAbstraction;
   fido2UserInterfaceService: Fido2UserInterfaceServiceAbstraction;
   fido2AuthenticatorService: Fido2AuthenticatorServiceAbstraction;
+  fido2ActiveRequestManager: Fido2ActiveRequestManagerAbstraction;
   fido2ClientService: Fido2ClientServiceAbstraction;
   avatarService: AvatarServiceAbstraction;
   mainContextMenuHandler: MainContextMenuHandler;
@@ -1021,7 +1024,7 @@ export default class MainBackground {
       this.accountService,
       this.logService,
     );
-    const fido2ActiveRequestManager = new Fido2ActiveRequestManager();
+    this.fido2ActiveRequestManager = new Fido2ActiveRequestManager();
     this.fido2ClientService = new Fido2ClientService(
       this.fido2AuthenticatorService,
       this.configService,
@@ -1029,7 +1032,7 @@ export default class MainBackground {
       this.vaultSettingsService,
       this.domainSettingsService,
       this.taskSchedulerService,
-      fido2ActiveRequestManager,
+      this.fido2ActiveRequestManager,
       this.logService,
     );
 
@@ -1057,11 +1060,15 @@ export default class MainBackground {
     if (!this.popupOnlyContext) {
       this.fido2Background = new Fido2Background(
         this.logService,
+        this.fido2ActiveRequestManager,
         this.fido2ClientService,
         this.vaultSettingsService,
         this.scriptInjectorService,
         this.configService,
       );
+
+      const lockService = new DefaultLockService(this.accountService, this.vaultTimeoutService);
+
       this.runtimeBackground = new RuntimeBackground(
         this,
         this.autofillService,
@@ -1076,6 +1083,7 @@ export default class MainBackground {
         this.fido2Background,
         messageListener,
         this.accountService,
+        lockService,
       );
       this.nativeMessagingBackground = new NativeMessagingBackground(
         this.cryptoService,
@@ -1605,7 +1613,8 @@ export default class MainBackground {
         this.autofillSettingsService,
         this.i18nService,
         this.platformUtilsService,
-        this.fido2ClientService,
+        this.vaultSettingsService,
+        this.fido2ActiveRequestManager,
         this.themeStateService,
       );
     }
