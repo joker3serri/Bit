@@ -757,26 +757,6 @@
               </span>
               <span>{{ additionalServiceAccountTotal(selectedPlan) | currency: "$" }}</span>
             </p>
-            <!--Discount SM Annual-->
-            <p
-              class="tw-mb-0 tw-flex tw-justify-between"
-              bitTypography="body2"
-              *ngIf="organization.useSecretsManager && isSecretsManagerTrial()"
-            >
-              <ng-container
-                *ngIf="selectedInterval == planIntervals.Annually && discountPercentageFromSub > 0"
-              >
-                <span class="tw-text-xs">
-                  {{ "providerDiscount" | i18n: this.discountPercentageFromSub | lowercase }}
-                </span>
-                <span class="tw-line-through tw-text-xs">{{
-                  calculateTotalAppliedDiscount(
-                    additionalServiceAccountTotal(selectedPlan) +
-                      secretsManagerSeatTotal(selectedPlan, sub.smSeats)
-                  ) | currency: "$"
-                }}</span>
-              </ng-container>
-            </p>
             <!-- password manager summary for annual -->
             <p class="tw-font-semibold tw-mt-3 tw-mb-0" *ngIf="organization.useSecretsManager">
               {{ "passwordManager" | i18n }}
