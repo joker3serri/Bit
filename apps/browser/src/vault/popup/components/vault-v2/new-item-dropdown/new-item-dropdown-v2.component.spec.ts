@@ -50,11 +50,10 @@ describe("NewItemDropdownV2Component", () => {
   });
 
   describe("new item", () => {
-    const defaultParams: AddEditQueryParams = {
+    const emptyParams: AddEditQueryParams = {
       collectionId: undefined,
       organizationId: undefined,
       folderId: undefined,
-      name: "example.com",
     };
 
     beforeEach(() => {
@@ -65,7 +64,7 @@ describe("NewItemDropdownV2Component", () => {
       await component.newItemNavigate(CipherType.Login);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.Login.toString(), ...defaultParams },
+        queryParams: { type: CipherType.Login.toString(), name: "example.com", ...emptyParams },
       });
     });
 
@@ -73,7 +72,7 @@ describe("NewItemDropdownV2Component", () => {
       await component.newItemNavigate(CipherType.Card);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.Card.toString(), ...defaultParams },
+        queryParams: { type: CipherType.Card.toString(), ...emptyParams },
       });
     });
 
@@ -81,7 +80,7 @@ describe("NewItemDropdownV2Component", () => {
       await component.newItemNavigate(CipherType.Identity);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.Identity.toString(), ...defaultParams },
+        queryParams: { type: CipherType.Identity.toString(), ...emptyParams },
       });
     });
 
@@ -89,7 +88,7 @@ describe("NewItemDropdownV2Component", () => {
       await component.newItemNavigate(CipherType.SecureNote);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.SecureNote.toString(), ...defaultParams },
+        queryParams: { type: CipherType.SecureNote.toString(), ...emptyParams },
       });
     });
 

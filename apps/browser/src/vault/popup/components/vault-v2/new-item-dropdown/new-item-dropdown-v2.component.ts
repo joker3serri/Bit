@@ -44,13 +44,21 @@ export class NewItemDropdownV2Component {
     const tab = await BrowserApi.getTabFromCurrentWindow();
     const poppedOut = BrowserPopupUtils.inPopout(window);
 
+    const loginDetails: { uri?: string; name?: string } = {};
+
+    // When a Login Cipher is created and the extension is not popped out,
+    // pass along the uri and name
+    if (!poppedOut && type === CipherType.Login) {
+      loginDetails.uri = this.initialValues?.uri;
+      loginDetails.name = Utils.getHostname(tab.url);
+    }
+
     return {
       type: type.toString(),
       collectionId: this.initialValues?.collectionId,
       organizationId: this.initialValues?.organizationId,
       folderId: this.initialValues?.folderId,
-      uri: !poppedOut ? this.initialValues?.uri : undefined,
-      name: !poppedOut ? Utils.getHostname(tab.url) : undefined,
+      ...loginDetails,
     };
   }
 
