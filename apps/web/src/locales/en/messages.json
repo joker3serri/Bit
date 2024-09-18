@@ -9098,7 +9098,7 @@
   "current": {
     "message": "Current"
   },
-  "secretsManagerSubInfo": {
+  "secretsManagerSubscriptionInfo": {
     "message": "Your Secrets Manager subscription will upgrade base on the plan selected"
   },
   "bitwardenPasswordManager": {
