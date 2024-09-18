@@ -7,6 +7,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, DialogService, MenuModule } from "@bitwarden/components";
 
+import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
 import { AddEditFolderDialogComponent } from "../add-edit-folder-dialog/add-edit-folder-dialog.component";
 
@@ -17,6 +18,10 @@ describe("NewItemDropdownV2Component", () => {
   let fixture: ComponentFixture<NewItemDropdownV2Component>;
   const open = jest.fn();
   const navigate = jest.fn();
+
+  jest
+    .spyOn(BrowserApi, "getTabFromCurrentWindow")
+    .mockResolvedValue({ url: "https://example.com" } as chrome.tabs.Tab);
 
   beforeEach(async () => {
     open.mockClear();
@@ -44,56 +49,58 @@ describe("NewItemDropdownV2Component", () => {
   });
 
   describe("new item", () => {
-    const emptyParams: AddEditQueryParams = {
+    const defaultParams: AddEditQueryParams = {
       collectionId: undefined,
       organizationId: undefined,
       folderId: undefined,
+      name: "example.com",
     };
 
     beforeEach(() => {
       jest.spyOn(component, "newItemNavigate");
     });
 
-    it("navigates to new login", () => {
-      component.newItemNavigate(CipherType.Login);
+    it("navigates to new login", async () => {
+      await component.newItemNavigate(CipherType.Login);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.Login.toString(), ...emptyParams },
+        queryParams: { type: CipherType.Login.toString(), ...defaultParams },
       });
     });
 
-    it("navigates to new card", () => {
-      component.newItemNavigate(CipherType.Card);
+    it("navigates to new card", async () => {
+      await component.newItemNavigate(CipherType.Card);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.Card.toString(), ...emptyParams },
+        queryParams: { type: CipherType.Card.toString(), ...defaultParams },
       });
     });
 
-    it("navigates to new identity", () => {
-      component.newItemNavigate(CipherType.Identity);
+    it("navigates to new identity", async () => {
+      await component.newItemNavigate(CipherType.Identity);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.Identity.toString(), ...emptyParams },
+        queryParams: { type: CipherType.Identity.toString(), ...defaultParams },
       });
     });
 
-    it("navigates to new note", () => {
-      component.newItemNavigate(CipherType.SecureNote);
+    it("navigates to new note", async () => {
+      await component.newItemNavigate(CipherType.SecureNote);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.SecureNote.toString(), ...emptyParams },
+        queryParams: { type: CipherType.SecureNote.toString(), ...defaultParams },
       });
     });
 
-    it("includes initial values", () => {
+    it("includes initial values", async () => {
       component.initialValues = {
         folderId: "222-333-444",
         organizationId: "444-555-666",
         collectionId: "777-888-999",
+        uri: "https://www.example.com/login",
       } as NewItemInitialValues;
 
-      component.newItemNavigate(CipherType.Login);
+      await component.newItemNavigate(CipherType.Login);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
         queryParams: {
@@ -101,6 +108,8 @@ describe("NewItemDropdownV2Component", () => {
           folderId: "222-333-444",
           organizationId: "444-555-666",
           collectionId: "777-888-999",
+          uri: "https://www.example.com/login",
+          name: "example.com",
         },
       });
     });

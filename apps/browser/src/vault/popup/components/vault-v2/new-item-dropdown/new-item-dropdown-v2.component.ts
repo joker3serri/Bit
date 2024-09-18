@@ -3,10 +3,12 @@ import { Component, Input } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, DialogService, MenuModule, NoItemsModule } from "@bitwarden/components";
 
+import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
 import { AddEditFolderDialogComponent } from "../add-edit-folder-dialog/add-edit-folder-dialog.component";
 
@@ -37,18 +39,21 @@ export class NewItemDropdownV2Component {
     private dialogService: DialogService,
   ) {}
 
-  private buildQueryParams(type: CipherType): AddEditQueryParams {
+  private async buildQueryParams(type: CipherType): Promise<AddEditQueryParams> {
+    const tab = await BrowserApi.getTabFromCurrentWindow();
+
     return {
       type: type.toString(),
       collectionId: this.initialValues?.collectionId,
       organizationId: this.initialValues?.organizationId,
       folderId: this.initialValues?.folderId,
       uri: this.initialValues?.uri,
+      name: Utils.getHostname(tab.url),
     };
   }
 
-  newItemNavigate(type: CipherType) {
-    void this.router.navigate(["/add-cipher"], { queryParams: this.buildQueryParams(type) });
+  async newItemNavigate(type: CipherType) {
+    await this.router.navigate(["/add-cipher"], { queryParams: await this.buildQueryParams(type) });
   }
 
   openFolderDialog() {
