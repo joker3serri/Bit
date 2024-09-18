@@ -831,11 +831,6 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
   }
 
   calculateTotalAppliedDiscount(total: number) {
-    // const discountPercent =
-    //   this.selectedInterval == PlanInterval.Annually
-    //     ? this.discountPercentage + this.discountPercentageFromSub
-    //     : this.discountPercentageFromSub;
-
     const discountedTotal = total * (this.discountPercentageFromSub / 100);
     return discountedTotal;
   }
