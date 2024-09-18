@@ -80,7 +80,7 @@ export class AccountSwitcherService {
 
         if (!hasMaxAccounts) {
           options.push({
-            name: "Add account",
+            name: "addAccount",
             id: this.SPECIAL_ADD_ACCOUNT_ID,
             isActive: false,
           });
@@ -134,7 +134,6 @@ export class AccountSwitcherService {
     const switchAccountFinishedPromise = this.listenForSwitchAccountFinish(userId);
 
     // Initiate the actions required to make account switching happen
-    await this.accountService.switchAccount(userId);
     this.messagingService.send("switchAccount", { userId }); // This message should cause switchAccountFinish to be sent
 
     // Wait until we receive the switchAccountFinished message

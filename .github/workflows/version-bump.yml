@@ -28,6 +28,10 @@ on:
         description: "Cut RC branch?"
         default: true
         type: boolean
+      enable_slack_notification:
+        description: "Enable Slack notifications for upcoming release?"
+        default: false
+        type: boolean
 
 jobs:
   bump_version:
@@ -45,8 +49,16 @@ jobs:
         with:
           version: ${{ inputs.version_number_override }}
 
+      - name: Slack Notification Check
+        run: |
+          if [[ "${{ inputs.enable_slack_notification }}" == true ]]; then
+            echo "Slack notifications enabled."
+          else
+            echo "Slack notifications disabled."
+          fi
+
       - name: Checkout Branch
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: main
 
@@ -71,8 +83,7 @@ jobs:
         with:
           keyvault: "bitwarden-ci"
           secrets: "github-gpg-private-key,
-            github-gpg-private-key-passphrase,
-            github-pat-bitwarden-devops-bot-repo-scope"
+            github-gpg-private-key-passphrase"
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4 # v6.1.0
@@ -402,10 +413,7 @@ jobs:
 
       - name: Commit files
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
-        env:
-          CLIENT: ${{ steps.create-branch.outputs.client }}
-          VERSION: ${{ steps.set-final-version-output.outputs.version }}
-        run: git commit -m "Bumped ${CLIENT} version to ${VERSION}" -a
+        run: git commit -m "Bumped client version(s)" -a
 
       - name: Push changes
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
@@ -413,13 +421,46 @@ jobs:
           PR_BRANCH: ${{ steps.create-branch.outputs.name }}
         run: git push -u origin $PR_BRANCH
 
+      - name: Generate PR message
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
+        id: pr-message
+        run: |
+          MESSAGE=""
+          if [[ "${{ inputs.bump_browser }}" == "true" ]]; then
+            MESSAGE+=$'    Browser version bump to ${{ steps.set-final-version-output.outputs.version_browser }}\n'
+          fi
+
+          if [[ "${{ inputs.bump_cli }}" == "true" ]]; then
+            MESSAGE+=$'    CLI version bump to ${{ steps.set-final-version-output.outputs.version_cli }}\n'
+          fi
+
+          if [[ "${{ inputs.bump_desktop }}" == "true" ]]; then
+            MESSAGE+=$'    Desktop version bump to ${{ steps.set-final-version-output.outputs.version_desktop }}\n'
+          fi
+
+          if [[ "${{ inputs.bump_web }}" == "true" ]]; then
+            MESSAGE+=$'    Web version bump to ${{ steps.set-final-version-output.outputs.version_web }}\n'
+          fi
+
+          echo "MESSAGE<<EOF" >> $GITHUB_ENV
+          echo "$MESSAGE" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Generate GH App token
+        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
+        id: app-token
+        with:
+          app-id: ${{ secrets.BW_GHAPP_ID }}
+          private-key: ${{ secrets.BW_GHAPP_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Create Version PR
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
         id: create-pr
         env:
-          GH_TOKEN: ${{ steps.retrieve-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_BRANCH: ${{ steps.create-branch.outputs.name }}
-          TITLE: "Bump ${{ steps.create-branch.outputs.client }} version to ${{ steps.set-final-version-output.outputs.version }}"
+          TITLE: "Bump client(s) version"
         run: |
           PR_URL=$(gh pr create --title "$TITLE" \
             --base "main" \
@@ -435,7 +476,8 @@ jobs:
               - [X] Other
 
               ## Objective
-              Automated ${{ steps.create-branch.outputs.client }} version bump to ${{ steps.set-final-version-output.outputs.version }}")
+          $MESSAGE")
+
           echo "pr_number=${PR_URL##*/}" >> $GITHUB_OUTPUT
 
       - name: Approve PR
@@ -448,9 +490,41 @@ jobs:
       - name: Merge PR
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
         env:
-          GH_TOKEN: ${{ steps.retrieve-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
         run: gh pr merge $PR_NUMBER --squash --auto --delete-branch
+
+      - name: Report upcoming browser release version to Slack
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' && steps.set-final-version-output.outputs.version_browser != '' && inputs.enable_slack_notification == true }}
+        uses: bitwarden/gh-actions/report-upcoming-release-version@main
+        with:
+          version: ${{ steps.set-final-version-output.outputs.version_browser }}
+          project: browser
+          AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
+
+      - name: Report upcoming cli release version to Slack
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' && steps.set-final-version-output.outputs.version_cli != '' && inputs.enable_slack_notification == true }}
+        uses: bitwarden/gh-actions/report-upcoming-release-version@main
+        with:
+          version: ${{ steps.set-final-version-output.outputs.version_cli }}
+          project: cli
+          AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
+
+      - name: Report upcoming desktop release version to Slack
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' && steps.set-final-version-output.outputs.version_desktop != '' && inputs.enable_slack_notification == true }}
+        uses: bitwarden/gh-actions/report-upcoming-release-version@main
+        with:
+          version: ${{ steps.set-final-version-output.outputs.version_desktop }}
+          project: desktop
+          AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
+
+      - name: Report upcoming web release version to Slack
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' && steps.set-final-version-output.outputs.version_web != '' && inputs.enable_slack_notification == true }}
+        uses: bitwarden/gh-actions/report-upcoming-release-version@main
+        with:
+          version: ${{ steps.set-final-version-output.outputs.version_web }}
+          project: web
+          AZURE_KV_CI_SERVICE_PRINCIPAL: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
   cut_rc:
     name: Cut RC branch
@@ -459,7 +533,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: main
 

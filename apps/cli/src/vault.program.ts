@@ -2,12 +2,12 @@ import { program, Command } from "commander";
 
 import { ConfirmCommand } from "./admin-console/commands/confirm.command";
 import { ShareCommand } from "./admin-console/commands/share.command";
+import { BaseProgram } from "./base-program";
 import { EditCommand } from "./commands/edit.command";
 import { GetCommand } from "./commands/get.command";
 import { ListCommand } from "./commands/list.command";
 import { RestoreCommand } from "./commands/restore.command";
 import { Response } from "./models/response";
-import { Program } from "./program";
 import { ExportCommand } from "./tools/export.command";
 import { ImportCommand } from "./tools/import.command";
 import { CliUtils } from "./utils";
@@ -16,8 +16,8 @@ import { DeleteCommand } from "./vault/delete.command";
 
 const writeLn = CliUtils.writeLn;
 
-export class VaultProgram extends Program {
-  async register() {
+export class VaultProgram extends BaseProgram {
+  register() {
     program
       .addCommand(this.listCommand())
       .addCommand(this.getCommand())
@@ -108,7 +108,7 @@ export class VaultProgram extends Program {
           this.serviceContainer.collectionService,
           this.serviceContainer.organizationService,
           this.serviceContainer.searchService,
-          this.serviceContainer.organizationUserService,
+          this.serviceContainer.organizationUserApiService,
           this.serviceContainer.apiService,
           this.serviceContainer.eventCollectionService,
         );
@@ -184,6 +184,7 @@ export class VaultProgram extends Program {
           this.serviceContainer.organizationService,
           this.serviceContainer.eventCollectionService,
           this.serviceContainer.billingAccountProfileStateService,
+          this.serviceContainer.accountService,
         );
         const response = await command.run(object, id, cmd);
         this.processResponse(response);
@@ -226,6 +227,8 @@ export class VaultProgram extends Program {
           this.serviceContainer.apiService,
           this.serviceContainer.folderApiService,
           this.serviceContainer.billingAccountProfileStateService,
+          this.serviceContainer.organizationService,
+          this.serviceContainer.accountService,
         );
         const response = await command.run(object, encodedJson, cmd);
         this.processResponse(response);
@@ -271,6 +274,7 @@ export class VaultProgram extends Program {
           this.serviceContainer.cryptoService,
           this.serviceContainer.apiService,
           this.serviceContainer.folderApiService,
+          this.serviceContainer.accountService,
         );
         const response = await command.run(object, id, encodedJson, cmd);
         this.processResponse(response);
@@ -374,7 +378,10 @@ export class VaultProgram extends Program {
       })
       .action(async (id, organizationId, encodedJson, cmd) => {
         await this.exitIfLocked();
-        const command = new ShareCommand(this.serviceContainer.cipherService);
+        const command = new ShareCommand(
+          this.serviceContainer.cipherService,
+          this.serviceContainer.accountService,
+        );
         const response = await command.run(id, organizationId, encodedJson);
         this.processResponse(response);
       });
@@ -405,7 +412,7 @@ export class VaultProgram extends Program {
         const command = new ConfirmCommand(
           this.serviceContainer.apiService,
           this.serviceContainer.cryptoService,
-          this.serviceContainer.organizationUserService,
+          this.serviceContainer.organizationUserApiService,
         );
         const response = await command.run(object, id, cmd);
         this.processResponse(response);

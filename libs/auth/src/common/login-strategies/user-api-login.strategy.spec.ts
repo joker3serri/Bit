@@ -94,6 +94,8 @@ describe("UserApiLoginStrategy", () => {
 
     apiLogInStrategy = new UserApiLoginStrategy(
       cache,
+      environmentService,
+      keyConnectorService,
       accountService,
       masterPasswordService,
       cryptoService,
@@ -106,8 +108,6 @@ describe("UserApiLoginStrategy", () => {
       stateService,
       twoFactorService,
       userDecryptionOptionsService,
-      environmentService,
-      keyConnectorService,
       billingAccountProfileStateService,
       vaultTimeoutSettingsService,
       kdfConfigService,
@@ -172,7 +172,10 @@ describe("UserApiLoginStrategy", () => {
 
     await apiLogInStrategy.logIn(credentials);
 
-    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(tokenResponse.key);
+    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(
+      tokenResponse.key,
+      userId,
+    );
     expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(tokenResponse.privateKey, userId);
   });
 

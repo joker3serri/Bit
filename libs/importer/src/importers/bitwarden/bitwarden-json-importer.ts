@@ -1,4 +1,7 @@
+import { firstValueFrom, map } from "rxjs";
+
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import {
   CipherWithIdExport,
   CollectionWithIdExport,
@@ -7,6 +10,7 @@ import {
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
@@ -30,6 +34,7 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
     protected i18nService: I18nService,
     protected cipherService: CipherService,
     protected pinService: PinServiceAbstraction,
+    protected accountService: AccountService,
   ) {
     super();
   }
@@ -100,8 +105,11 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
         });
       }
 
+      const activeUserId = await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+      );
       const view = await cipher.decrypt(
-        await this.cipherService.getKeyForCipherKeyDecryption(cipher),
+        await this.cipherService.getKeyForCipherKeyDecryption(cipher, activeUserId),
       );
       this.cleanupCipher(view);
       this.result.ciphers.push(view);
@@ -194,7 +202,9 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       if (data.encrypted) {
         const collection = CollectionWithIdExport.toDomain(c);
         collection.organizationId = this.organizationId;
-        collectionView = await collection.decrypt();
+        collectionView = await firstValueFrom(this.cryptoService.activeUserOrgKeys$).then(
+          (orgKeys) => collection.decrypt(orgKeys[c.organizationId as OrganizationId]),
+        );
       } else {
         collectionView = CollectionWithIdExport.toView(c);
         collectionView.organizationId = null;

@@ -11,8 +11,8 @@ import {
 
 import { ApiService } from "../../abstractions/api.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
-import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { StateService } from "../../platform/abstractions/state.service";
+import { MessageSender } from "../../platform/messaging";
 import { Utils } from "../../platform/misc/utils";
 import { UserId } from "../../types/guid";
 import { AccountService } from "../abstractions/account.service";
@@ -26,7 +26,7 @@ export class AuthService implements AuthServiceAbstraction {
 
   constructor(
     protected accountService: AccountService,
-    protected messagingService: MessagingService,
+    protected messageSender: MessageSender,
     protected cryptoService: CryptoService,
     protected apiService: ApiService,
     protected stateService: StateService,
@@ -93,8 +93,8 @@ export class AuthService implements AuthServiceAbstraction {
     return await firstValueFrom(this.authStatusFor$(userId as UserId));
   }
 
-  logOut(callback: () => void) {
+  logOut(callback: () => void, userId?: string): void {
     callback();
-    this.messagingService.send("loggedOut");
+    this.messageSender.send("loggedOut", { userId });
   }
 }

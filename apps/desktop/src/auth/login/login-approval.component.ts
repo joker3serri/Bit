@@ -1,23 +1,24 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, OnDestroy, Inject } from "@angular/core";
-import { Subject, firstValueFrom } from "rxjs";
+import { Subject, firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AuthRequestServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   AsyncActionsModule,
   ButtonModule,
   DialogModule,
   DialogService,
+  ToastService,
 } from "@bitwarden/components";
 
 const RequestTimeOut = 60000 * 15; //15 Minutes
@@ -47,13 +48,14 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(DIALOG_DATA) private params: LoginApprovalDialogParams,
     protected authRequestService: AuthRequestServiceAbstraction,
-    protected stateService: StateService,
+    protected accountService: AccountService,
     protected platformUtilsService: PlatformUtilsService,
     protected i18nService: I18nService,
     protected apiService: ApiService,
     protected appIdService: AppIdService,
     protected cryptoService: CryptoService,
     private dialogRef: DialogRef,
+    private toastService: ToastService,
   ) {
     this.notificationId = params.notificationId;
   }
@@ -74,10 +76,13 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
     if (this.notificationId != null) {
       this.authRequestResponse = await this.apiService.getAuthRequest(this.notificationId);
       const publicKey = Utils.fromB64ToArray(this.authRequestResponse.publicKey);
-      this.email = await this.stateService.getEmail();
-      this.fingerprintPhrase = (
-        await this.cryptoService.getFingerprint(this.email, publicKey)
-      ).join("-");
+      this.email = await await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((a) => a?.email)),
+      );
+      this.fingerprintPhrase = await this.authRequestService.getFingerprintPhrase(
+        this.email,
+        publicKey,
+      );
       this.updateTimeText();
 
       this.interval = setInterval(() => {
@@ -115,11 +120,11 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
   private async retrieveAuthRequestAndRespond(approve: boolean) {
     this.authRequestResponse = await this.apiService.getAuthRequest(this.notificationId);
     if (this.authRequestResponse.requestApproved || this.authRequestResponse.responseDate != null) {
-      this.platformUtilsService.showToast(
-        "info",
-        null,
-        this.i18nService.t("thisRequestIsNoLongerValid"),
-      );
+      this.toastService.showToast({
+        variant: "info",
+        title: null,
+        message: this.i18nService.t("thisRequestIsNoLongerValid"),
+      });
     } else {
       const loginResponse = await this.authRequestService.approveOrDenyAuthRequest(
         approve,
@@ -131,21 +136,21 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
 
   showResultToast(loginResponse: AuthRequestResponse) {
     if (loginResponse.requestApproved) {
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t(
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t(
           "logInConfirmedForEmailOnDevice",
           this.email,
           loginResponse.requestDeviceType,
         ),
-      );
+      });
     } else {
-      this.platformUtilsService.showToast(
-        "info",
-        null,
-        this.i18nService.t("youDeniedALogInAttemptFromAnotherDevice"),
-      );
+      this.toastService.showToast({
+        variant: "info",
+        title: null,
+        message: this.i18nService.t("youDeniedALogInAttemptFromAnotherDevice"),
+      });
     }
   }
 
@@ -184,11 +189,11 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
     } else {
       clearInterval(this.interval);
       this.dialogRef.close();
-      this.platformUtilsService.showToast(
-        "info",
-        null,
-        this.i18nService.t("loginRequestHasAlreadyExpired"),
-      );
+      this.toastService.showToast({
+        variant: "info",
+        title: null,
+        message: this.i18nService.t("loginRequestHasAlreadyExpired"),
+      });
     }
   }
 }

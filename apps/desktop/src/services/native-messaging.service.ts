@@ -1,15 +1,15 @@
 import { Injectable, NgZone } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
+import { BiometricsService } from "@bitwarden/common/platform/biometrics/biometric.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -21,28 +21,27 @@ import { BrowserSyncVerificationDialogComponent } from "../app/components/browse
 import { LegacyMessage } from "../models/native-messaging/legacy-message";
 import { LegacyMessageWrapper } from "../models/native-messaging/legacy-message-wrapper";
 import { Message } from "../models/native-messaging/message";
+import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
 
 import { NativeMessageHandlerService } from "./native-message-handler.service";
 
 const MessageValidTimeout = 10 * 1000;
-const EncryptionAlgorithm = "sha1";
+const HashAlgorithmForAsymmetricEncryption = "sha1";
 
 @Injectable()
 export class NativeMessagingService {
-  private sharedSecrets = new Map<string, SymmetricCryptoKey>();
-
   constructor(
-    private masterPasswordService: MasterPasswordServiceAbstraction,
     private cryptoFunctionService: CryptoFunctionService,
     private cryptoService: CryptoService,
-    private platformUtilService: PlatformUtilsService,
     private logService: LogService,
     private messagingService: MessagingService,
-    private stateService: StateService,
+    private desktopSettingService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
+    private biometricsService: BiometricsService,
     private nativeMessageHandler: NativeMessageHandlerService,
     private dialogService: DialogService,
     private accountService: AccountService,
+    private authService: AuthService,
     private ngZone: NgZone,
   ) {}
 
@@ -53,6 +52,7 @@ export class NativeMessagingService {
   private async messageHandler(msg: LegacyMessageWrapper | Message) {
     const outerMessage = msg as Message;
     if (outerMessage.version) {
+      // If there is a version, it is a using the protocol created for the DuckDuckGo integration
       await this.nativeMessageHandler.handleMessage(outerMessage);
       return;
     }
@@ -74,7 +74,7 @@ export class NativeMessagingService {
         return;
       }
 
-      if (await this.stateService.getEnableBrowserIntegrationFingerprint()) {
+      if (await firstValueFrom(this.desktopSettingService.browserIntegrationFingerprintEnabled$)) {
         ipc.platform.nativeMessaging.sendMessage({
           command: "verifyFingerprint",
           appId: appId,
@@ -102,7 +102,7 @@ export class NativeMessagingService {
       return;
     }
 
-    if (this.sharedSecrets.get(appId) == null) {
+    if ((await ipc.platform.ephemeralStore.getEphemeralValue(appId)) == null) {
       ipc.platform.nativeMessaging.sendMessage({
         command: "invalidateEncryption",
         appId: appId,
@@ -113,7 +113,7 @@ export class NativeMessagingService {
     const message: LegacyMessage = JSON.parse(
       await this.cryptoService.decryptToUtf8(
         rawMessage as EncString,
-        this.sharedSecrets.get(appId),
+        SymmetricCryptoKey.fromString(await ipc.platform.ephemeralStore.getEphemeralValue(appId)),
       ),
     );
 
@@ -133,8 +133,23 @@ export class NativeMessagingService {
 
     switch (message.command) {
       case "biometricUnlock": {
-        if (!(await this.platformUtilService.supportsBiometric())) {
+        const isTemporarilyDisabled =
+          (await this.biometricStateService.getBiometricUnlockEnabled(message.userId as UserId)) &&
+          !(await this.biometricsService.supportsBiometric());
+        if (isTemporarilyDisabled) {
+          return this.send({ command: "biometricUnlock", response: "not available" }, appId);
+        }
+
+        if (!(await this.biometricsService.supportsBiometric())) {
           return this.send({ command: "biometricUnlock", response: "not supported" }, appId);
+        }
+
+        const userId =
+          (message.userId as UserId) ??
+          (await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id))));
+
+        if (userId == null) {
+          return this.send({ command: "biometricUnlock", response: "not unlocked" }, appId);
         }
 
         const biometricUnlockPromise =
@@ -160,23 +175,27 @@ export class NativeMessagingService {
             KeySuffixOptions.Biometric,
             message.userId,
           );
-          const masterKey = await firstValueFrom(
-            this.masterPasswordService.masterKey$(message.userId as UserId),
-          );
 
           if (userKey != null) {
-            // we send the master key still for backwards compatibility
-            // with older browser extensions
-            // TODO: Remove after 2023.10 release (https://bitwarden.atlassian.net/browse/PM-3472)
             await this.send(
               {
                 command: "biometricUnlock",
                 response: "unlocked",
-                keyB64: masterKey?.keyB64,
                 userKeyB64: userKey.keyB64,
               },
               appId,
             );
+
+            const currentlyActiveAccountId = (
+              await firstValueFrom(this.accountService.activeAccount$)
+            ).id;
+            const isCurrentlyActiveAccountUnlocked =
+              (await this.authService.getAuthStatus(userId)) == AuthenticationStatus.Unlocked;
+
+            // prevent proc reloading an active account, when it is the same as the browser
+            if (currentlyActiveAccountId != message.userId || !isCurrentlyActiveAccountUnlocked) {
+              await ipc.platform.reloadProcess();
+            }
           } else {
             await this.send({ command: "biometricUnlock", response: "canceled" }, appId);
           }
@@ -186,8 +205,18 @@ export class NativeMessagingService {
 
         break;
       }
+      case "biometricUnlockAvailable": {
+        const isAvailable = await this.biometricsService.supportsBiometric();
+        return this.send(
+          {
+            command: "biometricUnlockAvailable",
+            response: isAvailable ? "available" : "not available",
+          },
+          appId,
+        );
+      }
       default:
-        this.logService.error("NativeMessage, got unknown command.");
+        this.logService.error("NativeMessage, got unknown command: " + message.command);
         break;
     }
   }
@@ -197,7 +226,7 @@ export class NativeMessagingService {
 
     const encrypted = await this.cryptoService.encrypt(
       JSON.stringify(message),
-      this.sharedSecrets.get(appId),
+      SymmetricCryptoKey.fromString(await ipc.platform.ephemeralStore.getEphemeralValue(appId)),
     );
 
     ipc.platform.nativeMessaging.sendMessage({ appId: appId, message: encrypted });
@@ -205,12 +234,15 @@ export class NativeMessagingService {
 
   private async secureCommunication(remotePublicKey: Uint8Array, appId: string) {
     const secret = await this.cryptoFunctionService.randomBytes(64);
-    this.sharedSecrets.set(appId, new SymmetricCryptoKey(secret));
+    await ipc.platform.ephemeralStore.setEphemeralValue(
+      appId,
+      new SymmetricCryptoKey(secret).keyB64,
+    );
 
     const encryptedSecret = await this.cryptoFunctionService.rsaEncrypt(
       secret,
       remotePublicKey,
-      EncryptionAlgorithm,
+      HashAlgorithmForAsymmetricEncryption,
     );
     ipc.platform.nativeMessaging.sendMessage({
       appId: appId,

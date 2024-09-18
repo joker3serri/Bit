@@ -1,11 +1,16 @@
+import { mock } from "jest-mock-extended";
+
 import { EVENTS } from "@bitwarden/common/autofill/constants";
 
 import AutofillScript, { FillScript, FillScriptActions } from "../models/autofill-script";
+import { mockQuerySelectorAllDefinedCall } from "../spec/testing-utils";
 import { FillableFormFieldElement, FormElementWithAttribute, FormFieldElement } from "../types";
 
-import AutofillOverlayContentService from "./autofill-overlay-content.service";
-import CollectAutofillContentService from "./collect-autofill-content.service";
+import { InlineMenuFieldQualificationService } from "./abstractions/inline-menu-field-qualifications.service";
+import { AutofillOverlayContentService } from "./autofill-overlay-content.service";
+import { CollectAutofillContentService } from "./collect-autofill-content.service";
 import DomElementVisibilityService from "./dom-element-visibility.service";
+import { DomQueryService } from "./dom-query.service";
 import InsertAutofillContentService from "./insert-autofill-content.service";
 
 const mockLoginForm = `
@@ -63,10 +68,17 @@ function setMockWindowLocation({
 }
 
 describe("InsertAutofillContentService", () => {
+  const mockQuerySelectorAll = mockQuerySelectorAllDefinedCall();
+  const inlineMenuFieldQualificationService = mock<InlineMenuFieldQualificationService>();
+  const domQueryService = new DomQueryService();
   const domElementVisibilityService = new DomElementVisibilityService();
-  const autofillOverlayContentService = new AutofillOverlayContentService();
+  const autofillOverlayContentService = new AutofillOverlayContentService(
+    domQueryService,
+    inlineMenuFieldQualificationService,
+  );
   const collectAutofillContentService = new CollectAutofillContentService(
     domElementVisibilityService,
+    domQueryService,
     autofillOverlayContentService,
   );
   let insertAutofillContentService: InsertAutofillContentService;
@@ -99,9 +111,14 @@ describe("InsertAutofillContentService", () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+    jest.clearAllTimers();
     windowLocationSpy.mockRestore();
     confirmSpy.mockRestore();
     document.body.innerHTML = "";
+  });
+
+  afterAll(() => {
+    mockQuerySelectorAll.mockRestore();
   });
 
   describe("fillForm", () => {

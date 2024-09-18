@@ -1,5 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
+import { LogoutReason } from "@bitwarden/auth/common";
+
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { VaultTimeoutSettingsService } from "../abstractions/vault-timeout/vault-timeout-settings.service";
 import { OrganizationConnectionType } from "../admin-console/enums";
@@ -35,6 +37,7 @@ import { SelectionReadOnlyResponse } from "../admin-console/models/response/sele
 import { TokenService } from "../auth/abstractions/token.service";
 import { CreateAuthRequest } from "../auth/models/request/create-auth.request";
 import { DeviceVerificationRequest } from "../auth/models/request/device-verification.request";
+import { DisableTwoFactorAuthenticatorRequest } from "../auth/models/request/disable-two-factor-authenticator.request";
 import { EmailTokenRequest } from "../auth/models/request/email-token.request";
 import { EmailRequest } from "../auth/models/request/email.request";
 import { DeviceRequest } from "../auth/models/request/identity-token/device.request";
@@ -54,13 +57,14 @@ import { TwoFactorEmailRequest } from "../auth/models/request/two-factor-email.r
 import { TwoFactorProviderRequest } from "../auth/models/request/two-factor-provider.request";
 import { TwoFactorRecoveryRequest } from "../auth/models/request/two-factor-recovery.request";
 import { UpdateProfileRequest } from "../auth/models/request/update-profile.request";
+import { UpdateTdeOffboardingPasswordRequest } from "../auth/models/request/update-tde-offboarding-password.request";
 import { UpdateTempPasswordRequest } from "../auth/models/request/update-temp-password.request";
 import { UpdateTwoFactorAuthenticatorRequest } from "../auth/models/request/update-two-factor-authenticator.request";
 import { UpdateTwoFactorDuoRequest } from "../auth/models/request/update-two-factor-duo.request";
 import { UpdateTwoFactorEmailRequest } from "../auth/models/request/update-two-factor-email.request";
 import { UpdateTwoFactorWebAuthnDeleteRequest } from "../auth/models/request/update-two-factor-web-authn-delete.request";
 import { UpdateTwoFactorWebAuthnRequest } from "../auth/models/request/update-two-factor-web-authn.request";
-import { UpdateTwoFactorYubioOtpRequest } from "../auth/models/request/update-two-factor-yubio-otp.request";
+import { UpdateTwoFactorYubikeyOtpRequest } from "../auth/models/request/update-two-factor-yubikey-otp.request";
 import { ApiKeyResponse } from "../auth/models/response/api-key.response";
 import { AuthRequestResponse } from "../auth/models/response/auth-request.response";
 import { DeviceVerificationResponse } from "../auth/models/response/device-verification.response";
@@ -68,7 +72,6 @@ import { IdentityCaptchaResponse } from "../auth/models/response/identity-captch
 import { IdentityTokenResponse } from "../auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../auth/models/response/identity-two-factor.response";
 import { KeyConnectorUserKeyResponse } from "../auth/models/response/key-connector-user-key.response";
-import { MasterPasswordPolicyResponse } from "../auth/models/response/master-password-policy.response";
 import { PreloginResponse } from "../auth/models/response/prelogin.response";
 import { RegisterResponse } from "../auth/models/response/register.response";
 import { SsoPreValidateResponse } from "../auth/models/response/sso-pre-validate.response";
@@ -99,7 +102,6 @@ import { DeleteRecoverRequest } from "../models/request/delete-recover.request";
 import { EventRequest } from "../models/request/event.request";
 import { KdfRequest } from "../models/request/kdf.request";
 import { KeysRequest } from "../models/request/keys.request";
-import { OrganizationImportRequest } from "../models/request/organization-import.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { RegisterRequest } from "../models/request/register.request";
 import { StorageRequest } from "../models/request/storage.request";
@@ -116,8 +118,10 @@ import { ProfileResponse } from "../models/response/profile.response";
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { AppIdService } from "../platform/abstractions/app-id.service";
 import { EnvironmentService } from "../platform/abstractions/environment.service";
+import { LogService } from "../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../platform/abstractions/platform-utils.service";
 import { Utils } from "../platform/misc/utils";
+import { SyncResponse } from "../platform/sync";
 import { UserId } from "../types/guid";
 import { AttachmentRequest } from "../vault/models/request/attachment.request";
 import { CipherBulkDeleteRequest } from "../vault/models/request/cipher-bulk-delete.request";
@@ -138,7 +142,7 @@ import {
   CollectionDetailsResponse,
   CollectionResponse,
 } from "../vault/models/response/collection.response";
-import { SyncResponse } from "../vault/models/response/sync.response";
+import { OptionalCipherResponse } from "../vault/models/response/optional-cipher.response";
 
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
@@ -156,8 +160,10 @@ export class ApiService implements ApiServiceAbstraction {
     private platformUtilsService: PlatformUtilsService,
     private environmentService: EnvironmentService,
     private appIdService: AppIdService,
+    private refreshAccessTokenErrorCallback: () => void,
+    private logService: LogService,
+    private logoutCallback: (logoutReason: LogoutReason) => Promise<void>,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
-    private logoutCallback: (expired: boolean) => Promise<void>,
     private customUserAgent: string = null,
   ) {
     this.device = platformUtilsService.getDevice();
@@ -244,9 +250,10 @@ export class ApiService implements ApiServiceAbstraction {
 
   async refreshIdentityToken(): Promise<any> {
     try {
-      await this.doAuthRefresh();
+      await this.refreshToken();
     } catch (e) {
-      return Promise.reject(null);
+      this.logService.error("Error refreshing access token: ", e);
+      throw e;
     }
   }
 
@@ -417,12 +424,6 @@ export class ApiService implements ApiServiceAbstraction {
     return this.send("POST", "/accounts/verify-email-token", request, false, false);
   }
 
-  postAccountVerifyPassword(
-    request: SecretVerificationRequest,
-  ): Promise<MasterPasswordPolicyResponse> {
-    return this.send("POST", "/accounts/verify-password", request, true, true);
-  }
-
   postAccountRecoverDelete(request: DeleteRecoverRequest): Promise<any> {
     return this.send("POST", "/accounts/delete-recover", request, false, false);
   }
@@ -458,6 +459,10 @@ export class ApiService implements ApiServiceAbstraction {
 
   putUpdateTempPassword(request: UpdateTempPasswordRequest): Promise<any> {
     return this.send("PUT", "/accounts/update-temp-password", request, true, false);
+  }
+
+  putUpdateTdeOffboardingPassword(request: UpdateTdeOffboardingPasswordRequest): Promise<void> {
+    return this.send("PUT", "/accounts/update-tde-offboarding-password", request, true, false);
   }
 
   postConvertToKeyConnector(): Promise<void> {
@@ -566,9 +571,15 @@ export class ApiService implements ApiServiceAbstraction {
   async putCipherCollections(
     id: string,
     request: CipherCollectionsRequest,
-  ): Promise<CipherResponse> {
-    const response = await this.send("PUT", "/ciphers/" + id + "/collections", request, true, true);
-    return new CipherResponse(response);
+  ): Promise<OptionalCipherResponse> {
+    const response = await this.send(
+      "PUT",
+      "/ciphers/" + id + "/collections_v2",
+      request,
+      true,
+      true,
+    );
+    return new OptionalCipherResponse(response);
   }
 
   putCipherCollectionsAdmin(id: string, request: CipherCollectionsRequest): Promise<any> {
@@ -785,7 +796,7 @@ export class ApiService implements ApiServiceAbstraction {
       true,
       true,
     );
-    return new CollectionDetailsResponse(r);
+    return new CollectionAccessDetailsResponse(r);
   }
 
   async putCollection(
@@ -800,7 +811,7 @@ export class ApiService implements ApiServiceAbstraction {
       true,
       true,
     );
-    return new CollectionDetailsResponse(r);
+    return new CollectionAccessDetailsResponse(r);
   }
 
   async putCollectionUsers(
@@ -879,10 +890,6 @@ export class ApiService implements ApiServiceAbstraction {
   async getPlans(): Promise<ListResponse<PlanResponse>> {
     const r = await this.send("GET", "/plans", null, false, true);
     return new ListResponse(r, PlanResponse);
-  }
-
-  async postPublicImportDirectory(request: OrganizationImportRequest): Promise<any> {
-    return this.send("POST", "/public/organization/import", request, true, false);
   }
 
   async getTaxRates(): Promise<ListResponse<TaxRateResponse>> {
@@ -992,6 +999,13 @@ export class ApiService implements ApiServiceAbstraction {
     return new TwoFactorAuthenticatorResponse(r);
   }
 
+  async deleteTwoFactorAuthenticator(
+    request: DisableTwoFactorAuthenticatorRequest,
+  ): Promise<TwoFactorProviderResponse> {
+    const r = await this.send("DELETE", "/two-factor/authenticator", request, true, true);
+    return new TwoFactorProviderResponse(r);
+  }
+
   async putTwoFactorEmail(request: UpdateTwoFactorEmailRequest): Promise<TwoFactorEmailResponse> {
     const r = await this.send("PUT", "/two-factor/email", request, true, true);
     return new TwoFactorEmailResponse(r);
@@ -1017,7 +1031,7 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   async putTwoFactorYubiKey(
-    request: UpdateTwoFactorYubioOtpRequest,
+    request: UpdateTwoFactorYubikeyOtpRequest,
   ): Promise<TwoFactorYubiKeyResponse> {
     const r = await this.send("PUT", "/two-factor/yubikey", request, true, true);
     return new TwoFactorYubiKeyResponse(r);
@@ -1560,8 +1574,7 @@ export class ApiService implements ApiServiceAbstraction {
   async getActiveBearerToken(): Promise<string> {
     let accessToken = await this.tokenService.getAccessToken();
     if (await this.tokenService.tokenNeedsRefresh()) {
-      await this.doAuthRefresh();
-      accessToken = await this.tokenService.getAccessToken();
+      accessToken = await this.refreshToken();
     }
     return accessToken;
   }
@@ -1701,22 +1714,24 @@ export class ApiService implements ApiServiceAbstraction {
     );
   }
 
-  protected async doAuthRefresh(): Promise<void> {
+  protected async refreshToken(): Promise<string> {
     const refreshToken = await this.tokenService.getRefreshToken();
     if (refreshToken != null && refreshToken !== "") {
-      return this.doRefreshToken();
+      return this.refreshAccessToken();
     }
 
     const clientId = await this.tokenService.getClientId();
     const clientSecret = await this.tokenService.getClientSecret();
     if (!Utils.isNullOrWhitespace(clientId) && !Utils.isNullOrWhitespace(clientSecret)) {
-      return this.doApiTokenRefresh();
+      return this.refreshApiToken();
     }
 
-    throw new Error("Cannot refresh token, no refresh token or api keys are stored");
+    this.refreshAccessTokenErrorCallback();
+
+    throw new Error("Cannot refresh access token, no refresh token or api keys are stored.");
   }
 
-  protected async doRefreshToken(): Promise<void> {
+  protected async refreshAccessToken(): Promise<string> {
     const refreshToken = await this.tokenService.getRefreshToken();
     if (refreshToken == null || refreshToken === "") {
       throw new Error();
@@ -1762,19 +1777,20 @@ export class ApiService implements ApiServiceAbstraction {
         this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
       );
 
-      await this.tokenService.setTokens(
+      const refreshedTokens = await this.tokenService.setTokens(
         tokenResponse.accessToken,
         vaultTimeoutAction as VaultTimeoutAction,
         vaultTimeout,
         tokenResponse.refreshToken,
       );
+      return refreshedTokens.accessToken;
     } else {
       const error = await this.handleError(response, true, true);
       return Promise.reject(error);
     }
   }
 
-  protected async doApiTokenRefresh(): Promise<void> {
+  protected async refreshApiToken(): Promise<string> {
     const clientId = await this.tokenService.getClientId();
     const clientSecret = await this.tokenService.getClientSecret();
 
@@ -1802,11 +1818,12 @@ export class ApiService implements ApiServiceAbstraction {
       this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
     );
 
-    await this.tokenService.setAccessToken(
+    const refreshedToken = await this.tokenService.setAccessToken(
       response.accessToken,
       vaultTimeoutAction as VaultTimeoutAction,
       vaultTimeout,
     );
+    return refreshedToken;
   }
 
   async send(
@@ -1868,9 +1885,12 @@ export class ApiService implements ApiServiceAbstraction {
 
     const responseType = response.headers.get("content-type");
     const responseIsJson = responseType != null && responseType.indexOf("application/json") !== -1;
+    const responseIsCsv = responseType != null && responseType.indexOf("text/csv") !== -1;
     if (hasResponse && response.status === 200 && responseIsJson) {
       const responseJson = await response.json();
       return responseJson;
+    } else if (hasResponse && response.status === 200 && responseIsCsv) {
+      return await response.text();
     } else if (response.status !== 200) {
       const error = await this.handleError(response, false, authed);
       return Promise.reject(error);
@@ -1898,7 +1918,7 @@ export class ApiService implements ApiServiceAbstraction {
           responseJson != null &&
           responseJson.error === "invalid_grant")
       ) {
-        await this.logoutCallback(true);
+        await this.logoutCallback("invalidGrantError");
         return null;
       }
     }

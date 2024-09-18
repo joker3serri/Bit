@@ -1,5 +1,7 @@
 import { mock } from "jest-mock-extended";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
+
+import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
 
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
@@ -10,7 +12,7 @@ import { AutofillSettingsService } from "../../autofill/services/autofill-settin
 import { DomainSettingsService } from "../../autofill/services/domain-settings.service";
 import { UriMatchStrategy } from "../../models/domain/domain-service";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
+import { CipherDecryptionKeys, CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { StateService } from "../../platform/abstractions/state.service";
@@ -19,8 +21,8 @@ import { EncArrayBuffer } from "../../platform/models/domain/enc-array-buffer";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { ContainerService } from "../../platform/services/container.service";
-import { UserId } from "../../types/guid";
-import { CipherKey, OrgKey } from "../../types/key";
+import { CipherId, UserId } from "../../types/guid";
+import { CipherKey, OrgKey, UserKey } from "../../types/key";
 import { CipherFileUploadService } from "../abstractions/file-upload/cipher-file-upload.service";
 import { FieldType } from "../enums";
 import { CipherRepromptType } from "../enums/cipher-reprompt-type";
@@ -114,9 +116,12 @@ describe("Cipher Service", () => {
   const i18nService = mock<I18nService>();
   const searchService = mock<SearchService>();
   const encryptService = mock<EncryptService>();
+  const bulkEncryptService = mock<BulkEncryptService>();
   const configService = mock<ConfigService>();
   accountService = mockAccountServiceWith(mockUserId);
   const stateProvider = new FakeStateProvider(accountService);
+
+  const userId = "TestUserId" as UserId;
 
   let cipherService: CipherService;
   let cipherObj: Cipher;
@@ -136,6 +141,7 @@ describe("Cipher Service", () => {
       stateService,
       autofillSettingsService,
       encryptService,
+      bulkEncryptService,
       cipherFileUploadService,
       configService,
       stateProvider,
@@ -160,11 +166,11 @@ describe("Cipher Service", () => {
       );
 
       configService.checkServerMeetsVersionRequirement$.mockReturnValue(of(false));
-      setEncryptionKeyFlag(false);
+      configService.getFeatureFlag.mockResolvedValue(false);
 
       const spy = jest.spyOn(cipherFileUploadService, "upload");
 
-      await cipherService.saveAttachmentRawWithServer(new Cipher(), fileName, fileData);
+      await cipherService.saveAttachmentRawWithServer(new Cipher(), fileName, fileData, userId);
 
       expect(spy).toHaveBeenCalled();
     });
@@ -279,7 +285,7 @@ describe("Cipher Service", () => {
           { uri: "uri", match: UriMatchStrategy.RegularExpression } as LoginUriView,
         ];
 
-        const domain = await cipherService.encrypt(cipherView);
+        const domain = await cipherService.encrypt(cipherView, userId);
 
         expect(domain.login.uris).toEqual([
           {
@@ -292,18 +298,18 @@ describe("Cipher Service", () => {
     });
 
     describe("cipher.key", () => {
-      it("is null when enableCipherKeyEncryption flag is false", async () => {
-        setEncryptionKeyFlag(false);
+      it("is null when feature flag is false", async () => {
+        configService.getFeatureFlag.mockResolvedValue(false);
 
-        const cipher = await cipherService.encrypt(cipherView);
+        const cipher = await cipherService.encrypt(cipherView, userId);
 
         expect(cipher.key).toBeNull();
       });
 
-      it("is defined when enableCipherKeyEncryption flag is true", async () => {
-        setEncryptionKeyFlag(true);
+      it("is defined when feature flag flag is true", async () => {
+        configService.getFeatureFlag.mockResolvedValue(true);
 
-        const cipher = await cipherService.encrypt(cipherView);
+        const cipher = await cipherService.encrypt(cipherView, userId);
 
         expect(cipher.key).toBeDefined();
       });
@@ -314,27 +320,81 @@ describe("Cipher Service", () => {
         jest.spyOn<any, string>(cipherService, "encryptCipherWithCipherKey");
       });
 
-      it("is not called when enableCipherKeyEncryption is false", async () => {
-        setEncryptionKeyFlag(false);
+      it("is not called when feature flag is false", async () => {
+        configService.getFeatureFlag.mockResolvedValue(false);
 
-        await cipherService.encrypt(cipherView);
+        await cipherService.encrypt(cipherView, userId);
 
         expect(cipherService["encryptCipherWithCipherKey"]).not.toHaveBeenCalled();
       });
 
-      it("is called when enableCipherKeyEncryption is true", async () => {
-        setEncryptionKeyFlag(true);
+      it("is called when feature flag is true", async () => {
+        configService.getFeatureFlag.mockResolvedValue(true);
 
-        await cipherService.encrypt(cipherView);
+        await cipherService.encrypt(cipherView, userId);
 
         expect(cipherService["encryptCipherWithCipherKey"]).toHaveBeenCalled();
       });
     });
   });
-});
 
-function setEncryptionKeyFlag(value: boolean) {
-  process.env.FLAGS = JSON.stringify({
-    enableCipherKeyEncryption: value,
+  describe("getRotatedData", () => {
+    const originalUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
+    const newUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
+    let decryptedCiphers: BehaviorSubject<Record<CipherId, CipherView>>;
+    let encryptedKey: EncString;
+
+    beforeEach(() => {
+      configService.getFeatureFlag.mockResolvedValue(true);
+      configService.checkServerMeetsVersionRequirement$.mockReturnValue(of(true));
+
+      searchService.indexedEntityId$ = of(null);
+      stateService.getUserId.mockResolvedValue(mockUserId);
+
+      const keys = {
+        userKey: originalUserKey,
+      } as CipherDecryptionKeys;
+      cryptoService.cipherDecryptionKeys$.mockReturnValue(of(keys));
+
+      const cipher1 = new CipherView(cipherObj);
+      cipher1.id = "Cipher 1";
+      cipher1.organizationId = null;
+      const cipher2 = new CipherView(cipherObj);
+      cipher2.id = "Cipher 2";
+      cipher2.organizationId = null;
+
+      decryptedCiphers = new BehaviorSubject({
+        Cipher1: cipher1,
+        Cipher2: cipher2,
+      });
+      cipherService.cipherViews$ = decryptedCiphers;
+
+      encryptService.decryptToBytes.mockResolvedValue(new Uint8Array(32));
+      encryptedKey = new EncString("Re-encrypted Cipher Key");
+      encryptService.encrypt.mockResolvedValue(encryptedKey);
+
+      cryptoService.makeCipherKey.mockResolvedValue(
+        new SymmetricCryptoKey(new Uint8Array(32)) as CipherKey,
+      );
+    });
+
+    it("returns re-encrypted user ciphers", async () => {
+      const result = await cipherService.getRotatedData(originalUserKey, newUserKey, mockUserId);
+
+      expect(result[0]).toMatchObject({ id: "Cipher 1", key: "Re-encrypted Cipher Key" });
+      expect(result[1]).toMatchObject({ id: "Cipher 2", key: "Re-encrypted Cipher Key" });
+    });
+
+    it("throws if the original user key is null", async () => {
+      await expect(cipherService.getRotatedData(null, newUserKey, mockUserId)).rejects.toThrow(
+        "Original user key is required to rotate ciphers",
+      );
+    });
+
+    it("throws if the new user key is null", async () => {
+      await expect(cipherService.getRotatedData(originalUserKey, null, mockUserId)).rejects.toThrow(
+        "New user key is required to rotate ciphers",
+      );
+    });
   });
-}
+});

@@ -499,6 +499,12 @@
   "createAccount": {
     "message": "Crea account"
   },
+  "setAStrongPassword": {
+    "message": "Imposta una password robusta"
+  },
+  "finishCreatingYourAccountBySettingAPassword": {
+    "message": "Termina la creazione del tuo account impostando una password"
+  },
   "logIn": {
     "message": "Accedi"
   },
@@ -519,6 +525,37 @@
   },
   "masterPassHint": {
     "message": "Suggerimento per la password principale (facoltativo)"
+  },
+  "masterPassHintText": {
+    "message": "Se dimentichi la password, il suggerimento password può essere inviato alla tua email. $CURRENT$/$MAXIMUM$ massimo carattere.",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "0"
+      },
+      "maximum": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
+  "masterPassword": {
+    "message": "Password principale"
+  },
+  "masterPassImportant": {
+    "message": "La tua password principale non può essere recuperata se la dimentichi!"
+  },
+  "confirmMasterPassword": {
+    "message": "Conferma password principale"
+  },
+  "masterPassHintLabel": {
+    "message": "Suggerimento per la password principale"
+  },
+  "joinOrganization": {
+    "message": "Unisciti all'organizzazione"
+  },
+  "finishJoiningThisOrganizationBySettingAMasterPassword": {
+    "message": "Termina l'adesione a questa organizzazione impostando una password principale."
   },
   "settings": {
     "message": "Impostazioni"
@@ -554,17 +591,23 @@
       }
     }
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "Hai effettuato l'accesso"
+  },
+  "youMayCloseThisWindow": {
+    "message": "Puoi chiudere questa finestra"
+  },
   "masterPassDoesntMatch": {
     "message": "Le password principali non corrispondono."
   },
   "newAccountCreated": {
     "message": "Il tuo nuovo account è stato creato! Ora puoi eseguire l'accesso."
   },
-  "youSuccessfullyLoggedIn": {
-    "message": "Hai effettuato l'accesso"
+  "newAccountCreated2": {
+    "message": "Il tuo nuovo account è stato creato!"
   },
-  "youMayCloseThisWindow": {
-    "message": "Puoi chiudere questa finestra"
+  "youHaveBeenLoggedIn": {
+    "message": "Hai effettuato l'accesso!"
   },
   "masterPassSent": {
     "message": "Ti abbiamo inviato un'email con il tuo suggerimento per la password principale."
@@ -595,6 +638,9 @@
   },
   "verificationCodeRequired": {
     "message": "Codice di verifica obbligatorio."
+  },
+  "webauthnCancelOrTimeout": {
+    "message": "L'autenticazione è stata annullata o ha richiesto troppo tempo. Per favore riprova."
   },
   "invalidVerificationCode": {
     "message": "Codice di verifica non valido"
@@ -647,18 +693,18 @@
   "authenticatorAppTitle": {
     "message": "App di autenticazione"
   },
-  "authenticatorAppDesc": {
-    "message": "Usa un'app di autenticazione (come Authy o Google Authenticator) per generare codici di verifica a tempo.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Inserisci un codice generato da un'app di autenticazione come Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
+  "yubiKeyTitleV2": {
     "message": "Chiave di sicurezza YubiKey OTP"
   },
   "yubiKeyDesc": {
     "message": "Usa YubiKey per accedere al tuo account. Compatibile con YubiKey 4, 4 Nano, 4C, e dispositivi NEO."
   },
-  "duoDesc": {
-    "message": "Verifica con Duo Security usando l'app Duo Mobile, SMS, chiamata telefonica, o chiave di sicurezza U2F.",
+  "duoDescV2": {
+    "message": "Inserisci un codice generato da Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -674,8 +720,8 @@
   "emailTitle": {
     "message": "Email"
   },
-  "emailDesc": {
-    "message": "I codici di verifica ti saranno inviati per email."
+  "emailDescV2": {
+    "message": "Inserisci il codice inviato alla tua email."
   },
   "loginUnavailable": {
     "message": "Login non disponibile"
@@ -694,6 +740,15 @@
   },
   "selfHostedEnvironmentFooter": {
     "message": "Specifica l'URL principale della tua installazione self-hosted di Bitwarden."
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "Specifica lo URL principale della tua installazione self-hosted di Bitwarden. Esempio: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "Per la configurazione avanzata, puoi specificare lo URL di base di ciascun servizio in modo indipendente."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "Devi aggiungere lo URL del server di base o almeno un ambiente personalizzato."
   },
   "customEnvironment": {
     "message": "Ambiente personalizzato"
@@ -743,8 +798,23 @@
   "loggedOut": {
     "message": "Uscito"
   },
+  "loggedOutDesc": {
+    "message": "Sei stato fatto uscire dal tuo account."
+  },
   "loginExpired": {
     "message": "La tua sessione è scaduta."
+  },
+  "restartRegistration": {
+    "message": "Riprova la registrazione"
+  },
+  "expiredLink": {
+    "message": "Link scaduto"
+  },
+  "pleaseRestartRegistrationOrTryLoggingIn": {
+    "message": "Riavvia la registrazione o prova ad accedere."
+  },
+  "youMayAlreadyHaveAnAccount": {
+    "message": "Potresti già avere un account"
   },
   "logOutConfirmation": {
     "message": "Sei sicuro di voler uscire?"
@@ -1110,6 +1180,9 @@
   "premiumPurchaseAlert": {
     "message": "Puoi acquistare il un abbonamento Premium dalla cassaforte web su bitwarden.com. Vuoi visitare il sito?"
   },
+  "premiumPurchaseAlertV2": {
+    "message": "Puoi acquistare Premium dalle impostazioni del tuo account sull'app web Bitwarden."
+  },
   "premiumCurrentMember": {
     "message": "Sei un membro Premium!"
   },
@@ -1212,6 +1285,15 @@
       }
     }
   },
+  "copySuccessful": {
+    "message": "Copy Successful"
+  },
+  "errorRefreshingAccessToken": {
+    "message": "Errore di aggiornamento del token di accesso"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "Nessun token di aggiornamento o chiave API trovati. Prova ad uscire ed entrare di nuovo."
+  },
   "help": {
     "message": "Aiuto"
   },
@@ -1299,11 +1381,41 @@
     "message": "Password aggiornata",
     "description": "ex. Date this password was updated"
   },
+  "exportFrom": {
+    "message": "Esporta da"
+  },
   "exportVault": {
     "message": "Esporta cassaforte"
   },
   "fileFormat": {
     "message": "Formato file"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Questo file esportato sarà protetto e richiederà la password del file per decifrarlo."
+  },
+  "filePassword": {
+    "message": "Password del file"
+  },
+  "exportPasswordDescription": {
+    "message": "La password sarà utilizzata per importare ed esportare questo file"
+  },
+  "accountRestrictedOptionDescription": {
+    "message": "Usa la chiave di crittografia dell'account, derivata dal nome utente e dalla password principale del tuo account, per crittografare il file di esportazione e limitare l'importazione solo all'account Bitwarden corrente."
+  },
+  "passwordProtected": {
+    "message": "Protetto da password"
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Imposta una password del file per crittografare il file esportato e importarlo in qualsiasi account Bitwarden usando la password per decrittografarlo."
+  },
+  "exportTypeHeading": {
+    "message": "Tipo di esportazione"
+  },
+  "accountRestricted": {
+    "message": "Account limitato"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "Le due password del file non corrispondono."
   },
   "hCaptchaUrl": {
     "message": "URL hCaptcha",
@@ -1410,8 +1522,14 @@
   "additionalWindowsHelloSettings": {
     "message": "Impostazioni aggiuntive di Windows Hello"
   },
+  "unlockWithPolkit": {
+    "message": "Sblocca con l'autenticazione di sistema"
+  },
   "windowsHelloConsentMessage": {
     "message": "Verifica per Bitwarden."
+  },
+  "polkitConsentMessage": {
+    "message": "Autenticazione per sbloccare Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "Sblocca con Touch ID"
@@ -1424,6 +1542,9 @@
   },
   "autoPromptWindowsHello": {
     "message": "Richiedi Windows Hello all'avvio"
+  },
+  "autoPromptPolkit": {
+    "message": "Chiedi autenticazione di sistema all'avvio"
   },
   "autoPromptTouchId": {
     "message": "Richiedi Touch ID all'avvio"
@@ -1611,6 +1732,21 @@
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "La tua nuova password principale non soddisfa i requisiti di sicurezza."
   },
+  "receiveMarketingEmailsV2": {
+    "message": "Ottieni consigli, annunci e opportunità di ricerca da Bitwarden nella tua casella di posta."
+  },
+  "unsubscribe": {
+    "message": "Annulla iscrizione"
+  },
+  "atAnyTime": {
+    "message": "in qualsiasi momento."
+  },
+  "byContinuingYouAgreeToThe": {
+    "message": "Continuando accetti le"
+  },
+  "and": {
+    "message": "e"
+  },
   "acceptPolicies": {
     "message": "Selezionando questa casella accetti quanto segue:"
   },
@@ -1688,6 +1824,12 @@
   },
   "biometricsNotEnabledDesc": {
     "message": "L'autenticazione biometrica del browser richiede che l'autenticazione biometrica del desktop sia stata già impostata nelle impostazioni."
+  },
+  "biometricsManualSetupTitle": {
+    "message": "Configurazione automatica non disponibile"
+  },
+  "biometricsManualSetupDesc": {
+    "message": "A causa del metodo di installazione, il supporto biometrico non può essere attivato automaticamente. Aprire la documentazione su come farlo manualmente?"
   },
   "personalOwnershipSubmitError": {
     "message": "A causa di una politica aziendale, non puoi salvare elementi nella tua cassaforte personale. Cambia l'opzione di proprietà in un'organizzazione e scegli tra le raccolte disponibili."
@@ -1873,6 +2015,9 @@
   "emailVerificationRequired": {
     "message": "Verifica email obbligatoria"
   },
+  "emailVerifiedV2": {
+    "message": "Email verificata"
+  },
   "emailVerificationRequiredDesc": {
     "message": "Devi verificare la tua email per usare questa funzionalità."
   },
@@ -1896,6 +2041,9 @@
   },
   "updateWeakMasterPasswordWarning": {
     "message": "La tua password principale non soddisfa uno o più politiche della tua organizzazione. Per accedere alla cassaforte, aggiornala ora. Procedere ti farà uscire dalla sessione corrente, richiedendoti di accedere di nuovo. Le sessioni attive su altri dispositivi potrebbero continuare a rimanere attive per un massimo di un'ora."
+  },
+  "tdeDisabledMasterPasswordRequired": {
+    "message": "La tua organizzazione ha disabilitato la crittografia affidabile del dispositivo. Per favore imposta una password principale per accedere alla tua cassaforte."
   },
   "tryAgain": {
     "message": "Riprova"
@@ -1981,6 +2129,9 @@
   "vaultTimeoutTooLarge": {
     "message": "Il timeout della tua cassaforte supera i limiti impostati dalla tua organizzazione."
   },
+  "inviteAccepted": {
+    "message": "Invito accettato"
+  },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Iscrizione automatica"
   },
@@ -2050,6 +2201,9 @@
   "switchAccount": {
     "message": "Cambia account"
   },
+  "alreadyHaveAccount": {
+    "message": "Hai già un account?"
+  },
   "options": {
     "message": "Opzioni"
   },
@@ -2065,6 +2219,18 @@
       "email": {
         "content": "$1",
         "example": "name@example.com"
+      }
+    }
+  },
+  "exportingOrganizationVaultTitle": {
+    "message": "Esportando cassaforte dell'organizzazione"
+  },
+  "exportingOrganizationVaultDesc": {
+    "message": "Solo la cassaforte dell'organizzazione associata a $ORGANIZATION$ sarà esportata. Elementi nelle casseforti individuali o in altre organizzazioni non saranno inclusi.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "ACME Moving Co."
       }
     }
   },
@@ -2131,6 +2297,108 @@
   },
   "forwardedEmailDesc": {
     "message": "Genera un alias email con un servizio di inoltro esterno."
+  },
+  "forwarderError": {
+    "message": "Errore $SERVICENAME$: $ERRORMESSAGE$",
+    "description": "Reports an error returned by a forwarding service to the user.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Invalid characters in domain name."
+      }
+    }
+  },
+  "forwarderGeneratedBy": {
+    "message": "Generato da Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen."
+  },
+  "forwarderGeneratedByWithWebsite": {
+    "message": "Sito web: $WEBSITE$. Generato da Bitwarden.",
+    "description": "Displayed with the address on the forwarding service's configuration screen.",
+    "placeholders": {
+      "WEBSITE": {
+        "content": "$1",
+        "example": "www.example.com"
+      }
+    }
+  },
+  "forwaderInvalidToken": {
+    "message": "Token API $SERVICENAME$ non valido",
+    "description": "Displayed when the user's API token is empty or rejected by the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwaderInvalidTokenWithMessage": {
+    "message": "Token API $SERVICENAME$ non valido: $ERRORMESSAGE$",
+    "description": "Displayed when the user's API token is rejected by the forwarding service with an error message.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      },
+      "errormessage": {
+        "content": "$2",
+        "example": "Please verify your email address to continue."
+      }
+    }
+  },
+  "forwarderNoAccountId": {
+    "message": "Impossibile ottenere l'ID dell'account email mascherato di $SERVICENAME$.",
+    "description": "Displayed when the forwarding service fails to return an account ID.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoDomain": {
+    "message": "Dominio $SERVICENAME$ non valido.",
+    "description": "Displayed when the domain is empty or domain authorization failed at the forwarding service.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderNoUrl": {
+    "message": "URL $SERVICENAME$ non valido.",
+    "description": "Displayed when the url of the forwarding service wasn't supplied.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownError": {
+    "message": "Errore di $SERVICENAME$ sconosciuto.",
+    "description": "Displayed when the forwarding service failed due to an unknown error.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "SimpleLogin"
+      }
+    }
+  },
+  "forwarderUnknownForwarder": {
+    "message": "Mittente sconosciuto: \"$SERVICENAME$\".",
+    "description": "Displayed when the forwarding service is not supported.",
+    "placeholders": {
+      "servicename": {
+        "content": "$1",
+        "example": "JustTrust.us"
+      }
+    }
   },
   "hostname": {
     "message": "Nome host",
@@ -2236,9 +2504,6 @@
   "denyLogIn": {
     "message": "Nega accesso"
   },
-  "approveLoginRequests": {
-    "message": "Approva richieste di accesso"
-  },
   "logInConfirmedForEmailOnDevice": {
     "message": "Login per $EMAIL$ da $DEVICE$ confermato",
     "placeholders": {
@@ -2273,9 +2538,6 @@
   "thisRequestIsNoLongerValid": {
     "message": "La richiesta non è più valida."
   },
-  "approveLoginRequestDesc": {
-    "message": "Usa questo dispositivo per approvare le richieste di accesso fatte da altri dispositivi."
-  },
   "confirmLoginAtemptForMail": {
     "message": "Conferma il tentativo di accesso di $EMAIL$",
     "placeholders": {
@@ -2287,6 +2549,27 @@
   },
   "logInRequested": {
     "message": "Accesso richiesto"
+  },
+  "creatingAccountOn": {
+    "message": "Creazione account su"
+  },
+  "checkYourEmail": {
+    "message": "Controlli la tua email"
+  },
+  "followTheLinkInTheEmailSentTo": {
+    "message": "Segui il link nell'email inviata a"
+  },
+  "andContinueCreatingYourAccount": {
+    "message": "e continua a creare il tuo account."
+  },
+  "noEmail": {
+    "message": "Nessuna email?"
+  },
+  "goBack": {
+    "message": "Torna indietro"
+  },
+  "toEditYourEmailAddress": {
+    "message": "per modificare il tuo indirizzo email."
   },
   "exposedMasterPassword": {
     "message": "Password principale violata"
@@ -2305,6 +2588,12 @@
   },
   "important": {
     "message": "Importante:"
+  },
+  "accessTokenUnableToBeDecrypted": {
+    "message": "Sei stato fatto uscire perché non è stato possibile decrittografare il tuo token di accesso. Entra di nuovo per risolvere il problema."
+  },
+  "refreshTokenSecureStorageRetrievalFailure": {
+    "message": "Sei stato fatto uscire perché non è stato possibile recuperare il token di aggiornamento. Entra di nuovo per risolvere il problema."
   },
   "masterPasswordHint": {
     "message": "La tua password principale non può essere recuperata se la dimentichi!"
@@ -2485,6 +2774,9 @@
   "submenu": {
     "message": "Sottomenu"
   },
+  "toggleSideNavigation": {
+    "message": "Attiva/Disattiva navigazione laterale"
+  },
   "skipToContent": {
     "message": "Vai al contenuto"
   },
@@ -2540,6 +2832,9 @@
       }
     }
   },
+  "duoHealthCheckResultsInNullAuthUrlError": {
+    "message": "Errore di connessione con il servizio Duo. Utilizza un metodo di login in due passaggi diverso o contatta Duo per assistenza."
+  },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
     "message": "Avvia Duo e segui i passaggi per finire di accedere."
   },
@@ -2561,8 +2856,8 @@
   "invalidFilePassword": {
     "message": "Password errata, usa la password che hai inserito alla creazione del file di esportazione."
   },
-  "importDestination": {
-    "message": "Destinazione dell'importazione"
+  "destination": {
+    "message": "Destinazione"
   },
   "learnAboutImportOptions": {
     "message": "Ulteriori informazioni sulle tue opzioni di importazione"
@@ -2619,6 +2914,9 @@
   },
   "confirmFilePassword": {
     "message": "Conferma password del file"
+  },
+  "exportSuccess": {
+    "message": "Dati della cassaforte esportati"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Verifica in due passaggi annullata"
@@ -2720,5 +3018,54 @@
   },
   "errorAssigningTargetFolder": {
     "message": "Errore nell'assegnazione della cartella di destinazione."
+  },
+  "viewItemsIn": {
+    "message": "Visualizza gli elementi in $NAME$",
+    "description": "Button to view the contents of a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "backTo": {
+    "message": "Torna a $NAME$",
+    "description": "Navigate back to a previous folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "back": {
+    "message": "Indietro",
+    "description": "Button text to navigate back"
+  },
+  "removeItem": {
+    "message": "Rimuovi $NAME$",
+    "description": "Remove a selected option, such as a folder or collection",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "data": {
+    "message": "Dati"
+  },
+  "fileSends": {
+    "message": "Send File"
+  },
+  "textSends": {
+    "message": "Send Testo"
+  },
+  "ssoError": {
+    "message": "Non è stato possibile trovare nessuna porta libera per il login Sso."
+  },
+  "fileSavedToDevice": {
+    "message": "File salvato sul dispositivo. Gestisci dai download del dispositivo."
   }
 }

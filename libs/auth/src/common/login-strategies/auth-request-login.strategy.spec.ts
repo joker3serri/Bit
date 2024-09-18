@@ -97,6 +97,7 @@ describe("AuthRequestLoginStrategy", () => {
 
     authRequestLoginStrategy = new AuthRequestLoginStrategy(
       cache,
+      deviceTrustService,
       accountService,
       masterPasswordService,
       cryptoService,
@@ -109,7 +110,6 @@ describe("AuthRequestLoginStrategy", () => {
       stateService,
       twoFactorService,
       userDecryptionOptions,
-      deviceTrustService,
       billingAccountProfileStateService,
       vaultTimeoutSettingsService,
       kdfConfigService,
@@ -158,8 +158,11 @@ describe("AuthRequestLoginStrategy", () => {
       decMasterKeyHash,
       mockUserId,
     );
-    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(tokenResponse.key);
-    expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
+    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(
+      tokenResponse.key,
+      mockUserId,
+    );
+    expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey, mockUserId);
     expect(deviceTrustService.trustDeviceIfRequired).toHaveBeenCalled();
     expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(tokenResponse.privateKey, mockUserId);
   });
@@ -183,8 +186,11 @@ describe("AuthRequestLoginStrategy", () => {
     expect(masterPasswordService.mock.setMasterKeyHash).not.toHaveBeenCalled();
 
     // setMasterKeyEncryptedUserKey, setUserKey, and setPrivateKey should still be called
-    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(tokenResponse.key);
-    expect(cryptoService.setUserKey).toHaveBeenCalledWith(decUserKey);
+    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(
+      tokenResponse.key,
+      mockUserId,
+    );
+    expect(cryptoService.setUserKey).toHaveBeenCalledWith(decUserKey, mockUserId);
     expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(tokenResponse.privateKey, mockUserId);
 
     // trustDeviceIfRequired should be called

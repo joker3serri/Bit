@@ -8,27 +8,32 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { OrganizationApiKeyType, ProviderStatusType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { PlanType } from "@bitwarden/common/billing/enums";
+import { PlanType, ProductTierType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { BillingSubscriptionItemResponse } from "@bitwarden/common/billing/models/response/subscription.response";
-import { ProductType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 
+import {
+  AdjustStorageDialogV2Component,
+  AdjustStorageDialogV2ResultType,
+} from "../shared/adjust-storage-dialog/adjust-storage-dialog-v2.component";
 import {
   AdjustStorageDialogResult,
   openAdjustStorageDialog,
-} from "../shared/adjust-storage.component";
+} from "../shared/adjust-storage-dialog/adjust-storage-dialog.component";
 import {
   OffboardingSurveyDialogResultType,
   openOffboardingSurvey,
 } from "../shared/offboarding-survey.component";
 
 import { BillingSyncApiKeyComponent } from "./billing-sync-api-key.component";
+import { ChangePlanDialogResultType, openChangePlanDialog } from "./change-plan-dialog.component";
+import { DownloadLicenceDialogComponent } from "./download-license.component";
 import { ManageBilling } from "./icons/manage-billing.icon";
 import { SecretsManagerSubscriptionOptions } from "./sm-adjust-subscription.component";
 
@@ -50,14 +55,28 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   locale: string;
   showUpdatedSubscriptionStatusSection$: Observable<boolean>;
   manageBillingFromProviderPortal = ManageBilling;
-  isProviderManaged = false;
+  isManagedByConsolidatedBillingMSP = false;
+  enableTimeThreshold: boolean;
+  preSelectedProductTier: ProductTierType = ProductTierType.Free;
 
-  protected readonly teamsStarter = ProductType.TeamsStarter;
+  protected readonly teamsStarter = ProductTierType.TeamsStarter;
 
   private destroy$ = new Subject<void>();
 
   protected enableConsolidatedBilling$ = this.configService.getFeatureFlag$(
     FeatureFlag.EnableConsolidatedBilling,
+  );
+
+  protected enableTimeThreshold$ = this.configService.getFeatureFlag$(
+    FeatureFlag.EnableTimeThreshold,
+  );
+
+  protected EnableUpgradePasswordManagerSub$ = this.configService.getFeatureFlag$(
+    FeatureFlag.EnableUpgradePasswordManagerSub,
+  );
+
+  protected deprecateStripeSourcesAPI$ = this.configService.getFeatureFlag$(
+    FeatureFlag.AC2476_DeprecateStripeSourcesAPI,
   );
 
   constructor(
@@ -71,6 +90,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private dialogService: DialogService,
     private configService: ConfigService,
     private providerService: ProviderService,
+    private toastService: ToastService,
   ) {}
 
   async ngOnInit() {
@@ -78,6 +98,13 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.changePlan();
+      const productTierTypeStr = this.route.snapshot.queryParamMap.get("productTierType");
+      if (productTierTypeStr != null) {
+        const productTier = Number(productTierTypeStr);
+        if (Object.values(ProductTierType).includes(productTier as ProductTierType)) {
+          this.preSelectedProductTier = productTier;
+        }
+      }
     }
 
     this.route.params
@@ -94,6 +121,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.showUpdatedSubscriptionStatusSection$ = this.configService.getFeatureFlag$(
       FeatureFlag.AC1795_UpdatedSubscriptionStatusSection,
     );
+    this.enableTimeThreshold = await firstValueFrom(this.enableTimeThreshold$);
   }
 
   ngOnDestroy() {
@@ -112,10 +140,10 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     if (this.userOrg.canViewSubscription) {
       const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
       const provider = await this.providerService.get(this.userOrg.providerId);
-      this.isProviderManaged =
+      this.isManagedByConsolidatedBillingMSP =
         enableConsolidatedBilling &&
         this.userOrg.hasProvider &&
-        provider.providerStatus == ProviderStatusType.Billable;
+        provider?.providerStatus == ProviderStatusType.Billable;
 
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
       this.lineItems = this.sub?.subscription?.items;
@@ -284,22 +312,51 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         return this.i18nService.t("subscriptionUpgrade", this.sub.seats.toString());
       }
     } else if (this.sub.maxAutoscaleSeats === this.sub.seats && this.sub.seats != null) {
-      return this.i18nService.t("subscriptionMaxReached", this.sub.seats.toString());
-    } else if (this.userOrg.planProductType === ProductType.TeamsStarter) {
+      if (!this.enableTimeThreshold) {
+        return this.i18nService.t("subscriptionMaxReached", this.sub.seats.toString());
+      }
+      const seatAdjustmentMessage = this.sub.plan.isAnnual
+        ? "annualSubscriptionUserSeatsMessage"
+        : "monthlySubscriptionUserSeatsMessage";
+      return this.i18nService.t(
+        seatAdjustmentMessage + "subscriptionSeatMaxReached",
+        this.sub.seats.toString(),
+      );
+    } else if (this.userOrg.productTierType === ProductTierType.TeamsStarter) {
       return this.i18nService.t("subscriptionUserSeatsWithoutAdditionalSeatsOption", 10);
     } else if (this.sub.maxAutoscaleSeats == null) {
-      return this.i18nService.t("subscriptionUserSeatsUnlimitedAutoscale");
+      if (!this.enableTimeThreshold) {
+        return this.i18nService.t("subscriptionUserSeatsUnlimitedAutoscale");
+      }
+
+      const seatAdjustmentMessage = this.sub.plan.isAnnual
+        ? "annualSubscriptionUserSeatsMessage"
+        : "monthlySubscriptionUserSeatsMessage";
+      return this.i18nService.t(seatAdjustmentMessage);
     } else {
-      return this.i18nService.t(
-        "subscriptionUserSeatsLimitedAutoscale",
-        this.sub.maxAutoscaleSeats.toString(),
-      );
+      if (!this.enableTimeThreshold) {
+        return this.i18nService.t(
+          "subscriptionUserSeatsLimitedAutoscale",
+          this.sub.maxAutoscaleSeats.toString(),
+        );
+      }
+      const seatAdjustmentMessage = this.sub.plan.isAnnual
+        ? "annualSubscriptionUserSeatsMessage"
+        : "monthlySubscriptionUserSeatsMessage";
+      return this.i18nService.t(seatAdjustmentMessage, this.sub.maxAutoscaleSeats.toString());
     }
   }
 
   get subscriptionMarkedForCancel() {
     return (
       this.subscription != null && !this.subscription.cancelled && this.subscription.cancelAtEndDate
+    );
+  }
+
+  shownSelfHost(): boolean {
+    return (
+      this.sub?.plan.productTier !== ProductTierType.Teams &&
+      this.sub?.plan.productTier !== ProductTierType.Free
     );
   }
 
@@ -337,7 +394,11 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
     try {
       await this.organizationApiService.reinstate(this.organizationId);
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("reinstated"));
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("reinstated"),
+      });
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.load();
@@ -347,15 +408,46 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   };
 
   async changePlan() {
-    this.showChangePlan = !this.showChangePlan;
+    const EnableUpgradePasswordManagerSub = await firstValueFrom(
+      this.EnableUpgradePasswordManagerSub$,
+    );
+    if (EnableUpgradePasswordManagerSub) {
+      const reference = openChangePlanDialog(this.dialogService, {
+        data: {
+          organizationId: this.organizationId,
+          subscription: this.sub,
+          productTierType: this.userOrg.productTierType,
+        },
+      });
+
+      const result = await lastValueFrom(reference.closed);
+
+      if (result === ChangePlanDialogResultType.Submitted) {
+        await this.load();
+      }
+    } else {
+      this.showChangePlan = !this.showChangePlan;
+    }
+  }
+
+  isSecretsManagerTrial(): boolean {
+    return (
+      this.sub?.subscription?.items?.some((item) =>
+        this.sub?.customerDiscount?.appliesTo?.includes(item.productId),
+      ) ?? false
+    );
   }
 
   closeChangePlan() {
     this.showChangePlan = false;
   }
 
-  downloadLicense() {
-    this.showDownloadLicense = !this.showDownloadLicense;
+  async downloadLicense() {
+    DownloadLicenceDialogComponent.open(this.dialogService, {
+      data: {
+        organizationId: this.organizationId,
+      },
+    });
   }
 
   async manageBillingSync() {
@@ -380,19 +472,43 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     this.load();
   }
 
+  calculateTotalAppliedDiscount(total: number) {
+    const discountedTotal = total / (1 - this.customerDiscount?.percentOff / 100);
+    return discountedTotal;
+  }
+
   adjustStorage = (add: boolean) => {
     return async () => {
-      const dialogRef = openAdjustStorageDialog(this.dialogService, {
-        data: {
-          storageGbPrice: this.storageGbPrice,
-          add: add,
-          organizationId: this.organizationId,
-          interval: this.billingInterval,
-        },
-      });
-      const result = await lastValueFrom(dialogRef.closed);
-      if (result === AdjustStorageDialogResult.Adjusted) {
-        await this.load();
+      const deprecateStripeSourcesAPI = await firstValueFrom(this.deprecateStripeSourcesAPI$);
+
+      if (deprecateStripeSourcesAPI) {
+        const dialogRef = AdjustStorageDialogV2Component.open(this.dialogService, {
+          data: {
+            price: this.storageGbPrice,
+            cadence: this.billingInterval,
+            type: add ? "Add" : "Remove",
+            organizationId: this.organizationId,
+          },
+        });
+
+        const result = await lastValueFrom(dialogRef.closed);
+
+        if (result === AdjustStorageDialogV2ResultType.Submitted) {
+          await this.load();
+        }
+      } else {
+        const dialogRef = openAdjustStorageDialog(this.dialogService, {
+          data: {
+            storageGbPrice: this.storageGbPrice,
+            add: add,
+            organizationId: this.organizationId,
+            interval: this.billingInterval,
+          },
+        });
+        const result = await lastValueFrom(dialogRef.closed);
+        if (result === AdjustStorageDialogResult.Adjusted) {
+          await this.load();
+        }
       }
     };
   };
@@ -411,11 +527,11 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
     try {
       await this.apiService.deleteRemoveSponsorship(this.organizationId);
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("removeSponsorshipSuccess"),
-      );
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("removeSponsorshipSuccess"),
+      });
       await this.load();
     } catch (e) {
       this.logService.error(e);
@@ -435,12 +551,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   };
 
   get showChangePlanButton() {
-    return this.sub.plan.product !== ProductType.Enterprise && !this.showChangePlan;
+    return this.sub.plan.productTier !== ProductTierType.Enterprise && !this.showChangePlan;
   }
 }
 
 /**
- * Helper to sort subscription items by product type and then by addon status
+ * Helper to sort subscription items by productTier type and then by addon status
  */
 function sortSubscriptionItems(
   a: BillingSubscriptionItemResponse,
