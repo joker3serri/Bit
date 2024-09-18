@@ -50,7 +50,6 @@ export class SendFileDetailsComponent implements OnInit {
   sendFileDetailsForm: SendFileDetailsForm;
 
   FileSendType = SendType.File;
-  editMode = false;
   fileName = "";
 
   constructor(
@@ -84,8 +83,6 @@ export class SendFileDetailsComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.editMode = !!this.originalSendView;
-
     if (this.originalSendView) {
       this.sendFileDetailsForm.patchValue({
         file: this.originalSendView.file,

@@ -33,22 +33,21 @@
         <ng-container slot="end">
           <bit-item-action>
             <button
-              class="tw-p-1"
-              bitIconButton="bwi-clone"
-              size="small"
               type="button"
               (click)="copySendLink(send)"
               appA11yTitle="{{ 'copyLink' | i18n }} - {{ send.name }}"
-            ></button>
+            >
+              <i class="bwi tw-text-lg bwi-clone"></i>
+            </button>
           </bit-item-action>
           <bit-item-action>
             <button
-              bitIconButton="bwi-trash"
-              size="small"
               type="button"
-              (click)="deleteSend($event, send)"
+              (click)="deleteSend(send)"
               appA11yTitle="{{ 'delete' | i18n }} - {{ send.name }}"
-            ></button>
+            >
+              <i class="bwi tw-text-lg bwi-trash"></i>
+            </button>
           </bit-item-action>
         </ng-container>
       </button>
