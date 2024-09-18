@@ -1,26 +1,57 @@
+import { DialogRef } from "@angular/cdk/dialog";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { MessagingService } from "../../../../../../libs/common/src/platform/abstractions/messaging.service";
-import { PremiumUpgradePromptService } from "../../../../../../libs/common/src/vault/abstractions/premium-upgrade-prompt.service";
+import { OrganizationId } from "@bitwarden/common/types/guid";
+import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
+import { DialogService } from "@bitwarden/components";
+
+import {
+  ViewCipherDialogCloseResult,
+  ViewCipherDialogResult,
+} from "../individual-vault/view.component";
 
 /**
  * This service is used to prompt the user to upgrade to premium.
  */
 @Injectable()
 export class WebVaultPremiumUpgradePromptService implements PremiumUpgradePromptService {
-  constructor(private messagingService: MessagingService) {}
+  constructor(
+    private dialogService: DialogService,
+    private router: Router,
+    private dialog: DialogRef<ViewCipherDialogCloseResult>,
+  ) {}
 
-  async promptForPremium(organizationId?: string) {
-    /**
-     * Use the messaging service to trigger the premium required dialog in the web vault.
-     * If the organizationId is not set, then we are in the individual vault and should sent the premiumRequired message.
-     */
+  /**
+   * Prompts the user to upgrade to premium.
+   * @param organizationId The ID of the organization to upgrade.
+   */
+  async promptForPremium(organizationId?: OrganizationId) {
+    let upgradeConfirmed;
     if (organizationId) {
-      this.messagingService.send("upgradeOrganization", {
-        organizationId: organizationId,
+      upgradeConfirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "upgradeOrganization" },
+        content: { key: "upgradeOrganizationDesc" },
+        acceptButtonText: { key: "upgradeOrganization" },
+        type: "info",
       });
+      if (upgradeConfirmed) {
+        await this.router.navigate(["organizations", organizationId, "billing", "subscription"]);
+      }
     } else {
-      this.messagingService.send("premiumRequired");
+      upgradeConfirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "premiumRequired" },
+        content: { key: "premiumRequiredDesc" },
+        acceptButtonText: { key: "upgrade" },
+        type: "success",
+      });
+      if (upgradeConfirmed) {
+        await this.router.navigate(["settings/subscription/premium"]);
+      }
+    }
+
+    if (upgradeConfirmed) {
+      this.dialog.close({ action: ViewCipherDialogResult.PremiumUpgrade });
     }
   }
 }

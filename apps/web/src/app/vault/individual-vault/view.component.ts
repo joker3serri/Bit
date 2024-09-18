@@ -31,6 +31,7 @@ export interface ViewCipherDialogParams {
 export enum ViewCipherDialogResult {
   Edited = "edited",
   Deleted = "deleted",
+  PremiumUpgrade = "premiumUpgrade",
 }
 
 export interface ViewCipherDialogCloseResult {

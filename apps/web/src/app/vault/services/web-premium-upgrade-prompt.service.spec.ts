@@ -1,37 +1,95 @@
+import { DialogRef } from "@angular/cdk/dialog";
 import { TestBed } from "@angular/core/testing";
-import { mock, MockProxy } from "jest-mock-extended";
+import { Router } from "@angular/router";
+import { of, lastValueFrom } from "rxjs";
 
-import { MessagingService } from "../../../../../../libs/common/src/platform/abstractions/messaging.service";
+import { OrganizationId } from "@bitwarden/common/types/guid";
+import { DialogService } from "@bitwarden/components";
+
+import {
+  ViewCipherDialogCloseResult,
+  ViewCipherDialogResult,
+} from "../individual-vault/view.component";
 
 import { WebVaultPremiumUpgradePromptService } from "./web-premium-upgrade-prompt.service";
 
 describe("WebVaultPremiumUpgradePromptService", () => {
   let service: WebVaultPremiumUpgradePromptService;
-  let messagingService: MockProxy<MessagingService>;
+  let dialogServiceMock: jest.Mocked<DialogService>;
+  let routerMock: jest.Mocked<Router>;
+  let dialogRefMock: jest.Mocked<DialogRef<ViewCipherDialogCloseResult>>;
 
-  beforeEach(async () => {
-    messagingService = mock<MessagingService>();
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    dialogServiceMock = {
+      openSimpleDialog: jest.fn(),
+    } as unknown as jest.Mocked<DialogService>;
+
+    routerMock = {
+      navigate: jest.fn(),
+    } as unknown as jest.Mocked<Router>;
+
+    dialogRefMock = {
+      close: jest.fn(),
+    } as unknown as jest.Mocked<DialogRef<ViewCipherDialogCloseResult>>;
+
+    TestBed.configureTestingModule({
       providers: [
         WebVaultPremiumUpgradePromptService,
-        { provide: MessagingService, useValue: messagingService },
+        { provide: DialogService, useValue: dialogServiceMock },
+        { provide: Router, useValue: routerMock },
+        { provide: DialogRef, useValue: dialogRefMock },
       ],
-    }).compileComponents();
+    });
 
     service = TestBed.inject(WebVaultPremiumUpgradePromptService);
   });
 
-  describe("promptForPremium", () => {
-    it('sends "upgradeOrganization" message if organizationId is set', async () => {
-      await service.promptForPremium("myOrganizationId");
-      expect(messagingService.send).toHaveBeenCalledWith("upgradeOrganization", {
-        organizationId: "myOrganizationId",
-      });
-    });
+  it("prompts for premium upgrade and navigates to organization billing if organizationId is provided", async () => {
+    dialogServiceMock.openSimpleDialog.mockReturnValue(lastValueFrom(of(true)));
+    const organizationId = "test-org-id" as OrganizationId;
 
-    it('sends "premiumRequired" message if organizationId is not set', async () => {
-      await service.promptForPremium();
-      expect(messagingService.send).toHaveBeenCalledWith("premiumRequired");
+    await service.promptForPremium(organizationId);
+
+    expect(dialogServiceMock.openSimpleDialog).toHaveBeenCalledWith({
+      title: { key: "upgradeOrganization" },
+      content: { key: "upgradeOrganizationDesc" },
+      acceptButtonText: { key: "upgradeOrganization" },
+      type: "info",
     });
+    expect(routerMock.navigate).toHaveBeenCalledWith([
+      "organizations",
+      organizationId,
+      "billing",
+      "subscription",
+    ]);
+    expect(dialogRefMock.close).toHaveBeenCalledWith({
+      action: ViewCipherDialogResult.PremiumUpgrade,
+    });
+  });
+
+  it("prompts for premium upgrade and navigates to premium subscription if organizationId is not provided", async () => {
+    dialogServiceMock.openSimpleDialog.mockReturnValue(lastValueFrom(of(true)));
+
+    await service.promptForPremium();
+
+    expect(dialogServiceMock.openSimpleDialog).toHaveBeenCalledWith({
+      title: { key: "premiumRequired" },
+      content: { key: "premiumRequiredDesc" },
+      acceptButtonText: { key: "upgrade" },
+      type: "success",
+    });
+    expect(routerMock.navigate).toHaveBeenCalledWith(["settings/subscription/premium"]);
+    expect(dialogRefMock.close).toHaveBeenCalledWith({
+      action: ViewCipherDialogResult.PremiumUpgrade,
+    });
+  });
+
+  it("does not navigate or close dialog if upgrade is no action is taken", async () => {
+    dialogServiceMock.openSimpleDialog.mockReturnValue(lastValueFrom(of(false)));
+
+    await service.promptForPremium("test-org-id" as OrganizationId);
+
+    expect(routerMock.navigate).not.toHaveBeenCalled();
+    expect(dialogRefMock.close).not.toHaveBeenCalled();
   });
 });
