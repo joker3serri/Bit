@@ -77,11 +77,6 @@ export class SendAddEditComponent {
    */
   config: SendFormConfig;
 
-  /**
-   * Whether to show the file selector.
-   */
-  showFileSelector = false;
-
   constructor(
     private route: ActivatedRoute,
     private location: Location,
@@ -89,7 +84,6 @@ export class SendAddEditComponent {
     private addEditFormConfigService: SendFormConfigService,
     private filePopoutUtilsService: FilePopoutUtilsService,
   ) {
-    this.showFileSelector = !this.filePopoutUtilsService.showFilePopoutMessage(window);
     this.subscribeToParams();
   }
 
