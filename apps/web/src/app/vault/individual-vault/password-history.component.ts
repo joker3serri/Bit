@@ -34,7 +34,6 @@ export interface ViewPasswordHistoryDialogParams {
   templateUrl: "password-history.component.html",
   standalone: true,
   imports: [CommonModule, AsyncActionsModule, DialogModule, ItemModule, SharedModule],
-  providers: [{ provide: WINDOW, useValue: window }],
 })
 export class PasswordHistoryComponent implements OnInit {
   /**
