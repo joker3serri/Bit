@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   QueryList,
+  ViewChild,
   ViewChildren,
   booleanAttribute,
   signal,
@@ -15,7 +16,7 @@ import { Subject, takeUntil } from "rxjs";
 import { compareValues } from "../../../common/src/platform/misc/compare-values";
 import { ButtonModule } from "../button";
 import { IconButtonModule } from "../icon-button";
-import { MenuItemDirective, MenuModule } from "../menu";
+import { MenuComponent, MenuItemDirective, MenuModule } from "../menu";
 import { Option } from "../select/option";
 import { SharedModule } from "../shared";
 import { TypographyModule } from "../typography";
@@ -42,6 +43,7 @@ export type ChipSelectOption<T> = Option<T> & {
 export class ChipSelectComponent<T = unknown>
   implements ControlValueAccessor, AfterViewInit, OnDestroy
 {
+  @ViewChild(MenuComponent) menu: MenuComponent;
   @ViewChildren(MenuItemDirective) menuItems: QueryList<MenuItemDirective>;
 
   /** Text to show when there is no selected option */
@@ -166,11 +168,13 @@ export class ChipSelectComponent<T = unknown>
   }
 
   ngAfterViewInit() {
-    this.menuItems.changes
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((next: QueryList<MenuItemDirective>) => {
-        next.first.focus();
-      });
+    /**
+     * menuItems will change when the user navigates into or out of a submenu. when that happens, we want to
+     * direct their focus to the first item in the new menu
+     */
+    this.menuItems.changes.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+      this.menu.keyManager.setFirstItemActive();
+    });
   }
 
   ngOnDestroy(): void {
