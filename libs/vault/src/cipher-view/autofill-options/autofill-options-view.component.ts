@@ -2,16 +2,16 @@ import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import {
   CardComponent,
   FormFieldModule,
+  IconButtonModule,
   SectionComponent,
   SectionHeaderComponent,
   TypographyModule,
-  IconButtonModule,
 } from "@bitwarden/components";
-import { TotpCaptureService } from "@bitwarden/vault";
 
 @Component({
   selector: "app-autofill-options-view",
@@ -31,9 +31,9 @@ import { TotpCaptureService } from "@bitwarden/vault";
 export class AutofillOptionsViewComponent {
   @Input() loginUris: LoginUriView[];
 
-  constructor(private totpCaptureService: TotpCaptureService) {}
+  constructor(private platformUtilsService: PlatformUtilsService) {}
 
-  async openWebsite(selectedUri: string) {
-    await this.totpCaptureService.openAutofillNewTab(selectedUri);
+  openWebsite(selectedUri: string) {
+    this.platformUtilsService.launchUri(selectedUri);
   }
 }
