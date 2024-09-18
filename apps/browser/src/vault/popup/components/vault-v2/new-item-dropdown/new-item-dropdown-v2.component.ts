@@ -9,6 +9,7 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, DialogService, MenuModule, NoItemsModule } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
+import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
 import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
 import { AddEditFolderDialogComponent } from "../add-edit-folder-dialog/add-edit-folder-dialog.component";
 
@@ -41,14 +42,15 @@ export class NewItemDropdownV2Component {
 
   private async buildQueryParams(type: CipherType): Promise<AddEditQueryParams> {
     const tab = await BrowserApi.getTabFromCurrentWindow();
+    const poppedOut = BrowserPopupUtils.inPopout(window);
 
     return {
       type: type.toString(),
       collectionId: this.initialValues?.collectionId,
       organizationId: this.initialValues?.organizationId,
       folderId: this.initialValues?.folderId,
-      uri: this.initialValues?.uri,
-      name: Utils.getHostname(tab.url),
+      uri: !poppedOut ? this.initialValues?.uri : undefined,
+      name: !poppedOut ? Utils.getHostname(tab.url) : undefined,
     };
   }
 

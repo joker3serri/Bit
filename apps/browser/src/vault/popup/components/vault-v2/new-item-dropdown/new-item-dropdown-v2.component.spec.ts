@@ -8,6 +8,7 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, DialogService, MenuModule } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
+import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
 import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
 import { AddEditFolderDialogComponent } from "../add-edit-folder-dialog/add-edit-folder-dialog.component";
 
@@ -110,6 +111,28 @@ describe("NewItemDropdownV2Component", () => {
           collectionId: "777-888-999",
           uri: "https://www.example.com/login",
           name: "example.com",
+        },
+      });
+    });
+
+    it("does not include name or uri when the extension is popped out", async () => {
+      jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true);
+
+      component.initialValues = {
+        folderId: "222-333-444",
+        organizationId: "444-555-666",
+        collectionId: "777-888-999",
+        uri: "https://www.example.com/login",
+      } as NewItemInitialValues;
+
+      await component.newItemNavigate(CipherType.Login);
+
+      expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
+        queryParams: {
+          type: CipherType.Login.toString(),
+          folderId: "222-333-444",
+          organizationId: "444-555-666",
+          collectionId: "777-888-999",
         },
       });
     });
