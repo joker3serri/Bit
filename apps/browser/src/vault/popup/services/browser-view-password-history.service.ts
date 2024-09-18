@@ -12,7 +12,7 @@ export class BrowserViewPasswordHistoryService implements ViewPasswordHistorySer
   /**
    * Navigates to the password history screen.
    */
-  async viewPasswordHistory() {
-    await this.router.navigate(["/vault/password-history"]);
+  async viewPasswordHistory(cipherId: string) {
+    await this.router.navigate(["/cipher-password-history"], { queryParams: { cipherId } });
   }
 }
