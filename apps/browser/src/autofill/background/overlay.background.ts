@@ -1904,12 +1904,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     // If there's a combined expiration date value and no individual month or year values,
     // try to parse them from the combined value
-    if (
-      card.expirationDate &&
-      (card.expirationMonth == null || card.expirationMonth === "") &&
-      (card.expirationYear == null || card.expirationYear === "")
-    ) {
+    if (card.expirationDate && !card.expirationMonth && !card.expirationYear) {
       const [parsedYear, parsedMonth] = parseYearMonthExpiry(card.expirationDate);
+
       cardView.expMonth = parsedMonth || "";
       cardView.expYear = parsedYear || "";
     } else {

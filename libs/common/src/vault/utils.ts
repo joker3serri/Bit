@@ -64,20 +64,23 @@ export function isCardExpired(cipherCard: CardView): boolean {
     const normalizedYear = normalizeExpiryYearFormat(expYear);
 
     // If the card year is before the current year, don't bother checking the month
-    if (normalizedYear && parseInt(normalizedYear) < now.getFullYear()) {
+    if (normalizedYear && parseInt(normalizedYear, 10) < now.getFullYear()) {
       return true;
     }
 
     if (normalizedYear && expMonth) {
-      // `Date` months are zero-indexed
-      let parsedMonth = parseInt(expMonth) - 1;
+      const parsedMonthInteger = parseInt(expMonth, 10);
 
-      // Add a month floor of 0 to protect against an invalid low month value of "0" or negative integers
-      if (parsedMonth < 1) {
-        parsedMonth = 0;
-      }
+      const parsedMonth = isNaN(parsedMonthInteger)
+        ? 0
+        : // Add a month floor of 0 to protect against an invalid low month value of "0" or negative integers
+          Math.max(
+            // `Date` months are zero-indexed
+            parsedMonthInteger - 1,
+            0,
+          );
 
-      const parsedYear = parseInt(normalizedYear);
+      const parsedYear = parseInt(normalizedYear, 10);
 
       // First day of the next month minus one, to get last day of the card month
       const cardExpiry = new Date(parsedYear, parsedMonth + 1, 0);
