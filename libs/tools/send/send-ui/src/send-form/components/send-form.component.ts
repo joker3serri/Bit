@@ -84,11 +84,6 @@ export class SendFormComponent implements AfterViewInit, OnInit, OnChanges, Send
   submitBtn?: ButtonComponent;
 
   /**
-   * Whether to show the file selector.
-   */
-  @Input({ required: true }) showFileSelector: boolean;
-
-  /**
    * Event emitted when the send is saved successfully.
    */
   @Output() sendSaved = new EventEmitter<SendView>();

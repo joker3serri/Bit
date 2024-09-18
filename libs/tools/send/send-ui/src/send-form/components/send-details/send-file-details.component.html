@@ -4,7 +4,7 @@
     <div>{{ originalSendView.file.fileName }}</div>
     <div class="tw-text-muted">{{ originalSendView.file.sizeName }}</div>
   </div>
-  <bit-form-field *ngIf="!editMode && showFileSelector">
+  <bit-form-field *ngIf="!editMode">
     <bit-label for="file">{{ "fileToShare" | i18n }}</bit-label>
     <button bitButton type="button" buttonType="primary" (click)="fileSelector.click()">
       {{ "chooseFile" | i18n }}
@@ -23,7 +23,7 @@
       hidden
       (change)="onFileSelected($event)"
     />
-    <bit-hint *ngIf="showFileSelector">
+    <bit-hint>
       {{ "maxFileSize" | i18n }}
     </bit-hint>
   </bit-form-field>

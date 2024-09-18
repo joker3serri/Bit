@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -43,11 +43,6 @@ import { SendTextDetailsComponent } from "./send-text-details.component";
   ],
 })
 export class SendDetailsComponent extends BaseSendDetailsComponent implements OnInit {
-  /**
-   * Whether to show the file selector.
-   */
-  @Input({ required: true }) showFileSelector: boolean;
-
   FileSendType = SendType.File;
   TextSendType = SendType.Text;
 

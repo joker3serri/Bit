@@ -45,7 +45,6 @@ export class SendFileDetailsComponent implements OnInit {
   @Input() config: SendFormConfig;
   @Input() originalSendView?: SendView;
   @Input() sendDetailsForm: BaseSendDetailsForm;
-  @Input() showFileSelector: boolean;
 
   baseSendFileDetailsForm: BaseSendFileDetailsForm;
   sendFileDetailsForm: SendFileDetailsForm;
