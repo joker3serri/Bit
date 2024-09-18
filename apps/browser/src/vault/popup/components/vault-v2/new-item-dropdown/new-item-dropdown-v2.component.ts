@@ -17,7 +17,6 @@ export interface NewItemInitialValues {
   folderId?: string;
   organizationId?: OrganizationId;
   collectionId?: CollectionId;
-  uri?: string;
 }
 
 @Component({
@@ -49,7 +48,7 @@ export class NewItemDropdownV2Component {
     // When a Login Cipher is created and the extension is not popped out,
     // pass along the uri and name
     if (!poppedOut && type === CipherType.Login) {
-      loginDetails.uri = this.initialValues?.uri;
+      loginDetails.uri = tab?.url;
       loginDetails.name = Utils.getHostname(tab.url);
     }
 

@@ -97,7 +97,6 @@ describe("NewItemDropdownV2Component", () => {
         folderId: "222-333-444",
         organizationId: "444-555-666",
         collectionId: "777-888-999",
-        uri: "https://www.example.com/login",
       } as NewItemInitialValues;
 
       await component.newItemNavigate(CipherType.Login);
@@ -121,7 +120,6 @@ describe("NewItemDropdownV2Component", () => {
         folderId: "222-333-444",
         organizationId: "444-555-666",
         collectionId: "777-888-999",
-        uri: "https://www.example.com/login",
       } as NewItemInitialValues;
 
       await component.newItemNavigate(CipherType.Login);
