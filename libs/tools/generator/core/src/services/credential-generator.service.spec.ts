@@ -48,7 +48,7 @@ const SomeCategory = "passphrase";
 
 // fake the configuration
 const SomeConfiguration: CredentialGeneratorConfiguration<SomeSettings, SomePolicy> = {
-  category: SomeCategory,
+  algorithm: SomeCategory,
   engine: {
     create: (randomizer) => {
       return {

@@ -29,8 +29,11 @@ import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subje
 
 import { Randomizer } from "../abstractions";
 import { mapPolicyToConstraints } from "../rx";
+import { CredentialPreference } from "../types";
 import { CredentialGeneratorConfiguration as Configuration } from "../types/credential-generator-configuration";
 import { GeneratorConstraints } from "../types/generator-constraints";
+
+import { PREFERENCES } from "./credential-preferences";
 
 type Policy$Dependencies = UserDependency;
 type Settings$Dependencies = Partial<UserDependency>;
@@ -123,6 +126,29 @@ export class CredentialGeneratorService {
     );
 
     return settings$;
+  }
+
+  /** Get a subject bound to credential generator preferences.
+   *  @param dependencies.singleUserId$ identifies the user to which the preferences are bound
+   *  @returns a promise that resolves with the subject once `dependencies.singleUserId$`
+   *   becomes available.
+   *  @remarks Preferences determine which algorithms are used when generating a
+   *   credential from a credential category (e.g. `PassX` or `Username`). Preferences
+   *   should not be used to hold navigation history. Use @bitwarden/generator-navigation
+   *   instead.
+   */
+  async preferences(
+    dependencies: SingleUserDependency,
+  ): Promise<UserStateSubject<CredentialPreference>> {
+    const userId = await firstValueFrom(
+      dependencies.singleUserId$.pipe(filter((userId) => !!userId)),
+    );
+
+    // FIXME: enforce policy
+    const state = this.stateProvider.getUser(userId, PREFERENCES);
+    const subject = new UserStateSubject(state, { ...dependencies });
+
+    return subject;
   }
 
   /** Get a subject bound to a specific user's settings
