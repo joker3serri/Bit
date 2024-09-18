@@ -129,8 +129,142 @@ function splitCombinedDateValues(combinedExpiryValue: string): string[] {
 }
 
 /**
- * Attempt to parse year and month parts of a combined expiry date value. Used when no
- * other information about the format is available.
+ * Given an array of split card expiry date parts,
+ * returns an array of those values ordered by year then month
+ *
+ * @param {string[]} splitDateInput
+ * @return {*}  {([string | null, string | null])}
+ */
+function parseDelimitedYearMonthExpiry([firstPart, secondPart]: string[]): [string, string] {
+  // Conditionals here are structured to avoid unnecessary evaluations and are ordered
+  // from more authoritative checks to checks yielding increasingly inferred conclusions
+
+  // If a 4-digit value is found (when there are multiple parts), it can't be month
+  if (ExpiryFullYearPatternExpression.test(firstPart)) {
+    return [firstPart, secondPart];
+  }
+
+  // If a 4-digit value is found (when there are multiple parts), it can't be month
+  if (ExpiryFullYearPatternExpression.test(secondPart)) {
+    return [secondPart, firstPart];
+  }
+
+  // If it's a two digit value that doesn't match against month pattern, assume it's a year
+  if (/\d{2}/.test(firstPart) && !MonthPatternExpression.test(firstPart)) {
+    return [firstPart, secondPart];
+  }
+
+  // If it's a two digit value that doesn't match against month pattern, assume it's a year
+  if (/\d{2}/.test(secondPart) && !MonthPatternExpression.test(secondPart)) {
+    return [secondPart, firstPart];
+  }
+
+  // Values are too ambiguous (e.g. "12/09"). For the most part,
+  // a month-looking value likely is, at the time of writing (year 2024).
+  let parsedYear = firstPart;
+  let parsedMonth = secondPart;
+
+  if (MonthPatternExpression.test(firstPart)) {
+    parsedYear = secondPart;
+    parsedMonth = firstPart;
+  }
+
+  return [parsedYear, parsedMonth];
+}
+
+/**
+ * Given a single string of integers, attempts to identify card expiry date portions within
+ * and return values ordered by year then month
+ *
+ * @param {string} dateInput
+ * @return {*}  {([string | null, string | null])}
+ */
+function parseNonDelimitedYearMonthExpiry(dateInput: string): [string | null, string | null] {
+  if (dateInput.length > 4) {
+    // e.g.
+    // "052024"
+    // "202405"
+    // "20245"
+    // "52024"
+
+    // If the value is over 5-characters long, it likely has a full year format in it
+    const [parsedYear, parsedMonth] = dateInput
+      .split(new RegExp(`(?=${ExpiryFullYearPattern})|(?<=${ExpiryFullYearPattern})`, "g"))
+      .sort((current: string, next: string) => (current.length > next.length ? -1 : 1));
+
+    return [parsedYear, parsedMonth];
+  }
+
+  if (dateInput.length === 4) {
+    // e.g.
+    // "0524"
+    // "2405"
+
+    // If the `sanitizedFirstPart` value is a length of 4, it must be split in half, since
+    // neither a year or month will be represented with three characters
+    const splitFirstPartFirstHalf = dateInput.slice(0, 2);
+    const splitFirstPartSecondHalf = dateInput.slice(-2);
+
+    let parsedYear = splitFirstPartSecondHalf;
+    let parsedMonth = splitFirstPartFirstHalf;
+
+    // If the first part doesn't match a month pattern, assume it's a year
+    if (!MonthPatternExpression.test(splitFirstPartFirstHalf)) {
+      parsedYear = splitFirstPartFirstHalf;
+      parsedMonth = splitFirstPartSecondHalf;
+    }
+
+    return [parsedYear, parsedMonth];
+  }
+
+  // e.g.
+  // "245"
+  // "202"
+  // "212"
+  // "022"
+  // "111"
+
+  // A valid year representation here must be two characters so try to find it first.
+
+  let parsedYear = null;
+  let parsedMonth = null;
+
+  // Split if there is a digit with a leading zero
+  const splitFirstPartOnLeadingZero = dateInput.split(/(?<=0[1-9]{1})|(?=0[1-9]{1})/);
+
+  // Assume a leading zero indicates a month in ambiguous cases (e.g. "202"), since we're
+  // dealing with expiry dates and the next two-digit year with a leading zero will be 2100
+  if (splitFirstPartOnLeadingZero.length > 1) {
+    parsedYear = splitFirstPartOnLeadingZero[0];
+    parsedMonth = splitFirstPartOnLeadingZero[1];
+
+    if (splitFirstPartOnLeadingZero[0].startsWith("0")) {
+      parsedMonth = splitFirstPartOnLeadingZero[0];
+      parsedYear = splitFirstPartOnLeadingZero[1];
+    }
+  } else {
+    // Here, a year has to be two-digits, and a month can't be more than one, so assume the first two digits that are greater than the current year is the year representation.
+    parsedYear = dateInput.slice(0, 2);
+    parsedMonth = dateInput.slice(-1);
+
+    const currentYear = new Date().getFullYear();
+    const normalizedParsedYear = parseInt(normalizeExpiryYearFormat(parsedYear), 10);
+    const normalizedParsedYearAlternative = parseInt(
+      normalizeExpiryYearFormat(dateInput.slice(-2)),
+      10,
+    );
+
+    if (normalizedParsedYear < currentYear && normalizedParsedYearAlternative >= currentYear) {
+      parsedYear = dateInput.slice(-2);
+      parsedMonth = dateInput.slice(0, 1);
+    }
+  }
+
+  return [parsedYear, parsedMonth];
+}
+
+/**
+ * Attempt to parse year and month parts of a combined expiry date value.
  *
  * @param {string} combinedExpiryValue
  * @return {*}  {([string | null, string | null])}
@@ -152,124 +286,20 @@ export function parseYearMonthExpiry(combinedExpiryValue: string): [Year | null,
 
   // If there is only one date part, no delimiter was found in the passed value
   if (dateParts.length === 1) {
-    if (sanitizedFirstPart.length > 4) {
-      // If the value is over 5-characters long, it likely has a full year format in it
-      // e.g.
-      // "052024"
-      // "202405"
-      // "20245"
-      // "52024"
-      const [year, month] = dateParts[0]
-        .split(new RegExp(`(?=${ExpiryFullYearPattern})|(?<=${ExpiryFullYearPattern})`, "g"))
-        .sort((current, next) => (current.length > next.length ? -1 : 1));
-      parsedYear = year;
-      parsedMonth = month;
-    } else if (sanitizedFirstPart.length === 4) {
-      // If the `sanitizedFirstPart` value is a length of 4, it must be split in half, since
-      // neither a year or month will be represented with three characters
-      // e.g.
-      // "0524"
-      // "2405"
-
-      const splitFirstPartFirstHalf = sanitizedFirstPart.slice(0, 2);
-      const splitFirstPartSecondHalf = sanitizedFirstPart.slice(-2);
-
-      parsedYear = splitFirstPartSecondHalf;
-      parsedMonth = splitFirstPartFirstHalf;
-
-      // If the first part doesn't match a month pattern, assume it's a year
-      if (!MonthPatternExpression.test(splitFirstPartFirstHalf)) {
-        parsedYear = splitFirstPartFirstHalf;
-        parsedMonth = splitFirstPartSecondHalf;
-      }
-    } else {
-      // A valid year representation here must be two characters so try to find it first.
-      // e.g.
-      // "245"
-      // "202"
-      // "212"
-      // "022"
-      // "111"
-
-      // split if there is a digit with a leading zero
-      const splitFirstPartOnLeadingZero = sanitizedFirstPart.split(/(?<=0[1-9]{1})|(?=0[1-9]{1})/);
-
-      // Assume a leading zero indicates a month in ambiguous cases (e.g. "202"), since we're
-      // dealing with expiry dates and the next two-digit year with a leading zero will be 2100
-      if (splitFirstPartOnLeadingZero.length > 1) {
-        parsedYear = splitFirstPartOnLeadingZero[0];
-        parsedMonth = splitFirstPartOnLeadingZero[1];
-
-        if (splitFirstPartOnLeadingZero[0].startsWith("0")) {
-          parsedMonth = splitFirstPartOnLeadingZero[0];
-          parsedYear = splitFirstPartOnLeadingZero[1];
-        }
-      } else {
-        // Here, a year has to be two-digits, and a month can't be more than one, so assume the first two digits that are greater than the current year is the year representation.
-        parsedYear = sanitizedFirstPart.slice(0, 2);
-        parsedMonth = sanitizedFirstPart.slice(-1);
-
-        const currentYear = new Date().getFullYear();
-        const normalizedParsedYear = parseInt(normalizeExpiryYearFormat(parsedYear), 10);
-        const normalizedParsedYearAlternative = parseInt(
-          normalizeExpiryYearFormat(sanitizedFirstPart.slice(-2)),
-          10,
-        );
-
-        if (normalizedParsedYear < currentYear && normalizedParsedYearAlternative >= currentYear) {
-          parsedYear = sanitizedFirstPart.slice(-2);
-          parsedMonth = sanitizedFirstPart.slice(0, 1);
-        }
-      }
-    }
+    [parsedYear, parsedMonth] = parseNonDelimitedYearMonthExpiry(sanitizedFirstPart);
   }
   // There are multiple date parts
   else {
-    // Conditionals here are structured to avoid unnecessary evaluations and
-    // are ordered from more authoritative checks to checks yielding inferred conclusions
-    if (
-      // If a 4-digit value is found (when there are multiple parts), it can't be month
-      ExpiryFullYearPatternExpression.test(sanitizedFirstPart)
-    ) {
-      parsedYear = sanitizedFirstPart;
-      parsedMonth = sanitizedSecondPart;
-    } else if (
-      // If a 4-digit value is found (when there are multiple parts), it can't be month
-      ExpiryFullYearPatternExpression.test(sanitizedSecondPart)
-    ) {
-      parsedYear = sanitizedSecondPart;
-      parsedMonth = sanitizedFirstPart;
-    } else if (
-      // If it's a two digit value that doesn't match against month pattern, assume it's a year
-      /\d{2}/.test(sanitizedFirstPart) &&
-      !MonthPatternExpression.test(sanitizedFirstPart)
-    ) {
-      parsedYear = sanitizedFirstPart;
-      parsedMonth = sanitizedSecondPart;
-    } else if (
-      // If it's a two digit value that doesn't match against month pattern, assume it's a year
-      /\d{2}/.test(sanitizedSecondPart) &&
-      !MonthPatternExpression.test(sanitizedSecondPart)
-    ) {
-      parsedYear = sanitizedSecondPart;
-      parsedMonth = sanitizedFirstPart;
-    } else {
-      // Values are too ambiguous (e.g. "12/09"). For the most part,
-      // a month-looking value likely is, at the time of writing (year 2024).
-      parsedYear = sanitizedFirstPart;
-      parsedMonth = sanitizedSecondPart;
-
-      if (MonthPatternExpression.test(sanitizedFirstPart)) {
-        parsedYear = sanitizedSecondPart;
-        parsedMonth = sanitizedFirstPart;
-      }
-    }
+    [parsedYear, parsedMonth] = parseDelimitedYearMonthExpiry([
+      sanitizedFirstPart,
+      sanitizedSecondPart,
+    ]);
   }
 
   const normalizedParsedYear = normalizeExpiryYearFormat(parsedYear);
   const normalizedParsedMonth = parsedMonth?.replace(/^0+/, "").slice(0, 2);
 
-  // set "empty" values to null
+  // Set "empty" values to null
   parsedYear = normalizedParsedYear?.length ? normalizedParsedYear : null;
   parsedMonth = normalizedParsedMonth?.length ? normalizedParsedMonth : null;
 
