@@ -20,7 +20,7 @@ describe("BrowserViewPasswordHistoryService", () => {
   describe("viewPasswordHistory", () => {
     it("navigates to the password history screen", async () => {
       await service.viewPasswordHistory("test");
-      expect(router.navigate).toHaveBeenCalledWith(["/vault/password-history"], {
+      expect(router.navigate).toHaveBeenCalledWith(["/cipher-password-history"], {
         queryParams: { cipherId: "test" },
       });
     });
