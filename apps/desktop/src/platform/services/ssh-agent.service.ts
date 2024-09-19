@@ -32,18 +32,12 @@ import { ApproveSshRequestComponent } from "../components/approve-ssh-request";
 
 import { DesktopSettingsService } from "./desktop-settings.service";
 
-// type SshRequest = {
-//   cipherId: string;
-//   requestId: number;
-//   timeout: boolean;
-// };
-
 @Injectable({
   providedIn: "root",
 })
 export class SshAgentService implements OnDestroy {
   SSH_REFRESH_INTERVAL = 1000;
-  SSH_VAULT_UNLOCK_REQUEST_TIMEOUT = 1000 * 10;
+  SSH_VAULT_UNLOCK_REQUEST_TIMEOUT = 1000 * 60 * 5;
   SSH_REQUEST_UNLOCK_POLLING_INTERVAL = 100;
 
   private destroy$ = new Subject<void>();
@@ -63,7 +57,12 @@ export class SshAgentService implements OnDestroy {
       .messages$(new CommandDefinition("sshagent.signrequest"))
       .pipe(
         withLatestFrom(this.authService.activeAccountStatus$),
-        // switchMap will stop waiting for an unlock if a new request comes in
+        // This switchMap handles unlocking the vault if it is locked:
+        //   - If the vault is locked, we will wait for it to be unlocked.
+        //   - If the vault is not unlocked within the timeout, we will abort the flow.
+        //   - If the vault is unlocked, we will continue with the flow.
+        // switchMap is used here to prevent multiple requests from being processed at the same time,
+        // and will cancel the previous request if a new one is received.
         switchMap(([message, status]) => {
           ipc.platform.focusWindow();
           if (status !== AuthenticationStatus.Unlocked) {
@@ -98,11 +97,13 @@ export class SshAgentService implements OnDestroy {
 
           return of(message);
         }),
+        // This switchMap handles fetching the ciphers from the vault.
         switchMap((message) =>
           from(this.cipherService.getAllDecrypted()).pipe(
             map((ciphers) => [message, ciphers] as const),
           ),
         ),
+        // This concatMap handles showing the dialog to approve the request.
         concatMap(([message, decryptedCiphers]) => {
           const cipherId = message.cipherId as string;
           const requestId = message.requestId as number;
@@ -127,73 +128,6 @@ export class SshAgentService implements OnDestroy {
           this.logService.error("Error processing sshagent.signrequest", error);
         },
       });
-
-    // this.messageListener
-    //   .messages$(new CommandDefinition("sshagent.signrequest"))
-    //   .pipe(
-    //     tap(() => ipc.platform.focusWindow()),
-    //     concatMap(async (message: any) => {
-    //       if (
-    //         (await firstValueFrom(this.authService.activeAccountStatus$)) !==
-    //         AuthenticationStatus.Unlocked
-    //       ) {
-    //         this.toastService.showToast({
-    //           variant: "info",
-    //           title: null,
-    //           message: this.i18nService.t("sshAgentUnlockRequired"),
-    //         });
-    //       }
-    //       return message;
-    //     }),
-    //     switchMap(async (message: any) => {
-    //       const cipherId = message.cipherId;
-    //       const requestId = message.requestId;
-
-    //       const ret = race([
-    //         of({ cipherId, requestId, timeout: true } as SshRequest).pipe(
-    //           delay(this.SSH_VAULT_UNLOCK_REQUEST_TIMEOUT),
-    //         ),
-    //         this.authService.activeAccountStatus$.pipe(
-    //           map((status) => {
-    //             return status;
-    //           }),
-    //           filter((status) => status === AuthenticationStatus.Unlocked),
-    //           map(() => {
-    //             return {
-    //               cipherId,
-    //               requestId,
-    //               timeout: false,
-    //             } as SshRequest;
-    //           }),
-    //         ),
-    //       ]);
-    //       return await firstValueFrom(ret);
-    //     }),
-    //     concatMap(async (request: SshRequest) => {
-    //       if (request.timeout) {
-    //         this.toastService.showToast({
-    //           variant: "error",
-    //           title: null,
-    //           message: this.i18nService.t("sshAgentUnlockTimeout"),
-    //         });
-    //       } else {
-    //         const decryptedCiphers = await this.cipherService.getAllDecrypted();
-    //         const cipher = decryptedCiphers.find((cipher) => cipher.id == request.cipherId);
-
-    //         const dialogRef = ApproveSshRequestComponent.open(
-    //           this.dialogService,
-    //           cipher.name,
-    //           this.i18nService.t("unknownApplication"),
-    //         );
-
-    //         const result = await firstValueFrom(dialogRef.closed);
-    //         await ipc.platform.sshAgent.signRequestResponse(request.requestId, result);
-    //         ipc.platform.hideWindow();
-    //       }
-    //     }),
-    //     takeUntil(this.destroy$),
-    //   )
-    //   .subscribe();
 
     combineLatest([
       timer(0, this.SSH_REFRESH_INTERVAL),
