@@ -1,6 +1,6 @@
-<bit-section [formGroup]="sendOptionsForm" class="tw-mt-4">
+<bit-section [formGroup]="sendOptionsForm">
   <bit-section-header>
-    <h2 bitTypography="h5">{{ "additionalOptions" | i18n }}</h2>
+    <h2 class="tw-mt-4" bitTypography="h5">{{ "additionalOptions" | i18n }}</h2>
   </bit-section-header>
   <bit-card>
     <bit-form-field>
@@ -21,7 +21,7 @@
     </bit-form-field>
     <bit-form-control>
       <input bitCheckbox type="checkbox" formControlName="hideEmail" />
-      <bit-label>{{ "hideEmail" | i18n }}</bit-label>
+      <bit-label>{{ "hideYourEmail" | i18n }}</bit-label>
     </bit-form-control>
     <bit-form-field>
       <bit-label>{{ "privateNote" | i18n }}</bit-label>
