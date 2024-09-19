@@ -13,7 +13,6 @@ import { OrgKey } from "@bitwarden/common/types/key";
 import { ToastService } from "@bitwarden/components";
 
 import { AbstractSelfHostingLicenseUploaderComponent } from "../../shared/self-hosting-license-uploader/abstract-self-hosting-license-uploader.component";
-import { LicenseUploadedEvent } from "../../shared/self-hosting-license-uploader/license-uploaded-event";
 
 /**
  * Processes license file uploads for organizations.
@@ -25,10 +24,9 @@ import { LicenseUploadedEvent } from "../../shared/self-hosting-license-uploader
 })
 export class OrganizationSelfHostingLicenseUploaderComponent extends AbstractSelfHostingLicenseUploaderComponent {
   /**
-   * Emitted when a license file has been successfully uploaded & processed.
+   * Notifies the parent component of the `organizationId` the license was created for.
    */
-  @Output() onLicenseFileUploaded: EventEmitter<LicenseUploadedEvent> =
-    new EventEmitter<LicenseUploadedEvent>();
+  @Output() onLicenseFileUploaded: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     protected readonly formBuilder: FormBuilder,
@@ -72,9 +70,7 @@ export class OrganizationSelfHostingLicenseUploaderComponent extends AbstractSel
     await this.apiService.refreshIdentityToken();
     await this.syncService.fullSync(true);
 
-    const event = new LicenseUploadedEvent();
-    event.organizationId = orgId;
-    this.onLicenseFileUploaded.emit(event);
+    this.onLicenseFileUploaded.emit(orgId);
   }
 
   get description(): string {
