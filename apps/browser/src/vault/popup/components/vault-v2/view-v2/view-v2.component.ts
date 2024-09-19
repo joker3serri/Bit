@@ -28,8 +28,10 @@ import {
   ToastService,
 } from "@bitwarden/components";
 
+import { PremiumUpgradePromptService } from "../../../../../../../../libs/common/src/vault/abstractions/premium-upgrade-prompt.service";
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
+import { BrowserPremiumUpgradePromptService } from "../../../services/browser-premium-upgrade-prompt.service";
 import { BrowserViewPasswordHistoryService } from "../../../services/browser-view-password-history.service";
 
 import { PopupFooterComponent } from "./../../../../../platform/popup/layout/popup-footer.component";
@@ -55,7 +57,10 @@ import { VaultPopupAutofillService } from "./../../../services/vault-popup-autof
     AsyncActionsModule,
     PopOutComponent,
   ],
-  providers: [{ provide: ViewPasswordHistoryService, useClass: BrowserViewPasswordHistoryService }],
+  providers: [
+    { provide: ViewPasswordHistoryService, useClass: BrowserViewPasswordHistoryService },
+    { provide: PremiumUpgradePromptService, useClass: BrowserPremiumUpgradePromptService },
+  ],
 })
 export class ViewV2Component {
   headerText: string;
