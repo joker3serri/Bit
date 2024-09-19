@@ -294,8 +294,7 @@ export class VaultItemsComponent {
     );
 
     const canEditOrManageAllCiphers =
-      organizations.length > 0 &&
-      organizations.every((org) => org?.canEditAllCiphers(this.restrictProviderAccess));
+      organizations.length > 0 && organizations.every((org) => org?.canEditAllCiphers);
 
     const canDeleteCollections = this.selection.selected
       .filter((item) => item.collection)
