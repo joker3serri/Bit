@@ -73,17 +73,15 @@ export class ServiceAccountConfigComponent implements OnInit, OnDestroy {
       serviceAccountId,
     );
 
-    const ids = policies.grantedProjectPolicies.map(
-      (policy) => policy.accessPolicy.grantedProjectId,
-    );
-
     const projects = policies.grantedProjectPolicies.map((policy) => {
-        return {
-            id: policy.accessPolicy.grantedProjectId,
-            name: policy.accessPolicy.grantedProjectName,
-            organizationId: organizationId,
-            linkable: allProjects.some((project) => project.id === policy.accessPolicy.grantedProjectId),
-          } as ProjectListView;
+      return {
+        id: policy.accessPolicy.grantedProjectId,
+        name: policy.accessPolicy.grantedProjectName,
+        organizationId: organizationId,
+        linkable: allProjects.some(
+          (project) => project.id === policy.accessPolicy.grantedProjectId,
+        ),
+      } as ProjectListView;
     });
 
     return {
