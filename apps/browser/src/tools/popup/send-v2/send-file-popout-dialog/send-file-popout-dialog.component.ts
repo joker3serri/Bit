@@ -1,9 +1,10 @@
-import { DIALOG_DATA } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, Inject } from "@angular/core";
+import { Component } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ButtonModule, DialogModule, DialogService, TypographyModule } from "@bitwarden/components";
+
+import BrowserPopupUtils from "../../../../platform/popup/browser-popup-utils";
 
 @Component({
   selector: "tools-send-file-popout-dialog",
@@ -12,20 +13,13 @@ import { ButtonModule, DialogModule, DialogService, TypographyModule } from "@bi
   imports: [JslibModule, CommonModule, DialogModule, ButtonModule, TypographyModule],
 })
 export class SendFilePopoutDialogComponent {
-  popOutWindow: () => void;
+  constructor(private dialogService: DialogService) {}
 
-  constructor(
-    private dialogService: DialogService,
-    @Inject(DIALOG_DATA) public data: { popOutWindow: () => void },
-  ) {
-    this.popOutWindow = data.popOutWindow;
+  async popOutWindow() {
+    await BrowserPopupUtils.openCurrentPagePopout(window);
   }
 
   close() {
     this.dialogService.closeAll();
-  }
-
-  onPopOutClick() {
-    this.popOutWindow();
   }
 }

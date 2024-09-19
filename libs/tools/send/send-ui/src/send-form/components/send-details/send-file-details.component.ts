@@ -83,6 +83,8 @@ export class SendFileDetailsComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.sendFormContainer.renderFilePopoutMessage?.();
+
     if (this.originalSendView) {
       this.sendFileDetailsForm.patchValue({
         file: this.originalSendView.file,

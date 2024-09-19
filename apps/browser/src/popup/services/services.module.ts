@@ -433,10 +433,10 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: FilePopoutUtilsService,
-    useFactory: (platformUtilsService: PlatformUtilsService) => {
-      return new FilePopoutUtilsService(platformUtilsService);
+    useFactory: (platformUtilsService: PlatformUtilsService, dialogService: DialogService) => {
+      return new FilePopoutUtilsService(platformUtilsService, dialogService);
     },
-    deps: [PlatformUtilsService],
+    deps: [PlatformUtilsService, DialogService],
   }),
   safeProvider({
     provide: DerivedStateProvider,

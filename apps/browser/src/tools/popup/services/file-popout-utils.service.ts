@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core";
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { DialogService } from "@bitwarden/components";
 
 import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
+import { SendFilePopoutDialogComponent } from "../send-v2/send-file-popout-dialog/send-file-popout-dialog.component";
 
 /**
  * Service for determining whether to display file popout callout messages.
@@ -12,7 +14,10 @@ export class FilePopoutUtilsService {
   /**
    * Creates an instance of FilePopoutUtilsService.
    */
-  constructor(private platformUtilsService: PlatformUtilsService) {}
+  constructor(
+    private platformUtilsService: PlatformUtilsService,
+    private dialogService: DialogService,
+  ) {}
 
   /**
    * Determines whether to show any file popout callout message in the current browser.
@@ -59,6 +64,18 @@ export class FilePopoutUtilsService {
       !this.platformUtilsService.isFirefox() &&
       !(BrowserPopupUtils.inSidebar(win) || BrowserPopupUtils.inPopout(win))
     );
+  }
+
+  /**
+   * Returns a function that renders the send file popout dialog if the file popout message should be displayed.
+   * @param win - The window context in which the dialog should be rendered.
+   */
+  renderSendFilePopoutMessage(win: Window): () => void {
+    return () => {
+      if (this.showFilePopoutMessage(win)) {
+        this.dialogService.open(SendFilePopoutDialogComponent);
+      }
+    };
   }
 
   private isLinux(win: Window): boolean {

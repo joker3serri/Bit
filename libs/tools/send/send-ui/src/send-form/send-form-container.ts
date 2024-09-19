@@ -34,6 +34,8 @@ export abstract class SendFormContainer {
    */
   readonly originalSendView: SendView | null;
 
+  readonly renderFilePopoutMessage?: () => void;
+
   abstract registerChildForm<K extends keyof SendForm>(
     name: K,
     group: Exclude<SendForm[K], undefined>,

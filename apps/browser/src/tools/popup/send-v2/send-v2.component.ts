@@ -6,11 +6,10 @@ import { combineLatest } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
-import { ButtonModule, DialogService, Icons, NoItemsModule } from "@bitwarden/components";
+import { ButtonModule, Icons, NoItemsModule } from "@bitwarden/components";
 import {
   NoSendsIcon,
   NewSendDropdownComponent,
-  SendFilePopoutDialogComponent,
   SendListItemsContainerComponent,
   SendItemsService,
   SendSearchComponent,
@@ -19,11 +18,9 @@ import {
 } from "@bitwarden/send-ui";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
-import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
-import { FilePopoutUtilsService } from "../services/file-popout-utils.service";
 
 export enum SendState {
   Empty,
@@ -44,7 +41,6 @@ export enum SendState {
     ButtonModule,
     RouterLink,
     NewSendDropdownComponent,
-    SendFilePopoutDialogComponent,
     SendListItemsContainerComponent,
     SendListFiltersComponent,
     SendSearchComponent,
@@ -64,8 +60,6 @@ export class SendV2Component implements OnInit, OnDestroy {
   constructor(
     protected sendItemsService: SendItemsService,
     protected sendListFiltersService: SendListFiltersService,
-    protected dialogService: DialogService,
-    private filePopoutUtilsService: FilePopoutUtilsService,
   ) {
     combineLatest([
       this.sendItemsService.emptyList$,
@@ -94,13 +88,7 @@ export class SendV2Component implements OnInit, OnDestroy {
       });
   }
 
-  async popOutWindow() {
-    await BrowserPopupUtils.openCurrentPagePopout(window);
-  }
-
-  ngOnInit(): void {
-    this.shouldShowFilePopoutMessage = this.filePopoutUtilsService.showFilePopoutMessage(window);
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {}
 }
