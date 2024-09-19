@@ -30,10 +30,6 @@ export class NewSendDropdownComponent implements OnInit {
     ));
   }
 
-  async handleNewFileClick() {
-    await this.newItemNavigate(SendType.File);
-  }
-
   newItemNavigate(type: SendType) {
     if (this.hasNoPremium && type === SendType.File) {
       return this.router.navigate(["/premium"]);

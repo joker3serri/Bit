@@ -83,12 +83,6 @@ export class SendFormComponent implements AfterViewInit, OnInit, OnChanges, Send
   @Input()
   submitBtn?: ButtonComponent;
 
-  /**
-   * Method to render the file popout message. The file popout message will be shown if appropriate.
-   */
-  @Input()
-  renderFilePopoutMessage = () => {};
-
   @Input()
   window: Window;
 

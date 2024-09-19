@@ -6,9 +6,10 @@
     [config]="config"
     (sendSaved)="onSendSaved()"
     [submitBtn]="submitBtn"
-    [renderFilePopoutMessage]="renderFilePopoutMessage"
   >
   </tools-send-form>
+
+  <send-file-popout-dialog></send-file-popout-dialog>
 
   <popup-footer slot="footer">
     <button bitButton type="submit" form="sendForm" buttonType="primary" #submitBtn>

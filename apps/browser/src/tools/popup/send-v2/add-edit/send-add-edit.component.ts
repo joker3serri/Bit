@@ -1,5 +1,5 @@
 import { CommonModule, Location } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Params } from "@angular/router";
@@ -21,7 +21,7 @@ import { SendFormModule } from "../../../../../../../libs/tools/send/send-ui/src
 import { PopupFooterComponent } from "../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
-import { FilePopoutUtilsService } from "../../services/file-popout-utils.service";
+import { SendFilePopoutDialogComponent } from "../send-file-popout-dialog/send-file-popout-dialog.component";
 
 /**
  * Helper class to parse query parameters for the AddEdit route.
@@ -62,11 +62,12 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,
+    SendFilePopoutDialogComponent,
     SendFormModule,
     AsyncActionsModule,
   ],
 })
-export class SendAddEditComponent implements OnInit {
+export class SendAddEditComponent {
   /**
    * The header text for the component.
    */
@@ -77,17 +78,11 @@ export class SendAddEditComponent implements OnInit {
    */
   config: SendFormConfig;
 
-  /**
-   * The function to render the file popout message
-   */
-  renderFilePopoutMessage: () => void;
-
   constructor(
     private route: ActivatedRoute,
     private location: Location,
     private i18nService: I18nService,
     private addEditFormConfigService: SendFormConfigService,
-    protected filePopoutUtilsService: FilePopoutUtilsService,
   ) {
     this.subscribeToParams();
   }
@@ -126,10 +121,6 @@ export class SendAddEditComponent implements OnInit {
         this.config = config;
         this.headerText = this.getHeaderText(config.mode);
       });
-  }
-
-  ngOnInit(): void {
-    this.renderFilePopoutMessage = this.filePopoutUtilsService.renderSendFilePopoutMessage(window);
   }
 
   /**
