@@ -18,7 +18,6 @@ import {
   withLatestFrom,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -48,7 +47,6 @@ export class SshAgentService implements OnDestroy {
     private dialogService: DialogService,
     private messageListener: MessageListener,
     private authService: AuthService,
-    private accountService: AccountService,
     private toastService: ToastService,
     private i18nService: I18nService,
     private desktopSettingsService: DesktopSettingsService,
