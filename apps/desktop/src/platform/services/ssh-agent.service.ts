@@ -114,7 +114,9 @@ export class SshAgentService implements OnDestroy {
           );
 
           return dialogRef.closed.pipe(
-            switchMap((result) => ipc.platform.sshAgent.signRequestResponse(requestId, result)),
+            switchMap((result) =>
+              ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result)),
+            ),
             tap(() => ipc.platform.hideWindow()),
           );
         }),
