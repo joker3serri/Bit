@@ -7,6 +7,7 @@ import { firstValueFrom } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { BadgeSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/badge-settings.service";
 import { DomainSettingsService } from "@bitwarden/common/autofill/services/domain-settings.service";
+import { AnimationControlService } from "@bitwarden/common/platform/abstractions/animation-control.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
@@ -41,6 +42,7 @@ export class AppearanceV2Component implements OnInit {
     enableFavicon: false,
     enableBadgeCounter: true,
     theme: ThemeType.System,
+    enableAnimations: true,
   });
 
   /** Available theme options */
@@ -53,6 +55,7 @@ export class AppearanceV2Component implements OnInit {
     private themeStateService: ThemeStateService,
     private formBuilder: FormBuilder,
     private destroyRef: DestroyRef,
+    private animationControlService: AnimationControlService,
     i18nService: I18nService,
   ) {
     this.themeOptions = [
@@ -66,12 +69,16 @@ export class AppearanceV2Component implements OnInit {
     const enableFavicon = await firstValueFrom(this.domainSettingsService.showFavicons$);
     const enableBadgeCounter = await firstValueFrom(this.badgeSettingsService.enableBadgeCounter$);
     const theme = await firstValueFrom(this.themeStateService.selectedTheme$);
+    const enableAnimations = await firstValueFrom(
+      this.animationControlService.enableRoutingAnimation$,
+    );
 
     // Set initial values for the form
     this.appearanceForm.setValue({
       enableFavicon,
       enableBadgeCounter,
       theme,
+      enableAnimations,
     });
 
     this.appearanceForm.controls.theme.valueChanges
@@ -91,6 +98,12 @@ export class AppearanceV2Component implements OnInit {
       .subscribe((enableBadgeCounter) => {
         void this.updateBadgeCounter(enableBadgeCounter);
       });
+
+    this.appearanceForm.controls.enableAnimations.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((enableBadgeCounter) => {
+        void this.updateAnimations(enableBadgeCounter);
+      });
   }
 
   async updateFavicon(enableFavicon: boolean) {
@@ -104,5 +117,9 @@ export class AppearanceV2Component implements OnInit {
 
   async saveTheme(newTheme: ThemeType) {
     await this.themeStateService.setSelectedTheme(newTheme);
+  }
+
+  async updateAnimations(enableAnimations: boolean) {
+    await this.animationControlService.setEnableRoutingAnimation(enableAnimations);
   }
 }
