@@ -23,8 +23,6 @@ export type SendTextDetailsForm = FormGroup<{
   hidden: FormControl<boolean>;
 }>;
 
-// export type SendTextDetailsForm = SendTextDetailsForm & BaseSendDetailsForm;
-
 @Component({
   selector: "tools-send-text-details",
   templateUrl: "./send-text-details.component.html",
