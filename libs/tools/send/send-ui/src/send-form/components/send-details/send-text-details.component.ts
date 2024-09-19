@@ -16,8 +16,6 @@ import { CheckboxModule, FormFieldModule, SectionComponent } from "@bitwarden/co
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
 import { SendFormContainer } from "../../send-form-container";
 
-import { BaseSendDetailsForm } from "./base-send-details.component";
-
 export type SendTextDetailsForm = FormGroup<{
   text: FormControl<string>;
   hidden: FormControl<boolean>;
@@ -39,7 +37,6 @@ export type SendTextDetailsForm = FormGroup<{
 export class SendTextDetailsComponent implements OnInit {
   @Input() config: SendFormConfig;
   @Input() originalSendView?: SendView;
-  @Input() sendDetailsForm: BaseSendDetailsForm;
 
   sendTextDetailsForm: SendTextDetailsForm;
 
