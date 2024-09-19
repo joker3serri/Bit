@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
@@ -17,14 +17,6 @@ import {
 
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
 import { SendFormContainer } from "../../send-form-container";
-
-export type SendOptionsForm = FormGroup<{
-  maxAccessCount: FormControl<number>;
-  accessCount: FormControl<number>;
-  notes: FormControl<string>;
-  password: FormControl<string>;
-  hideEmail: FormControl<boolean>;
-}>;
 
 @Component({
   selector: "tools-send-options",

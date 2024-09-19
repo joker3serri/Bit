@@ -2277,8 +2277,8 @@
     "message": "No one can view this Send after the limit is reached.",
     "description": "Displayed under the limit views field on Send"
   },
-  "limitSendViewsHintWithCount": {
-    "message": "No one can view this Send after the limit is reached. $ACCESSCOUNT$ views left",
+  "limitSendViewsCount": {
+    "message": "$ACCESSCOUNT$ views left",
     "description": "Displayed under the limit views field on Send",
     "placeholders": {
       "accessCount": {

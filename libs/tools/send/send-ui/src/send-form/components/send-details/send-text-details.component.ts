@@ -1,13 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from "@angular/forms";
+import { FormBuilder, FormControl, Validators, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
@@ -15,11 +9,6 @@ import { CheckboxModule, FormFieldModule, SectionComponent } from "@bitwarden/co
 
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
 import { SendFormContainer } from "../../send-form-container";
-
-export type SendTextDetailsForm = FormGroup<{
-  text: FormControl<string>;
-  hidden: FormControl<boolean>;
-}>;
 
 @Component({
   selector: "tools-send-text-details",
@@ -38,17 +27,15 @@ export class SendTextDetailsComponent implements OnInit {
   @Input() config: SendFormConfig;
   @Input() originalSendView?: SendView;
 
-  sendTextDetailsForm: SendTextDetailsForm;
+  sendTextDetailsForm = this.formBuilder.group({
+    text: new FormControl("", Validators.required),
+    hidden: new FormControl(false),
+  });
 
   constructor(
     private formBuilder: FormBuilder,
     protected sendFormContainer: SendFormContainer,
   ) {
-    this.sendTextDetailsForm = this.formBuilder.group({
-      text: new FormControl("", Validators.required),
-      hidden: new FormControl(false),
-    });
-
     this.sendFormContainer.registerChildForm("sendTextDetailsForm", this.sendTextDetailsForm);
 
     this.sendTextDetailsForm.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {

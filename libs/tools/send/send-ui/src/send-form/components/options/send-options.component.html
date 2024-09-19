@@ -6,10 +6,10 @@
     <bit-form-field>
       <bit-label>{{ "limitSendViews" | i18n }}</bit-label>
       <input bitInput type="number" formControlName="maxAccessCount" min="1" />
-      <bit-hint *ngIf="!shouldShowCount">{{ "limitSendViewsHint" | i18n }}</bit-hint>
-      <bit-hint *ngIf="shouldShowCount">{{
-        "limitSendViewsHintWithCount" | i18n: viewsLeft
-      }}</bit-hint>
+      <bit-hint>{{ "limitSendViewsHint" | i18n }}</bit-hint>
+      <bit-hint *ngIf="shouldShowCount"
+        >&nbsp;{{ "limitSendViewsCount" | i18n: viewsLeft }}</bit-hint
+      >
     </bit-form-field>
     <bit-form-field>
       <bit-label *ngIf="!hasPassword">{{ "password" | i18n }}</bit-label>
@@ -17,7 +17,7 @@
       <input bitInput type="password" formControlName="password" />
       <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
       <button type="button" bitIconButton="bwi-refresh" bitSuffix></button>
-      <bit-hint>{{ "sendPasswordDesc" | i18n }}</bit-hint>
+      <bit-hint>{{ "sendPasswordDescV2" | i18n }}</bit-hint>
     </bit-form-field>
     <bit-form-control>
       <input bitCheckbox type="checkbox" formControlName="hideEmail" />

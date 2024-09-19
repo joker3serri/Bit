@@ -1,14 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-  FormsModule,
-} from "@angular/forms";
+import { FormBuilder, Validators, ReactiveFormsModule, FormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
@@ -18,12 +11,6 @@ import { ButtonModule, FormFieldModule, SectionComponent } from "@bitwarden/comp
 
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
 import { SendFormContainer } from "../../send-form-container";
-
-import { BaseSendDetailsForm } from "./base-send-details.component";
-
-export type SendFileDetailsForm = FormGroup<{
-  file: FormControl<SendFileView | null>;
-}>;
 
 @Component({
   selector: "tools-send-file-details",
@@ -42,9 +29,10 @@ export type SendFileDetailsForm = FormGroup<{
 export class SendFileDetailsComponent implements OnInit {
   @Input() config: SendFormConfig;
   @Input() originalSendView?: SendView;
-  @Input() sendDetailsForm: BaseSendDetailsForm;
 
-  sendFileDetailsForm: SendFileDetailsForm;
+  sendFileDetailsForm = this.formBuilder.group({
+    file: this.formBuilder.control<SendFileView | null>(null, Validators.required),
+  });
 
   FileSendType = SendType.File;
   fileName = "";
@@ -53,10 +41,6 @@ export class SendFileDetailsComponent implements OnInit {
     private formBuilder: FormBuilder,
     protected sendFormContainer: SendFormContainer,
   ) {
-    this.sendFileDetailsForm = this.formBuilder.group({
-      file: this.formBuilder.control<SendFileView | null>(null, Validators.required),
-    });
-
     this.sendFormContainer.registerChildForm("sendFileDetailsForm", this.sendFileDetailsForm);
 
     this.sendFileDetailsForm.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
