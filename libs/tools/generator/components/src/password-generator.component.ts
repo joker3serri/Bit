@@ -3,8 +3,13 @@ import { BehaviorSubject, distinctUntilChanged, map, Subject, switchMap, takeUnt
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserId } from "@bitwarden/common/types/guid";
-import { CredentialGeneratorService, Generators, GeneratorType } from "@bitwarden/generator-core";
-import { GeneratedCredential } from "@bitwarden/generator-history";
+import {
+  CredentialGeneratorService,
+  Generators,
+  PasswordAlgorithm,
+  PasswordAlgorithms,
+  GeneratedCredential,
+} from "@bitwarden/generator-core";
 
 import { DependenciesModule } from "./dependencies";
 import { PassphraseSettingsComponent } from "./passphrase-settings.component";
@@ -32,7 +37,7 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
   userId: UserId | null;
 
   /** tracks the currently selected credential type */
-  protected credentialType$ = new BehaviorSubject<GeneratorType>("password");
+  protected credentialType$ = new BehaviorSubject<PasswordAlgorithm>("password");
 
   /** Emits the last generated value. */
   protected readonly value$ = new BehaviorSubject<string>("");
@@ -46,7 +51,7 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
   /** Tracks changes to the selected credential type
    * @param type the new credential type
    */
-  protected onCredentialTypeChanged(type: GeneratorType) {
+  protected onCredentialTypeChanged(type: PasswordAlgorithm) {
     if (this.credentialType$.value !== type) {
       this.credentialType$.next(type);
       this.generate$.next();
@@ -79,13 +84,15 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
         // update subjects within the angular zone so that the
         // template bindings refresh immediately
         this.zone.run(() => {
-          this.onGenerated.next(generated);
-          this.value$.next(generated.credential);
+          if (PasswordAlgorithms.includes(generated.category as any)) {
+            this.onGenerated.next(generated);
+            this.value$.next(generated.credential);
+          }
         });
       });
   }
 
-  private typeToGenerator$(type: GeneratorType) {
+  private typeToGenerator$(type: PasswordAlgorithm) {
     const dependencies = {
       on$: this.generate$,
       userId$: this.userId$,

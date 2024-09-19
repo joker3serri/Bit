@@ -10,8 +10,8 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ToastService } from "@bitwarden/components";
 import {
-  GeneratorType,
   DefaultPasswordBoundaries as DefaultBoundaries,
+  CredentialAlgorithm,
 } from "@bitwarden/generator-core";
 import {
   PasswordGenerationServiceAbstraction,
@@ -29,7 +29,7 @@ export class EmailForwarderOptions {
 @Directive()
 export class GeneratorComponent implements OnInit, OnDestroy {
   @Input() comingFromAddEdit = false;
-  @Input() type: GeneratorType | "";
+  @Input() type: CredentialAlgorithm | "";
   @Output() onSelected = new EventEmitter<string>();
 
   usernameGeneratingPromise: Promise<string>;
@@ -50,7 +50,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   get passTypeOptions() {
     return this._passTypeOptions.filter((o) => !o.disabled);
   }
-  private _passTypeOptions: { name: string; value: GeneratorType; disabled: boolean }[];
+  private _passTypeOptions: { name: string; value: CredentialAlgorithm; disabled: boolean }[];
 
   private destroy$ = new Subject<void>();
   private isInitialized$ = new BehaviorSubject(false);
@@ -128,7 +128,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     });
   }
 
-  cascadeOptions(navigationType: GeneratorType = undefined, accountEmail: string) {
+  cascadeOptions(navigationType: CredentialAlgorithm = undefined, accountEmail: string) {
     this.avoidAmbiguous = !this.passwordOptions.ambiguous;
 
     if (!this.type) {
@@ -175,7 +175,7 @@ export class GeneratorComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         map(([qParams, account, [passwordOptions, passwordPolicy], usernameOptions]) => ({
-          navigationType: qParams.type as GeneratorType,
+          navigationType: qParams.type as CredentialAlgorithm,
           accountEmail: account.email,
           passwordOptions,
           passwordPolicy,

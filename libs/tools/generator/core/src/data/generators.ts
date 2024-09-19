@@ -122,7 +122,7 @@ const CATCHALL = Object.freeze({
   },
   settings: {
     initial: DefaultCatchallOptions,
-    constraints: {},
+    constraints: { catchallDomain: { minLength: 1 } },
     account: CATCHALL_SETTINGS,
   },
   policy: {
