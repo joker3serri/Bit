@@ -1,9 +1,9 @@
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import {
   normalizeExpiryYearFormat,
   isCardExpired,
   parseYearMonthExpiry,
-} from "@bitwarden/common/vault/utils";
+} from "@bitwarden/common/autofill/utils";
+import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 
 function getExpiryYearValueFormats(currentCentury: string) {
   return [
