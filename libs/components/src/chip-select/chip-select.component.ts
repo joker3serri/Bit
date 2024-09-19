@@ -1,17 +1,18 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   HostListener,
   Input,
-  OnDestroy,
   QueryList,
   ViewChild,
   ViewChildren,
   booleanAttribute,
+  inject,
   signal,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
 
 import { compareValues } from "../../../common/src/platform/misc/compare-values";
 import { ButtonModule } from "../button";
@@ -40,9 +41,7 @@ export type ChipSelectOption<T> = Option<T> & {
     },
   ],
 })
-export class ChipSelectComponent<T = unknown>
-  implements ControlValueAccessor, AfterViewInit, OnDestroy
-{
+export class ChipSelectComponent<T = unknown> implements ControlValueAccessor, AfterViewInit {
   @ViewChild(MenuComponent) menu: MenuComponent;
   @ViewChildren(MenuItemDirective) menuItems: QueryList<MenuItemDirective>;
 
@@ -79,7 +78,7 @@ export class ChipSelectComponent<T = unknown>
     this.focusVisibleWithin.set(false);
   }
 
-  private destroyed$: Subject<void> = new Subject();
+  private destroyRef = inject(DestroyRef);
 
   /** Tree constructed from `this.options` */
   private rootTree: ChipSelectOption<T>;
@@ -172,14 +171,9 @@ export class ChipSelectComponent<T = unknown>
      * menuItems will change when the user navigates into or out of a submenu. when that happens, we want to
      * direct their focus to the first item in the new menu
      */
-    this.menuItems.changes.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+    this.menuItems.changes.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.menu.keyManager.setFirstItemActive();
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   /** Control Value Accessor */
