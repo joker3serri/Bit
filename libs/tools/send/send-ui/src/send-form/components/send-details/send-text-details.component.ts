@@ -18,12 +18,12 @@ import { SendFormContainer } from "../../send-form-container";
 
 import { BaseSendDetailsForm } from "./base-send-details.component";
 
-type BaseSendTextDetailsForm = FormGroup<{
+export type SendTextDetailsForm = FormGroup<{
   text: FormControl<string>;
   hidden: FormControl<boolean>;
 }>;
 
-export type SendTextDetailsForm = BaseSendTextDetailsForm & BaseSendDetailsForm;
+// export type SendTextDetailsForm = SendTextDetailsForm & BaseSendDetailsForm;
 
 @Component({
   selector: "tools-send-text-details",
@@ -43,19 +43,16 @@ export class SendTextDetailsComponent implements OnInit {
   @Input() originalSendView?: SendView;
   @Input() sendDetailsForm: BaseSendDetailsForm;
 
-  baseSendTextDetailsForm: BaseSendTextDetailsForm;
   sendTextDetailsForm: SendTextDetailsForm;
 
   constructor(
     private formBuilder: FormBuilder,
     protected sendFormContainer: SendFormContainer,
   ) {
-    this.baseSendTextDetailsForm = this.formBuilder.group({
+    this.sendTextDetailsForm = this.formBuilder.group({
       text: new FormControl("", Validators.required),
       hidden: new FormControl(false),
     });
-
-    this.sendTextDetailsForm = Object.assign(this.baseSendTextDetailsForm, this.sendDetailsForm);
 
     this.sendFormContainer.registerChildForm("sendTextDetailsForm", this.sendTextDetailsForm);
 
@@ -73,7 +70,7 @@ export class SendTextDetailsComponent implements OnInit {
 
   ngOnInit() {
     if (this.originalSendView) {
-      this.baseSendTextDetailsForm.patchValue({
+      this.sendTextDetailsForm.patchValue({
         text: this.originalSendView.text?.text || "",
         hidden: this.originalSendView.text?.hidden || false,
       });

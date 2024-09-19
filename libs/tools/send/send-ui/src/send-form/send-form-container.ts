@@ -1,6 +1,7 @@
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 
 import { SendFormConfig } from "./abstractions/send-form-config.service";
+import { SendOptionsForm } from "./components/options/send-options.component";
 import { SendDetailsComponent } from "./components/send-details/send-details.component";
 import { SendFileDetailsForm } from "./components/send-details/send-file-details.component";
 import { SendTextDetailsForm } from "./components/send-details/send-text-details.component";
@@ -12,6 +13,7 @@ export type SendForm = {
   sendDetailsForm?: SendDetailsComponent["sendDetailsForm"];
   sendTextDetailsForm?: SendTextDetailsForm;
   sendFileDetailsForm?: SendFileDetailsForm;
+  sendOptionsForm?: SendOptionsForm;
 };
 
 /**

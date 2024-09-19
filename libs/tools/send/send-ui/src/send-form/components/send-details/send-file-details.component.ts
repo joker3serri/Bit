@@ -21,11 +21,9 @@ import { SendFormContainer } from "../../send-form-container";
 
 import { BaseSendDetailsForm } from "./base-send-details.component";
 
-type BaseSendFileDetailsForm = FormGroup<{
+export type SendFileDetailsForm = FormGroup<{
   file: FormControl<SendFileView | null>;
 }>;
-
-export type SendFileDetailsForm = BaseSendFileDetailsForm & BaseSendDetailsForm;
 
 @Component({
   selector: "tools-send-file-details",
@@ -46,7 +44,6 @@ export class SendFileDetailsComponent implements OnInit {
   @Input() originalSendView?: SendView;
   @Input() sendDetailsForm: BaseSendDetailsForm;
 
-  baseSendFileDetailsForm: BaseSendFileDetailsForm;
   sendFileDetailsForm: SendFileDetailsForm;
 
   FileSendType = SendType.File;
@@ -56,11 +53,9 @@ export class SendFileDetailsComponent implements OnInit {
     private formBuilder: FormBuilder,
     protected sendFormContainer: SendFormContainer,
   ) {
-    this.baseSendFileDetailsForm = this.formBuilder.group({
+    this.sendFileDetailsForm = this.formBuilder.group({
       file: this.formBuilder.control<SendFileView | null>(null, Validators.required),
     });
-
-    this.sendFileDetailsForm = Object.assign(this.baseSendFileDetailsForm, this.sendDetailsForm);
 
     this.sendFormContainer.registerChildForm("sendFileDetailsForm", this.sendFileDetailsForm);
 
