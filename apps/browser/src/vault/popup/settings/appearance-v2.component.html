@@ -5,7 +5,7 @@
     </ng-container>
   </popup-header>
 
-  <form [formGroup]="appearanceForm">
+  <form [formGroup]="appearanceForm" *ngIf="formPopulated">
     <bit-card>
       <bit-form-field>
         <bit-label>{{ "theme" | i18n }}</bit-label>

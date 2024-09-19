@@ -45,6 +45,9 @@ export class AppearanceV2Component implements OnInit {
     enableAnimations: true,
   });
 
+  /** To avoid flashes of inaccurate values, only show the form after the entire form is populated. */
+  formPopulated = false;
+
   /** Available theme options */
   themeOptions: { name: string; value: ThemeType }[];
 
@@ -80,6 +83,8 @@ export class AppearanceV2Component implements OnInit {
       theme,
       enableAnimations,
     });
+
+    this.formPopulated = true;
 
     this.appearanceForm.controls.theme.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
