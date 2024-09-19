@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, EventEmitter } from "@angular/core";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -18,8 +18,10 @@ import {
   ToastService,
 } from "@bitwarden/components";
 
+import { PremiumUpgradePromptService } from "../../../../../../libs/common/src/vault/abstractions/premium-upgrade-prompt.service";
 import { CipherViewComponent } from "../../../../../../libs/vault/src/cipher-view/cipher-view.component";
 import { SharedModule } from "../../shared/shared.module";
+import { WebVaultPremiumUpgradePromptService } from "../services/web-premium-upgrade-prompt.service";
 
 export interface ViewCipherDialogParams {
   cipher: CipherView;
@@ -39,6 +41,7 @@ export interface ViewCipherDialogParams {
 export enum ViewCipherDialogResult {
   Edited = "edited",
   Deleted = "deleted",
+  PremiumUpgrade = "premiumUpgrade",
 }
 
 export interface ViewCipherDialogCloseResult {
@@ -53,6 +56,9 @@ export interface ViewCipherDialogCloseResult {
   templateUrl: "view.component.html",
   standalone: true,
   imports: [CipherViewComponent, CommonModule, AsyncActionsModule, DialogModule, SharedModule],
+  providers: [
+    { provide: PremiumUpgradePromptService, useClass: WebVaultPremiumUpgradePromptService },
+  ],
 })
 export class ViewComponent implements OnInit {
   cipher: CipherView;
