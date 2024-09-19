@@ -64,7 +64,12 @@ describe("NewItemDropdownV2Component", () => {
       await component.newItemNavigate(CipherType.Login);
 
       expect(navigate).toHaveBeenCalledWith(["/add-cipher"], {
-        queryParams: { type: CipherType.Login.toString(), name: "example.com", ...emptyParams },
+        queryParams: {
+          type: CipherType.Login.toString(),
+          name: "example.com",
+          uri: "https://example.com",
+          ...emptyParams,
+        },
       });
     });
 
@@ -107,7 +112,7 @@ describe("NewItemDropdownV2Component", () => {
           folderId: "222-333-444",
           organizationId: "444-555-666",
           collectionId: "777-888-999",
-          uri: "https://www.example.com/login",
+          uri: "https://example.com",
           name: "example.com",
         },
       });

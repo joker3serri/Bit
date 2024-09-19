@@ -47,8 +47,8 @@ export class NewItemDropdownV2Component {
 
     // When a Login Cipher is created and the extension is not popped out,
     // pass along the uri and name
-    if (!poppedOut && type === CipherType.Login) {
-      loginDetails.uri = tab?.url;
+    if (!poppedOut && type === CipherType.Login && tab) {
+      loginDetails.uri = tab.url;
       loginDetails.name = Utils.getHostname(tab.url);
     }
 
