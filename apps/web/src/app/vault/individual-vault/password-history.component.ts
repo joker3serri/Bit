@@ -17,7 +17,8 @@ import {
   ToastService,
   ItemModule,
 } from "@bitwarden/components";
-import { SharedModule } from "@bitwarden/web-vault/app/shared/shared.module"; // eslint-disable-line no-restricted-imports
+
+import { SharedModule } from "../../shared/shared.module";
 
 /**
  * The parameters for the password history dialog.
