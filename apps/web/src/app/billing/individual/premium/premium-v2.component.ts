@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -21,7 +21,7 @@ import { TaxInfoComponent } from "../../shared/tax-info.component";
 @Component({
   templateUrl: "./premium-v2.component.html",
 })
-export class PremiumV2Component implements OnInit {
+export class PremiumV2Component {
   @ViewChild(PaymentV2Component) paymentComponent: PaymentV2Component;
   @ViewChild(TaxInfoComponent) taxInfoComponent: TaxInfoComponent;
 
@@ -38,7 +38,7 @@ export class PremiumV2Component implements OnInit {
   protected cloudWebVaultURL: string;
   protected isSelfHost = false;
 
-  protected useLicenseUploaderComponent = false;
+  protected useLicenseUploaderComponent$: Observable<boolean>;
 
   protected readonly familyPlanMaxUserCount = 6;
   protected readonly premiumPrice = 10;
@@ -58,6 +58,9 @@ export class PremiumV2Component implements OnInit {
     private tokenService: TokenService,
   ) {
     this.isSelfHost = this.platformUtilsService.isSelfHost();
+    this.useLicenseUploaderComponent$ = this.configService.getFeatureFlag$(
+      FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader,
+    );
 
     this.hasPremiumFromAnyOrganization$ =
       this.billingAccountProfileStateService.hasPremiumFromAnyOrganization$;
@@ -78,12 +81,6 @@ export class PremiumV2Component implements OnInit {
         }),
       )
       .subscribe();
-  }
-
-  async ngOnInit(): Promise<void> {
-    this.useLicenseUploaderComponent = await this.configService.getFeatureFlag(
-      FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader,
-    );
   }
 
   finalizeUpgrade = async () => {

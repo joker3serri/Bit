@@ -7,7 +7,7 @@
   <span class="tw-sr-only">{{ "loading" | i18n }}</span>
 </ng-container>
 <ng-container *ngIf="createOrganization && selfHosted">
-  <ng-container *ngIf="!useSelfHostingLicenseUploaderFeature">
+  <ng-container *ngIf="!(useLicenseUploaderComponent$ | async)">
     <p bitTypography="body1">{{ "uploadLicenseFileOrg" | i18n }}</p>
     <form [formGroup]="selfHostedForm" [bitSubmit]="submit">
       <bit-form-field>
@@ -36,7 +36,7 @@
     </form>
   </ng-container>
   <organization-self-hosting-license-uploader
-    *ngIf="useSelfHostingLicenseUploaderFeature"
+    *ngIf="useLicenseUploaderComponent$ | async"
     (onLicenseFileUploaded)="onLicenseFileUploaded($event)"
   />
 </ng-container>
