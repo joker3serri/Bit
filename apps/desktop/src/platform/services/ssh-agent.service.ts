@@ -3,6 +3,7 @@ import {
   catchError,
   combineLatest,
   concatMap,
+  EMPTY,
   filter,
   from,
   map,
@@ -81,7 +82,12 @@ export class SshAgentService implements OnDestroy {
                     title: null,
                     message: this.i18nService.t("sshAgentUnlockTimeout"),
                   });
-                  return of();
+                  const requestId = message.requestId as number;
+                  // Abort flow by sending a false response.
+                  // Returning an empty observable this will prevent the rest of the flow from executing
+                  return from(ipc.platform.sshAgent.signRequestResponse(requestId, false)).pipe(
+                    map(() => EMPTY),
+                  );
                 }
 
                 throw error;
