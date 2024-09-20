@@ -38,7 +38,7 @@ export class MoreFromBitwardenPageV2Component {
     private organizationService: OrganizationService,
   ) {
     this.canAccessPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
-    this.familySponsorshipAvailable$ = this.organizationService.familySponsorshipAvailable$;
+    this.familySponsorshipAvailable$ = this.organizationService.canManageSponsorships$;
   }
 
   async openFreeBitwardenFamiliesPage() {
