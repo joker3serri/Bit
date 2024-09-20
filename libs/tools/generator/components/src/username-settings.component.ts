@@ -48,13 +48,13 @@ export class UsernameSettingsComponent implements OnInit, OnDestroy {
   readonly onUpdated = new EventEmitter<EffUsernameGenerationOptions>();
 
   protected settings = this.formBuilder.group({
-    wordCapitalize: [Generators.Username.settings.initial.wordCapitalize],
-    wordIncludeNumber: [Generators.Username.settings.initial.wordIncludeNumber],
+    wordCapitalize: [Generators.username.settings.initial.wordCapitalize],
+    wordIncludeNumber: [Generators.username.settings.initial.wordIncludeNumber],
   });
 
   async ngOnInit() {
     const singleUserId$ = this.singleUserId$();
-    const settings = await this.generatorService.settings(Generators.Username, { singleUserId$ });
+    const settings = await this.generatorService.settings(Generators.username, { singleUserId$ });
 
     settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
       this.settings.patchValue(s, { emitEvent: false });

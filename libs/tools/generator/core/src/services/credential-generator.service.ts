@@ -18,6 +18,7 @@ import {
 import { Simplify } from "type-fest";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import {
   OnDependency,
@@ -28,8 +29,15 @@ import { isDynamic } from "@bitwarden/common/tools/state/state-constraints-depen
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
 
 import { Randomizer } from "../abstractions";
+import { Generators } from "../data";
+import { availableAlgorithms } from "../policies/available-algorithms-policy";
 import { mapPolicyToConstraints } from "../rx";
-import { CredentialPreference } from "../types";
+import {
+  CredentialCategories,
+  CredentialCategory,
+  CredentialGeneratorInfo,
+  CredentialPreference,
+} from "../types";
 import { CredentialGeneratorConfiguration as Configuration } from "../types/credential-generator-configuration";
 import { GeneratorConstraints } from "../types/generator-constraints";
 
@@ -48,6 +56,8 @@ type Generate$Dependencies = Simplify<Partial<OnDependency> & Partial<UserDepend
    */
   website$?: Observable<string>;
 };
+
+type MetaDependencies = Partial<UserDependency>;
 
 export class CredentialGeneratorService {
   constructor(
@@ -87,6 +97,46 @@ export class CredentialGeneratorService {
     );
 
     return generate$;
+  }
+
+  algorithms$(
+    category: CredentialCategory,
+    dependencies: MetaDependencies,
+  ): Observable<CredentialGeneratorInfo[]>;
+  algorithms$(
+    category: CredentialCategory[],
+    dependencies: MetaDependencies,
+  ): Observable<CredentialGeneratorInfo[]>;
+  algorithms$(category: CredentialCategory | CredentialCategory[], dependencies: MetaDependencies) {
+    const categories = Array.isArray(category) ? category : [category];
+    const algorithms = categories
+      .flatMap((c) => CredentialCategories[c])
+      .map((c) => (c === "forwarder" ? null : Generators[c]))
+      .filter((info) => info !== null);
+
+    if (dependencies.userId$) {
+      const completion$ = dependencies.userId$.pipe(ignoreElements(), endWith(true));
+
+      const algorithms$ = dependencies.userId$.pipe(
+        mergeMap((userId) => {
+          // complete policy emissions otherwise `mergeMap` holds `policies$` open indefinitely
+          const policies$ = this.policyService
+            .getAll$(PolicyType.PasswordGenerator, userId)
+            .pipe(takeUntil(completion$));
+          return policies$;
+        }),
+        map((policy) => {
+          const available = new Set(availableAlgorithms(policy));
+          const filtered = algorithms.filter((c) => available.has(c.id));
+
+          return filtered;
+        }),
+      );
+
+      return algorithms$;
+    } else {
+      return new BehaviorSubject(algorithms);
+    }
   }
 
   /** Get the settings for the provided configuration

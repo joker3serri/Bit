@@ -15,6 +15,7 @@ import {
 import {
   CatchallGenerationOptions,
   CredentialGenerator,
+  CredentialGeneratorConfiguration,
   EffUsernameGenerationOptions,
   NoPolicy,
   PassphraseGenerationOptions,
@@ -23,7 +24,6 @@ import {
   PasswordGeneratorPolicy,
   SubaddressGenerationOptions,
 } from "../types";
-import { CredentialGeneratorConfiguration } from "../types/credential-generator-configuration";
 
 import { DefaultCatchallOptions } from "./default-catchall-options";
 import { DefaultEffUsernameOptions } from "./default-eff-username-options";
@@ -35,7 +35,9 @@ import { DefaultSubaddressOptions } from "./default-subaddress-generator-options
 import { Policies } from "./policies";
 
 const PASSPHRASE = Object.freeze({
-  algorithm: "passphrase",
+  id: "passphrase",
+  category: "password",
+  nameKey: "passphrase",
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<PassphraseGenerationOptions> {
       return new PasswordRandomizer(randomizer);
@@ -59,7 +61,9 @@ const PASSPHRASE = Object.freeze({
 >);
 
 const PASSWORD = Object.freeze({
-  algorithm: "password",
+  id: "password",
+  category: "password",
+  nameKey: "password",
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<PasswordGenerationOptions> {
       return new PasswordRandomizer(randomizer);
@@ -87,7 +91,9 @@ const PASSWORD = Object.freeze({
 } satisfies CredentialGeneratorConfiguration<PasswordGenerationOptions, PasswordGeneratorPolicy>);
 
 const USERNAME = Object.freeze({
-  algorithm: "username",
+  id: "username",
+  category: "username",
+  nameKey: "username",
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<EffUsernameGenerationOptions> {
       return new UsernameRandomizer(randomizer);
@@ -114,7 +120,9 @@ const USERNAME = Object.freeze({
 } satisfies CredentialGeneratorConfiguration<EffUsernameGenerationOptions, NoPolicy>);
 
 const CATCHALL = Object.freeze({
-  algorithm: "catchall",
+  id: "catchall",
+  category: "email",
+  nameKey: "catchall",
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<CatchallGenerationOptions> {
       return new EmailRandomizer(randomizer);
@@ -141,7 +149,9 @@ const CATCHALL = Object.freeze({
 } satisfies CredentialGeneratorConfiguration<CatchallGenerationOptions, NoPolicy>);
 
 const SUBADDRESS = Object.freeze({
-  algorithm: "subaddress",
+  id: "subaddress",
+  category: "email",
+  nameKey: "subaddress",
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<SubaddressGenerationOptions> {
       return new EmailRandomizer(randomizer);
@@ -170,17 +180,17 @@ const SUBADDRESS = Object.freeze({
 /** Generator configurations */
 export const Generators = Object.freeze({
   /** Passphrase generator configuration */
-  Passphrase: PASSPHRASE,
+  passphrase: PASSPHRASE,
 
   /** Password generator configuration */
-  Password: PASSWORD,
+  password: PASSWORD,
 
   /** Username generator configuration */
-  Username: USERNAME,
+  username: USERNAME,
 
   /** Catchall email generator configuration */
-  Catchall: CATCHALL,
+  catchall: CATCHALL,
 
   /** Email subaddress generator configuration */
-  Subaddress: SUBADDRESS,
+  subaddress: SUBADDRESS,
 });

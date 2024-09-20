@@ -7,7 +7,14 @@ export const PREFERENCES = new UserKeyDefinition<CredentialPreference>(
   GENERATOR_DISK,
   "credentialPreferences",
   {
-    deserializer: (value) => value,
+    deserializer: (value) => {
+      // transmute type of `updated` fields
+      const result = value as any;
+      result.password.updated = new Date(result.password.updated);
+      result.email.updated = new Date(result.email.updated);
+      result.username.updated = new Date(result.username.updated);
+      return result;
+    },
     clearOn: [],
   },
 );

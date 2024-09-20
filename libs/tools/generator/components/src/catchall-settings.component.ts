@@ -48,12 +48,12 @@ export class CatchallSettingsComponent implements OnInit, OnDestroy {
   readonly onUpdated = new EventEmitter<CatchallGenerationOptions>();
 
   protected settings = this.formBuilder.group({
-    catchallDomain: [Generators.Catchall.settings.initial.catchallDomain],
+    catchallDomain: [Generators.catchall.settings.initial.catchallDomain],
   });
 
   async ngOnInit() {
     const singleUserId$ = this.singleUserId$();
-    const settings = await this.generatorService.settings(Generators.Catchall, { singleUserId$ });
+    const settings = await this.generatorService.settings(Generators.catchall, { singleUserId$ });
 
     settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
       this.settings.patchValue(s, { emitEvent: false });

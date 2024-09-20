@@ -100,10 +100,10 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
 
     switch (type) {
       case "password":
-        return this.generatorService.generate$(Generators.Password, dependencies);
+        return this.generatorService.generate$(Generators.password, dependencies);
 
       case "passphrase":
-        return this.generatorService.generate$(Generators.Passphrase, dependencies);
+        return this.generatorService.generate$(Generators.passphrase, dependencies);
       default:
         throw new Error(`Invalid generator type: "${type}"`);
     }

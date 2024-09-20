@@ -44,17 +44,21 @@ const somePolicy = new Policy({
 });
 
 const SomeTime = new Date(1);
-const SomeCategory = "passphrase";
+const SomeAlgorithm = "passphrase";
+const SomeCategory = "password";
+const SomeNameKey = "passphraseKey";
 
 // fake the configuration
 const SomeConfiguration: CredentialGeneratorConfiguration<SomeSettings, SomePolicy> = {
-  algorithm: SomeCategory,
+  id: SomeAlgorithm,
+  category: SomeCategory,
+  nameKey: SomeNameKey,
   engine: {
     create: (randomizer) => {
       return {
         generate: (request, settings) => {
           const credential = request.website ? `${request.website}|${settings.foo}` : settings.foo;
-          const result = new GeneratedCredential(credential, SomeCategory, SomeTime);
+          const result = new GeneratedCredential(credential, SomeAlgorithm, SomeTime);
           return Promise.resolve(result);
         },
       };
@@ -149,7 +153,7 @@ describe("CredentialGeneratorService", () => {
 
       const result = await generated.expectEmission();
 
-      expect(result).toEqual(new GeneratedCredential("value", SomeCategory, SomeTime));
+      expect(result).toEqual(new GeneratedCredential("value", SomeAlgorithm, SomeTime));
     });
 
     it("follows the active user", async () => {
@@ -165,8 +169,8 @@ describe("CredentialGeneratorService", () => {
       generated.unsubscribe();
 
       expect(generated.emissions).toEqual([
-        new GeneratedCredential("some value", SomeCategory, SomeTime),
-        new GeneratedCredential("another value", SomeCategory, SomeTime),
+        new GeneratedCredential("some value", SomeAlgorithm, SomeTime),
+        new GeneratedCredential("another value", SomeAlgorithm, SomeTime),
       ]);
     });
 
@@ -182,8 +186,8 @@ describe("CredentialGeneratorService", () => {
       generated.unsubscribe();
 
       expect(generated.emissions).toEqual([
-        new GeneratedCredential("some value", SomeCategory, SomeTime),
-        new GeneratedCredential("another value", SomeCategory, SomeTime),
+        new GeneratedCredential("some value", SomeAlgorithm, SomeTime),
+        new GeneratedCredential("another value", SomeAlgorithm, SomeTime),
       ]);
     });
 
@@ -200,7 +204,9 @@ describe("CredentialGeneratorService", () => {
 
       const result = await generated.expectEmission();
 
-      expect(result).toEqual(new GeneratedCredential("some website|value", SomeCategory, SomeTime));
+      expect(result).toEqual(
+        new GeneratedCredential("some website|value", SomeAlgorithm, SomeTime),
+      );
     });
 
     it("errors when `website$` errors", async () => {
@@ -246,7 +252,7 @@ describe("CredentialGeneratorService", () => {
 
       const result = await generated.expectEmission();
 
-      expect(result).toEqual(new GeneratedCredential("another", SomeCategory, SomeTime));
+      expect(result).toEqual(new GeneratedCredential("another", SomeAlgorithm, SomeTime));
     });
 
     it("emits a generation for a specific user when `user$` emits", async () => {
@@ -261,8 +267,8 @@ describe("CredentialGeneratorService", () => {
       const result = await generated.pauseUntilReceived(2);
 
       expect(result).toEqual([
-        new GeneratedCredential("value", SomeCategory, SomeTime),
-        new GeneratedCredential("another", SomeCategory, SomeTime),
+        new GeneratedCredential("value", SomeAlgorithm, SomeTime),
+        new GeneratedCredential("another", SomeAlgorithm, SomeTime),
       ]);
     });
 
@@ -317,7 +323,7 @@ describe("CredentialGeneratorService", () => {
       // confirm forwarded emission
       on$.next();
       await awaitAsync();
-      expect(results).toEqual([new GeneratedCredential("value", SomeCategory, SomeTime)]);
+      expect(results).toEqual([new GeneratedCredential("value", SomeAlgorithm, SomeTime)]);
 
       // confirm updating settings does not cause an emission
       await stateProvider.setUserState(SettingsKey, { foo: "next" }, SomeUser);
@@ -330,8 +336,8 @@ describe("CredentialGeneratorService", () => {
       sub.unsubscribe();
 
       expect(results).toEqual([
-        new GeneratedCredential("value", SomeCategory, SomeTime),
-        new GeneratedCredential("next", SomeCategory, SomeTime),
+        new GeneratedCredential("value", SomeAlgorithm, SomeTime),
+        new GeneratedCredential("next", SomeAlgorithm, SomeTime),
       ]);
     });
 

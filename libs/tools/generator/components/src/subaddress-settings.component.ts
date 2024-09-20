@@ -48,12 +48,12 @@ export class SubaddressSettingsComponent implements OnInit, OnDestroy {
   readonly onUpdated = new EventEmitter<SubaddressGenerationOptions>();
 
   protected settings = this.formBuilder.group({
-    subaddressEmail: [Generators.Subaddress.settings.initial.subaddressEmail],
+    subaddressEmail: [Generators.subaddress.settings.initial.subaddressEmail],
   });
 
   async ngOnInit() {
     const singleUserId$ = this.singleUserId$();
-    const settings = await this.generatorService.settings(Generators.Subaddress, { singleUserId$ });
+    const settings = await this.generatorService.settings(Generators.subaddress, { singleUserId$ });
 
     settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
       this.settings.patchValue(s, { emitEvent: false });
