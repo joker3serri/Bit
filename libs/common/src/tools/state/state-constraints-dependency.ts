@@ -8,7 +8,7 @@ import { DynamicStateConstraints, StateConstraints } from "../types";
  * apply it when application state is received or emitted. If `constraints$`
  * emits an unrecoverable error, the consumer should continue using the
  * last-emitted constraints. If `constraints$` completes, the consumer should
- * continue continue using the last-emitted constraints.
+ * continue using the last-emitted constraints.
  */
 export type StateConstraintsDependency<State> = {
   /** A stream that emits constraints when subscribed and when the
