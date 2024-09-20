@@ -45,7 +45,6 @@ import { OrganizationCreateModule } from "../../admin-console/organizations/crea
 import { BillingSharedModule, secretsManagerSubscribeFormFactory } from "../shared";
 import { PaymentV2Component } from "../shared/payment/payment-v2.component";
 import { PaymentComponent } from "../shared/payment/payment.component";
-import { LicenseUploadedEvent } from "../shared/self-hosting-license-uploader/license-uploaded-event";
 import { TaxInfoComponent } from "../shared/tax-info.component";
 
 interface OnSuccessArgs {
@@ -853,7 +852,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     return !plan.disabled && !plan.legacyYear;
   }
 
-  protected async onLicenseFileUploaded(event: LicenseUploadedEvent): Promise<void> {
+  protected async onLicenseFileUploaded(organizationId: string): Promise<void> {
     this.toastService.showToast({
       variant: "success",
       title: this.i18nService.t("organizationCreated"),
@@ -863,19 +862,19 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     if (!this.acceptingSponsorship && !this.isInTrialFlow) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["/organizations/" + event.organizationId]);
+      this.router.navigate(["/organizations/" + organizationId]);
     }
 
     if (this.isInTrialFlow) {
       this.onTrialBillingSuccess.emit({
-        orgId: event.organizationId,
+        orgId: organizationId,
         subLabelText: this.billingSubLabelText(),
       });
     }
 
-    this.onSuccess.emit({ organizationId: event.organizationId });
+    this.onSuccess.emit({ organizationId: organizationId });
 
     // TODO: No one actually listening to this message?
-    this.messagingService.send("organizationCreated", { organizationId: event.organizationId });
+    this.messagingService.send("organizationCreated", { organizationId: organizationId });
   }
 }
