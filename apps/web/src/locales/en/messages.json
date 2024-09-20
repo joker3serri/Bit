@@ -1411,7 +1411,7 @@
   },
   "generatorPolicyInEffect": {
     "message": "Enterprise policy requirements have been applied to your generator options.",
-    "description": "Help text displayed when a policy limits the password generator's options."
+    "description": "Indicates that a policy limits the credential generator screen."
   },
   "passwordHistory": {
     "message": "Password history"
