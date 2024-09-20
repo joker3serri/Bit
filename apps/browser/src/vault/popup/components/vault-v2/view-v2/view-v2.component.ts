@@ -165,9 +165,7 @@ export class ViewV2Component {
       return false;
     }
 
-    this.cipher.isDeleted
-      ? await this.popupRouterCacheService.back()
-      : await this.router.navigate(["/vault"]);
+    await this.popupRouterCacheService.back();
 
     this.toastService.showToast({
       variant: "success",
