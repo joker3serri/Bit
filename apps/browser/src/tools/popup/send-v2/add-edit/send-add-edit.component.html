@@ -13,5 +13,14 @@
     <button bitButton type="submit" form="sendForm" buttonType="primary" #submitBtn>
       {{ "save" | i18n }}
     </button>
+    <button
+      *ngIf="config?.mode !== 'add'"
+      type="button"
+      buttonType="danger"
+      class="tw-border-0 tw-ml-auto bwi-lg"
+      bitIconButton="bwi-trash"
+      (click)="deleteSend()"
+      appA11yTitle="{{ 'delete' | i18n }}"
+    ></button>
   </popup-footer>
 </popup-page>
