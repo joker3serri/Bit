@@ -112,10 +112,19 @@ export class SendAddEditComponent {
     });
 
     if (!confirmed) {
-      return false;
+      return;
     }
 
-    await this.sendApiService.delete(this.config.originalSend?.id);
+    try {
+      await this.sendApiService.delete(this.config.originalSend?.id);
+    } catch (e) {
+      this.toastService.showToast({
+        variant: "error",
+        title: null,
+        message: e.message,
+      });
+      return;
+    }
 
     this.location.back();
 
