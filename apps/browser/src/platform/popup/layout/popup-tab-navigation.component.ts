@@ -59,7 +59,7 @@ export class PopupTabNavigationComponent {
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([sends, policyAppliesToActiveUser]) => {
-        if (!policyAppliesToActiveUser && sends.length === 0) {
+        if (policyAppliesToActiveUser && sends.length === 0) {
           this.navButtons = this.navButtons.filter((b) => b.page !== "/tabs/send");
         }
       });

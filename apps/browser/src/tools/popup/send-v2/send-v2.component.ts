@@ -101,7 +101,7 @@ export class SendV2Component implements OnInit, OnDestroy {
       .policyAppliesToActiveUser$(PolicyType.DisableSend)
       .pipe(takeUntilDestroyed())
       .subscribe((sendsDisabled) => {
-        this.sendsDisabled = !sendsDisabled;
+        this.sendsDisabled = sendsDisabled;
       });
   }
 
