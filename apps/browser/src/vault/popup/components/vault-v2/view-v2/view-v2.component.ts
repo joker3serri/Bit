@@ -30,6 +30,7 @@ import { TotpCaptureService } from "@bitwarden/vault";
 
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
+import { PopupRouterCacheService } from "../../../../../platform/popup/view-cache/popup-router-cache.service";
 import { BrowserTotpCaptureService } from "../../../services/browser-totp-capture.service";
 
 import { PopupFooterComponent } from "./../../../../../platform/popup/layout/popup-footer.component";
@@ -76,6 +77,7 @@ export class ViewV2Component {
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private accountService: AccountService,
     private eventCollectionService: EventCollectionService,
+    private popupRouterCacheService: PopupRouterCacheService,
   ) {
     this.subscribeToParams();
   }
@@ -162,8 +164,10 @@ export class ViewV2Component {
       return false;
     }
 
-    const successRoute = this.cipher.isDeleted ? "/trash" : "/vault";
-    await this.router.navigate([successRoute]);
+    this.cipher.isDeleted
+      ? await this.popupRouterCacheService.back()
+      : await this.router.navigate(["/vault"]);
+
     this.toastService.showToast({
       variant: "success",
       title: null,
@@ -180,7 +184,7 @@ export class ViewV2Component {
       this.logService.error(e);
     }
 
-    await this.router.navigate(["/trash"]);
+    await this.popupRouterCacheService.back();
     this.toastService.showToast({
       variant: "success",
       title: null,

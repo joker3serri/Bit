@@ -107,7 +107,6 @@ export class TrashListItemsContainerComponent {
     }
 
     await this.router.navigate(["/view-cipher"], {
-      skipLocationChange: true,
       queryParams: { cipherId: cipher.id, type: cipher.type },
     });
   }
