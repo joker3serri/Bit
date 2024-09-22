@@ -11,6 +11,7 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
@@ -62,11 +63,16 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
     results: BitwardenEncryptedIndividualJsonExport | BitwardenEncryptedOrgJsonExport,
   ) {
     if (results.encKeyValidation_DO_NOT_EDIT != null) {
-      const orgKey = await this.cryptoService.getOrgKey(this.organizationId);
+      let keyForDecryption: SymmetricCryptoKey = await this.cryptoService.getOrgKey(
+        this.organizationId,
+      );
+      if (keyForDecryption == null) {
+        keyForDecryption = await this.cryptoService.getUserKeyWithLegacySupport();
+      }
       const encKeyValidation = new EncString(results.encKeyValidation_DO_NOT_EDIT);
       const encKeyValidationDecrypt = await this.encryptService.decryptToUtf8(
         encKeyValidation,
-        orgKey,
+        keyForDecryption,
       );
       if (encKeyValidationDecrypt === null) {
         this.result.success = false;
