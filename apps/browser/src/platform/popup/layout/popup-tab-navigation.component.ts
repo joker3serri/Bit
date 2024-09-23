@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
-import { combineLatestWith, filter } from "rxjs";
+import { filter, map, switchMap } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -53,14 +53,15 @@ export class PopupTabNavigationComponent {
     this.policyService
       .policyAppliesToActiveUser$(PolicyType.DisableSend)
       .pipe(
-        combineLatestWith(this.sendService.sends$),
-        filter(
-          ([policyAppliesToActiveUser, sends]) => policyAppliesToActiveUser && sends.length === 0,
-        ),
+        filter((policyAppliesToActiveUser) => policyAppliesToActiveUser),
+        switchMap(() => this.sendService.sends$),
+        map((sends) => sends.length > 1),
         takeUntilDestroyed(),
       )
-      .subscribe(() => {
-        this.navButtons = this.navButtons.filter((b) => b.page !== "/tabs/send");
+      .subscribe((hasSends) => {
+        this.navButtons = hasSends
+          ? this.navButtons
+          : this.navButtons.filter((b) => b.page !== "/tabs/send");
       });
   }
 }
