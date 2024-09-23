@@ -2,11 +2,10 @@ import { CommonModule, DatePipe } from "@angular/common";
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { firstValueFrom, Subject } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
@@ -126,14 +125,9 @@ export class SendDetailsComponent implements OnInit, OnDestroy {
         env.getSendUrl() + this.originalSendView.accessId + "/" + this.originalSendView.urlB64Key;
     }
 
-    this.policyService
-      .policyAppliesToActiveUser$(PolicyType.DisableSend)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToActiveUser) => {
-        if (policyAppliesToActiveUser) {
-          this.sendDetailsForm.disable();
-        }
-      });
+    if (!this.config.areSendsAllowed) {
+      this.sendDetailsForm.disable();
+    }
   }
 
   ngOnDestroy() {

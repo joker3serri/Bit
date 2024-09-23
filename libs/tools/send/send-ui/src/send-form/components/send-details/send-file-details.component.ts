@@ -2,11 +2,10 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, Validators, ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { Subject } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { SendFileView } from "@bitwarden/common/tools/send/models/view/send-file.view";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
@@ -74,13 +73,8 @@ export class SendFileDetailsComponent implements OnInit {
       });
     }
 
-    this.policyService
-      .policyAppliesToActiveUser$(PolicyType.DisableSend)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToActiveUser) => {
-        if (policyAppliesToActiveUser) {
-          this.sendFileDetailsForm.disable();
-        }
-      });
+    if (!this.config.areSendsAllowed) {
+      this.sendFileDetailsForm.disable();
+    }
   }
 }

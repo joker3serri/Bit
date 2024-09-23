@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { map, Subject, takeUntil } from "rxjs";
+import { map, Subject } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -110,14 +110,9 @@ export class SendOptionsComponent implements OnInit, OnDestroy {
         notes: this.sendFormContainer.originalSendView.notes,
       });
     }
-    this.policyService
-      .policyAppliesToActiveUser$(PolicyType.DisableSend)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToActiveUser) => {
-        if (policyAppliesToActiveUser) {
-          this.sendOptionsForm.disable();
-        }
-      });
+    if (!this.config.areSendsAllowed) {
+      this.sendOptionsForm.disable();
+    }
   }
 
   ngOnDestroy() {

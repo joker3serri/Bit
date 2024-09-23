@@ -2,11 +2,10 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormControl, Validators, ReactiveFormsModule } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { Subject } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { CheckboxModule, FormFieldModule, SectionComponent } from "@bitwarden/components";
 
@@ -64,14 +63,9 @@ export class SendTextDetailsComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.policyService
-      .policyAppliesToActiveUser$(PolicyType.DisableSend)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToActiveUser) => {
-        if (policyAppliesToActiveUser) {
-          this.sendTextDetailsForm.disable();
-        }
-      });
+    if (!this.config.areSendsAllowed) {
+      this.sendTextDetailsForm.disable();
+    }
   }
 
   ngOnDestroy() {
