@@ -8,7 +8,6 @@ import {
   firstValueFrom,
   ignoreElements,
   map,
-  mergeMap,
   Observable,
   race,
   switchMap,
@@ -108,15 +107,15 @@ export class CredentialGeneratorService {
    */
   algorithms$(
     category: CredentialCategory,
-    dependencies: Algorithms$Dependencies,
+    dependencies?: Algorithms$Dependencies,
   ): Observable<CredentialGeneratorInfo[]>;
   algorithms$(
     category: CredentialCategory[],
-    dependencies: Algorithms$Dependencies,
+    dependencies?: Algorithms$Dependencies,
   ): Observable<CredentialGeneratorInfo[]>;
   algorithms$(
     category: CredentialCategory | CredentialCategory[],
-    dependencies: Algorithms$Dependencies,
+    dependencies?: Algorithms$Dependencies,
   ) {
     // any cast required here because TypeScript fails to bind `category`
     // to the union-typed overload of `algorithms`.
@@ -130,8 +129,9 @@ export class CredentialGeneratorService {
 
     // apply policy
     const algorithms$ = userId$.pipe(
-      mergeMap((userId) => {
-        // complete policy emissions otherwise `mergeMap` holds `policies$` open indefinitely
+      distinctUntilChanged(),
+      switchMap((userId) => {
+        // complete policy emissions otherwise `switchMap` holds `algorithms$` open indefinitely
         const policies$ = this.policyService.getAll$(PolicyType.PasswordGenerator, userId).pipe(
           map((p) => new Set(availableAlgorithms(p))),
           takeUntil(completion$),
@@ -259,7 +259,7 @@ export class CredentialGeneratorService {
     const completion$ = dependencies.userId$.pipe(ignoreElements(), endWith(true));
 
     const constraints$ = dependencies.userId$.pipe(
-      mergeMap((userId) => {
+      switchMap((userId) => {
         // complete policy emissions otherwise `mergeMap` holds `policies$` open indefinitely
         const policies$ = this.policyService
           .getAll$(configuration.policy.type, userId)

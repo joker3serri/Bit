@@ -15,6 +15,7 @@ import {
   ObservableTracker,
 } from "../../../../../common/spec";
 import { Randomizer } from "../abstractions";
+import { Generators } from "../data";
 import {
   CredentialGeneratorConfiguration,
   GeneratedCredential,
@@ -33,13 +34,32 @@ const SettingsKey = new UserKeyDefinition<SomeSettings>(GENERATOR_DISK, "SomeSet
   clearOn: [],
 });
 
-// fake policy
+// fake policies
 const policyService = mock<PolicyService>();
 const somePolicy = new Policy({
   data: { fooPolicy: true },
   type: PolicyType.PasswordGenerator,
   id: "" as PolicyId,
   organizationId: "" as OrganizationId,
+  enabled: true,
+});
+const passwordOverridePolicy = new Policy({
+  id: "" as PolicyId,
+  organizationId: "",
+  type: PolicyType.PasswordGenerator,
+  data: {
+    overridePasswordType: "password",
+  },
+  enabled: true,
+});
+
+const passphraseOverridePolicy = new Policy({
+  id: "" as PolicyId,
+  organizationId: "",
+  type: PolicyType.PasswordGenerator,
+  data: {
+    overridePasswordType: "passphrase",
+  },
   enabled: true,
 });
 
@@ -118,7 +138,7 @@ const SomeConfiguration: CredentialGeneratorConfiguration<SomeSettings, SomePoli
 // fake user information
 const SomeUser = "SomeUser" as UserId;
 const AnotherUser = "SomeOtherUser" as UserId;
-const accountService = new FakeAccountService({
+const accounts = {
   [SomeUser]: {
     name: "some user",
     email: "some.user@example.com",
@@ -129,7 +149,8 @@ const accountService = new FakeAccountService({
     email: "some.other.user@example.com",
     emailVerified: true,
   },
-});
+};
+const accountService = new FakeAccountService(accounts);
 
 // fake state
 const stateProvider = new FakeStateProvider(accountService);
@@ -378,6 +399,241 @@ describe("CredentialGeneratorService", () => {
     });
   });
 
+  describe("algorithms", () => {
+    it("outputs password generation metadata", () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = generator.algorithms("password");
+
+      expect(result).toContain(Generators.password);
+      expect(result).toContain(Generators.passphrase);
+
+      // this test shouldn't contain entries outside of the current category
+      expect(result).not.toContain(Generators.username);
+      expect(result).not.toContain(Generators.catchall);
+    });
+
+    it("outputs username generation metadata", () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = generator.algorithms("username");
+
+      expect(result).toContain(Generators.username);
+
+      // this test shouldn't contain entries outside of the current category
+      expect(result).not.toContain(Generators.catchall);
+      expect(result).not.toContain(Generators.password);
+    });
+
+    it("outputs email generation metadata", () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = generator.algorithms("email");
+
+      expect(result).toContain(Generators.catchall);
+      expect(result).toContain(Generators.subaddress);
+
+      // this test shouldn't contain entries outside of the current category
+      expect(result).not.toContain(Generators.username);
+      expect(result).not.toContain(Generators.password);
+    });
+
+    it("combines metadata across categories", () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = generator.algorithms(["username", "email"]);
+
+      expect(result).toContain(Generators.username);
+      expect(result).toContain(Generators.catchall);
+      expect(result).toContain(Generators.subaddress);
+
+      // this test shouldn't contain entries outside of the current categories
+      expect(result).not.toContain(Generators.password);
+    });
+  });
+
+  describe("algorithms$", () => {
+    // these tests cannot use the observable tracker because they return
+    //  data that cannot be cloned
+    it("returns password metadata", async () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = await firstValueFrom(generator.algorithms$("password"));
+
+      expect(result).toContain(Generators.password);
+      expect(result).toContain(Generators.passphrase);
+    });
+
+    it("returns username metadata", async () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = await firstValueFrom(generator.algorithms$("username"));
+
+      expect(result).toContain(Generators.username);
+    });
+
+    it("returns email metadata", async () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = await firstValueFrom(generator.algorithms$("email"));
+
+      expect(result).toContain(Generators.catchall);
+      expect(result).toContain(Generators.subaddress);
+    });
+
+    it("returns username and email metadata", async () => {
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = await firstValueFrom(generator.algorithms$(["username", "email"]));
+
+      expect(result).toContain(Generators.username);
+      expect(result).toContain(Generators.catchall);
+      expect(result).toContain(Generators.subaddress);
+    });
+
+    // Subsequent tests focus on passwords and passphrases as an example of policy
+    // awareness; they exercise the logic without being comprehensive
+    it("enforces the active user's policy", async () => {
+      const policy$ = new BehaviorSubject([passwordOverridePolicy]);
+      policyService.getAll$.mockReturnValue(policy$);
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+
+      const result = await firstValueFrom(generator.algorithms$(["password"]));
+
+      expect(policyService.getAll$).toHaveBeenCalledWith(PolicyType.PasswordGenerator, SomeUser);
+      expect(result).toContain(Generators.password);
+      expect(result).not.toContain(Generators.passphrase);
+    });
+
+    it("follows changes to the active user", async () => {
+      // initialize local account service and state provider because this test is sensitive
+      // to some shared data in `FakeAccountService`.
+      const accountService = new FakeAccountService(accounts);
+      const stateProvider = new FakeStateProvider(accountService);
+      await accountService.switchAccount(SomeUser);
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passwordOverridePolicy]));
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passphraseOverridePolicy]));
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+      const results: any = [];
+      const sub = generator.algorithms$("password").subscribe((r) => results.push(r));
+
+      await accountService.switchAccount(AnotherUser);
+      await awaitAsync();
+      sub.unsubscribe();
+
+      const [someResult, anotherResult] = results;
+
+      expect(policyService.getAll$).toHaveBeenNthCalledWith(
+        1,
+        PolicyType.PasswordGenerator,
+        SomeUser,
+      );
+      expect(someResult).toContain(Generators.password);
+      expect(someResult).not.toContain(Generators.passphrase);
+
+      expect(policyService.getAll$).toHaveBeenNthCalledWith(
+        2,
+        PolicyType.PasswordGenerator,
+        AnotherUser,
+      );
+      expect(anotherResult).toContain(Generators.passphrase);
+      expect(anotherResult).not.toContain(Generators.password);
+    });
+
+    it("reads an arbitrary user's settings", async () => {
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passwordOverridePolicy]));
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+      const userId$ = new BehaviorSubject(AnotherUser).asObservable();
+
+      const result = await firstValueFrom(generator.algorithms$("password", { userId$ }));
+
+      expect(policyService.getAll$).toHaveBeenCalledWith(PolicyType.PasswordGenerator, AnotherUser);
+      expect(result).toContain(Generators.password);
+      expect(result).not.toContain(Generators.passphrase);
+    });
+
+    it("follows changes to the arbitrary user", async () => {
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passwordOverridePolicy]));
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passphraseOverridePolicy]));
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+      const userId = new BehaviorSubject(SomeUser);
+      const userId$ = userId.asObservable();
+      const results: any = [];
+      const sub = generator.algorithms$("password", { userId$ }).subscribe((r) => results.push(r));
+
+      userId.next(AnotherUser);
+      await awaitAsync();
+      sub.unsubscribe();
+
+      const [someResult, anotherResult] = results;
+      expect(policyService.getAll$).toHaveBeenCalledWith(PolicyType.PasswordGenerator, SomeUser);
+      expect(someResult).toContain(Generators.password);
+      expect(someResult).not.toContain(Generators.passphrase);
+
+      expect(policyService.getAll$).toHaveBeenCalledWith(PolicyType.PasswordGenerator, AnotherUser);
+      expect(anotherResult).toContain(Generators.passphrase);
+      expect(anotherResult).not.toContain(Generators.password);
+    });
+
+    it("errors when the arbitrary user's stream errors", async () => {
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passwordOverridePolicy]));
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+      const userId = new BehaviorSubject(SomeUser);
+      const userId$ = userId.asObservable();
+      let error = null;
+
+      generator.algorithms$("password", { userId$ }).subscribe({
+        error: (e: unknown) => {
+          error = e;
+        },
+      });
+      userId.error({ some: "error" });
+      await awaitAsync();
+
+      expect(error).toEqual({ some: "error" });
+    });
+
+    it("completes when the arbitrary user's stream completes", async () => {
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passwordOverridePolicy]));
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+      const userId = new BehaviorSubject(SomeUser);
+      const userId$ = userId.asObservable();
+      let completed = false;
+
+      generator.algorithms$("password", { userId$ }).subscribe({
+        complete: () => {
+          completed = true;
+        },
+      });
+      userId.complete();
+      await awaitAsync();
+
+      expect(completed).toBeTruthy();
+    });
+
+    it("ignores repeated arbitrary user emissions", async () => {
+      policyService.getAll$.mockReturnValueOnce(new BehaviorSubject([passwordOverridePolicy]));
+      const generator = new CredentialGeneratorService(randomizer, stateProvider, policyService);
+      const userId = new BehaviorSubject(SomeUser);
+      const userId$ = userId.asObservable();
+      let count = 0;
+
+      const sub = generator.algorithms$("password", { userId$ }).subscribe({
+        next: () => {
+          count++;
+        },
+      });
+      await awaitAsync();
+      userId.next(SomeUser);
+      await awaitAsync();
+      userId.next(SomeUser);
+      await awaitAsync();
+      sub.unsubscribe();
+
+      expect(count).toEqual(1);
+    });
+  });
+
   describe("settings$", () => {
     it("defaults to the configuration's initial settings if settings aren't found", async () => {
       await stateProvider.setUserState(SettingsKey, null, SomeUser);
@@ -411,6 +667,11 @@ describe("CredentialGeneratorService", () => {
     });
 
     it("follows changes to the active user", async () => {
+      // initialize local accound service and state provider because this test is sensitive
+      // to some shared data in `FakeAccountService`.
+      const accountService = new FakeAccountService(accounts);
+      const stateProvider = new FakeStateProvider(accountService);
+      await accountService.switchAccount(SomeUser);
       const someSettings = { foo: "value" };
       const anotherSettings = { foo: "another" };
       await stateProvider.setUserState(SettingsKey, someSettings, SomeUser);
