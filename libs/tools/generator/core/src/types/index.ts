@@ -1,4 +1,4 @@
-import { CredentialAlgorithm } from "./generator-type";
+import { CredentialAlgorithm, PasswordAlgorithm } from "./generator-type";
 
 export * from "./boundary";
 export * from "./catchall-generator-options";
@@ -23,3 +23,8 @@ export * from "./word-options";
  *  @deprecated Use one of the Algorithm types instead.
  */
 export type GeneratorType = CredentialAlgorithm;
+
+/** Provided for backwards compatibility only.
+ *  @deprecated Use one of the Algorithm types instead.
+ */
+export type PasswordType = PasswordAlgorithm;

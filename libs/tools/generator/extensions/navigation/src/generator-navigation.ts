@@ -1,4 +1,4 @@
-import { CredentialAlgorithm, ForwarderId, UsernameGeneratorType } from "@bitwarden/generator-core";
+import { GeneratorType, ForwarderId, UsernameGeneratorType } from "@bitwarden/generator-core";
 
 /** Stores credential generator UI state. */
 export type GeneratorNavigation = {
@@ -6,7 +6,7 @@ export type GeneratorNavigation = {
    * @remarks The legacy generator only supports "password" and "passphrase".
    *  The componentized generator supports all values.
    */
-  type?: CredentialAlgorithm;
+  type?: GeneratorType;
 
   /** When `type === "username"`, this stores the username algorithm. */
   username?: UsernameGeneratorType;
