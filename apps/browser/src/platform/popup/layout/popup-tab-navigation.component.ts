@@ -2,12 +2,12 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
-import { combineLatest } from "rxjs";
+import { combineLatestWith, filter } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { LinkModule } from "@bitwarden/components";
-import { SendItemsService } from "@bitwarden/send-ui";
 
 @Component({
   selector: "popup-tab-navigation",
@@ -46,22 +46,21 @@ export class PopupTabNavigationComponent {
     },
   ];
 
-  sendsDisabled = false;
-  protected sends$ = this.sendItemsService.filteredAndSortedSends$;
-
   constructor(
     private policyService: PolicyService,
-    private sendItemsService: SendItemsService,
+    private sendService: SendService,
   ) {
-    combineLatest([
-      this.sendItemsService.filteredAndSortedSends$,
-      this.policyService.policyAppliesToActiveUser$(PolicyType.DisableSend),
-    ])
-      .pipe(takeUntilDestroyed())
-      .subscribe(([sends, policyAppliesToActiveUser]) => {
-        if (policyAppliesToActiveUser && sends.length === 0) {
-          this.navButtons = this.navButtons.filter((b) => b.page !== "/tabs/send");
-        }
+    this.policyService
+      .policyAppliesToActiveUser$(PolicyType.DisableSend)
+      .pipe(
+        combineLatestWith(this.sendService.sends$),
+        filter(
+          ([policyAppliesToActiveUser, sends]) => policyAppliesToActiveUser && sends.length === 0,
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        this.navButtons = this.navButtons.filter((b) => b.page !== "/tabs/send");
       });
   }
 }
