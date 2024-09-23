@@ -1,5 +1,7 @@
 use ed25519;
-use pkcs8::{der::Decode, EncryptedPrivateKeyInfo, ObjectIdentifier, PrivateKeyInfo, SecretDocument};
+use pkcs8::{
+    der::Decode, EncryptedPrivateKeyInfo, ObjectIdentifier, PrivateKeyInfo, SecretDocument,
+};
 use ssh_key::{
     private::{Ed25519Keypair, Ed25519PrivateKey, RsaKeypair},
     HashAlg, LineEnding,
@@ -40,33 +42,31 @@ pub fn import_key(
                 }),
             };
         }
-        Some(PKCS8_ENCRYPTED_HEADER) => {
-            match import_pkcs8_key(encoded_key, Some(password)) {
-                Ok(result) => {
-                    return Ok(result);
-                }
-                Err(err) => match err {
-                    SshKeyImportError::PasswordRequired => {
-                        return Ok(SshKeyImportResult {
-                            status: SshKeyImportStatus::PasswordRequired,
-                            ssh_key: None,
-                        });
-                    }
-                    SshKeyImportError::WrongPassword => {
-                        return Ok(SshKeyImportResult {
-                            status: SshKeyImportStatus::WrongPassword,
-                            ssh_key: None,
-                        });
-                    }
-                    SshKeyImportError::ParsingError => {
-                        return Ok(SshKeyImportResult {
-                            status: SshKeyImportStatus::ParsingError,
-                            ssh_key: None,
-                        });
-                    }
-                },
+        Some(PKCS8_ENCRYPTED_HEADER) => match import_pkcs8_key(encoded_key, Some(password)) {
+            Ok(result) => {
+                return Ok(result);
             }
-        }
+            Err(err) => match err {
+                SshKeyImportError::PasswordRequired => {
+                    return Ok(SshKeyImportResult {
+                        status: SshKeyImportStatus::PasswordRequired,
+                        ssh_key: None,
+                    });
+                }
+                SshKeyImportError::WrongPassword => {
+                    return Ok(SshKeyImportResult {
+                        status: SshKeyImportStatus::WrongPassword,
+                        ssh_key: None,
+                    });
+                }
+                SshKeyImportError::ParsingError => {
+                    return Ok(SshKeyImportResult {
+                        status: SshKeyImportStatus::ParsingError,
+                        ssh_key: None,
+                    });
+                }
+            },
+        },
         Some(OPENSSH_HEADER) => {
             return import_openssh_key(encoded_key, password);
         }
@@ -217,7 +217,8 @@ fn import_openssh_key(
         Ok(k) => k,
         Err(err) => {
             match err {
-                ssh_key::Error::AlgorithmUnknown | ssh_key::Error::AlgorithmUnsupported { algorithm: _ } => {
+                ssh_key::Error::AlgorithmUnknown
+                | ssh_key::Error::AlgorithmUnsupported { algorithm: _ } => {
                     return Ok(SshKeyImportResult {
                         status: SshKeyImportStatus::UnsupportedKeyType,
                         ssh_key: None,
@@ -340,6 +341,17 @@ mod tests {
     }
 
     #[test]
+    fn import_key_ed25519_pkcs8_unencrypted() {
+        let private_key = include_str!("./test_keys/ed25519_pkcs8_unencrypted");
+        let public_key =
+            include_str!("./test_keys/ed25519_pkcs8_unencrypted.pub").replace("testkey", "");
+        let public_key = public_key.trim();
+        let result = import_key(private_key.to_string(), "".to_string()).unwrap();
+        assert_eq!(result.status, SshKeyImportStatus::Success);
+        assert_eq!(result.ssh_key.unwrap().public_key, public_key);
+    }
+
+    #[test]
     fn import_key_rsa_pkcs8_unencrypted() {
         let private_key = include_str!("./test_keys/rsa_pkcs8_unencrypted");
         // for whatever reason pkcs8 + rsa does not include the comment in the public key
@@ -354,8 +366,7 @@ mod tests {
     #[test]
     fn import_key_rsa_pkcs8_encrypted() {
         let private_key = include_str!("./test_keys/rsa_pkcs8_encrypted");
-        let public_key =
-        include_str!("./test_keys/rsa_pkcs8_encrypted.pub").replace("testkey", "");
+        let public_key = include_str!("./test_keys/rsa_pkcs8_encrypted.pub").replace("testkey", "");
         let public_key = public_key.trim();
         let result = import_key(private_key.to_string(), "password".to_string()).unwrap();
         assert_eq!(result.status, SshKeyImportStatus::Success);
