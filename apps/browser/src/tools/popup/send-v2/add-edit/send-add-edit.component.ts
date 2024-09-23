@@ -104,7 +104,7 @@ export class SendAddEditComponent {
     this.location.back();
   }
 
-  async deleteSend() {
+  deleteSend = async () => {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteSend" },
       content: { key: "deleteSendPermanentConfirmation" },
@@ -133,7 +133,7 @@ export class SendAddEditComponent {
       title: null,
       message: this.i18nService.t("deletedSend"),
     });
-  }
+  };
 
   /**
    * Subscribes to the route query parameters and builds the configuration based on the parameters.
