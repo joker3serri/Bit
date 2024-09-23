@@ -13,6 +13,7 @@ const OPENSSH_HEADER: &str = "-----BEGIN OPENSSH PRIVATE KEY-----";
 pub const RSA_PKCS8_ALGORITHM_OID: ObjectIdentifier =
     ObjectIdentifier::new_unwrap("1.2.840.113549.1.1.1");
 
+#[derive(Debug)]
 enum KeyType {
     Ed25519,
     Rsa,
@@ -30,8 +31,17 @@ pub fn import_key(
                 ssh_key: None,
             });
         }
-        Some(PKCS8_UNENCRYPTED_HEADER | PKCS8_ENCRYPTED_HEADER) => {
-            match import_pkcs8_key(encoded_key, None) {
+        Some(PKCS8_UNENCRYPTED_HEADER) => {
+            return match import_pkcs8_key(encoded_key, None) {
+                Ok(result) => Ok(result),
+                Err(_) => Ok(SshKeyImportResult {
+                    status: SshKeyImportStatus::ParsingError,
+                    ssh_key: None,
+                }),
+            };
+        }
+        Some(PKCS8_ENCRYPTED_HEADER) => {
+            match import_pkcs8_key(encoded_key, Some(password)) {
                 Ok(result) => {
                     return Ok(result);
                 }
@@ -266,6 +276,8 @@ pub struct SshKey {
 
 #[cfg(test)]
 mod tests {
+    use ssh_key::public;
+
     use super::*;
 
     #[test]
@@ -305,24 +317,6 @@ mod tests {
     }
 
     #[test]
-    fn import_key_ed25519_pkcs8_unencrypted() {
-        let private_key = include_str!("./test_keys/ed25519_pkcs8_unencrypted");
-        let public_key = include_str!("./test_keys/ed25519_pkcs8_unencrypted.pub").trim();
-        let result = import_key(private_key.to_string(), "".to_string()).unwrap();
-        assert_eq!(result.status, SshKeyImportStatus::Success);
-        assert_eq!(result.ssh_key.unwrap().public_key, public_key);
-    }
-
-    #[test]
-    fn import_key_ed25519_pkcs8_encrypted() {
-        let private_key = include_str!("./test_keys/ed25519_pkcs8_encrypted");
-        let public_key = include_str!("./test_keys/ed25519_pkcs8_encrypted.pub").trim();
-        let result = import_key(private_key.to_string(), "password".to_string()).unwrap();
-        assert_eq!(result.status, SshKeyImportStatus::Success);
-        assert_eq!(result.ssh_key.unwrap().public_key, public_key);
-    }
-
-    #[test]
     fn import_key_rsa_pkcs8_unencrypted() {
         let private_key = include_str!("./test_keys/rsa_pkcs8_unencrypted");
         // for whatever reason pkcs8 + rsa does not include the comment in the public key
@@ -334,31 +328,20 @@ mod tests {
         assert_eq!(result.ssh_key.unwrap().public_key, public_key);
     }
 
-    // rsa pkcs8 encrypted is not supported yet
     #[test]
-    fn import_key_rsa_pkcs8_encrypted_fails() {
+    fn import_key_rsa_pkcs8_encrypted() {
         let private_key = include_str!("./test_keys/rsa_pkcs8_encrypted");
+        let public_key =
+        include_str!("./test_keys/rsa_pkcs8_encrypted.pub").replace("testkey", "");
+        let public_key = public_key.trim();
         let result = import_key(private_key.to_string(), "password".to_string()).unwrap();
-        assert_eq!(result.status, SshKeyImportStatus::ParsingError);
-    }
-
-    #[test]
-    fn import_key_ed25519_pkcs8_encrypted_wrong_password() {
-        let private_key = include_str!("./test_keys/ed25519_pkcs8_encrypted");
-        let result = import_key(private_key.to_string(), "wrongpassword".to_string()).unwrap();
-        assert_eq!(result.status, SshKeyImportStatus::WrongPassword);
+        assert_eq!(result.status, SshKeyImportStatus::Success);
+        assert_eq!(result.ssh_key.unwrap().public_key, public_key);
     }
 
     #[test]
     fn import_key_ed25519_openssh_encrypted_wrong_password() {
         let private_key = include_str!("./test_keys/ed25519_openssh_encrypted");
-        let result = import_key(private_key.to_string(), "wrongpassword".to_string()).unwrap();
-        assert_eq!(result.status, SshKeyImportStatus::WrongPassword);
-    }
-
-    #[test]
-    fn import_key_rsa_openssh_encrypted_wrong_password() {
-        let private_key = include_str!("./test_keys/rsa_openssh_encrypted");
         let result = import_key(private_key.to_string(), "wrongpassword".to_string()).unwrap();
         assert_eq!(result.status, SshKeyImportStatus::WrongPassword);
     }
