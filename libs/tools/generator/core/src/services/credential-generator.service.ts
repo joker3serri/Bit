@@ -57,7 +57,7 @@ type Generate$Dependencies = Simplify<Partial<OnDependency> & Partial<UserDepend
   website$?: Observable<string>;
 };
 
-type MetaDependencies = Partial<UserDependency>;
+type Algorithms$Dependencies = Partial<UserDependency>;
 
 export class CredentialGeneratorService {
   constructor(
@@ -99,44 +99,68 @@ export class CredentialGeneratorService {
     return generate$;
   }
 
+  /** Emits metadata concerning the provided generation algorithms
+   *  @param category the category or categories of interest
+   *  @param dependences.userId$ when provided, the algorithms are filter to only
+   *   those matching the provided user's policy. Otherwise, emits the algorithms
+   *   available to the active user.
+   *  @returns An observable that emits algorithm metadata.
+   */
   algorithms$(
     category: CredentialCategory,
-    dependencies: MetaDependencies,
+    dependencies: Algorithms$Dependencies,
   ): Observable<CredentialGeneratorInfo[]>;
   algorithms$(
     category: CredentialCategory[],
-    dependencies: MetaDependencies,
+    dependencies: Algorithms$Dependencies,
   ): Observable<CredentialGeneratorInfo[]>;
-  algorithms$(category: CredentialCategory | CredentialCategory[], dependencies: MetaDependencies) {
+  algorithms$(
+    category: CredentialCategory | CredentialCategory[],
+    dependencies: Algorithms$Dependencies,
+  ) {
+    // any cast required here because TypeScript fails to bind `category`
+    // to the union-typed overload of `algorithms`.
+    const algorithms = this.algorithms(category as any);
+
+    // fall back to default bindings
+    const userId$ = dependencies?.userId$ ?? this.stateProvider.activeUserId$;
+
+    // monitor completion
+    const completion$ = userId$.pipe(ignoreElements(), endWith(true));
+
+    // apply policy
+    const algorithms$ = userId$.pipe(
+      mergeMap((userId) => {
+        // complete policy emissions otherwise `mergeMap` holds `policies$` open indefinitely
+        const policies$ = this.policyService.getAll$(PolicyType.PasswordGenerator, userId).pipe(
+          map((p) => new Set(availableAlgorithms(p))),
+          takeUntil(completion$),
+        );
+        return policies$;
+      }),
+      map((available) => {
+        const filtered = algorithms.filter((c) => available.has(c.id));
+        return filtered;
+      }),
+    );
+
+    return algorithms$;
+  }
+
+  /** Lists metadata concerning the provided generation algorithms
+   *  @param category the category or categories of interest
+   *  @returns A list containing he requested metadata.
+   */
+  algorithms(category: CredentialCategory): CredentialGeneratorInfo[];
+  algorithms(category: CredentialCategory[]): CredentialGeneratorInfo[];
+  algorithms(category: CredentialCategory | CredentialCategory[]): CredentialGeneratorInfo[] {
     const categories = Array.isArray(category) ? category : [category];
     const algorithms = categories
       .flatMap((c) => CredentialCategories[c])
       .map((c) => (c === "forwarder" ? null : Generators[c]))
       .filter((info) => info !== null);
 
-    if (dependencies.userId$) {
-      const completion$ = dependencies.userId$.pipe(ignoreElements(), endWith(true));
-
-      const algorithms$ = dependencies.userId$.pipe(
-        mergeMap((userId) => {
-          // complete policy emissions otherwise `mergeMap` holds `policies$` open indefinitely
-          const policies$ = this.policyService
-            .getAll$(PolicyType.PasswordGenerator, userId)
-            .pipe(takeUntil(completion$));
-          return policies$;
-        }),
-        map((policy) => {
-          const available = new Set(availableAlgorithms(policy));
-          const filtered = algorithms.filter((c) => available.has(c.id));
-
-          return filtered;
-        }),
-      );
-
-      return algorithms$;
-    } else {
-      return new BehaviorSubject(algorithms);
-    }
+    return algorithms;
   }
 
   /** Get the settings for the provided configuration

@@ -47,6 +47,7 @@ export class UsernameSettingsComponent implements OnInit, OnDestroy {
   @Output()
   readonly onUpdated = new EventEmitter<EffUsernameGenerationOptions>();
 
+  /** The template's control bindings */
   protected settings = this.formBuilder.group({
     wordCapitalize: [Generators.username.settings.initial.wordCapitalize],
     wordIncludeNumber: [Generators.username.settings.initial.wordIncludeNumber],

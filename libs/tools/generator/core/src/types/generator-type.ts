@@ -14,23 +14,31 @@ export type CredentialAlgorithm = PasswordAlgorithm | UsernameAlgorithm | EmailA
 
 /** Compound credential types supported by the credential generator. */
 export const CredentialCategories = Object.freeze({
+  /** Lists algorithms in the "password" credential category */
   password: PasswordAlgorithms as Readonly<PasswordAlgorithm[]>,
+
+  /** Lists algorithms in the "username" credential category */
   username: UsernameAlgorithms as Readonly<UsernameAlgorithm[]>,
+
+  /** Lists algorithms in the "email" credential category */
   email: EmailAlgorithms as Readonly<EmailAlgorithm[]>,
 });
 
+/** Returns true when the input algorithm is a password algorithm. */
 export function isPasswordAlgorithm(
   algorithm: CredentialAlgorithm,
 ): algorithm is PasswordAlgorithm {
   return PasswordAlgorithms.includes(algorithm as any);
 }
 
+/** Returns true when the input algorithm is a username algorithm. */
 export function isUsernameAlgorithm(
   algorithm: CredentialAlgorithm,
 ): algorithm is UsernameAlgorithm {
   return UsernameAlgorithms.includes(algorithm as any);
 }
 
+/** Returns true when the input algorithm is an email algorithm. */
 export function isEmailAlgorithm(algorithm: CredentialAlgorithm): algorithm is EmailAlgorithm {
   return EmailAlgorithms.includes(algorithm as any);
 }

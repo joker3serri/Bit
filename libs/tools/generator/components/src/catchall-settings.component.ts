@@ -47,6 +47,7 @@ export class CatchallSettingsComponent implements OnInit, OnDestroy {
   @Output()
   readonly onUpdated = new EventEmitter<CatchallGenerationOptions>();
 
+  /** The template's control bindings */
   protected settings = this.formBuilder.group({
     catchallDomain: [Generators.catchall.settings.initial.catchallDomain],
   });

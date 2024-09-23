@@ -6,6 +6,7 @@ import { CredentialAlgorithm, CredentialCategory, PolicyConfiguration } from "..
 
 import { CredentialGenerator } from "./credential-generator";
 
+/** Credential generator metadata common across credential generators. */
 export type CredentialGeneratorInfo = {
   /** Uniquely identifies the credential configuration
    */
@@ -18,6 +19,7 @@ export type CredentialGeneratorInfo = {
   nameKey: string;
 };
 
+/** Credential generator metadata that relies upon typed setting and policy definitions. */
 export type CredentialGeneratorConfiguration<Settings, Policy> = CredentialGeneratorInfo & {
   /** An algorithm that generates credentials when ran. */
   engine: {
@@ -35,6 +37,7 @@ export type CredentialGeneratorConfiguration<Settings, Policy> = CredentialGener
     /** value used when an account's settings haven't been initialized */
     initial: Readonly<Partial<Settings>>;
 
+    /** Application-global constraints that apply to account settings */
     constraints: Constraints<Settings>;
 
     /** storage location for account-global settings */

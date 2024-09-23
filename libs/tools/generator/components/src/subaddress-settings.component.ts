@@ -47,6 +47,7 @@ export class SubaddressSettingsComponent implements OnInit, OnDestroy {
   @Output()
   readonly onUpdated = new EventEmitter<SubaddressGenerationOptions>();
 
+  /** The template's control bindings */
   protected settings = this.formBuilder.group({
     subaddressEmail: [Generators.subaddress.settings.initial.subaddressEmail],
   });

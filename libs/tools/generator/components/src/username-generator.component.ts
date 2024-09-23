@@ -39,6 +39,13 @@ type SupportedAlgorithm = UsernameAlgorithm | EmailAlgorithm;
   ],
 })
 export class UsernameGeneratorComponent implements OnInit, OnDestroy {
+  /** Instantiates the username generator
+   *  @param generatorService generates credentials; stores preferences
+   *  @param i18nService localizes generator algorithm descriptions
+   *  @param accountService discovers the active user when one is not provided
+   *  @param zone detects generator settings updates originating from the generator services
+   *  @param formBuilder binds reactive form
+   */
   constructor(
     private generatorService: CredentialGeneratorService,
     private i18nService: I18nService,
@@ -58,6 +65,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
   @Output()
   readonly onGenerated = new EventEmitter<GeneratedCredential>();
 
+  /** Tracks the selected generation algorithm */
   protected algorithm = this.formBuilder.group({
     credentialType: ["username" as SupportedAlgorithm],
   });
