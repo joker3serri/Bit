@@ -88,10 +88,6 @@ export class OrganizationService implements InternalOrganizationServiceAbstracti
     mapToBooleanHasAnyOrganizations(),
   );
 
-  familySponsorshipAvailable$ = this.organizations$.pipe(
-    map((orgs) => orgs.some((o) => o.familySponsorshipAvailable)),
-  );
-
   async hasOrganizations(): Promise<boolean> {
     return await firstValueFrom(this.organizations$.pipe(mapToBooleanHasAnyOrganizations()));
   }
