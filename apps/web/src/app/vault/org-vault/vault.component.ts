@@ -283,10 +283,13 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.currentSearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
-    this.allCollectionsWithoutUnassigned$ = combineLatest([
-      organizationId$.pipe(switchMap((orgId) => this.collectionAdminService.getAll(orgId))),
-      defer(() => this.collectionService.getAllDecrypted()),
-    ]).pipe(
+    this.allCollectionsWithoutUnassigned$ = this.refresh$.pipe(
+      switchMap(() =>
+        combineLatest([
+          organizationId$.pipe(switchMap((orgId) => this.collectionAdminService.getAll(orgId))),
+          defer(() => this.collectionService.getAllDecrypted()),
+        ]),
+      ),
       map(([adminCollections, syncCollections]) => {
         const syncCollectionDict = Object.fromEntries(syncCollections.map((c) => [c.id, c]));
 
@@ -367,7 +370,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       map((ciphers) => {
         return Object.fromEntries(ciphers.map((c) => [c.id, c]));
       }),
-      shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
     const nestedCollections$ = allCollections$.pipe(
