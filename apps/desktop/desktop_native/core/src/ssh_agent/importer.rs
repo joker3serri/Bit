@@ -1,5 +1,5 @@
 use ed25519;
-use pkcs8::{der::Decode, ObjectIdentifier, PrivateKeyInfo, SecretDocument};
+use pkcs8::{der::Decode, EncryptedPrivateKeyInfo, ObjectIdentifier, PrivateKeyInfo, SecretDocument};
 use ssh_key::{
     private::{Ed25519Keypair, Ed25519PrivateKey, RsaKeypair},
     HashAlg, LineEnding,
@@ -99,7 +99,32 @@ fn import_pkcs8_key(
         }
     };
 
-    let key_type: KeyType = match PrivateKeyInfo::from_der(der.as_bytes())
+    let decrypted_der = match password.clone() {
+        Some(password) => {
+            let encrypted_private_key_info = match EncryptedPrivateKeyInfo::from_der(der.as_bytes())
+            {
+                Ok(info) => info,
+                Err(_) => {
+                    return Ok(SshKeyImportResult {
+                        status: SshKeyImportStatus::ParsingError,
+                        ssh_key: None,
+                    });
+                }
+            };
+            match encrypted_private_key_info.decrypt(password.as_bytes()) {
+                Ok(der) => der,
+                Err(_) => {
+                    return Ok(SshKeyImportResult {
+                        status: SshKeyImportStatus::WrongPassword,
+                        ssh_key: None,
+                    });
+                }
+            }
+        }
+        None => der,
+    };
+
+    let key_type: KeyType = match PrivateKeyInfo::from_der(decrypted_der.as_bytes())
         .map_err(|_| SshKeyImportError::ParsingError)?
         .algorithm
         .oid
@@ -276,8 +301,6 @@ pub struct SshKey {
 
 #[cfg(test)]
 mod tests {
-    use ssh_key::public;
-
     use super::*;
 
     #[test]
