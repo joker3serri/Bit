@@ -8,7 +8,7 @@ const linkStyles: Record<LinkType, string[]> = {
     "hover:!tw-text-primary-700",
     "focus-visible:before:tw-ring-primary-600",
   ],
-  secondary: ["!tw-text-main", "hover:!tw-text-main", "focus-visible:before:tw-ring-primary-700"],
+  secondary: ["!tw-text-main", "hover:!tw-text-main", "focus-visible:before:tw-ring-primary-600"],
   contrast: [
     "!tw-text-contrast",
     "hover:!tw-text-contrast",
