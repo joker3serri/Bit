@@ -107,7 +107,7 @@ export class SendAddEditComponent {
   async deleteSend() {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "deleteSend" },
-      content: { key: "deleteSendConfirmation" },
+      content: { key: "deleteSendPermanentConfirmation" },
       type: "warning",
     });
 

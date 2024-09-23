@@ -19,7 +19,7 @@
       buttonType="danger"
       class="tw-border-0 tw-ml-auto bwi-lg"
       bitIconButton="bwi-trash"
-      (click)="deleteSend()"
+      [bitAction]="deleteSend"
       appA11yTitle="{{ 'delete' | i18n }}"
     ></button>
   </popup-footer>
