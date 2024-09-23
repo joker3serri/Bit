@@ -1,11 +1,11 @@
-<popup-page>
+<popup-page [loading]="formLoading">
   <popup-header slot="header" [pageTitle]="'appearance' | i18n" showBackButton>
     <ng-container slot="end">
       <app-pop-out></app-pop-out>
     </ng-container>
   </popup-header>
 
-  <form [formGroup]="appearanceForm" *ngIf="formPopulated">
+  <form [formGroup]="appearanceForm">
     <bit-card>
       <bit-form-field>
         <bit-label>{{ "theme" | i18n }}</bit-label>
