@@ -49,11 +49,19 @@ export class UsernameRandomizer implements CredentialGenerator<EffUsernameGenera
   }
 
   async generate(_request: GenerationRequest, settings: EffUsernameGenerationOptions) {
-    const username = await this.randomWords({
-      digits: settings.wordIncludeNumber ? 1 : 0,
-      casing: settings.wordCapitalize ? "TitleCase" : "lowercase",
-    });
+    if (isEffUsernameGenerationOptions(settings)) {
+      const username = await this.randomWords({
+        digits: settings.wordIncludeNumber ? 1 : 0,
+        casing: settings.wordCapitalize ? "TitleCase" : "lowercase",
+      });
 
-    return new GeneratedCredential(username, "username", Date.now());
+      return new GeneratedCredential(username, "username", Date.now());
+    }
+
+    throw new Error("Invalid settings received by generator.");
   }
+}
+
+function isEffUsernameGenerationOptions(settings: any): settings is EffUsernameGenerationOptions {
+  return "wordIncludeNumber" in (settings ?? {});
 }
