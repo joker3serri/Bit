@@ -31,6 +31,7 @@ import {
 import { PremiumUpgradePromptService } from "../../../../../../../../libs/common/src/vault/abstractions/premium-upgrade-prompt.service";
 import { CipherViewComponent } from "../../../../../../../../libs/vault/src/cipher-view";
 import { PopOutComponent } from "../../../../../platform/popup/components/pop-out.component";
+import { PopupRouterCacheService } from "../../../../../platform/popup/view-cache/popup-router-cache.service";
 import { BrowserPremiumUpgradePromptService } from "../../../services/browser-premium-upgrade-prompt.service";
 import { BrowserViewPasswordHistoryService } from "../../../services/browser-view-password-history.service";
 
@@ -81,6 +82,7 @@ export class ViewV2Component {
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private accountService: AccountService,
     private eventCollectionService: EventCollectionService,
+    private popupRouterCacheService: PopupRouterCacheService,
   ) {
     this.subscribeToParams();
   }
@@ -167,8 +169,8 @@ export class ViewV2Component {
       return false;
     }
 
-    const successRoute = this.cipher.isDeleted ? "/trash" : "/vault";
-    await this.router.navigate([successRoute]);
+    await this.popupRouterCacheService.back();
+
     this.toastService.showToast({
       variant: "success",
       title: null,
@@ -185,7 +187,7 @@ export class ViewV2Component {
       this.logService.error(e);
     }
 
-    await this.router.navigate(["/trash"]);
+    await this.popupRouterCacheService.back();
     this.toastService.showToast({
       variant: "success",
       title: null,
