@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { map, Subject } from "rxjs";
+import { map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -38,9 +38,7 @@ import { SendFormContainer } from "../../send-form-container";
     CommonModule,
   ],
 })
-export class SendOptionsComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-
+export class SendOptionsComponent implements OnInit {
   @Input({ required: true })
   config: SendFormConfig;
   @Input()
@@ -113,10 +111,5 @@ export class SendOptionsComponent implements OnInit, OnDestroy {
     if (!this.config.areSendsAllowed) {
       this.sendOptionsForm.disable();
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

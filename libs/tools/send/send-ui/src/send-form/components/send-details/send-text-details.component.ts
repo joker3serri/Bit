@@ -1,11 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormControl, Validators, ReactiveFormsModule } from "@angular/forms";
-import { Subject } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { CheckboxModule, FormFieldModule, SectionComponent } from "@bitwarden/components";
 
@@ -25,9 +23,7 @@ import { SendFormContainer } from "../../send-form-container";
     SectionComponent,
   ],
 })
-export class SendTextDetailsComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-
+export class SendTextDetailsComponent implements OnInit {
   @Input() config: SendFormConfig;
   @Input() originalSendView?: SendView;
 
@@ -39,7 +35,6 @@ export class SendTextDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     protected sendFormContainer: SendFormContainer,
-    private policyService: PolicyService,
   ) {
     this.sendFormContainer.registerChildForm("sendTextDetailsForm", this.sendTextDetailsForm);
 
@@ -66,10 +61,5 @@ export class SendTextDetailsComponent implements OnInit, OnDestroy {
     if (!this.config.areSendsAllowed) {
       this.sendTextDetailsForm.disable();
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
