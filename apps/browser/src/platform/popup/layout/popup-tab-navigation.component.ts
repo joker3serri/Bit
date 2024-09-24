@@ -9,6 +9,33 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 import { LinkModule } from "@bitwarden/components";
 
+const allNavButtons = [
+  {
+    label: "Vault",
+    page: "/tabs/vault",
+    iconKey: "lock",
+    iconKeyActive: "lock-f",
+  },
+  {
+    label: "Generator",
+    page: "/tabs/generator",
+    iconKey: "generate",
+    iconKeyActive: "generate-f",
+  },
+  {
+    label: "Send",
+    page: "/tabs/send",
+    iconKey: "send",
+    iconKeyActive: "send-f",
+  },
+  {
+    label: "Settings",
+    page: "/tabs/settings",
+    iconKey: "cog",
+    iconKeyActive: "cog-f",
+  },
+];
+
 @Component({
   selector: "popup-tab-navigation",
   templateUrl: "popup-tab-navigation.component.html",
@@ -19,33 +46,7 @@ import { LinkModule } from "@bitwarden/components";
   },
 })
 export class PopupTabNavigationComponent {
-  navButtons = [
-    {
-      label: "Vault",
-      page: "/tabs/vault",
-      iconKey: "lock",
-      iconKeyActive: "lock-f",
-    },
-    {
-      label: "Generator",
-      page: "/tabs/generator",
-      iconKey: "generate",
-      iconKeyActive: "generate-f",
-    },
-    {
-      label: "Send",
-      page: "/tabs/send",
-      iconKey: "send",
-      iconKeyActive: "send-f",
-    },
-    {
-      label: "Settings",
-      page: "/tabs/settings",
-      iconKey: "cog",
-      iconKeyActive: "cog-f",
-    },
-  ];
-
+  navButtons = allNavButtons;
   constructor(
     private policyService: PolicyService,
     private sendService: SendService,
@@ -60,8 +61,8 @@ export class PopupTabNavigationComponent {
       )
       .subscribe((hasSends) => {
         this.navButtons = hasSends
-          ? this.navButtons
-          : this.navButtons.filter((b) => b.page !== "/tabs/send");
+          ? allNavButtons
+          : allNavButtons.filter((b) => b.page !== "/tabs/send");
       });
   }
 }
