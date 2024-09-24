@@ -267,16 +267,19 @@ pub mod sshagent {
                     match promise_result {
                         Ok(promise_result) => match promise_result.await {
                             Ok(result) => {
-                                let _ = auth_response_tx_arc.lock().await.send((request_id, result)).unwrap();
+                                let _ = auth_response_tx_arc.lock().await.send((request_id, result))
+                                    .expect("should be able to send auth response to agent");
                             }
                             Err(e) => {
                                 println!("[SSH Agent Native Module] calling UI callback promise was rejected: {}", e);
-                                let _ = auth_response_tx_arc.lock().await.send((request_id, false)).unwrap();
+                                let _ = auth_response_tx_arc.lock().await.send((request_id, false))
+                                    .expect("should be able to send auth response to agent");
                             }
                         },
                         Err(e) => {
                             println!("[SSH Agent Native Module] calling UI callback could not create promise: {}", e);
-                            let _ = auth_response_tx_arc.lock().await.send((request_id, false)).unwrap();
+                            let _ = auth_response_tx_arc.lock().await.send((request_id, false))
+                                .expect("should be able to send auth response to agent");
                         }
                     }
                 });
