@@ -1,20 +1,23 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import {
+  catchError,
   combineLatest,
   concatMap,
-  delay,
+  EMPTY,
   filter,
-  firstValueFrom,
+  from,
   map,
   of,
-  race,
   Subject,
   switchMap,
   takeUntil,
+  tap,
+  timeout,
+  TimeoutError,
   timer,
+  withLatestFrom,
 } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -27,12 +30,6 @@ import { DialogService, ToastService } from "@bitwarden/components";
 import { ApproveSshRequestComponent } from "../components/approve-ssh-request";
 
 import { DesktopSettingsService } from "./desktop-settings.service";
-
-type SshRequest = {
-  cipherId: string;
-  requestId: number;
-  timeout: boolean;
-};
 
 @Injectable({
   providedIn: "root",
@@ -50,7 +47,6 @@ export class SshAgentService implements OnDestroy {
     private dialogService: DialogService,
     private messageListener: MessageListener,
     private authService: AuthService,
-    private accountService: AccountService,
     private toastService: ToastService,
     private i18nService: I18nService,
     private desktopSettingsService: DesktopSettingsService,
@@ -58,69 +54,80 @@ export class SshAgentService implements OnDestroy {
     this.messageListener
       .messages$(new CommandDefinition("sshagent.signrequest"))
       .pipe(
-        concatMap(async (message: any) => {
+        withLatestFrom(this.authService.activeAccountStatus$),
+        // This switchMap handles unlocking the vault if it is locked:
+        //   - If the vault is locked, we will wait for it to be unlocked.
+        //   - If the vault is not unlocked within the timeout, we will abort the flow.
+        //   - If the vault is unlocked, we will continue with the flow.
+        // switchMap is used here to prevent multiple requests from being processed at the same time,
+        // and will cancel the previous request if a new one is received.
+        switchMap(([message, status]) => {
           ipc.platform.focusWindow();
-          if (
-            (await firstValueFrom(this.authService.activeAccountStatus$)) !==
-            AuthenticationStatus.Unlocked
-          ) {
+          if (status !== AuthenticationStatus.Unlocked) {
             this.toastService.showToast({
               variant: "info",
               title: null,
               message: this.i18nService.t("sshAgentUnlockRequired"),
             });
-          }
-          return message;
-        }),
-        switchMap(async (message: any) => {
-          const cipherId = message.cipherId;
-          const requestId = message.requestId;
-
-          const ret = race([
-            of({ cipherId, requestId, timeout: true } as SshRequest).pipe(
-              delay(this.SSH_VAULT_UNLOCK_REQUEST_TIMEOUT),
-            ),
-            this.authService.activeAccountStatus$.pipe(
-              map((status) => {
-                return status;
-              }),
+            return this.authService.activeAccountStatus$.pipe(
               filter((status) => status === AuthenticationStatus.Unlocked),
-              map(() => {
-                return {
-                  cipherId,
-                  requestId,
-                  timeout: false,
-                } as SshRequest;
+              timeout(this.SSH_VAULT_UNLOCK_REQUEST_TIMEOUT),
+              catchError((error: unknown) => {
+                if (error instanceof TimeoutError) {
+                  this.toastService.showToast({
+                    variant: "error",
+                    title: null,
+                    message: this.i18nService.t("sshAgentUnlockTimeout"),
+                  });
+                  const requestId = message.requestId as number;
+                  // Abort flow by sending a false response.
+                  // Returning an empty observable this will prevent the rest of the flow from executing
+                  return from(ipc.platform.sshAgent.signRequestResponse(requestId, false)).pipe(
+                    map(() => EMPTY),
+                  );
+                }
+
+                throw error;
               }),
-            ),
-          ]);
-          return await firstValueFrom(ret);
-        }),
-        concatMap(async (request: SshRequest) => {
-          if (request.timeout) {
-            this.toastService.showToast({
-              variant: "error",
-              title: null,
-              message: this.i18nService.t("sshAgentUnlockTimeout"),
-            });
-          } else {
-            const decryptedCiphers = await this.cipherService.getAllDecrypted();
-            const cipher = decryptedCiphers.find((cipher) => cipher.id == request.cipherId);
-
-            const dialogRef = ApproveSshRequestComponent.open(
-              this.dialogService,
-              cipher.name,
-              this.i18nService.t("unknownApplication"),
+              map(() => message),
             );
-
-            const result = await firstValueFrom(dialogRef.closed);
-            await ipc.platform.sshAgent.signRequestResponse(request.requestId, result);
-            ipc.platform.hideWindow();
           }
+
+          return of(message);
+        }),
+        // This switchMap handles fetching the ciphers from the vault.
+        switchMap((message) =>
+          from(this.cipherService.getAllDecrypted()).pipe(
+            map((ciphers) => [message, ciphers] as const),
+          ),
+        ),
+        // This concatMap handles showing the dialog to approve the request.
+        concatMap(([message, decryptedCiphers]) => {
+          const cipherId = message.cipherId as string;
+          const requestId = message.requestId as number;
+          const cipher = decryptedCiphers.find((cipher) => cipher.id == cipherId);
+
+          const dialogRef = ApproveSshRequestComponent.open(
+            this.dialogService,
+            cipher.name,
+            this.i18nService.t("unknownApplication"),
+          );
+
+          return dialogRef.closed.pipe(
+            switchMap((result) =>
+              ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result)),
+            ),
+            tap(() => ipc.platform.hideWindow()),
+          );
         }),
         takeUntil(this.destroy$),
       )
-      .subscribe();
+      .subscribe({
+        // Please not that any error here will have cause the whole stream to
+        error: (error: unknown) => {
+          this.logService.error("Error processing sshagent.signrequest", error);
+        },
+      });
 
     combineLatest([
       timer(0, this.SSH_REFRESH_INTERVAL),
