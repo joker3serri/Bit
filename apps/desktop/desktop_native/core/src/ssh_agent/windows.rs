@@ -13,7 +13,7 @@ use super::BitwardenDesktopAgent;
 impl BitwardenDesktopAgent {
     pub async fn start_server(
         auth_request_tx: tokio::sync::mpsc::Sender<(u32, String)>,
-        auth_response_rx: Arc<Mutex<tokio::sync::iwbroadcastpsc::Receiver<(u32, bool)>>>,
+        auth_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
     ) -> Result<Self, anyhow::Error> {
         let agent_state = BitwardenDesktopAgent {
             keystore: ssh_agent::KeyStore(Arc::new(RwLock::new(HashMap::new()))),
