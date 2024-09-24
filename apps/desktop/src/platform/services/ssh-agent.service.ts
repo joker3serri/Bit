@@ -11,7 +11,6 @@ import {
   Subject,
   switchMap,
   takeUntil,
-  tap,
   timeout,
   TimeoutError,
   timer,
@@ -50,7 +49,9 @@ export class SshAgentService implements OnDestroy {
     private toastService: ToastService,
     private i18nService: I18nService,
     private desktopSettingsService: DesktopSettingsService,
-  ) {
+  ) {}
+
+  init() {
     this.messageListener
       .messages$(new CommandDefinition("sshagent.signrequest"))
       .pipe(
@@ -62,8 +63,8 @@ export class SshAgentService implements OnDestroy {
         // switchMap is used here to prevent multiple requests from being processed at the same time,
         // and will cancel the previous request if a new one is received.
         switchMap(([message, status]) => {
-          ipc.platform.focusWindow();
           if (status !== AuthenticationStatus.Unlocked) {
+            ipc.platform.focusWindow();
             this.toastService.showToast({
               variant: "info",
               title: null,
@@ -107,6 +108,7 @@ export class SshAgentService implements OnDestroy {
           const requestId = message.requestId as number;
           const cipher = decryptedCiphers.find((cipher) => cipher.id == cipherId);
 
+          ipc.platform.focusWindow();
           const dialogRef = ApproveSshRequestComponent.open(
             this.dialogService,
             cipher.name,
@@ -117,7 +119,6 @@ export class SshAgentService implements OnDestroy {
             switchMap((result) =>
               ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result)),
             ),
-            tap(() => ipc.platform.hideWindow()),
           );
         }),
         takeUntil(this.destroy$),
