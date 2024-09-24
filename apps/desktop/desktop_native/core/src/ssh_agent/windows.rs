@@ -12,14 +12,15 @@ use super::BitwardenDesktopAgent;
 
 impl BitwardenDesktopAgent {
     pub async fn start_server(
-        auth_request_tx: tokio::sync::mpsc::Sender<String>,
-        auth_response_rx: Arc<Mutex<tokio::sync::mpsc::Receiver<bool>>>,
+        auth_request_tx: tokio::sync::mpsc::Sender<(u32, String)>,
+        auth_response_rx: Arc<Mutex<tokio::sync::iwbroadcastpsc::Receiver<(u32, bool)>>>,
     ) -> Result<Self, anyhow::Error> {
         let agent_state = BitwardenDesktopAgent {
             keystore: ssh_agent::KeyStore(Arc::new(RwLock::new(HashMap::new()))),
             show_ui_request_tx: auth_request_tx,
             get_ui_response_rx: auth_response_rx,
             cancellation_token: CancellationToken::new(),
+            request_id: Arc::new(tokio::sync::Mutex::new(0)),
         };
         let stream = named_pipe_listener_stream::NamedPipeServerStream::new(
             agent_state.cancellation_token.clone(),

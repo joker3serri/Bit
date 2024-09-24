@@ -12,8 +12,8 @@ use super::BitwardenDesktopAgent;
 
 impl BitwardenDesktopAgent {
     pub async fn start_server(
-        auth_request_tx: tokio::sync::mpsc::Sender<String>,
-        auth_response_rx: Arc<Mutex<tokio::sync::mpsc::Receiver<bool>>>,
+        auth_request_tx: tokio::sync::mpsc::Sender<(u32, String)>,
+        auth_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
     ) -> Result<Self, anyhow::Error> {
         use std::path::PathBuf;
 
@@ -22,6 +22,7 @@ impl BitwardenDesktopAgent {
             cancellation_token: CancellationToken::new(),
             show_ui_request_tx: auth_request_tx,
             get_ui_response_rx: auth_response_rx,
+            request_id: Arc::new(tokio::sync::Mutex::new(0)),
         };
         let cloned_agent_state = agent.clone();
         tokio::spawn(async move {

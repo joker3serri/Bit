@@ -17,23 +17,34 @@ pub mod importer;
 pub struct BitwardenDesktopAgent {
     keystore: ssh_agent::KeyStore,
     cancellation_token: CancellationToken,
-    show_ui_request_tx: tokio::sync::mpsc::Sender<String>,
-    get_ui_response_rx: Arc<Mutex<tokio::sync::mpsc::Receiver<bool>>>,
+    show_ui_request_tx: tokio::sync::mpsc::Sender<(u32, String)>,
+    get_ui_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
+    request_id: Arc<Mutex<u32>>,
+}
+
+impl BitwardenDesktopAgent {
+    async fn get_request_id(&self) -> u32 {
+        let mut request_id = self.request_id.lock().await;
+        *request_id += 1;
+        *request_id
+    }
 }
 
 impl ssh_agent::Agent for BitwardenDesktopAgent {
     async fn confirm(&self, ssh_key: Key) -> bool {
-        // make sure we will recv our response by locking the channel
-        let mut rx_channel = self.get_ui_response_rx.lock().await;
+        let request_id = self.get_request_id().await;
+
+        let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
         self.show_ui_request_tx
-            .send(ssh_key.cipher_uuid)
+            .send((request_id, ssh_key.cipher_uuid.clone()))
             .await
             .expect("Should send request to ui");
-        let res = rx_channel
-            .recv()
-            .await
-            .expect("Should receive response from ui");
-        res
+        while let Ok((id, response)) = rx_channel.recv().await {
+            if id == request_id {
+                return response;
+            }
+        }
+        false
     }
 }
 
