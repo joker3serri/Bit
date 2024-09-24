@@ -29,8 +29,6 @@ export class BitPasswordInputToggleDirective implements AfterContentInit, OnChan
   @HostBinding("attr.title") title = this.i18nService.t("toggleVisibility");
   @HostBinding("attr.aria-label") label = this.i18nService.t("toggleVisibility");
 
-  @HostBinding("attr.test-id") testId = "toggle-visibility-for-password";
-
   /**
    * Click handler to toggle the state of the input type.
    */
