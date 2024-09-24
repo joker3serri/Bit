@@ -419,7 +419,7 @@ export default class MainBackground {
     this.logService = new ConsoleLogService(isDev);
     this.cryptoFunctionService = new WebCryptoFunctionService(self);
     this.keyGenerationService = new KeyGenerationService(this.cryptoFunctionService);
-    this.storageService = new BrowserLocalStorageService();
+    this.storageService = new BrowserLocalStorageService(this.logService);
 
     this.intraprocessMessagingSubject = new Subject<Message<Record<string, unknown>>>();
 
@@ -610,8 +610,6 @@ export default class MainBackground {
       migrationRunner,
     );
 
-    this.themeStateService = new DefaultThemeStateService(this.globalStateProvider);
-
     this.masterPasswordService = new MasterPasswordService(
       this.stateProvider,
       this.stateService,
@@ -784,6 +782,11 @@ export default class MainBackground {
       this.logService,
       this.stateProvider,
       this.authService,
+    );
+
+    this.themeStateService = new DefaultThemeStateService(
+      this.globalStateProvider,
+      this.configService,
     );
 
     this.bulkEncryptService = new FallbackBulkEncryptService(this.encryptService);
@@ -1045,6 +1048,14 @@ export default class MainBackground {
 
     const systemUtilsServiceReloadCallback = async () => {
       await this.taskSchedulerService.clearAllScheduledTasks();
+      if (this.platformUtilsService.isSafari()) {
+        // If we do `chrome.runtime.reload` on safari they will send an onInstalled reason of install
+        // and that prompts us to show a new tab, this apparently doesn't happen on sideloaded
+        // extensions and only shows itself production scenarios. See: https://bitwarden.atlassian.net/browse/PM-12298
+        self.location.reload();
+        return;
+      }
+
       BrowserApi.reloadExtension();
     };
 
@@ -1481,14 +1492,7 @@ export default class MainBackground {
     });
 
     if (needStorageReseed) {
-      await this.reseedStorage(
-        await firstValueFrom(
-          this.configService.userCachedFeatureFlag$(
-            FeatureFlag.StorageReseedRefactor,
-            userBeingLoggedOut,
-          ),
-        ),
-      );
+      await this.reseedStorage();
     }
 
     if (BrowserApi.isManifestVersion(3)) {
@@ -1543,7 +1547,7 @@ export default class MainBackground {
     await SafariApp.sendMessageToApp("showPopover", null, true);
   }
 
-  async reseedStorage(doFillBuffer: boolean) {
+  async reseedStorage() {
     if (
       !this.platformUtilsService.isChrome() &&
       !this.platformUtilsService.isVivaldi() &&
@@ -1552,11 +1556,7 @@ export default class MainBackground {
       return;
     }
 
-    if (doFillBuffer) {
-      await this.storageService.fillBuffer();
-    } else {
-      await this.storageService.reseed();
-    }
+    await this.storageService.fillBuffer();
   }
 
   async clearClipboard(clipboardValue: string, clearMs: number) {
