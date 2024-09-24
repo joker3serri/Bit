@@ -6,6 +6,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/platform/sync";
@@ -35,6 +36,7 @@ export class OrganizationSelfHostingLicenseUploaderComponent extends AbstractSel
     protected readonly toastService: ToastService,
     protected readonly tokenService: TokenService,
     private readonly apiService: ApiService,
+    private readonly encryptService: EncryptService,
     private readonly cryptoService: CryptoService,
     private readonly organizationApiService: OrganizationApiServiceAbstraction,
     private readonly syncService: SyncService,
@@ -47,7 +49,7 @@ export class OrganizationSelfHostingLicenseUploaderComponent extends AbstractSel
 
     const orgKey = await this.cryptoService.makeOrgKey<OrgKey>();
     const key = orgKey[0].encryptedString;
-    const collection = await this.cryptoService.encrypt(
+    const collection = await this.encryptService.encrypt(
       this.i18nService.t("defaultCollection"),
       orgKey[1],
     );
