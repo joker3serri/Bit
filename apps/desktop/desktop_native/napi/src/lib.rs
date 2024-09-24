@@ -178,7 +178,6 @@ pub mod sshagent {
     pub struct SshKey {
         pub private_key: String,
         pub public_key: String,
-        pub key_algorithm: String,
         pub key_fingerprint: String,
     }
 
@@ -187,7 +186,6 @@ pub mod sshagent {
             SshKey {
                 private_key: key.private_key,
                 public_key: key.public_key,
-                key_algorithm: key.key_algorithm,
                 key_fingerprint: key.key_fingerprint,
             }
         }
@@ -203,6 +201,8 @@ pub mod sshagent {
         WrongPassword,
         /// ssh key could not be parsed, either due to an incorrect / unsupported format (pkcs#8) or key type (ecdsa), or because the input is not an ssh key
         ParsingError,
+        /// ssh key type is not supported (e.g. ecdsa)
+        UnsupportedKeyType,
     }
 
     impl From<desktop_core::ssh_agent::importer::SshKeyImportStatus> for SshKeyImportStatus {
@@ -219,6 +219,9 @@ pub mod sshagent {
                 }
                 desktop_core::ssh_agent::importer::SshKeyImportStatus::ParsingError => {
                     SshKeyImportStatus::ParsingError
+                }
+                desktop_core::ssh_agent::importer::SshKeyImportStatus::UnsupportedKeyType => {
+                    SshKeyImportStatus::UnsupportedKeyType
                 }
             }
         }
