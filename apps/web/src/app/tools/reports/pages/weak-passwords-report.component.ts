@@ -14,7 +14,7 @@ import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { CipherReportComponent } from "./cipher-report.component";
 
-type ReportScore = [string, BadgeVariant];
+type ReportScore = { label: string; badgeVariant: BadgeVariant };
 type ReportResult = CipherView & { reportValue: ReportScore };
 
 @Component({
@@ -119,13 +119,13 @@ export class WeakPasswordsReportComponent extends CipherReportComponent implemen
   private scoreKey(score: number): ReportScore {
     switch (score) {
       case 4:
-        return ["strong", "success"];
+        return { label: "strong", badgeVariant: "success" };
       case 3:
-        return ["good", "primary"];
+        return { label: "good", badgeVariant: "primary" };
       case 2:
-        return ["weak", "warning"];
+        return { label: "weak", badgeVariant: "warning" };
       default:
-        return ["veryWeak", "danger"];
+        return { label: "veryWeak", badgeVariant: "danger" };
     }
   }
 }
