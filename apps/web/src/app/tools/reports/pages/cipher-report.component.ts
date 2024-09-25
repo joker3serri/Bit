@@ -5,6 +5,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
@@ -95,14 +96,14 @@ export class CipherReportComponent implements OnDestroy {
   }
 
   async filterOrgToggle(status: any) {
-    this.currentFilterStatus = status;
-    if (status === 0) {
-      this.dataSource.filter = null;
-    } else if (status === 1) {
-      this.dataSource.filter = (c: CipherView) => c.organizationId == null;
-    } else {
-      this.dataSource.filter = (c: CipherView) => c.organizationId === status;
+    let filter = null;
+    if (typeof status === "number" && status === 1) {
+      filter = (c: CipherView) => c.organizationId == null;
+    } else if (typeof status === "string") {
+      const orgId = status as OrganizationId;
+      filter = (c: CipherView) => c.organizationId === orgId;
     }
+    this.dataSource.filter = filter;
   }
 
   async load() {
