@@ -110,7 +110,7 @@ export class SendDetailsComponent implements OnInit {
 
       if (this.originalSendView.deletionDate) {
         this.customDeletionDateOption = {
-          name: this.datePipe.transform(this.originalSendView.deletionDate, "MM/dd/yyyy, hh:mm a"),
+          name: this.datePipe.transform(this.originalSendView.deletionDate, "short"),
           value: this.originalSendView.deletionDate.toString(),
         };
         this.datePresetOptions.unshift(this.customDeletionDateOption);
