@@ -39,7 +39,7 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
   ) {}
 
-  /** Binds the passphrase component to a specific user's settings.
+  /** Binds the component to a specific user's settings.
    *  When this input is not provided, the form binds to the active
    *  user
    */

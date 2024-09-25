@@ -104,10 +104,10 @@ describe("UsernameRandomizer", () => {
   });
 
   describe("generate", () => {
-    it("processes password generation options", async () => {
-      const password = new UsernameRandomizer(randomizer);
+    it("processes username generation options", async () => {
+      const username = new UsernameRandomizer(randomizer);
 
-      const result = await password.generate(
+      const result = await username.generate(
         {},
         {
           wordIncludeNumber: true,
@@ -118,9 +118,9 @@ describe("UsernameRandomizer", () => {
     });
 
     it("throws when it cannot recognize the options type", async () => {
-      const password = new UsernameRandomizer(randomizer);
+      const username = new UsernameRandomizer(randomizer);
 
-      const result = password.generate({}, {});
+      const result = username.generate({}, {});
 
       await expect(result).rejects.toBeInstanceOf(Error);
     });

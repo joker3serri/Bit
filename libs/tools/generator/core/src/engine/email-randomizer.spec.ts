@@ -210,10 +210,10 @@ describe("EmailRandomizer", () => {
   });
 
   describe("generate", () => {
-    it("processes password generation options", async () => {
-      const password = new EmailRandomizer(randomizer);
+    it("processes catchall generation options", async () => {
+      const email = new EmailRandomizer(randomizer);
 
-      const result = await password.generate(
+      const result = await email.generate(
         {},
         {
           catchallDomain: "example.com",
@@ -223,10 +223,10 @@ describe("EmailRandomizer", () => {
       expect(result.category).toEqual("catchall");
     });
 
-    it("processes passphrase generation options", async () => {
-      const password = new EmailRandomizer(randomizer);
+    it("processes subaddress generation options", async () => {
+      const email = new EmailRandomizer(randomizer);
 
-      const result = await password.generate(
+      const result = await email.generate(
         {},
         {
           subaddressEmail: "foo@example.com",
@@ -237,9 +237,9 @@ describe("EmailRandomizer", () => {
     });
 
     it("throws when it cannot recognize the options type", async () => {
-      const password = new EmailRandomizer(randomizer);
+      const email = new EmailRandomizer(randomizer);
 
-      const result = password.generate({}, {});
+      const result = email.generate({}, {});
 
       await expect(result).rejects.toBeInstanceOf(Error);
     });

@@ -32,7 +32,7 @@ import { SubaddressSettingsComponent } from "./subaddress-settings.component";
 import { UsernameSettingsComponent } from "./username-settings.component";
 import { completeOnAccountSwitch } from "./util";
 
-/** Options group for passwords */
+/** Component that generates usernames and emails */
 @Component({
   standalone: true,
   selector: "tools-username-generator",
@@ -60,9 +60,8 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
   ) {}
 
-  /** Binds the passphrase component to a specific user's settings.
-   *  When this input is not provided, the form binds to the active
-   *  user
+  /** Binds the component to a specific user's settings. When this input is not provided,
+   * the form binds to the active user
    */
   @Input()
   userId: UserId | null;

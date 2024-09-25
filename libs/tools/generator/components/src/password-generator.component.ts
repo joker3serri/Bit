@@ -28,7 +28,7 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
     private zone: NgZone,
   ) {}
 
-  /** Binds the passphrase component to a specific user's settings.
+  /** Binds the component to a specific user's settings.
    *  When this input is not provided, the form binds to the active
    *  user
    */

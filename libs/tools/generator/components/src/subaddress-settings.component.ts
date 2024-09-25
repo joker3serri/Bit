@@ -13,7 +13,7 @@ import {
 import { DependenciesModule } from "./dependencies";
 import { completeOnAccountSwitch } from "./util";
 
-/** Options group for passphrases */
+/** Options group for plus-addressed emails */
 @Component({
   standalone: true,
   selector: "tools-subaddress-settings",
@@ -32,7 +32,7 @@ export class SubaddressSettingsComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
   ) {}
 
-  /** Binds the passphrase component to a specific user's settings.
+  /** Binds the component to a specific user's settings.
    *  When this input is not provided, the form binds to the active
    *  user
    */
