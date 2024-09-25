@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ButtonModule, DialogModule, DialogService, TypographyModule } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 import { SendFormConfig } from "@bitwarden/send-ui";
 
 import { FilePopoutUtilsService } from "../../services/file-popout-utils.service";
@@ -13,7 +13,7 @@ import { SendFilePopoutDialogComponent } from "./send-file-popout-dialog.compone
   selector: "send-file-popout-dialog-container",
   templateUrl: "./send-file-popout-dialog-container.component.html",
   standalone: true,
-  imports: [JslibModule, CommonModule, DialogModule, ButtonModule, TypographyModule],
+  imports: [JslibModule, CommonModule],
 })
 export class SendFilePopoutDialogContainerComponent implements OnInit {
   @Input() config: SendFormConfig;
