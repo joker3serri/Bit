@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
@@ -117,7 +117,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   discount = 0;
   deprecateStripeSourcesAPI: boolean;
 
-  protected useLicenseUploaderComponent$: Observable<boolean>;
+  protected useLicenseUploaderComponent$ = this.configService.getFeatureFlag$(
+    FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader,
+  );
 
   secretsManagerSubscription = secretsManagerSubscribeFormFactory(this.formBuilder);
 
@@ -166,9 +168,6 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private billingApiService: BillingApiServiceAbstraction,
   ) {
     this.selfHosted = this.platformUtilsService.isSelfHost();
-    this.useLicenseUploaderComponent$ = this.configService.getFeatureFlag$(
-      FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader,
-    );
   }
 
   async ngOnInit() {

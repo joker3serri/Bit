@@ -38,7 +38,9 @@ export class PremiumV2Component {
   protected cloudWebVaultURL: string;
   protected isSelfHost = false;
 
-  protected useLicenseUploaderComponent$: Observable<boolean>;
+  protected useLicenseUploaderComponent$ = this.configService.getFeatureFlag$(
+    FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader,
+  );
 
   protected readonly familyPlanMaxUserCount = 6;
   protected readonly premiumPrice = 10;
@@ -58,9 +60,6 @@ export class PremiumV2Component {
     private tokenService: TokenService,
   ) {
     this.isSelfHost = this.platformUtilsService.isSelfHost();
-    this.useLicenseUploaderComponent$ = this.configService.getFeatureFlag$(
-      FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader,
-    );
 
     this.hasPremiumFromAnyOrganization$ =
       this.billingAccountProfileStateService.hasPremiumFromAnyOrganization$;
