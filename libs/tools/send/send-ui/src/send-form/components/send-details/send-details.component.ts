@@ -1,12 +1,10 @@
 import { CommonModule, DatePipe } from "@angular/common";
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
@@ -66,9 +64,7 @@ export interface DatePresetSelectOption {
     SelectModule,
   ],
 })
-export class SendDetailsComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-
+export class SendDetailsComponent implements OnInit {
   @Input() config: SendFormConfig;
   @Input() originalSendView?: SendView;
 
@@ -89,7 +85,6 @@ export class SendDetailsComponent implements OnInit, OnDestroy {
     protected i18nService: I18nService,
     protected datePipe: DatePipe,
     protected environmentService: EnvironmentService,
-    private policyService: PolicyService,
   ) {
     this.sendDetailsForm.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
       this.sendFormContainer.patchSend((send) => {
@@ -126,19 +121,9 @@ export class SendDetailsComponent implements OnInit, OnDestroy {
         env.getSendUrl() + this.originalSendView.accessId + "/" + this.originalSendView.urlB64Key;
     }
 
-    this.policyService
-      .policyAppliesToActiveUser$(PolicyType.DisableSend)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToActiveUser) => {
-        if (policyAppliesToActiveUser) {
-          this.sendDetailsForm.disable();
-        }
-      });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    if (!this.config.areSendsAllowed) {
+      this.sendDetailsForm.disable();
+    }
   }
 
   setupDeletionDatePresets() {
