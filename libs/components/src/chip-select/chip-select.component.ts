@@ -111,7 +111,7 @@ export class ChipSelectComponent<T = unknown> implements ControlValueAccessor, A
   protected handleMenuClosed(): void {
     /** Update the rendered options for next time the menu is opened */
     this.renderedOptions = this.selectedOption
-      ? this.selectedOption.children.length > 0
+      ? this.selectedOption.children?.length > 0
         ? this.selectedOption
         : this.getParent(this.selectedOption)
       : this.rootTree;
