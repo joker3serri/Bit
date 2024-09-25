@@ -84,9 +84,6 @@ export class SendFormComponent implements AfterViewInit, OnInit, OnChanges, Send
   @Input()
   submitBtn?: ButtonComponent;
 
-  @Input()
-  window: Window;
-
   /**
    * Event emitted when the send is saved successfully.
    */

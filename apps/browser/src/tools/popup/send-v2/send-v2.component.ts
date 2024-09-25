@@ -55,7 +55,6 @@ export class SendV2Component implements OnInit, OnDestroy {
   protected title: string = "allSends";
   protected noItemIcon = NoSendsIcon;
   protected noResultsIcon = Icons.NoResults;
-  shouldShowFilePopoutMessage = false;
 
   constructor(
     protected sendItemsService: SendItemsService,

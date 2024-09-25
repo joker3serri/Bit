@@ -29,7 +29,7 @@ import { SendFormModule } from "../../../../../../../libs/tools/send/send-ui/src
 import { PopupFooterComponent } from "../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
-import { SendFilePopoutDialogComponent } from "../send-file-popout-dialog/send-file-popout-dialog.component";
+import { SendFilePopoutDialogContainerComponent } from "../send-file-popout-dialog/send-file-popout-dialog-container.component";
 
 /**
  * Helper class to parse query parameters for the AddEdit route.
@@ -71,7 +71,7 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,
-    SendFilePopoutDialogComponent,
+    SendFilePopoutDialogContainerComponent,
     SendFormModule,
     AsyncActionsModule,
   ],

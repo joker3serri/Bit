@@ -35,7 +35,6 @@ import { PopOutComponent } from "../../../platform/popup/components/pop-out.comp
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popup-router-cache.service";
-import { FilePopoutUtilsService } from "../services/file-popout-utils.service";
 
 import { SendV2Component, SendState } from "./send-v2.component";
 
@@ -105,7 +104,6 @@ describe("SendV2Component", () => {
         { provide: I18nService, useValue: { t: (key: string) => key } },
         { provide: SendListFiltersService, useValue: sendListFiltersService },
         { provide: PopupRouterCacheService, useValue: mock<PopupRouterCacheService>() },
-        { provide: FilePopoutUtilsService, useValue: mock<FilePopoutUtilsService>() },
       ],
     }).compileComponents();
 
