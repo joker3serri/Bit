@@ -398,6 +398,10 @@ describe("CredentialGeneratorService", () => {
 
       expect(complete).toBeTruthy();
     });
+
+    // FIXME: test these when the fake state provider can delay its first emission
+    it.todo("emits when settings$ become available if on$ is called before they're ready.");
+    it.todo("emits when website$ become available if on$ is called before they're ready.");
   });
 
   describe("algorithms", () => {

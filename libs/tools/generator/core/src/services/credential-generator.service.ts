@@ -1,15 +1,18 @@
 import {
   BehaviorSubject,
   combineLatest,
+  concat,
   concatMap,
   distinctUntilChanged,
   endWith,
   filter,
+  first,
   firstValueFrom,
   ignoreElements,
   map,
   Observable,
   race,
+  skip,
   switchMap,
   takeUntil,
   withLatestFrom,
@@ -66,6 +69,9 @@ export class CredentialGeneratorService {
     private policyService: PolicyService,
   ) {}
 
+  // FIXME: the rxjs methods of this service can be a lot more resilient if
+  // `Subjects` are introduced where sharing occurs
+
   /** Generates a stream of credentials
    * @param configuration determines which generator's settings are loaded
    * @param dependencies.on$ when specified, a new credential is emitted when
@@ -89,8 +95,18 @@ export class CredentialGeneratorService {
     const settingsComplete$ = request$.pipe(ignoreElements(), endWith(true));
     const complete$ = race(requestComplete$, settingsComplete$);
 
+    // if on$ triggers before settings are loaded, trigger as soon
+    // as they become available.
+    let readyOn$: Observable<any> = null;
+    if (dependencies?.on$) {
+      readyOn$ = concat(
+        dependencies.on$?.pipe(switchMap(() => combineLatest([settings$, request$]).pipe(first()))),
+        dependencies.on$.pipe(skip(1)),
+      );
+    }
+
     // generation proper
-    const generate$ = (dependencies?.on$ ?? settings$).pipe(
+    const generate$ = (readyOn$ ?? settings$).pipe(
       withLatestFrom(request$, settings$),
       concatMap(([, request, settings]) => engine.generate(request, settings)),
       takeUntil(complete$),
