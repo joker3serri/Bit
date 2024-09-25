@@ -16,7 +16,7 @@ export const PREFERENCES = new UserKeyDefinition<CredentialPreference>(
         const category: keyof typeof DefaultCredentialPreferences = key as any;
 
         const preference = result[category] ?? { ...DefaultCredentialPreferences[category] };
-        if (typeof preference.updated === "number") {
+        if (typeof preference.updated === "string") {
           preference.updated = new Date(preference.updated);
         }
 

@@ -39,9 +39,9 @@ describe("PREFERENCES", () => {
 
     it("converts updated fields to Dates", () => {
       const input = structuredClone(DefaultCredentialPreferences);
-      input.email.updated = 100 as any;
-      input.password.updated = 200 as any;
-      input.username.updated = 300 as any;
+      input.email.updated = "1970-01-01T00:00:00.100Z" as any;
+      input.password.updated = "1970-01-01T00:00:00.200Z" as any;
+      input.username.updated = "1970-01-01T00:00:00.300Z" as any;
 
       const result = PREFERENCES.deserializer(input as any);
 

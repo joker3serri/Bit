@@ -95,7 +95,13 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
         map((a) => a?.descriptionKey && this.i18nService.t(a?.descriptionKey)),
         takeUntil(this.destroyed),
       )
-      .subscribe(this.credentialTypeHint$);
+      .subscribe((hint) => {
+        // update subjects within the angular zone so that the
+        // template bindings refresh immediately
+        this.zone.run(() => {
+          this.credentialTypeHint$.next(hint);
+        });
+      });
 
     // wire up the generator
     this.algorithm$
@@ -140,7 +146,11 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
       this.credential.setValue({ type: preference }, { emitEvent: false });
 
       const algorithm = this.generatorService.algorithm(preference);
-      this.algorithm$.next(algorithm);
+      // update subjects within the angular zone so that the
+      // template bindings refresh immediately
+      this.zone.run(() => {
+        this.algorithm$.next(algorithm);
+      });
     });
 
     // generate on load unless the generator prohibits it
