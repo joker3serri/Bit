@@ -1,6 +1,16 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, combineLatestWith, map, Subject, switchMap, takeUntil } from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  filter,
+  first,
+  map,
+  ReplaySubject,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -8,14 +18,12 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { Option } from "@bitwarden/components/src/select/option";
 import {
   CredentialAlgorithm,
+  CredentialGeneratorInfo,
   CredentialGeneratorService,
-  EmailAlgorithm,
   GeneratedCredential,
   Generators,
   isEmailAlgorithm,
   isUsernameAlgorithm,
-  UsernameAlgorithm,
-  UsernameAlgorithms,
 } from "@bitwarden/generator-core";
 
 import { CatchallSettingsComponent } from "./catchall-settings.component";
@@ -23,8 +31,6 @@ import { DependenciesModule } from "./dependencies";
 import { SubaddressSettingsComponent } from "./subaddress-settings.component";
 import { UsernameSettingsComponent } from "./username-settings.component";
 import { completeOnAccountSwitch } from "./util";
-
-type SupportedAlgorithm = UsernameAlgorithm | EmailAlgorithm;
 
 /** Options group for passwords */
 @Component({
@@ -66,8 +72,8 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
   readonly onGenerated = new EventEmitter<GeneratedCredential>();
 
   /** Tracks the selected generation algorithm */
-  protected algorithm = this.formBuilder.group({
-    credentialType: ["username" as SupportedAlgorithm],
+  protected credential = this.formBuilder.group({
+    type: ["username" as CredentialAlgorithm],
   });
 
   async ngOnInit() {
@@ -80,40 +86,43 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     this.generatorService
       .algorithms$(["email", "username"], { userId$: this.userId$ })
       .pipe(
-        map((algorithms) =>
-          algorithms.map(
-            (algorithm) =>
-              ({
-                value: algorithm.id,
-                label: this.i18nService.t(algorithm.nameKey),
-              }) satisfies Option<CredentialAlgorithm>,
-          ),
-        ),
+        map((algorithms) => this.toOptions(algorithms)),
         takeUntil(this.destroyed),
       )
-      .subscribe(this.credentialTypes$);
+      .subscribe(this.typeOptions$);
 
-    // restore selection to the user's preferred generator algorithm
-    const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
-    preferences.pipe(takeUntil(this.destroyed)).subscribe(({ email, username }) => {
-      // this generator supports email & username; the last preference
-      // set by the user "wins"
-      const preference = email.updated > username.updated ? email.algorithm : username.algorithm;
+    this.algorithm$
+      .pipe(
+        map((a) => a?.descriptionKey && this.i18nService.t(a?.descriptionKey)),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(this.credentialTypeHint$);
 
-      // break subscription loop
-      this.algorithm.setValue({ credentialType: preference }, { emitEvent: false });
-      this.credentialType$.next(preference);
-    });
+    // wire up the generator
+    this.algorithm$
+      .pipe(
+        switchMap((algorithm) => this.typeToGenerator$(algorithm.id)),
+        takeUntil(this.destroyed),
+      )
+      .subscribe((generated) => {
+        // update subjects within the angular zone so that the
+        // template bindings refresh immediately
+        this.zone.run(() => {
+          this.onGenerated.next(generated);
+          this.value$.next(generated.credential);
+        });
+      });
 
     // assume the last-visible generator algorithm is the user's preferred one
-    this.algorithm.valueChanges
+    const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
+    this.credential.valueChanges
       .pipe(combineLatestWith(preferences), takeUntil(this.destroyed))
-      .subscribe(([algorithm, preference]) => {
-        if (isEmailAlgorithm(algorithm.credentialType)) {
-          preference.email.algorithm = algorithm.credentialType;
+      .subscribe(([{ type }, preference]) => {
+        if (isEmailAlgorithm(type)) {
+          preference.email.algorithm = type;
           preference.email.updated = new Date();
-        } else if (isUsernameAlgorithm(algorithm.credentialType)) {
-          preference.username.algorithm = algorithm.credentialType;
+        } else if (isUsernameAlgorithm(type)) {
+          preference.username.algorithm = type;
           preference.username.updated = new Date();
         } else {
           return;
@@ -122,25 +131,30 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
         preferences.next(preference);
       });
 
-    // once everything is initialized, wire up the generator
-    this.credentialType$
+    // populate the form with the user's preferences to kick off interactivity
+    preferences.pipe(takeUntil(this.destroyed)).subscribe(({ email, username }) => {
+      // this generator supports email & username; the last preference
+      // set by the user "wins"
+      const preference = email.updated > username.updated ? email.algorithm : username.algorithm;
+
+      // break subscription loop
+      this.credential.setValue({ type: preference }, { emitEvent: false });
+
+      const algorithm = this.generatorService.algorithm(preference);
+      this.algorithm$.next(algorithm);
+    });
+
+    // generate on load unless the generator prohibits it
+    this.algorithm$
       .pipe(
-        switchMap((type) => this.typeToGenerator$(type)),
+        first(),
+        filter((a) => !a.onlyOnRequest),
         takeUntil(this.destroyed),
       )
-      .subscribe((generated) => {
-        // update subjects within the angular zone so that the
-        // template bindings refresh immediately
-        this.zone.run(() => {
-          if (UsernameAlgorithms.includes(generated.category as any)) {
-            this.onGenerated.next(generated);
-            this.value$.next(generated.credential);
-          }
-        });
-      });
+      .subscribe(() => this.generate$.next());
   }
 
-  private typeToGenerator$(type: SupportedAlgorithm) {
+  private typeToGenerator$(type: CredentialAlgorithm) {
     const dependencies = {
       on$: this.generate$,
       userId$: this.userId$,
@@ -162,10 +176,13 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
   }
 
   /** Lists the credential types supported by the component. */
-  protected credentialTypes$ = new BehaviorSubject<Option<CredentialAlgorithm>[]>([]);
+  protected typeOptions$ = new BehaviorSubject<Option<CredentialAlgorithm>[]>([]);
 
   /** tracks the currently selected credential type */
-  protected credentialType$ = new BehaviorSubject<SupportedAlgorithm>("username");
+  protected algorithm$ = new ReplaySubject<CredentialGeneratorInfo>(1);
+
+  /** Emits hint key for the currently selected credential type */
+  protected credentialTypeHint$ = new ReplaySubject<string>(1);
 
   /** Emits the last generated value. */
   protected readonly value$ = new BehaviorSubject<string>("");
@@ -187,6 +204,15 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
       completeOnAccountSwitch(),
       takeUntil(this.destroyed),
     );
+  }
+
+  private toOptions(algorithms: CredentialGeneratorInfo[]) {
+    const options: Option<CredentialAlgorithm>[] = algorithms.map((algorithm) => ({
+      value: algorithm.id,
+      label: this.i18nService.t(algorithm.nameKey),
+    }));
+
+    return options;
   }
 
   private readonly destroyed = new Subject<void>();

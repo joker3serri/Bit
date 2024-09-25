@@ -7,7 +7,6 @@ import {
   CredentialGeneratorService,
   Generators,
   PasswordAlgorithm,
-  PasswordAlgorithms,
   GeneratedCredential,
 } from "@bitwarden/generator-core";
 
@@ -84,10 +83,8 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
         // update subjects within the angular zone so that the
         // template bindings refresh immediately
         this.zone.run(() => {
-          if (PasswordAlgorithms.includes(generated.category as any)) {
-            this.onGenerated.next(generated);
-            this.value$.next(generated.credential);
-          }
+          this.onGenerated.next(generated);
+          this.value$.next(generated.credential);
         });
       });
   }

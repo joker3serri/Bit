@@ -38,6 +38,7 @@ const PASSPHRASE = Object.freeze({
   id: "passphrase",
   category: "password",
   nameKey: "passphrase",
+  onlyOnRequest: false,
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<PassphraseGenerationOptions> {
       return new PasswordRandomizer(randomizer);
@@ -64,6 +65,7 @@ const PASSWORD = Object.freeze({
   id: "password",
   category: "password",
   nameKey: "password",
+  onlyOnRequest: false,
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<PasswordGenerationOptions> {
       return new PasswordRandomizer(randomizer);
@@ -93,7 +95,8 @@ const PASSWORD = Object.freeze({
 const USERNAME = Object.freeze({
   id: "username",
   category: "username",
-  nameKey: "username",
+  nameKey: "randomWord",
+  onlyOnRequest: false,
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<EffUsernameGenerationOptions> {
       return new UsernameRandomizer(randomizer);
@@ -122,7 +125,9 @@ const USERNAME = Object.freeze({
 const CATCHALL = Object.freeze({
   id: "catchall",
   category: "email",
-  nameKey: "catchall",
+  nameKey: "catchallEmail",
+  descriptionKey: "catchallEmailDesc",
+  onlyOnRequest: false,
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<CatchallGenerationOptions> {
       return new EmailRandomizer(randomizer);
@@ -151,7 +156,9 @@ const CATCHALL = Object.freeze({
 const SUBADDRESS = Object.freeze({
   id: "subaddress",
   category: "email",
-  nameKey: "subaddress",
+  nameKey: "plusAddressedEmail",
+  descriptionKey: "plusAddressedEmailDesc",
+  onlyOnRequest: false,
   engine: {
     create(randomizer: Randomizer): CredentialGenerator<SubaddressGenerationOptions> {
       return new EmailRandomizer(randomizer);

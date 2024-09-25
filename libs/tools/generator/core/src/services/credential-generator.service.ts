@@ -32,6 +32,7 @@ import { Generators } from "../data";
 import { availableAlgorithms } from "../policies/available-algorithms-policy";
 import { mapPolicyToConstraints } from "../rx";
 import {
+  CredentialAlgorithm,
   CredentialCategories,
   CredentialCategory,
   CredentialGeneratorInfo,
@@ -147,9 +148,9 @@ export class CredentialGeneratorService {
     return algorithms$;
   }
 
-  /** Lists metadata concerning the provided generation algorithms
+  /** Lists metadata for the algorithms in a credential category
    *  @param category the category or categories of interest
-   *  @returns A list containing he requested metadata.
+   *  @returns A list containing the requested metadata.
    */
   algorithms(category: CredentialCategory): CredentialGeneratorInfo[];
   algorithms(category: CredentialCategory[]): CredentialGeneratorInfo[];
@@ -161,6 +162,14 @@ export class CredentialGeneratorService {
       .filter((info) => info !== null);
 
     return algorithms;
+  }
+
+  /** Look up the metadata for a specific generator algorithm
+   *  @param id identifies the algorithm
+   *  @returns the requested metadata, or `null` if the metadata wasn't found.
+   */
+  algorithm(id: CredentialAlgorithm): CredentialGeneratorInfo {
+    return (id === "forwarder" ? null : Generators[id]) ?? null;
   }
 
   /** Get the settings for the provided configuration

@@ -22,22 +22,27 @@
   </bit-section-header>
   <div class="tw-mb-4">
     <bit-card>
-      <form class="box" [formGroup]="algorithm" class="tw-container">
-        <bit-select [items]="credentialTypes$ | async" formControlName="credentialType">
-        </bit-select>
+      <form class="box" [formGroup]="credential" class="tw-container">
+        <bit-form-field>
+          <bit-label>{{ "type" | i18n }}</bit-label>
+          <bit-select [items]="typeOptions$ | async" formControlName="type"> </bit-select>
+          <bit-hint *ngIf="!!(credentialTypeHint$ | async)">{{
+            credentialTypeHint$ | async
+          }}</bit-hint>
+        </bit-form-field>
       </form>
       <tools-catchall-settings
-        *ngIf="(credentialType$ | async) === 'catchall'"
+        *ngIf="(algorithm$ | async)?.id === 'catchall'"
         [userId]="this.userId$ | async"
         (onUpdated)="generate$.next()"
       />
       <tools-subaddress-settings
-        *ngIf="(credentialType$ | async) === 'subaddress'"
+        *ngIf="(algorithm$ | async)?.id === 'subaddress'"
         [userId]="this.userId$ | async"
         (onUpdated)="generate$.next()"
       />
       <tools-username-settings
-        *ngIf="(credentialType$ | async) === 'username'"
+        *ngIf="(algorithm$ | async)?.id === 'username'"
         [userId]="this.userId$ | async"
         (onUpdated)="generate$.next()"
       />
