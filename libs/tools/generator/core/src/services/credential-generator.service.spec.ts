@@ -73,6 +73,7 @@ const SomeConfiguration: CredentialGeneratorConfiguration<SomeSettings, SomePoli
   id: SomeAlgorithm,
   category: SomeCategory,
   nameKey: SomeNameKey,
+  onlyOnRequest: false,
   engine: {
     create: (randomizer) => {
       return {
