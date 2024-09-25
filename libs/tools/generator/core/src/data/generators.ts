@@ -4,7 +4,15 @@ import { IdentityConstraint } from "@bitwarden/common/tools/state/identity-state
 
 import { Randomizer } from "../abstractions";
 import { EmailRandomizer, PasswordRandomizer, UsernameRandomizer } from "../engine";
-import { DefaultPolicyEvaluator } from "../policies";
+import {
+  DefaultPolicyEvaluator,
+  DynamicPasswordPolicyConstraints,
+  PassphraseGeneratorOptionsEvaluator,
+  passphraseLeastPrivilege,
+  PassphrasePolicyConstraints,
+  PasswordGeneratorOptionsEvaluator,
+  passwordLeastPrivilege,
+} from "../policies";
 import {
   CATCHALL_SETTINGS,
   EFF_USERNAME_SETTINGS,
@@ -32,7 +40,6 @@ import { DefaultPassphraseGenerationOptions } from "./default-passphrase-generat
 import { DefaultPasswordBoundaries } from "./default-password-boundaries";
 import { DefaultPasswordGenerationOptions } from "./default-password-generation-options";
 import { DefaultSubaddressOptions } from "./default-subaddress-generator-options";
-import { Policies } from "./policies";
 
 const PASSPHRASE = Object.freeze({
   id: "passphrase",
@@ -55,7 +62,17 @@ const PASSPHRASE = Object.freeze({
     },
     account: PASSPHRASE_SETTINGS,
   },
-  policy: Policies.Passphrase,
+  policy: {
+    type: PolicyType.PasswordGenerator,
+    disabledValue: Object.freeze({
+      minNumberWords: 0,
+      capitalize: false,
+      includeNumber: false,
+    }),
+    combine: passphraseLeastPrivilege,
+    createEvaluator: (policy) => new PassphraseGeneratorOptionsEvaluator(policy),
+    toConstraints: (policy) => new PassphrasePolicyConstraints(policy),
+  },
 } satisfies CredentialGeneratorConfiguration<
   PassphraseGenerationOptions,
   PassphraseGeneratorPolicy
@@ -89,7 +106,21 @@ const PASSWORD = Object.freeze({
     },
     account: PASSWORD_SETTINGS,
   },
-  policy: Policies.Password,
+  policy: {
+    type: PolicyType.PasswordGenerator,
+    disabledValue: Object.freeze({
+      minLength: 0,
+      useUppercase: false,
+      useLowercase: false,
+      useNumbers: false,
+      numberCount: 0,
+      useSpecial: false,
+      specialCount: 0,
+    }),
+    combine: passwordLeastPrivilege,
+    createEvaluator: (policy) => new PasswordGeneratorOptionsEvaluator(policy),
+    toConstraints: (policy) => new DynamicPasswordPolicyConstraints(policy),
+  },
 } satisfies CredentialGeneratorConfiguration<PasswordGenerationOptions, PasswordGeneratorPolicy>);
 
 const USERNAME = Object.freeze({
