@@ -3,8 +3,8 @@ import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
   combineLatestWith,
+  distinctUntilChanged,
   filter,
-  first,
   map,
   ReplaySubject,
   Subject,
@@ -156,7 +156,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     // generate on load unless the generator prohibits it
     this.algorithm$
       .pipe(
-        first(),
+        distinctUntilChanged((prev, next) => prev.id === next.id),
         filter((a) => !a.onlyOnRequest),
         takeUntil(this.destroyed),
       )
