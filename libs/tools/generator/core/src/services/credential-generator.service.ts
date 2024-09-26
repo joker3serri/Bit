@@ -12,7 +12,8 @@ import {
   map,
   Observable,
   race,
-  skip,
+  share,
+  skipUntil,
   switchMap,
   takeUntil,
   withLatestFrom,
@@ -99,9 +100,15 @@ export class CredentialGeneratorService {
     // as they become available.
     let readyOn$: Observable<any> = null;
     if (dependencies?.on$) {
+      const NO_EMISSIONS = {};
+      const ready$ = combineLatest([settings$, request$]).pipe(
+        first(null, NO_EMISSIONS),
+        filter((value) => value !== NO_EMISSIONS),
+        share(),
+      );
       readyOn$ = concat(
-        dependencies.on$?.pipe(switchMap(() => combineLatest([settings$, request$]).pipe(first()))),
-        dependencies.on$.pipe(skip(1)),
+        dependencies.on$?.pipe(switchMap(() => ready$)),
+        dependencies.on$.pipe(skipUntil(ready$)),
       );
     }
 
