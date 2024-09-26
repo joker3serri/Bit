@@ -5,6 +5,7 @@ import {
   distinctUntilChanged,
   from,
   map,
+  merge,
   Observable,
   shareReplay,
   startWith,
@@ -47,27 +48,25 @@ export class SendItemsService {
     this._searchText$,
     this.sendListFiltersService.filterFunction$,
   ]).pipe(
-    tap(() => this._sendsLoading$.next()),
+    tap(() => {
+      this._sendsLoading$.next();
+    }),
     map(([sends, searchText, filterFunction]): [SendView[], string] => [
       filterFunction(sends),
       searchText,
     ]),
     map(([sends, searchText]) => this.searchService.searchSends(sends, searchText)),
     map((sends) => sends.sort((a, b) => a.name.localeCompare(b.name))),
-    tap(() => this._sendsLoading$.complete()),
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
   /**
    * Observable that indicates whether the service is currently loading sends.
    */
-  loading$: Observable<boolean> = this._sendsLoading$.pipe(
-    map(() => true),
-    startWith(true),
-    switchMap(() => this.filteredAndSortedSends$.pipe(map(() => false))),
-    distinctUntilChanged(),
-    shareReplay({ refCount: false, bufferSize: 1 }),
-  );
+  loading$: Observable<boolean> = merge(
+    this._sendsLoading$.pipe(map(() => true)),
+    this.filteredAndSortedSends$.pipe(map(() => false)),
+  ).pipe(startWith(true), distinctUntilChanged(), shareReplay({ refCount: false, bufferSize: 1 }));
 
   /**
    * Observable that indicates whether a filter is currently applied to the sends.

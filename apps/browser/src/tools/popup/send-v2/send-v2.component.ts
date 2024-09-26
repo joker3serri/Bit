@@ -54,8 +54,8 @@ export class SendV2Component implements OnInit, OnDestroy {
   sendState = SendState;
 
   protected listState: SendState | null = null;
-  protected sendsLoading$ = this.sendItemsService.loading$;
   protected sends$ = this.sendItemsService.filteredAndSortedSends$;
+  protected sendsLoading$ = this.sendItemsService.loading$;
   protected title: string = "allSends";
   protected noItemIcon = NoSendsIcon;
   protected noResultsIcon = Icons.NoResults;
