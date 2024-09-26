@@ -54,15 +54,20 @@ export class SendItemsService {
     ]),
     map(([sends, searchText]) => this.searchService.searchSends(sends, searchText)),
     map((sends) => sends.sort((a, b) => a.name.localeCompare(b.name))),
+    tap(() => this._sendsLoading$.complete()),
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
   /**
    * Observable that indicates whether the service is currently loading sends.
    */
-  loading$: Observable<boolean> = this._sendsLoading$
-    .pipe(map(() => true))
-    .pipe(startWith(true), distinctUntilChanged(), shareReplay({ refCount: false, bufferSize: 1 }));
+  loading$: Observable<boolean> = this._sendsLoading$.pipe(
+    map(() => true),
+    startWith(true),
+    switchMap(() => this.filteredAndSortedSends$.pipe(map(() => false))),
+    distinctUntilChanged(),
+    shareReplay({ refCount: false, bufferSize: 1 }),
+  );
 
   /**
    * Observable that indicates whether a filter is currently applied to the sends.
