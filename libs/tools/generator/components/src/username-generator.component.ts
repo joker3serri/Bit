@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } fro
 import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
-  combineLatestWith,
   distinctUntilChanged,
   filter,
   map,
@@ -10,6 +9,7 @@ import {
   Subject,
   switchMap,
   takeUntil,
+  withLatestFrom,
 } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -121,7 +121,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     // assume the last-visible generator algorithm is the user's preferred one
     const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
     this.credential.valueChanges
-      .pipe(combineLatestWith(preferences), takeUntil(this.destroyed))
+      .pipe(withLatestFrom(preferences), takeUntil(this.destroyed))
       .subscribe(([{ type }, preference]) => {
         if (isEmailAlgorithm(type)) {
           preference.email.algorithm = type;
