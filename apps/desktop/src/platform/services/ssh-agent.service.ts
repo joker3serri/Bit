@@ -35,7 +35,7 @@ import { DesktopSettingsService } from "./desktop-settings.service";
 })
 export class SshAgentService implements OnDestroy {
   SSH_REFRESH_INTERVAL = 1000;
-  SSH_VAULT_UNLOCK_REQUEST_TIMEOUT = 1000 * 60 * 5;
+  SSH_VAULT_UNLOCK_REQUEST_TIMEOUT = 1000 * 60;
   SSH_REQUEST_UNLOCK_POLLING_INTERVAL = 100;
 
   private destroy$ = new Subject<void>();
@@ -106,6 +106,15 @@ export class SshAgentService implements OnDestroy {
         concatMap(([message, decryptedCiphers]) => {
           const cipherId = message.cipherId as string;
           const requestId = message.requestId as number;
+
+          if (decryptedCiphers === undefined) {
+            return of(false).pipe(
+              switchMap((result) =>
+                ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result)),
+              ),
+            );
+          }
+
           const cipher = decryptedCiphers.find((cipher) => cipher.id == cipherId);
 
           ipc.platform.focusWindow();
@@ -116,19 +125,14 @@ export class SshAgentService implements OnDestroy {
           );
 
           return dialogRef.closed.pipe(
-            switchMap((result) =>
-              ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result)),
-            ),
+            switchMap((result) => {
+              return ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result));
+            }),
           );
         }),
         takeUntil(this.destroy$),
       )
-      .subscribe({
-        // Please not that any error here will have cause the whole stream to
-        error: (error: unknown) => {
-          this.logService.error("Error processing sshagent.signrequest", error);
-        },
-      });
+      .subscribe();
 
     combineLatest([
       timer(0, this.SSH_REFRESH_INTERVAL),
