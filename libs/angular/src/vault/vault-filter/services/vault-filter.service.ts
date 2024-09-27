@@ -93,7 +93,7 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
     } else {
       collections = storedCollections;
     }
-    const nestedCollections = await this.collectionService.getAllNested(collections);
+    const nestedCollections = this.collectionService.getAllNested(collections);
     return new DynamicTreeNode<CollectionView>({
       fullList: collections,
       nestedList: nestedCollections,

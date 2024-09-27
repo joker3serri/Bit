@@ -13,6 +13,7 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Collection } from "@bitwarden/common/vault/models/domain/collection";
+import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
@@ -29,7 +30,7 @@ describe("VaultPopupListFiltersService", () => {
 
   const collectionService = {
     decryptedCollections$,
-    getAllNested: () => Promise.resolve([]),
+    getAllNested: () => [] as TreeNode<CollectionView>[],
   } as unknown as CollectionService;
 
   const folderService = {
@@ -58,7 +59,7 @@ describe("VaultPopupListFiltersService", () => {
     policyAppliesToActiveUser$.next(false);
     policyService.policyAppliesToActiveUser$.mockClear();
 
-    collectionService.getAllNested = () => Promise.resolve([]);
+    collectionService.getAllNested = () => [] as TreeNode<CollectionView>[];
     TestBed.configureTestingModule({
       providers: [
         {
@@ -278,13 +279,11 @@ describe("VaultPopupListFiltersService", () => {
       decryptedCollections$.next(testCollections);
 
       collectionService.getAllNested = () =>
-        Promise.resolve(
-          testCollections.map((c) => ({
-            children: [],
-            node: c,
-            parent: null,
-          })),
-        );
+        testCollections.map((c) => ({
+          children: [],
+          node: c,
+          parent: null,
+        }));
     });
 
     it("returns all collections", (done) => {

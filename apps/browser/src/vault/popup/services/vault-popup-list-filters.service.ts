@@ -1,15 +1,7 @@
 import { Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder } from "@angular/forms";
-import {
-  combineLatest,
-  distinctUntilChanged,
-  map,
-  Observable,
-  startWith,
-  switchMap,
-  tap,
-} from "rxjs";
+import { combineLatest, distinctUntilChanged, map, Observable, startWith, tap } from "rxjs";
 
 import { DynamicTreeNode } from "@bitwarden/angular/vault/vault-filter/models/dynamic-tree-node.model";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -316,8 +308,8 @@ export class VaultPopupListFiltersService {
 
       return collections;
     }),
-    switchMap(async (collections) => {
-      const nestedCollections = await this.collectionService.getAllNested(collections);
+    map((collections) => {
+      const nestedCollections = this.collectionService.getAllNested(collections);
 
       return new DynamicTreeNode<CollectionView>({
         fullList: collections,

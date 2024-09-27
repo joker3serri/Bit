@@ -25,8 +25,8 @@ export abstract class CollectionService {
     collections: Collection[],
     orgKeys?: Record<OrganizationId, OrgKey>,
   ) => Promise<CollectionView[]>;
-  getAllNested: (collections?: CollectionView[]) => Promise<TreeNode<CollectionView>[]>;
-  getNested: (id: string) => Promise<TreeNode<CollectionView>>;
+  getAllNested: (collections: CollectionView[]) => TreeNode<CollectionView>[];
+  getNested: (collections: CollectionView[], id: string) => TreeNode<CollectionView>;
   upsert: (collection: CollectionData | CollectionData[]) => Promise<any>;
   replace: (collections: { [id: string]: CollectionData }, userId: UserId) => Promise<any>;
   clear: (userId?: string) => Promise<void>;

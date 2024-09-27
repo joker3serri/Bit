@@ -1,6 +1,7 @@
 import { Location } from "@angular/common";
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/vault/components/vault-items.component";
@@ -134,7 +135,8 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnIn
         this.showVaultFilter = false;
         this.collectionId = params.collectionId;
         this.searchPlaceholder = this.i18nService.t("searchCollection");
-        const collectionNode = await this.collectionService.getNested(this.collectionId);
+        const allCollections = await firstValueFrom(this.collectionService.decryptedCollections$);
+        const collectionNode = this.collectionService.getNested(allCollections, this.collectionId);
         if (collectionNode != null && collectionNode.node != null) {
           this.groupingTitle = collectionNode.node.name;
           this.nestedCollections =

@@ -141,10 +141,7 @@ export class CollectionService implements CollectionServiceAbstraction {
     return decCollections.sort(Utils.getSortFunction(this.i18nService, "name"));
   }
 
-  async getAllNested(collections: CollectionView[] = null): Promise<TreeNode<CollectionView>[]> {
-    if (collections == null) {
-      collections = await firstValueFrom(this.decryptedCollections$);
-    }
+  getAllNested(collections: CollectionView[]): TreeNode<CollectionView>[] {
     const nodes: TreeNode<CollectionView>[] = [];
     collections.forEach((c) => {
       const collectionCopy = new CollectionView();
@@ -160,9 +157,12 @@ export class CollectionService implements CollectionServiceAbstraction {
    * @deprecated August 30 2022: Moved to new Vault Filter Service
    * Remove when Desktop and Browser are updated
    */
-  async getNested(id: string): Promise<TreeNode<CollectionView>> {
-    const collections = await this.getAllNested();
-    return ServiceUtils.getTreeNodeObjectFromList(collections, id) as TreeNode<CollectionView>;
+  getNested(collections: CollectionView[], id: string): TreeNode<CollectionView> {
+    const nestedCollections = this.getAllNested(collections);
+    return ServiceUtils.getTreeNodeObjectFromList(
+      nestedCollections,
+      id,
+    ) as TreeNode<CollectionView>;
   }
 
   async upsert(toUpdate: CollectionData | CollectionData[]): Promise<void> {
