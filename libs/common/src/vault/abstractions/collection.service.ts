@@ -11,7 +11,7 @@ export abstract class CollectionService {
   encryptedCollections$: Observable<Collection[]>;
   decryptedCollections$: Observable<CollectionView[]>;
 
-  clearActiveUserCache: () => Promise<void>;
+  clearUserCache: (userId: UserId) => Promise<void>;
   encrypt: (model: CollectionView) => Promise<Collection>;
   /**
    * @deprecated This method will soon be made private, use `decryptedCollections$` instead.

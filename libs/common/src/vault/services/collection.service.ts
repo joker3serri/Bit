@@ -89,8 +89,34 @@ export class CollectionService implements CollectionServiceAbstraction {
     this.decryptedCollections$ = this.decryptedCollectionDataState.state$;
   }
 
-  async clearActiveUserCache(): Promise<void> {
-    await this.decryptedCollectionDataState.forceValue(null);
+  /**
+   * @returns a SingleUserState for encrypted collection data.
+   */
+  private encryptedCollectionState$(userId: UserId) {
+    return this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY);
+  }
+
+  /**
+   * @returns a SingleUserState for decrypted collection data.
+   */
+  private decryptedCollectionState$(userId: UserId): DerivedState<CollectionView[]> {
+    const encryptedCollectionsWithKeys = this.encryptedCollectionState$(userId).combinedState$.pipe(
+      switchMap(([userId, collectionData]) =>
+        combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
+      ),
+    );
+
+    return this.stateProvider.getDerived(
+      encryptedCollectionsWithKeys,
+      DECRYPTED_COLLECTION_DATA_KEY,
+      {
+        collectionService: this,
+      },
+    );
+  }
+
+  async clearUserCache(userId: UserId): Promise<void> {
+    await this.decryptedCollectionState$(userId).forceValue(null);
   }
 
   async encrypt(model: CollectionView): Promise<Collection> {
