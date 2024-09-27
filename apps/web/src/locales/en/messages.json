@@ -2233,6 +2233,9 @@
   "noWeakPasswords": {
     "message": "No items in your vault have weak passwords."
   },
+  "weakness": {
+    "message": "Weakness"
+  },
   "reusedPasswordsReport": {
     "message": "Reused passwords"
   },
