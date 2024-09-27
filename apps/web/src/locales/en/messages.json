@@ -2264,6 +2264,9 @@
   "noReusedPasswords": {
     "message": "No logins in your vault have passwords that are being reused."
   },
+  "timesReused": {
+    "message": "Times reused"
+  },
   "reusedXTimes": {
     "message": "Reused $COUNT$ times",
     "placeholders": {
