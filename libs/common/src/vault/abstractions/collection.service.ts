@@ -14,7 +14,8 @@ export abstract class CollectionService {
   clearActiveUserCache: () => Promise<void>;
   encrypt: (model: CollectionView) => Promise<Collection>;
   /**
-   * Emits the decrypted collections for the specified CollectionIds only
+   * Returns an observable that emits the decrypted collections for the specified CollectionIds.
+   * Uses state from {@link decryptedCollections$}.
    */
   decryptedCollectionViews$: (ids: CollectionId[]) => Observable<CollectionView[]>;
   /**
@@ -25,7 +26,13 @@ export abstract class CollectionService {
     collections: Collection[],
     orgKeys?: Record<OrganizationId, OrgKey>,
   ) => Promise<CollectionView[]>;
+  /**
+   * Transforms the input CollectionViews into TreeNodes
+   */
   getAllNested: (collections: CollectionView[]) => TreeNode<CollectionView>[];
+  /**
+   * Transforms the input CollectionViews into TreeNodes and then returns the Treenode with the specified id
+   */
   getNested: (collections: CollectionView[], id: string) => TreeNode<CollectionView>;
   upsert: (collection: CollectionData | CollectionData[]) => Promise<any>;
   replace: (collections: { [id: string]: CollectionData }, userId: UserId) => Promise<any>;

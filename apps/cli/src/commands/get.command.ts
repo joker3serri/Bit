@@ -25,7 +25,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
-import { OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -96,7 +96,7 @@ export class GetCommand extends DownloadCommand {
       case "folder":
         return await this.getFolder(id);
       case "collection":
-        return await this.getCollection(id);
+        return await this.getCollection(id as CollectionId);
       case "org-collection":
         return await this.getOrganizationCollection(id, normalizedOptions);
       case "organization":
@@ -407,7 +407,7 @@ export class GetCommand extends DownloadCommand {
     return Response.success(res);
   }
 
-  private async getCollection(id: string) {
+  private async getCollection(id: CollectionId) {
     let decCollection: CollectionView = null;
     if (Utils.isGuid(id)) {
       const collection = (await firstValueFrom(this.collectionService.encryptedCollections$)).find(
