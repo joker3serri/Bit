@@ -2,11 +2,15 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { map } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
+import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import {
   CardComponent,
@@ -17,6 +21,14 @@ import {
   SectionHeaderComponent,
   TypographyModule,
 } from "@bitwarden/components";
+import {
+  createRandomizer,
+  CredentialGeneratorService,
+  Generators,
+  Randomizer,
+} from "@bitwarden/generator-core";
+
+const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
 
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
 import { SendFormContainer } from "../../send-form-container";
@@ -36,6 +48,18 @@ import { SendFormContainer } from "../../send-form-container";
     IconButtonModule,
     CheckboxModule,
     CommonModule,
+  ],
+  providers: [
+    safeProvider({
+      provide: RANDOMIZER,
+      useFactory: createRandomizer,
+      deps: [CryptoService],
+    }),
+    safeProvider({
+      useClass: CredentialGeneratorService,
+      provide: CredentialGeneratorService,
+      deps: [RANDOMIZER, StateProvider, PolicyService],
+    }),
   ],
 })
 export class SendOptionsComponent implements OnInit {
@@ -72,6 +96,7 @@ export class SendOptionsComponent implements OnInit {
     private sendFormContainer: SendFormContainer,
     private formBuilder: FormBuilder,
     private policyService: PolicyService,
+    private generatorService: CredentialGeneratorService,
   ) {
     this.sendFormContainer.registerChildForm("sendOptionsForm", this.sendOptionsForm);
     this.policyService
@@ -97,6 +122,16 @@ export class SendOptionsComponent implements OnInit {
       });
     });
   }
+
+  generatePassword = async () => {
+    const generatedCredential = await firstValueFrom(
+      this.generatorService.generate$(Generators.Password),
+    );
+
+    this.sendOptionsForm.patchValue({
+      password: generatedCredential.credential,
+    });
+  };
 
   ngOnInit() {
     if (this.sendFormContainer.originalSendView) {
