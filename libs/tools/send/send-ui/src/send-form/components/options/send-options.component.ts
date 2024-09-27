@@ -5,12 +5,8 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
-import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
-import { StateProvider } from "@bitwarden/common/platform/state";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import {
   CardComponent,
@@ -21,14 +17,7 @@ import {
   SectionHeaderComponent,
   TypographyModule,
 } from "@bitwarden/components";
-import {
-  createRandomizer,
-  CredentialGeneratorService,
-  Generators,
-  Randomizer,
-} from "@bitwarden/generator-core";
-
-const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
+import { CredentialGeneratorService, Generators } from "@bitwarden/generator-core";
 
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
 import { SendFormContainer } from "../../send-form-container";
@@ -48,18 +37,6 @@ import { SendFormContainer } from "../../send-form-container";
     IconButtonModule,
     CheckboxModule,
     CommonModule,
-  ],
-  providers: [
-    safeProvider({
-      provide: RANDOMIZER,
-      useFactory: createRandomizer,
-      deps: [CryptoService],
-    }),
-    safeProvider({
-      useClass: CredentialGeneratorService,
-      provide: CredentialGeneratorService,
-      deps: [RANDOMIZER, StateProvider, PolicyService],
-    }),
   ],
 })
 export class SendOptionsComponent implements OnInit {
