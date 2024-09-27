@@ -141,14 +141,6 @@ export class CollectionService implements CollectionServiceAbstraction {
     return decCollections.sort(Utils.getSortFunction(this.i18nService, "name"));
   }
 
-  async get(id: string): Promise<Collection> {
-    return (
-      (await firstValueFrom(
-        this.encryptedCollections$.pipe(map((cs) => cs.find((c) => c.id === id))),
-      )) ?? null
-    );
-  }
-
   async getAllDecrypted(): Promise<CollectionView[]> {
     return await firstValueFrom(this.decryptedCollections$);
   }

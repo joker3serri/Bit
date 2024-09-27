@@ -22,7 +22,6 @@ export abstract class CollectionService {
     collections: Collection[],
     orgKeys?: Record<OrganizationId, OrgKey>,
   ) => Promise<CollectionView[]>;
-  get: (id: string) => Promise<Collection>;
   getAllDecrypted: () => Promise<CollectionView[]>;
   getAllNested: (collections?: CollectionView[]) => Promise<TreeNode<CollectionView>[]>;
   getNested: (id: string) => Promise<TreeNode<CollectionView>>;

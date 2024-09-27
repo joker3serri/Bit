@@ -410,7 +410,9 @@ export class GetCommand extends DownloadCommand {
   private async getCollection(id: string) {
     let decCollection: CollectionView = null;
     if (Utils.isGuid(id)) {
-      const collection = await this.collectionService.get(id);
+      const collection = (await firstValueFrom(this.collectionService.encryptedCollections$)).find(
+        (c) => c.id === id,
+      );
       if (collection != null) {
         const orgKeys = await firstValueFrom(this.cryptoService.activeUserOrgKeys$);
         decCollection = await collection.decrypt(
