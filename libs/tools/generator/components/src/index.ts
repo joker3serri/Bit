@@ -1,4 +1,5 @@
 export { CatchallSettingsComponent } from "./catchall-settings.component";
+export { CredentialGeneratorComponent } from "./credential-generator.component";
 export { CredentialGeneratorHistoryComponent } from "./credential-generator-history.component";
 export { EmptyCredentialHistoryComponent } from "./empty-credential-history.component";
 export { PassphraseSettingsComponent } from "./passphrase-settings.component";
