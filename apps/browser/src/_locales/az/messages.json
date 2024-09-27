@@ -128,6 +128,21 @@
   "copyLicenseNumber": {
     "message": "Lisenziya nömrəsini kopyala"
   },
+  "copyCustomField": {
+    "message": "$FIELD$ - kopyala",
+    "placeholders": {
+      "field": {
+        "content": "$1",
+        "example": "Custom field label"
+      }
+    }
+  },
+  "copyWebsite": {
+    "message": "Veb saytı kopyala"
+  },
+  "copyNotes": {
+    "message": "Notları kopyala"
+  },
   "autoFill": {
     "message": "Avto-doldurma"
   },
@@ -178,6 +193,18 @@
   },
   "addItem": {
     "message": "Element əlavə et"
+  },
+  "accountEmail": {
+    "message": "Hesab e-poçtu"
+  },
+  "requestHint": {
+    "message": "İpucu tələb et"
+  },
+  "requestPasswordHint": {
+    "message": "Parol ipucusu tələb et"
+  },
+  "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
+    "message": "Hesabınızın e-poçt ünvanını daxil edin və parolunuz üçün ipucu sizə göndəriləcək"
   },
   "passwordHint": {
     "message": "Parol ipucu"
@@ -308,7 +335,7 @@
     "message": "Qovluq adı"
   },
   "folderHintText": {
-    "message": "Nest a folder by adding the parent folder's name followed by a “/”. Example: Social/Forums"
+    "message": "Ana qovluğun adından sonra \"/\" əlavə edərək qovluğu ardıcıl yerləşdirin. Nümunə: Social/Forums"
   },
   "noFoldersAdded": {
     "message": "Heç bir qovluq əlavə edilmədi"
@@ -384,16 +411,56 @@
     "message": "Minimal parol uzunluğu"
   },
   "uppercase": {
-    "message": "Böyük hərf (A-Z)"
+    "message": "Böyük hərf (A-Z)",
+    "description": "deprecated. Use uppercaseLabel instead."
   },
   "lowercase": {
-    "message": "Kiçik hərf (a-z)"
+    "message": "Kiçik hərf (a-z)",
+    "description": "deprecated. Use lowercaseLabel instead."
   },
   "numbers": {
-    "message": "Rəqəmlər (0-9)"
+    "message": "Rəqəmlər (0-9)",
+    "description": "deprecated. Use numbersLabel instead."
   },
   "specialCharacters": {
-    "message": "Xüsusi simvollar (!@#$%^&*)"
+    "message": "Xüsusi simvollar (!@#$%^&*)",
+    "description": "deprecated. Use specialCharactersLabel instead."
+  },
+  "include": {
+    "message": "Daxil et",
+    "description": "Card header for password generator include block"
+  },
+  "uppercaseDescription": {
+    "message": "Böyük hərf xarakterlərini daxil et",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Kiçik hərf xarakterlərini daxil et",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Rəqəmləri daxil et",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Xüsusi xarakterləri daxil et",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
   },
   "numWords": {
     "message": "Söz sayı"
@@ -415,7 +482,16 @@
     "message": "Minimum simvol"
   },
   "avoidAmbChar": {
-    "message": "Anlaşılmaz simvollardan çəkinin"
+    "message": "Anlaşılmaz simvollardan çəkinin",
+    "description": "deprecated. Use avoidAmbiguous instead."
+  },
+  "avoidAmbiguous": {
+    "message": "Anlaşılmaz xarakterlərdən çəkin",
+    "description": "Label for the avoid ambiguous characters checkbox."
+  },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
   },
   "searchVault": {
     "message": "Anbarda axtar"
@@ -458,6 +534,9 @@
   },
   "notes": {
     "message": "Notlar"
+  },
+  "privateNote": {
+    "message": "Şəxsi not"
   },
   "note": {
     "message": "Not"
@@ -504,6 +583,9 @@
   "sessionTimeoutHeader": {
     "message": "Seans vaxt bitməsi"
   },
+  "vaultTimeoutHeader": {
+    "message": "Anbar vaxtının bitməsi"
+  },
   "otherOptions": {
     "message": "Digər seçimlər"
   },
@@ -543,6 +625,9 @@
   },
   "vaultTimeout": {
     "message": "Anbara müraciət bitəcək"
+  },
+  "vaultTimeout1": {
+    "message": "Vaxt bitmə"
   },
   "lockNow": {
     "message": "İndi kilidlə"
@@ -637,6 +722,12 @@
   },
   "newAccountCreated": {
     "message": "Yeni hesabınız yaradıldı! İndi giriş edə bilərsiniz."
+  },
+  "newAccountCreated2": {
+    "message": "Yeni hesabınız yaradıldı!"
+  },
+  "youHaveBeenLoggedIn": {
+    "message": "Giriş etdiniz!"
   },
   "youSuccessfullyLoggedIn": {
     "message": "Uğurla giriş etdiniz"
@@ -737,6 +828,12 @@
   },
   "twoStepLoginConfirmation": {
     "message": "İki addımlı giriş, güvənlik açarı, kimlik doğrulayıcı tətbiq, SMS, telefon zəngi və ya e-poçt kimi digər cihazlarla girişinizi doğrulamanızı tələb edərək hesabınızı daha da güvənli edir. İki addımlı giriş, bitwarden.com veb anbarında qurula bilər. Veb saytı indi ziyarət etmək istəyirsiniz?"
+  },
+  "twoStepLoginConfirmationContent": {
+    "message": "Bitwarden veb tətbiqində iki addımlı girişi quraraq hesabınızı daha güvənli edin."
+  },
+  "twoStepLoginConfirmationTitle": {
+    "message": "Veb tətbiqlə davam edilsin?"
   },
   "editedFolder": {
     "message": "Qovluğ saxlanıldı"
@@ -1045,6 +1142,9 @@
   },
   "file": {
     "message": "Fayl"
+  },
+  "fileToShare": {
+    "message": "Paylaşılacaq fayl"
   },
   "selectFile": {
     "message": "Bir fayl seçin"
@@ -1745,6 +1845,15 @@
   "noPasswordsInList": {
     "message": "Sadalanacaq heç bir parol yoxdur."
   },
+  "clearHistory": {
+    "message": "Tarixçəni təmizlə"
+  },
+  "noPasswordsToShow": {
+    "message": "Göstəriləcək parol yoxdur."
+  },
+  "noRecentlyGeneratedPassword": {
+    "message": "Təzəlikcə parol yaratmamısınız."
+  },
   "remove": {
     "message": "Çıxart"
   },
@@ -1803,8 +1912,17 @@
   "unlockWithPin": {
     "message": "PIN ilə kilidi açın"
   },
+  "setYourPinTitle": {
+    "message": "PIN təyin et"
+  },
+  "setYourPinButton": {
+    "message": "PIN təyin et"
+  },
   "setYourPinCode": {
     "message": "Bitwarden-in kilidini açmaq üçün PIN kodunuzu ayarlayın. Tətbiqdən tam çıxış etdikdə PIN ayarlarınız sıfırlanacaq."
+  },
+  "setYourPinCode1": {
+    "message": "Bitwarden kilidini açmaq üçün ana parolunuzun əvəzinə PIN-iniz istifadə ediləcək. Bitwarden-dən tamamilə çıxış etdikdə PIN-iniz sıfırlanacaq."
   },
   "pinRequired": {
     "message": "PIN kod lazımdır."
@@ -1826,6 +1944,9 @@
   },
   "lockWithMasterPassOnRestart": {
     "message": "Brauzer yenidən başladılanda ana parolla kilidlə"
+  },
+  "lockWithMasterPassOnRestart1": {
+    "message": "Brauzer yenidən başladılanda ana parolu tələb et"
   },
   "selectOneCollection": {
     "message": "Ən azı bir kolleksiya seçməlisiniz."
@@ -1865,9 +1986,12 @@
   "vaultTimeoutAction": {
     "message": "Anbar vaxtının bitmə əməliyyatı"
   },
+  "vaultTimeoutAction1": {
+    "message": "Vaxt bitmə əməliyyatı"
+  },
   "lock": {
     "message": "Kilidlə",
-    "description": "Verb form: to make secure or inaccesible by"
+    "description": "Verb form: to make secure or inaccessible by"
   },
   "trash": {
     "message": "Tullantı qutusu",
@@ -2059,11 +2183,11 @@
   "nativeMessagingWrongUserTitle": {
     "message": "Hesablar uyuşmur"
   },
-  "nativeMessagingWrongUserKeyDesc": {
-    "message": "Biometrik kilidini açma uğursuz oldu. Biometrik sirr açarı anbarın kilidini aça bilmədi. Lütfən biometriki yenidən qurmağa çalışın."
-  },
   "nativeMessagingWrongUserKeyTitle": {
     "message": "Biometrik açarı uyuşmazlığı"
+  },
+  "nativeMessagingWrongUserKeyDesc": {
+    "message": "Biometrik kilidini açma uğursuz oldu. Biometrik sirr açarı anbarın kilidini aça bilmədi. Lütfən biometriki yenidən qurmağa çalışın."
   },
   "biometricsNotEnabledTitle": {
     "message": "Biometriklər qurulmayıb"
@@ -2082,6 +2206,12 @@
   },
   "biometricsNotUnlockedDesc": {
     "message": "Lütfən bu istifadəçinin kilidini masaüstü tətbiqində açıb yenidən sınayın."
+  },
+  "biometricsNotAvailableTitle": {
+    "message": "Biometrik kilidi açma əlçatmazdır"
+  },
+  "biometricsNotAvailableDesc": {
+    "message": "Biometrik kilidi açma hazırda əlçatmazdır. Lütfən daha sonra yenidən sınayın."
   },
   "biometricsFailedTitle": {
     "message": "Biometrik uğursuzdur"
@@ -2144,8 +2274,29 @@
   "excludedDomainsSavedSuccess": {
     "message": "İstisna domen dəyişikliyi saxlanıldı"
   },
+  "limitSendViews": {
+    "message": "Baxışları limitlə"
+  },
+  "limitSendViewsHint": {
+    "message": "Limitə çatdıqdan sonra bu Send-ə heç kim baxa bilməz.",
+    "description": "Displayed under the limit views field on Send"
+  },
+  "limitSendViewsCount": {
+    "message": "$ACCESSCOUNT$ baxış qaldı",
+    "description": "Displayed under the limit views field on Send",
+    "placeholders": {
+      "accessCount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "send": {
     "message": "Send",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendDetails": {
+    "message": "Send detalları",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "searchSends": {
@@ -2159,12 +2310,18 @@
   "sendTypeText": {
     "message": "Mətn"
   },
+  "sendTypeTextToShare": {
+    "message": "Paylaşılacaq mətn"
+  },
   "sendTypeFile": {
     "message": "Fayl"
   },
   "allSends": {
     "message": "Bütün \"Send\"lər",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "hideTextByDefault": {
+    "message": "Mətni ilkin olaraq gizlət"
   },
   "maxAccessCountReached": {
     "message": "Maksimal müraciət sayına çatıldı",
@@ -2239,6 +2396,10 @@
     "message": "\"Send\" göstərilən tarix və saatda birdəfəlik silinəcək.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
+  "deletionDateDescV2": {
+    "message": "Send, bu tarixdə həmişəlik silinəcək.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
   "expirationDate": {
     "message": "Bitmə tarixi"
   },
@@ -2270,6 +2431,10 @@
   },
   "sendPasswordDesc": {
     "message": "İstəyinizə görə istifadəçilərdən bu \"Send\"ə müraciət edərkən parol tələb edə bilərsiniz.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendPasswordDescV2": {
+    "message": "Send-ə baxmaq üçün bu parol tələb edilsin.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
@@ -2377,6 +2542,9 @@
   "hideEmail": {
     "message": "E-poçt ünvanımı alıcılardan gizlət."
   },
+  "hideYourEmail": {
+    "message": "E-poçt ünvanınız baxanlardan gizlədilsin."
+  },
   "sendOptionsPolicyInEffect": {
     "message": "Bir və ya daha çox təşkilat siyasətləri \"Send\" seçimlərinizə təsir edir."
   },
@@ -2444,8 +2612,37 @@
   "minutes": {
     "message": "Dəqiqə"
   },
+  "vaultTimeoutPolicyAffectingOptions": {
+    "message": "Müəssisə siyasət tələbləri, vaxt bitmə seçimlərinizə tətbiq edildi"
+  },
   "vaultTimeoutPolicyInEffect": {
     "message": "Təşkilatınızın siyasətləri, anbarınızın vaxt bitişinə təsir edir. Anbar vaxt bitişi üçün icazə verilən maksimum vaxt $HOURS$ saat $MINUTES$ dəqiqədir",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyInEffect1": {
+    "message": "Maksimum $HOURS$ saat və $MINUTES$ dəqiqə.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutPolicyMaximumError": {
+    "message": "Vaxt bitməsinə təyin olunan vaxt, təşkilatınız tərəfindən ayarlanan məhdudiyyəti aşır: Maksimum $HOURS$ saat və $MINUTES$ dəqiqə",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -3420,7 +3617,7 @@
   "passkeyFeatureIsNotImplementedForAccountsWithoutMasterPassword": {
     "message": "Başladan saytın tələb etdiyi doğrulama. Bu özəllik, hələlik ana parolu olmayan hesablara tətbiq olunmur."
   },
-  "logInWithPasskey": {
+  "logInWithPasskeyQuestion": {
     "message": "Keçid açarı ilə giriş edilsin?"
   },
   "passkeyAlreadyExists": {
@@ -3432,6 +3629,9 @@
   "noMatchingPasskeyLogin": {
     "message": "Bu sayt üçün uyuşan bir giriş məlumatınız yoxdur."
   },
+  "noMatchingLoginsForSite": {
+    "message": "Bu sayt üçün uyuşan giriş məlumatı yoxdur"
+  },
   "confirm": {
     "message": "Təsdiqlə"
   },
@@ -3441,8 +3641,11 @@
   "savePasskeyNewLogin": {
     "message": "Keçid açarını yeni bir giriş olaraq saxla"
   },
-  "choosePasskey": {
+  "chooseCipherForPasskeySave": {
     "message": "Bu keçid açarını saxlayacaq bir giriş seçin"
+  },
+  "chooseCipherForPasskeyAuth": {
+    "message": "Giriş ediləcək keçid açarını seçin"
   },
   "passkeyItem": {
     "message": "Keçid açarı elementi"
@@ -3639,8 +3842,16 @@
     "message": "Kimlik məlumatları uğurla saxlanıldı!",
     "description": "Notification message for when saving credentials has succeeded."
   },
+  "passwordSaved": {
+    "message": "Parol saxlanıldı!",
+    "description": "Notification message for when saving credentials has succeeded."
+  },
   "updateCipherAttemptSuccess": {
     "message": "Kimlik məlumatları uğurla güncəlləndi!",
+    "description": "Notification message for when updating credentials has succeeded."
+  },
+  "passwordUpdated": {
+    "message": "Parol güncəlləndi!",
     "description": "Notification message for when updating credentials has succeeded."
   },
   "saveCipherAttemptFailed": {
@@ -4228,5 +4439,44 @@
   },
   "enterprisePolicyRequirementsApplied": {
     "message": "Müəssisə siyasət tələbləri bu ayara tətbiq edildi"
+  },
+  "retry": {
+    "message": "Yenidən sına"
+  },
+  "vaultCustomTimeoutMinimum": {
+    "message": "Minimum özəl bitmə vaxtı 1 dəqiqədir."
+  },
+  "additionalContentAvailable": {
+    "message": "Əlavə məzmun əlçatandır"
+  },
+  "fileSavedToDevice": {
+    "message": "Fayl cihazda saxlanıldı. Endirilənləri cihazınızdan idarə edin."
+  },
+  "showCharacterCount": {
+    "message": "Xarakter sayını göstər"
+  },
+  "hideCharacterCount": {
+    "message": "Xarakter sayını gizlət"
+  },
+  "itemsInTrash": {
+    "message": "Tullantıdakı elementlər"
+  },
+  "noItemsInTrash": {
+    "message": "Tullantıda element yoxdur"
+  },
+  "noItemsInTrashDesc": {
+    "message": "Sildiyiniz elementlər burada görünəcək və 30 gün sonra birdəfəlik silinəcək"
+  },
+  "trashWarning": {
+    "message": "Tullantıda 30 gündən çox qalan elementlər avtomatik silinəcək"
+  },
+  "restore": {
+    "message": "Bərpa et"
+  },
+  "deleteForever": {
+    "message": "Həmişəlik sil"
+  },
+  "noEditPermissions": {
+    "message": "Bu elementə düzəliş etmə icazəniz yoxdur"
   }
 }
