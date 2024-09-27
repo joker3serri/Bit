@@ -8,6 +8,7 @@ import { TreeNode } from "../models/domain/tree-node";
 import { CollectionView } from "../models/view/collection.view";
 
 export abstract class CollectionService {
+  encryptedCollections$: Observable<Collection[]>;
   decryptedCollections$: Observable<CollectionView[]>;
 
   clearActiveUserCache: () => Promise<void>;
@@ -22,7 +23,6 @@ export abstract class CollectionService {
     orgKeys?: Record<OrganizationId, OrgKey>,
   ) => Promise<CollectionView[]>;
   get: (id: string) => Promise<Collection>;
-  getAll: () => Promise<Collection[]>;
   getAllDecrypted: () => Promise<CollectionView[]>;
   getAllNested: (collections?: CollectionView[]) => Promise<TreeNode<CollectionView>[]>;
   getNested: (id: string) => Promise<TreeNode<CollectionView>>;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -45,7 +46,7 @@ export class UnsecuredWebsitesReportComponent extends CipherReportComponent impl
 
   async setCiphers() {
     const allCiphers = await this.getAllCiphers();
-    const allCollections = await this.collectionService.getAll();
+    const allCollections = await firstValueFrom(this.collectionService.encryptedCollections$);
     this.filterStatus = [0];
 
     const unsecuredCiphers = allCiphers.filter((c) => {

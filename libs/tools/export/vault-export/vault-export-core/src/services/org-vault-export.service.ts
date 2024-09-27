@@ -215,7 +215,7 @@ export class OrganizationVaultExportService
     const promises = [];
 
     promises.push(
-      this.collectionService.getAll().then((collections) => {
+      firstValueFrom(this.collectionService.encryptedCollections$).then((collections) => {
         encCollections = collections.filter((c) => c.organizationId == organizationId && c.manage);
       }),
     );

@@ -149,10 +149,6 @@ export class CollectionService implements CollectionServiceAbstraction {
     );
   }
 
-  async getAll(): Promise<Collection[]> {
-    return await firstValueFrom(this.encryptedCollections$);
-  }
-
   async getAllDecrypted(): Promise<CollectionView[]> {
     return await firstValueFrom(this.decryptedCollections$);
   }
