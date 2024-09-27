@@ -56,12 +56,6 @@ export class CollectionService implements CollectionServiceAbstraction {
   private decryptedCollectionDataState: DerivedState<CollectionView[]>;
   decryptedCollections$: Observable<CollectionView[]>;
 
-  decryptedCollectionViews$(ids: CollectionId[]): Observable<CollectionView[]> {
-    return this.decryptedCollections$.pipe(
-      map((collections) => collections.filter((c) => ids.includes(c.id as CollectionId))),
-    );
-  }
-
   constructor(
     private cryptoService: CryptoService,
     private encryptService: EncryptService,

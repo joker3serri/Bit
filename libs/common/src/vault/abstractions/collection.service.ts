@@ -14,13 +14,7 @@ export abstract class CollectionService {
   clearActiveUserCache: () => Promise<void>;
   encrypt: (model: CollectionView) => Promise<Collection>;
   /**
-   * Returns an observable that emits the decrypted collections for the specified CollectionIds.
-   * Uses state from {@link decryptedCollections$}.
-   */
-  decryptedCollectionViews$: (ids: CollectionId[]) => Observable<CollectionView[]>;
-  /**
-   * @deprecated This method will soon be made private
-   * See PM-12375
+   * @deprecated This method will soon be made private, use `decryptedCollections$` instead.
    */
   decryptMany: (
     collections: Collection[],
