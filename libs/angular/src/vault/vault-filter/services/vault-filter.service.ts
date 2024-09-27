@@ -86,7 +86,7 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
   }
 
   async buildCollections(organizationId?: string): Promise<DynamicTreeNode<CollectionView>> {
-    const storedCollections = await this.collectionService.getAllDecrypted();
+    const storedCollections = await firstValueFrom(this.collectionService.decryptedCollections$);
     let collections: CollectionView[];
     if (organizationId != null) {
       collections = storedCollections.filter((c) => c.organizationId === organizationId);

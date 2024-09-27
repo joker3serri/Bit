@@ -146,7 +146,7 @@ export class ListCommand {
   }
 
   private async listCollections(options: Options) {
-    let collections = await this.collectionService.getAllDecrypted();
+    let collections = await firstValueFrom(this.collectionService.decryptedCollections$);
 
     if (options.organizationId != null) {
       collections = collections.filter((c) => {

@@ -420,7 +420,7 @@ export class GetCommand extends DownloadCommand {
         );
       }
     } else if (id.trim() !== "") {
-      let collections = await this.collectionService.getAllDecrypted();
+      let collections = await firstValueFrom(this.collectionService.decryptedCollections$);
       collections = CliUtils.searchCollections(collections, id);
       if (collections.length > 1) {
         return Response.multipleResults(collections.map((c) => c.id));

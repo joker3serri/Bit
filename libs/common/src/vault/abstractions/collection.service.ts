@@ -13,6 +13,9 @@ export abstract class CollectionService {
 
   clearActiveUserCache: () => Promise<void>;
   encrypt: (model: CollectionView) => Promise<Collection>;
+  /**
+   * Emits the decrypted collections for the specified CollectionIds only
+   */
   decryptedCollectionViews$: (ids: CollectionId[]) => Observable<CollectionView[]>;
   /**
    * @deprecated This method will soon be made private
@@ -22,7 +25,6 @@ export abstract class CollectionService {
     collections: Collection[],
     orgKeys?: Record<OrganizationId, OrgKey>,
   ) => Promise<CollectionView[]>;
-  getAllDecrypted: () => Promise<CollectionView[]>;
   getAllNested: (collections?: CollectionView[]) => Promise<TreeNode<CollectionView>[]>;
   getNested: (id: string) => Promise<TreeNode<CollectionView>>;
   upsert: (collection: CollectionData | CollectionData[]) => Promise<any>;

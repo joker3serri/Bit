@@ -183,9 +183,13 @@ export class OrganizationVaultExportService
     const promises = [];
 
     promises.push(
-      this.collectionService.getAllDecrypted().then(async (collections) => {
-        decCollections = collections.filter((c) => c.organizationId == organizationId && c.manage);
-      }),
+      await firstValueFrom(this.collectionService.decryptedCollections$).then(
+        async (collections) => {
+          decCollections = collections.filter(
+            (c) => c.organizationId == organizationId && c.manage,
+          );
+        },
+      ),
     );
 
     promises.push(

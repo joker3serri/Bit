@@ -1,4 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
+import { of } from "rxjs";
 
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -161,10 +162,7 @@ describe("ImportService", () => {
     mockCollection1.organizationId = organizationId;
 
     it("passing importTarget adds it to collections", async () => {
-      collectionService.getAllDecrypted.mockResolvedValue([
-        mockImportTargetCollection,
-        mockCollection1,
-      ]);
+      collectionService.decryptedCollections$ = of([mockImportTargetCollection, mockCollection1]);
 
       await importService["setImportTarget"](
         importResult,
@@ -176,7 +174,7 @@ describe("ImportService", () => {
     });
 
     it("passing importTarget sets it as new root for all existing collections", async () => {
-      collectionService.getAllDecrypted.mockResolvedValue([
+      collectionService.decryptedCollections$ = of([
         mockImportTargetCollection,
         mockCollection1,
         mockCollection2,
@@ -221,7 +219,7 @@ describe("ImportService", () => {
     });
 
     it("passing importTarget, collectionRelationship has the expected values", async () => {
-      collectionService.getAllDecrypted.mockResolvedValue([
+      collectionService.decryptedCollections$ = of([
         mockImportTargetCollection,
         mockCollection1,
         mockCollection2,

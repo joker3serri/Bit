@@ -74,7 +74,7 @@ export class BulkShareDialogComponent implements OnInit, OnDestroy {
       (c) => !c.hasOldAttachments && c.organizationId == null,
     );
     this.nonShareableCount = this.ciphers.length - this.shareableCiphers.length;
-    const allCollections = await this.collectionService.getAllDecrypted();
+    const allCollections = await firstValueFrom(this.collectionService.decryptedCollections$);
     this.writeableCollections = allCollections.filter((c) => !c.readOnly);
     this.organizations = await this.organizationService.getAll();
     if (this.organizationId == null && this.organizations.length > 0) {

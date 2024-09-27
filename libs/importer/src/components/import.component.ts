@@ -273,14 +273,12 @@ export class ImportComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         if (value) {
-          this.collections$ = Utils.asyncToObservable(() =>
-            this.collectionService
-              .getAllDecrypted()
-              .then((decryptedCollections) =>
-                decryptedCollections
-                  .filter((c2) => c2.organizationId === value && c2.manage)
-                  .sort(Utils.getSortFunction(this.i18nService, "name")),
-              ),
+          this.collections$ = this.collectionService.decryptedCollections$.pipe(
+            map((decryptedCollections) =>
+              decryptedCollections
+                .filter((c2) => c2.organizationId === value && c2.manage)
+                .sort(Utils.getSortFunction(this.i18nService, "name")),
+            ),
           );
         }
       });

@@ -141,13 +141,9 @@ export class CollectionService implements CollectionServiceAbstraction {
     return decCollections.sort(Utils.getSortFunction(this.i18nService, "name"));
   }
 
-  async getAllDecrypted(): Promise<CollectionView[]> {
-    return await firstValueFrom(this.decryptedCollections$);
-  }
-
   async getAllNested(collections: CollectionView[] = null): Promise<TreeNode<CollectionView>[]> {
     if (collections == null) {
-      collections = await this.getAllDecrypted();
+      collections = await firstValueFrom(this.decryptedCollections$);
     }
     const nodes: TreeNode<CollectionView>[] = [];
     collections.forEach((c) => {

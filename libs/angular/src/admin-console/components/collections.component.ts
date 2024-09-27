@@ -113,8 +113,8 @@ export class CollectionsComponent implements OnInit {
     return this.cipherDomain.collectionIds;
   }
 
-  protected async loadCollections() {
-    const allCollections = await this.collectionService.getAllDecrypted();
+  protected async loadCollections(): Promise<CollectionView[]> {
+    const allCollections = await firstValueFrom(this.collectionService.decryptedCollections$);
     return allCollections.filter(
       (c) => !c.readOnly && c.organizationId === this.cipher.organizationId,
     );

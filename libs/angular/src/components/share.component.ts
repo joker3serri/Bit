@@ -50,7 +50,7 @@ export class ShareComponent implements OnInit, OnDestroy {
   }
 
   async load() {
-    const allCollections = await this.collectionService.getAllDecrypted();
+    const allCollections = await firstValueFrom(this.collectionService.decryptedCollections$);
     this.writeableCollections = allCollections.map((c) => c).filter((c) => !c.readOnly);
 
     this.organizations$ = this.organizationService.memberOrganizations$.pipe(
