@@ -62,7 +62,7 @@ import {
 } from "@bitwarden/common/platform/theming/theme-state.service";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 
-import { devFlagEnabled } from "../../utils/flags";
+import { flagEnabled } from "../../utils/flags";
 import { PolicyListService } from "../admin-console/core/policy-list.service";
 import { WebSetPasswordJitService, WebRegistrationFinishService } from "../auth";
 import { AcceptOrganizationInviteService } from "../auth/organization-invite/accept-organization.service";
@@ -221,7 +221,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: SdkClientFactory,
-    useClass: devFlagEnabled("sdk") ? WebSdkClientFactory : NoopSdkClientFactory,
+    useClass: flagEnabled("sdk") ? WebSdkClientFactory : NoopSdkClientFactory,
     deps: [],
   }),
 ];

@@ -230,7 +230,7 @@ import { AutofillService as AutofillServiceAbstraction } from "../autofill/servi
 import AutofillService from "../autofill/services/autofill.service";
 import { SafariApp } from "../browser/safariApp";
 import { BrowserApi } from "../platform/browser/browser-api";
-import { devFlagEnabled } from "../platform/flags";
+import { flagEnabled } from "../platform/flags";
 import { UpdateBadge } from "../platform/listeners/update-badge";
 /* eslint-disable no-restricted-imports */
 import { ChromeMessageSender } from "../platform/messaging/chrome-message.sender";
@@ -723,7 +723,7 @@ export default class MainBackground {
       this.stateProvider,
     );
 
-    const sdkClientFactory = devFlagEnabled("sdk")
+    const sdkClientFactory = flagEnabled("sdk")
       ? new DefaultSdkClientFactory()
       : new NoopSdkClientFactory();
     this.sdkService = new DefaultSdkService(

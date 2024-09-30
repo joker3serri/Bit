@@ -76,7 +76,7 @@ import { DialogService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
-import { devFlagEnabled } from "../../platform/flags";
+import { flagEnabled } from "../../platform/flags";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { ElectronBiometricsService } from "../../platform/services/electron-biometrics.service";
 import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
@@ -302,7 +302,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: SdkClientFactory,
-    useClass: devFlagEnabled("sdk") ? DefaultSdkClientFactory : NoopSdkClientFactory,
+    useClass: flagEnabled("sdk") ? DefaultSdkClientFactory : NoopSdkClientFactory,
     deps: [],
   }),
 ];

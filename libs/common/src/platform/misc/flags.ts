@@ -2,6 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SharedFlags = {
   showPasswordless?: boolean;
+  sdk?: boolean;
 };
 
 // required to avoid linting errors when there are no flags
@@ -10,7 +11,6 @@ export type SharedDevFlags = {
   noopNotifications: boolean;
   skipWelcomeOnInstall: boolean;
   configRetrievalIntervalMs: number;
-  sdk: boolean;
 };
 
 function getFlags<T>(envFlags: string | T): T {

@@ -155,7 +155,7 @@ import {
   VaultExportServiceAbstraction,
 } from "@bitwarden/vault-export-core";
 
-import { devFlagEnabled } from "../platform/flags";
+import { flagEnabled } from "../platform/flags";
 import { CliPlatformUtilsService } from "../platform/services/cli-platform-utils.service";
 import { ConsoleLogService } from "../platform/services/console-log.service";
 import { I18nService } from "../platform/services/i18n.service";
@@ -530,7 +530,7 @@ export class ServiceContainer {
       this.globalStateProvider,
     );
 
-    const sdkClientFactory = devFlagEnabled("sdk")
+    const sdkClientFactory = flagEnabled("sdk")
       ? new NodeSdkClientFactory()
       : new NoopSdkClientFactory();
     this.sdkService = new DefaultSdkService(
