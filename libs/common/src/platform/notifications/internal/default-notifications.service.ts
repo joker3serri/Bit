@@ -112,7 +112,7 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
       return;
     }
 
-    const payloadUserId = notification.payload.userId || notification.payload.UserId;
+    const payloadUserId = notification.payload?.userId || notification.payload?.UserId;
     if (payloadUserId != null && payloadUserId !== userId) {
       return;
     }
@@ -151,9 +151,8 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
         break;
       case NotificationType.SyncOrgKeys:
         await this.syncService.fullSync(true);
-        // Stop so a reconnect can be made
-        // TODO: Replace
-        // await this.signalrConnection.stop();
+        this.activitySubject.next("inactive"); // Force a disconnect
+        this.activitySubject.next("active"); // Allow a reconnect
         break;
       case NotificationType.LogOut:
         await this.logoutCallback("logoutNotification", userId);

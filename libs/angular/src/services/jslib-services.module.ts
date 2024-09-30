@@ -874,7 +874,6 @@ const safeProviders: SafeProvider[] = [
       AuthServiceAbstraction,
       WebPushConnectionService,
       LogService,
-      TaskSchedulerService,
     ],
   }),
   safeProvider({

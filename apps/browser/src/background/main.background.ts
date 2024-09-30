@@ -1037,7 +1037,6 @@ export default class MainBackground {
       this.authService,
       this.webPushConnectionService,
       this.logService,
-      this.taskSchedulerService,
     );
 
     this.fido2UserInterfaceService = new BrowserFido2UserInterfaceService(this.authService);
