@@ -15,7 +15,7 @@ import { BadgeModule, ButtonModule, MenuModule } from "@bitwarden/components";
   imports: [JslibModule, CommonModule, ButtonModule, RouterLink, MenuModule, BadgeModule],
 })
 export class NewSendDropdownComponent implements OnInit {
-  @Input() showIcon: boolean = false;
+  @Input() hideIcon: boolean = false;
 
   sendType = SendType;
 
@@ -30,10 +30,6 @@ export class NewSendDropdownComponent implements OnInit {
     this.hasNoPremium = !(await firstValueFrom(
       this.billingAccountProfileStateService.hasPremiumFromAnySource$,
     ));
-  }
-
-  get iconClass() {
-    return this.showIcon ? "bwi bwi-plus-f" : null;
   }
 
   newItemNavigate(type: SendType) {
