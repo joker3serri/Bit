@@ -13,6 +13,7 @@ export type KdfConfig = PBKDF2KdfConfig | Argon2KdfConfig;
  */
 export class PBKDF2KdfConfig {
   static ITERATIONS = new RangeWithDefault(600_000, 2_000_000, 600_000);
+  static PRELOGIN_ITERATIONS = new RangeWithDefault(5000, 2_000_000, 600_000);
   kdfType: KdfType.PBKDF2_SHA256 = KdfType.PBKDF2_SHA256;
   iterations: number;
 
@@ -21,13 +22,25 @@ export class PBKDF2KdfConfig {
   }
 
   /**
-   * Validates the PBKDF2 KDF configuration.
+   * Validates the PBKDF2 KDF configuration for updating the KDF config.
    * A Valid PBKDF2 KDF configuration has KDF iterations between the 600_000 and 2_000_000.
    */
-  validateKdfConfig(): void {
+  validateKdfConfigForSetting(): void {
     if (!PBKDF2KdfConfig.ITERATIONS.inRange(this.iterations)) {
       throw new Error(
         `PBKDF2 iterations must be between ${PBKDF2KdfConfig.ITERATIONS.min} and ${PBKDF2KdfConfig.ITERATIONS.max}`,
+      );
+    }
+  }
+
+  /**
+   * Validates the PBKDF2 KDF configuration for pre-login.
+   * A Valid PBKDF2 KDF configuration has KDF iterations between the 5000 and 2_000_000.
+   */
+  validateKdfConfigForPrelogin(): void {
+    if (!PBKDF2KdfConfig.PRELOGIN_ITERATIONS.inRange(this.iterations)) {
+      throw new Error(
+        `PBKDF2 iterations must be between ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS.min} and ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS.max}`,
       );
     }
   }
@@ -56,10 +69,10 @@ export class Argon2KdfConfig {
   }
 
   /**
-   * Validates the Argon2 KDF configuration.
+   * Validates the Argon2 KDF configuration for updating the KDF config.
    * A Valid Argon2 KDF configuration has iterations between 2 and 10, memory between 16mb and 1024mb, and parallelism between 1 and 16.
    */
-  validateKdfConfig(): void {
+  validateKdfConfigForSetting(): void {
     if (!Argon2KdfConfig.ITERATIONS.inRange(this.iterations)) {
       throw new Error(
         `Argon2 iterations must be between ${Argon2KdfConfig.ITERATIONS.min} and ${Argon2KdfConfig.ITERATIONS.max}`,
@@ -77,6 +90,13 @@ export class Argon2KdfConfig {
         `Argon2 parallelism must be between ${Argon2KdfConfig.PARALLELISM.min} and ${Argon2KdfConfig.PARALLELISM.max}.`,
       );
     }
+  }
+
+  /**
+   * Validates the Argon2 KDF configuration for pre-login.
+   */
+  validateKdfConfigForPrelogin(): void {
+    this.validateKdfConfigForSetting();
   }
 
   static fromJSON(json: Jsonify<Argon2KdfConfig>): Argon2KdfConfig {
