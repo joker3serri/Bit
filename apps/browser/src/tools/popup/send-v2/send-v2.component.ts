@@ -51,17 +51,13 @@ export enum SendState {
 })
 export class SendV2Component implements OnInit, OnDestroy {
   sendType = SendType;
-
   sendState = SendState;
 
   protected listState: SendState | null = null;
-
   protected sends$ = this.sendItemsService.filteredAndSortedSends$;
-
+  protected sendsLoading$ = this.sendItemsService.loading$;
   protected title: string = "allSends";
-
   protected noItemIcon = NoSendsIcon;
-
   protected noResultsIcon = Icons.NoResults;
 
   protected sendsDisabled = false;
