@@ -80,11 +80,14 @@ export class DefaultSdkService implements SdkService {
         return "VivaldiExtension";
       case DeviceType.SafariExtension:
         return "SafariExtension";
-      // FIXME: These should be added to the SDK
       case DeviceType.Server:
+        return "Server";
       case DeviceType.WindowsCLI:
+        return "WindowsCLI";
       case DeviceType.MacOsCLI:
+        return "MacOsCLI";
       case DeviceType.LinuxCLI:
+        return "LinuxCLI";
       default:
         return "SDK";
     }
