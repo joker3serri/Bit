@@ -109,7 +109,7 @@ describe("KdfConfigService", () => {
   it("validateKdfConfigForPrelogin(): should throw an error for invalid PBKDF2 iterations", () => {
     const kdfConfig: PBKDF2KdfConfig = new PBKDF2KdfConfig(100);
     expect(() => kdfConfig.validateKdfConfigForPrelogin()).toThrow(
-      `PBKDF2 iterations must be between ${PBKDF2KdfConfig.ITERATIONS.min} and ${PBKDF2KdfConfig.ITERATIONS.max}`,
+      `PBKDF2 iterations must be between ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS.min} and ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS.max}`,
     );
   });
 

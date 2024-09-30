@@ -14,6 +14,7 @@ import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
+import { PreloginResponse } from "@bitwarden/common/auth/models/response/prelogin.response";
 import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
@@ -159,6 +160,9 @@ describe("LoginStrategyService", () => {
       new IdentityTokenResponse({
         ForcePasswordReset: false,
         Kdf: KdfType.Argon2id,
+        KdfIterations: 2,
+        KdfMemory: 16,
+        KdfParallelism: 1,
         Key: "KEY",
         PrivateKey: "PRIVATE_KEY",
         ResetMasterPassword: false,
@@ -169,6 +173,15 @@ describe("LoginStrategyService", () => {
         token_type: "Bearer",
       }),
     );
+    apiService.postPrelogin.mockResolvedValue(
+      new PreloginResponse({
+        Kdf: KdfType.Argon2id,
+        KdfIterations: 2,
+        KdfMemory: 16,
+        KdfParallelism: 1,
+      }),
+    );
+
     tokenService.decodeAccessToken.calledWith("ACCESS_TOKEN").mockResolvedValue({
       sub: "USER_ID",
       name: "NAME",
@@ -194,6 +207,15 @@ describe("LoginStrategyService", () => {
       }),
     );
 
+    apiService.postPrelogin.mockResolvedValue(
+      new PreloginResponse({
+        Kdf: KdfType.Argon2id,
+        KdfIterations: 2,
+        KdfMemory: 16,
+        KdfParallelism: 1,
+      }),
+    );
+
     await sut.logIn(credentials);
 
     const twoFactorToken = new TokenTwoFactorRequest(
@@ -205,6 +227,9 @@ describe("LoginStrategyService", () => {
       new IdentityTokenResponse({
         ForcePasswordReset: false,
         Kdf: KdfType.Argon2id,
+        KdfIterations: 2,
+        KdfMemory: 16,
+        KdfParallelism: 1,
         Key: "KEY",
         PrivateKey: "PRIVATE_KEY",
         ResetMasterPassword: false,
@@ -238,6 +263,15 @@ describe("LoginStrategyService", () => {
         error_description: "Two factor required.",
         email: undefined,
         ssoEmail2faSessionToken: undefined,
+      }),
+    );
+
+    apiService.postPrelogin.mockResolvedValue(
+      new PreloginResponse({
+        Kdf: KdfType.Argon2id,
+        KdfIterations: 2,
+        KdfMemory: 16,
+        KdfParallelism: 1,
       }),
     );
 
