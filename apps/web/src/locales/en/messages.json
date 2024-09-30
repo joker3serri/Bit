@@ -5975,8 +5975,8 @@
   "viewBillingSyncToken": {
     "message": "View billing sync token"
   },
-  "generateBillingSyncToken": {
-    "message": "Generate billing sync token"
+  "generateBillingToken": {
+    "message": "Generate billing token"
   },
   "copyPasteBillingSync": {
     "message": "Copy and paste this token into the billing sync settings of your self-hosted organization."
