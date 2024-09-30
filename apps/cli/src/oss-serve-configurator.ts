@@ -13,7 +13,7 @@ import { RestoreCommand } from "./commands/restore.command";
 import { StatusCommand } from "./commands/status.command";
 import { Response } from "./models/response";
 import { FileResponse } from "./models/response/file.response";
-import { ServiceContainer } from "./service-container";
+import { ServiceContainer } from "./service-container/service-container";
 import { GenerateCommand } from "./tools/generate.command";
 import {
   SendEditCommand,
@@ -57,12 +57,14 @@ export class OssServeConfigurator {
       this.serviceContainer.totpService,
       this.serviceContainer.auditService,
       this.serviceContainer.cryptoService,
+      this.serviceContainer.encryptService,
       this.serviceContainer.stateService,
       this.serviceContainer.searchService,
       this.serviceContainer.apiService,
       this.serviceContainer.organizationService,
       this.serviceContainer.eventCollectionService,
       this.serviceContainer.billingAccountProfileStateService,
+      this.serviceContainer.accountService,
     );
     this.listCommand = new ListCommand(
       this.serviceContainer.cipherService,
@@ -70,7 +72,7 @@ export class OssServeConfigurator {
       this.serviceContainer.collectionService,
       this.serviceContainer.organizationService,
       this.serviceContainer.searchService,
-      this.serviceContainer.organizationUserService,
+      this.serviceContainer.organizationUserApiService,
       this.serviceContainer.apiService,
       this.serviceContainer.eventCollectionService,
     );
@@ -78,17 +80,21 @@ export class OssServeConfigurator {
       this.serviceContainer.cipherService,
       this.serviceContainer.folderService,
       this.serviceContainer.cryptoService,
+      this.serviceContainer.encryptService,
       this.serviceContainer.apiService,
       this.serviceContainer.folderApiService,
       this.serviceContainer.billingAccountProfileStateService,
       this.serviceContainer.organizationService,
+      this.serviceContainer.accountService,
     );
     this.editCommand = new EditCommand(
       this.serviceContainer.cipherService,
       this.serviceContainer.folderService,
       this.serviceContainer.cryptoService,
+      this.serviceContainer.encryptService,
       this.serviceContainer.apiService,
       this.serviceContainer.folderApiService,
+      this.serviceContainer.accountService,
     );
     this.generateCommand = new GenerateCommand(
       this.serviceContainer.passwordGenerationService,
@@ -111,10 +117,13 @@ export class OssServeConfigurator {
     this.confirmCommand = new ConfirmCommand(
       this.serviceContainer.apiService,
       this.serviceContainer.cryptoService,
-      this.serviceContainer.organizationUserService,
+      this.serviceContainer.organizationUserApiService,
     );
     this.restoreCommand = new RestoreCommand(this.serviceContainer.cipherService);
-    this.shareCommand = new ShareCommand(this.serviceContainer.cipherService);
+    this.shareCommand = new ShareCommand(
+      this.serviceContainer.cipherService,
+      this.serviceContainer.accountService,
+    );
     this.lockCommand = new LockCommand(this.serviceContainer.vaultTimeoutService);
     this.unlockCommand = new UnlockCommand(
       this.serviceContainer.accountService,
@@ -144,7 +153,7 @@ export class OssServeConfigurator {
       this.serviceContainer.sendService,
       this.serviceContainer.environmentService,
       this.serviceContainer.searchService,
-      this.serviceContainer.cryptoService,
+      this.serviceContainer.encryptService,
     );
     this.sendEditCommand = new SendEditCommand(
       this.serviceContainer.sendService,

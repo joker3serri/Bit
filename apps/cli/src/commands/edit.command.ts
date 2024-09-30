@@ -1,9 +1,13 @@
+import { firstValueFrom, map } from "rxjs";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { CipherExport } from "@bitwarden/common/models/export/cipher.export";
 import { CollectionExport } from "@bitwarden/common/models/export/collection.export";
 import { FolderExport } from "@bitwarden/common/models/export/folder.export";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
@@ -22,8 +26,10 @@ export class EditCommand {
     private cipherService: CipherService,
     private folderService: FolderService,
     private cryptoService: CryptoService,
+    private encryptService: EncryptService,
     private apiService: ApiService,
     private folderApiService: FolderApiServiceAbstraction,
+    private accountService: AccountService,
   ) {}
 
   async run(
@@ -77,18 +83,21 @@ export class EditCommand {
       return Response.notFound();
     }
 
+    const activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
     let cipherView = await cipher.decrypt(
-      await this.cipherService.getKeyForCipherKeyDecryption(cipher),
+      await this.cipherService.getKeyForCipherKeyDecryption(cipher, activeUserId),
     );
     if (cipherView.isDeleted) {
       return Response.badRequest("You may not edit a deleted item. Use the restore command first.");
     }
     cipherView = CipherExport.toView(req, cipherView);
-    const encCipher = await this.cipherService.encrypt(cipherView);
+    const encCipher = await this.cipherService.encrypt(cipherView, activeUserId);
     try {
       const updatedCipher = await this.cipherService.updateWithServer(encCipher);
       const decCipher = await updatedCipher.decrypt(
-        await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher),
+        await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher, activeUserId),
       );
       const res = new CipherResponse(decCipher);
       return Response.success(res);
@@ -110,9 +119,12 @@ export class EditCommand {
 
     cipher.collectionIds = req;
     try {
+      const activeUserId = await firstValueFrom(
+        this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+      );
       const updatedCipher = await this.cipherService.saveCollectionsWithServer(cipher);
       const decCipher = await updatedCipher.decrypt(
-        await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher),
+        await this.cipherService.getKeyForCipherKeyDecryption(updatedCipher, activeUserId),
       );
       const res = new CipherResponse(decCipher);
       return Response.success(res);
@@ -129,7 +141,10 @@ export class EditCommand {
 
     let folderView = await folder.decrypt();
     folderView = FolderExport.toView(req, folderView);
-    const encFolder = await this.folderService.encrypt(folderView);
+
+    const activeUserId = await firstValueFrom(this.accountService.activeAccount$);
+    const userKey = await this.cryptoService.getUserKeyWithLegacySupport(activeUserId.id);
+    const encFolder = await this.folderService.encrypt(folderView, userKey);
     try {
       await this.folderApiService.save(encFolder);
       const updatedFolder = await this.folderService.get(folder.id);
@@ -177,14 +192,14 @@ export class EditCommand {
               (u) => new SelectionReadOnlyRequest(u.id, u.readOnly, u.hidePasswords, u.manage),
             );
       const request = new CollectionRequest();
-      request.name = (await this.cryptoService.encrypt(req.name, orgKey)).encryptedString;
+      request.name = (await this.encryptService.encrypt(req.name, orgKey)).encryptedString;
       request.externalId = req.externalId;
       request.groups = groups;
       request.users = users;
       const response = await this.apiService.putCollection(req.organizationId, id, request);
       const view = CollectionExport.toView(req);
       view.id = response.id;
-      const res = new OrganizationCollectionResponse(view, groups);
+      const res = new OrganizationCollectionResponse(view, groups, users);
       return Response.success(res);
     } catch (e) {
       return Response.error(e);

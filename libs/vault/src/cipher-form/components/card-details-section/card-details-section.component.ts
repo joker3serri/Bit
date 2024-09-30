@@ -4,6 +4,9 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
+import { normalizeExpiryYearFormat } from "@bitwarden/common/autofill/utils";
+import { EventType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -90,34 +93,32 @@ export class CardDetailsSectionComponent implements OnInit {
     { name: "12 - " + this.i18nService.t("december"), value: "12" },
   ];
 
-  /** Local CardView, either created empty or set to the existing card instance  */
-  private cardView: CardView;
+  EventType = EventType;
 
   constructor(
     private cipherFormContainer: CipherFormContainer,
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
+    private eventCollectionService: EventCollectionService,
   ) {
     this.cipherFormContainer.registerChildForm("cardDetails", this.cardDetailsForm);
 
     this.cardDetailsForm.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(({ cardholderName, number, brand, expMonth, expYear, code }) => {
-        // The input[type="number"] is returning a number, convert it to a string
-        // An empty field returns null, avoid casting `"null"` to a string
-        const expirationYear = expYear !== null ? `${expYear}` : null;
+        this.cipherFormContainer.patchCipher((cipher) => {
+          const expirationYear = normalizeExpiryYearFormat(expYear);
 
-        const patchedCard = Object.assign(this.cardView, {
-          cardholderName,
-          number,
-          brand,
-          expMonth,
-          expYear: expirationYear,
-          code,
-        });
+          Object.assign(cipher.card, {
+            cardholderName,
+            number,
+            brand,
+            expMonth,
+            expYear: expirationYear,
+            code,
+          });
 
-        this.cipherFormContainer.patchCipher({
-          card: patchedCard,
+          return cipher;
         });
       });
 
@@ -133,15 +134,38 @@ export class CardDetailsSectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    // If the original cipher has a card, use it. Otherwise, create a new card instance
-    this.cardView = this.originalCipherView?.card ?? new CardView();
-
     if (this.originalCipherView?.card) {
       this.setInitialValues();
     }
 
     if (this.disabled) {
       this.cardDetailsForm.disable();
+    }
+  }
+
+  /** Get the section heading based on the card brand */
+  getSectionHeading(): string {
+    const { brand } = this.cardDetailsForm.value;
+
+    if (brand && brand !== "Other") {
+      return this.i18nService.t("cardBrandDetails", brand);
+    }
+
+    return this.i18nService.t("cardDetails");
+  }
+
+  async logCardEvent(hiddenFieldVisible: boolean, event: EventType) {
+    const { mode, originalCipher } = this.cipherFormContainer.config;
+
+    const isEdit = ["edit", "partial-edit"].includes(mode);
+
+    if (hiddenFieldVisible && isEdit) {
+      await this.eventCollectionService.collect(
+        event,
+        originalCipher.id,
+        false,
+        originalCipher.organizationId,
+      );
     }
   }
 

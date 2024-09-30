@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "המנע מאותיות ותווים דומים"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "חפש אוסף"
   },
@@ -500,7 +504,7 @@
     "message": "צור חשבון"
   },
   "setAStrongPassword": {
-    "message": "Set a strong password"
+    "message": "הגדרת סיסמה חזקה"
   },
   "finishCreatingYourAccountBySettingAPassword": {
     "message": "Finish creating your account by setting a password"
@@ -539,8 +543,38 @@
       }
     }
   },
+  "masterPassword": {
+    "message": "Master password"
+  },
+  "masterPassImportant": {
+    "message": "Your master password cannot be recovered if you forget it!"
+  },
+  "confirmMasterPassword": {
+    "message": "Confirm master password"
+  },
+  "masterPassHintLabel": {
+    "message": "Master password hint"
+  },
+  "joinOrganization": {
+    "message": "Join organization"
+  },
+  "finishJoiningThisOrganizationBySettingAMasterPassword": {
+    "message": "Finish joining this organization by setting a master password."
+  },
   "settings": {
     "message": "הגדרות"
+  },
+  "accountEmail": {
+    "message": "Account email"
+  },
+  "requestHint": {
+    "message": "Request hint"
+  },
+  "requestPasswordHint": {
+    "message": "Request password hint"
+  },
+  "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
+    "message": "Enter your account email address and your password hint will be sent to you"
   },
   "passwordHint": {
     "message": "רמז לסיסמה"
@@ -585,6 +619,12 @@
   "newAccountCreated": {
     "message": "החשבון החדש שלך נוצר בהצלחה! כעת ניתן להתחבר למערכת."
   },
+  "newAccountCreated2": {
+    "message": "Your new account has been created!"
+  },
+  "youHaveBeenLoggedIn": {
+    "message": "You have been logged in!"
+  },
   "masterPassSent": {
     "message": "שלחנו לך אימייל עם רמז לסיסמה הראשית."
   },
@@ -614,6 +654,9 @@
   },
   "verificationCodeRequired": {
     "message": "נדרש קוד אימות."
+  },
+  "webauthnCancelOrTimeout": {
+    "message": "The authentication was cancelled or took too long. Please try again."
   },
   "invalidVerificationCode": {
     "message": "קוד אימות שגוי"
@@ -777,6 +820,18 @@
   "loginExpired": {
     "message": "תוקף החיבור שלך הסתיים."
   },
+  "restartRegistration": {
+    "message": "Restart registration"
+  },
+  "expiredLink": {
+    "message": "Expired link"
+  },
+  "pleaseRestartRegistrationOrTryLoggingIn": {
+    "message": "Please restart registration or try logging in."
+  },
+  "youMayAlreadyHaveAnAccount": {
+    "message": "You may already have an account"
+  },
   "logOutConfirmation": {
     "message": "האם אתה בטוח שברצונך להתנתק?"
   },
@@ -890,6 +945,9 @@
   },
   "vaultTimeout": {
     "message": "סגירת כספת אוטומטית"
+  },
+  "vaultTimeout1": {
+    "message": "Timeout"
   },
   "vaultTimeoutDesc": {
     "message": "בחר כמה זמן יעבור כדי שהכספת תסגר לאחר חוסר פעילות ותבצע את הפעולה שנבחרה."
@@ -1141,6 +1199,9 @@
   "premiumPurchaseAlert": {
     "message": "באפשרותך לרכוש מנוי פרימיום בכספת באתר bitwarden.com. האם ברצונך לפתוח את האתר כעת?"
   },
+  "premiumPurchaseAlertV2": {
+    "message": "You can purchase Premium from your account settings on the Bitwarden web app."
+  },
   "premiumCurrentMember": {
     "message": "אתה מנוי פרימיום!"
   },
@@ -1242,6 +1303,9 @@
         "example": "Password"
       }
     }
+  },
+  "copySuccessful": {
+    "message": "Copy Successful"
   },
   "errorRefreshingAccessToken": {
     "message": "Access Token Refresh Error"
@@ -1477,8 +1541,14 @@
   "additionalWindowsHelloSettings": {
     "message": "הגדרות נוספות של Windows Hello"
   },
+  "unlockWithPolkit": {
+    "message": "Unlock with system authentication"
+  },
   "windowsHelloConsentMessage": {
     "message": "אימות עבור Bitwarden."
+  },
+  "polkitConsentMessage": {
+    "message": "Authenticate to unlock Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "שחרור נעילה עם Touch ID"
@@ -1492,6 +1562,9 @@
   "autoPromptWindowsHello": {
     "message": "הצג את Windows Hello בפתיחת האפליקציה"
   },
+  "autoPromptPolkit": {
+    "message": "Ask for system authentication on launch"
+  },
   "autoPromptTouchId": {
     "message": "הצג בקשה של Touch ID בפתיחת האפליקציה"
   },
@@ -1501,8 +1574,8 @@
   "recommendedForSecurity": {
     "message": "מומלץ לשיפור אבטחת מידע."
   },
-  "lockWithMasterPassOnRestart": {
-    "message": "נעל בעזרת הסיסמה הראשית בהפעלה מחדש"
+  "lockWithMasterPassOnRestart1": {
+    "message": "Lock with master password on restart"
   },
   "deleteAccount": {
     "message": "מחק חשבון"
@@ -1579,7 +1652,7 @@
   },
   "lock": {
     "message": "נעילה",
-    "description": "Verb form: to make secure or inaccesible by"
+    "description": "Verb form: to make secure or inaccessible by"
   },
   "trash": {
     "message": "סל המחזור",
@@ -1678,8 +1751,8 @@
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "הסיסמה הראשית החדשה השלך לא עומדת בדרישות המדיניות."
   },
-  "receiveMarketingEmails": {
-    "message": "Get emails from Bitwarden for announcements, advice, and research opportunities."
+  "receiveMarketingEmailsV2": {
+    "message": "Get advice, announcements, and research opportunities from Bitwarden in your inbox."
   },
   "unsubscribe": {
     "message": "Unsubscribe"
@@ -1702,8 +1775,8 @@
   "enableBrowserIntegration": {
     "message": "אפשר אינטגרציה עם הדפדפן"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "אינטגרצייה עם הדפדפן מאפשרת שימוש באמצעיים ביומטריים בדפדפן."
+  "enableBrowserIntegrationDesc1": {
+    "message": "משמש כדי לאפשר שחרור עם אמצעים ביומטריים בדפדפנים שאינם Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "אפשר שילוב דפדפן DuckDuckGo"
@@ -1770,6 +1843,12 @@
   },
   "biometricsNotEnabledDesc": {
     "message": "בכדי להשתמש באמצעי אימות ביומטריים בדפדפן, אפשר תכונה זו באפליקציה בשולחן העבודה."
+  },
+  "biometricsManualSetupTitle": {
+    "message": "Automatic setup not available"
+  },
+  "biometricsManualSetupDesc": {
+    "message": "Due to the installation method, biometrics support could not be automatically enabled. Would you like to open the documentation on how to do this manually?"
   },
   "personalOwnershipSubmitError": {
     "message": "בשל מדיניות ארגונית, אתה מוגבל לשמירת פריטים בכספת האישית שלך. שנה את ההגדרות בעלות החשבון לחשבון ארגוני ובחר מתוך האוספים הזמינים."
@@ -1955,6 +2034,9 @@
   "emailVerificationRequired": {
     "message": "נדרש כתובת אימייל לאימות"
   },
+  "emailVerifiedV2": {
+    "message": "Email verified"
+  },
   "emailVerificationRequiredDesc": {
     "message": "נדרש אישור אימות בדוא\"ל כדי לאפשר שימוש בתכונה זו."
   },
@@ -1978,6 +2060,9 @@
   },
   "updateWeakMasterPasswordWarning": {
     "message": "Your master password does not meet one or more of your organization policies. In order to access the vault, you must update your master password now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
+  },
+  "tdeDisabledMasterPasswordRequired": {
+    "message": "Your organization has disabled trusted device encryption. Please set a master password to access your vault."
   },
   "tryAgain": {
     "message": "לנסות שוב"
@@ -2021,8 +2106,8 @@
   "minutes": {
     "message": "דקות"
   },
-  "vaultTimeoutPolicyInEffect": {
-    "message": "מדיניות הארגון שלך משפיעה על הזמן הקצוב לכספת שלך. פסק הזמן המרבי המותר לכספת הוא $HOURS$ שע(ה/ות) ו $MINUTES$ דק(ה/ות)",
+  "vaultTimeoutPolicyInEffect1": {
+    "message": "$HOURS$ hour(s) and $MINUTES$ minute(s) maximum.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -2062,6 +2147,9 @@
   },
   "vaultTimeoutTooLarge": {
     "message": "הזמן הקצוב לכספת שלך חורג מהמגבלות שנקבעו על ידי הארגון שלך."
+  },
+  "inviteAccepted": {
+    "message": "Invitation accepted"
   },
   "resetPasswordPolicyAutoEnroll": {
     "message": "רישום אוטומטי"
@@ -2763,6 +2851,9 @@
       }
     }
   },
+  "duoHealthCheckResultsInNullAuthUrlError": {
+    "message": "Error connecting with the Duo service. Use a different two-step login method or contact Duo for assistance."
+  },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
     "message": "Launch Duo and follow the steps to finish logging in."
   },
@@ -2784,8 +2875,8 @@
   "invalidFilePassword": {
     "message": "Invalid file password, please use the password you entered when you created the export file."
   },
-  "importDestination": {
-    "message": "Import destination"
+  "destination": {
+    "message": "Destination"
   },
   "learnAboutImportOptions": {
     "message": "Learn about your import options"
@@ -2980,5 +3071,26 @@
         "example": "Work"
       }
     }
+  },
+  "data": {
+    "message": "Data"
+  },
+  "fileSends": {
+    "message": "File Sends"
+  },
+  "textSends": {
+    "message": "Text Sends"
+  },
+  "allowScreenshots": {
+    "message": "Allow screen capture"
+  },
+  "allowScreenshotsDesc": {
+    "message": "Allow screen capture of the Bitwarden desktop application."
+  },
+  "ssoError": {
+    "message": "No free ports could be found for the sso login."
+  },
+  "fileSavedToDevice": {
+    "message": "File saved to device. Manage from your device downloads."
   }
 }

@@ -1,12 +1,14 @@
 import * as papa from "papaparse";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { CipherWithIdExport, CollectionWithIdExport } from "@bitwarden/common/models/export";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -38,12 +40,14 @@ export class OrganizationVaultExportService
     private cipherService: CipherService,
     private apiService: ApiService,
     pinService: PinServiceAbstraction,
-    cryptoService: CryptoService,
+    private cryptoService: CryptoService,
+    encryptService: EncryptService,
     cryptoFunctionService: CryptoFunctionService,
     private collectionService: CollectionService,
     kdfConfigService: KdfConfigService,
+    private accountService: AccountService,
   ) {
-    super(pinService, cryptoService, cryptoFunctionService, kdfConfigService);
+    super(pinService, encryptService, cryptoFunctionService, kdfConfigService);
   }
 
   async getPasswordProtectedExport(
@@ -87,6 +91,9 @@ export class OrganizationVaultExportService
     const decCollections: CollectionView[] = [];
     const decCiphers: CipherView[] = [];
     const promises = [];
+    const activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
 
     promises.push(
       this.apiService.getOrganizationExport(organizationId).then((exportData) => {
@@ -111,7 +118,7 @@ export class OrganizationVaultExportService
                 const cipher = new Cipher(new CipherData(c));
                 exportPromises.push(
                   this.cipherService
-                    .getKeyForCipherKeyDecryption(cipher)
+                    .getKeyForCipherKeyDecryption(cipher, activeUserId)
                     .then((key) => cipher.decrypt(key))
                     .then((decCipher) => {
                       decCiphers.push(decCipher);
@@ -237,7 +244,7 @@ export class OrganizationVaultExportService
     ciphers: Cipher[],
   ): Promise<string> {
     const orgKey = await this.cryptoService.getOrgKey(organizationId);
-    const encKeyValidation = await this.cryptoService.encrypt(Utils.newGuid(), orgKey);
+    const encKeyValidation = await this.encryptService.encrypt(Utils.newGuid(), orgKey);
 
     const jsonDoc: BitwardenEncryptedOrgJsonExport = {
       encrypted: true,

@@ -7,8 +7,6 @@ import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action
 import { NotificationsService } from "@bitwarden/common/platform/notifications";
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 
-import { BrowserStateService } from "../platform/services/abstractions/browser-state.service";
-
 const IdleInterval = 60 * 5; // 5 minutes
 
 export default class IdleBackground {
@@ -18,7 +16,6 @@ export default class IdleBackground {
 
   constructor(
     private vaultTimeoutService: VaultTimeoutService,
-    private stateService: BrowserStateService,
     private notificationsService: NotificationsService,
     private accountService: AccountService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
@@ -26,7 +23,7 @@ export default class IdleBackground {
     this.idle = chrome.idle || (browser != null ? browser.idle : null);
   }
 
-  async init() {
+  init() {
     if (!this.idle) {
       return;
     }

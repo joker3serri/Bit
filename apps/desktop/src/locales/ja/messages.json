@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "あいまいな文字を省く"
   },
+  "generatorPolicyInEffect": {
+    "message": "生成オプションにエンタープライズポリシー要件を適用しました",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "コレクションの検索"
   },
@@ -539,8 +543,38 @@
       }
     }
   },
+  "masterPassword": {
+    "message": "マスターパスワード"
+  },
+  "masterPassImportant": {
+    "message": "マスターパスワードを忘れた場合は復元できません！"
+  },
+  "confirmMasterPassword": {
+    "message": "マスターパスワードの確認"
+  },
+  "masterPassHintLabel": {
+    "message": "マスターパスワードのヒント"
+  },
+  "joinOrganization": {
+    "message": "組織に参加"
+  },
+  "finishJoiningThisOrganizationBySettingAMasterPassword": {
+    "message": "マスターパスワードを設定して、この組織への参加を完了します。"
+  },
   "settings": {
     "message": "設定"
+  },
+  "accountEmail": {
+    "message": "アカウントのメールアドレス"
+  },
+  "requestHint": {
+    "message": "ヒントを要求"
+  },
+  "requestPasswordHint": {
+    "message": "パスワードのヒントを要求する"
+  },
+  "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
+    "message": "アカウントのメールアドレスを入力すると、パスワードのヒントが送信されます"
   },
   "passwordHint": {
     "message": "パスワードのヒント"
@@ -585,6 +619,12 @@
   "newAccountCreated": {
     "message": "新しいアカウントを作成しました！今すぐログインできます。"
   },
+  "newAccountCreated2": {
+    "message": "新しいアカウントを作成しました！"
+  },
+  "youHaveBeenLoggedIn": {
+    "message": "ログインしました！"
+  },
   "masterPassSent": {
     "message": "あなたのマスターパスワードのヒントを記載したメールを送信しました。"
   },
@@ -614,6 +654,9 @@
   },
   "verificationCodeRequired": {
     "message": "認証コードは必須項目です。"
+  },
+  "webauthnCancelOrTimeout": {
+    "message": "認証がキャンセルされたか、時間がかかりすぎました。もう一度やり直してください。"
   },
   "invalidVerificationCode": {
     "message": "認証コードが間違っています"
@@ -777,6 +820,18 @@
   "loginExpired": {
     "message": "ログインセッションの有効期限が切れています。"
   },
+  "restartRegistration": {
+    "message": "登録を再度始める"
+  },
+  "expiredLink": {
+    "message": "期限切れのリンク"
+  },
+  "pleaseRestartRegistrationOrTryLoggingIn": {
+    "message": "登録を再度始めるか、ログインしてください。"
+  },
+  "youMayAlreadyHaveAnAccount": {
+    "message": "すでにアカウントを持っている可能性があります"
+  },
   "logOutConfirmation": {
     "message": "ログアウトしてもよろしいですか？"
   },
@@ -890,6 +945,9 @@
   },
   "vaultTimeout": {
     "message": "保管庫のタイムアウト"
+  },
+  "vaultTimeout1": {
+    "message": "タイムアウト"
   },
   "vaultTimeoutDesc": {
     "message": "保管庫がタイムアウトし、選択したアクションを実行するタイミングを選択します。"
@@ -1141,6 +1199,9 @@
   "premiumPurchaseAlert": {
     "message": "プレミアム会員権は bitwarden.com ウェブ保管庫で購入できます。ウェブサイトを開きますか？"
   },
+  "premiumPurchaseAlertV2": {
+    "message": "Bitwarden ウェブアプリでアカウント設定からプレミアムを購入できます。"
+  },
   "premiumCurrentMember": {
     "message": "あなたはプレミアム会員です！"
   },
@@ -1242,6 +1303,9 @@
         "example": "Password"
       }
     }
+  },
+  "copySuccessful": {
+    "message": "コピーしました"
   },
   "errorRefreshingAccessToken": {
     "message": "アクセストークンの更新エラー"
@@ -1477,8 +1541,14 @@
   "additionalWindowsHelloSettings": {
     "message": "追加の Windows Hello 設定"
   },
+  "unlockWithPolkit": {
+    "message": "システム認証でロック解除"
+  },
   "windowsHelloConsentMessage": {
     "message": "Bitwarden の認証を行います。"
+  },
+  "polkitConsentMessage": {
+    "message": "認証して Bitwarden のロックを解除します。"
   },
   "unlockWithTouchId": {
     "message": "Touch ID でロック解除"
@@ -1492,6 +1562,9 @@
   "autoPromptWindowsHello": {
     "message": "起動時に Windows Hello を要求する"
   },
+  "autoPromptPolkit": {
+    "message": "起動時にシステム認証を要求する"
+  },
   "autoPromptTouchId": {
     "message": "起動時に Touch ID を要求する"
   },
@@ -1501,7 +1574,7 @@
   "recommendedForSecurity": {
     "message": "セキュリティ向上のためおすすめします。"
   },
-  "lockWithMasterPassOnRestart": {
+  "lockWithMasterPassOnRestart1": {
     "message": "再起動時にマスターパスワードでロック"
   },
   "deleteAccount": {
@@ -1579,7 +1652,7 @@
   },
   "lock": {
     "message": "ロック",
-    "description": "Verb form: to make secure or inaccesible by"
+    "description": "Verb form: to make secure or inaccessible by"
   },
   "trash": {
     "message": "ごみ箱",
@@ -1678,8 +1751,8 @@
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "新しいマスターパスワードは最低要件を満たしていません。"
   },
-  "receiveMarketingEmails": {
-    "message": "Bitwarden からのお知らせ、アドバイス、アンケート調査等のメールを受信します。"
+  "receiveMarketingEmailsV2": {
+    "message": "Bitwarden からメールでアドバイスやお知らせ、リサーチの機会を受け取りましょう。"
   },
   "unsubscribe": {
     "message": "配信停止"
@@ -1702,8 +1775,8 @@
   "enableBrowserIntegration": {
     "message": "ブラウザ統合を有効にする"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "ブラウザでの生体認証のためにブラウザ統合を使用します。"
+  "enableBrowserIntegrationDesc1": {
+    "message": "Safari 以外のブラウザで生体認証によるロック解除を許可するために使用されます。"
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckGo ブラウザの統合を許可する"
@@ -1770,6 +1843,12 @@
   },
   "biometricsNotEnabledDesc": {
     "message": "ブラウザで生体認証を利用するには、最初に設定でデスクトップ生体認証を有効にする必要があります。"
+  },
+  "biometricsManualSetupTitle": {
+    "message": "自動設定は利用できません"
+  },
+  "biometricsManualSetupDesc": {
+    "message": "インストール方法により、生体認証を自動的に有効化できませんでした。手動で設定する方法の説明を開きますか？"
   },
   "personalOwnershipSubmitError": {
     "message": "組織のポリシーにより、個人保管庫へのアイテムの保存が制限されています。 所有権を組織に変更し、利用可能なコレクションから選択してください。"
@@ -1955,6 +2034,9 @@
   "emailVerificationRequired": {
     "message": "メールアドレスの確認が必要です"
   },
+  "emailVerifiedV2": {
+    "message": "メールアドレスを認証しました"
+  },
   "emailVerificationRequiredDesc": {
     "message": "この機能を使用するにはメールアドレスを確認する必要があります。"
   },
@@ -1978,6 +2060,9 @@
   },
   "updateWeakMasterPasswordWarning": {
     "message": "マスターパスワードが組織のポリシーに適合していません。保管庫にアクセスするには、今すぐマスターパスワードを更新しなければなりません。続行すると現在のセッションからログアウトし、再度ログインする必要があります。 他のデバイス上のアクティブなセッションは、最大1時間アクティブであり続けることがあります。"
+  },
+  "tdeDisabledMasterPasswordRequired": {
+    "message": "あなたの組織は信頼できるデバイスの暗号化を無効化しました。保管庫にアクセスするにはマスターパスワードを設定してください。"
   },
   "tryAgain": {
     "message": "再試行"
@@ -2021,8 +2106,8 @@
   "minutes": {
     "message": "分"
   },
-  "vaultTimeoutPolicyInEffect": {
-    "message": "あなたの組織ポリシーは保管庫のタイムアウトに影響を与えています。最大保管庫のタイムアウト時間は $HOURS$ 時間 $MINUTES$ 分です。",
+  "vaultTimeoutPolicyInEffect1": {
+    "message": "$HOURS$ 時間と $MINUTES$ 分が最大です。",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -2062,6 +2147,9 @@
   },
   "vaultTimeoutTooLarge": {
     "message": "保管庫のタイムアウトが組織によって設定された制限を超えています。"
+  },
+  "inviteAccepted": {
+    "message": "招待が承認されました"
   },
   "resetPasswordPolicyAutoEnroll": {
     "message": "自動登録"
@@ -2763,6 +2851,9 @@
       }
     }
   },
+  "duoHealthCheckResultsInNullAuthUrlError": {
+    "message": "Duo サービスへの接続中にエラーが発生しました。異なる二段階ログイン方法を使用するか、Duo に連絡してください。"
+  },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
     "message": "ログインを完了するには Duo を起動し手順に従ってください。"
   },
@@ -2784,8 +2875,8 @@
   "invalidFilePassword": {
     "message": "無効なファイルパスワードです。エクスポートファイルを作成したときに入力したパスワードを使用してください。"
   },
-  "importDestination": {
-    "message": "インポート先"
+  "destination": {
+    "message": "保存先"
   },
   "learnAboutImportOptions": {
     "message": "インポートオプションの詳細"
@@ -2980,5 +3071,26 @@
         "example": "Work"
       }
     }
+  },
+  "data": {
+    "message": "データ"
+  },
+  "fileSends": {
+    "message": "ファイル Send"
+  },
+  "textSends": {
+    "message": "テキスト Send"
+  },
+  "allowScreenshots": {
+    "message": "スクリーンショットを許可"
+  },
+  "allowScreenshotsDesc": {
+    "message": "Bitwarden デスクトップアプリのスクリーンショットを許可します。"
+  },
+  "ssoError": {
+    "message": "SSO ログインのための空きポートが見つかりませんでした。"
+  },
+  "fileSavedToDevice": {
+    "message": "ファイルをデバイスに保存しました。デバイスのダウンロードで管理できます。"
   }
 }

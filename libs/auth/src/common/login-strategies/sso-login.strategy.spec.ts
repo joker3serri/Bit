@@ -17,6 +17,7 @@ import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -44,6 +45,7 @@ describe("SsoLoginStrategy", () => {
   let masterPasswordService: FakeMasterPasswordService;
 
   let cryptoService: MockProxy<CryptoService>;
+  let encryptService: MockProxy<EncryptService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
   let appIdService: MockProxy<AppIdService>;
@@ -78,6 +80,7 @@ describe("SsoLoginStrategy", () => {
     masterPasswordService = new FakeMasterPasswordService();
 
     cryptoService = mock<CryptoService>();
+    encryptService = mock<EncryptService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
     appIdService = mock<AppIdService>();
@@ -125,6 +128,7 @@ describe("SsoLoginStrategy", () => {
       accountService,
       masterPasswordService,
       cryptoService,
+      encryptService,
       apiService,
       tokenService,
       appIdService,
@@ -211,6 +215,7 @@ describe("SsoLoginStrategy", () => {
         HasAdminApproval: true,
         HasLoginApprovingDevice: true,
         HasManageResetPasswordPermission: false,
+        IsTdeOffboarding: false,
         EncryptedPrivateKey: mockEncDevicePrivateKey,
         EncryptedUserKey: mockEncUserKey,
       },
@@ -251,7 +256,7 @@ describe("SsoLoginStrategy", () => {
       expect(deviceTrustService.getDeviceKey).toHaveBeenCalledTimes(1);
       expect(deviceTrustService.decryptUserKeyWithDeviceKey).toHaveBeenCalledTimes(1);
       expect(cryptoSvcSetUserKeySpy).toHaveBeenCalledTimes(1);
-      expect(cryptoSvcSetUserKeySpy).toHaveBeenCalledWith(mockUserKey);
+      expect(cryptoSvcSetUserKeySpy).toHaveBeenCalledWith(mockUserKey, userId);
     });
 
     it("does not set the user key when deviceKey is missing", async () => {
@@ -312,6 +317,27 @@ describe("SsoLoginStrategy", () => {
       expect(cryptoService.setUserKey).not.toHaveBeenCalled();
     });
 
+    it("logs when a device key is found but no decryption keys were recieved in token response", async () => {
+      // Arrange
+      const userDecryptionOpts = userDecryptionOptsServerResponseWithTdeOption;
+      userDecryptionOpts.TrustedDeviceOption.EncryptedPrivateKey = null;
+      userDecryptionOpts.TrustedDeviceOption.EncryptedUserKey = null;
+
+      const idTokenResponse: IdentityTokenResponse = identityTokenResponseFactory(
+        null,
+        userDecryptionOpts,
+      );
+
+      apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
+      deviceTrustService.getDeviceKey.mockResolvedValue(mockDeviceKey);
+
+      // Act
+      await ssoLoginStrategy.logIn(credentials);
+
+      // Assert
+      expect(deviceTrustService.recordDeviceTrustLoss).toHaveBeenCalledTimes(1);
+    });
+
     describe("AdminAuthRequest", () => {
       let tokenResponse: IdentityTokenResponse;
 
@@ -322,6 +348,7 @@ describe("SsoLoginStrategy", () => {
             HasAdminApproval: true,
             HasLoginApprovingDevice: false,
             HasManageResetPasswordPermission: false,
+            IsTdeOffboarding: false,
             EncryptedPrivateKey: mockEncDevicePrivateKey,
             EncryptedUserKey: mockEncUserKey,
           },
@@ -475,7 +502,7 @@ describe("SsoLoginStrategy", () => {
         undefined,
         undefined,
       );
-      expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
+      expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey, userId);
     });
   });
 
@@ -531,7 +558,7 @@ describe("SsoLoginStrategy", () => {
         undefined,
         undefined,
       );
-      expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey);
+      expect(cryptoService.setUserKey).toHaveBeenCalledWith(userKey, userId);
     });
   });
 });
