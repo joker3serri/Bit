@@ -113,7 +113,7 @@ import {
   DefaultNotificationsService,
   WorkerWebPushConnectionService,
   SignalRConnectionService,
-  WebSocketWebPushConnectionService,
+  UnsupportedWebPushConnectionService,
 } from "@bitwarden/common/platform/notifications/internal";
 import { ScheduledTaskNames } from "@bitwarden/common/platform/scheduling";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
@@ -368,7 +368,7 @@ export default class MainBackground {
   offscreenDocumentService: OffscreenDocumentService;
   syncServiceListener: SyncServiceListener;
 
-  webPushConnectionService: WorkerWebPushConnectionService | WebSocketWebPushConnectionService;
+  webPushConnectionService: WorkerWebPushConnectionService | UnsupportedWebPushConnectionService;
   themeStateService: DefaultThemeStateService;
   autoSubmitLoginBackground: AutoSubmitLoginBackground;
 
@@ -1023,7 +1023,7 @@ export default class MainBackground {
         (self as unknown as { registration: ServiceWorkerRegistration }).registration,
       );
     } else {
-      this.webPushConnectionService = new WebSocketWebPushConnectionService();
+      this.webPushConnectionService = new UnsupportedWebPushConnectionService();
     }
 
     this.notificationsService = new DefaultNotificationsService(
