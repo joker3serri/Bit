@@ -12,7 +12,7 @@
   },
   "flags": {
     "showPasswordless": false,
-    "sdk": true
+    "sdk": false
   },
   "devFlags": {}
 }
