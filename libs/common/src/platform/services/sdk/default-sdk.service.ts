@@ -1,4 +1,4 @@
-import { concatMap, share } from "rxjs";
+import { concatMap, shareReplay } from "rxjs";
 
 import { LogLevel, DeviceType as SdkDeviceType } from "@bitwarden/sdk-internal";
 
@@ -6,20 +6,21 @@ import { DeviceType } from "../../../enums/device-type.enum";
 import { EnvironmentService } from "../../abstractions/environment.service";
 import { PlatformUtilsService } from "../../abstractions/platform-utils.service";
 import { SdkClientFactory } from "../../abstractions/sdk/sdk-client-factory";
+import { SdkService } from "../../abstractions/sdk/sdk.service";
 
-export class DefaultSdkService {
+export class DefaultSdkService implements SdkService {
   client$ = this.environmentService.environment$.pipe(
     concatMap(async (env) => {
       const settings = {
         apiUrl: env.getApiUrl(),
         identityUrl: env.getIdentityUrl(),
         deviceType: this.toDevice(this.platformUtilsService.getDevice()),
-        userAgent2: this.userAgent ?? navigator.userAgent,
+        userAgent: navigator.userAgent,
       };
 
       return await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
     }),
-    share(),
+    shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
   supported$ = this.client$.pipe(
