@@ -1475,6 +1475,10 @@
   "includeNumber": {
     "message": "Include number"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "passwordHistory": {
     "message": "Password history"
   },
@@ -2195,6 +2199,9 @@
   "checkExposedPasswords": {
     "message": "Check exposed passwords"
   },
+  "timesExposed": {
+    "message": "Times exposed"
+  },
   "exposedXTimes": {
     "message": "Exposed $COUNT$ time(s)",
     "placeholders": {
@@ -2229,6 +2236,9 @@
   "noWeakPasswords": {
     "message": "No items in your vault have weak passwords."
   },
+  "weakness": {
+    "message": "Weakness"
+  },
   "reusedPasswordsReport": {
     "message": "Reused passwords"
   },
@@ -2253,6 +2263,9 @@
   },
   "noReusedPasswords": {
     "message": "No logins in your vault have passwords that are being reused."
+  },
+  "timesReused": {
+    "message": "Times reused"
   },
   "reusedXTimes": {
     "message": "Reused $COUNT$ times",
