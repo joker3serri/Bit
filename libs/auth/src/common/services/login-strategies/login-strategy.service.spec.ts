@@ -11,6 +11,7 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
+import { PBKDF2KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
@@ -286,5 +287,41 @@ describe("LoginStrategyService", () => {
     );
 
     await expect(sut.logInTwoFactor(twoFactorToken, "CAPTCHA")).rejects.toThrow();
+  });
+
+  it("throw error on too low kdf config", async () => {
+    const credentials = new PasswordLoginCredentials("EMAIL", "MASTER_PASSWORD");
+    apiService.postIdentityToken.mockResolvedValue(
+      new IdentityTokenResponse({
+        ForcePasswordReset: false,
+        Kdf: KdfType.PBKDF2_SHA256,
+        KdfIterations: PBKDF2KdfConfig.PRELOGIN_ITERATIONS.min - 1,
+        Key: "KEY",
+        PrivateKey: "PRIVATE_KEY",
+        ResetMasterPassword: false,
+        access_token: "ACCESS_TOKEN",
+        expires_in: 3600,
+        refresh_token: "REFRESH_TOKEN",
+        scope: "api offline_access",
+        token_type: "Bearer",
+      }),
+    );
+    apiService.postPrelogin.mockResolvedValue(
+      new PreloginResponse({
+        Kdf: KdfType.PBKDF2_SHA256,
+        KdfIterations: PBKDF2KdfConfig.PRELOGIN_ITERATIONS.min - 1,
+      }),
+    );
+
+    tokenService.decodeAccessToken.calledWith("ACCESS_TOKEN").mockResolvedValue({
+      sub: "USER_ID",
+      name: "NAME",
+      email: "EMAIL",
+      premium: false,
+    });
+
+    await expect(sut.logIn(credentials)).rejects.toThrow(
+      `PBKDF2 iterations must be between ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS.min} and ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS.max}`,
+    );
   });
 });
