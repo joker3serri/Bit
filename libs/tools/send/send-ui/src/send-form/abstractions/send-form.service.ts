@@ -1,4 +1,3 @@
-import { SendData } from "@bitwarden/common/tools/send/models/data/send.data";
 import { Send } from "@bitwarden/common/tools/send/models/domain/send";
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 
@@ -23,5 +22,5 @@ export abstract class SendFormService {
     send: SendView,
     file: File | ArrayBuffer,
     config: SendFormConfig,
-  ): Promise<SendData>;
+  ): Promise<SendView>;
 }
