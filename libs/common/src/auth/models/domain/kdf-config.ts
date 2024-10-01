@@ -57,6 +57,11 @@ export class Argon2KdfConfig {
   static MEMORY = new RangeWithDefault(16, 1024, 64);
   static PARALLELISM = new RangeWithDefault(1, 16, 4);
   static ITERATIONS = new RangeWithDefault(2, 10, 3);
+
+  static PRELOGIN_MEMORY = Argon2KdfConfig.MEMORY;
+  static PRELOGIN_PARALLELISM = Argon2KdfConfig.PARALLELISM;
+  static PRELOGIN_ITERATIONS = Argon2KdfConfig.ITERATIONS;
+
   kdfType: KdfType.Argon2id = KdfType.Argon2id;
   iterations: number;
   memory: number;
@@ -96,7 +101,23 @@ export class Argon2KdfConfig {
    * Validates the Argon2 KDF configuration for pre-login.
    */
   validateKdfConfigForPrelogin(): void {
-    this.validateKdfConfigForSetting();
+    if (!Argon2KdfConfig.PRELOGIN_ITERATIONS.inRange(this.iterations)) {
+      throw new Error(
+        `Argon2 iterations must be between ${Argon2KdfConfig.PRELOGIN_ITERATIONS.min} and ${Argon2KdfConfig.PRELOGIN_ITERATIONS.max}`,
+      );
+    }
+
+    if (!Argon2KdfConfig.PRELOGIN_MEMORY.inRange(this.memory)) {
+      throw new Error(
+        `Argon2 memory must be between ${Argon2KdfConfig.PRELOGIN_MEMORY.min}mb and ${Argon2KdfConfig.PRELOGIN_MEMORY.max}mb`,
+      );
+    }
+
+    if (!Argon2KdfConfig.PRELOGIN_PARALLELISM.inRange(this.parallelism)) {
+      throw new Error(
+        `Argon2 parallelism must be between ${Argon2KdfConfig.PRELOGIN_PARALLELISM.min} and ${Argon2KdfConfig.PRELOGIN_PARALLELISM.max}.`,
+      );
+    }
   }
 
   static fromJSON(json: Jsonify<Argon2KdfConfig>): Argon2KdfConfig {
