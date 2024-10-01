@@ -1,18 +1,19 @@
 import { Jsonify } from "type-fest";
 
 import { AllowedFeatureFlagTypes } from "../../../enums/feature-flag.enum";
+import { PushTechnology } from "../../../enums/push-technology.enum";
 import {
   ServerConfigData,
   ThirdPartyServerConfigData,
   EnvironmentServerConfigData,
 } from "../../models/data/server-config.data";
 
-const dayInMilliseconds = 24 * 3600 * 1000;
+type PushConfig =
+  | { pushTechnology: PushTechnology.SignalR }
+  | { pushTechnology: PushTechnology.WebPush; vapidPublicKey: string }
+  | undefined;
 
-export enum PushTechnology {
-  SignalR = 0,
-  WebPush = 1,
-}
+const dayInMilliseconds = 24 * 3600 * 1000;
 
 export class ServerConfig {
   version: string;
@@ -21,10 +22,7 @@ export class ServerConfig {
   environment?: EnvironmentServerConfigData;
   utcDate: Date;
   featureStates: { [key: string]: AllowedFeatureFlagTypes } = {};
-  push: {
-    pushTechnology: PushTechnology;
-    vapidPublicKey?: string;
-  };
+  push: PushConfig;
 
   constructor(serverConfigData: ServerConfigData) {
     this.version = serverConfigData.version;

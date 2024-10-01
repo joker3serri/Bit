@@ -11,10 +11,10 @@ import {
   switchMap,
 } from "rxjs";
 
+import { PushTechnology } from "../../../enums/push-technology.enum";
 import { NotificationResponse } from "../../../models/response/notification.response";
 import { UserId } from "../../../types/guid";
 import { ConfigService } from "../../abstractions/config/config.service";
-import { PushTechnology } from "../../abstractions/config/server-config";
 import { SupportStatus } from "../../misc/support-status";
 import { Utils } from "../../misc/utils";
 import { WebPushNotificationsApiService } from "../../services/notifications/web-push-notifications-api.service";

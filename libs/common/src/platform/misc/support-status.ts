@@ -1,4 +1,4 @@
-import { filter, map, ObservableInput, OperatorFunction, pipe, switchMap } from "rxjs";
+import { ObservableInput, OperatorFunction, switchMap } from "rxjs";
 
 /**
  * Indicates that the given set of actions is not supported and there is
@@ -26,22 +26,23 @@ export type Supported<T> = { type: "supported"; service: T };
  */
 export type SupportStatus<T> = Supported<T> | NeedsConfiguration | NotSupported;
 
-export function filterSupported<T>(): OperatorFunction<SupportStatus<T>, T> {
-  return pipe(
-    filter<SupportStatus<T>>((supportStatus) => supportStatus.type === "supported"),
-    map<Supported<T>, T>((supportStatus) => supportStatus.service),
-  );
-}
-
+/**
+ * Projects each source value to one of the given projects defined in `selectors`.
+ *
+ * @param selectors.supported The function to run when the given item reports that it is supported
+ * @param selectors.notSupported The function to run when the given item reports that it is either not-supported
+ *   or needs-configuration.
+ * @returns A function that returns an Observable that emits the result of one of the given projection functions.
+ */
 export function supportSwitch<TService, TSupported, TNotSupported>(selectors: {
   supported: (service: TService, index: number) => ObservableInput<TSupported>;
-  notSupported: (index: number) => ObservableInput<TNotSupported>;
+  notSupported: (reason: string, index: number) => ObservableInput<TNotSupported>;
 }): OperatorFunction<SupportStatus<TService>, TSupported | TNotSupported> {
   return switchMap((supportStatus, index) => {
     if (supportStatus.type === "supported") {
       return selectors.supported(supportStatus.service, index);
     }
 
-    return selectors.notSupported(index);
+    return selectors.notSupported(supportStatus.reason, index);
   });
 }
