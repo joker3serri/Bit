@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Éviter les caractères ambigus"
   },
+  "generatorPolicyInEffect": {
+    "message": "Les exigences de la politique d'entreprise ont été appliquées à vos options de générateur.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Rechercher dans la collection"
   },
@@ -540,25 +544,37 @@
     }
   },
   "masterPassword": {
-    "message": "Master password"
+    "message": "Mot de passe principal"
   },
   "masterPassImportant": {
-    "message": "Your master password cannot be recovered if you forget it!"
+    "message": "Votre mot de passe principal ne peut pas être récupéré si vous l'oubliez !"
   },
   "confirmMasterPassword": {
-    "message": "Confirm master password"
+    "message": "Confirmer le mot de passe principal"
   },
   "masterPassHintLabel": {
-    "message": "Master password hint"
+    "message": "Indice du mot de passe principal"
   },
   "joinOrganization": {
-    "message": "Join organization"
+    "message": "Rejoindre l'organisation"
   },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
-    "message": "Finish joining this organization by setting a master password."
+    "message": "Terminez votre adhésion à cette organisation en définissant un mot de passe principal."
   },
   "settings": {
     "message": "Paramètres"
+  },
+  "accountEmail": {
+    "message": "Courriel du compte"
+  },
+  "requestHint": {
+    "message": "Demander l'indice"
+  },
+  "requestPasswordHint": {
+    "message": "Obtenir l'indice du mot de passe"
+  },
+  "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
+    "message": "Saisissez l'adresse courriel de votre compte et votre indice de mot de passe vous sera envoyé"
   },
   "passwordHint": {
     "message": "Indice pour le mot de passe"
@@ -603,6 +619,12 @@
   "newAccountCreated": {
     "message": "Votre nouveau compte a été créé ! Vous pouvez maintenant vous authentifier."
   },
+  "newAccountCreated2": {
+    "message": "Votre nouveau compte a été créé !"
+  },
+  "youHaveBeenLoggedIn": {
+    "message": "Vous avez été connecté !"
+  },
   "masterPassSent": {
     "message": "Nous vous avons envoyé un courriel avec votre indice de mot de passe principal."
   },
@@ -634,7 +656,7 @@
     "message": "Le code de vérification est requis."
   },
   "webauthnCancelOrTimeout": {
-    "message": "The authentication was cancelled or took too long. Please try again."
+    "message": "L'authentification a été annulée ou a pris trop de temps. Veuillez réessayer."
   },
   "invalidVerificationCode": {
     "message": "Code de vérification invalide"
@@ -799,16 +821,16 @@
     "message": "Votre session a expiré."
   },
   "restartRegistration": {
-    "message": "Restart registration"
+    "message": "Redémarrer l'inscription"
   },
   "expiredLink": {
-    "message": "Expired link"
+    "message": "Lien expiré"
   },
   "pleaseRestartRegistrationOrTryLoggingIn": {
-    "message": "Please restart registration or try logging in."
+    "message": "Veuillez redémarrer votre inscription ou essayez de vous connecter."
   },
   "youMayAlreadyHaveAnAccount": {
-    "message": "You may already have an account"
+    "message": "Vous avez peut-être déjà un compte"
   },
   "logOutConfirmation": {
     "message": "Êtes-vous sûr de vouloir vous déconnecter ?"
@@ -923,6 +945,9 @@
   },
   "vaultTimeout": {
     "message": "Délai d'expiration du coffre"
+  },
+  "vaultTimeout1": {
+    "message": "Délai dépassé"
   },
   "vaultTimeoutDesc": {
     "message": "Choisissez quand votre coffre réalisera l'action d'expiration."
@@ -1175,7 +1200,7 @@
     "message": "Vous pouvez acheter une adhésion Premium sur le coffre web de bitwarden.com. Voulez-vous visiter le site web maintenant ?"
   },
   "premiumPurchaseAlertV2": {
-    "message": "You can purchase Premium from your account settings on the Bitwarden web app."
+    "message": "Vous pouvez faire des achats Prenium à partir des paramètres de votre compte sur l'application web Bitwarden."
   },
   "premiumCurrentMember": {
     "message": "Vous êtes un membre Premium !"
@@ -1278,6 +1303,9 @@
         "example": "Password"
       }
     }
+  },
+  "copySuccessful": {
+    "message": "Copié avec succès"
   },
   "errorRefreshingAccessToken": {
     "message": "Erreur d'actualisation du jeton d'accès"
@@ -1514,13 +1542,13 @@
     "message": "Paramètres supplémentaires de Windows Hello"
   },
   "unlockWithPolkit": {
-    "message": "Unlock with system authentication"
+    "message": "Déverrouiller avec l'authentification du système"
   },
   "windowsHelloConsentMessage": {
     "message": "Vérifier pour Bitwarden."
   },
   "polkitConsentMessage": {
-    "message": "Authenticate to unlock Bitwarden."
+    "message": "S'authentifier pour déverrouiller Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "Déverrouiller avec Touch ID"
@@ -1535,7 +1563,7 @@
     "message": "Demander à Windows Hello au démarrage"
   },
   "autoPromptPolkit": {
-    "message": "Ask for system authentication on launch"
+    "message": "Demander l'authentification du système au lancement"
   },
   "autoPromptTouchId": {
     "message": "Demander Touch ID au démarrage de l'application"
@@ -1546,7 +1574,7 @@
   "recommendedForSecurity": {
     "message": "Recommandé pour la sécurité."
   },
-  "lockWithMasterPassOnRestart": {
+  "lockWithMasterPassOnRestart1": {
     "message": "Verrouiller avec le mot de passe principal au redémarrage"
   },
   "deleteAccount": {
@@ -1624,7 +1652,7 @@
   },
   "lock": {
     "message": "Verrouiller",
-    "description": "Verb form: to make secure or inaccesible by"
+    "description": "Verb form: to make secure or inaccessible by"
   },
   "trash": {
     "message": "Corbeille",
@@ -1747,8 +1775,8 @@
   "enableBrowserIntegration": {
     "message": "Activer l'intégration avec le navigateur"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "L'intégration avec le navigateur est utilisée pour le déverrouillage biométrique dans le navigateur."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Autoriser l'intégration DuckDuckGo au navigateur"
@@ -2007,7 +2035,7 @@
     "message": "Vérification de courriel requise"
   },
   "emailVerifiedV2": {
-    "message": "Email verified"
+    "message": "Courriel vérifié"
   },
   "emailVerificationRequiredDesc": {
     "message": "Vous devez vérifier votre courriel pour utiliser cette fonctionnalité."
@@ -2078,8 +2106,8 @@
   "minutes": {
     "message": "Minutes"
   },
-  "vaultTimeoutPolicyInEffect": {
-    "message": "Les politiques de sécurité de votre organisation ont défini le délai d'expiration de votre coffre à $HOURS$ heure(s) et $MINUTES$ minute(s) maximum.",
+  "vaultTimeoutPolicyInEffect1": {
+    "message": "$HOURS$ heure(s) et $MINUTES$ minute(s) maximum.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -2121,7 +2149,7 @@
     "message": "Le délai d'expiration de votre coffre dépasse les restrictions définies par votre organisation."
   },
   "inviteAccepted": {
-    "message": "Invitation accepted"
+    "message": "Invitation acceptée"
   },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Inscription automatique"
@@ -3045,12 +3073,24 @@
     }
   },
   "data": {
-    "message": "Data"
+    "message": "Données"
   },
   "fileSends": {
     "message": "File Sends"
   },
   "textSends": {
     "message": "Text Sends"
+  },
+  "allowScreenshots": {
+    "message": "Autoriser les captures d'écran"
+  },
+  "allowScreenshotsDesc": {
+    "message": "Autoriser la capture d'écran de l'application de bureau Bitwarden."
+  },
+  "ssoError": {
+    "message": "No free ports could be found for the sso login."
+  },
+  "fileSavedToDevice": {
+    "message": "Fichier enregistré sur l'appareil. Gérez à partir des téléchargements de votre appareil."
   }
 }
