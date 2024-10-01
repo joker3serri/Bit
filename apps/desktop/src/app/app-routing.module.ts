@@ -19,6 +19,7 @@ import {
   LockV2Component,
   PasswordHintComponent,
   RegistrationFinishComponent,
+  RegistrationLockAltIcon,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
   RegistrationStartSecondaryComponentData,
@@ -188,6 +189,7 @@ const routes: Routes = [
         path: "finish-signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
+          pageIcon: RegistrationLockAltIcon,
           pageTitle: "setAStrongPassword",
           pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
         } satisfies AnonLayoutWrapperData,
