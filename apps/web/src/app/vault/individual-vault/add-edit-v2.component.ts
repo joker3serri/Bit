@@ -17,9 +17,8 @@ import {
   CipherFormModule,
 } from "@bitwarden/vault";
 
-import { WebCipherFormGenerationService } from "../../../../../../libs/vault/src/cipher-form/services/web-cipher-form-generation.service";
-import { CipherViewComponent } from "../../../../../../libs/vault/src/cipher-view/cipher-view.component";
 import { SharedModule } from "../../shared/shared.module";
+import { WebCipherFormGenerationService } from "../services/web-cipher-form-generation.service";
 
 import { AttachmentsV2Component } from "./attachments-v2.component";
 
@@ -54,7 +53,6 @@ export interface AddEditCipherDialogCloseResult {
   templateUrl: "add-edit-v2.component.html",
   standalone: true,
   imports: [
-    CipherViewComponent,
     CommonModule,
     AsyncActionsModule,
     DialogModule,
