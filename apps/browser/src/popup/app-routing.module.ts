@@ -24,6 +24,7 @@ import {
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
   RegistrationStartSecondaryComponentData,
+  RegistrationUserAddIcon,
   SetPasswordJitComponent,
   UserLockIcon,
 } from "@bitwarden/auth/angular";
@@ -472,6 +473,7 @@ const routes: Routes = [
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
           state: "signup",
+          pageIcon: RegistrationUserAddIcon,
           pageTitle: "createAccount",
         } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [

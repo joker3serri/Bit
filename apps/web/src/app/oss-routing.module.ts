@@ -24,6 +24,7 @@ import {
   LockV2Component,
   LockIcon,
   UserLockIcon,
+  RegistrationUserAddIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -226,6 +227,7 @@ const routes: Routes = [
         path: "signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
+          pageIcon: RegistrationUserAddIcon,
           pageTitle: "createAccount",
           titleId: "createAccount",
         } satisfies RouteDataProperties & AnonLayoutWrapperData,
