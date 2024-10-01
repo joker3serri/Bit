@@ -68,8 +68,7 @@ const moduleRules = [
       {
         loader: "babel-loader",
         options: {
-          configFile: false,
-          plugins: ["@angular/compiler-cli/linker/babel"],
+          configFile: "../../babel.config.json",
         },
       },
     ],
@@ -89,14 +88,9 @@ const plugins = [
   new HtmlWebpackPlugin({
     template: "./src/index.html",
     filename: "index.html",
-    chunks: ["theme_head", "app/polyfills", "app/vendor", "app/main"],
+    chunks: ["theme_head", "app/polyfills", "app/vendor", "app/main", "styles"],
   }),
   new HtmlWebpackInjector(),
-  new HtmlWebpackPlugin({
-    template: "./src/connectors/duo.html",
-    filename: "duo-connector.html",
-    chunks: ["connectors/duo"],
-  }),
   new HtmlWebpackPlugin({
     template: "./src/connectors/webauthn.html",
     filename: "webauthn-connector.html",
@@ -118,6 +112,11 @@ const plugins = [
     chunks: ["connectors/sso"],
   }),
   new HtmlWebpackPlugin({
+    template: "./src/connectors/redirect.html",
+    filename: "redirect-connector.html",
+    chunks: ["connectors/redirect", "styles"],
+  }),
+  new HtmlWebpackPlugin({
     template: "./src/connectors/captcha.html",
     filename: "captcha-connector.html",
     chunks: ["connectors/captcha"],
@@ -132,6 +131,13 @@ const plugins = [
     filename: "duo-redirect-connector.html",
     chunks: ["connectors/duo-redirect"],
   }),
+  new HtmlWebpackPlugin({
+    template: "./src/404.html",
+    filename: "404.html",
+    chunks: ["styles"],
+    // 404 page is a wildcard, this ensures it uses absolute paths.
+    publicPath: "/",
+  }),
   new CopyWebpackPlugin({
     patterns: [
       { from: "./src/.nojekyll" },
@@ -139,8 +145,6 @@ const plugins = [
       { from: "./src/favicon.ico" },
       { from: "./src/browserconfig.xml" },
       { from: "./src/app-id.json" },
-      { from: "./src/404.html" },
-      { from: "./src/404", to: "404" },
       { from: "./src/images", to: "images" },
       { from: "./src/locales", to: "locales" },
       { from: "../../node_modules/qrious/dist/qrious.min.js", to: "scripts" },
@@ -174,7 +178,7 @@ const plugins = [
     ADDITIONAL_REGIONS: envConfig["additionalRegions"] ?? [],
   }),
   new AngularWebpackPlugin({
-    tsConfigPath: "tsconfig.json",
+    tsconfig: "tsconfig.build.json",
     entryModule: "src/app/app.module#AppModule",
     sourceMap: true,
   }),
@@ -325,10 +329,11 @@ const webpackConfig = {
     "app/main": "./src/main.ts",
     "connectors/webauthn": "./src/connectors/webauthn.ts",
     "connectors/webauthn-fallback": "./src/connectors/webauthn-fallback.ts",
-    "connectors/duo": "./src/connectors/duo.ts",
     "connectors/sso": "./src/connectors/sso.ts",
     "connectors/captcha": "./src/connectors/captcha.ts",
     "connectors/duo-redirect": "./src/connectors/duo-redirect.ts",
+    "connectors/redirect": "./src/connectors/redirect.ts",
+    styles: ["./src/scss/styles.scss", "./src/scss/tailwind.css"],
     theme_head: "./src/theme.ts",
   },
   optimization: {

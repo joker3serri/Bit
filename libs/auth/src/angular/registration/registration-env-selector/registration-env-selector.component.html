@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup" *ngIf="!hideEnvSelector">
   <bit-form-field>
     <bit-label>{{ "creatingAccountOn" | i18n }}</bit-label>
     <bit-select formControlName="selectedRegion">
@@ -8,6 +8,7 @@
         [label]="regionConfig.domain"
       ></bit-option>
       <bit-option
+        *ngIf="isDesktopOrBrowserExtension"
         [value]="ServerEnvironmentType.SelfHosted"
         [label]="'selfHostedServer' | i18n"
       ></bit-option>

@@ -9,6 +9,7 @@ import { FakeActiveUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
 import { DeviceType } from "../../enums";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
+import { ConfigService } from "../../platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
@@ -50,6 +51,7 @@ describe("deviceTrustService", () => {
   const platformUtilsService = mock<PlatformUtilsService>();
   const secureStorageService = mock<AbstractStorageService>();
   const logService = mock<LogService>();
+  const configService = mock<ConfigService>();
 
   const userDecryptionOptionsService = mock<UserDecryptionOptionsServiceAbstraction>();
   const decryptionOptions = new BehaviorSubject<UserDecryptionOptions>(null);
@@ -115,7 +117,7 @@ describe("deviceTrustService", () => {
 
       expect(deviceTrustService.getShouldTrustDevice).toHaveBeenCalledTimes(1);
       expect(deviceTrustService.trustDevice).toHaveBeenCalledTimes(1);
-      expect(deviceTrustService.setShouldTrustDevice).toHaveBeenCalledWith(mockUserId, false);
+      expect(deviceTrustService.setShouldTrustDevice).toHaveBeenCalledWith(mockUserId, null);
     });
 
     it("should not trust device nor reset when getShouldTrustDevice returns false", async () => {
@@ -533,6 +535,32 @@ describe("deviceTrustService", () => {
         ).rejects.toThrow("UserId is required. Cannot decrypt user key with device key.");
       });
 
+      it("throws an error when a nullish encrypted device private key is passed in", async () => {
+        await expect(
+          deviceTrustService.decryptUserKeyWithDeviceKey(
+            mockUserId,
+            null,
+            mockEncryptedUserKey,
+            mockDeviceKey,
+          ),
+        ).rejects.toThrow(
+          "Encrypted device private key is required. Cannot decrypt user key with device key.",
+        );
+      });
+
+      it("throws an error when a nullish encrypted user key is passed in", async () => {
+        await expect(
+          deviceTrustService.decryptUserKeyWithDeviceKey(
+            mockUserId,
+            mockEncryptedDevicePrivateKey,
+            null,
+            mockDeviceKey,
+          ),
+        ).rejects.toThrow(
+          "Encrypted user key is required. Cannot decrypt user key with device key.",
+        );
+      });
+
       it("returns null when device key isn't provided", async () => {
         const result = await deviceTrustService.decryptUserKeyWithDeviceKey(
           mockUserId,
@@ -595,7 +623,7 @@ describe("deviceTrustService", () => {
         const fakeNewUserKeyData = new Uint8Array(64);
         fakeNewUserKeyData.fill(FakeNewUserKeyMarker, 0, 1);
         fakeNewUserKey = new SymmetricCryptoKey(fakeNewUserKeyData) as UserKey;
-        cryptoService.activeUserKey$ = of(fakeNewUserKey);
+        cryptoService.userKey$.mockReturnValue(of(fakeNewUserKey));
       });
 
       it("throws an error when a null user id is passed in", async () => {
@@ -631,7 +659,9 @@ describe("deviceTrustService", () => {
           fakeOldUserKeyData.fill(FakeOldUserKeyMarker, 0, 1);
 
           // Mock the retrieval of a user key that differs from the new one passed into the method
-          cryptoService.activeUserKey$ = of(new SymmetricCryptoKey(fakeOldUserKeyData) as UserKey);
+          cryptoService.userKey$.mockReturnValue(
+            of(new SymmetricCryptoKey(fakeOldUserKeyData) as UserKey),
+          );
 
           appIdService.getAppId.mockResolvedValue("test_device_identifier");
 
@@ -729,6 +759,7 @@ describe("deviceTrustService", () => {
       secureStorageService,
       userDecryptionOptionsService,
       logService,
+      configService,
     );
   }
 });

@@ -49,7 +49,13 @@ describe("Folder Service", () => {
     );
     encryptService.decryptToUtf8.mockResolvedValue("DEC");
 
-    folderService = new FolderService(cryptoService, i18nService, cipherService, stateProvider);
+    folderService = new FolderService(
+      cryptoService,
+      encryptService,
+      i18nService,
+      cipherService,
+      stateProvider,
+    );
 
     folderState = stateProvider.activeUser.getFake(FOLDER_ENCRYPTED_FOLDERS);
 
@@ -62,9 +68,9 @@ describe("Folder Service", () => {
     model.id = "2";
     model.name = "Test Folder";
 
-    cryptoService.encrypt.mockResolvedValue(new EncString("ENC"));
+    encryptService.encrypt.mockResolvedValue(new EncString("ENC"));
 
-    const result = await folderService.encrypt(model);
+    const result = await folderService.encrypt(model, null);
 
     expect(result).toEqual({
       id: "2",
@@ -120,7 +126,7 @@ describe("Folder Service", () => {
   });
 
   it("replace", async () => {
-    await folderService.replace({ "2": folderData("2", "test 2") });
+    await folderService.replace({ "2": folderData("2", "test 2") }, mockUserId);
 
     expect(await firstValueFrom(folderService.folders$)).toEqual([
       {
@@ -176,6 +182,29 @@ describe("Folder Service", () => {
     //   expect((await firstValueFrom(folderService.folders$)).length).toBe(1);
     //   expect((await firstValueFrom(folderService.folderViews$)).length).toBe(2);
     // });
+  });
+
+  describe("getRotatedData", () => {
+    const originalUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
+    const newUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
+    let encryptedKey: EncString;
+
+    beforeEach(() => {
+      encryptedKey = new EncString("Re-encrypted Folder");
+      encryptService.encrypt.mockResolvedValue(encryptedKey);
+    });
+
+    it("returns re-encrypted user folders", async () => {
+      const result = await folderService.getRotatedData(originalUserKey, newUserKey, mockUserId);
+
+      expect(result[0]).toMatchObject({ id: "1", name: "Re-encrypted Folder" });
+    });
+
+    it("throws if the new user key is null", async () => {
+      await expect(folderService.getRotatedData(originalUserKey, null, mockUserId)).rejects.toThrow(
+        "New user key is required for rotation.",
+      );
+    });
   });
 
   function folderData(id: string, name: string) {

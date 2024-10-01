@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject, Observable, Subject, firstValueFrom } from "rxjs";
 import { concatMap, debounceTime, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 
-import { AuthRequestServiceAbstraction, PinServiceAbstraction } from "@bitwarden/auth/common";
+import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -19,7 +19,6 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions, ThemeType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
@@ -30,6 +29,7 @@ import {
   VaultTimeoutStringType,
 } from "@bitwarden/common/types/vault-timeout.type";
 import { DialogService } from "@bitwarden/components";
+import { BiometricsService, BiometricStateService } from "@bitwarden/key-management";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
@@ -41,12 +41,12 @@ import { NativeMessagingManifestService } from "../services/native-messaging-man
   templateUrl: "settings.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   // For use in template
   protected readonly VaultTimeoutAction = VaultTimeoutAction;
 
   showMinToTray = false;
-  vaultTimeoutOptions: VaultTimeoutOption[];
+  vaultTimeoutOptions: VaultTimeoutOption[] = [];
   localeOptions: any[];
   themeOptions: any[];
   clearClipboardOptions: any[];
@@ -55,6 +55,7 @@ export class SettingsComponent implements OnInit {
   requireEnableTray = false;
   showDuckDuckGoIntegrationOption = false;
   isWindows: boolean;
+  isLinux: boolean;
 
   enableTrayText: string;
   enableTrayDescText: string;
@@ -90,7 +91,6 @@ export class SettingsComponent implements OnInit {
     biometric: false,
     autoPromptBiometrics: false,
     requirePasswordOnStart: false,
-    approveLoginRequests: false,
     // Account Preferences
     clearClipboard: [null],
     minimizeOnCopyToClipboard: false,
@@ -108,6 +108,7 @@ export class SettingsComponent implements OnInit {
       disabled: true,
     }),
     enableHardwareAcceleration: true,
+    allowScreenshots: false,
     enableDuckDuckGoBrowserIntegration: false,
     theme: [null as ThemeType | null],
     locale: [null as string | null],
@@ -133,9 +134,9 @@ export class SettingsComponent implements OnInit {
     private userVerificationService: UserVerificationServiceAbstraction,
     private desktopSettingsService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
+    private biometricsService: BiometricsService,
     private desktopAutofillSettingsService: DesktopAutofillSettingsService,
     private pinService: PinServiceAbstraction,
-    private authRequestService: AuthRequestServiceAbstraction,
     private logService: LogService,
     private nativeMessagingManifestService: NativeMessagingManifestService,
   ) {
@@ -162,29 +163,6 @@ export class SettingsComponent implements OnInit {
 
     // DuckDuckGo browser is only for macos initially
     this.showDuckDuckGoIntegrationOption = isMac;
-
-    this.vaultTimeoutOptions = [
-      { name: this.i18nService.t("oneMinute"), value: 1 },
-      { name: this.i18nService.t("fiveMinutes"), value: 5 },
-      { name: this.i18nService.t("fifteenMinutes"), value: 15 },
-      { name: this.i18nService.t("thirtyMinutes"), value: 30 },
-      { name: this.i18nService.t("oneHour"), value: 60 },
-      { name: this.i18nService.t("fourHours"), value: 240 },
-      { name: this.i18nService.t("onIdle"), value: VaultTimeoutStringType.OnIdle },
-      { name: this.i18nService.t("onSleep"), value: VaultTimeoutStringType.OnSleep },
-    ];
-
-    if (this.platformUtilsService.getDevice() !== DeviceType.LinuxDesktop) {
-      this.vaultTimeoutOptions.push({
-        name: this.i18nService.t("onLocked"),
-        value: VaultTimeoutStringType.OnLocked,
-      });
-    }
-
-    this.vaultTimeoutOptions = this.vaultTimeoutOptions.concat([
-      { name: this.i18nService.t("onRestart"), value: VaultTimeoutStringType.OnRestart },
-      { name: this.i18nService.t("never"), value: VaultTimeoutStringType.Never },
-    ]);
 
     const localeOptions: any[] = [];
     this.i18nService.supportedTranslationLocales.forEach((locale) => {
@@ -217,9 +195,12 @@ export class SettingsComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.vaultTimeoutOptions = await this.generateVaultTimeoutOptions();
+
     this.userHasMasterPassword = await this.userVerificationService.hasMasterPassword();
 
     this.isWindows = (await this.platformUtilsService.getDevice()) === DeviceType.WindowsDesktop;
+    this.isLinux = (await this.platformUtilsService.getDevice()) === DeviceType.LinuxDesktop;
 
     if ((await this.stateService.getUserId()) == null) {
       return;
@@ -275,10 +256,8 @@ export class SettingsComponent implements OnInit {
       requirePasswordOnStart: await firstValueFrom(
         this.biometricStateService.requirePasswordOnStart$,
       ),
-      approveLoginRequests:
-        (await this.authRequestService.getAcceptAuthRequests(this.currentUserId)) ?? false,
       clearClipboard: await firstValueFrom(this.autofillSettingsService.clearClipboardDelay$),
-      minimizeOnCopyToClipboard: await this.stateService.getMinimizeOnCopyToClipboard(),
+      minimizeOnCopyToClipboard: await firstValueFrom(this.desktopSettingsService.minimizeOnCopy$),
       enableFavicons: await firstValueFrom(this.domainSettingsService.showFavicons$),
       enableTray: await firstValueFrom(this.desktopSettingsService.trayEnabled$),
       enableMinToTray: await firstValueFrom(this.desktopSettingsService.minimizeToTray$),
@@ -286,15 +265,19 @@ export class SettingsComponent implements OnInit {
       startToTray: await firstValueFrom(this.desktopSettingsService.startToTray$),
       openAtLogin: await firstValueFrom(this.desktopSettingsService.openAtLogin$),
       alwaysShowDock: await firstValueFrom(this.desktopSettingsService.alwaysShowDock$),
-      enableBrowserIntegration: await this.stateService.getEnableBrowserIntegration(),
-      enableBrowserIntegrationFingerprint:
-        await this.stateService.getEnableBrowserIntegrationFingerprint(),
+      enableBrowserIntegration: await firstValueFrom(
+        this.desktopSettingsService.browserIntegrationEnabled$,
+      ),
+      enableBrowserIntegrationFingerprint: await firstValueFrom(
+        this.desktopSettingsService.browserIntegrationFingerprintEnabled$,
+      ),
       enableDuckDuckGoBrowserIntegration: await firstValueFrom(
         this.desktopAutofillSettingsService.enableDuckDuckGoBrowserIntegration$,
       ),
       enableHardwareAcceleration: await firstValueFrom(
         this.desktopSettingsService.hardwareAcceleration$,
       ),
+      allowScreenshots: await firstValueFrom(this.desktopSettingsService.allowScreenshots$),
       theme: await firstValueFrom(this.themeStateService.selectedTheme$),
       locale: await firstValueFrom(this.i18nService.userSetLocale$),
     };
@@ -307,7 +290,7 @@ export class SettingsComponent implements OnInit {
     // Non-form values
     this.showMinToTray = this.platformUtilsService.getDevice() !== DeviceType.LinuxDesktop;
     this.showAlwaysShowDock = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
-    this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
+    this.supportsBiometric = await this.biometricsService.supportsBiometric();
     this.previousVaultTimeout = this.form.value.vaultTimeout;
 
     this.refreshTimeoutSettings$
@@ -486,9 +469,35 @@ export class SettingsComponent implements OnInit {
         return;
       }
 
+      const needsSetup = await this.biometricsService.biometricsNeedsSetup();
+      const supportsBiometricAutoSetup = await this.biometricsService.biometricsSupportsAutoSetup();
+
+      if (needsSetup) {
+        if (supportsBiometricAutoSetup) {
+          await this.biometricsService.biometricsSetup();
+        } else {
+          const confirmed = await this.dialogService.openSimpleDialog({
+            title: { key: "biometricsManualSetupTitle" },
+            content: { key: "biometricsManualSetupDesc" },
+            type: "warning",
+          });
+          if (confirmed) {
+            this.platformUtilsService.launchUri("https://bitwarden.com/help/biometrics/");
+          }
+          return;
+        }
+      }
+
       await this.biometricStateService.setBiometricUnlockEnabled(true);
       if (this.isWindows) {
         // Recommended settings for Windows Hello
+        this.form.controls.requirePasswordOnStart.setValue(true);
+        this.form.controls.autoPromptBiometrics.setValue(false);
+        await this.biometricStateService.setPromptAutomatically(false);
+        await this.biometricStateService.setRequirePasswordOnStart(true);
+        await this.biometricStateService.setDismissedRequirePasswordOnStartCallout();
+      } else if (this.isLinux) {
+        // Similar to Windows
         this.form.controls.requirePasswordOnStart.setValue(true);
         this.form.controls.autoPromptBiometrics.setValue(false);
         await this.biometricStateService.setPromptAutomatically(false);
@@ -598,7 +607,10 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveMinOnCopyToClipboard() {
-    await this.stateService.setMinimizeOnCopyToClipboard(this.form.value.minimizeOnCopyToClipboard);
+    await this.desktopSettingsService.setMinimizeOnCopy(
+      this.form.value.minimizeOnCopyToClipboard,
+      this.currentUserId,
+    );
   }
 
   async saveClearClipboard() {
@@ -643,7 +655,7 @@ export class SettingsComponent implements OnInit {
 
       this.form.controls.enableBrowserIntegration.setValue(false);
       return;
-    } else if (ipc.platform.deviceType === DeviceType.LinuxDesktop) {
+    } else if (ipc.platform.isSnapStore || ipc.platform.isFlatpak) {
       await this.dialogService.openSimpleDialog({
         title: { key: "browserIntegrationUnsupportedTitle" },
         content: { key: "browserIntegrationLinuxDesc" },
@@ -656,7 +668,9 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    await this.stateService.setEnableBrowserIntegration(this.form.value.enableBrowserIntegration);
+    await this.desktopSettingsService.setBrowserIntegrationEnabled(
+      this.form.value.enableBrowserIntegration,
+    );
 
     const errorResult = await this.nativeMessagingManifestService.generate(
       this.form.value.enableBrowserIntegration,
@@ -703,7 +717,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveBrowserIntegrationFingerprint() {
-    await this.stateService.setEnableBrowserIntegrationFingerprint(
+    await this.desktopSettingsService.setBrowserIntegrationFingerprintEnabled(
       this.form.value.enableBrowserIntegrationFingerprint,
     );
   }
@@ -714,11 +728,35 @@ export class SettingsComponent implements OnInit {
     );
   }
 
-  async updateApproveLoginRequests() {
-    await this.authRequestService.setAcceptAuthRequests(
-      this.form.value.approveLoginRequests,
-      this.currentUserId,
-    );
+  async saveAllowScreenshots() {
+    await this.desktopSettingsService.setAllowScreenshots(this.form.value.allowScreenshots);
+  }
+
+  private async generateVaultTimeoutOptions(): Promise<VaultTimeoutOption[]> {
+    let vaultTimeoutOptions: VaultTimeoutOption[] = [
+      { name: this.i18nService.t("oneMinute"), value: 1 },
+      { name: this.i18nService.t("fiveMinutes"), value: 5 },
+      { name: this.i18nService.t("fifteenMinutes"), value: 15 },
+      { name: this.i18nService.t("thirtyMinutes"), value: 30 },
+      { name: this.i18nService.t("oneHour"), value: 60 },
+      { name: this.i18nService.t("fourHours"), value: 240 },
+      { name: this.i18nService.t("onIdle"), value: VaultTimeoutStringType.OnIdle },
+      { name: this.i18nService.t("onSleep"), value: VaultTimeoutStringType.OnSleep },
+    ];
+
+    if (await ipc.platform.powermonitor.isLockMonitorAvailable()) {
+      vaultTimeoutOptions.push({
+        name: this.i18nService.t("onLocked"),
+        value: VaultTimeoutStringType.OnLocked,
+      });
+    }
+
+    vaultTimeoutOptions = vaultTimeoutOptions.concat([
+      { name: this.i18nService.t("onRestart"), value: VaultTimeoutStringType.OnRestart },
+      { name: this.i18nService.t("never"), value: VaultTimeoutStringType.Never },
+    ]);
+
+    return vaultTimeoutOptions;
   }
 
   ngOnDestroy() {
@@ -732,6 +770,8 @@ export class SettingsComponent implements OnInit {
         return "unlockWithTouchId";
       case DeviceType.WindowsDesktop:
         return "unlockWithWindowsHello";
+      case DeviceType.LinuxDesktop:
+        return "unlockWithPolkit";
       default:
         throw new Error("Unsupported platform");
     }
@@ -743,6 +783,8 @@ export class SettingsComponent implements OnInit {
         return "autoPromptTouchId";
       case DeviceType.WindowsDesktop:
         return "autoPromptWindowsHello";
+      case DeviceType.LinuxDesktop:
+        return "autoPromptPolkit";
       default:
         throw new Error("Unsupported platform");
     }

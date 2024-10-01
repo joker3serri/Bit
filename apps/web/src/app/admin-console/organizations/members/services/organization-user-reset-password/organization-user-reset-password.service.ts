@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import {
+  OrganizationUserApiService,
   OrganizationUserResetPasswordRequest,
   OrganizationUserResetPasswordWithIdRequest,
-} from "@bitwarden/common/admin-console/abstractions/organization-user/requests";
+} from "@bitwarden/admin-console/common";
+import { UserKeyRotationDataProvider } from "@bitwarden/auth/common";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import {
   Argon2KdfConfig,
   KdfConfig,
@@ -19,17 +20,20 @@ import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 
 @Injectable({
   providedIn: "root",
 })
-export class OrganizationUserResetPasswordService {
+export class OrganizationUserResetPasswordService
+  implements UserKeyRotationDataProvider<OrganizationUserResetPasswordWithIdRequest>
+{
   constructor(
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
     private organizationService: OrganizationService,
-    private organizationUserService: OrganizationUserService,
+    private organizationUserApiService: OrganizationUserApiService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private i18nService: I18nService,
   ) {}
@@ -72,7 +76,7 @@ export class OrganizationUserResetPasswordService {
     orgUserId: string,
     orgId: string,
   ): Promise<void> {
-    const response = await this.organizationUserService.getOrganizationUserResetPasswordDetails(
+    const response = await this.organizationUserApiService.getOrganizationUserResetPasswordDetails(
       orgId,
       orgUserId,
     );
@@ -124,16 +128,25 @@ export class OrganizationUserResetPasswordService {
     request.newMasterPasswordHash = newMasterKeyHash;
 
     // Change user's password
-    await this.organizationUserService.putOrganizationUserResetPassword(orgId, orgUserId, request);
+    await this.organizationUserApiService.putOrganizationUserResetPassword(
+      orgId,
+      orgUserId,
+      request,
+    );
   }
 
   /**
    * Returns existing account recovery keys re-encrypted with the new user key.
+   * @param originalUserKey the original user key
    * @param newUserKey the new user key
+   * @param userId the user id
    * @throws Error if new user key is null
+   * @returns a list of account recovery keys that have been re-encrypted with the new user key
    */
-  async getRotatedKeys(
+  async getRotatedData(
+    originalUserKey: UserKey,
     newUserKey: UserKey,
+    userId: UserId,
   ): Promise<OrganizationUserResetPasswordWithIdRequest[] | null> {
     if (newUserKey == null) {
       throw new Error("New user key is required for rotation.");

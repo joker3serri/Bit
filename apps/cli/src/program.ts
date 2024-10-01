@@ -1,6 +1,5 @@
 import * as chalk from "chalk";
 import { program, Command, OptionValues } from "commander";
-import { firstValueFrom } from "rxjs";
 
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
@@ -10,13 +9,12 @@ import { LogoutCommand } from "./auth/commands/logout.command";
 import { UnlockCommand } from "./auth/commands/unlock.command";
 import { BaseProgram } from "./base-program";
 import { CompletionCommand } from "./commands/completion.command";
-import { ConfigCommand } from "./commands/config.command";
 import { EncodeCommand } from "./commands/encode.command";
-import { ServeCommand } from "./commands/serve.command";
 import { StatusCommand } from "./commands/status.command";
 import { UpdateCommand } from "./commands/update.command";
 import { Response } from "./models/response";
 import { MessageResponse } from "./models/response/message.response";
+import { ConfigCommand } from "./platform/commands/config.command";
 import { GenerateCommand } from "./tools/generate.command";
 import { CliUtils } from "./utils";
 import { SyncCommand } from "./vault/sync.command";
@@ -62,18 +60,8 @@ export class Program extends BaseProgram {
       process.env.BW_NOINTERACTION = "true";
     });
 
-    program.on("option:session", async (key) => {
+    program.on("option:session", (key) => {
       process.env.BW_SESSION = key;
-
-      // once we have the session key, we can set the user key in memory
-      const activeAccount = await firstValueFrom(
-        this.serviceContainer.accountService.activeAccount$,
-      );
-      if (activeAccount) {
-        await this.serviceContainer.userAutoUnlockKeyService.setUserKeyInMemoryIfAutoUserKeySet(
-          activeAccount.id,
-        );
-      }
     });
 
     program.on("command:*", () => {
@@ -83,6 +71,11 @@ export class Program extends BaseProgram {
     });
 
     program.on("--help", () => {
+      writeLn(
+        chalk.yellowBright(
+          "\n  Tip: Managing and retrieving secrets for dev environments is easier with Bitwarden Secrets Manager. Learn more under https://bitwarden.com/products/secrets-manager/",
+        ),
+      );
       writeLn("\n  Examples:");
       writeLn("");
       writeLn("    bw login");
@@ -202,9 +195,9 @@ export class Program extends BaseProgram {
         writeLn("", true);
       })
       .action(async (cmd) => {
-        await this.exitIfNotAuthed();
+        const userId = await this.exitIfNotAuthed();
 
-        if (await this.serviceContainer.keyConnectorService.getUsesKeyConnector()) {
+        if (await this.serviceContainer.keyConnectorService.getUsesKeyConnector(userId)) {
           const logoutCommand = new LogoutCommand(
             this.serviceContainer.authService,
             this.serviceContainer.i18nService,
@@ -266,16 +259,14 @@ export class Program extends BaseProgram {
             this.serviceContainer.accountService,
             this.serviceContainer.masterPasswordService,
             this.serviceContainer.cryptoService,
-            this.serviceContainer.stateService,
+            this.serviceContainer.userVerificationService,
             this.serviceContainer.cryptoFunctionService,
-            this.serviceContainer.apiService,
             this.serviceContainer.logService,
             this.serviceContainer.keyConnectorService,
             this.serviceContainer.environmentService,
             this.serviceContainer.syncService,
             this.serviceContainer.organizationApiService,
             async () => await this.serviceContainer.logout(),
-            this.serviceContainer.kdfConfigService,
           );
           const response = await command.run(password, cmd);
           this.processResponse(response);
@@ -401,7 +392,10 @@ export class Program extends BaseProgram {
         writeLn("", true);
       })
       .action(async (setting, value, options) => {
-        const command = new ConfigCommand(this.serviceContainer.environmentService);
+        const command = new ConfigCommand(
+          this.serviceContainer.environmentService,
+          this.serviceContainer.accountService,
+        );
         const response = await command.run(setting, value, options);
         this.processResponse(response);
       });
@@ -481,35 +475,6 @@ export class Program extends BaseProgram {
         );
         const response = await command.run();
         this.processResponse(response);
-      });
-
-    program
-      .command("serve")
-      .description("Start a RESTful API webserver.")
-      .option("--hostname <hostname>", "The hostname to bind your API webserver to.")
-      .option("--port <port>", "The port to run your API webserver on.")
-      .option(
-        "--disable-origin-protection",
-        "If set, allows requests with origin header. Warning, this option exists for backwards compatibility reasons and exposes your environment to known CSRF attacks.",
-      )
-      .on("--help", () => {
-        writeLn("\n  Notes:");
-        writeLn("");
-        writeLn("    Default hostname is `localhost`.");
-        writeLn("    Use hostname `all` for no hostname binding.");
-        writeLn("    Default port is `8087`.");
-        writeLn("");
-        writeLn("  Examples:");
-        writeLn("");
-        writeLn("    bw serve");
-        writeLn("    bw serve --port 8080");
-        writeLn("    bw serve --hostname bwapi.mydomain.com --port 80");
-        writeLn("", true);
-      })
-      .action(async (cmd) => {
-        await this.exitIfNotAuthed();
-        const command = new ServeCommand(this.serviceContainer);
-        await command.run(cmd);
       });
   }
 }

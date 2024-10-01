@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "あいまいな文字を省く"
   },
+  "generatorPolicyInEffect": {
+    "message": "生成オプションにエンタープライズポリシー要件を適用しました",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "コレクションの検索"
   },
@@ -499,6 +503,12 @@
   "createAccount": {
     "message": "アカウントの作成"
   },
+  "setAStrongPassword": {
+    "message": "強力なパスワードを設定する"
+  },
+  "finishCreatingYourAccountBySettingAPassword": {
+    "message": "パスワードを設定してアカウントの作成を完了してください"
+  },
   "logIn": {
     "message": "ログイン"
   },
@@ -520,8 +530,51 @@
   "masterPassHint": {
     "message": "マスターパスワードのヒント (省略可能)"
   },
+  "masterPassHintText": {
+    "message": "パスワードを忘れた場合、パスワードのヒントをメールに送信できます。 最大文字数：$CURRENT$/$MAXIMUM$",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "0"
+      },
+      "maximum": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
+  "masterPassword": {
+    "message": "マスターパスワード"
+  },
+  "masterPassImportant": {
+    "message": "マスターパスワードを忘れた場合は復元できません！"
+  },
+  "confirmMasterPassword": {
+    "message": "マスターパスワードの確認"
+  },
+  "masterPassHintLabel": {
+    "message": "マスターパスワードのヒント"
+  },
+  "joinOrganization": {
+    "message": "組織に参加"
+  },
+  "finishJoiningThisOrganizationBySettingAMasterPassword": {
+    "message": "マスターパスワードを設定して、この組織への参加を完了します。"
+  },
   "settings": {
     "message": "設定"
+  },
+  "accountEmail": {
+    "message": "アカウントのメールアドレス"
+  },
+  "requestHint": {
+    "message": "ヒントを要求"
+  },
+  "requestPasswordHint": {
+    "message": "パスワードのヒントを要求する"
+  },
+  "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
+    "message": "アカウントのメールアドレスを入力すると、パスワードのヒントが送信されます"
   },
   "passwordHint": {
     "message": "パスワードのヒント"
@@ -554,17 +607,23 @@
       }
     }
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "ログインに成功しました"
+  },
+  "youMayCloseThisWindow": {
+    "message": "ウィンドウを閉じて大丈夫です"
+  },
   "masterPassDoesntMatch": {
     "message": "マスターパスワードが一致しません。"
   },
   "newAccountCreated": {
     "message": "新しいアカウントを作成しました！今すぐログインできます。"
   },
-  "youSuccessfullyLoggedIn": {
-    "message": "ログインに成功しました"
+  "newAccountCreated2": {
+    "message": "新しいアカウントを作成しました！"
   },
-  "youMayCloseThisWindow": {
-    "message": "ウィンドウを閉じて大丈夫です"
+  "youHaveBeenLoggedIn": {
+    "message": "ログインしました！"
   },
   "masterPassSent": {
     "message": "あなたのマスターパスワードのヒントを記載したメールを送信しました。"
@@ -595,6 +654,9 @@
   },
   "verificationCodeRequired": {
     "message": "認証コードは必須項目です。"
+  },
+  "webauthnCancelOrTimeout": {
+    "message": "認証がキャンセルされたか、時間がかかりすぎました。もう一度やり直してください。"
   },
   "invalidVerificationCode": {
     "message": "認証コードが間違っています"
@@ -647,18 +709,18 @@
   "authenticatorAppTitle": {
     "message": "認証アプリ"
   },
-  "authenticatorAppDesc": {
-    "message": "Authy や Google 認証システムなどの認証アプリで時限式の認証コードを生成してください。",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Bitwarden Authenticator のような認証アプリによって生成されたコードを入力してください。",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "YubiKey OTP セキュリティキー"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP セキュリティキー"
   },
   "yubiKeyDesc": {
     "message": "YubiKey を使ってアカウントにアクセスできます。 YubiKey 4、4 Nano、4C、NEOに対応しています。"
   },
-  "duoDesc": {
-    "message": "Duo Mobile アプリや SMS、電話や U2F セキュリティキーを使って Duo Security で認証します。",
+  "duoDescV2": {
+    "message": "Duo Security によって生成されたコードを入力してください。",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -674,8 +736,8 @@
   "emailTitle": {
     "message": "メールアドレス"
   },
-  "emailDesc": {
-    "message": "確認コードをメールにお送りします。"
+  "emailDescV2": {
+    "message": "メールアドレスに送信されたコードを入力してください。"
   },
   "loginUnavailable": {
     "message": "ログインできません。"
@@ -694,6 +756,15 @@
   },
   "selfHostedEnvironmentFooter": {
     "message": "セルフホスティングしている Bitwarden のベース URL を指定してください。"
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "オンプレミスホストした Bitwarden のベース URL を指定してください。例: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "高度な設定では、各サービスのベース URL を個別に指定できます。"
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "ベース サーバー URL または少なくとも 1 つのカスタム環境を追加する必要があります。"
   },
   "customEnvironment": {
     "message": "カスタム環境"
@@ -743,8 +814,23 @@
   "loggedOut": {
     "message": "ログアウトしました"
   },
+  "loggedOutDesc": {
+    "message": "アカウントからログアウトしました。"
+  },
   "loginExpired": {
     "message": "ログインセッションの有効期限が切れています。"
+  },
+  "restartRegistration": {
+    "message": "登録を再度始める"
+  },
+  "expiredLink": {
+    "message": "期限切れのリンク"
+  },
+  "pleaseRestartRegistrationOrTryLoggingIn": {
+    "message": "登録を再度始めるか、ログインしてください。"
+  },
+  "youMayAlreadyHaveAnAccount": {
+    "message": "すでにアカウントを持っている可能性があります"
   },
   "logOutConfirmation": {
     "message": "ログアウトしてもよろしいですか？"
@@ -859,6 +945,9 @@
   },
   "vaultTimeout": {
     "message": "保管庫のタイムアウト"
+  },
+  "vaultTimeout1": {
+    "message": "タイムアウト"
   },
   "vaultTimeoutDesc": {
     "message": "保管庫がタイムアウトし、選択したアクションを実行するタイミングを選択します。"
@@ -1110,6 +1199,9 @@
   "premiumPurchaseAlert": {
     "message": "プレミアム会員権は bitwarden.com ウェブ保管庫で購入できます。ウェブサイトを開きますか？"
   },
+  "premiumPurchaseAlertV2": {
+    "message": "Bitwarden ウェブアプリでアカウント設定からプレミアムを購入できます。"
+  },
   "premiumCurrentMember": {
     "message": "あなたはプレミアム会員です！"
   },
@@ -1212,6 +1304,15 @@
       }
     }
   },
+  "copySuccessful": {
+    "message": "コピーしました"
+  },
+  "errorRefreshingAccessToken": {
+    "message": "アクセストークンの更新エラー"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "リフレッシュトークンや API キーが見つかりませんでした。ログアウトして再度ログインしてください。"
+  },
   "help": {
     "message": "ヘルプ"
   },
@@ -1299,11 +1400,41 @@
     "message": "パスワード更新日",
     "description": "ex. Date this password was updated"
   },
+  "exportFrom": {
+    "message": "エクスポート元"
+  },
   "exportVault": {
     "message": "保管庫のエクスポート"
   },
   "fileFormat": {
     "message": "ファイル形式"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "エクスポートするファイルはパスワードで保護され、復号するにはファイルパスワードが必要になります。"
+  },
+  "filePassword": {
+    "message": "ファイルパスワード"
+  },
+  "exportPasswordDescription": {
+    "message": "このパスワードはこのファイルのエクスポートとインポート時に使用します"
+  },
+  "accountRestrictedOptionDescription": {
+    "message": "アカウントのユーザー名とマスターパスワードから得られる暗号化キーを使用してエクスポートするデータを暗号化し、現在の Bitwarden アカウントのみがインポートできるよう制限します。"
+  },
+  "passwordProtected": {
+    "message": "パスワード保護あり"
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "エクスポートを暗号化するためのファイルパスワードを設定します。そのパスワードを使用して、任意の Bitwarden アカウントにインポートします。"
+  },
+  "exportTypeHeading": {
+    "message": "エクスポートの種類"
+  },
+  "accountRestricted": {
+    "message": "アカウント制限"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "「ファイルパスワード」と「ファイルパスワードの確認」が一致しません。"
   },
   "hCaptchaUrl": {
     "message": "hCaptcha URL",
@@ -1410,8 +1541,14 @@
   "additionalWindowsHelloSettings": {
     "message": "追加の Windows Hello 設定"
   },
+  "unlockWithPolkit": {
+    "message": "システム認証でロック解除"
+  },
   "windowsHelloConsentMessage": {
     "message": "Bitwarden の認証を行います。"
+  },
+  "polkitConsentMessage": {
+    "message": "認証して Bitwarden のロックを解除します。"
   },
   "unlockWithTouchId": {
     "message": "Touch ID でロック解除"
@@ -1425,6 +1562,9 @@
   "autoPromptWindowsHello": {
     "message": "起動時に Windows Hello を要求する"
   },
+  "autoPromptPolkit": {
+    "message": "起動時にシステム認証を要求する"
+  },
   "autoPromptTouchId": {
     "message": "起動時に Touch ID を要求する"
   },
@@ -1434,7 +1574,7 @@
   "recommendedForSecurity": {
     "message": "セキュリティ向上のためおすすめします。"
   },
-  "lockWithMasterPassOnRestart": {
+  "lockWithMasterPassOnRestart1": {
     "message": "再起動時にマスターパスワードでロック"
   },
   "deleteAccount": {
@@ -1512,7 +1652,7 @@
   },
   "lock": {
     "message": "ロック",
-    "description": "Verb form: to make secure or inaccesible by"
+    "description": "Verb form: to make secure or inaccessible by"
   },
   "trash": {
     "message": "ごみ箱",
@@ -1611,6 +1751,21 @@
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "新しいマスターパスワードは最低要件を満たしていません。"
   },
+  "receiveMarketingEmailsV2": {
+    "message": "Bitwarden からメールでアドバイスやお知らせ、リサーチの機会を受け取りましょう。"
+  },
+  "unsubscribe": {
+    "message": "配信停止"
+  },
+  "atAnyTime": {
+    "message": "はいつでもできます。"
+  },
+  "byContinuingYouAgreeToThe": {
+    "message": "続行すると以下に同意したものとみなします："
+  },
+  "and": {
+    "message": "と"
+  },
   "acceptPolicies": {
     "message": "以下に同意しチェックします:"
   },
@@ -1620,8 +1775,8 @@
   "enableBrowserIntegration": {
     "message": "ブラウザ統合を有効にする"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "ブラウザでの生体認証のためにブラウザ統合を使用します。"
+  "enableBrowserIntegrationDesc1": {
+    "message": "Safari 以外のブラウザで生体認証によるロック解除を許可するために使用されます。"
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckGo ブラウザの統合を許可する"
@@ -1688,6 +1843,12 @@
   },
   "biometricsNotEnabledDesc": {
     "message": "ブラウザで生体認証を利用するには、最初に設定でデスクトップ生体認証を有効にする必要があります。"
+  },
+  "biometricsManualSetupTitle": {
+    "message": "自動設定は利用できません"
+  },
+  "biometricsManualSetupDesc": {
+    "message": "インストール方法により、生体認証を自動的に有効化できませんでした。手動で設定する方法の説明を開きますか？"
   },
   "personalOwnershipSubmitError": {
     "message": "組織のポリシーにより、個人保管庫へのアイテムの保存が制限されています。 所有権を組織に変更し、利用可能なコレクションから選択してください。"
@@ -1873,6 +2034,9 @@
   "emailVerificationRequired": {
     "message": "メールアドレスの確認が必要です"
   },
+  "emailVerifiedV2": {
+    "message": "メールアドレスを認証しました"
+  },
   "emailVerificationRequiredDesc": {
     "message": "この機能を使用するにはメールアドレスを確認する必要があります。"
   },
@@ -1896,6 +2060,9 @@
   },
   "updateWeakMasterPasswordWarning": {
     "message": "マスターパスワードが組織のポリシーに適合していません。保管庫にアクセスするには、今すぐマスターパスワードを更新しなければなりません。続行すると現在のセッションからログアウトし、再度ログインする必要があります。 他のデバイス上のアクティブなセッションは、最大1時間アクティブであり続けることがあります。"
+  },
+  "tdeDisabledMasterPasswordRequired": {
+    "message": "あなたの組織は信頼できるデバイスの暗号化を無効化しました。保管庫にアクセスするにはマスターパスワードを設定してください。"
   },
   "tryAgain": {
     "message": "再試行"
@@ -1939,8 +2106,8 @@
   "minutes": {
     "message": "分"
   },
-  "vaultTimeoutPolicyInEffect": {
-    "message": "あなたの組織ポリシーは保管庫のタイムアウトに影響を与えています。最大保管庫のタイムアウト時間は $HOURS$ 時間 $MINUTES$ 分です。",
+  "vaultTimeoutPolicyInEffect1": {
+    "message": "$HOURS$ 時間と $MINUTES$ 分が最大です。",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1980,6 +2147,9 @@
   },
   "vaultTimeoutTooLarge": {
     "message": "保管庫のタイムアウトが組織によって設定された制限を超えています。"
+  },
+  "inviteAccepted": {
+    "message": "招待が承認されました"
   },
   "resetPasswordPolicyAutoEnroll": {
     "message": "自動登録"
@@ -2068,6 +2238,18 @@
       "email": {
         "content": "$1",
         "example": "name@example.com"
+      }
+    }
+  },
+  "exportingOrganizationVaultTitle": {
+    "message": "組織保管庫のエクスポート"
+  },
+  "exportingOrganizationVaultDesc": {
+    "message": "$ORGANIZATION$ に関連付けられた組織保管庫のみがエクスポートされます。個々の保管庫または他の組織にあるアイテムは含まれません。",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "ACME Moving Co."
       }
     }
   },
@@ -2341,9 +2523,6 @@
   "denyLogIn": {
     "message": "ログインを拒否"
   },
-  "approveLoginRequests": {
-    "message": "ログインリクエストを承認する"
-  },
   "logInConfirmedForEmailOnDevice": {
     "message": "$EMAIL$ に $DEVICE$ でのログインを承認しました",
     "placeholders": {
@@ -2377,9 +2556,6 @@
   },
   "thisRequestIsNoLongerValid": {
     "message": "このリクエストは無効になりました。"
-  },
-  "approveLoginRequestDesc": {
-    "message": "このデバイスを使用して、他のデバイスからのログインリクエストを承認します。"
   },
   "confirmLoginAtemptForMail": {
     "message": "$EMAIL$ のログイン試行を確認",
@@ -2431,6 +2607,12 @@
   },
   "important": {
     "message": "重要"
+  },
+  "accessTokenUnableToBeDecrypted": {
+    "message": "アクセストークンを復号できなかったためログアウトしました。この問題を解決するためには再度ログインしてください。"
+  },
+  "refreshTokenSecureStorageRetrievalFailure": {
+    "message": "リフレッシュトークンを取得できなかったためログアウトしました。この問題を解決するためには再度ログインしてください。"
   },
   "masterPasswordHint": {
     "message": "マスターパスワードを忘れた場合は復元できません！"
@@ -2611,6 +2793,9 @@
   "submenu": {
     "message": "サブメニュー"
   },
+  "toggleSideNavigation": {
+    "message": "サイドナビゲーションの切り替え"
+  },
   "skipToContent": {
     "message": "コンテンツへ移動"
   },
@@ -2666,6 +2851,9 @@
       }
     }
   },
+  "duoHealthCheckResultsInNullAuthUrlError": {
+    "message": "Duo サービスへの接続中にエラーが発生しました。異なる二段階ログイン方法を使用するか、Duo に連絡してください。"
+  },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
     "message": "ログインを完了するには Duo を起動し手順に従ってください。"
   },
@@ -2687,8 +2875,8 @@
   "invalidFilePassword": {
     "message": "無効なファイルパスワードです。エクスポートファイルを作成したときに入力したパスワードを使用してください。"
   },
-  "importDestination": {
-    "message": "インポート先"
+  "destination": {
+    "message": "保存先"
   },
   "learnAboutImportOptions": {
     "message": "インポートオプションの詳細"
@@ -2745,6 +2933,9 @@
   },
   "confirmFilePassword": {
     "message": "ファイルパスワードの確認"
+  },
+  "exportSuccess": {
+    "message": "保管庫データをエクスポートしました"
   },
   "multifactorAuthenticationCancelled": {
     "message": "多要素認証がキャンセルされました"
@@ -2880,5 +3071,26 @@
         "example": "Work"
       }
     }
+  },
+  "data": {
+    "message": "データ"
+  },
+  "fileSends": {
+    "message": "ファイル Send"
+  },
+  "textSends": {
+    "message": "テキスト Send"
+  },
+  "allowScreenshots": {
+    "message": "スクリーンショットを許可"
+  },
+  "allowScreenshotsDesc": {
+    "message": "Bitwarden デスクトップアプリのスクリーンショットを許可します。"
+  },
+  "ssoError": {
+    "message": "SSO ログインのための空きポートが見つかりませんでした。"
+  },
+  "fileSavedToDevice": {
+    "message": "ファイルをデバイスに保存しました。デバイスのダウンロードで管理できます。"
   }
 }

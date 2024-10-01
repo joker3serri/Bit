@@ -1,3 +1,4 @@
+import { DialogRef } from "@angular/cdk/dialog";
 import {
   Component,
   NgZone,
@@ -13,6 +14,7 @@ import { filter, firstValueFrom, map, Subject, takeUntil, timeout } from "rxjs";
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { FingerprintDialogComponent } from "@bitwarden/auth/angular";
+import { LogoutReason } from "@bitwarden/auth/common";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
@@ -37,18 +39,18 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
-import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { clearCaches } from "@bitwarden/common/platform/misc/sequentialize";
 import { StateEventRunnerService } from "@bitwarden/common/platform/state";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { SyncService } from "@bitwarden/common/platform/sync";
 import { UserId } from "@bitwarden/common/types/guid";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { DialogService, ToastOptions, ToastService } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { BiometricStateService } from "@bitwarden/key-management";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { LoginApprovalComponent } from "../auth/login/login-approval.component";
@@ -108,6 +110,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private idleTimer: number = null;
   private isIdle = false;
   private activeUserId: UserId = null;
+  private activeSimpleDialog: DialogRef<boolean> = null;
 
   private destroy$ = new Subject<void>();
 
@@ -191,9 +194,9 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           case "loggedOut":
             this.modalService.closeAll();
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.notificationsService.updateConnection();
+            if (message.userId == null || message.userId === this.activeUserId) {
+              await this.notificationsService.updateConnection();
+            }
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             this.updateAppMenu();
@@ -207,7 +210,7 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           case "logout":
             this.loading = message.userId == null || message.userId === this.activeUserId;
-            await this.logOut(!!message.expired, message.userId);
+            await this.logOut(message.logoutReason, message.userId);
             this.loading = false;
             break;
           case "lockVault":
@@ -297,13 +300,19 @@ export class AppComponent implements OnInit, OnDestroy {
               this.systemService.clearClipboard(message.clipboardValue, message.clearMs);
             }
             break;
-          case "ssoCallback":
+          case "ssoCallback": {
+            const queryParams = {
+              code: message.code,
+              state: message.state,
+              redirectUri: message.redirectUri ?? "bitwarden://sso-callback",
+            };
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             this.router.navigate(["sso"], {
-              queryParams: { code: message.code, state: message.state },
+              queryParams: queryParams,
             });
             break;
+          }
           case "premiumRequired": {
             const premiumConfirmed = await this.dialogService.openSimpleDialog({
               title: { key: "premiumRequired" },
@@ -400,7 +409,6 @@ export class AppComponent implements OnInit, OnDestroy {
             // Clear sequentialized caches
             clearCaches();
             if (message.userId != null) {
-              await this.stateService.clearDecryptedData(message.userId);
               await this.accountService.switchAccount(message.userId);
             }
             const locked =
@@ -420,12 +428,13 @@ export class AppComponent implements OnInit, OnDestroy {
             } else {
               this.messagingService.send("unlocked");
               this.loading = true;
-              await this.syncService.fullSync(true);
+              await this.syncService.fullSync(false);
               this.loading = false;
               // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               this.router.navigate(["vault"]);
             }
+            this.messagingService.send("finishSwitchAccount");
             break;
           }
           case "systemSuspended":
@@ -451,6 +460,9 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           case "deepLink":
             this.processDeepLink(message.urlString);
+            break;
+          case "launchUri":
+            this.platformUtilsService.launchUri(message.url);
             break;
         }
       });
@@ -545,9 +557,73 @@ export class AppComponent implements OnInit, OnDestroy {
     this.messagingService.send("updateAppMenu", { updateRequest: updateRequest });
   }
 
+  private async displayLogoutReason(logoutReason: LogoutReason) {
+    let toastOptions: ToastOptions;
+
+    switch (logoutReason) {
+      case "invalidSecurityStamp":
+      case "sessionExpired": {
+        toastOptions = {
+          variant: "warning",
+          title: this.i18nService.t("loggedOut"),
+          message: this.i18nService.t("loginExpired"),
+        };
+        break;
+      }
+      // We don't expect these scenarios to be common, but we want the user to
+      // understand why they are being logged out before a process reload.
+      case "accessTokenUnableToBeDecrypted": {
+        // Don't create multiple dialogs if this fires multiple times
+        if (this.activeSimpleDialog) {
+          // Let the caller of this function listen for the dialog to close
+          return firstValueFrom(this.activeSimpleDialog.closed);
+        }
+
+        this.activeSimpleDialog = this.dialogService.openSimpleDialogRef({
+          title: { key: "loggedOut" },
+          content: { key: "accessTokenUnableToBeDecrypted" },
+          acceptButtonText: { key: "ok" },
+          cancelButtonText: null,
+          type: "danger",
+        });
+
+        await firstValueFrom(this.activeSimpleDialog.closed);
+        this.activeSimpleDialog = null;
+
+        break;
+      }
+      case "refreshTokenSecureStorageRetrievalFailure": {
+        // Don't create multiple dialogs if this fires multiple times
+        if (this.activeSimpleDialog) {
+          // Let the caller of this function listen for the dialog to close
+          return firstValueFrom(this.activeSimpleDialog.closed);
+        }
+
+        this.activeSimpleDialog = this.dialogService.openSimpleDialogRef({
+          title: { key: "loggedOut" },
+          content: { key: "refreshTokenSecureStorageRetrievalFailure" },
+          acceptButtonText: { key: "ok" },
+          cancelButtonText: null,
+          type: "danger",
+        });
+
+        await firstValueFrom(this.activeSimpleDialog.closed);
+        this.activeSimpleDialog = null;
+
+        break;
+      }
+    }
+
+    if (toastOptions) {
+      this.toastService.showToast(toastOptions);
+    }
+  }
+
   // Even though the userId parameter is no longer optional doesn't mean a message couldn't be
   // passing null-ish values to us.
-  private async logOut(expired: boolean, userId: UserId) {
+  private async logOut(logoutReason: LogoutReason, userId: UserId) {
+    await this.displayLogoutReason(logoutReason);
+
     const activeUserId = await firstValueFrom(
       this.accountService.activeAccount$.pipe(map((a) => a?.id)),
     );
@@ -583,7 +659,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
       // Provide the userId of the user to upload events for
       await this.eventUploadService.uploadEvents(userBeingLoggedOut);
-      await this.syncService.setLastSync(new Date(0), userBeingLoggedOut);
       await this.cryptoService.clearKeys(userBeingLoggedOut);
       await this.cipherService.clear(userBeingLoggedOut);
       await this.folderService.clear(userBeingLoggedOut);
@@ -619,17 +694,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // This must come last otherwise the logout will prematurely trigger
     // a process reload before all the state service user data can be cleaned up
-    if (userBeingLoggedOut === activeUserId) {
-      this.authService.logOut(async () => {
-        if (expired) {
-          this.platformUtilsService.showToast(
-            "warning",
-            this.i18nService.t("loggedOut"),
-            this.i18nService.t("loginExpired"),
-          );
-        }
-      });
-    }
+    this.authService.logOut(async () => {}, userBeingLoggedOut);
   }
 
   private async recordActivity() {
@@ -710,7 +775,7 @@ export class AppComponent implements OnInit, OnDestroy {
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         options[1] === "logOut"
-          ? this.logOut(false, userId as UserId)
+          ? this.logOut("vaultTimeout", userId as UserId)
           : await this.vaultTimeoutService.lock(userId);
       }
     }

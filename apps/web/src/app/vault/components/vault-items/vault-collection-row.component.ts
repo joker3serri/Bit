@@ -34,8 +34,6 @@ export class VaultCollectionRowComponent {
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
   @Input() showPermissionsColumn: boolean;
-  @Input() flexibleCollectionsV1Enabled: boolean;
-  @Input() restrictProviderAccess: boolean;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
@@ -57,10 +55,6 @@ export class VaultCollectionRowComponent {
   }
 
   get showAddAccess() {
-    if (!this.flexibleCollectionsV1Enabled) {
-      return false;
-    }
-
     if (this.collection.id == Unassigned) {
       return false;
     }
@@ -69,9 +63,9 @@ export class VaultCollectionRowComponent {
     if (this.collection instanceof CollectionAdminView) {
       // Only show AddAccess if unmanaged and allowAdminAccessToAllCollectionItems is disabled
       return (
-        !this.organization.allowAdminAccessToAllCollectionItems &&
+        !this.organization?.allowAdminAccessToAllCollectionItems &&
         this.collection.unmanaged &&
-        this.organization.canEditUnmanagedCollections()
+        this.organization?.canEditUnmanagedCollections
       );
     }
 
@@ -79,14 +73,11 @@ export class VaultCollectionRowComponent {
   }
 
   get permissionText() {
-    if (
-      this.collection.id == Unassigned &&
-      this.organization?.canEditUnassignedCiphers(this.restrictProviderAccess)
-    ) {
+    if (this.collection.id == Unassigned && this.organization?.canEditUnassignedCiphers) {
       return this.i18nService.t("canEdit");
     }
     if ((this.collection as CollectionAdminView).assigned) {
-      const permissionList = getPermissionList(this.organization?.flexibleCollections);
+      const permissionList = getPermissionList();
       return this.i18nService.t(
         permissionList.find((p) => p.perm === convertToPermission(this.collection))?.labelId,
       );
@@ -114,10 +105,6 @@ export class VaultCollectionRowComponent {
   }
 
   protected get showCheckbox() {
-    if (this.flexibleCollectionsV1Enabled) {
-      return this.collection?.id !== Unassigned;
-    }
-
-    return this.canDeleteCollection;
+    return this.collection?.id !== Unassigned;
   }
 }

@@ -8,14 +8,16 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { isCardExpired } from "@bitwarden/common/autofill/utils";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { EventType, ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
+import { EventType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
@@ -24,6 +26,7 @@ import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { DialogService } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 @Component({
@@ -42,6 +45,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   viewingPasswordHistory = false;
   viewOnly = false;
   showPasswordCount = false;
+  cardIsExpired: boolean = false;
 
   protected totpInterval: number;
   protected override componentName = "app-vault-add-edit";
@@ -93,6 +97,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   async ngOnInit() {
     await super.ngOnInit();
     await this.load();
+    this.viewOnly = !this.cipher.edit && this.editMode;
     // remove when all the title for all clients are updated to New Item
     if (this.cloneMode || !this.editMode) {
       this.title = this.i18nService.t("newItem");
@@ -113,6 +118,12 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
         await this.totpTick(interval);
       }, 1000);
     }
+
+    const extensionRefreshEnabled = await firstValueFrom(
+      this.configService.getFeatureFlag$(FeatureFlag.ExtensionRefresh),
+    );
+
+    this.cardIsExpired = extensionRefreshEnabled && isCardExpired(this.cipher.card);
   }
 
   ngOnDestroy() {
@@ -271,7 +282,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     return (
       this.cipher.type === CipherType.Login &&
       this.cipher.login.totp &&
-      this.organization?.planProductType != ProductType.Free &&
+      this.organization?.productTierType != ProductTierType.Free &&
       (this.cipher.organizationUseTotp || this.canAccessPremium)
     );
   }

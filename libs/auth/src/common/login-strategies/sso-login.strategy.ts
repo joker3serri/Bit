@@ -87,12 +87,16 @@ export class SsoLoginStrategy extends LoginStrategy {
 
     data.userEnteredEmail = credentials.email;
 
+    const deviceRequest = await this.buildDeviceRequest();
+
+    this.logService.info("Logging in with appId %s.", deviceRequest.identifier);
+
     data.tokenRequest = new SsoTokenRequest(
       credentials.code,
       credentials.codeVerifier,
       credentials.redirectUrl,
       await this.buildTwoFactor(credentials.twoFactor, credentials.email),
-      await this.buildDeviceRequest(),
+      deviceRequest,
     );
 
     this.cache.next(data);
@@ -195,12 +199,18 @@ export class SsoLoginStrategy extends LoginStrategy {
 
     // Note: TDE and key connector are mutually exclusive
     if (userDecryptionOptions?.trustedDeviceOption) {
+      this.logService.info("Attempting to set user key with approved admin auth request.");
+
+      // Try to use the user key from an approved admin request if it exists.
+      // Using it will clear it from state and future requests will use the device key.
       await this.trySetUserKeyWithApprovedAdminRequestIfExists(userId);
 
       const hasUserKey = await this.cryptoService.hasUserKey(userId);
 
-      // Only try to set user key with device key if admin approval request was not successful
+      // Only try to set user key with device key if admin approval request was not successful.
       if (!hasUserKey) {
+        this.logService.info("Attempting to set user key with device key.");
+
         await this.trySetUserKeyWithDeviceKey(tokenResponse, userId);
       }
     } else if (
@@ -245,6 +255,7 @@ export class SsoLoginStrategy extends LoginStrategy {
         await this.authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash(
           adminAuthReqResponse,
           adminAuthReqStorable.privateKey,
+          userId,
         );
       } else {
         // if masterPasswordHash is null, we will always receive authReqResponse.key
@@ -252,6 +263,7 @@ export class SsoLoginStrategy extends LoginStrategy {
         await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
           adminAuthReqResponse,
           adminAuthReqStorable.privateKey,
+          userId,
         );
       }
 
@@ -275,11 +287,31 @@ export class SsoLoginStrategy extends LoginStrategy {
   ): Promise<void> {
     const trustedDeviceOption = tokenResponse.userDecryptionOptions?.trustedDeviceOption;
 
+    if (!trustedDeviceOption) {
+      this.logService.error("Unable to set user key due to missing trustedDeviceOption.");
+      return;
+    }
+
     const deviceKey = await this.deviceTrustService.getDeviceKey(userId);
     const encDevicePrivateKey = trustedDeviceOption?.encryptedPrivateKey;
     const encUserKey = trustedDeviceOption?.encryptedUserKey;
 
     if (!deviceKey || !encDevicePrivateKey || !encUserKey) {
+      if (!deviceKey) {
+        this.logService.warning("Unable to set user key due to missing device key.");
+      } else if (!encDevicePrivateKey || !encUserKey) {
+        // Tell the server that we have a device key, but received no decryption keys
+        await this.deviceTrustService.recordDeviceTrustLoss();
+      }
+      if (!encDevicePrivateKey) {
+        this.logService.warning(
+          "Unable to set user key due to missing encrypted device private key.",
+        );
+      }
+      if (!encUserKey) {
+        this.logService.warning("Unable to set user key due to missing encrypted user key.");
+      }
+
       return;
     }
 
@@ -291,7 +323,7 @@ export class SsoLoginStrategy extends LoginStrategy {
     );
 
     if (userKey) {
-      await this.cryptoService.setUserKey(userKey);
+      await this.cryptoService.setUserKey(userKey, userId);
     }
   }
 
@@ -307,7 +339,7 @@ export class SsoLoginStrategy extends LoginStrategy {
     }
 
     const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(masterKey);
-    await this.cryptoService.setUserKey(userKey);
+    await this.cryptoService.setUserKey(userKey, userId);
   }
 
   protected override async setPrivateKey(

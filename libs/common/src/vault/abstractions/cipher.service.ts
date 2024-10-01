@@ -1,18 +1,25 @@
 import { Observable } from "rxjs";
 
+import { UserKeyRotationDataProvider } from "@bitwarden/auth/common";
+import { LocalData } from "@bitwarden/common/vault/models/data/local.data";
+
 import { UriMatchStrategySetting } from "../../models/domain/domain-service";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
-import { CipherId, CollectionId, OrganizationId } from "../../types/guid";
+import { CipherId, CollectionId, OrganizationId, UserId } from "../../types/guid";
+import { UserKey } from "../../types/key";
 import { CipherType } from "../enums/cipher-type";
 import { CipherData } from "../models/data/cipher.data";
 import { Cipher } from "../models/domain/cipher";
 import { Field } from "../models/domain/field";
+import { CipherWithIdRequest } from "../models/request/cipher-with-id.request";
 import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
 import { AddEditCipherInfo } from "../types/add-edit-cipher-info";
 
-export abstract class CipherService {
+export abstract class CipherService implements UserKeyRotationDataProvider<CipherWithIdRequest> {
   cipherViews$: Observable<Record<CipherId, CipherView>>;
+  ciphers$: Observable<Record<CipherId, CipherData>>;
+  localData$: Observable<Record<CipherId, LocalData>>;
   /**
    *  An observable monitoring the add/edit cipher info saved to memory.
    */
@@ -20,6 +27,7 @@ export abstract class CipherService {
   clearCache: (userId?: string) => Promise<void>;
   encrypt: (
     model: CipherView,
+    userId: UserId,
     keyForEncryption?: SymmetricCryptoKey,
     keyForCipherKeyDecryption?: SymmetricCryptoKey,
     originalCipher?: Cipher,
@@ -76,21 +84,25 @@ export abstract class CipherService {
     cipher: CipherView,
     organizationId: string,
     collectionIds: string[],
+    userId: UserId,
   ) => Promise<any>;
   shareManyWithServer: (
     ciphers: CipherView[],
     organizationId: string,
     collectionIds: string[],
+    userId: UserId,
   ) => Promise<any>;
   saveAttachmentWithServer: (
     cipher: Cipher,
     unencryptedFile: any,
+    userId: UserId,
     admin?: boolean,
   ) => Promise<Cipher>;
   saveAttachmentRawWithServer: (
     cipher: Cipher,
     filename: string,
     data: ArrayBuffer,
+    userId: UserId,
     admin?: boolean,
   ) => Promise<Cipher>;
   /**
@@ -121,8 +133,8 @@ export abstract class CipherService {
    * @returns A promise that resolves to a record of updated cipher store, keyed by their cipher ID. Returns all ciphers, not just those updated
    */
   upsert: (cipher: CipherData | CipherData[]) => Promise<Record<CipherId, CipherData>>;
-  replace: (ciphers: { [id: string]: CipherData }) => Promise<any>;
-  clear: (userId: string) => Promise<any>;
+  replace: (ciphers: { [id: string]: CipherData }, userId: UserId) => Promise<any>;
+  clear: (userId?: string) => Promise<void>;
   moveManyWithServer: (ids: string[], folderId: string) => Promise<any>;
   delete: (id: string | string[]) => Promise<any>;
   deleteWithServer: (id: string, asAdmin?: boolean) => Promise<any>;
@@ -140,6 +152,21 @@ export abstract class CipherService {
   ) => Promise<any>;
   restoreWithServer: (id: string, asAdmin?: boolean) => Promise<any>;
   restoreManyWithServer: (ids: string[], orgId?: string) => Promise<void>;
-  getKeyForCipherKeyDecryption: (cipher: Cipher) => Promise<any>;
+  getKeyForCipherKeyDecryption: (cipher: Cipher, userId: UserId) => Promise<any>;
   setAddEditCipherInfo: (value: AddEditCipherInfo) => Promise<void>;
+  /**
+   * Returns user ciphers re-encrypted with the new user key.
+   * @param originalUserKey the original user key
+   * @param newUserKey the new user key
+   * @param userId the user id
+   * @throws Error if new user key is null
+   * @returns a list of user ciphers that have been re-encrypted with the new user key
+   */
+  getRotatedData: (
+    originalUserKey: UserKey,
+    newUserKey: UserKey,
+    userId: UserId,
+  ) => Promise<CipherWithIdRequest[]>;
+  getNextCardCipher: () => Promise<CipherView>;
+  getNextIdentityCipher: () => Promise<CipherView>;
 }
