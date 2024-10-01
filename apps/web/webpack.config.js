@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 const { AngularWebpackPlugin } = require("@ngtools/webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -178,7 +177,6 @@ const plugins = [
     DEV_FLAGS: NODE_ENV === "development" ? envConfig["devFlags"] : {},
     ADDITIONAL_REGIONS: envConfig["additionalRegions"] ?? [],
   }),
-  new CircularDependencyPlugin({}),
   new AngularWebpackPlugin({
     tsconfig: "tsconfig.build.json",
     entryModule: "src/app/app.module#AppModule",
