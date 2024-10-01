@@ -20,6 +20,7 @@ import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
 import {
   RegistrationFinishService as RegistrationFinishServiceAbstraction,
+  LockComponentService,
   SetPasswordJitService,
 } from "@bitwarden/auth/angular";
 import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
@@ -35,6 +36,7 @@ import { ClientType } from "@bitwarden/common/enums";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -61,7 +63,11 @@ import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/va
 import { BiometricsService } from "@bitwarden/key-management";
 
 import { PolicyListService } from "../admin-console/core/policy-list.service";
-import { WebRegistrationFinishService, WebSetPasswordJitService } from "../auth";
+import {
+  WebSetPasswordJitService,
+  WebRegistrationFinishService,
+  WebLockComponentService,
+} from "../auth";
 import { AcceptOrganizationInviteService } from "../auth/organization-invite/accept-organization.service";
 import { HtmlStorageService } from "../core/html-storage.service";
 import { I18nService } from "../core/i18n.service";
@@ -197,11 +203,17 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
+    provide: LockComponentService,
+    useClass: WebLockComponentService,
+    deps: [],
+  }),
+  safeProvider({
     provide: SetPasswordJitService,
     useClass: WebSetPasswordJitService,
     deps: [
       ApiService,
       CryptoServiceAbstraction,
+      EncryptService,
       I18nServiceAbstraction,
       KdfConfigService,
       InternalMasterPasswordServiceAbstraction,
