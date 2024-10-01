@@ -11,8 +11,8 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { DeviceType } from "@bitwarden/common/enums";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { BiometricsService } from "@bitwarden/common/platform/biometrics/biometric.service";
 import { UserId } from "@bitwarden/common/types/guid";
+import { BiometricsService } from "@bitwarden/key-management";
 
 import { DesktopLockComponentService } from "./desktop-lock-component.service";
 
@@ -20,10 +20,12 @@ import { DesktopLockComponentService } from "./desktop-lock-component.service";
 const isWindowVisibleMock = jest.fn();
 const biometricEnabledMock = jest.fn();
 (global as any).ipc = {
-  platform: {
+  keyManagement: {
     biometric: {
       enabled: biometricEnabledMock,
     },
+  },
+  platform: {
     isWindowVisible: isWindowVisibleMock,
   },
 };
