@@ -12,16 +12,15 @@ import { NotificationResponse } from "../../../models/response/notification.resp
 import { UserId } from "../../../types/guid";
 import { AppIdService } from "../../abstractions/app-id.service";
 import { Environment, EnvironmentService } from "../../abstractions/environment.service";
+import { LogService } from "../../abstractions/log.service";
 import { MessageSender } from "../../messaging";
 import { SupportStatus } from "../../misc/support-status";
 import { SyncService } from "../../sync";
 
 import { DefaultNotificationsService } from "./default-notifications.service";
 import { SignalRNotification, SignalRConnectionService } from "./signalr-connection.service";
-import {
-  WebPushConnector,
-  WorkerWebPushConnectionService,
-} from "./worker-webpush-connection.service";
+import { WebPushConnector } from "./webpush-connection.service";
+import { WorkerWebPushConnectionService } from "./worker-webpush-connection.service";
 
 describe("NotificationsService", () => {
   const syncService = mock<SyncService>();
@@ -91,6 +90,7 @@ describe("NotificationsService", () => {
     signalRNotificationConnectionService,
     authService,
     webPushNotificationConnectionService,
+    mock<LogService>(),
   );
 
   test("observable chain reacts to inputs properly", async () => {

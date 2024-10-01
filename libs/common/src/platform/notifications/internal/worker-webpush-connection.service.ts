@@ -22,9 +22,19 @@ import { WebPushNotificationsApiService } from "../../services/notifications/web
 import { WebPushConnectionService, WebPushConnector } from "./webpush-connection.service";
 
 // Ref: https://w3c.github.io/push-api/#the-pushsubscriptionchange-event
-interface PushSubscriptionChangeEvent extends ExtendableEvent {
+interface PushSubscriptionChangeEvent {
   readonly newSubscription?: PushSubscription;
   readonly oldSubscription?: PushSubscription;
+}
+
+// Ref: https://developer.mozilla.org/en-US/docs/Web/API/PushMessageData
+interface PushMessageData {
+  json(): any;
+}
+
+// Ref: https://developer.mozilla.org/en-US/docs/Web/API/PushEvent
+interface PushEvent {
+  data: PushMessageData;
 }
 
 /**
@@ -48,11 +58,12 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService,
       this.pushChangeEvent = new Subject<PushSubscriptionChangeEvent>();
     });
 
-    const pushEventSubscription = fromEvent(self, "push").subscribe(this.pushEvent);
+    const pushEventSubscription = fromEvent<PushEvent>(self, "push").subscribe(this.pushEvent);
 
-    const pushChangeEventSubscription = fromEvent(self, "pushsubscriptionchange").subscribe(
-      this.pushChangeEvent,
-    );
+    const pushChangeEventSubscription = fromEvent<PushSubscriptionChangeEvent>(
+      self,
+      "pushsubscriptionchange",
+    ).subscribe(this.pushChangeEvent);
 
     subscription.add(pushEventSubscription);
     subscription.add(pushChangeEventSubscription);
