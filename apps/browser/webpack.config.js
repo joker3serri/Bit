@@ -251,7 +251,6 @@ const mainConfig = {
     "overlay/list":
       "./src/autofill/deprecated/overlay/pages/list/bootstrap-autofill-overlay-list.deprecated.ts",
     "encrypt-worker": "../../libs/common/src/platform/services/cryptography/encrypt.worker.ts",
-    "service-worker": "../../libs/common/src/platform/services/notifications/service.worker.ts",
     "content/lp-fileless-importer": "./src/tools/content/lp-fileless-importer.ts",
     "content/send-on-installed-message": "./src/vault/content/send-on-installed-message.ts",
     "content/lp-suppress-import-download": "./src/tools/content/lp-suppress-import-download.ts",
