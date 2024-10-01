@@ -33,7 +33,6 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
 @NgModule({
   imports: [CardComponent, SectionComponent, SectionHeaderComponent],
   exports: [
-    JslibModule,
     CardComponent,
     CheckboxModule,
     CommonModule,
@@ -42,6 +41,7 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
     IconButtonModule,
     InputModule,
     ItemModule,
+    JslibModule,
     ReactiveFormsModule,
     SectionComponent,
     SectionHeaderComponent,
