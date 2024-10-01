@@ -20,6 +20,6 @@
   "dependencies": {
     "@bitwarden/common": "file:../common",
     "@bitwarden/vault-export-core": "file:../tools/export/vault-export/vault-export-core",
-    "@bitwarden/admin-console/common": "file:../admin-console/src/common"
+    "@bitwarden/admin-console-common": "file:../admin-console/src/common"
   }
 }

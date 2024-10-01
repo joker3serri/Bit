@@ -19,6 +19,6 @@
   },
   "dependencies": {
     "@bitwarden/common": "file:../../../../common",
-    "@bitwarden/admin-console/common": "file:../../../../admin-console/src/common"
+    "@bitwarden/admin-console-common": "file:../../../../admin-console/src/common"
   }
 }
