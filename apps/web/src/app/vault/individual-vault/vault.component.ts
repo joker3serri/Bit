@@ -788,7 +788,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Edit a cipher using the new AddEditCipherDialogV2 component.
+   * Edit a cipher using the new VaultItemDialog.
    *
    * @param cipher
    * @param cloneMode

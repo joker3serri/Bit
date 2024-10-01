@@ -47,6 +47,7 @@ export interface AddEditCipherDialogCloseResult {
 
 /**
  * Component for viewing a cipher, presented in a dialog.
+ * @deprecated Use the VaultItemDialogComponent instead.
  */
 @Component({
   selector: "app-vault-add-edit-v2",
