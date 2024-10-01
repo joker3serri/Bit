@@ -24,6 +24,7 @@ import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
 import {
   RegistrationFinishService as RegistrationFinishServiceAbstraction,
+  LockComponentService,
   SetPasswordJitService,
 } from "@bitwarden/auth/angular";
 import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
@@ -67,7 +68,11 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { BiometricsService } from "@bitwarden/key-management";
 
 import { PolicyListService } from "../admin-console/core/policy-list.service";
-import { WebRegistrationFinishService, WebSetPasswordJitService } from "../auth";
+import {
+  WebSetPasswordJitService,
+  WebRegistrationFinishService,
+  WebLockComponentService,
+} from "../auth";
 import { AcceptOrganizationInviteService } from "../auth/organization-invite/accept-organization.service";
 import { HtmlStorageService } from "../core/html-storage.service";
 import { I18nService } from "../core/i18n.service";
@@ -201,11 +206,17 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
+    provide: LockComponentService,
+    useClass: WebLockComponentService,
+    deps: [],
+  }),
+  safeProvider({
     provide: SetPasswordJitService,
     useClass: WebSetPasswordJitService,
     deps: [
       ApiService,
       CryptoServiceAbstraction,
+      EncryptService,
       I18nServiceAbstraction,
       KdfConfigService,
       InternalMasterPasswordServiceAbstraction,
