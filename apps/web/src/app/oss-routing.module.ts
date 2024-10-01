@@ -63,7 +63,7 @@ import { VerifyEmailTokenComponent } from "./auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "./auth/verify-recover-delete.component";
 import { SponsoredFamiliesComponent } from "./billing/settings/sponsored-families.component";
 import { EnvironmentSelectorComponent } from "./components/environment-selector/environment-selector.component";
-import { DataProperties } from "./core";
+import { RouteDataProperties } from "./core";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
 import { RequestSMAccessComponent } from "./secrets-manager/secrets-manager-landing/request-sm-access.component";
@@ -81,7 +81,7 @@ const routes: Routes = [
   {
     path: "",
     component: FrontendLayoutComponent,
-    data: { doNotSaveUrl: true } satisfies DataProperties,
+    data: { doNotSaveUrl: true } satisfies RouteDataProperties,
     children: [
       {
         path: "",
@@ -92,17 +92,17 @@ const routes: Routes = [
       {
         path: "login-with-device",
         component: LoginViaAuthRequestComponent,
-        data: { titleId: "loginWithDevice" } satisfies DataProperties,
+        data: { titleId: "loginWithDevice" } satisfies RouteDataProperties,
       },
       {
         path: "login-with-passkey",
         component: LoginViaWebAuthnComponent,
-        data: { titleId: "loginWithPasskey" } satisfies DataProperties,
+        data: { titleId: "loginWithPasskey" } satisfies RouteDataProperties,
       },
       {
         path: "admin-approval-requested",
         component: LoginViaAuthRequestComponent,
-        data: { titleId: "adminApprovalRequested" } satisfies DataProperties,
+        data: { titleId: "adminApprovalRequested" } satisfies RouteDataProperties,
       },
       {
         path: "login-initiated",
@@ -113,7 +113,7 @@ const routes: Routes = [
         path: "register",
         component: TrialInitiationComponent,
         canActivate: [unauthGuardFn()],
-        data: { titleId: "createAccount" } satisfies DataProperties,
+        data: { titleId: "createAccount" } satisfies RouteDataProperties,
       },
       {
         path: "trial",
@@ -123,20 +123,23 @@ const routes: Routes = [
       {
         path: "set-password",
         component: SetPasswordComponent,
-        data: { titleId: "setMasterPassword" } satisfies DataProperties,
+        data: { titleId: "setMasterPassword" } satisfies RouteDataProperties,
       },
       { path: "verify-email", component: VerifyEmailTokenComponent },
       {
         path: "accept-organization",
         canActivate: [deepLinkGuard()],
         component: AcceptOrganizationComponent,
-        data: { titleId: "joinOrganization", doNotSaveUrl: false } satisfies DataProperties,
+        data: { titleId: "joinOrganization", doNotSaveUrl: false } satisfies RouteDataProperties,
       },
       {
         path: "accept-families-for-enterprise",
         component: AcceptFamilySponsorshipComponent,
         canActivate: [deepLinkGuard()],
-        data: { titleId: "acceptFamilySponsorship", doNotSaveUrl: false } satisfies DataProperties,
+        data: {
+          titleId: "acceptFamilySponsorship",
+          doNotSaveUrl: false,
+        } satisfies RouteDataProperties,
       },
       { path: "recover", pathMatch: "full", redirectTo: "recover-2fa" },
       {
@@ -149,19 +152,19 @@ const routes: Routes = [
         path: "verify-recover-delete-provider",
         component: VerifyRecoverDeleteProviderComponent,
         canActivate: [unauthGuardFn()],
-        data: { titleId: "deleteAccount" } satisfies DataProperties,
+        data: { titleId: "deleteAccount" } satisfies RouteDataProperties,
       },
       {
         path: "update-temp-password",
         component: UpdateTempPasswordComponent,
         canActivate: [authGuard],
-        data: { titleId: "updateTempPassword" } satisfies DataProperties,
+        data: { titleId: "updateTempPassword" } satisfies RouteDataProperties,
       },
       {
         path: "update-password",
         component: UpdatePasswordComponent,
         canActivate: [authGuard],
-        data: { titleId: "updatePassword" } satisfies DataProperties,
+        data: { titleId: "updatePassword" } satisfies RouteDataProperties,
       },
       {
         path: "migrate-legacy-encryption",
@@ -222,8 +225,10 @@ const routes: Routes = [
       {
         path: "signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
-        data: { pageTitle: "createAccount", titleId: "createAccount" } satisfies DataProperties &
-          AnonLayoutWrapperData,
+        data: {
+          pageTitle: "createAccount",
+          titleId: "createAccount",
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -246,7 +251,7 @@ const routes: Routes = [
           pageTitle: "setAStrongPassword",
           pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
           titleId: "setAStrongPassword",
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -259,7 +264,7 @@ const routes: Routes = [
         data: {
           pageTitle: "viewSend",
           showReadonlyHostname: true,
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -303,7 +308,7 @@ const routes: Routes = [
         data: {
           pageTitle: "enterpriseSingleSignOn",
           titleId: "enterpriseSingleSignOn",
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -384,7 +389,7 @@ const routes: Routes = [
         ],
         data: {
           pageTitle: "verifyIdentity",
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
       },
       {
         path: "recover-2fa",
@@ -403,7 +408,7 @@ const routes: Routes = [
         data: {
           pageTitle: "recoverAccountTwoStep",
           titleId: "recoverAccountTwoStep",
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
       },
       {
         path: "accept-emergency",
@@ -412,7 +417,7 @@ const routes: Routes = [
           pageTitle: "emergencyAccess",
           titleId: "acceptEmergency",
           doNotSaveUrl: false,
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -429,7 +434,7 @@ const routes: Routes = [
         data: {
           pageTitle: "deleteAccount",
           titleId: "deleteAccount",
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -448,7 +453,7 @@ const routes: Routes = [
         data: {
           pageTitle: "deleteAccount",
           titleId: "deleteAccount",
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -463,7 +468,7 @@ const routes: Routes = [
         data: {
           pageTitle: "removeMasterPassword",
           titleId: "removeMasterPassword",
-        } satisfies DataProperties & AnonLayoutWrapperData,
+        } satisfies RouteDataProperties & AnonLayoutWrapperData,
       },
       {
         path: "trial-initiation",
@@ -501,7 +506,7 @@ const routes: Routes = [
       {
         path: "sends",
         component: SendComponent,
-        data: { titleId: "send" } satisfies DataProperties,
+        data: { titleId: "send" } satisfies RouteDataProperties,
       },
       {
         path: "sm-landing",
@@ -516,7 +521,7 @@ const routes: Routes = [
       {
         path: "create-organization",
         component: CreateOrganizationComponent,
-        data: { titleId: "newOrganization" } satisfies DataProperties,
+        data: { titleId: "newOrganization" } satisfies RouteDataProperties,
       },
       {
         path: "settings",
@@ -525,12 +530,12 @@ const routes: Routes = [
           {
             path: "account",
             component: AccountComponent,
-            data: { titleId: "myAccount" } satisfies DataProperties,
+            data: { titleId: "myAccount" } satisfies RouteDataProperties,
           },
           {
             path: "preferences",
             component: PreferencesComponent,
-            data: { titleId: "preferences" } satisfies DataProperties,
+            data: { titleId: "preferences" } satisfies RouteDataProperties,
           },
           {
             path: "security",
@@ -539,7 +544,7 @@ const routes: Routes = [
           {
             path: "domain-rules",
             component: DomainRulesComponent,
-            data: { titleId: "domainRules" } satisfies DataProperties,
+            data: { titleId: "domainRules" } satisfies RouteDataProperties,
           },
           {
             path: "subscription",
@@ -554,19 +559,19 @@ const routes: Routes = [
               {
                 path: "",
                 component: EmergencyAccessComponent,
-                data: { titleId: "emergencyAccess" } satisfies DataProperties,
+                data: { titleId: "emergencyAccess" } satisfies RouteDataProperties,
               },
               {
                 path: ":id",
                 component: EmergencyAccessViewComponent,
-                data: { titleId: "emergencyAccess" } satisfies DataProperties,
+                data: { titleId: "emergencyAccess" } satisfies RouteDataProperties,
               },
             ],
           },
           {
             path: "sponsored-families",
             component: SponsoredFamiliesComponent,
-            data: { titleId: "sponsoredFamilies" } satisfies DataProperties,
+            data: { titleId: "sponsoredFamilies" } satisfies RouteDataProperties,
           },
         ],
       },
@@ -581,7 +586,7 @@ const routes: Routes = [
               import("./tools/import/import-web.component").then((mod) => mod.ImportWebComponent),
             data: {
               titleId: "importData",
-            } satisfies DataProperties,
+            } satisfies RouteDataProperties,
           },
           {
             path: "export",
@@ -591,12 +596,12 @@ const routes: Routes = [
               ),
             data: {
               titleId: "exportVault",
-            } satisfies DataProperties,
+            } satisfies RouteDataProperties,
           },
           {
             path: "generator",
             component: GeneratorComponent,
-            data: { titleId: "generator" } satisfies DataProperties,
+            data: { titleId: "generator" } satisfies RouteDataProperties,
           },
         ],
       },
