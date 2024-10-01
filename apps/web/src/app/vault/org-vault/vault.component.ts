@@ -33,8 +33,6 @@ import {
 import {
   CollectionAdminService,
   CollectionAdminView,
-  OrganizationUserApiService,
-  OrganizationUserUserDetailsResponse,
   Unassigned,
 } from "@bitwarden/admin-console/common";
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
@@ -168,8 +166,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected editableCollections$: Observable<CollectionAdminView[]>;
   protected allCollectionsWithoutUnassigned$: Observable<CollectionAdminView[]>;
 
-  protected orgRevokedUsers: OrganizationUserUserDetailsResponse[];
-
   protected get hideVaultFilters(): boolean {
     return this.organization?.isProviderUser && !this.organization?.isMember;
   }
@@ -206,7 +202,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     private totpService: TotpService,
     private apiService: ApiService,
     private collectionService: CollectionService,
-    private organizationUserApiService: OrganizationUserApiService,
     private toastService: ToastService,
     private accountService: AccountService,
   ) {}
@@ -357,13 +352,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       map((collections) => getNestedCollectionTree(collections)),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
-
-    // This will be passed into the usersCanManage call
-    this.orgRevokedUsers = (
-      await this.organizationUserApiService.getAllUsers(await firstValueFrom(organizationId$))
-    ).data.filter((user: OrganizationUserUserDetailsResponse) => {
-      return user.status === -1;
-    });
 
     const collections$ = combineLatest([
       nestedCollections$,
