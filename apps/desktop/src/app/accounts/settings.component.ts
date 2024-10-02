@@ -34,7 +34,6 @@ import { BiometricsService, BiometricStateService } from "@bitwarden/key-managem
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
-import { allowBrowserintegrationOverride } from "../../utils";
 import { NativeMessagingManifestService } from "../services/native-messaging-manifest.service";
 
 @Component({
@@ -631,7 +630,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   async saveBrowserIntegration() {
-    if (!allowBrowserintegrationOverride()) {
+    if (!ipc.platform.allowBrowserintegrationOverride && !ipc.platform.isDev) {
       if (
         ipc.platform.deviceType === DeviceType.MacOsDesktop &&
         !this.platformUtilsService.isMacAppStore()
