@@ -1,7 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { APP_INITIALIZER, NgModule, Optional, SkipSelf } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
+import {
+  CollectionAdminService,
+  DefaultCollectionAdminService,
+  OrganizationUserApiService,
+} from "@bitwarden/admin-console/common";
 import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
   CLIENT_TYPE,
@@ -20,6 +25,7 @@ import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
 import {
   RegistrationFinishService as RegistrationFinishServiceAbstraction,
+  LockComponentService,
   SetPasswordJitService,
 } from "@bitwarden/auth/angular";
 import { InternalUserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
@@ -63,10 +69,15 @@ import {
   ThemeStateService,
 } from "@bitwarden/common/platform/theming/theme-state.service";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
+import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { BiometricsService } from "@bitwarden/key-management";
 
 import { PolicyListService } from "../admin-console/core/policy-list.service";
-import { WebRegistrationFinishService, WebSetPasswordJitService } from "../auth";
+import {
+  WebSetPasswordJitService,
+  WebRegistrationFinishService,
+  WebLockComponentService,
+} from "../auth";
 import { AcceptOrganizationInviteService } from "../auth/organization-invite/accept-organization.service";
 import { HtmlStorageService } from "../core/html-storage.service";
 import { I18nService } from "../core/i18n.service";
@@ -74,7 +85,6 @@ import { WebBiometricsService } from "../key-management/web-biometric.service";
 import { WebEnvironmentService } from "../platform/web-environment.service";
 import { WebMigrationRunner } from "../platform/web-migration-runner";
 import { WebStorageServiceProvider } from "../platform/web-storage-service.provider";
-import { CollectionAdminService } from "../vault/core/collection-admin.service";
 
 import { EventService } from "./event.service";
 import { InitService } from "./init.service";
@@ -148,7 +158,6 @@ const safeProviders: SafeProvider[] = [
     useClass: WebFileDownloadService,
     useAngularDecorators: true,
   }),
-  safeProvider(CollectionAdminService),
   safeProvider({
     provide: WindowStorageService,
     useFactory: () => new WindowStorageService(window.localStorage),
@@ -171,7 +180,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: EnvironmentService,
     useClass: WebEnvironmentService,
-    deps: [WINDOW, StateProvider, AccountService],
+    deps: [WINDOW, StateProvider, AccountService, Router],
   }),
   safeProvider({
     provide: BiometricsService,
@@ -208,6 +217,11 @@ const safeProviders: SafeProvider[] = [
     deps: [],
   }),
   safeProvider({
+    provide: LockComponentService,
+    useClass: WebLockComponentService,
+    deps: [],
+  }),
+  safeProvider({
     provide: SetPasswordJitService,
     useClass: WebSetPasswordJitService,
     deps: [
@@ -226,6 +240,11 @@ const safeProviders: SafeProvider[] = [
     provide: AppIdService,
     useClass: DefaultAppIdService,
     deps: [OBSERVABLE_DISK_LOCAL_STORAGE, LogService],
+  }),
+  safeProvider({
+    provide: CollectionAdminService,
+    useClass: DefaultCollectionAdminService,
+    deps: [ApiService, CryptoServiceAbstraction, EncryptService, CollectionService],
   }),
 ];
 
