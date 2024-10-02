@@ -179,6 +179,10 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
     return this.cipher?.edit ?? false;
   }
 
+  protected get showDelete() {
+    return this.cipher != null;
+  }
+
   protected get showCipherView() {
     return this.cipher != undefined && (this.params.mode === "view" || this.loadingForm);
   }
