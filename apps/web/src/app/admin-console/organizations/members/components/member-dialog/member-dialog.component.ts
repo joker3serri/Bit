@@ -13,8 +13,13 @@ import {
   takeUntil,
 } from "rxjs";
 
+import {
+  CollectionAccessSelectionView,
+  CollectionAdminService,
+  CollectionAdminView,
+  OrganizationUserApiService,
+} from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import {
   OrganizationUserStatusType,
   OrganizationUserType,
@@ -24,14 +29,10 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { CollectionAdminService } from "../../../../../vault/core/collection-admin.service";
-import { CollectionAdminView } from "../../../../../vault/core/views/collection-admin.view";
 import {
-  CollectionAccessSelectionView,
   GroupService,
   GroupView,
   OrganizationUserAdminView,
@@ -133,13 +134,12 @@ export class MemberDialogComponent implements OnDestroy {
     @Inject(DIALOG_DATA) protected params: MemberDialogParams,
     private dialogRef: DialogRef<MemberDialogResult>,
     private i18nService: I18nService,
-    private platformUtilsService: PlatformUtilsService,
     private formBuilder: FormBuilder,
     // TODO: We should really look into consolidating naming conventions for these services
     private collectionAdminService: CollectionAdminService,
     private groupService: GroupService,
     private userService: UserAdminService,
-    private organizationUserService: OrganizationUserService,
+    private organizationUserApiService: OrganizationUserApiService,
     private dialogService: DialogService,
     private accountService: AccountService,
     organizationService: OrganizationService,
@@ -491,7 +491,7 @@ export class MemberDialogComponent implements OnDestroy {
       }
     }
 
-    await this.organizationUserService.removeOrganizationUser(
+    await this.organizationUserApiService.removeOrganizationUser(
       this.params.organizationId,
       this.params.organizationUserId,
     );
@@ -528,7 +528,7 @@ export class MemberDialogComponent implements OnDestroy {
       }
     }
 
-    await this.organizationUserService.revokeOrganizationUser(
+    await this.organizationUserApiService.revokeOrganizationUser(
       this.params.organizationId,
       this.params.organizationUserId,
     );
@@ -547,7 +547,7 @@ export class MemberDialogComponent implements OnDestroy {
       return;
     }
 
-    await this.organizationUserService.restoreOrganizationUser(
+    await this.organizationUserApiService.restoreOrganizationUser(
       this.params.organizationId,
       this.params.organizationUserId,
     );

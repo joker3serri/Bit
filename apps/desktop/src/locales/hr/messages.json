@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Izbjegavaj dvosmislene znakove"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Pretraživanje zbirke"
   },
@@ -560,6 +564,18 @@
   "settings": {
     "message": "Postavke"
   },
+  "accountEmail": {
+    "message": "e-pošta računa"
+  },
+  "requestHint": {
+    "message": "Zatraži podsjetnik"
+  },
+  "requestPasswordHint": {
+    "message": "Zatraži podsjetnik lozinke"
+  },
+  "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
+    "message": "Unesi svoju adresu e-pošte računa i poslat ćemo ti tvoj podsjetnik"
+  },
   "passwordHint": {
     "message": "Podsjetnik za lozinku"
   },
@@ -604,10 +620,10 @@
     "message": "Tvoj novi račun je stvoren! Sada se možeš prijaviti."
   },
   "newAccountCreated2": {
-    "message": "Your new account has been created!"
+    "message": "Tvoj novi račun je stvoren!"
   },
   "youHaveBeenLoggedIn": {
-    "message": "You have been logged in!"
+    "message": "Prijava uspješna!"
   },
   "masterPassSent": {
     "message": "Poslali smo e-poštu s podsjetnikom glavne lozinke."
@@ -929,6 +945,9 @@
   },
   "vaultTimeout": {
     "message": "Istek trezora"
+  },
+  "vaultTimeout1": {
+    "message": "Vrijeme isteka"
   },
   "vaultTimeoutDesc": {
     "message": "Odaberi kada će isteći trezor i koja će se radnja izvršiti."
@@ -1285,6 +1304,9 @@
       }
     }
   },
+  "copySuccessful": {
+    "message": "Kopiranje uspješno"
+  },
   "errorRefreshingAccessToken": {
     "message": "Pogreška osvježavanja tokena pristupa"
   },
@@ -1552,7 +1574,7 @@
   "recommendedForSecurity": {
     "message": "Preporučeno za sigurnost."
   },
-  "lockWithMasterPassOnRestart": {
+  "lockWithMasterPassOnRestart1": {
     "message": "Zaključaj glavnom lozinkom kod svakog pokretanja"
   },
   "deleteAccount": {
@@ -1630,7 +1652,7 @@
   },
   "lock": {
     "message": "Zaključaj",
-    "description": "Verb form: to make secure or inaccesible by"
+    "description": "Verb form: to make secure or inaccessible by"
   },
   "trash": {
     "message": "Smeće",
@@ -1753,8 +1775,8 @@
   "enableBrowserIntegration": {
     "message": "Uključi integraciju s web preglednikom"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Integracija s preglednikom koristi se za biometriju u pregledniku."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Dozvoli integraciju s DuckDuckGo preglednikom"
@@ -2084,8 +2106,8 @@
   "minutes": {
     "message": "minuta"
   },
-  "vaultTimeoutPolicyInEffect": {
-    "message": "Pravilo tvoje organizacije utječe na istek trezora. Najveće dozvoljeno vrijeme isteka je $HOURS$:$MINUTES$ h.",
+  "vaultTimeoutPolicyInEffect1": {
+    "message": "Najviše: $HOURS$:$MINUTES$",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -3059,7 +3081,16 @@
   "textSends": {
     "message": "Send tekstovi"
   },
+  "allowScreenshots": {
+    "message": "Dozvoli snimanje zaslona"
+  },
+  "allowScreenshotsDesc": {
+    "message": "Dozvoli snimanje zaslona Bitwarden aplikacije za stolna računala."
+  },
   "ssoError": {
     "message": "Nisu nađeni slobodni portovi za SSO prijavu."
+  },
+  "fileSavedToDevice": {
+    "message": "Datoteka spremljena na uređaj. Upravljaj u preuzimanjima svog uređaja."
   }
 }

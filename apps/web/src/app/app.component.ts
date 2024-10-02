@@ -21,7 +21,6 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { BiometricStateService } from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { StateEventRunnerService } from "@bitwarden/common/platform/state";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -29,6 +28,7 @@ import { CollectionService } from "@bitwarden/common/vault/abstractions/collecti
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { DialogService, ToastOptions, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { BiometricStateService } from "@bitwarden/key-management";
 
 import { PolicyListService } from "./admin-console/core/policy-list.service";
 import {
@@ -118,9 +118,12 @@ export class AppComponent implements OnDestroy, OnInit {
             this.notificationsService.updateConnection(false);
             break;
           case "loggedOut":
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.notificationsService.updateConnection(false);
+            if (
+              message.userId == null ||
+              message.userId === (await firstValueFrom(this.accountService.activeAccount$))
+            ) {
+              await this.notificationsService.updateConnection(false);
+            }
             break;
           case "unlocked":
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
@@ -184,7 +187,7 @@ export class AppComponent implements OnDestroy, OnInit {
             if (premiumConfirmed) {
               // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
-              this.router.navigate(["settings/subscription/premium"]);
+              await this.router.navigate(["settings/subscription/premium"]);
             }
             break;
           }
@@ -310,7 +313,7 @@ export class AppComponent implements OnDestroy, OnInit {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.router.navigate(["/"]);
       }
-    });
+    }, userId);
   }
 
   private async recordActivity() {

@@ -1,13 +1,13 @@
 import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
+import { Unassigned } from "@bitwarden/admin-console/common";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { TableDataSource } from "@bitwarden/components";
 
 import { GroupView } from "../../../admin-console/organizations/core";
-import { Unassigned } from "../../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
 
 import { VaultItem } from "./vault-item";
 import { VaultItemEvent } from "./vault-item-event";
@@ -46,7 +46,6 @@ export class VaultItemsComponent {
   @Input() viewingOrgVault: boolean;
   @Input() addAccessStatus: number;
   @Input() addAccessToggle: boolean;
-  @Input() restrictProviderAccess: boolean;
   @Input() vaultBulkManagementActionEnabled = false;
 
   private _ciphers?: CipherView[] = [];
@@ -212,10 +211,7 @@ export class VaultItemsComponent {
     }
 
     const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
-    return (
-      (organization.canEditAllCiphers(this.restrictProviderAccess) && this.viewingOrgVault) ||
-      cipher.edit
-    );
+    return (organization.canEditAllCiphers && this.viewingOrgVault) || cipher.edit;
   }
 
   private refreshItems() {
@@ -278,8 +274,7 @@ export class VaultItemsComponent {
     const [orgId] = uniqueCipherOrgIds;
     const organization = this.allOrganizations.find((o) => o.id === orgId);
 
-    const canEditOrManageAllCiphers =
-      organization?.canEditAllCiphers(this.restrictProviderAccess) && this.viewingOrgVault;
+    const canEditOrManageAllCiphers = organization?.canEditAllCiphers && this.viewingOrgVault;
 
     const collectionNotSelected =
       this.selection.selected.filter((item) => item.collection).length === 0;
@@ -299,8 +294,7 @@ export class VaultItemsComponent {
     );
 
     const canEditOrManageAllCiphers =
-      organizations.length > 0 &&
-      organizations.every((org) => org?.canEditAllCiphers(this.restrictProviderAccess));
+      organizations.length > 0 && organizations.every((org) => org?.canEditAllCiphers);
 
     const canDeleteCollections = this.selection.selected
       .filter((item) => item.collection)
