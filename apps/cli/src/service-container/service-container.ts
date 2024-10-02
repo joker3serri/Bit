@@ -491,13 +491,12 @@ export class ServiceContainer {
 
     this.collectionService = new CollectionService(
       this.cryptoService,
+      this.encryptService,
       this.i18nService,
       this.stateProvider,
     );
 
     this.providerService = new ProviderService(this.stateProvider);
-
-    this.organizationUserApiService = new DefaultOrganizationUserApiService(this.apiService);
 
     this.policyApiService = new PolicyApiService(this.policyService, this.apiService);
 
@@ -535,6 +534,7 @@ export class ServiceContainer {
       this.accountService,
       this.masterPasswordService,
       this.cryptoService,
+      this.encryptService,
       this.apiService,
       this.stateProvider,
     );
@@ -628,10 +628,12 @@ export class ServiceContainer {
       this.cipherFileUploadService,
       this.configService,
       this.stateProvider,
+      this.accountService,
     );
 
     this.folderService = new FolderService(
       this.cryptoService,
+      this.encryptService,
       this.i18nService,
       this.cipherService,
       this.stateProvider,
@@ -718,6 +720,7 @@ export class ServiceContainer {
       this.i18nService,
       this.collectionService,
       this.cryptoService,
+      this.encryptService,
       this.pinService,
       this.accountService,
     );
@@ -727,8 +730,10 @@ export class ServiceContainer {
       this.cipherService,
       this.pinService,
       this.cryptoService,
+      this.encryptService,
       this.cryptoFunctionService,
       this.kdfConfigService,
+      this.accountService,
     );
 
     this.organizationExportService = new OrganizationVaultExportService(
@@ -736,6 +741,7 @@ export class ServiceContainer {
       this.apiService,
       this.pinService,
       this.cryptoService,
+      this.encryptService,
       this.cryptoFunctionService,
       this.collectionService,
       this.kdfConfigService,
@@ -771,6 +777,11 @@ export class ServiceContainer {
     this.organizationApiService = new OrganizationApiService(this.apiService, this.syncService);
 
     this.providerApiService = new ProviderApiService(this.apiService);
+
+    this.organizationUserApiService = new DefaultOrganizationUserApiService(
+      this.apiService,
+      this.configService,
+    );
   }
 
   async logout() {

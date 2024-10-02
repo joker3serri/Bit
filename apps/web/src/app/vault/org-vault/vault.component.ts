@@ -11,7 +11,6 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import {
   BehaviorSubject,
   combineLatest,
-  defer,
   firstValueFrom,
   lastValueFrom,
   Observable,
@@ -28,12 +27,9 @@ import {
   switchMap,
   takeUntil,
   tap,
+  withLatestFrom,
 } from "rxjs/operators";
 
-import {
-  OrganizationUserApiService,
-  OrganizationUserUserDetailsResponse,
-} from "@bitwarden/admin-console/common";
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -168,8 +164,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected editableCollections$: Observable<CollectionAdminView[]>;
   protected allCollectionsWithoutUnassigned$: Observable<CollectionAdminView[]>;
 
-  protected orgRevokedUsers: OrganizationUserUserDetailsResponse[];
-
   protected get hideVaultFilters(): boolean {
     return this.organization?.isProviderUser && !this.organization?.isMember;
   }
@@ -206,7 +200,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     private totpService: TotpService,
     private apiService: ApiService,
     private collectionService: CollectionService,
-    private organizationUserApiService: OrganizationUserApiService,
     private toastService: ToastService,
     private accountService: AccountService,
   ) {}
@@ -283,27 +276,10 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.currentSearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
-    this.allCollectionsWithoutUnassigned$ = combineLatest([
-      organizationId$.pipe(switchMap((orgId) => this.collectionAdminService.getAll(orgId))),
-      defer(() => this.collectionService.getAllDecrypted()),
-    ]).pipe(
-      map(([adminCollections, syncCollections]) => {
-        const syncCollectionDict = Object.fromEntries(syncCollections.map((c) => [c.id, c]));
-
-        return adminCollections.map((collection) => {
-          const currentId: any = collection.id;
-
-          const match = syncCollectionDict[currentId];
-
-          if (match) {
-            collection.manage = match.manage;
-            collection.readOnly = match.readOnly;
-            collection.hidePasswords = match.hidePasswords;
-          }
-          return collection;
-        });
-      }),
-      shareReplay({ refCount: true, bufferSize: 1 }),
+    this.allCollectionsWithoutUnassigned$ = this.refresh$.pipe(
+      switchMap(() => organizationId$),
+      switchMap((orgId) => this.collectionAdminService.getAll(orgId)),
+      shareReplay({ refCount: false, bufferSize: 1 }),
     );
 
     this.editableCollections$ = this.allCollectionsWithoutUnassigned$.pipe(
@@ -336,8 +312,8 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
-    const allCiphers$ = organization$.pipe(
-      concatMap(async (organization) => {
+    const allCiphers$ = combineLatest([organization$, this.refresh$]).pipe(
+      switchMap(async ([organization]) => {
         // If user swaps organization reset the addAccessToggle
         if (!this.showAddAccessToggle || organization) {
           this.addAccessToggle(0);
@@ -361,26 +337,19 @@ export class VaultComponent implements OnInit, OnDestroy {
         await this.searchService.indexCiphers(ciphers, organization.id);
         return ciphers;
       }),
+      shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
     const allCipherMap$ = allCiphers$.pipe(
       map((ciphers) => {
         return Object.fromEntries(ciphers.map((c) => [c.id, c]));
       }),
-      shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
     const nestedCollections$ = allCollections$.pipe(
       map((collections) => getNestedCollectionTree(collections)),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
-
-    // This will be passed into the usersCanManage call
-    this.orgRevokedUsers = (
-      await this.organizationUserApiService.getAllUsers(await firstValueFrom(organizationId$))
-    ).data.filter((user: OrganizationUserUserDetailsResponse) => {
-      return user.status === -1;
-    });
 
     const collections$ = combineLatest([
       nestedCollections$,
@@ -494,15 +463,13 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     firstSetup$
       .pipe(
-        switchMap(() =>
-          combineLatest([this.route.queryParams, allCipherMap$, allCollections$, organization$]),
-        ),
+        switchMap(() => this.route.queryParams),
+        withLatestFrom(allCipherMap$, allCollections$, organization$),
         switchMap(async ([qParams, allCiphersMap, allCollections]) => {
           const cipherId = getCipherIdFromParams(qParams);
           if (!cipherId) {
             return;
           }
-
           const cipher = allCiphersMap[cipherId];
           const cipherCollections = allCollections.filter((c) =>
             cipher.collectionIds.includes(c.id),

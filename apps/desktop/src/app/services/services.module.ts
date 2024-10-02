@@ -235,7 +235,7 @@ const safeProviders: SafeProvider[] = [
     provide: DDGMessageHandlerService,
     deps: [
       StateServiceAbstraction,
-      CryptoServiceAbstraction,
+      EncryptService,
       CryptoFunctionServiceAbstraction,
       MessagingServiceAbstraction,
       EncryptedMessageHandlerService,
@@ -289,6 +289,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       ApiService,
       CryptoService,
+      EncryptService,
       I18nServiceAbstraction,
       KdfConfigService,
       InternalMasterPasswordServiceAbstraction,

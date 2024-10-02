@@ -446,6 +446,7 @@ const safeProviders: SafeProvider[] = [
       fileUploadService: CipherFileUploadServiceAbstraction,
       configService: ConfigService,
       stateProvider: StateProvider,
+      accountService: AccountServiceAbstraction,
     ) =>
       new CipherService(
         cryptoService,
@@ -460,6 +461,7 @@ const safeProviders: SafeProvider[] = [
         fileUploadService,
         configService,
         stateProvider,
+        accountService,
       ),
     deps: [
       CryptoServiceAbstraction,
@@ -474,6 +476,7 @@ const safeProviders: SafeProvider[] = [
       CipherFileUploadServiceAbstraction,
       ConfigService,
       StateProvider,
+      AccountServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -481,6 +484,7 @@ const safeProviders: SafeProvider[] = [
     useClass: FolderService,
     deps: [
       CryptoServiceAbstraction,
+      EncryptService,
       I18nServiceAbstraction,
       CipherServiceAbstraction,
       StateProvider,
@@ -524,7 +528,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: CollectionServiceAbstraction,
     useClass: CollectionService,
-    deps: [CryptoServiceAbstraction, I18nServiceAbstraction, StateProvider],
+    deps: [CryptoServiceAbstraction, EncryptService, I18nServiceAbstraction, StateProvider],
   }),
   safeProvider({
     provide: EnvironmentService,
@@ -782,6 +786,7 @@ const safeProviders: SafeProvider[] = [
       I18nServiceAbstraction,
       CollectionServiceAbstraction,
       CryptoServiceAbstraction,
+      EncryptService,
       PinServiceAbstraction,
       AccountServiceAbstraction,
     ],
@@ -794,8 +799,10 @@ const safeProviders: SafeProvider[] = [
       CipherServiceAbstraction,
       PinServiceAbstraction,
       CryptoServiceAbstraction,
+      EncryptService,
       CryptoFunctionServiceAbstraction,
       KdfConfigServiceAbstraction,
+      AccountServiceAbstraction,
     ],
   }),
   safeProvider({
@@ -806,6 +813,7 @@ const safeProviders: SafeProvider[] = [
       ApiServiceAbstraction,
       PinServiceAbstraction,
       CryptoServiceAbstraction,
+      EncryptService,
       CryptoFunctionServiceAbstraction,
       CollectionServiceAbstraction,
       KdfConfigServiceAbstraction,
@@ -944,7 +952,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: OrganizationUserApiService,
     useClass: DefaultOrganizationUserApiService,
-    deps: [ApiServiceAbstraction],
+    deps: [ApiServiceAbstraction, ConfigService],
   }),
   safeProvider({
     provide: PasswordResetEnrollmentServiceAbstraction,
@@ -953,6 +961,7 @@ const safeProviders: SafeProvider[] = [
       OrganizationApiServiceAbstraction,
       AccountServiceAbstraction,
       CryptoServiceAbstraction,
+      EncryptService,
       OrganizationUserApiService,
       I18nServiceAbstraction,
     ],
@@ -1082,6 +1091,7 @@ const safeProviders: SafeProvider[] = [
       AccountServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,
       CryptoServiceAbstraction,
+      EncryptService,
       ApiServiceAbstraction,
       StateProvider,
     ],
@@ -1277,6 +1287,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       ApiServiceAbstraction,
       CryptoServiceAbstraction,
+      EncryptService,
       I18nServiceAbstraction,
       KdfConfigServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,
