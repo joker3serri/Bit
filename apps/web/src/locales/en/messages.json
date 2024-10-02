@@ -697,9 +697,6 @@
   "launch": {
     "message": "Launch"
   },
-  "addAttachment": {
-    "message": "Add attachment"
-  },
   "newAttachment": {
     "message": "Add new attachment"
   },
