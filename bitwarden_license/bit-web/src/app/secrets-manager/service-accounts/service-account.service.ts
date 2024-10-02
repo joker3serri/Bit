@@ -3,8 +3,8 @@ import { Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
@@ -29,7 +29,7 @@ export class ServiceAccountService {
   serviceAccount$ = this._serviceAccount.asObservable();
 
   constructor(
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private apiService: ApiService,
     private encryptService: EncryptService,
   ) {}
@@ -120,7 +120,7 @@ export class ServiceAccountService {
   }
 
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
-    return await this.cryptoService.getOrgKey(organizationId);
+    return await this.keyService.getOrgKey(organizationId);
   }
 
   private async getServiceAccountRequest(

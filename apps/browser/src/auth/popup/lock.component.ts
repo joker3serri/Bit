@@ -16,9 +16,9 @@ import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -49,7 +49,7 @@ export class LockComponent extends BaseLockComponent implements OnInit {
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
     messagingService: MessagingService,
-    cryptoService: CryptoService,
+    keyService: KeyService,
     vaultTimeoutService: VaultTimeoutService,
     vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     environmentService: EnvironmentService,
@@ -79,7 +79,7 @@ export class LockComponent extends BaseLockComponent implements OnInit {
       i18nService,
       platformUtilsService,
       messagingService,
-      cryptoService,
+      keyService,
       vaultTimeoutService,
       vaultTimeoutSettingsService,
       environmentService,

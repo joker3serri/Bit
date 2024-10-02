@@ -7,9 +7,9 @@ import {
   CollectionWithIdExport,
   FolderWithIdExport,
 } from "@bitwarden/common/models/export";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { OrganizationId } from "@bitwarden/common/types/guid";
@@ -32,7 +32,7 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
   private result: ImportResult;
 
   protected constructor(
-    protected cryptoService: CryptoService,
+    protected keyService: KeyService,
     protected encryptService: EncryptService,
     protected i18nService: I18nService,
     protected cipherService: CipherService,
@@ -63,11 +63,11 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
     results: BitwardenEncryptedIndividualJsonExport | BitwardenEncryptedOrgJsonExport,
   ) {
     if (results.encKeyValidation_DO_NOT_EDIT != null) {
-      let keyForDecryption: SymmetricCryptoKey = await this.cryptoService.getOrgKey(
+      let keyForDecryption: SymmetricCryptoKey = await this.keyService.getOrgKey(
         this.organizationId,
       );
       if (keyForDecryption == null) {
-        keyForDecryption = await this.cryptoService.getUserKeyWithLegacySupport();
+        keyForDecryption = await this.keyService.getUserKeyWithLegacySupport();
       }
       const encKeyValidation = new EncString(results.encKeyValidation_DO_NOT_EDIT);
       const encKeyValidationDecrypt = await this.encryptService.decryptToUtf8(
@@ -210,8 +210,8 @@ export class BitwardenJsonImporter extends BaseImporter implements Importer {
       if (data.encrypted) {
         const collection = CollectionWithIdExport.toDomain(c);
         collection.organizationId = this.organizationId;
-        collectionView = await firstValueFrom(this.cryptoService.activeUserOrgKeys$).then(
-          (orgKeys) => collection.decrypt(orgKeys[c.organizationId as OrganizationId]),
+        collectionView = await firstValueFrom(this.keyService.activeUserOrgKeys$).then((orgKeys) =>
+          collection.decrypt(orgKeys[c.organizationId as OrganizationId]),
         );
       } else {
         collectionView = CollectionWithIdExport.toView(c);

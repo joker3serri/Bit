@@ -29,9 +29,9 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ClientType } from "@bitwarden/common/enums";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -89,7 +89,7 @@ const safeProviders: SafeProvider[] = [
       ImportApiServiceAbstraction,
       I18nService,
       CollectionService,
-      CryptoService,
+      KeyService,
       EncryptService,
       PinServiceAbstraction,
       AccountService,

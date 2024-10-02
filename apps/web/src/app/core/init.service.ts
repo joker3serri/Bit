@@ -8,9 +8,9 @@ import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService as KeyServiceAbstraction } from "@bitwarden/common/platform/abstractions/key.service";
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { UserAutoUnlockKeyService } from "@bitwarden/common/platform/services/user-auto-unlock-key.service";
@@ -27,7 +27,7 @@ export class InitService {
     private eventUploadService: EventUploadServiceAbstraction,
     private twoFactorService: TwoFactorServiceAbstraction,
     private stateService: StateServiceAbstraction,
-    private cryptoService: CryptoServiceAbstraction,
+    private keyService: KeyServiceAbstraction,
     private themingService: AbstractThemingService,
     private encryptService: EncryptService,
     private userAutoUnlockKeyService: UserAutoUnlockKeyService,
@@ -54,7 +54,7 @@ export class InitService {
       const htmlEl = this.win.document.documentElement;
       htmlEl.classList.add("locale_" + this.i18nService.translationLocale);
       this.themingService.applyThemeChangesTo(this.document);
-      const containerService = new ContainerService(this.cryptoService, this.encryptService);
+      const containerService = new ContainerService(this.keyService, this.encryptService);
       containerService.attachToGlobal(this.win);
     };
   }

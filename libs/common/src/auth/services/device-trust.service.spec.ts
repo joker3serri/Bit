@@ -11,10 +11,10 @@ import { DeviceType } from "../../enums";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
+import { KeyService } from "../../platform/abstractions/key.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
@@ -43,7 +43,7 @@ describe("deviceTrustService", () => {
 
   const keyGenerationService = mock<KeyGenerationService>();
   const cryptoFunctionService = mock<CryptoFunctionService>();
-  const cryptoService = mock<CryptoService>();
+  const keyService = mock<KeyService>();
   const encryptService = mock<EncryptService>();
   const appIdService = mock<AppIdService>();
   const devicesApiService = mock<DevicesApiServiceAbstraction>();
@@ -368,7 +368,7 @@ describe("deviceTrustService", () => {
           .mockResolvedValue(mockDeviceRsaKeyPair);
 
         cryptoSvcGetUserKeySpy = jest
-          .spyOn(cryptoService, "getUserKey")
+          .spyOn(keyService, "getUserKey")
           .mockResolvedValue(mockUserKey);
 
         cryptoSvcRsaEncryptSpy = jest
@@ -623,7 +623,7 @@ describe("deviceTrustService", () => {
         const fakeNewUserKeyData = new Uint8Array(64);
         fakeNewUserKeyData.fill(FakeNewUserKeyMarker, 0, 1);
         fakeNewUserKey = new SymmetricCryptoKey(fakeNewUserKeyData) as UserKey;
-        cryptoService.userKey$.mockReturnValue(of(fakeNewUserKey));
+        keyService.userKey$.mockReturnValue(of(fakeNewUserKey));
       });
 
       it("throws an error when a null user id is passed in", async () => {
@@ -659,7 +659,7 @@ describe("deviceTrustService", () => {
           fakeOldUserKeyData.fill(FakeOldUserKeyMarker, 0, 1);
 
           // Mock the retrieval of a user key that differs from the new one passed into the method
-          cryptoService.userKey$.mockReturnValue(
+          keyService.userKey$.mockReturnValue(
             of(new SymmetricCryptoKey(fakeOldUserKeyData) as UserKey),
           );
 
@@ -749,7 +749,7 @@ describe("deviceTrustService", () => {
     return new DeviceTrustService(
       keyGenerationService,
       cryptoFunctionService,
-      cryptoService,
+      keyService,
       encryptService,
       appIdService,
       devicesApiService,

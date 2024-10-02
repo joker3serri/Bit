@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
@@ -18,7 +18,7 @@ const AnotherUser = "AnotherUser" as UserId;
 
 describe("LocalGeneratorHistoryService", () => {
   const encryptService = mock<EncryptService>();
-  const keyService = mock<CryptoService>();
+  const keyService = mock<KeyService>();
   const userKey = new SymmetricCryptoKey(new Uint8Array(64) as CsprngArray) as UserKey;
 
   beforeEach(() => {

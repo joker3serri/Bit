@@ -3,8 +3,8 @@ import {
   OrganizationUserConfirmRequest,
 } from "@bitwarden/admin-console/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 import { Response } from "../../models/response";
@@ -12,7 +12,7 @@ import { Response } from "../../models/response";
 export class ConfirmCommand {
   constructor(
     private apiService: ApiService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private organizationUserApiService: OrganizationUserApiService,
   ) {}
@@ -42,7 +42,7 @@ export class ConfirmCommand {
       return Response.badRequest("`" + options.organizationId + "` is not a GUID.");
     }
     try {
-      const orgKey = await this.cryptoService.getOrgKey(options.organizationId);
+      const orgKey = await this.keyService.getOrgKey(options.organizationId);
       if (orgKey == null) {
         throw new Error("No encryption key for this organization.");
       }

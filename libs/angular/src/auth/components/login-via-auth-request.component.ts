@@ -24,9 +24,9 @@ import { HttpStatusCode } from "@bitwarden/common/enums/http-status-code.enum";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
@@ -72,7 +72,7 @@ export class LoginViaAuthRequestComponent
 
   constructor(
     protected router: Router,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private cryptoFunctionService: CryptoFunctionService,
     private appIdService: AppIdService,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,

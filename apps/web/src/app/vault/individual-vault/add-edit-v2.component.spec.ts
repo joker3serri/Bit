@@ -9,8 +9,8 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
@@ -89,7 +89,7 @@ describe("AddEditComponentV2", () => {
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: CollectionService, useValue: collectionService },
         { provide: FolderService, useValue: folderService },
-        { provide: CryptoService, useValue: mock<CryptoService>() },
+        { provide: KeyService, useValue: mock<KeyService>() },
         { provide: BillingAccountProfileStateService, useValue: billingAccountProfileStateService },
         { provide: PolicyService, useValue: policyService },
         { provide: DefaultCipherFormConfigService, useValue: mockDefaultCipherFormConfigService },

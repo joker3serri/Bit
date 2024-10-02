@@ -5,8 +5,8 @@ import {
   OrganizationUserResetPasswordDetailsResponse,
 } from "@bitwarden/admin-console/common";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 
 import { OrganizationAuthRequestApiService } from "./organization-auth-request-api.service";
@@ -16,19 +16,19 @@ import { PendingAuthRequestView } from "./pending-auth-request.view";
 
 describe("OrganizationAuthRequestService", () => {
   let organizationAuthRequestApiService: MockProxy<OrganizationAuthRequestApiService>;
-  let cryptoService: MockProxy<CryptoService>;
+  let keyService: MockProxy<KeyService>;
   let encryptService: MockProxy<EncryptService>;
   let organizationUserApiService: MockProxy<OrganizationUserApiService>;
   let organizationAuthRequestService: OrganizationAuthRequestService;
 
   beforeEach(() => {
     organizationAuthRequestApiService = mock<OrganizationAuthRequestApiService>();
-    cryptoService = mock<CryptoService>();
+    keyService = mock<KeyService>();
     encryptService = mock<EncryptService>();
     organizationUserApiService = mock<OrganizationUserApiService>();
     organizationAuthRequestService = new OrganizationAuthRequestService(
       organizationAuthRequestApiService,
-      cryptoService,
+      keyService,
       encryptService,
       organizationUserApiService,
     );

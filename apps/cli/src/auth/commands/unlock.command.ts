@@ -8,8 +8,8 @@ import { UserVerificationService } from "@bitwarden/common/auth/abstractions/use
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
 import { MasterPasswordVerification } from "@bitwarden/common/auth/types/verification";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { MasterKey } from "@bitwarden/common/types/key";
@@ -24,7 +24,7 @@ export class UnlockCommand {
   constructor(
     private accountService: AccountService,
     private masterPasswordService: InternalMasterPasswordServiceAbstraction,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private userVerificationService: UserVerificationService,
     private cryptoFunctionService: CryptoFunctionService,
     private logService: ConsoleLogService,
@@ -69,7 +69,7 @@ export class UnlockCommand {
     }
 
     const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(masterKey);
-    await this.cryptoService.setUserKey(userKey, userId);
+    await this.keyService.setUserKey(userKey, userId);
 
     if (await this.keyConnectorService.getConvertAccountRequired()) {
       const convertToKeyConnectorCommand = new ConvertToKeyConnectorCommand(

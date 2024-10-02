@@ -6,10 +6,10 @@ import { NEVER, switchMap } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-array-buffer";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import { OrganizationId } from "@bitwarden/common/types/guid";
@@ -44,11 +44,11 @@ export class DownloadAttachmentComponent {
     private toastService: ToastService,
     private encryptService: EncryptService,
     private stateProvider: StateProvider,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
   ) {
     this.stateProvider.activeUserId$
       .pipe(
-        switchMap((userId) => (userId !== null ? this.cryptoService.orgKeys$(userId) : NEVER)),
+        switchMap((userId) => (userId !== null ? this.keyService.orgKeys$(userId) : NEVER)),
         takeUntilDestroyed(),
       )
       .subscribe((data: Record<OrganizationId, OrgKey> | null) => {

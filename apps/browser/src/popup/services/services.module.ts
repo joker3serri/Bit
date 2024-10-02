@@ -48,12 +48,12 @@ import {
 } from "@bitwarden/common/platform/abstractions/animation-control.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -107,8 +107,8 @@ import BrowserPopupUtils from "../../platform/popup/browser-popup-utils";
 import { BrowserFileDownloadService } from "../../platform/popup/services/browser-file-download.service";
 import { PopupViewCacheService } from "../../platform/popup/view-cache/popup-view-cache.service";
 import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
-import { BrowserCryptoService } from "../../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../../platform/services/browser-environment.service";
+import { BrowserKeyService } from "../../platform/services/browser-key.service";
 import BrowserLocalStorageService from "../../platform/services/browser-local-storage.service";
 import { BrowserScriptInjectorService } from "../../platform/services/browser-script-injector.service";
 import I18nService from "../../platform/services/i18n.service";
@@ -207,7 +207,7 @@ const safeProviders: SafeProvider[] = [
     deps: [GlobalStateProvider],
   }),
   safeProvider({
-    provide: CryptoService,
+    provide: KeyService,
     useFactory: (
       pinService: PinServiceAbstraction,
       masterPasswordService: InternalMasterPasswordServiceAbstraction,
@@ -223,7 +223,7 @@ const safeProviders: SafeProvider[] = [
       biometricsService: BiometricsService,
       kdfConfigService: KdfConfigService,
     ) => {
-      const cryptoService = new BrowserCryptoService(
+      const keyService = new BrowserKeyService(
         pinService,
         masterPasswordService,
         keyGenerationService,
@@ -238,8 +238,8 @@ const safeProviders: SafeProvider[] = [
         biometricsService,
         kdfConfigService,
       );
-      new ContainerService(cryptoService, encryptService).attachToGlobal(self);
-      return cryptoService;
+      new ContainerService(keyService, encryptService).attachToGlobal(self);
+      return keyService;
     },
     deps: [
       PinServiceAbstraction,

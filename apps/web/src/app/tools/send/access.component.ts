@@ -7,8 +7,8 @@ import { RegisterRouteService } from "@bitwarden/auth/common";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
@@ -65,7 +65,7 @@ export class AccessComponent implements OnInit {
   constructor(
     private cryptoFunctionService: CryptoFunctionService,
     private route: ActivatedRoute,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private sendApiService: SendApiService,
     private toastService: ToastService,
     private i18nService: I18nService,
@@ -126,7 +126,7 @@ export class AccessComponent implements OnInit {
       }
       this.passwordRequired = false;
       const sendAccess = new SendAccess(sendResponse);
-      this.decKey = await this.cryptoService.makeSendKey(keyArray);
+      this.decKey = await this.keyService.makeSendKey(keyArray);
       this.send = await sendAccess.decrypt(this.decKey);
     } catch (e) {
       if (e instanceof ErrorResponse) {

@@ -26,7 +26,7 @@ import { Policy } from "../../admin-console/models/domain/policy";
 import { AccountService } from "../../auth/abstractions/account.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
+import { KeyService } from "../../platform/abstractions/key.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { StateProvider } from "../../platform/state";
 import { UserId } from "../../types/guid";
@@ -39,7 +39,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     private accountService: AccountService,
     private pinService: PinServiceAbstraction,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private tokenService: TokenService,
     private policyService: PolicyService,
     private biometricStateService: BiometricStateService,
@@ -87,7 +87,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
       clientSecret,
     ]);
 
-    await this.cryptoService.refreshAdditionalKeys();
+    await this.keyService.refreshAdditionalKeys();
   }
 
   availableVaultTimeoutActions$(userId?: string): Observable<VaultTimeoutAction[]> {
@@ -287,7 +287,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   }
 
   async clear(userId?: string): Promise<void> {
-    await this.cryptoService.clearPinKeys(userId);
+    await this.keyService.clearPinKeys(userId);
   }
 
   private async userHasMasterPassword(userId: string): Promise<boolean> {

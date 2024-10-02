@@ -6,8 +6,8 @@ import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractio
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { WebauthnRotateCredentialRequest } from "@bitwarden/common/auth/models/request/webauthn-rotate-credential.request";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { SendWithIdRequest } from "@bitwarden/common/tools/send/models/request/send-with-id.request";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
@@ -39,7 +39,7 @@ describe("KeyRotationService", () => {
   let mockEmergencyAccessService: MockProxy<EmergencyAccessService>;
   let mockResetPasswordService: MockProxy<OrganizationUserResetPasswordService>;
   let mockDeviceTrustService: MockProxy<DeviceTrustServiceAbstraction>;
-  let mockCryptoService: MockProxy<CryptoService>;
+  let mockKeyService: MockProxy<KeyService>;
   let mockEncryptService: MockProxy<EncryptService>;
   let mockConfigService: MockProxy<ConfigService>;
   let mockSyncService: MockProxy<SyncService>;
@@ -61,7 +61,7 @@ describe("KeyRotationService", () => {
     mockEmergencyAccessService = mock<EmergencyAccessService>();
     mockResetPasswordService = mock<OrganizationUserResetPasswordService>();
     mockDeviceTrustService = mock<DeviceTrustServiceAbstraction>();
-    mockCryptoService = mock<CryptoService>();
+    mockKeyService = mock<KeyService>();
     mockEncryptService = mock<EncryptService>();
     mockConfigService = mock<ConfigService>();
     mockSyncService = mock<SyncService>();
@@ -76,7 +76,7 @@ describe("KeyRotationService", () => {
       mockEmergencyAccessService,
       mockResetPasswordService,
       mockDeviceTrustService,
-      mockCryptoService,
+      mockKeyService,
       mockEncryptService,
       mockSyncService,
       mockWebauthnLoginAdminService,
@@ -91,13 +91,13 @@ describe("KeyRotationService", () => {
     let privateKey: BehaviorSubject<UserPrivateKey>;
 
     beforeEach(() => {
-      mockCryptoService.makeUserKey.mockResolvedValue([
+      mockKeyService.makeUserKey.mockResolvedValue([
         new SymmetricCryptoKey(new Uint8Array(64)) as UserKey,
         {
           encryptedString: "mockNewUserKey",
         } as any,
       ]);
-      mockCryptoService.hashMasterKey.mockResolvedValue("mockMasterPasswordHash");
+      mockKeyService.hashMasterKey.mockResolvedValue("mockMasterPasswordHash");
       mockConfigService.getFeatureFlag.mockResolvedValue(true);
 
       mockEncryptService.encrypt.mockResolvedValue({
@@ -111,11 +111,11 @@ describe("KeyRotationService", () => {
       });
 
       // Mock user key
-      mockCryptoService.userKey$.mockReturnValue(new BehaviorSubject("mockOriginalUserKey" as any));
+      mockKeyService.userKey$.mockReturnValue(new BehaviorSubject("mockOriginalUserKey" as any));
 
       // Mock private key
       privateKey = new BehaviorSubject("mockPrivateKey" as any);
-      mockCryptoService.userPrivateKeyWithLegacySupport$.mockReturnValue(privateKey);
+      mockKeyService.userPrivateKeyWithLegacySupport$.mockReturnValue(privateKey);
 
       // Mock ciphers
       const mockCiphers = [createMockCipher("1", "Cipher 1"), createMockCipher("2", "Cipher 2")];
@@ -164,7 +164,7 @@ describe("KeyRotationService", () => {
     });
 
     it("throws if user key creation fails", async () => {
-      mockCryptoService.makeUserKey.mockResolvedValueOnce([null, null]);
+      mockKeyService.makeUserKey.mockResolvedValueOnce([null, null]);
 
       await expect(
         keyRotationService.rotateUserKeyAndEncryptedData("mockMasterPassword", mockUser),

@@ -10,8 +10,8 @@ import {
 } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { CipherWithIdExport } from "@bitwarden/common/models/export/cipher-with-ids.export";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -152,7 +152,7 @@ describe("VaultExportService", () => {
   let cipherService: MockProxy<CipherService>;
   let pinService: MockProxy<PinServiceAbstraction>;
   let folderService: MockProxy<FolderService>;
-  let cryptoService: MockProxy<CryptoService>;
+  let keyService: MockProxy<KeyService>;
   let encryptService: MockProxy<EncryptService>;
   let accountService: MockProxy<AccountService>;
   let kdfConfigService: MockProxy<KdfConfigService>;
@@ -162,7 +162,7 @@ describe("VaultExportService", () => {
     cipherService = mock<CipherService>();
     pinService = mock<PinServiceAbstraction>();
     folderService = mock<FolderService>();
-    cryptoService = mock<CryptoService>();
+    keyService = mock<KeyService>();
     encryptService = mock<EncryptService>();
     accountService = mock<AccountService>();
 
@@ -172,7 +172,7 @@ describe("VaultExportService", () => {
     folderService.getAllFromState.mockResolvedValue(UserFolders);
     kdfConfigService.getKdfConfig.mockResolvedValue(DEFAULT_KDF_CONFIG);
     encryptService.encrypt.mockResolvedValue(new EncString("encrypted"));
-    cryptoService.userKey$.mockReturnValue(new BehaviorSubject("mockOriginalUserKey" as any));
+    keyService.userKey$.mockReturnValue(new BehaviorSubject("mockOriginalUserKey" as any));
     const userId = "" as UserId;
     const accountInfo: AccountInfo = {
       email: "",
@@ -186,7 +186,7 @@ describe("VaultExportService", () => {
       folderService,
       cipherService,
       pinService,
-      cryptoService,
+      keyService,
       encryptService,
       cryptoFunctionService,
       kdfConfigService,

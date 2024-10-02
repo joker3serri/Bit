@@ -11,9 +11,9 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -41,7 +41,7 @@ export class RegisterFormComponent extends BaseRegisterComponent implements OnIn
     loginStrategyService: LoginStrategyServiceAbstraction,
     router: Router,
     i18nService: I18nService,
-    cryptoService: CryptoService,
+    keyService: KeyService,
     apiService: ApiService,
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
@@ -60,7 +60,7 @@ export class RegisterFormComponent extends BaseRegisterComponent implements OnIn
       loginStrategyService,
       router,
       i18nService,
-      cryptoService,
+      keyService,
       apiService,
       stateService,
       platformUtilsService,

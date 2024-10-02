@@ -39,7 +39,7 @@ export type CipherDecryptionKeys = {
   orgKeys: Record<OrganizationId, OrgKey>;
 };
 
-export abstract class CryptoService {
+export abstract class KeyService {
   /**
    * Retrieves a stream of the given users {@see UserKey} values. Can emit null if the user does not have a user key, e.g. the user
    * is in a locked or logged out state.

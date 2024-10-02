@@ -19,8 +19,8 @@ import {
 } from "@bitwarden/common/auth/types/verification";
 import { ClientType } from "@bitwarden/common/enums";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -123,7 +123,7 @@ export class LockV2Component implements OnInit, OnDestroy {
     private accountService: AccountService,
     private pinService: PinServiceAbstraction,
     private userVerificationService: UserVerificationService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private platformUtilsService: PlatformUtilsService,
     private router: Router,
     private dialogService: DialogService,
@@ -310,7 +310,7 @@ export class LockV2Component implements OnInit, OnDestroy {
 
     try {
       await this.biometricStateService.setUserPromptCancelled();
-      const userKey = await this.cryptoService.getUserKeyFromStorage(
+      const userKey = await this.keyService.getUserKeyFromStorage(
         KeySuffixOptions.Biometric,
         this.activeAccount.id,
       );
@@ -489,7 +489,7 @@ export class LockV2Component implements OnInit, OnDestroy {
   }
 
   private async setUserKeyAndContinue(key: UserKey, evaluatePasswordAfterUnlock = false) {
-    await this.cryptoService.setUserKey(key, this.activeAccount.id);
+    await this.keyService.setUserKey(key, this.activeAccount.id);
 
     // Now that we have a decrypted user key in memory, we can check if we
     // need to establish trust on the current device

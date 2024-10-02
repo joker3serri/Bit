@@ -2,8 +2,8 @@ import {
   OrganizationUserApiService,
   OrganizationUserResetPasswordDetailsResponse,
 } from "@bitwarden/admin-console/common";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -15,7 +15,7 @@ import { PendingAuthRequestView } from "./pending-auth-request.view";
 export class OrganizationAuthRequestService {
   constructor(
     private organizationAuthRequestApiService: OrganizationAuthRequestApiService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private organizationUserApiService: OrganizationUserApiService,
   ) {}
@@ -110,7 +110,7 @@ export class OrganizationAuthRequestService {
     const devicePubKey = Utils.fromB64ToArray(devicePublicKey);
 
     // Decrypt Organization's encrypted Private Key with org key
-    const orgSymKey = await this.cryptoService.getOrgKey(organizationId);
+    const orgSymKey = await this.keyService.getOrgKey(organizationId);
     const decOrgPrivateKey = await this.encryptService.decryptToBytes(
       new EncString(encryptedOrgPrivateKey),
       orgSymKey,

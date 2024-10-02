@@ -38,14 +38,14 @@ import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ClientType } from "@bitwarden/common/enums";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import {
-  KeyService,
-  KeyService as CryptoServiceAbstraction,
-} from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
+import {
+  KeyService,
+  KeyService as KeyServiceAbstraction,
+} from "@bitwarden/common/platform/abstractions/key.service";
 import {
   LogService,
   LogService as LogServiceAbstraction,
@@ -74,7 +74,7 @@ import { BiometricStateService, BiometricsService } from "@bitwarden/key-managem
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { ElectronBiometricsService } from "../../key-management/biometrics/electron-biometrics.service";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
-import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
+import { ElectronKeyService } from "../../platform/services/electron-key.service";
 import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
 import {
   ELECTRON_SUPPORTS_SECURE_STORAGE,
@@ -248,8 +248,8 @@ const safeProviders: SafeProvider[] = [
     deps: [WINDOW],
   }),
   safeProvider({
-    provide: CryptoServiceAbstraction,
-    useClass: ElectronCryptoService,
+    provide: KeyServiceAbstraction,
+    useClass: ElectronKeyService,
     deps: [
       PinServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,

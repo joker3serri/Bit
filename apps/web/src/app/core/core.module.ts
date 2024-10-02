@@ -39,11 +39,11 @@ import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth
 import { ClientType } from "@bitwarden/common/enums";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService as KeyServiceAbstraction } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
@@ -197,7 +197,7 @@ const safeProviders: SafeProvider[] = [
     provide: RegistrationFinishServiceAbstraction,
     useClass: WebRegistrationFinishService,
     deps: [
-      CryptoServiceAbstraction,
+      KeyServiceAbstraction,
       AccountApiServiceAbstraction,
       AcceptOrganizationInviteService,
       PolicyApiServiceAbstraction,
@@ -215,7 +215,7 @@ const safeProviders: SafeProvider[] = [
     useClass: WebSetPasswordJitService,
     deps: [
       ApiService,
-      CryptoServiceAbstraction,
+      KeyServiceAbstraction,
       EncryptService,
       I18nServiceAbstraction,
       KdfConfigService,
@@ -233,7 +233,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: CollectionAdminService,
     useClass: DefaultCollectionAdminService,
-    deps: [ApiService, CryptoServiceAbstraction, EncryptService, CollectionService],
+    deps: [ApiService, KeyServiceAbstraction, EncryptService, CollectionService],
   }),
 ];
 

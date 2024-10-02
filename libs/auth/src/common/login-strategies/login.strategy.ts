@@ -25,8 +25,8 @@ import { ClientType } from "@bitwarden/common/enums";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -66,7 +66,7 @@ export abstract class LoginStrategy {
   constructor(
     protected accountService: AccountService,
     protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
-    protected cryptoService: CryptoService,
+    protected keyService: KeyService,
     protected encryptService: EncryptService,
     protected apiService: ApiService,
     protected tokenService: TokenService,
@@ -284,8 +284,8 @@ export abstract class LoginStrategy {
 
   protected async createKeyPairForOldAccount(userId: UserId) {
     try {
-      const userKey = await this.cryptoService.getUserKeyWithLegacySupport(userId);
-      const [publicKey, privateKey] = await this.cryptoService.makeKeyPair(userKey);
+      const userKey = await this.keyService.getUserKeyWithLegacySupport(userId);
+      const [publicKey, privateKey] = await this.keyService.makeKeyPair(userKey);
       await this.apiService.postAccountKeys(new KeysRequest(publicKey, privateKey.encryptedString));
       return privateKey.encryptedString;
     } catch (e) {

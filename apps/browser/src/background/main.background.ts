@@ -78,7 +78,6 @@ import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platf
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Fido2ActiveRequestManager as Fido2ActiveRequestManagerAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-active-request-manager.abstraction";
 import { Fido2AuthenticatorService as Fido2AuthenticatorServiceAbstraction } from "@bitwarden/common/platform/abstractions/fido2/fido2-authenticator.service.abstraction";
@@ -87,6 +86,7 @@ import { Fido2UserInterfaceService as Fido2UserInterfaceServiceAbstraction } fro
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
+import { KeyService as KeyServiceAbstraction } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
@@ -234,8 +234,8 @@ import { ChromeMessageSender } from "../platform/messaging/chrome-message.sender
 import { OffscreenDocumentService } from "../platform/offscreen-document/abstractions/offscreen-document";
 import { DefaultOffscreenDocumentService } from "../platform/offscreen-document/offscreen-document.service";
 import { BrowserTaskSchedulerService } from "../platform/services/abstractions/browser-task-scheduler.service";
-import { BrowserCryptoService } from "../platform/services/browser-crypto.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
+import { BrowserKeyService } from "../platform/services/browser-key.service";
 import BrowserLocalStorageService from "../platform/services/browser-local-storage.service";
 import BrowserMemoryStorageService from "../platform/services/browser-memory-storage.service";
 import { BrowserScriptInjectorService } from "../platform/services/browser-script-injector.service";
@@ -272,7 +272,7 @@ export default class MainBackground {
   platformUtilsService: PlatformUtilsServiceAbstraction;
   logService: LogServiceAbstraction;
   keyGenerationService: KeyGenerationServiceAbstraction;
-  cryptoService: CryptoServiceAbstraction;
+  keyService: KeyServiceAbstraction;
   cryptoFunctionService: CryptoFunctionServiceAbstraction;
   masterPasswordService: InternalMasterPasswordServiceAbstraction;
   tokenService: TokenServiceAbstraction;
@@ -637,7 +637,7 @@ export default class MainBackground {
       this.stateService,
     );
 
-    this.cryptoService = new BrowserCryptoService(
+    this.keyService = new BrowserKeyService(
       this.pinService,
       this.masterPasswordService,
       this.keyGenerationService,
@@ -663,7 +663,7 @@ export default class MainBackground {
       this.accountService,
       this.pinService,
       this.userDecryptionOptionsService,
-      this.cryptoService,
+      this.keyService,
       this.tokenService,
       this.policyService,
       this.biometricStateService,
@@ -692,7 +692,7 @@ export default class MainBackground {
     this.searchService = new SearchService(this.logService, this.i18nService, this.stateProvider);
 
     this.collectionService = new CollectionService(
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.i18nService,
       this.stateProvider,
@@ -707,7 +707,7 @@ export default class MainBackground {
     this.keyConnectorService = new KeyConnectorService(
       this.accountService,
       this.masterPasswordService,
-      this.cryptoService,
+      this.keyService,
       this.apiService,
       this.tokenService,
       this.logService,
@@ -721,7 +721,7 @@ export default class MainBackground {
 
     this.passwordGenerationService = legacyPasswordGenerationServiceFactory(
       this.encryptService,
-      this.cryptoService,
+      this.keyService,
       this.policyService,
       this.accountService,
       this.stateProvider,
@@ -733,7 +733,7 @@ export default class MainBackground {
     this.deviceTrustService = new DeviceTrustService(
       this.keyGenerationService,
       this.cryptoFunctionService,
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.appIdService,
       this.devicesApiService,
@@ -752,7 +752,7 @@ export default class MainBackground {
       this.appIdService,
       this.accountService,
       this.masterPasswordService,
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.apiService,
       this.stateProvider,
@@ -761,7 +761,7 @@ export default class MainBackground {
     this.authService = new AuthService(
       this.accountService,
       this.messagingService,
-      this.cryptoService,
+      this.keyService,
       this.apiService,
       this.stateService,
       this.tokenService,
@@ -793,7 +793,7 @@ export default class MainBackground {
     this.bulkEncryptService = new FallbackBulkEncryptService(this.encryptService);
 
     this.cipherService = new CipherService(
-      this.cryptoService,
+      this.keyService,
       this.domainSettingsService,
       this.apiService,
       this.i18nService,
@@ -808,7 +808,7 @@ export default class MainBackground {
       this.accountService,
     );
     this.folderService = new FolderService(
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.i18nService,
       this.cipherService,
@@ -817,7 +817,7 @@ export default class MainBackground {
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
 
     this.userVerificationService = new UserVerificationService(
-      this.cryptoService,
+      this.keyService,
       this.accountService,
       this.masterPasswordService,
       this.i18nService,
@@ -860,11 +860,11 @@ export default class MainBackground {
       lockedCallback,
       logoutCallback,
     );
-    this.containerService = new ContainerService(this.cryptoService, this.encryptService);
+    this.containerService = new ContainerService(this.keyService, this.encryptService);
 
     this.sendStateProvider = new SendStateProvider(this.stateProvider);
     this.sendService = new SendService(
-      this.cryptoService,
+      this.keyService,
       this.i18nService,
       this.keyGenerationService,
       this.sendStateProvider,
@@ -905,7 +905,7 @@ export default class MainBackground {
         this.domainSettingsService,
         this.folderService,
         this.cipherService,
-        this.cryptoService,
+        this.keyService,
         this.collectionService,
         this.messagingService,
         this.policyService,
@@ -980,7 +980,7 @@ export default class MainBackground {
       this.importApiService,
       this.i18nService,
       this.collectionService,
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.pinService,
       this.accountService,
@@ -990,7 +990,7 @@ export default class MainBackground {
       this.folderService,
       this.cipherService,
       this.pinService,
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.cryptoFunctionService,
       this.kdfConfigService,
@@ -1001,7 +1001,7 @@ export default class MainBackground {
       this.cipherService,
       this.apiService,
       this.pinService,
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.cryptoFunctionService,
       this.collectionService,
@@ -1105,7 +1105,7 @@ export default class MainBackground {
         lockService,
       );
       this.nativeMessagingBackground = new NativeMessagingBackground(
-        this.cryptoService,
+        this.keyService,
         this.encryptService,
         this.cryptoFunctionService,
         this.runtimeBackground,
@@ -1210,7 +1210,7 @@ export default class MainBackground {
     this.usernameGenerationService = legacyUsernameGenerationServiceFactory(
       this.apiService,
       this.i18nService,
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.policyService,
       this.accountService,
@@ -1242,7 +1242,7 @@ export default class MainBackground {
       }
     }
 
-    this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
+    this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.keyService);
   }
 
   async bootstrap() {
@@ -1461,7 +1461,7 @@ export default class MainBackground {
     );
 
     await Promise.all([
-      this.cryptoService.clearKeys(userBeingLoggedOut),
+      this.keyService.clearKeys(userBeingLoggedOut),
       this.cipherService.clear(userBeingLoggedOut),
       this.folderService.clear(userBeingLoggedOut),
       this.collectionService.clear(userBeingLoggedOut),

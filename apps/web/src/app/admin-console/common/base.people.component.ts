@@ -16,8 +16,8 @@ import {
 } from "@bitwarden/common/admin-console/enums";
 import { ProviderUserUserDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-user.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
@@ -119,7 +119,7 @@ export abstract class BasePeopleComponent<
     private searchService: SearchService,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
-    protected cryptoService: CryptoService,
+    protected keyService: KeyService,
     protected validationService: ValidationService,
     protected modalService: ModalService,
     private logService: LogService,
@@ -384,7 +384,7 @@ export abstract class BasePeopleComponent<
       }
 
       try {
-        const fingerprint = await this.cryptoService.getFingerprint(user.userId, publicKey);
+        const fingerprint = await this.keyService.getFingerprint(user.userId, publicKey);
         this.logService.info(`User's fingerprint: ${fingerprint.join("-")}`);
       } catch (e) {
         this.logService.error(e);

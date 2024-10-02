@@ -12,7 +12,7 @@ import {
 } from "@bitwarden/auth/common";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { DeviceType } from "@bitwarden/common/enums";
-import { KeyService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { UserId } from "@bitwarden/common/types/guid";

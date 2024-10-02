@@ -29,10 +29,10 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { PreloginRequest } from "@bitwarden/common/models/request/prelogin.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -91,7 +91,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   constructor(
     protected accountService: AccountService,
     protected masterPasswordService: InternalMasterPasswordServiceAbstraction,
-    protected cryptoService: CryptoService,
+    protected keyService: KeyService,
     protected apiService: ApiService,
     protected tokenService: TokenService,
     protected appIdService: AppIdService,
@@ -264,7 +264,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
         throw e;
       }
     }
-    return await this.cryptoService.makeMasterKey(masterPassword, email, kdfConfig);
+    return await this.keyService.makeMasterKey(masterPassword, email, kdfConfig);
   }
 
   private async clearCache(): Promise<void> {
@@ -316,7 +316,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     const sharedDeps: ConstructorParameters<typeof LoginStrategy> = [
       this.accountService,
       this.masterPasswordService,
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.apiService,
       this.tokenService,

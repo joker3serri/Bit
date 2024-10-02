@@ -15,8 +15,8 @@ import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -72,7 +72,7 @@ export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
     private folderService: FolderService,
     private folderApiService: FolderApiServiceAbstraction,
     private accountService: AccountService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private toastService: ToastService,
     private i18nService: I18nService,
     private logService: LogService,
@@ -113,7 +113,7 @@ export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
 
     try {
       const activeUserId = await firstValueFrom(this.accountService.activeAccount$);
-      const userKey = await this.cryptoService.getUserKeyWithLegacySupport(activeUserId.id);
+      const userKey = await this.keyService.getUserKeyWithLegacySupport(activeUserId.id);
       const folder = await this.folderService.encrypt(this.folder, userKey);
       await this.folderApiService.save(folder);
 

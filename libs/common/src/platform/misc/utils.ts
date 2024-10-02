@@ -6,9 +6,9 @@ import { Observable, of, switchMap } from "rxjs";
 import { getHostname, parse } from "tldts";
 import { Merge } from "type-fest";
 
-import { CryptoService } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { I18nService } from "../abstractions/i18n.service";
+import { KeyService } from "../abstractions/key.service";
 
 const nodeURL = typeof self === "undefined" ? require("url") : null;
 
@@ -18,7 +18,7 @@ declare global {
 }
 
 interface BitwardenContainerService {
-  getCryptoService: () => CryptoService;
+  getKeyService: () => KeyService;
   getEncryptService: () => EncryptService;
 }
 

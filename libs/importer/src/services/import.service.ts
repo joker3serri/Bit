@@ -6,9 +6,9 @@ import { ImportCiphersRequest } from "@bitwarden/common/models/request/import-ci
 import { ImportOrganizationCiphersRequest } from "@bitwarden/common/models/request/import-organization-ciphers.request";
 import { KvpRequest } from "@bitwarden/common/models/request/kvp.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
@@ -104,7 +104,7 @@ export class ImportService implements ImportServiceAbstraction {
     private importApiService: ImportApiServiceAbstraction,
     private i18nService: I18nService,
     private collectionService: CollectionService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private pinService: PinServiceAbstraction,
     private accountService: AccountService,
@@ -208,7 +208,7 @@ export class ImportService implements ImportServiceAbstraction {
       case "bitwardenjson":
       case "bitwardenpasswordprotected":
         return new BitwardenPasswordProtectedImporter(
-          this.cryptoService,
+          this.keyService,
           this.encryptService,
           this.i18nService,
           this.cipherService,
@@ -347,7 +347,7 @@ export class ImportService implements ImportServiceAbstraction {
       const c = await this.cipherService.encrypt(importResult.ciphers[i], activeUserId);
       request.ciphers.push(new CipherRequest(c));
     }
-    const userKey = await this.cryptoService.getUserKeyWithLegacySupport(activeUserId);
+    const userKey = await this.keyService.getUserKeyWithLegacySupport(activeUserId);
     if (importResult.folders != null) {
       for (let i = 0; i < importResult.folders.length; i++) {
         const f = await this.folderService.encrypt(importResult.folders[i], userKey);

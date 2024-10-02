@@ -4,9 +4,9 @@ import { firstValueFrom } from "rxjs";
 
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -27,7 +27,7 @@ export class SendReceiveCommand extends DownloadCommand {
   private sendAccessRequest: SendAccessRequest;
 
   constructor(
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     encryptService: EncryptService,
     private cryptoFunctionService: CryptoFunctionService,
     private platformUtilsService: PlatformUtilsService,
@@ -146,7 +146,7 @@ export class SendReceiveCommand extends DownloadCommand {
       );
 
       const sendAccess = new SendAccess(sendResponse);
-      this.decKey = await this.cryptoService.makeSendKey(key);
+      this.decKey = await this.keyService.makeSendKey(key);
       return await sendAccess.decrypt(this.decKey);
     } catch (e) {
       if (e instanceof ErrorResponse) {

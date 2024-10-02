@@ -20,10 +20,10 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { EventType } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -87,7 +87,7 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected totpService: TotpService,
     protected tokenService: TokenService,
     protected i18nService: I18nService,
-    protected cryptoService: CryptoService,
+    protected keyService: KeyService,
     protected encryptService: EncryptService,
     protected platformUtilsService: PlatformUtilsService,
     protected auditService: AuditService,
@@ -443,7 +443,7 @@ export class ViewComponent implements OnDestroy, OnInit {
       const key =
         attachment.key != null
           ? attachment.key
-          : await this.cryptoService.getOrgKey(this.cipher.organizationId);
+          : await this.keyService.getOrgKey(this.cipher.organizationId);
       const decBuf = await this.encryptService.decryptToBytes(encBuf, key);
       this.fileDownloadService.download({
         fileName: attachment.fileName,

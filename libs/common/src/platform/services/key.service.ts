@@ -35,13 +35,13 @@ import {
 } from "../../types/key";
 import { VaultTimeoutStringType } from "../../types/vault-timeout.type";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
-import {
-  CipherDecryptionKeys,
-  CryptoService as CryptoServiceAbstraction,
-  UserPrivateKeyDecryptionFailedError,
-} from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { KeyGenerationService } from "../abstractions/key-generation.service";
+import {
+  CipherDecryptionKeys,
+  KeyService as KeyServiceAbstraction,
+  UserPrivateKeyDecryptionFailedError,
+} from "../abstractions/key.service";
 import { LogService } from "../abstractions/log.service";
 import { PlatformUtilsService } from "../abstractions/platform-utils.service";
 import { StateService } from "../abstractions/state.service";
@@ -60,7 +60,7 @@ import {
   USER_KEY,
 } from "./key-state/user-key.state";
 
-export class CryptoService implements CryptoServiceAbstraction {
+export class KeyService implements KeyServiceAbstraction {
   private readonly activeUserEverHadUserKey: ActiveUserState<boolean>;
 
   readonly everHadUserKey$: Observable<boolean>;

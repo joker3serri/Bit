@@ -14,7 +14,7 @@ import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractio
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ClientType } from "@bitwarden/common/enums";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 
@@ -31,7 +31,7 @@ export function lockGuard(): CanActivateFn {
     routerStateSnapshot: RouterStateSnapshot,
   ) => {
     const authService = inject(AuthService);
-    const cryptoService = inject(CryptoService);
+    const keyService = inject(KeyService);
     const deviceTrustService = inject(DeviceTrustServiceAbstraction);
     const platformUtilService = inject(PlatformUtilsService);
     const messagingService = inject(MessagingService);
@@ -54,7 +54,7 @@ export function lockGuard(): CanActivateFn {
     }
 
     // If legacy user on web, redirect to migration page
-    if (await cryptoService.isLegacyUser()) {
+    if (await keyService.isLegacyUser()) {
       if (platformUtilService.getClientType() === ClientType.Web) {
         return router.createUrlTree(["migrate-legacy-encryption"]);
       }
@@ -78,7 +78,7 @@ export function lockGuard(): CanActivateFn {
     }
 
     // If authN user with TDE directly navigates to lock, reject that navigation
-    const everHadUserKey = await firstValueFrom(cryptoService.everHadUserKey$);
+    const everHadUserKey = await firstValueFrom(keyService.everHadUserKey$);
     if (tdeEnabled && !everHadUserKey) {
       return false;
     }

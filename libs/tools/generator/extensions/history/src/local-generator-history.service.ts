@@ -1,7 +1,7 @@
 import { filter, map } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
 import { BufferedState } from "@bitwarden/common/tools/state/buffered-state";
 import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
@@ -23,7 +23,7 @@ const OPTIONS_FRAME_SIZE = 2048;
 export class LocalGeneratorHistoryService extends GeneratorHistoryService {
   constructor(
     private readonly encryptService: EncryptService,
-    private readonly keyService: CryptoService,
+    private readonly keyService: KeyService,
     private readonly stateProvider: StateProvider,
     private readonly options: HistoryServiceOptions = { maxTotal: 100 },
   ) {

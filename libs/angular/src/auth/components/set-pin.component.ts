@@ -6,7 +6,7 @@ import { firstValueFrom } from "rxjs";
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
 @Directive()
@@ -20,7 +20,7 @@ export class SetPinComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private dialogRef: DialogRef,
     private formBuilder: FormBuilder,
     private pinService: PinServiceAbstraction,
@@ -46,7 +46,7 @@ export class SetPinComponent implements OnInit {
     }
 
     const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-    const userKey = await this.cryptoService.getUserKey();
+    const userKey = await this.keyService.getUserKey();
 
     const userKeyEncryptedPin = await this.pinService.createUserKeyEncryptedPin(pin, userKey);
     await this.pinService.setUserKeyEncryptedPin(userKeyEncryptedPin, userId);

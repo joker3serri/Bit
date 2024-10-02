@@ -7,7 +7,7 @@ import { ZXCVBNResult } from "zxcvbn";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { DialogService, ToastService } from "@bitwarden/components";
 
@@ -32,7 +32,7 @@ export default {
           } as Partial<AuditService>,
         },
         {
-          provide: CryptoService,
+          provide: KeyService,
           useValue: {
             makeMasterKey: () => Promise.resolve("example-master-key"),
             hashMasterKey: () => Promise.resolve("example-master-key-hash"),

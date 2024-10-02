@@ -13,9 +13,9 @@ import {
   KdfConfig,
   PBKDF2KdfConfig,
 } from "@bitwarden/common/auth/models/domain/kdf-config";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -30,7 +30,7 @@ export class OrganizationUserResetPasswordService
   implements UserKeyRotationDataProvider<OrganizationUserResetPasswordWithIdRequest>
 {
   constructor(
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private organizationService: OrganizationService,
     private organizationUserApiService: OrganizationUserApiService,
@@ -53,7 +53,7 @@ export class OrganizationUserResetPasswordService
     const publicKey = Utils.fromB64ToArray(orgKeys.publicKey);
 
     // RSA Encrypt user key with organization's public key
-    userKey ??= await this.cryptoService.getUserKey();
+    userKey ??= await this.keyService.getUserKey();
     if (userKey == null) {
       throw new Error("No user key found");
     }
@@ -86,7 +86,7 @@ export class OrganizationUserResetPasswordService
     }
 
     // Decrypt Organization's encrypted Private Key with org key
-    const orgSymKey = await this.cryptoService.getOrgKey(orgId);
+    const orgSymKey = await this.keyService.getOrgKey(orgId);
     if (orgSymKey == null) {
       throw new Error("No org key found");
     }
@@ -109,18 +109,15 @@ export class OrganizationUserResetPasswordService
         : new Argon2KdfConfig(response.kdfIterations, response.kdfMemory, response.kdfParallelism);
 
     // Create new master key and hash new password
-    const newMasterKey = await this.cryptoService.makeMasterKey(
+    const newMasterKey = await this.keyService.makeMasterKey(
       newMasterPassword,
       email.trim().toLowerCase(),
       kdfConfig,
     );
-    const newMasterKeyHash = await this.cryptoService.hashMasterKey(
-      newMasterPassword,
-      newMasterKey,
-    );
+    const newMasterKeyHash = await this.keyService.hashMasterKey(newMasterPassword, newMasterKey);
 
     // Create new encrypted user key for the User
-    const newUserKey = await this.cryptoService.encryptUserKeyWithMasterKey(
+    const newUserKey = await this.keyService.encryptUserKeyWithMasterKey(
       newMasterKey,
       existingUserKey,
     );

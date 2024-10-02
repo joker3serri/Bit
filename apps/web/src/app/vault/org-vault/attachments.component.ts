@@ -4,10 +4,10 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -31,7 +31,7 @@ export class AttachmentsComponent extends BaseAttachmentsComponent implements On
   constructor(
     cipherService: CipherService,
     i18nService: I18nService,
-    cryptoService: CryptoService,
+    keyService: KeyService,
     encryptService: EncryptService,
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
@@ -46,7 +46,7 @@ export class AttachmentsComponent extends BaseAttachmentsComponent implements On
     super(
       cipherService,
       i18nService,
-      cryptoService,
+      keyService,
       encryptService,
       stateService,
       platformUtilsService,

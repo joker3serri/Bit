@@ -2,9 +2,9 @@ import { filter, map } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
 import {
   ApiSettings,
@@ -45,7 +45,7 @@ export class ForwarderGeneratorStrategy<
     private client: RestClient,
     private i18nService: I18nService,
     private readonly encryptService: EncryptService,
-    private readonly keyService: CryptoService,
+    private readonly keyService: KeyService,
     private stateProvider: StateProvider,
   ) {
     super();
