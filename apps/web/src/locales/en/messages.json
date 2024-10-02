@@ -9271,5 +9271,8 @@
   },
   "maxFileSizeSansPunctuation": {
     "message": "Maximum file size is 500 MB"
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Are you sure you want to permanently delete this attachment?"
   }
 }
