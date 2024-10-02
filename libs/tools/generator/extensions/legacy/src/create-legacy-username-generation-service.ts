@@ -3,11 +3,11 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import { RestClient } from "@bitwarden/common/tools/integration/rpc";
 import { engine, services, strategies, Integrations } from "@bitwarden/generator-core";
 import { DefaultGeneratorNavigationService } from "@bitwarden/generator-navigation";
+import { KeyService } from "@bitwarden/key-management";
 
 import { LegacyUsernameGenerationService } from "./legacy-username-generation.service";
 import { UsernameGenerationServiceAbstraction } from "./username-generation.service.abstraction";

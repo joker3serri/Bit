@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { KeyService } from "../../../platform/abstractions/key.service";
+import { KeyService } from "../../../../../key-management/src/abstractions/key.service";
 import { FolderService } from "../../abstractions/folder/folder.service.abstraction";
 import { FolderData } from "../../models/data/folder.data";
 import { Folder } from "../../models/domain/folder";

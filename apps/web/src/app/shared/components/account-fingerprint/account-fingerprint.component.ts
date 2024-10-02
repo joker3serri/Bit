@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
+import { KeyService } from "@bitwarden/key-management";
 
 import { SharedModule } from "../../shared.module";
 

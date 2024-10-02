@@ -4,7 +4,6 @@ import { Jsonify } from "type-fest";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { SingleUserState, StateProvider } from "@bitwarden/common/platform/state";
 import {
   ApiSettings,
@@ -17,6 +16,7 @@ import { SecretKeyDefinition } from "@bitwarden/common/tools/state/secret-key-de
 import { SecretState } from "@bitwarden/common/tools/state/secret-state";
 import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
 import { UserId } from "@bitwarden/common/types/guid";
+import { KeyService } from "@bitwarden/key-management";
 
 import { GeneratorStrategy } from "../abstractions";
 import { ForwarderConfiguration, AccountRequest, ForwarderContext } from "../engine";

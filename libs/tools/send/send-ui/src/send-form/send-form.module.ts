@@ -3,13 +3,13 @@ import { NgModule } from "@angular/core";
 import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import {
   createRandomizer,
   CredentialGeneratorService,
   Randomizer,
 } from "@bitwarden/generator-core";
+import { KeyService } from "@bitwarden/key-management";
 
 import { SendFormService } from "./abstractions/send-form.service";
 import { SendFormComponent } from "./components/send-form.component";

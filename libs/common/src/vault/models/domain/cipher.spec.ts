@@ -3,10 +3,10 @@ import { Jsonify } from "type-fest";
 
 import { UserId } from "@bitwarden/common/types/guid";
 
+import { KeyService } from "../../../../../key-management/src/abstractions/key.service";
 import { makeStaticByteArray, mockEnc, mockFromJson } from "../../../../spec/utils";
 import { UriMatchStrategy } from "../../../models/domain/domain-service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
-import { KeyService } from "../../../platform/abstractions/key.service";
 import { EncString } from "../../../platform/models/domain/enc-string";
 import { ContainerService } from "../../../platform/services/container.service";
 import { InitializerKey } from "../../../platform/services/cryptography/initializer-key";

@@ -2,7 +2,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { CryptoFunctionService } from "../../../platform/abstractions/crypto-function.service";
 
-import { WebAuthnLoginPrfKeyService } from "./webauthn-login-prf-key.service";
+import { WebAuthnLoginPrfKeyService } from "./webauthn-login-prf-crypto.service";
 
 describe("WebAuthnLoginPrfKeyService", () => {
   let cryptoFunctionService: MockProxy<CryptoFunctionService>;

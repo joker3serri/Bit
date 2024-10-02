@@ -12,11 +12,10 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { USER_KEY } from "@bitwarden/common/platform/services/key-state/user-key.state";
-import { KeyService } from "@bitwarden/common/platform/services/key.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
-import { BiometricsService, BiometricStateService } from "@bitwarden/key-management";
+import { KeyService , BiometricsService, BiometricStateService } from "@bitwarden/key-management";
 
 export class BrowserKeyService extends KeyService {
   constructor(

@@ -19,6 +19,7 @@ import {
 } from "@bitwarden/auth/common";
 import { BiometricStateService } from "@bitwarden/key-management";
 
+import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "../../admin-console/enums";
@@ -26,7 +27,6 @@ import { Policy } from "../../admin-console/models/domain/policy";
 import { AccountService } from "../../auth/abstractions/account.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
-import { KeyService } from "../../platform/abstractions/key.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { StateProvider } from "../../platform/state";
 import { UserId } from "../../types/guid";

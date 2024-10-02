@@ -1,48 +1,48 @@
 import { mock } from "jest-mock-extended";
 import { bufferCount, firstValueFrom, lastValueFrom, of, take, tap } from "rxjs";
 
-import { PinServiceAbstraction } from "../../../../auth/src/common/abstractions";
+import { PinServiceAbstraction } from "../../auth/src/common/abstractions";
 import {
   awaitAsync,
   makeEncString,
   makeStaticByteArray,
   makeSymmetricCryptoKey,
-} from "../../../spec";
-import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
-import { FakeActiveUserState, FakeSingleUserState } from "../../../spec/fake-state";
-import { FakeStateProvider } from "../../../spec/fake-state-provider";
-import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
-import { KdfConfigService } from "../../auth/abstractions/kdf-config.service";
-import { FakeMasterPasswordService } from "../../auth/services/master-password/fake-master-password.service";
-import { VAULT_TIMEOUT } from "../../services/vault-timeout/vault-timeout-settings.state";
-import { CsprngArray } from "../../types/csprng";
-import { OrganizationId, UserId } from "../../types/guid";
-import { UserKey, MasterKey } from "../../types/key";
-import { VaultTimeoutStringType } from "../../types/vault-timeout.type";
-import { CryptoFunctionService } from "../abstractions/crypto-function.service";
-import { EncryptService } from "../abstractions/encrypt.service";
-import { KeyGenerationService } from "../abstractions/key-generation.service";
-import { UserPrivateKeyDecryptionFailedError } from "../abstractions/key.service";
-import { LogService } from "../abstractions/log.service";
-import { PlatformUtilsService } from "../abstractions/platform-utils.service";
-import { StateService } from "../abstractions/state.service";
-import { Encrypted } from "../interfaces/encrypted";
-import { Utils } from "../misc/utils";
-import { EncString, EncryptedString } from "../models/domain/enc-string";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
-import { KeyService } from "../services/key.service";
-import { UserKeyDefinition } from "../state";
-
-import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "./key-state/org-keys.state";
-import { USER_ENCRYPTED_PROVIDER_KEYS } from "./key-state/provider-keys.state";
+} from "../../common/spec";
+import { FakeAccountService, mockAccountServiceWith } from "../../common/spec/fake-account-service";
+import { FakeActiveUserState, FakeSingleUserState } from "../../common/spec/fake-state";
+import { FakeStateProvider } from "../../common/spec/fake-state-provider";
+import { EncryptedOrganizationKeyData } from "../../common/src/admin-console/models/data/encrypted-organization-key.data";
+import { KdfConfigService } from "../../common/src/auth/abstractions/kdf-config.service";
+import { FakeMasterPasswordService } from "../../common/src/auth/services/master-password/fake-master-password.service";
+import { CryptoFunctionService } from "../../common/src/platform/abstractions/crypto-function.service";
+import { EncryptService } from "../../common/src/platform/abstractions/encrypt.service";
+import { KeyGenerationService } from "../../common/src/platform/abstractions/key-generation.service";
+import { LogService } from "../../common/src/platform/abstractions/log.service";
+import { PlatformUtilsService } from "../../common/src/platform/abstractions/platform-utils.service";
+import { StateService } from "../../common/src/platform/abstractions/state.service";
+import { Encrypted } from "../../common/src/platform/interfaces/encrypted";
+import { Utils } from "../../common/src/platform/misc/utils";
+import { EncString, EncryptedString } from "../../common/src/platform/models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../common/src/platform/models/domain/symmetric-crypto-key";
+import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "../../common/src/platform/services/key-state/org-keys.state";
+import { USER_ENCRYPTED_PROVIDER_KEYS } from "../../common/src/platform/services/key-state/provider-keys.state";
 import {
   USER_ENCRYPTED_PRIVATE_KEY,
   USER_EVER_HAD_USER_KEY,
   USER_KEY,
-} from "./key-state/user-key.state";
+} from "../../common/src/platform/services/key-state/user-key.state";
+import { UserKeyDefinition } from "../../common/src/platform/state";
+import { VAULT_TIMEOUT } from "../../common/src/services/vault-timeout/vault-timeout-settings.state";
+import { CsprngArray } from "../../common/src/types/csprng";
+import { OrganizationId, UserId } from "../../common/src/types/guid";
+import { UserKey, MasterKey } from "../../common/src/types/key";
+import { VaultTimeoutStringType } from "../../common/src/types/vault-timeout.type";
+
+import { UserPrivateKeyDecryptionFailedError } from "./abstractions/key.service";
+import { DefaultKeyService } from "./key.service";
 
 describe("keyService", () => {
-  let keyService: KeyService;
+  let keyService: DefaultKeyService;
 
   const pinService = mock<PinServiceAbstraction>();
   const keyGenerationService = mock<KeyGenerationService>();
@@ -63,7 +63,7 @@ describe("keyService", () => {
     masterPasswordService = new FakeMasterPasswordService();
     stateProvider = new FakeStateProvider(accountService);
 
-    keyService = new KeyService(
+    keyService = new DefaultKeyService(
       pinService,
       masterPasswordService,
       keyGenerationService,

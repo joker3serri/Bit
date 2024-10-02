@@ -3,8 +3,8 @@ import { Jsonify } from "type-fest";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 
+import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
-import { KeyService } from "../../platform/abstractions/key.service";
 import { Utils } from "../../platform/misc/utils";
 import {
   ActiveUserState,

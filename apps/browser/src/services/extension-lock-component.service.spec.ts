@@ -8,10 +8,9 @@ import {
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
-import { BiometricsService } from "@bitwarden/key-management";
+import { KeyService , BiometricsService } from "@bitwarden/key-management";
 
 import { BrowserRouterService } from "../platform/popup/services/browser-router.service";
 

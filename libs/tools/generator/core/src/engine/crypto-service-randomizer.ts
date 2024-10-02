@@ -1,4 +1,4 @@
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
+import { KeyService } from "@bitwarden/key-management";
 
 import { Randomizer } from "../abstractions";
 import { WordOptions } from "../types";

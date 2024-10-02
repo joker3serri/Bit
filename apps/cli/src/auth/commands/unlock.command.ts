@@ -9,11 +9,11 @@ import { VerificationType } from "@bitwarden/common/auth/enums/verification-type
 import { MasterPasswordVerification } from "@bitwarden/common/auth/types/verification";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { MasterKey } from "@bitwarden/common/types/key";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { KeyService } from "@bitwarden/key-management";
 
 import { ConvertToKeyConnectorCommand } from "../../commands/convert-to-key-connector.command";
 import { Response } from "../../models/response";

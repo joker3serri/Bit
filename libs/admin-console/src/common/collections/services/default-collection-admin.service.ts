@@ -1,7 +1,6 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
@@ -11,6 +10,7 @@ import {
   CollectionDetailsResponse,
   CollectionResponse,
 } from "@bitwarden/common/vault/models/response/collection.response";
+import { KeyService } from "@bitwarden/key-management";
 
 import { CollectionAdminService } from "../abstractions";
 import {

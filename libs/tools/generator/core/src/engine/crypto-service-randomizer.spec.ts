@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
+import { KeyService } from "@bitwarden/key-management";
 
 import { KeyServiceRandomizer } from "./crypto-service-randomizer";
 

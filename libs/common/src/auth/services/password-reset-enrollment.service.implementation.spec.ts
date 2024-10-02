@@ -5,10 +5,10 @@ import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 
 import { UserId } from "../../../../common/src/types/guid";
+import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { OrganizationApiServiceAbstraction } from "../../admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationAutoEnrollStatusResponse } from "../../admin-console/models/response/organization-auto-enroll-status.response";
 import { I18nService } from "../../platform/abstractions/i18n.service";
-import { KeyService } from "../../platform/abstractions/key.service";
 import { AccountInfo, AccountService } from "../abstractions/account.service";
 
 import { PasswordResetEnrollmentServiceImplementation } from "./password-reset-enrollment.service.implementation";

@@ -1,5 +1,6 @@
 import { mock } from "jest-mock-extended";
 
+import { DefaultKeyService } from "../../../../key-management/src/key.service";
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { UserKey } from "../../types/key";
@@ -7,7 +8,6 @@ import { KeySuffixOptions } from "../enums";
 import { Utils } from "../misc/utils";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
-import { KeyService } from "./key.service";
 import { UserAutoUnlockKeyService } from "./user-auto-unlock-key.service";
 
 describe("UserAutoUnlockKeyService", () => {
@@ -15,7 +15,7 @@ describe("UserAutoUnlockKeyService", () => {
 
   const mockUserId = Utils.newGuid() as UserId;
 
-  const keyService = mock<KeyService>();
+  const keyService = mock<DefaultKeyService>();
 
   beforeEach(() => {
     userAutoUnlockKeyService = new UserAutoUnlockKeyService(keyService);

@@ -1,5 +1,5 @@
+import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { UserId } from "../../types/guid";
-import { KeyService } from "../abstractions/key.service";
 import { KeySuffixOptions } from "../enums";
 
 // TODO: this is a half measure improvement which allows us to reduce some side effects today (keyService.getUserKey setting user key in memory if auto key exists)

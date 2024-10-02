@@ -1,6 +1,7 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
+import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import {
   FakeAccountService,
   makeStaticByteArray,
@@ -8,7 +9,6 @@ import {
   trackEmissions,
 } from "../../../spec";
 import { ApiService } from "../../abstractions/api.service";
-import { KeyService } from "../../platform/abstractions/key.service";
 import { MessagingService } from "../../platform/abstractions/messaging.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";

@@ -9,10 +9,10 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { KeyService } from "@bitwarden/common/platform/abstractions/key.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { DialogService } from "@bitwarden/components";
+import { KeyService } from "@bitwarden/key-management";
 
 import { BulkUserDetails } from "./bulk-status.component";
 
