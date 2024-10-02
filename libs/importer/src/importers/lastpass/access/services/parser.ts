@@ -68,7 +68,7 @@ export class Parser {
               encryptionKey,
               placeholder,
             )
-          : this.decodeHexLoose(Utils.fromBufferToUtf8(urlEncoded)).toString();
+          : Utils.fromBufferToUtf8(this.decodeHexLoose(Utils.fromBufferToUtf8(urlEncoded)));
 
       // Ignore "group" accounts. They have no credentials.
       if (url == "http://group") {
