@@ -1,0 +1,26 @@
+<h2 bitTypography="h2" class="tw-mt-7">
+  {{ "selfHostingTitle" | i18n }}
+</h2>
+<p bitTypography="body1">
+  {{ "toHostBitwardenOnYourOwnServer" | i18n }}
+</p>
+<div class="tw-flex tw-space-x-2">
+  <button
+    *ngIf="canDownloadLicense"
+    bitButton
+    buttonType="secondary"
+    type="button"
+    (click)="openDownloadLicenseDialog()"
+  >
+    {{ "downloadLicense" | i18n }}
+  </button>
+  <button
+    bitButton
+    buttonType="secondary"
+    type="button"
+    (click)="manageSyncToken()"
+    *ngIf="canManageSyncToken"
+  >
+    {{ (hasSyncToken ? "viewBillingToken" : "setUpBillingSync") | i18n }}
+  </button>
+</div>

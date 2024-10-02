@@ -9,6 +9,7 @@ import { BillingSyncApiKeyComponent } from "./billing-sync-api-key.component";
 import { BillingSyncKeyComponent } from "./billing-sync-key.component";
 import { ChangePlanDialogComponent } from "./change-plan-dialog.component";
 import { ChangePlanComponent } from "./change-plan.component";
+import { OrganizationCloudManageSelfHostComponent } from "./cloud-manage-self-host/organization-cloud-manage-self-host.component";
 import { DownloadLicenceDialogComponent } from "./download-license.component";
 import { OrgBillingHistoryViewComponent } from "./organization-billing-history-view.component";
 import { OrganizationBillingRoutingModule } from "./organization-billing-routing.module";
@@ -37,6 +38,7 @@ import { SubscriptionStatusComponent } from "./subscription-status.component";
     DownloadLicenceDialogComponent,
     OrganizationSubscriptionCloudComponent,
     OrganizationSubscriptionSelfhostComponent,
+    OrganizationCloudManageSelfHostComponent,
     OrgBillingHistoryViewComponent,
     SecretsManagerAdjustSubscriptionComponent,
     SecretsManagerSubscribeStandaloneComponent,
