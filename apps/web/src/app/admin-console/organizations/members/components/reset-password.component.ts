@@ -1,12 +1,6 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import zxcvbn from "zxcvbn";
 
@@ -22,20 +16,53 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legac
 
 import { OrganizationUserResetPasswordService } from "../services/organization-user-reset-password/organization-user-reset-password.service";
 
+/**
+ * Encapsulates a few key data inputs needed to initiate an account recovery
+ * process for the organization user in question.
+ */
+export type ResetPasswordDialogData = {
+  /**
+   * The organization user's full name
+   */
+  name: string;
+
+  /**
+   * The organization user's email address
+   */
+  email: string;
+
+  /**
+   * The `organizationUserId` for the user
+   */
+  id: string;
+
+  /**
+   * The organization's `organizationId`
+   */
+  organizationId: string;
+};
+
+export enum ResetPasswordDialogResult {
+  Ok = "ok",
+}
+
 @Component({
   selector: "app-reset-password",
   templateUrl: "reset-password.component.html",
 })
+/**
+ * Used in a dialog for initiating the account recovery process against a
+ * given organization user. An admin will access this form when they want to
+ * reset a user's password and log them out of sessions.
+ */
 export class ResetPasswordComponent implements OnInit, OnDestroy {
-  @Input() name: string;
-  @Input() email: string;
-  @Input() id: string;
-  @Input() organizationId: string;
-  @Output() passwordReset = new EventEmitter();
+  formGroup = this.formBuilder.group({
+    newPassword: ["", Validators.required],
+  });
+
   @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
 
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
-  newPassword: string = null;
   showPassword = false;
   passwordStrengthResult: zxcvbn.ZXCVBNResult;
   formPromise: Promise<any>;
@@ -43,6 +70,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
+    @Inject(DIALOG_DATA) protected data: ResetPasswordDialogData,
     private resetPasswordService: OrganizationUserResetPasswordService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
@@ -51,6 +79,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private dialogService: DialogService,
     private toastService: ToastService,
+    private formBuilder: FormBuilder,
+    private dialogRef: DialogRef<ResetPasswordDialogResult>,
   ) {}
 
   async ngOnInit() {
@@ -69,13 +99,15 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   }
 
   get loggedOutWarningName() {
-    return this.name != null ? this.name : this.i18nService.t("thisUser");
+    return this.data.name != null ? this.data.name : this.i18nService.t("thisUser");
   }
 
   async generatePassword() {
     const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
-    this.newPassword = await this.passwordGenerationService.generatePassword(options);
-    this.passwordStrengthComponent.updatePasswordStrength(this.newPassword);
+    this.formGroup.patchValue({
+      newPassword: await this.passwordGenerationService.generatePassword(options),
+    });
+    this.passwordStrengthComponent.updatePasswordStrength(this.formGroup.value.newPassword);
   }
 
   togglePassword() {
@@ -83,7 +115,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     document.getElementById("newPassword").focus();
   }
 
-  copy(value: string) {
+  copy() {
+    const value = this.formGroup.value.newPassword;
     if (value == null) {
       return;
     }
@@ -96,9 +129,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     });
   }
 
-  async submit() {
+  submit = async () => {
     // Validation
-    if (this.newPassword == null || this.newPassword === "") {
+    if (this.formGroup.value.newPassword == null || this.formGroup.value.newPassword === "") {
       this.toastService.showToast({
         variant: "error",
         title: this.i18nService.t("errorOccurred"),
@@ -107,7 +140,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (this.newPassword.length < Utils.minimumPasswordLength) {
+    if (this.formGroup.value.newPassword.length < Utils.minimumPasswordLength) {
       this.toastService.showToast({
         variant: "error",
         title: this.i18nService.t("errorOccurred"),
@@ -120,7 +153,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       this.enforcedPolicyOptions != null &&
       !this.policyService.evaluateMasterPassword(
         this.passwordStrengthResult.score,
-        this.newPassword,
+        this.formGroup.value.newPassword,
         this.enforcedPolicyOptions,
       )
     ) {
@@ -146,10 +179,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
     try {
       this.formPromise = this.resetPasswordService.resetMasterPassword(
-        this.newPassword,
-        this.email,
-        this.id,
-        this.organizationId,
+        this.formGroup.value.newPassword,
+        this.data.email,
+        this.data.id,
+        this.data.organizationId,
       );
       await this.formPromise;
       this.toastService.showToast({
@@ -157,14 +190,19 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         title: null,
         message: this.i18nService.t("resetPasswordSuccess"),
       });
-      this.passwordReset.emit();
     } catch (e) {
       this.logService.error(e);
     }
     this.formPromise = null;
-  }
+
+    this.dialogRef.close(ResetPasswordDialogResult.Ok);
+  };
 
   getStrengthResult(result: zxcvbn.ZXCVBNResult) {
     this.passwordStrengthResult = result;
   }
+
+  static open = (dialogService: DialogService, input: DialogConfig<ResetPasswordDialogData>) => {
+    return dialogService.open<ResetPasswordDialogResult>(ResetPasswordComponent, input);
+  };
 }
