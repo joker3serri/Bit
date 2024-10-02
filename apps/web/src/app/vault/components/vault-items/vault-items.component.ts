@@ -222,30 +222,87 @@ export class VaultItemsComponent {
     this.dataSource.data = items;
   }
 
-  /**
-   * Default sorting function for vault items.
-   * Sorts by: 1. Collections before ciphers
-   *           2. Highest permission first
-   *           3. Alphabetical order of collections and ciphers
-   */
-  protected defaultSort = (a: VaultItem, b: VaultItem) => {
-    // First, sort collections before ciphers
-    if (a.collection && !b.collection) {
-      return -1;
-    }
-    if (!a.collection && b.collection) {
-      return 1;
+  protected bulkEditCollectionAccess() {
+    this.event({
+      type: "bulkEditCollectionAccess",
+      items: this.selection.selected
+        .filter((item) => item.collection !== undefined)
+        .map((item) => item.collection),
+    });
+  }
+
+  protected assignToCollections() {
+    this.event({
+      type: "assignToCollections",
+      items: this.selection.selected
+        .filter((item) => item.cipher !== undefined)
+        .map((item) => item.cipher),
+    });
+  }
+
+  protected showAssignToCollections(): boolean {
+    if (!this.showBulkMove) {
+      return false;
     }
 
-    // Next, sort by permissions
-    const permissionSort = this.sortByPermissions(a, b);
-    if (permissionSort !== 0) {
-      return permissionSort;
+    if (this.selection.selected.length === 0) {
+      return true;
     }
 
-    // Finally, sort by name
-    return this.sortByName(a, b);
-  };
+    const hasPersonalItems = this.hasPersonalItems();
+    const uniqueCipherOrgIds = this.getUniqueOrganizationIds();
+
+    // Return false if items are from different organizations
+    if (uniqueCipherOrgIds.size > 1) {
+      return false;
+    }
+
+    // If all items are personal, return based on personal items
+    if (uniqueCipherOrgIds.size === 0) {
+      return hasPersonalItems;
+    }
+
+    const [orgId] = uniqueCipherOrgIds;
+    const organization = this.allOrganizations.find((o) => o.id === orgId);
+
+    const canEditOrManageAllCiphers = organization?.canEditAllCiphers && this.viewingOrgVault;
+
+    const collectionNotSelected =
+      this.selection.selected.filter((item) => item.collection).length === 0;
+
+    return (canEditOrManageAllCiphers || this.allCiphersHaveEditAccess()) && collectionNotSelected;
+  }
+
+  protected showDelete(): boolean {
+    if (this.selection.selected.length === 0) {
+      return true;
+    }
+
+    const hasPersonalItems = this.hasPersonalItems();
+    const uniqueCipherOrgIds = this.getUniqueOrganizationIds();
+    const organizations = Array.from(uniqueCipherOrgIds, (orgId) =>
+      this.allOrganizations.find((o) => o.id === orgId),
+    );
+
+    const canEditOrManageAllCiphers =
+      organizations.length > 0 && organizations.every((org) => org?.canEditAllCiphers);
+
+    const canDeleteCollections = this.selection.selected
+      .filter((item) => item.collection)
+      .every((item) => item.collection && this.canDeleteCollection(item.collection));
+
+    const userCanDeleteAccess =
+      (canEditOrManageAllCiphers || this.allCiphersHaveEditAccess()) && canDeleteCollections;
+
+    if (
+      userCanDeleteAccess ||
+      (hasPersonalItems && (!uniqueCipherOrgIds.size || userCanDeleteAccess))
+    ) {
+      return true;
+    }
+
+    return false;
+  }
 
   /**
    * Sorts VaultItems, grouping collections before ciphers, and sorting each group alphabetically by name.
@@ -328,87 +385,30 @@ export class VaultItemsComponent {
     return this.sortByName(a, b);
   };
 
-  protected bulkEditCollectionAccess() {
-    this.event({
-      type: "bulkEditCollectionAccess",
-      items: this.selection.selected
-        .filter((item) => item.collection !== undefined)
-        .map((item) => item.collection),
-    });
-  }
-
-  protected assignToCollections() {
-    this.event({
-      type: "assignToCollections",
-      items: this.selection.selected
-        .filter((item) => item.cipher !== undefined)
-        .map((item) => item.cipher),
-    });
-  }
-
-  protected showAssignToCollections(): boolean {
-    if (!this.showBulkMove) {
-      return false;
+  /**
+   * Default sorting function for vault items.
+   * Sorts by: 1. Collections before ciphers
+   *           2. Highest permission first
+   *           3. Alphabetical order of collections and ciphers
+   */
+  private defaultSort = (a: VaultItem, b: VaultItem) => {
+    // First, sort collections before ciphers
+    if (a.collection && !b.collection) {
+      return -1;
+    }
+    if (!a.collection && b.collection) {
+      return 1;
     }
 
-    if (this.selection.selected.length === 0) {
-      return true;
+    // Next, sort by permissions
+    const permissionSort = this.sortByPermissions(a, b);
+    if (permissionSort !== 0) {
+      return permissionSort;
     }
 
-    const hasPersonalItems = this.hasPersonalItems();
-    const uniqueCipherOrgIds = this.getUniqueOrganizationIds();
-
-    // Return false if items are from different organizations
-    if (uniqueCipherOrgIds.size > 1) {
-      return false;
-    }
-
-    // If all items are personal, return based on personal items
-    if (uniqueCipherOrgIds.size === 0) {
-      return hasPersonalItems;
-    }
-
-    const [orgId] = uniqueCipherOrgIds;
-    const organization = this.allOrganizations.find((o) => o.id === orgId);
-
-    const canEditOrManageAllCiphers = organization?.canEditAllCiphers && this.viewingOrgVault;
-
-    const collectionNotSelected =
-      this.selection.selected.filter((item) => item.collection).length === 0;
-
-    return (canEditOrManageAllCiphers || this.allCiphersHaveEditAccess()) && collectionNotSelected;
-  }
-
-  protected showDelete(): boolean {
-    if (this.selection.selected.length === 0) {
-      return true;
-    }
-
-    const hasPersonalItems = this.hasPersonalItems();
-    const uniqueCipherOrgIds = this.getUniqueOrganizationIds();
-    const organizations = Array.from(uniqueCipherOrgIds, (orgId) =>
-      this.allOrganizations.find((o) => o.id === orgId),
-    );
-
-    const canEditOrManageAllCiphers =
-      organizations.length > 0 && organizations.every((org) => org?.canEditAllCiphers);
-
-    const canDeleteCollections = this.selection.selected
-      .filter((item) => item.collection)
-      .every((item) => item.collection && this.canDeleteCollection(item.collection));
-
-    const userCanDeleteAccess =
-      (canEditOrManageAllCiphers || this.allCiphersHaveEditAccess()) && canDeleteCollections;
-
-    if (
-      userCanDeleteAccess ||
-      (hasPersonalItems && (!uniqueCipherOrgIds.size || userCanDeleteAccess))
-    ) {
-      return true;
-    }
-
-    return false;
-  }
+    // Finally, sort by name
+    return this.sortByName(a, b);
+  };
 
   private hasPersonalItems(): boolean {
     return this.selection.selected.some(({ cipher }) => cipher?.organizationId === null);
