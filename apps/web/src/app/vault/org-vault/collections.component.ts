@@ -20,7 +20,9 @@ import {
   CollectionsComponent as BaseCollectionsComponent,
   CollectionsDialogResult,
 } from "../individual-vault/collections.component";
-
+/**
+ * @deprecated Please use the {@link AssignCollectionsWebComponent} instead.
+ */
 @Component({
   selector: "app-org-vault-collections",
   templateUrl: "../../vault/individual-vault/collections.component.html",
