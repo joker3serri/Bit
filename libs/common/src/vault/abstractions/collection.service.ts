@@ -7,6 +7,7 @@ import { TreeNode } from "../models/domain/tree-node";
 import { CollectionView } from "../models/view/collection.view";
 
 export abstract class CollectionService {
+  encryptedCollections$: Observable<Collection[]>;
   decryptedCollections$: Observable<CollectionView[]>;
 
   clearActiveUserCache: () => Promise<void>;
