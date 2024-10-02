@@ -203,7 +203,7 @@ export class VaultItemsComponent {
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
     const ciphers: VaultItem[] = this.ciphers.map((cipher) => ({ cipher }));
-    const items: VaultItem[] = [].concat(collections).concat(ciphers);
+    let items: VaultItem[] = [].concat(collections).concat(ciphers);
 
     this.selection.clear();
 
@@ -214,7 +214,12 @@ export class VaultItemsComponent {
         (item.collection !== undefined && item.collection.id !== Unassigned),
     );
 
-    this.dataSource.data = items.sort(this.defaultSort);
+    // Apply sorting only for organization vault
+    if (this.showAdminActions) {
+      items = items.sort(this.sortByGroups);
+    }
+
+    this.dataSource.data = items;
   }
 
   /**
