@@ -114,7 +114,7 @@ libs/key-management @bitwarden/team-key-management-dev
 apps/desktop/destkop_native/core/src/biometric/ @bitwarden/team-key-management-dev
 apps/desktop/src/services/native-messaging.service.ts @bitwarden/team-key-management-dev
 apps/browser/src/background/nativeMessaging.background.ts @bitwarden/team-key-management-dev
-apps/desktop/src/services/biometric-native-messaging.service.ts @bitwarden/team-key-management-dev
+apps/desktop/src/services/biometric-message-handler.service.ts @bitwarden/team-key-management-dev
 
 ## DevOps team files ##
 /.github/workflows @bitwarden/dept-devops
