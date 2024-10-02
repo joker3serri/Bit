@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { LegacyMessageWrapper } from "../models/native-messaging/legacy-message-wrapper";
 import { Message } from "../models/native-messaging/message";
 
-import { BiometricMessageHandlerService } from "./biometric-native-messaging.service";
+import { BiometricMessageHandlerService } from "./biometric-message-handler.service";
 import { DuckDuckGoMessageHandlerService } from "./duckduckgo-message-handler.service";
 
 @Injectable()

@@ -86,7 +86,7 @@ import { ElectronRendererStorageService } from "../../platform/services/electron
 import { I18nRendererService } from "../../platform/services/i18n.renderer.service";
 import { fromIpcMessaging } from "../../platform/utils/from-ipc-messaging";
 import { fromIpcSystemTheme } from "../../platform/utils/from-ipc-system-theme";
-import { BiometricMessageHandlerService } from "../../services/biometric-native-messaging.service";
+import { BiometricMessageHandlerService } from "../../services/biometric-message-handler.service";
 import { DesktopLockComponentService } from "../../services/desktop-lock-component.service";
 import { DuckDuckGoMessageHandlerService } from "../../services/duckduckgo-message-handler.service";
 import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
