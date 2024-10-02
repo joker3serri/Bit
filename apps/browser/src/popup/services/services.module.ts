@@ -5,15 +5,15 @@ import { ViewCacheService } from "@bitwarden/angular/platform/abstractions/view-
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
 import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
-  MEMORY_STORAGE,
-  SECURE_STORAGE,
-  OBSERVABLE_DISK_STORAGE,
-  OBSERVABLE_MEMORY_STORAGE,
-  SYSTEM_THEME_OBSERVABLE,
-  SafeInjectionToken,
+  CLIENT_TYPE,
   DEFAULT_VAULT_TIMEOUT,
   INTRAPROCESS_MESSAGING_SUBJECT,
-  CLIENT_TYPE,
+  MEMORY_STORAGE,
+  OBSERVABLE_DISK_STORAGE,
+  OBSERVABLE_MEMORY_STORAGE,
+  SECURE_STORAGE,
+  SYSTEM_THEME_OBSERVABLE,
+  SafeInjectionToken,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { AnonLayoutWrapperDataService, LockComponentService } from "@bitwarden/auth/angular";
@@ -86,7 +86,7 @@ import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vau
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { DialogService, ToastService } from "@bitwarden/components";
-import { KeyService , BiometricsService, BiometricStateService } from "@bitwarden/key-management";
+import { BiometricStateService, BiometricsService, KeyService } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { ForegroundLockService } from "../../auth/popup/accounts/foreground-lock.service";
@@ -95,6 +95,7 @@ import { AutofillService as AutofillServiceAbstraction } from "../../autofill/se
 import AutofillService from "../../autofill/services/autofill.service";
 import MainBackground from "../../background/main.background";
 import { ForegroundBrowserBiometricsService } from "../../key-management/biometrics/foreground-browser-biometrics";
+import { BrowserKeyService } from "../../key-management/browser-key.service";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { runInsideAngular } from "../../platform/browser/run-inside-angular.operator";
 /* eslint-disable no-restricted-imports */
@@ -107,7 +108,6 @@ import { BrowserFileDownloadService } from "../../platform/popup/services/browse
 import { PopupViewCacheService } from "../../platform/popup/view-cache/popup-view-cache.service";
 import { ScriptInjectorService } from "../../platform/services/abstractions/script-injector.service";
 import { BrowserEnvironmentService } from "../../platform/services/browser-environment.service";
-import { BrowserKeyService } from "../../platform/services/browser-key.service";
 import BrowserLocalStorageService from "../../platform/services/browser-local-storage.service";
 import { BrowserScriptInjectorService } from "../../platform/services/browser-script-injector.service";
 import I18nService from "../../platform/services/i18n.service";

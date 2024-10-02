@@ -1,15 +1,15 @@
 import { Subject, filter, firstValueFrom, map, merge, timeout } from "rxjs";
 
 import {
-  PinServiceAbstraction,
-  PinService,
-  InternalUserDecryptionOptionsServiceAbstraction,
-  UserDecryptionOptionsService,
-  AuthRequestServiceAbstraction,
   AuthRequestService,
+  AuthRequestServiceAbstraction,
+  DefaultLockService,
+  InternalUserDecryptionOptionsServiceAbstraction,
   LoginEmailServiceAbstraction,
   LogoutReason,
-  DefaultLockService,
+  PinService,
+  PinServiceAbstraction,
+  UserDecryptionOptionsService,
 } from "@bitwarden/auth/common";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -55,16 +55,16 @@ import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
 import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import {
-  AutofillSettingsServiceAbstraction,
   AutofillSettingsService,
+  AutofillSettingsServiceAbstraction,
 } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import {
-  BadgeSettingsServiceAbstraction,
   BadgeSettingsService,
+  BadgeSettingsServiceAbstraction,
 } from "@bitwarden/common/autofill/services/badge-settings.service";
 import {
-  DomainSettingsService,
   DefaultDomainSettingsService,
+  DomainSettingsService,
 } from "@bitwarden/common/autofill/services/domain-settings.service";
 import {
   UserNotificationSettingsService,
@@ -180,10 +180,10 @@ import { FolderService } from "@bitwarden/common/vault/services/folder/folder.se
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/services/vault-settings/vault-settings.service";
 import {
-  legacyPasswordGenerationServiceFactory,
   PasswordGenerationServiceAbstraction,
-  legacyUsernameGenerationServiceFactory,
   UsernameGenerationServiceAbstraction,
+  legacyPasswordGenerationServiceFactory,
+  legacyUsernameGenerationServiceFactory,
 } from "@bitwarden/generator-legacy";
 import {
   ImportApiService,
@@ -191,10 +191,11 @@ import {
   ImportService,
   ImportServiceAbstraction,
 } from "@bitwarden/importer/core";
-import { KeyService as KeyServiceAbstraction ,
+import {
   BiometricStateService,
-  DefaultBiometricStateService,
   BiometricsService,
+  DefaultBiometricStateService,
+  KeyService as KeyServiceAbstraction,
 } from "@bitwarden/key-management";
 import {
   IndividualVaultExportService,
@@ -225,6 +226,7 @@ import { AutofillService as AutofillServiceAbstraction } from "../autofill/servi
 import AutofillService from "../autofill/services/autofill.service";
 import { SafariApp } from "../browser/safariApp";
 import { BackgroundBrowserBiometricsService } from "../key-management/biometrics/background-browser-biometrics.service";
+import { BrowserKeyService } from "../key-management/browser-key.service";
 import { BrowserApi } from "../platform/browser/browser-api";
 import { UpdateBadge } from "../platform/listeners/update-badge";
 /* eslint-disable no-restricted-imports */
@@ -234,7 +236,6 @@ import { OffscreenDocumentService } from "../platform/offscreen-document/abstrac
 import { DefaultOffscreenDocumentService } from "../platform/offscreen-document/offscreen-document.service";
 import { BrowserTaskSchedulerService } from "../platform/services/abstractions/browser-task-scheduler.service";
 import { BrowserEnvironmentService } from "../platform/services/browser-environment.service";
-import { BrowserKeyService } from "../platform/services/browser-key.service";
 import BrowserLocalStorageService from "../platform/services/browser-local-storage.service";
 import BrowserMemoryStorageService from "../platform/services/browser-memory-storage.service";
 import { BrowserScriptInjectorService } from "../platform/services/browser-script-injector.service";
