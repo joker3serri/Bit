@@ -1,4 +1,5 @@
-import { CollectionDetailsResponse } from "../../../../admin-console/src/common/collections/models/collection.response";
+import { CollectionDetailsResponse } from "@bitwarden/admin-console/common";
+
 import { PolicyResponse } from "../../admin-console/models/response/policy.response";
 import { BaseResponse } from "../../models/response/base.response";
 import { DomainsResponse } from "../../models/response/domains.response";

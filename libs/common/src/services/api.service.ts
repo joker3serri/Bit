@@ -1,13 +1,13 @@
 import { firstValueFrom } from "rxjs";
 
-import { CollectionRequest } from "@bitwarden/admin-console/common";
-import { LogoutReason } from "@bitwarden/auth/common";
-
 import {
+  CollectionRequest,
   CollectionAccessDetailsResponse,
   CollectionDetailsResponse,
   CollectionResponse,
-} from "../../../admin-console/src/common/collections/models/collection.response";
+} from "@bitwarden/admin-console/common";
+import { LogoutReason } from "@bitwarden/auth/common";
+
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { VaultTimeoutSettingsService } from "../abstractions/vault-timeout/vault-timeout-settings.service";
 import { OrganizationConnectionType } from "../admin-console/enums";

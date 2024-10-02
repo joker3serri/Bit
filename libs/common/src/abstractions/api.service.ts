@@ -1,10 +1,10 @@
-import { CollectionRequest } from "@bitwarden/admin-console/common";
-
 import {
+  CollectionRequest,
   CollectionAccessDetailsResponse,
   CollectionDetailsResponse,
   CollectionResponse,
-} from "../../../admin-console/src/common/collections/models/collection.response";
+} from "@bitwarden/admin-console/common";
+
 import { OrganizationConnectionType } from "../admin-console/enums";
 import { OrganizationSponsorshipCreateRequest } from "../admin-console/models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../admin-console/models/request/organization/organization-sponsorship-redeem.request";

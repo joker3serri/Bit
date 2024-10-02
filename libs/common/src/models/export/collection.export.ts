@@ -1,6 +1,5 @@
-import { Collection as CollectionDomain } from "@bitwarden/admin-console/common";
+import { Collection as CollectionDomain, CollectionView } from "@bitwarden/admin-console/common";
 
-import { CollectionView } from "../../../../admin-console/src/common/collections/models/collection.view";
 import { EncString } from "../../platform/models/domain/enc-string";
 
 import { safeGetString } from "./utils";

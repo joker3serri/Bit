@@ -1,9 +1,11 @@
 import { firstValueFrom, map } from "rxjs";
 
-import { CollectionService } from "@bitwarden/admin-console/common";
+import {
+  CollectionService,
+  CollectionData,
+  CollectionDetailsResponse,
+} from "@bitwarden/admin-console/common";
 
-import { CollectionData } from "../../../../admin-console/src/common/collections/models/collection.data";
-import { CollectionDetailsResponse } from "../../../../admin-console/src/common/collections/models/collection.response";
 import { UserDecryptionOptionsServiceAbstraction } from "../../../../auth/src/common/abstractions";
 import { LogoutReason } from "../../../../auth/src/common/types";
 import { ApiService } from "../../abstractions/api.service";
