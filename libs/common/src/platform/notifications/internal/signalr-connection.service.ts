@@ -7,8 +7,10 @@ import { NotificationResponse } from "../../../models/response/notification.resp
 import { UserId } from "../../../types/guid";
 import { LogService } from "../../abstractions/log.service";
 
-const MIN_RECONNECT_TIME = 120000;
-const MAX_RECONNECT_TIME = 300000;
+// 2 Minutes
+const MIN_RECONNECT_TIME = 2 * 60 * 1000;
+// 5 Minutes
+const MAX_RECONNECT_TIME = 5 * 60 * 1000;
 
 export type Heartbeat = { type: "Heartbeat" };
 export type ReceiveMessage = { type: "ReceiveMessage"; message: NotificationResponse };
