@@ -1,4 +1,10 @@
-import { HttpTransportType, HubConnectionBuilder, HubConnectionState } from "@microsoft/signalr";
+import {
+  HttpTransportType,
+  HubConnectionBuilder,
+  HubConnectionState,
+  ILogger,
+  LogLevel,
+} from "@microsoft/signalr";
 import { MessagePackHubProtocol } from "@microsoft/signalr-protocol-msgpack";
 import { Observable, Subscription } from "rxjs";
 
@@ -17,6 +23,30 @@ export type ReceiveMessage = { type: "ReceiveMessage"; message: NotificationResp
 
 export type SignalRNotification = Heartbeat | ReceiveMessage;
 
+class SignalRLogger implements ILogger {
+  constructor(private readonly logService: LogService) {}
+
+  log(logLevel: LogLevel, message: string): void {
+    switch (logLevel) {
+      case LogLevel.Critical:
+        this.logService.error(message);
+        break;
+      case LogLevel.Error:
+        this.logService.error(message);
+        break;
+      case LogLevel.Warning:
+        this.logService.warning(message);
+        break;
+      case LogLevel.Information:
+        this.logService.info(message);
+        break;
+      case LogLevel.Debug:
+        this.logService.debug(message);
+        break;
+    }
+  }
+}
+
 export class SignalRConnectionService {
   constructor(
     private readonly apiService: ApiService,
@@ -32,6 +62,7 @@ export class SignalRConnectionService {
           transport: HttpTransportType.WebSockets,
         })
         .withHubProtocol(new MessagePackHubProtocol())
+        .configureLogging(new SignalRLogger(this.logService))
         .build();
 
       connection.on("ReceiveMessage", (data: any) => {
@@ -54,13 +85,12 @@ export class SignalRConnectionService {
           return Subscription.EMPTY;
         }
 
-        // TODO: Schedule reconnect with scheduler
         const randomTime = this.random();
         const timeoutHandler = setTimeout(() => {
           connection
             .start()
             .then(() => (reconnectSubscription = null))
-            .catch((error) => {
+            .catch(() => {
               reconnectSubscription = sheduleReconnect();
             });
         }, randomTime);
@@ -69,12 +99,11 @@ export class SignalRConnectionService {
       };
 
       connection.onclose((error) => {
-        // TODO: Do anything with error?
         reconnectSubscription = sheduleReconnect();
       });
 
       // Start connection
-      connection.start().catch((error) => {
+      connection.start().catch(() => {
         reconnectSubscription = sheduleReconnect();
       });
 
