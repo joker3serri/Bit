@@ -32,7 +32,8 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { UserId } from "@bitwarden/common/types/guid";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService, ToastService } from "@bitwarden/components";
-import { KeyService ,
+import {
+  KeyService,
   BiometricsService as AbstractBiometricService,
   BiometricStateService,
 } from "@bitwarden/key-management";

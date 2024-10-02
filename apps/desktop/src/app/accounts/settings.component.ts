@@ -28,7 +28,7 @@ import {
   VaultTimeoutStringType,
 } from "@bitwarden/common/types/vault-timeout.type";
 import { DialogService } from "@bitwarden/components";
-import { KeyService , BiometricsService, BiometricStateService } from "@bitwarden/key-management";
+import { KeyService, BiometricsService, BiometricStateService } from "@bitwarden/key-management";
 
 import { SetPinComponent } from "../../auth/components/set-pin.component";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";

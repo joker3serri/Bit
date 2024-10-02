@@ -64,7 +64,7 @@ import {
 } from "@bitwarden/common/platform/theming/theme-state.service";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
-import { KeyService as KeyServiceAbstraction , BiometricsService } from "@bitwarden/key-management";
+import { KeyService as KeyServiceAbstraction, BiometricsService } from "@bitwarden/key-management";
 
 import { PolicyListService } from "../admin-console/core/policy-list.service";
 import {

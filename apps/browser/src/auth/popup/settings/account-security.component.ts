@@ -51,7 +51,7 @@ import {
   TypographyModule,
   ToastService,
 } from "@bitwarden/components";
-import { KeyService , BiometricsService, BiometricStateService } from "@bitwarden/key-management";
+import { KeyService, BiometricsService, BiometricStateService } from "@bitwarden/key-management";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../../models/biometricErrors";
 import { BrowserApi } from "../../../platform/browser/browser-api";

@@ -36,7 +36,7 @@ import {
   IconButtonModule,
   ToastService,
 } from "@bitwarden/components";
-import { KeyService , BiometricStateService } from "@bitwarden/key-management";
+import { KeyService, BiometricStateService } from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../common/abstractions";
 import { AnonLayoutWrapperDataService } from "../anon-layout/anon-layout-wrapper-data.service";
