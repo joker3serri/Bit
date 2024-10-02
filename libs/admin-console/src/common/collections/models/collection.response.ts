@@ -1,6 +1,6 @@
 import { SelectionReadOnlyResponse } from "@bitwarden/common/admin-console/models/response/selection-read-only.response";
 import { BaseResponse } from "@bitwarden/common/models/response/base.response";
-import { CollectionId, OrganizationId } from "@bitwarden/common/src/types/guid";
+import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 
 export class CollectionResponse extends BaseResponse {
   id: CollectionId;

@@ -2,7 +2,7 @@ import { Jsonify } from "type-fest";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { View } from "@bitwarden/common/models/view/view";
-import { ITreeNodeObject } from "@bitwarden/common/src/vault/models/domain/tree-node";
+import { ITreeNodeObject } from "@bitwarden/common/vault/models/domain/tree-node";
 
 import { Collection } from "./collection";
 import { CollectionAccessDetailsResponse } from "./collection.response";
