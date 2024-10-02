@@ -63,12 +63,14 @@ export class Parser {
       const urlEncoded = this.readItem(reader);
       let url =
         urlEncoded.length > 0 && urlEncoded[0] === 33 // 33 = '!'
-          ? await this.cryptoUtils.decryptAes256PlainWithDefault(
+          ? // URL is encrypted
+            await this.cryptoUtils.decryptAes256PlainWithDefault(
               urlEncoded,
               encryptionKey,
               placeholder,
             )
-          : Utils.fromBufferToUtf8(this.decodeHexLoose(Utils.fromBufferToUtf8(urlEncoded)));
+          : // URL is not encrypted
+            Utils.fromBufferToUtf8(this.decodeHexLoose(Utils.fromBufferToUtf8(urlEncoded)));
 
       // Ignore "group" accounts. They have no credentials.
       if (url == "http://group") {
