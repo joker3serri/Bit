@@ -19,7 +19,7 @@ import {
   CLIENT_TYPE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { SetPasswordJitService } from "@bitwarden/auth/angular";
+import { LockComponentService, SetPasswordJitService } from "@bitwarden/auth/angular";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
   PinServiceAbstraction,
@@ -87,7 +87,8 @@ import { I18nRendererService } from "../../platform/services/i18n.renderer.servi
 import { fromIpcMessaging } from "../../platform/utils/from-ipc-messaging";
 import { fromIpcSystemTheme } from "../../platform/utils/from-ipc-system-theme";
 import { BiometricMessageHandlerService } from "../../services/biometric-native-messaging.service";
-import { DDGMessageHandlerService } from "../../services/ddg-message-handler.service";
+import { DesktopLockComponentService } from "../../services/desktop-lock-component.service";
+import { DuckDuckGoMessageHandlerService } from "../../services/duckduckgo-message-handler.service";
 import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
 import { NativeMessagingService } from "../../services/native-messaging.service";
 import { SearchBarService } from "../layout/search/search-bar.service";
@@ -232,7 +233,7 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
-    provide: DDGMessageHandlerService,
+    provide: DuckDuckGoMessageHandlerService,
     deps: [
       StateServiceAbstraction,
       EncryptService,
@@ -277,6 +278,11 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: NativeMessagingManifestService,
     useClass: NativeMessagingManifestService,
+    deps: [],
+  }),
+  safeProvider({
+    provide: LockComponentService,
+    useClass: DesktopLockComponentService,
     deps: [],
   }),
   safeProvider({
