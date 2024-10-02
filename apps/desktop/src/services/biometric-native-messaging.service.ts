@@ -15,21 +15,18 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserId } from "@bitwarden/common/types/guid";
 import { DialogService } from "@bitwarden/components";
-import { BiometricsService, BiometricStateService } from "@bitwarden/key-management";
+import { BiometricStateService, BiometricsService } from "@bitwarden/key-management";
 
 import { BrowserSyncVerificationDialogComponent } from "../app/components/browser-sync-verification-dialog.component";
 import { LegacyMessage } from "../models/native-messaging/legacy-message";
 import { LegacyMessageWrapper } from "../models/native-messaging/legacy-message-wrapper";
-import { Message } from "../models/native-messaging/message";
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
-
-import { NativeMessageHandlerService } from "./native-message-handler.service";
 
 const MessageValidTimeout = 10 * 1000;
 const HashAlgorithmForAsymmetricEncryption = "sha1";
 
 @Injectable()
-export class NativeMessagingService {
+export class BiometricMessageHandlerService {
   constructor(
     private cryptoFunctionService: CryptoFunctionService,
     private keyService: KeyService,
@@ -39,25 +36,13 @@ export class NativeMessagingService {
     private desktopSettingService: DesktopSettingsService,
     private biometricStateService: BiometricStateService,
     private biometricsService: BiometricsService,
-    private nativeMessageHandler: NativeMessageHandlerService,
     private dialogService: DialogService,
     private accountService: AccountService,
     private authService: AuthService,
     private ngZone: NgZone,
   ) {}
 
-  init() {
-    ipc.platform.nativeMessaging.onMessage((message) => this.messageHandler(message));
-  }
-
-  private async messageHandler(msg: LegacyMessageWrapper | Message) {
-    const outerMessage = msg as Message;
-    if (outerMessage.version) {
-      // If there is a version, it is a using the protocol created for the DuckDuckGo integration
-      await this.nativeMessageHandler.handleMessage(outerMessage);
-      return;
-    }
-
+  async handleMessage(msg: LegacyMessageWrapper) {
     const { appId, message: rawMessage } = msg as LegacyMessageWrapper;
 
     // Request to setup secure encryption

@@ -16,7 +16,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { KeyService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -39,7 +39,7 @@ export class LoginViaAuthRequestComponent extends BaseLoginWithDeviceComponent {
 
   constructor(
     protected router: Router,
-    cryptoService: CryptoService,
+    keyService: KeyService,
     cryptoFunctionService: CryptoFunctionService,
     appIdService: AppIdService,
     passwordGenerationService: PasswordGenerationServiceAbstraction,
@@ -63,7 +63,7 @@ export class LoginViaAuthRequestComponent extends BaseLoginWithDeviceComponent {
   ) {
     super(
       router,
-      cryptoService,
+      keyService,
       cryptoFunctionService,
       appIdService,
       passwordGenerationService,

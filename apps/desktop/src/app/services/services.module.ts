@@ -39,8 +39,8 @@ import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/s
 import { ClientType } from "@bitwarden/common/enums";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import {
-  CryptoService,
-  CryptoService as CryptoServiceAbstraction,
+  KeyService,
+  KeyService as CryptoServiceAbstraction,
 } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
@@ -292,7 +292,7 @@ const safeProviders: SafeProvider[] = [
     useClass: DesktopSetPasswordJitService,
     deps: [
       ApiService,
-      CryptoService,
+      KeyService,
       EncryptService,
       I18nServiceAbstraction,
       KdfConfigService,
