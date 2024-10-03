@@ -24,12 +24,12 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     stateProvider: StateProvider,
     accountService: AccountService,
     private router: Router,
+    private envUrls: Urls,
   ) {
     super(stateProvider, accountService);
 
     // The web vault always uses the current location as the base url
-    const urls = JSON.parse(process.env.URLS) as Urls;
-    urls.base ??= this.win.location.origin;
+    envUrls.base ??= this.win.location.origin;
 
     // Find the region
     const currentHostname = new URL(this.win.location.href).hostname;
@@ -43,9 +43,9 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
 
     let environment: Environment;
     if (region) {
-      environment = new WebCloudEnvironment(region, urls);
+      environment = new WebCloudEnvironment(region, envUrls);
     } else {
-      environment = new SelfHostedEnvironment(urls);
+      environment = new SelfHostedEnvironment(envUrls);
     }
 
     // Override the environment observable with a replay subject

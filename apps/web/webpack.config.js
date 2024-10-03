@@ -169,7 +169,7 @@ const plugins = [
     NODE_ENV: NODE_ENV === "production" ? "production" : "development",
     APPLICATION_VERSION: pjson.version,
     CACHE_TAG: Math.random().toString(36).substring(7),
-    URLS: JSON.stringify(envConfig["urls"] ?? {}),
+    URLS: envConfig["urls"] ?? {},
     STRIPE_KEY: envConfig["stripeKey"] ?? "",
     BRAINTREE_KEY: envConfig["braintreeKey"] ?? "",
     PAYPAL_CONFIG: envConfig["paypal"] ?? {},
