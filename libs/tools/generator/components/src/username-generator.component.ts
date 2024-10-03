@@ -26,23 +26,10 @@ import {
   isUsernameAlgorithm,
 } from "@bitwarden/generator-core";
 
-import { CatchallSettingsComponent } from "./catchall-settings.component";
-import { DependenciesModule } from "./dependencies";
-import { SubaddressSettingsComponent } from "./subaddress-settings.component";
-import { UsernameSettingsComponent } from "./username-settings.component";
-import { completeOnAccountSwitch } from "./util";
-
 /** Component that generates usernames and emails */
 @Component({
-  standalone: true,
   selector: "tools-username-generator",
   templateUrl: "username-generator.component.html",
-  imports: [
-    DependenciesModule,
-    CatchallSettingsComponent,
-    SubaddressSettingsComponent,
-    UsernameSettingsComponent,
-  ],
 })
 export class UsernameGeneratorComponent implements OnInit, OnDestroy {
   /** Instantiates the username generator
@@ -79,7 +66,13 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     if (this.userId) {
       this.userId$.next(this.userId);
     } else {
-      this.singleUserId$().pipe(takeUntil(this.destroyed)).subscribe(this.userId$);
+      this.accountService.activeAccount$
+        .pipe(
+          map((acct) => acct.id),
+          distinctUntilChanged(),
+          takeUntil(this.destroyed),
+        )
+        .subscribe(this.userId$);
     }
 
     this.generatorService
@@ -201,19 +194,6 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
 
   /** Emits when a new credential is requested */
   protected readonly generate$ = new Subject<void>();
-
-  private singleUserId$() {
-    // FIXME: this branch should probably scan for the user and make sure
-    // the account is unlocked
-    if (this.userId) {
-      return new BehaviorSubject(this.userId as UserId).asObservable();
-    }
-
-    return this.accountService.activeAccount$.pipe(
-      completeOnAccountSwitch(),
-      takeUntil(this.destroyed),
-    );
-  }
 
   private toOptions(algorithms: CredentialGeneratorInfo[]) {
     const options: Option<CredentialAlgorithm>[] = algorithms.map((algorithm) => ({

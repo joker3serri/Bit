@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ItemModule } from "@bitwarden/components";
-import { CredentialGeneratorComponent as CredentialGeneratorPanel } from "@bitwarden/generator-components";
+import { GeneratorModule } from "@bitwarden/generator-components";
 
 import { CurrentAccountComponent } from "../../../auth/popup/account-switching/current-account.component";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
@@ -15,7 +15,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
   selector: "credential-generator",
   templateUrl: "credential-generator.component.html",
   imports: [
-    CredentialGeneratorPanel,
+    GeneratorModule,
     CurrentAccountComponent,
     JslibModule,
     PopOutComponent,
