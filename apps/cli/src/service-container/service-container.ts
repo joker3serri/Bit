@@ -146,6 +146,7 @@ import {
   ImportService,
   ImportServiceAbstraction,
 } from "@bitwarden/importer/core";
+import { BiometricStateService, DefaultBiometricStateService } from "@bitwarden/key-management";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 import {
   IndividualVaultExportService,
@@ -507,8 +508,6 @@ export class ServiceContainer {
 
     this.providerService = new ProviderService(this.stateProvider);
 
-    this.organizationUserApiService = new DefaultOrganizationUserApiService(this.apiService);
-
     this.policyApiService = new PolicyApiService(this.policyService, this.apiService);
 
     this.keyConnectorService = new KeyConnectorService(
@@ -555,6 +554,7 @@ export class ServiceContainer {
       this.accountService,
       this.masterPasswordService,
       this.cryptoService,
+      this.encryptService,
       this.apiService,
       this.stateProvider,
     );
@@ -797,6 +797,11 @@ export class ServiceContainer {
     this.organizationApiService = new OrganizationApiService(this.apiService, this.syncService);
 
     this.providerApiService = new ProviderApiService(this.apiService);
+
+    this.organizationUserApiService = new DefaultOrganizationUserApiService(
+      this.apiService,
+      this.configService,
+    );
   }
 
   async logout() {
