@@ -28,7 +28,7 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     super(stateProvider, accountService);
 
     // The web vault always uses the current location as the base url
-    const urls = process.env.URLS as Urls;
+    const urls = JSON.parse(process.env.URLS) as Urls;
     urls.base ??= this.win.location.origin;
 
     // Find the region
@@ -90,7 +90,7 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
   }
 }
 
-class WebCloudEnvironment extends CloudEnvironment {
+export class WebCloudEnvironment extends CloudEnvironment {
   constructor(config: RegionConfig, urls: Urls) {
     super(config);
     // We override the urls to avoid CORS issues
