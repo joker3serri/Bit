@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject } from "rxjs";
 
+import { CollectionAdminService } from "@bitwarden/admin-console/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -9,7 +10,6 @@ import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 
-import { CollectionAdminService } from "../../core/collection-admin.service";
 import { RoutedVaultFilterService } from "../../individual-vault/vault-filter/services/routed-vault-filter.service";
 
 import { AdminConsoleCipherFormConfigService } from "./admin-console-cipher-form-config.service";

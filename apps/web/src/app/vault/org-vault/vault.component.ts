@@ -1,3 +1,4 @@
+import { DialogRef } from "@angular/cdk/dialog";
 import {
   ChangeDetectorRef,
   Component,
@@ -64,6 +65,7 @@ import { CollectionView } from "@bitwarden/common/vault/models/view/collection.v
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { DialogService, Icons, NoItemsModule, ToastService } from "@bitwarden/components";
 import {
+  CipherFormConfig,
   CipherFormConfigService,
   CollectionAssignmentResult,
   PasswordRepromptService,
@@ -80,6 +82,11 @@ import {
   CollectionDialogTabType,
   openCollectionDialog,
 } from "../components/collection-dialog";
+import {
+  VaultItemDialogComponent,
+  VaultItemDialogMode,
+  VaultItemDialogResult,
+} from "../components/vault-item-dialog/vault-item-dialog.component";
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";
 import { VaultItemsModule } from "../components/vault-items/vault-items.module";
 import {
@@ -184,6 +191,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   protected addAccessStatus$ = new BehaviorSubject<AddAccessStatusType>(0);
   private extensionRefreshEnabled: boolean;
+  private vaultItemDialogRef?: DialogRef<VaultItemDialogResult> | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -481,6 +489,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     firstSetup$
       .pipe(
         switchMap(() => this.route.queryParams),
+        // Only process the queryParams if the dialog is not open (only when extension refresh is enabled)
+        filter(() => this.vaultItemDialogRef == undefined || !this.extensionRefreshEnabled),
         withLatestFrom(allCipherMap$, allCollections$, organization$),
         switchMap(async ([qParams, allCiphersMap]) => {
           const cipherId = getCipherIdFromParams(qParams);
@@ -490,10 +500,15 @@ export class VaultComponent implements OnInit, OnDestroy {
           const cipher = allCiphersMap[cipherId];
 
           if (cipher) {
-            if (qParams.action === "view") {
-              // Only allow for edit in the admin console via query params,
-              // This prevents multiple modals from stacking on top of each other between view & edit.
-              // TODO: PM-12398 - combine view/edit actions into a single dialog
+            let action = qParams.action;
+            // Default to "view" if extension refresh is enabled
+            if (action == null && this.extensionRefreshEnabled) {
+              action = "view";
+            }
+
+            if (action === "view") {
+              await this.viewCipherById(cipherId);
+            } else {
               await this.editCipherId(cipherId, false);
             }
           } else {
@@ -877,18 +892,52 @@ export class VaultComponent implements OnInit, OnDestroy {
       cipherId,
     );
 
-    const dialogRef = openAddEditCipherDialog(this.dialogService, {
-      data: cipherFormConfig,
+    await this.openVaultItemDialog("form", cipherFormConfig);
+  }
+
+  /** Opens the view dialog for the given cipher unless password reprompt fails */
+  async viewCipherById(id: string) {
+    const cipher = await this.cipherService.get(id);
+    // If cipher exists (cipher is null when new) and MP reprompt
+    // is on for this cipher, then show password reprompt.
+    if (
+      cipher &&
+      cipher.reprompt !== 0 &&
+      !(await this.passwordRepromptService.showPasswordPrompt())
+    ) {
+      // Didn't pass password prompt, so don't open add / edit modal.
+      await this.go({ cipherId: null, itemId: null, action: null });
+      return;
+    }
+
+    const cipherFormConfig = await this.cipherFormConfigService.buildConfig(
+      cipher?.edit ? "edit" : "partial-edit",
+      id as CipherId,
+      cipher?.type,
+    );
+
+    await this.openVaultItemDialog("view", cipherFormConfig);
+  }
+
+  /**
+   * Open the combined view / edit dialog for a cipher.
+   */
+  async openVaultItemDialog(mode: VaultItemDialogMode, formConfig: CipherFormConfig) {
+    this.vaultItemDialogRef = VaultItemDialogComponent.open(this.dialogService, {
+      mode,
+      formConfig,
     });
 
-    const result: AddEditCipherDialogCloseResult = await firstValueFrom(dialogRef.closed);
+    const result = await lastValueFrom(this.vaultItemDialogRef.closed);
+    this.vaultItemDialogRef = undefined;
 
-    // When the cipher was edited, refresh the vault view
-    if (result?.action === AddEditCipherDialogResult.Edited) {
+    // If the dialog was closed by deleting the cipher, refresh the vault.
+    if (result === VaultItemDialogResult.Deleted || result === VaultItemDialogResult.Saved) {
       this.refresh();
     }
 
-    this.go({ cipherId: null, itemId: null, action: null });
+    // Clear the query params when the dialog closes
+    await this.go({ cipherId: null, itemId: null, action: null });
   }
 
   async cloneCipher(cipher: CipherView) {

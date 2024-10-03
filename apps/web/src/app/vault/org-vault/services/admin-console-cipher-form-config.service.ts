@@ -1,6 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, defer, filter, firstValueFrom, map, switchMap } from "rxjs";
 
+import { CollectionAdminService } from "@bitwarden/admin-console/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -18,7 +19,6 @@ import {
   CipherFormConfigService,
   CipherFormMode,
 } from "../../../../../../../libs/vault/src/cipher-form/abstractions/cipher-form-config.service";
-import { CollectionAdminService } from "../../core/collection-admin.service";
 import { RoutedVaultFilterService } from "../../individual-vault/vault-filter/services/routed-vault-filter.service";
 
 /** Admin Console implementation of the `CipherFormConfigService`. */
