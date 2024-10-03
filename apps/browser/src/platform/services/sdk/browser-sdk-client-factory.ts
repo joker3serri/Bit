@@ -28,7 +28,7 @@ if (supported) {
   import("./fallback");
 }
 
-export class ServiceWorkerSdkClientFactory implements SdkClientFactory {
+export class BrowserSdkClientFactory implements SdkClientFactory {
   async createSdkClient(
     ...args: ConstructorParameters<typeof BitwardenClient>
   ): Promise<BitwardenClient> {

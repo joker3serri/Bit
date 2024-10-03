@@ -248,7 +248,7 @@ import { LocalBackedSessionStorageService } from "../platform/services/local-bac
 import { BackgroundPlatformUtilsService } from "../platform/services/platform-utils/background-platform-utils.service";
 import { BrowserPlatformUtilsService } from "../platform/services/platform-utils/browser-platform-utils.service";
 import { PopupViewCacheBackgroundService } from "../platform/services/popup-view-cache-background.service";
-import { ServiceWorkerSdkClientFactory } from "../platform/services/sdk/service-worker-sdk-client-factory";
+import { BrowserSdkClientFactory } from "../platform/services/sdk/browser-sdk-client-factory";
 import { BackgroundTaskSchedulerService } from "../platform/services/task-scheduler/background-task-scheduler.service";
 import { ForegroundTaskSchedulerService } from "../platform/services/task-scheduler/foreground-task-scheduler.service";
 import { BackgroundMemoryStorageService } from "../platform/storage/background-memory-storage.service";
@@ -724,7 +724,7 @@ export default class MainBackground {
     );
 
     const sdkClientFactory = flagEnabled("sdk")
-      ? new ServiceWorkerSdkClientFactory()
+      ? new BrowserSdkClientFactory()
       : new NoopSdkClientFactory();
     this.sdkService = new DefaultSdkService(
       sdkClientFactory,
