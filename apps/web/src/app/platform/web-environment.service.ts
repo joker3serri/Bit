@@ -8,7 +8,6 @@ import {
   RegionConfig,
   Urls,
 } from "@bitwarden/common/platform/abstractions/environment.service";
-import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   CloudEnvironment,
   DefaultEnvironmentService,
@@ -33,8 +32,14 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     urls.base ??= this.win.location.origin;
 
     // Find the region
-    const domain = Utils.getDomain(this.win.location.href);
-    const region = this.availableRegions().find((r) => Utils.getDomain(r.urls.webVault) === domain);
+    const currentHostname = new URL(this.win.location.href).hostname;
+    const availableRegions = this.availableRegions();
+    const region = availableRegions.find((r) => {
+      // We must use hostname as our QA envs use the same
+      // domain (bitwarden.pw) but different subdomains (qa and euqa)
+      const webVaultHostname = new URL(r.urls.webVault).hostname;
+      return webVaultHostname === currentHostname;
+    });
 
     let environment: Environment;
     if (region) {
@@ -55,10 +60,15 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
       throw new Error("setEnvironment does not work in web for self-hosted.");
     }
 
-    const currentDomain = Utils.getDomain(this.win.location.href);
-    const currentRegion = this.availableRegions().find(
-      (r) => Utils.getDomain(r.urls.webVault) === currentDomain,
-    );
+    // Find the region
+    const currentHostname = new URL(this.win.location.href).hostname;
+    const availableRegions = this.availableRegions();
+    const currentRegion = availableRegions.find((r) => {
+      // We must use hostname as our QA envs use the same
+      // domain (bitwarden.pw) but different subdomains (qa and euqa)
+      const webVaultHostname = new URL(r.urls.webVault).hostname;
+      return webVaultHostname === currentHostname;
+    });
 
     if (currentRegion.key === region) {
       // They have selected the current region, nothing to do
