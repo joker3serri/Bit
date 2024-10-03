@@ -1,5 +1,5 @@
 import { Router } from "@angular/router";
-import { ReplaySubject } from "rxjs";
+import { firstValueFrom, ReplaySubject } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import {
@@ -55,7 +55,7 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
   }
 
   // Web setting env means navigating to a new location
-  setEnvironment(region: Region, urls?: Urls): Promise<Urls> {
+  async setEnvironment(region: Region, urls?: Urls): Promise<Urls> {
     if (region === Region.SelfHosted) {
       throw new Error("setEnvironment does not work in web for self-hosted.");
     }
@@ -71,8 +71,11 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     });
 
     if (currentRegion.key === region) {
-      // They have selected the current region, nothing to do
-      return Promise.resolve(currentRegion.urls);
+      // They have selected the current region, return the current env urls
+      // We can't return the region urls because the env base url is modified
+      // in the constructor to match the current window.location.origin.
+      const currentEnv = await firstValueFrom(this.environment$);
+      return Promise.resolve(currentEnv.getUrls());
     }
 
     const chosenRegion = this.availableRegions().find((r) => r.key === region);
