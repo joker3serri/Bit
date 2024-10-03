@@ -5,9 +5,9 @@ import { concatMap, firstValueFrom, lastValueFrom, Observable, Subject, takeUnti
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
-import { OrganizationApiKeyType, ProviderStatusType } from "@bitwarden/common/admin-console/enums";
+import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
 import { PlanType, ProductTierType } from "@bitwarden/common/billing/enums";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { BillingSubscriptionItemResponse } from "@bitwarden/common/billing/models/response/subscription.response";
@@ -33,7 +33,7 @@ import {
 import { BillingSyncApiKeyComponent } from "./billing-sync-api-key.component";
 import { ChangePlanDialogResultType, openChangePlanDialog } from "./change-plan-dialog.component";
 import { DownloadLicenceDialogComponent } from "./download-license.component";
-import { ManageBilling } from "./icons/manage-billing.icon";
+import { SubscriptionHiddenIcon } from "./icons/subscription-hidden.icon";
 import { SecretsManagerSubscriptionOptions } from "./sm-adjust-subscription.component";
 
 @Component({
@@ -49,18 +49,16 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   hasBillingSyncToken: boolean;
   showAdjustSecretsManager = false;
   showSecretsManagerSubscribe = false;
-  firstLoaded = false;
-  loading: boolean;
+  loading = true;
   locale: string;
   showUpdatedSubscriptionStatusSection$: Observable<boolean>;
-  manageBillingFromProviderPortal = ManageBilling;
-  isManagedByConsolidatedBillingMSP = false;
   enableTimeThreshold: boolean;
   preSelectedProductTier: ProductTierType = ProductTierType.Free;
+  showSubscription = true;
+  showSelfHost = false;
 
+  protected readonly subscriptionHiddenIcon = SubscriptionHiddenIcon;
   protected readonly teamsStarter = ProductTierType.TeamsStarter;
-
-  private destroy$ = new Subject<void>();
 
   protected enableConsolidatedBilling$ = this.configService.getFeatureFlag$(
     FeatureFlag.EnableConsolidatedBilling,
@@ -78,6 +76,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     FeatureFlag.AC2476_DeprecateStripeSourcesAPI,
   );
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private apiService: ApiService,
     private i18nService: I18nService,
@@ -87,8 +87,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private configService: ConfigService,
-    private providerService: ProviderService,
     private toastService: ToastService,
+    private billingApiService: BillingApiServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -108,7 +108,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         concatMap(async (params) => {
           this.organizationId = params.organizationId;
           await this.load();
-          this.firstLoaded = true;
         }),
         takeUntil(this.destroy$),
       )
@@ -126,21 +125,34 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   }
 
   async load() {
-    if (this.loading) {
-      return;
-    }
     this.loading = true;
     this.locale = await firstValueFrom(this.i18nService.locale$);
     this.userOrg = await this.organizationService.get(this.organizationId);
 
-    if (this.userOrg.canViewSubscription) {
-      const enableConsolidatedBilling = await firstValueFrom(this.enableConsolidatedBilling$);
-      const provider = await this.providerService.get(this.userOrg.providerId);
-      this.isManagedByConsolidatedBillingMSP =
-        enableConsolidatedBilling &&
-        this.userOrg.hasProvider &&
-        provider?.providerStatus == ProviderStatusType.Billable;
+    /*
+    +--------------------+--------------+----------------------+--------------+
+    |     User Type      | Has Provider | Consolidated Billing | Subscription |
+    +--------------------+--------------+----------------------+--------------+
+    | Organization Owner | False        | N/A                  | Shown        |
+    | Organization Owner | True         | N/A                  | Hidden       |
+    | Provider User      | True         | False                | Shown        |
+    | Provider User      | True         | True                 | Hidden       |
+    +--------------------+--------------+----------------------+--------------+
+     */
 
+    const consolidatedBillingEnabled = await firstValueFrom(this.enableConsolidatedBilling$);
+
+    this.showSubscription =
+      (!this.userOrg.hasProvider && this.userOrg.isOwner) ||
+      (this.userOrg.hasProvider && this.userOrg.isProviderUser && !consolidatedBillingEnabled);
+
+    const metadata = await this.billingApiService.getOrganizationBillingMetadata(
+      this.organizationId,
+    );
+
+    this.showSelfHost = metadata.isEligibleForSelfHost;
+
+    if (this.showSubscription) {
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
       this.lineItems = this.sub?.subscription?.items;
 
@@ -273,26 +285,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     return this.sub.subscription?.items.some((i) => i.sponsoredSubscriptionItem);
   }
 
-  get canDownloadLicense() {
-    return (
-      (this.sub.planType !== PlanType.Free && this.subscription == null) ||
-      (this.subscription != null && !this.subscription.cancelled)
-    );
-  }
-
-  get canManageBillingSync() {
-    return (
-      this.sub.planType === PlanType.EnterpriseAnnually ||
-      this.sub.planType === PlanType.EnterpriseMonthly ||
-      this.sub.planType === PlanType.EnterpriseAnnually2023 ||
-      this.sub.planType === PlanType.EnterpriseMonthly2023 ||
-      this.sub.planType === PlanType.EnterpriseAnnually2020 ||
-      this.sub.planType === PlanType.EnterpriseMonthly2020 ||
-      this.sub.planType === PlanType.EnterpriseAnnually2019 ||
-      this.sub.planType === PlanType.EnterpriseMonthly2019
-    );
-  }
-
   get subscriptionDesc() {
     if (this.sub.planType === PlanType.Free) {
       return this.i18nService.t("subscriptionFreePlan", this.sub.seats.toString());
@@ -346,13 +338,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   get subscriptionMarkedForCancel() {
     return (
       this.subscription != null && !this.subscription.cancelled && this.subscription.cancelAtEndDate
-    );
-  }
-
-  shownSelfHost(): boolean {
-    return (
-      this.sub?.plan.productTier !== ProductTierType.Teams &&
-      this.sub?.plan.productTier !== ProductTierType.Free
     );
   }
 
