@@ -1,7 +1,7 @@
 {
-  "name": "@bitwarden/report-components",
+  "name": "@bitwarden/tools-card",
   "version": "0.0.0",
-  "description": "Angular components for Bitwarden Reports",
+  "description": "Angular card component",
   "keywords": [
     "bitwarden"
   ],

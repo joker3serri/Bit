@@ -296,7 +296,7 @@
     {
       "files": ["libs/tools/card/src/**/*.ts"],
       "rules": {
-        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/card/*", "src/**/*"] }]
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/tools-card/*", "src/**/*"] }]
       }
     },
     {

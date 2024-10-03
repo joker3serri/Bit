@@ -1,9 +1,5 @@
-# Bitwarden Reports
+## Tools Card
 
-This folder contains shared packages related to reports
+Package name: `@bitwarden/tools-card`
 
-## report-components
-
-Package name: `@bitwarden/report-components`
-
-Contains the UI elements used in Bitwarden Reports
+Generic Tools Card Component
