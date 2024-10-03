@@ -65,7 +65,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   showPassword = false;
   passwordStrengthResult: zxcvbn.ZXCVBNResult;
-  formPromise: Promise<any>;
 
   private destroy$ = new Subject<void>();
 
@@ -178,13 +177,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.formPromise = this.resetPasswordService.resetMasterPassword(
+      await this.resetPasswordService.resetMasterPassword(
         this.formGroup.value.newPassword,
         this.data.email,
         this.data.id,
         this.data.organizationId,
       );
-      await this.formPromise;
       this.toastService.showToast({
         variant: "success",
         title: null,
@@ -193,7 +191,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     } catch (e) {
       this.logService.error(e);
     }
-    this.formPromise = null;
 
     this.dialogRef.close(ResetPasswordDialogResult.Ok);
   };
