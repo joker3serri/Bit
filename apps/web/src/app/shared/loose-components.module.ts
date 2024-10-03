@@ -69,6 +69,7 @@ import { ProductSwitcherModule } from "../layouts/product-switcher/product-switc
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { DomainRulesComponent } from "../settings/domain-rules.component";
 import { PreferencesComponent } from "../settings/preferences.component";
+import { CredentialGeneratorComponent } from "../tools/credential-generator/credential-generator.component";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
 import { AddEditComponent as SendAddEditComponent } from "../tools/send/add-edit.component";
@@ -114,6 +115,7 @@ import { SharedModule } from "./shared.module";
     UserLayoutComponent,
     VerifyRecoverDeleteOrgComponent,
     VaultTimeoutInputComponent,
+    CredentialGeneratorComponent,
   ],
   declarations: [
     AcceptFamilySponsorshipComponent,
@@ -221,6 +223,7 @@ import { SharedModule } from "./shared.module";
     OrgUserConfirmComponent,
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
+    CredentialGeneratorComponent,
     PasswordGeneratorHistoryComponent,
     PreferencesComponent,
     PremiumBadgeComponent,
