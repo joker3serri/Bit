@@ -78,9 +78,12 @@ const webpackConfig = {
   externals: [
     nodeExternals({
       modulesDir: "../../node_modules",
-      allowlist: [/@bitwarden\/(?!sdk-internal)/],
+      allowlist: [/@bitwarden/],
     }),
   ],
+  experiments: {
+    asyncWebAssembly: true,
+  },
 };
 
 module.exports = webpackConfig;

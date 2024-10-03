@@ -15,7 +15,7 @@ export class DefaultSdkService implements SdkService {
         apiUrl: env.getApiUrl(),
         identityUrl: env.getIdentityUrl(),
         deviceType: this.toDevice(this.platformUtilsService.getDevice()),
-        userAgent: navigator.userAgent,
+        userAgent: this.userAgent ?? navigator.userAgent,
       };
 
       return await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
