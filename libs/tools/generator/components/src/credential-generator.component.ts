@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } fro
 import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
+  concat,
   distinctUntilChanged,
   filter,
   map,
@@ -52,9 +53,18 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   @Output()
   readonly onGenerated = new EventEmitter<GeneratedCredential>();
 
-  protected root = this.formBuilder.group({
-    nav: ["username" as "password" | "passphrase" | "username"],
+  protected root$ = new BehaviorSubject<{ nav: "password" | "passphrase" | "username" }>({
+    nav: "password",
   });
+
+  protected onRootChanged(nav: "password" | "passphrase" | "username") {
+    // prevent subscription cycle
+    if (this.root$.value.nav !== nav) {
+      this.zone.run(() => {
+        this.root$.next({ nav });
+      });
+    }
+  }
 
   protected username = this.formBuilder.group({
     nav: ["username" as CredentialAlgorithm],
@@ -125,9 +135,15 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
     // assume the last-visible generator algorithm is the user's preferred one
     const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
-    this.root.valueChanges
+    this.root$
       .pipe(
-        switchMap((root) => (root.nav === "username" ? this.username.valueChanges : of(root))),
+        switchMap((root) => {
+          if (root.nav === "username") {
+            return concat(of(this.username.value), this.username.valueChanges);
+          } else {
+            return of(root);
+          }
+        }),
         withLatestFrom(preferences),
         takeUntil(this.destroyed),
       )
@@ -160,8 +176,8 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       const credentialType = rootNav === "username" ? userNav.algorithm : password.algorithm;
 
       // update navigation; break subscription loop
-      this.root.setValue({ nav: rootNav }, { emitEvent: false });
-      this.username.setValue({ nav: userNav.algorithm });
+      this.onRootChanged(rootNav);
+      this.username.setValue({ nav: userNav.algorithm }, { emitEvent: false });
 
       // load algorithm metadata
       const algorithm = this.generatorService.algorithm(credentialType);
