@@ -1,4 +1,7 @@
-<bit-section>
+<div
+  disableMargin
+  class="[&_tools-passphrase-settings_section]:tw-mb-0 [&_tools-password-settings_section]:tw-mb-0 [&_tools-username-generator_section]:tw-mb-0"
+>
   <tools-password-generator
     *ngIf="type === 'password'"
     (onGenerated)="onCredentialGenerated($event)"
@@ -7,4 +10,4 @@
     *ngIf="type === 'username'"
     (onGenerated)="onCredentialGenerated($event)"
   ></tools-username-generator>
-</bit-section>
+</div>
