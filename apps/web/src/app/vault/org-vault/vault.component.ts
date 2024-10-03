@@ -90,12 +90,6 @@ import {
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";
 import { VaultItemsModule } from "../components/vault-items/vault-items.module";
 import {
-  AddEditCipherDialogCloseResult,
-  AddEditCipherDialogResult,
-  AddEditComponentV2,
-  openAddEditCipherDialog,
-} from "../individual-vault/add-edit-v2.component";
-import {
   BulkDeleteDialogResult,
   openBulkDeleteDialog,
 } from "../individual-vault/bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
@@ -139,7 +133,6 @@ enum AddAccessStatusType {
     VaultItemsModule,
     SharedModule,
     NoItemsModule,
-    AddEditComponentV2,
   ],
   providers: [
     RoutedVaultFilterService,
@@ -784,28 +777,14 @@ export class VaultComponent implements OnInit, OnDestroy {
       cipherType,
     );
 
+    const collectionId: CollectionId | undefined = this.activeFilter.collectionId as CollectionId;
+
     cipherFormConfig.initialValues = {
       organizationId: this.organization.id as OrganizationId,
-      collectionIds: this.collections.map((c) => c.id as CollectionId),
+      collectionIds: collectionId ? [collectionId] : [],
     };
 
-    // Open the dialog.
-    const dialogRef = openAddEditCipherDialog(this.dialogService, {
-      data: cipherFormConfig,
-    });
-
-    // Wait for the dialog to close.
-    const result: AddEditCipherDialogCloseResult = await lastValueFrom(dialogRef.closed);
-
-    // Refresh the vault to show the new cipher.
-    if (result?.action === AddEditCipherDialogResult.Added) {
-      this.refresh();
-      this.go({ itemId: result.id, action: "view" });
-      return;
-    }
-
-    // If the dialog was closed by any other action navigate back to the vault.
-    this.go({ cipherId: null, itemId: null, action: null });
+    await this.openVaultItemDialog("form", cipherFormConfig);
   }
 
   async editCipher(
