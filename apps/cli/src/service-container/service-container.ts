@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import * as jsdom from "jsdom";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import {
   OrganizationUserApiService,
@@ -61,10 +61,6 @@ import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstract
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
-import {
-  BiometricStateService,
-  DefaultBiometricStateService,
-} from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions, LogLevelType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { MessageSender } from "@bitwarden/common/platform/messaging";
@@ -123,7 +119,6 @@ import {
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service";
 import { SendStateProvider } from "@bitwarden/common/tools/send/services/send-state.provider";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service";
-import { UserId } from "@bitwarden/common/types/guid";
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
@@ -142,6 +137,7 @@ import {
   ImportService,
   ImportServiceAbstraction,
 } from "@bitwarden/importer/core";
+import { BiometricStateService, DefaultBiometricStateService } from "@bitwarden/key-management";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 import {
   IndividualVaultExportService,
@@ -494,13 +490,12 @@ export class ServiceContainer {
 
     this.collectionService = new CollectionService(
       this.cryptoService,
+      this.encryptService,
       this.i18nService,
       this.stateProvider,
     );
 
     this.providerService = new ProviderService(this.stateProvider);
-
-    this.organizationUserApiService = new DefaultOrganizationUserApiService(this.apiService);
 
     this.policyApiService = new PolicyApiService(this.policyService, this.apiService);
 
@@ -538,6 +533,7 @@ export class ServiceContainer {
       this.accountService,
       this.masterPasswordService,
       this.cryptoService,
+      this.encryptService,
       this.apiService,
       this.stateProvider,
     );
@@ -631,10 +627,12 @@ export class ServiceContainer {
       this.cipherFileUploadService,
       this.configService,
       this.stateProvider,
+      this.accountService,
     );
 
     this.folderService = new FolderService(
       this.cryptoService,
+      this.encryptService,
       this.i18nService,
       this.cipherService,
       this.stateProvider,
@@ -721,6 +719,7 @@ export class ServiceContainer {
       this.i18nService,
       this.collectionService,
       this.cryptoService,
+      this.encryptService,
       this.pinService,
       this.accountService,
     );
@@ -730,8 +729,10 @@ export class ServiceContainer {
       this.cipherService,
       this.pinService,
       this.cryptoService,
+      this.encryptService,
       this.cryptoFunctionService,
       this.kdfConfigService,
+      this.accountService,
     );
 
     this.organizationExportService = new OrganizationVaultExportService(
@@ -739,6 +740,7 @@ export class ServiceContainer {
       this.apiService,
       this.pinService,
       this.cryptoService,
+      this.encryptService,
       this.cryptoFunctionService,
       this.collectionService,
       this.kdfConfigService,
@@ -774,19 +776,24 @@ export class ServiceContainer {
     this.organizationApiService = new OrganizationApiService(this.apiService, this.syncService);
 
     this.providerApiService = new ProviderApiService(this.apiService);
+
+    this.organizationUserApiService = new DefaultOrganizationUserApiService(
+      this.apiService,
+      this.configService,
+    );
   }
 
   async logout() {
     this.authService.logOut(() => {
       /* Do nothing */
     });
-    const userId = (await this.stateService.getUserId()) as UserId;
+    const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id)));
     await Promise.all([
-      this.eventUploadService.uploadEvents(userId as UserId),
+      this.eventUploadService.uploadEvents(userId),
       this.cryptoService.clearKeys(),
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
-      this.collectionService.clear(userId as UserId),
+      this.collectionService.clear(userId),
     ]);
 
     await this.stateEventRunnerService.handleEvent("logout", userId);

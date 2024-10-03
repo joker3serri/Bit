@@ -1,5 +1,7 @@
-import { firstValueFrom, map, Observable } from "rxjs";
+import { combineLatest, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
 import { Jsonify } from "type-fest";
+
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
@@ -13,6 +15,7 @@ import {
   UserKeyDefinition,
 } from "../../platform/state";
 import { CollectionId, OrganizationId, UserId } from "../../types/guid";
+import { OrgKey } from "../../types/key";
 import { CollectionService as CollectionServiceAbstraction } from "../../vault/abstractions/collection.service";
 import { CollectionData } from "../models/data/collection.data";
 import { Collection } from "../models/domain/collection";
@@ -20,7 +23,7 @@ import { TreeNode } from "../models/domain/tree-node";
 import { CollectionView } from "../models/view/collection.view";
 import { ServiceUtils } from "../service-utils";
 
-const ENCRYPTED_COLLECTION_DATA_KEY = UserKeyDefinition.record<CollectionData, CollectionId>(
+export const ENCRYPTED_COLLECTION_DATA_KEY = UserKeyDefinition.record<CollectionData, CollectionId>(
   COLLECTION_DATA,
   "collections",
   {
@@ -29,19 +32,19 @@ const ENCRYPTED_COLLECTION_DATA_KEY = UserKeyDefinition.record<CollectionData, C
   },
 );
 
-const DECRYPTED_COLLECTION_DATA_KEY = DeriveDefinition.from<
-  Record<CollectionId, CollectionData>,
+const DECRYPTED_COLLECTION_DATA_KEY = new DeriveDefinition<
+  [Record<CollectionId, CollectionData>, Record<OrganizationId, OrgKey>],
   CollectionView[],
   { collectionService: CollectionService }
->(ENCRYPTED_COLLECTION_DATA_KEY, {
+>(COLLECTION_DATA, "decryptedCollections", {
   deserializer: (obj) => obj.map((collection) => CollectionView.fromJSON(collection)),
-  derive: async (collections: Record<CollectionId, CollectionData>, { collectionService }) => {
-    const data: Collection[] = [];
-    for (const id in collections ?? {}) {
-      const collectionId = id as CollectionId;
-      data.push(new Collection(collections[collectionId]));
+  derive: async ([collections, orgKeys], { collectionService }) => {
+    if (collections == null) {
+      return [];
     }
-    return await collectionService.decryptMany(data);
+
+    const data = Object.values(collections).map((c) => new Collection(c));
+    return await collectionService.decryptMany(data, orgKeys);
   },
 });
 
@@ -61,22 +64,30 @@ export class CollectionService implements CollectionServiceAbstraction {
 
   constructor(
     private cryptoService: CryptoService,
+    private encryptService: EncryptService,
     private i18nService: I18nService,
     protected stateProvider: StateProvider,
   ) {
     this.encryptedCollectionDataState = this.stateProvider.getActive(ENCRYPTED_COLLECTION_DATA_KEY);
+
     this.encryptedCollections$ = this.encryptedCollectionDataState.state$.pipe(
       map((collections) => {
-        const response: Collection[] = [];
-        for (const id in collections ?? {}) {
-          response.push(new Collection(collections[id as CollectionId]));
+        if (collections == null) {
+          return [];
         }
-        return response;
+
+        return Object.values(collections).map((c) => new Collection(c));
       }),
     );
 
+    const encryptedCollectionsWithKeys = this.encryptedCollectionDataState.combinedState$.pipe(
+      switchMap(([userId, collectionData]) =>
+        combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
+      ),
+    );
+
     this.decryptedCollectionDataState = this.stateProvider.getDerived(
-      this.encryptedCollectionDataState.state$,
+      encryptedCollectionsWithKeys,
       DECRYPTED_COLLECTION_DATA_KEY,
       { collectionService: this },
     );
@@ -101,23 +112,28 @@ export class CollectionService implements CollectionServiceAbstraction {
     collection.organizationId = model.organizationId;
     collection.readOnly = model.readOnly;
     collection.externalId = model.externalId;
-    collection.name = await this.cryptoService.encrypt(model.name, key);
+    collection.name = await this.encryptService.encrypt(model.name, key);
     return collection;
   }
 
-  async decryptMany(collections: Collection[]): Promise<CollectionView[]> {
-    if (collections == null) {
+  // TODO: this should be private and orgKeys should be required.
+  // See https://bitwarden.atlassian.net/browse/PM-12375
+  async decryptMany(
+    collections: Collection[],
+    orgKeys?: Record<OrganizationId, OrgKey>,
+  ): Promise<CollectionView[]> {
+    if (collections == null || collections.length === 0) {
       return [];
     }
     const decCollections: CollectionView[] = [];
 
-    const organizationKeys = await firstValueFrom(this.cryptoService.activeUserOrgKeys$);
+    orgKeys ??= await firstValueFrom(this.cryptoService.activeUserOrgKeys$);
 
     const promises: Promise<any>[] = [];
     collections.forEach((collection) => {
       promises.push(
         collection
-          .decrypt(organizationKeys[collection.organizationId as OrganizationId])
+          .decrypt(orgKeys[collection.organizationId as OrganizationId])
           .then((c) => decCollections.push(c)),
       );
     });
