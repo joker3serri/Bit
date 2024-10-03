@@ -207,6 +207,10 @@ export class CollectionService implements CollectionServiceAbstraction {
   }
 
   async clearDecryptedState(userId: UserId): Promise<void> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
+
     await this.decryptedCollectionState(userId).forceValue(null);
   }
 

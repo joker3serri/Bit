@@ -136,9 +136,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       await this.folderService.clearCache();
     }
 
-    if (userId === currentUserId) {
-      await this.collectionService.clearDecryptedState(userId);
-    }
+    await this.collectionService.clearDecryptedState(userId);
 
     await this.masterPasswordService.clearMasterKey(lockingUserId);
 
