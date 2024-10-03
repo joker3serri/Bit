@@ -63,14 +63,14 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     // Find the region
     const currentHostname = new URL(this.win.location.href).hostname;
     const availableRegions = this.availableRegions();
-    const currentRegion = availableRegions.find((r) => {
+    const currentRegionConfig = availableRegions.find((r) => {
       // We must use hostname as our QA envs use the same
       // domain (bitwarden.pw) but different subdomains (qa and euqa)
       const webVaultHostname = new URL(r.urls.webVault).hostname;
       return webVaultHostname === currentHostname;
     });
 
-    if (currentRegion.key === region) {
+    if (currentRegionConfig.key === region) {
       // They have selected the current region, return the current env urls
       // We can't return the region urls because the env base url is modified
       // in the constructor to match the current window.location.origin.
@@ -78,18 +78,18 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
       return Promise.resolve(currentEnv.getUrls());
     }
 
-    const chosenRegion = this.availableRegions().find((r) => r.key === region);
+    const chosenRegionConfig = this.availableRegions().find((r) => r.key === region);
 
-    if (chosenRegion == null) {
+    if (chosenRegionConfig == null) {
       throw new Error("The selected region is not known as an available region.");
     }
 
     // Preserve the current in app route + params in the new location
     const routeAndParams = `/#${this.router.url}`;
-    this.win.location.href = chosenRegion.urls.webVault + routeAndParams;
+    this.win.location.href = chosenRegionConfig.urls.webVault + routeAndParams;
 
     // This return shouldn't matter as we are about to leave the current window
-    return Promise.resolve(chosenRegion.urls);
+    return Promise.resolve(chosenRegionConfig.urls);
   }
 }
 
