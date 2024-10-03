@@ -25,8 +25,9 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     accountService: AccountService,
     private router: Router,
     private envUrls: Urls,
+    additionalRegionConfigs: RegionConfig[] = [],
   ) {
-    super(stateProvider, accountService);
+    super(stateProvider, accountService, additionalRegionConfigs);
 
     // The web vault always uses the current location as the base url
     envUrls.base ??= this.win.location.origin;
