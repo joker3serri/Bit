@@ -51,10 +51,16 @@ const DECRYPTED_COLLECTION_DATA_KEY = new DeriveDefinition<
 const NestingDelimiter = "/";
 
 export class CollectionService implements CollectionServiceAbstraction {
-  private encryptedCollectionDataState: ActiveUserState<Record<CollectionId, CollectionData>>;
-  encryptedCollections$: Observable<Collection[]>;
-  private decryptedCollectionDataState: DerivedState<CollectionView[]>;
-  decryptedCollections$: Observable<CollectionView[]>;
+  /**
+   * @deprecated use encryptedCollectionState instead
+   */
+  private activeUserEncryptedCollectionDataState: ActiveUserState<
+    Record<CollectionId, CollectionData>
+  >;
+  /**
+   * @deprecated use decryptedCollectionState instead
+   */
+  private activeUserDecryptedCollectionDataState: DerivedState<CollectionView[]>;
 
   constructor(
     private cryptoService: CryptoService,
@@ -62,9 +68,27 @@ export class CollectionService implements CollectionServiceAbstraction {
     private i18nService: I18nService,
     protected stateProvider: StateProvider,
   ) {
-    this.encryptedCollectionDataState = this.stateProvider.getActive(ENCRYPTED_COLLECTION_DATA_KEY);
+    this.activeUserEncryptedCollectionDataState = this.stateProvider.getActive(
+      ENCRYPTED_COLLECTION_DATA_KEY,
+    );
 
-    this.encryptedCollections$ = this.encryptedCollectionDataState.state$.pipe(
+    const encryptedCollectionsWithKeys =
+      this.activeUserEncryptedCollectionDataState.combinedState$.pipe(
+        switchMap(([userId, collectionData]) =>
+          combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
+        ),
+      );
+
+    this.activeUserDecryptedCollectionDataState = this.stateProvider.getDerived(
+      encryptedCollectionsWithKeys,
+      DECRYPTED_COLLECTION_DATA_KEY,
+      { collectionService: this },
+    );
+  }
+
+  encryptedCollections$(userId$: Observable<UserId>) {
+    return userId$.pipe(
+      switchMap((userId) => this.encryptedCollectionState(userId).state$),
       map((collections) => {
         if (collections == null) {
           return [];
@@ -73,20 +97,10 @@ export class CollectionService implements CollectionServiceAbstraction {
         return Object.values(collections).map((c) => new Collection(c));
       }),
     );
+  }
 
-    const encryptedCollectionsWithKeys = this.encryptedCollectionDataState.combinedState$.pipe(
-      switchMap(([userId, collectionData]) =>
-        combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
-      ),
-    );
-
-    this.decryptedCollectionDataState = this.stateProvider.getDerived(
-      encryptedCollectionsWithKeys,
-      DECRYPTED_COLLECTION_DATA_KEY,
-      { collectionService: this },
-    );
-
-    this.decryptedCollections$ = this.decryptedCollectionDataState.state$;
+  decryptedCollections$(userId$: Observable<UserId>) {
+    return userId$.pipe(switchMap((userId) => this.decryptedCollectionState(userId).state$));
   }
 
   /**
@@ -185,7 +199,7 @@ export class CollectionService implements CollectionServiceAbstraction {
     if (toUpdate == null) {
       return;
     }
-    await this.encryptedCollectionDataState.update((collections) => {
+    await this.activeUserEncryptedCollectionDataState.update((collections) => {
       if (collections == null) {
         collections = {};
       }
@@ -216,15 +230,15 @@ export class CollectionService implements CollectionServiceAbstraction {
 
   async clear(userId?: UserId): Promise<void> {
     if (userId == null) {
-      await this.encryptedCollectionDataState.update(() => null);
-      await this.decryptedCollectionDataState.forceValue(null);
+      await this.activeUserEncryptedCollectionDataState.update(() => null);
+      await this.activeUserDecryptedCollectionDataState.forceValue(null);
     } else {
       await this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY).update(() => null);
     }
   }
 
   async delete(id: CollectionId | CollectionId[]): Promise<any> {
-    await this.encryptedCollectionDataState.update((collections) => {
+    await this.activeUserEncryptedCollectionDataState.update((collections) => {
       if (collections == null) {
         collections = {};
       }
