@@ -128,6 +128,8 @@ export class ChipSelectComponent<T = unknown> implements ControlValueAccessor, A
 
   protected handleMenuClosed(): void {
     this.setOrResetRenderedOptions();
+    // reset menu width so that it can be recalculated upon open
+    this.menuWidth = undefined;
   }
 
   protected selectOption(option: ChipSelectOption<T>, _event: MouseEvent) {
