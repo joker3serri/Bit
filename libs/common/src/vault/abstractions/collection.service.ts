@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { CollectionId, OrganizationId, UserId } from "../../types/guid";
+import { OrganizationId, UserId } from "../../types/guid";
 import { OrgKey } from "../../types/key";
 import { CollectionData } from "../models/data/collection.data";
 import { Collection } from "../models/domain/collection";
@@ -11,7 +11,6 @@ export abstract class CollectionService {
   encryptedCollections$: Observable<Collection[]>;
   decryptedCollections$: Observable<CollectionView[]>;
 
-  clearUserCache: (userId: UserId) => Promise<void>;
   encrypt: (model: CollectionView) => Promise<Collection>;
   /**
    * @deprecated This method will soon be made private, use `decryptedCollections$` instead.
@@ -30,6 +29,15 @@ export abstract class CollectionService {
   getNested: (collections: CollectionView[], id: string) => TreeNode<CollectionView>;
   upsert: (collection: CollectionData | CollectionData[]) => Promise<any>;
   replace: (collections: { [id: string]: CollectionData }, userId: UserId) => Promise<any>;
+  /**
+   * Clear decrypted state without affecting encrypted state.
+   * Used for locking the vault.
+   */
+  clearDecryptedState: (userId: UserId) => Promise<void>;
+  /**
+   * Clear decrypted and encrypted state.
+   * Used for logging out.
+   */
   clear: (userId?: string) => Promise<void>;
   delete: (id: string | string[]) => Promise<any>;
 }

@@ -92,15 +92,15 @@ export class CollectionService implements CollectionServiceAbstraction {
   /**
    * @returns a SingleUserState for encrypted collection data.
    */
-  private encryptedCollectionState$(userId: UserId) {
+  private encryptedCollectionState(userId: UserId) {
     return this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY);
   }
 
   /**
    * @returns a SingleUserState for decrypted collection data.
    */
-  private decryptedCollectionState$(userId: UserId): DerivedState<CollectionView[]> {
-    const encryptedCollectionsWithKeys = this.encryptedCollectionState$(userId).combinedState$.pipe(
+  private decryptedCollectionState(userId: UserId): DerivedState<CollectionView[]> {
+    const encryptedCollectionsWithKeys = this.encryptedCollectionState(userId).combinedState$.pipe(
       switchMap(([userId, collectionData]) =>
         combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
       ),
@@ -113,10 +113,6 @@ export class CollectionService implements CollectionServiceAbstraction {
         collectionService: this,
       },
     );
-  }
-
-  async clearUserCache(userId: UserId): Promise<void> {
-    await this.decryptedCollectionState$(userId).forceValue(null);
   }
 
   async encrypt(model: CollectionView): Promise<Collection> {
@@ -208,6 +204,10 @@ export class CollectionService implements CollectionServiceAbstraction {
     await this.stateProvider
       .getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY)
       .update(() => collections);
+  }
+
+  async clearDecryptedState(userId: UserId): Promise<void> {
+    await this.decryptedCollectionState(userId).forceValue(null);
   }
 
   async clear(userId?: UserId): Promise<void> {
