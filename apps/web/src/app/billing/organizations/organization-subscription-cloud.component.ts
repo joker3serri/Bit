@@ -15,7 +15,6 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
 import {
@@ -71,7 +70,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     FeatureFlag.EnableTimeThreshold,
   );
 
-  protected EnableUpgradePasswordManagerSub$ = this.configService.getFeatureFlag$(
+  protected enableUpgradePasswordManagerSub$ = this.configService.getFeatureFlag$(
     FeatureFlag.EnableUpgradePasswordManagerSub,
   );
 
@@ -81,7 +80,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
   constructor(
     private apiService: ApiService,
-    private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private logService: LogService,
     private organizationService: OrganizationService,
@@ -95,9 +93,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
   async ngOnInit() {
     if (this.route.snapshot.queryParamMap.get("upgrade")) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.changePlan();
+      await this.changePlan();
       const productTierTypeStr = this.route.snapshot.queryParamMap.get("productTierType");
       if (productTierTypeStr != null) {
         const productTier = Number(productTierTypeStr);
@@ -399,9 +395,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
         title: null,
         message: this.i18nService.t("reinstated"),
       });
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.load();
+      await this.load();
     } catch (e) {
       this.logService.error(e);
     }
@@ -409,7 +403,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
 
   async changePlan() {
     const EnableUpgradePasswordManagerSub = await firstValueFrom(
-      this.EnableUpgradePasswordManagerSub$,
+      this.enableUpgradePasswordManagerSub$,
     );
     if (EnableUpgradePasswordManagerSub) {
       const reference = openChangePlanDialog(this.dialogService, {
@@ -458,24 +452,15 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     });
 
     await firstValueFrom(dialogRef.closed);
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.load();
+    await this.load();
   }
 
-  closeDownloadLicense() {
-    this.showDownloadLicense = false;
-  }
-
-  subscriptionAdjusted() {
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.load();
+  async subscriptionAdjusted() {
+    await this.load();
   }
 
   calculateTotalAppliedDiscount(total: number) {
-    const discountedTotal = total / (1 - this.customerDiscount?.percentOff / 100);
-    return discountedTotal;
+    return total / (1 - this.customerDiscount?.percentOff / 100);
   }
 
   adjustStorage = (add: boolean) => {
