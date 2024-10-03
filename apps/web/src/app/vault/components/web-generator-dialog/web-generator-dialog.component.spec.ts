@@ -6,13 +6,12 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-
-import { CipherFormGeneratorComponent } from "../cipher-generator/cipher-form-generator.component";
+import { CipherFormGeneratorComponent } from "@bitwarden/vault";
 
 import {
+  WebVaultGeneratorDialogAction,
   WebVaultGeneratorDialogComponent,
   WebVaultGeneratorDialogParams,
-  WebVaultGeneratorDialogAction,
 } from "./web-generator-dialog.component";
 
 @Component({
