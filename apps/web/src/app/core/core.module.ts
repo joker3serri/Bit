@@ -70,6 +70,7 @@ import { MemoryStorageService } from "@bitwarden/common/platform/services/memory
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopSdkClientFactory } from "@bitwarden/common/platform/services/sdk/noop-sdk-client-factory";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 /* eslint-disable import/no-restricted-paths -- Implementation for memory storage */
 import { GlobalStateProvider, StateProvider } from "@bitwarden/common/platform/state";
@@ -285,6 +286,16 @@ const safeProviders: SafeProvider[] = [
     provide: LoginEmailService,
     useClass: LoginEmailService,
     deps: [AccountService, AuthService, StateProvider],
+  }),
+  safeProvider({
+    provide: CollectionAdminService,
+    useClass: DefaultCollectionAdminService,
+    deps: [ApiService, CryptoServiceAbstraction, EncryptService, CollectionService],
+  }),
+  safeProvider({
+    provide: ServerSettingsService,
+    useClass: ServerSettingsService,
+    deps: [ConfigService],
   }),
 ];
 
