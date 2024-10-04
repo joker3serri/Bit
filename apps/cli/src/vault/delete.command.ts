@@ -1,13 +1,13 @@
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { CipherAuthorizationServiceAbstraction } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 
 import { Response } from "../models/response";
 import { CliUtils } from "../utils";
@@ -19,8 +19,7 @@ export class DeleteCommand {
     private apiService: ApiService,
     private folderApiService: FolderApiServiceAbstraction,
     private accountProfileService: BillingAccountProfileStateService,
-    private accountService: AccountService,
-    private cipherAuthorizationService: CipherAuthorizationServiceAbstraction,
+    private cipherAuthorizationService: CipherAuthorizationService,
   ) {}
 
   async run(object: string, id: string, cmdOptions: Record<string, any>): Promise<Response> {
@@ -49,15 +48,11 @@ export class DeleteCommand {
       return Response.notFound();
     }
 
-    const activeUserId = await firstValueFrom(
-      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
-    );
-    const cipherView = await cipher.decrypt(
-      await this.cipherService.getKeyForCipherKeyDecryption(cipher, activeUserId),
-    );
-
     const canDeleteCipher = await firstValueFrom(
-      this.cipherAuthorizationService.canDeleteCipher$(cipherView),
+      this.cipherAuthorizationService.canDeleteCipher$(
+        cipher.organizationId as OrganizationId,
+        cipher.collectionIds as CollectionId[],
+      ),
     );
 
     if (!canDeleteCipher) {
