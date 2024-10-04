@@ -70,6 +70,7 @@ describe("WebEnvironmentService", () => {
           window,
           stateProvider,
           accountService,
+          [], // no additional region configs required for prod envs
           router,
           mockInitialProdUSUrls,
         );
@@ -173,6 +174,7 @@ describe("WebEnvironmentService", () => {
           window,
           stateProvider,
           accountService,
+          [], // no additional region configs required for prod envs
           router,
           mockInitialProdEUUrls,
         );
@@ -234,40 +236,41 @@ describe("WebEnvironmentService", () => {
     });
   });
 
-  describe("QA", () => {
-    // describe("US QA", () => {
-    //   const mockInitialQAUSUrls = {
-    //     base: null,
-    //     api: "https://api.bitwarden.com",
-    //     identity: "https://identity.bitwarden.com",
-    //     icons: "https://icons.bitwarden.net",
-    //     webVault: "https://vault.bitwarden.com",
-    //     notifications: "https://notifications.bitwarden.com",
-    //     events: "https://events.bitwarden.com",
-    //     scim: "https://scim.bitwarden.com",
-    //   } as Urls;
-    //   const mockProdUSBaseUrl = "https://vault.bitwarden.com";
-    //   const expectedProdUSUrls: Urls = {
-    //     ...mockInitialProdUSUrls,
-    //     base: mockProdUSBaseUrl,
-    //   };
-    //   const expectedModifiedScimUrl = expectedProdUSUrls.scim + "/v2";
-    //   const expectedSendUrl = "https://send.bitwarden.com/#";
-    //   const PROD_US_REGION = PRODUCTION_REGIONS.find((r) => r.key === Region.US);
-    //   const prodUSEnv = new WebCloudEnvironment(PROD_US_REGION, expectedProdUSUrls);
-    //   beforeEach(() => {
-    //     process.env.URLS = JSON.stringify(mockInitialProdUSUrls);
-    //     window = mock<Window>();
-    //     window.location = {
-    //       origin: mockProdUSBaseUrl,
-    //       href: mockProdUSBaseUrl + "/#/example",
-    //     } as Location;
-    //     accountService = mockAccountServiceWith(mockUserId);
-    //     stateProvider = new FakeStateProvider(accountService);
-    //     router = mock<Router>();
-    //     (router as any).url = "";
-    //     service = new WebEnvironmentService(window, stateProvider, accountService, router);
-    //   });
-    // })
-  });
+  // describe("QA", () => {
+  //   describe("US QA", () => {
+  //     const mockInitialQAUSUrls = {
+  //       base: null,
+  //       api: "https://api.bitwarden.com",
+  //       identity: "https://identity.bitwarden.com",
+  //       icons: "https://icons.bitwarden.net",
+  //       webVault: "https://vault.bitwarden.com",
+  //       notifications: "https://notifications.bitwarden.com",
+  //       events: "https://events.bitwarden.com",
+  //       scim: "https://scim.bitwarden.com",
+  //     } as Urls;
+  //     const mockProdUSBaseUrl = "https://vault.bitwarden.com";
+  //     const expectedProdUSUrls: Urls = {
+  //       ...mockInitialQAUSUrls,
+  //       base: mockProdUSBaseUrl,
+  //     };
+  //     const expectedModifiedScimUrl = expectedProdUSUrls.scim + "/v2";
+  //     const expectedSendUrl = "https://send.bitwarden.com/#";
+  //     const PROD_US_REGION = PRODUCTION_REGIONS.find((r) => r.key === Region.US);
+  //     const prodUSEnv = new WebCloudEnvironment(PROD_US_REGION, expectedProdUSUrls);
+
+  //     beforeEach(() => {
+  //       process.env.ADDITIONAL_REGIONS = JSON.stringify(mockInitialQAUSUrls);
+  //       window = mock<Window>();
+  //       window.location = {
+  //         origin: mockProdUSBaseUrl,
+  //         href: mockProdUSBaseUrl + "/#/example",
+  //       } as Location;
+  //       accountService = mockAccountServiceWith(mockUserId);
+  //       stateProvider = new FakeStateProvider(accountService);
+  //       router = mock<Router>();
+  //       (router as any).url = "";
+  //       service = new WebEnvironmentService(window, stateProvider, accountService, router);
+  //     });
+  //   });
+  // });
 });

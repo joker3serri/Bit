@@ -11,6 +11,7 @@ import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/sa
 import {
   CLIENT_TYPE,
   DEFAULT_VAULT_TIMEOUT,
+  ENV_ADDITIONAL_REGIONS,
   LOCALES_DIRECTORY,
   MEMORY_STORAGE,
   OBSERVABLE_DISK_LOCAL_STORAGE,
@@ -184,7 +185,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: EnvironmentService,
     useClass: WebEnvironmentService,
-    deps: [WINDOW, StateProvider, AccountService, Router, ENV_URLS],
+    deps: [WINDOW, StateProvider, AccountService, ENV_ADDITIONAL_REGIONS, Router, ENV_URLS],
   }),
   safeProvider({
     provide: BiometricsService,

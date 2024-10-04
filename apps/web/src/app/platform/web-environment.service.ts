@@ -23,9 +23,9 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     private win: Window,
     stateProvider: StateProvider,
     accountService: AccountService,
+    additionalRegionConfigs: RegionConfig[] = [],
     private router: Router,
     private envUrls: Urls,
-    additionalRegionConfigs: RegionConfig[] = [],
   ) {
     super(stateProvider, accountService, additionalRegionConfigs);
 
