@@ -1,0 +1,29 @@
+<app-header> </app-header>
+<bit-tab-group [(selectedIndex)]="tabIndex">
+  <bit-tab label="{{ 'allApplications' | i18n: allApps.length }}">
+    <bit-table [dataSource]="dataSource">
+      <ng-container header>
+        <tr>
+          <th bitCell>{{ "application" | i18n }}</th>
+          <th bitCell>{{ "atRiskPasswords" | i18n }}</th>
+          <th bitCell>{{ "totalPasswords" | i18n }}</th>
+          <th bitCell>{{ "atRiskMembers" | i18n }}</th>
+          <th bitCell>{{ "totalMembers" | i18n }}</th>
+        </tr>
+      </ng-container>
+    </bit-table>
+  </bit-tab>
+  <bit-tab label="{{ 'allMembers' | i18n }}">
+    <bit-table [dataSource]="dataSource">
+      <ng-container header>
+        <tr>
+          <th bitCell>{{ "member" | i18n }}</th>
+          <th bitCell>{{ "atRiskPasswords" | i18n }}</th>
+          <th bitCell>{{ "totalPasswords" | i18n }}</th>
+          <th bitCell>{{ "atRiskApplications" | i18n }}</th>
+          <th bitCell>{{ "totalApplications" | i18n }}</th>
+        </tr>
+      </ng-container>
+    </bit-table>
+  </bit-tab>
+</bit-tab-group>
