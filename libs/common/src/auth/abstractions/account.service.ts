@@ -10,6 +10,7 @@ export type AccountInfo = {
   email: string;
   emailVerified: boolean;
   name: string | undefined;
+  managedByOrganizationId?: string | null;
 };
 
 export function accountInfoEqual(a: AccountInfo, b: AccountInfo) {
@@ -68,6 +69,15 @@ export abstract class AccountService {
    * @param emailVerified
    */
   abstract setAccountEmailVerified(userId: UserId, emailVerified: boolean): Promise<void>;
+  /**
+   * updates the `accounts$` observable with the new ID of the organization the account is managed by.
+   * @param userId
+   * @param managedByOrganizationId
+   */
+  abstract setAccountManagedByOrganizationId(
+    userId: UserId,
+    managedByOrganizationId?: string | null,
+  ): Promise<void>;
   /**
    * Updates the `activeAccount$` observable with the new active account.
    * @param userId

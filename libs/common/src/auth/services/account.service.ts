@@ -120,6 +120,13 @@ export class AccountServiceImplementation implements InternalAccountService {
     await this.setAccountInfo(userId, { emailVerified });
   }
 
+  async setAccountManagedByOrganizationId(
+    userId: UserId,
+    managedByOrganizationId?: string | null,
+  ): Promise<void> {
+    await this.setAccountInfo(userId, { managedByOrganizationId });
+  }
+
   async clean(userId: UserId) {
     await this.setAccountInfo(userId, LOGGED_OUT_INFO);
     await this.removeAccountActivity(userId);
