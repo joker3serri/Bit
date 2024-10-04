@@ -891,7 +891,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     const cipherFormConfig = await this.cipherFormConfigService.buildConfig(
-      cipher?.edit ? "edit" : "partial-edit",
+      "edit",
       cipher.id as CipherId,
       cipher?.type,
     );
