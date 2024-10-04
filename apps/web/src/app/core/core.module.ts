@@ -61,6 +61,7 @@ import { MemoryStorageService } from "@bitwarden/common/platform/services/memory
 // eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 /* eslint-disable import/no-restricted-paths -- Implementation for memory storage */
 import { GlobalStateProvider, StateProvider } from "@bitwarden/common/platform/state";
@@ -260,6 +261,11 @@ const safeProviders: SafeProvider[] = [
     provide: CollectionAdminService,
     useClass: DefaultCollectionAdminService,
     deps: [ApiService, CryptoServiceAbstraction, EncryptService, CollectionService],
+  }),
+  safeProvider({
+    provide: ServerSettingsService,
+    useClass: ServerSettingsService,
+    deps: [ConfigService],
   }),
 ];
 
