@@ -180,7 +180,7 @@ import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwar
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   CipherAuthorizationService,
-  CipherAuthorizationServiceAbstraction,
+  DefaultCipherAuthorizationService,
 } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
@@ -367,7 +367,7 @@ export default class MainBackground {
   syncServiceListener: SyncServiceListener;
   themeStateService: DefaultThemeStateService;
   autoSubmitLoginBackground: AutoSubmitLoginBackground;
-  cipherAuthorizationService: CipherAuthorizationServiceAbstraction;
+  cipherAuthorizationService: CipherAuthorizationService;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -1248,7 +1248,7 @@ export default class MainBackground {
 
     this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
 
-    this.cipherAuthorizationService = new CipherAuthorizationService(
+    this.cipherAuthorizationService = new DefaultCipherAuthorizationService(
       this.collectionService,
       this.organizationService,
     );

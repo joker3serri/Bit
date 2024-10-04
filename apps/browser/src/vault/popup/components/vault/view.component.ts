@@ -26,7 +26,7 @@ import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/a
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { CipherAuthorizationServiceAbstraction } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -103,7 +103,7 @@ export class ViewComponent extends BaseViewComponent implements OnInit, OnDestro
     datePipe: DatePipe,
     accountService: AccountService,
     billingAccountProfileStateService: BillingAccountProfileStateService,
-    cipherAuthorizationService: CipherAuthorizationServiceAbstraction,
+    cipherAuthorizationService: CipherAuthorizationService,
   ) {
     super(
       cipherService,
