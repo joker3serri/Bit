@@ -877,6 +877,10 @@ export class VaultComponent implements OnInit, OnDestroy {
 
   /** Opens the view dialog for the given cipher unless password reprompt fails */
   async viewCipherById(cipher: CipherView) {
+    if (!cipher) {
+      return;
+    }
+
     if (
       cipher &&
       cipher.reprompt !== 0 &&
@@ -890,7 +894,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const cipherFormConfig = await this.cipherFormConfigService.buildConfig(
       "edit",
       cipher.id as CipherId,
-      cipher?.type,
+      cipher.type,
     );
 
     await this.openVaultItemDialog("view", cipherFormConfig, cipher);
