@@ -273,7 +273,7 @@ export class ItemDetailsSectionComponent implements OnInit {
     // The user has "Can Manage" or "Can Edit" permissions
     // The Organization has "Owners and Admins Can Manage" setting on
     if (
-      organization.canEditAllCiphers ||
+      organization?.canEditAllCiphers ||
       filteredCollections?.length > 0 ||
       (this.originalCipherView.edit && this.originalCipherView.viewPassword)
     ) {
