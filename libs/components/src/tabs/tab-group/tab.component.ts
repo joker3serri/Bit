@@ -21,7 +21,6 @@ import { TabLabelDirective } from "./tab-label.directive";
 export class TabComponent implements OnInit {
   @Input() disabled = false;
   @Input("label") textLabel = "";
-  @Input("icon") iconClass: string | undefined;
 
   /**
    * Optional tabIndex for the tabPanel that contains this tab's content.

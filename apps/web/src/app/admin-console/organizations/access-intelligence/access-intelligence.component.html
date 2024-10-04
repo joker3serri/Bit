@@ -4,14 +4,19 @@
     <h2 bitTypography="h2">{{ "allApplications" | i18n }}</h2>
     <tools-application-table></tools-application-table>
   </bit-tab>
-  <bit-tab
-    label="{{ 'priorityApplicationsWithCount' | i18n: priorityApps.length }}"
-    iconClass="bwi-star"
-  >
+  <bit-tab>
+    <ng-template bitTabLabel>
+      <i class="bwi bwi-star"></i>
+      {{ "priorityApplicationsWithCount" | i18n: priorityApps.length }}
+    </ng-template>
     <h2 bitTypography>{{ "priorityApplications" | i18n }}</h2>
     <tools-application-table></tools-application-table>
   </bit-tab>
-  <bit-tab label="{{ 'notifiedMembersWithCount' | i18n: notifiedMembers.length }}">
+  <bit-tab>
+    <ng-template bitTabLabel>
+      <i class="bwi bwi-envelope"></i>
+      {{ "notifiedMembersWithCount" | i18n: priorityApps.length }}
+    </ng-template>
     <h2 bitTypography="h2">{{ "notifiedMembers" | i18n }}</h2>
     <tools-notified-members-table></tools-notified-members-table>
   </bit-tab>

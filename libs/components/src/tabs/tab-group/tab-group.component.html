@@ -20,9 +20,6 @@
       <ng-container [ngTemplateOutlet]="content"></ng-container>
 
       <ng-template #content>
-        <ng-template *ngIf="tab.iconClass">
-          <i class="bwi bwi-lg" [ngClass]="tab.iconClass"></i>
-        </ng-template>
         <ng-template [ngIf]="tab.templateLabel" [ngIfElse]="tabTextLabel">
           <ng-container [ngTemplateOutlet]="tab.templateLabel.templateRef"></ng-container>
         </ng-template>
