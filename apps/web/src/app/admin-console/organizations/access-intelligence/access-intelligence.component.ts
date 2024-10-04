@@ -5,9 +5,12 @@ import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { TableDataSource, TabsModule } from "@bitwarden/components";
+import { TabsModule } from "@bitwarden/components";
 
 import { HeaderModule } from "../../../layouts/header/header.module";
+
+import { ApplicationTableComponent } from "./application-table.component";
+import { NotifiedMembersTableComponent } from "./notified-members-table.component";
 
 export enum AccessIntelligenceTabType {
   AllApps = 0,
@@ -16,13 +19,23 @@ export enum AccessIntelligenceTabType {
 }
 
 @Component({
+  standalone: true,
   templateUrl: "./access-intelligence.component.html",
-  imports: [CommonModule, JslibModule, HeaderModule, TabsModule],
+  imports: [
+    ApplicationTableComponent,
+    CommonModule,
+    JslibModule,
+    HeaderModule,
+    NotifiedMembersTableComponent,
+    TabsModule,
+  ],
 })
 export class AccessIntelligenceComponent {
   tabIndex: AccessIntelligenceTabType;
-  protected allApps = new TableDataSource<any>([]);
-  protected priorityApps = new TableDataSource<any>([]);
+
+  apps: any[] = [];
+  priorityApps: any[] = [];
+  notifiedMembers: any[] = [];
 
   constructor(route: ActivatedRoute) {
     route.queryParams.pipe(takeUntilDestroyed(), first()).subscribe(({ tabIndex }) => {

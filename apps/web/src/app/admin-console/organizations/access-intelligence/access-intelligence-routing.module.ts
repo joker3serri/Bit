@@ -8,7 +8,6 @@ const routes: Routes = [
     path: "",
     component: AccessIntelligenceComponent,
     // TODO - Implement canAccessAccessIntelligenceTab
-    canActivate: [],
     data: {
       titleId: "accessIntelligence",
     },
@@ -19,4 +18,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class MembersRoutingModule {}
+export class AccessIntelligenceRoutingModule {}
