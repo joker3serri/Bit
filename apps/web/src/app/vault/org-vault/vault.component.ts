@@ -502,7 +502,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             if (action === "view") {
               await this.viewCipherById(cipher);
             } else {
-              await this.editCipherId(cipherId, false);
+              await this.editCipherId(cipher, false);
             }
           } else {
             this.toastService.showToast({
@@ -801,17 +801,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     cloneCipher: boolean,
     additionalComponentParameters?: (comp: AddEditComponent) => void,
   ) {
-    return this.editCipherId(cipher?.id, cloneCipher, additionalComponentParameters);
+    return this.editCipherId(cipher, cloneCipher, additionalComponentParameters);
   }
 
   async editCipherId(
-    cipherId: string,
+    cipher: CipherView,
     cloneCipher: boolean,
     additionalComponentParameters?: (comp: AddEditComponent) => void,
   ) {
-    const cipher = await this.cipherService.get(cipherId);
-    // if cipher exists (cipher is null when new) and MP reprompt
-    // is on for this cipher, then show password reprompt
     if (
       cipher &&
       cipher.reprompt !== 0 &&
@@ -823,14 +820,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     if (this.extensionRefreshEnabled) {
-      await this.editCipherIdV2(cipherId as CipherId, cloneCipher);
+      await this.editCipherIdV2(cipher, cloneCipher);
       return;
     }
 
     const defaultComponentParameters = (comp: AddEditComponent) => {
       comp.organization = this.organization;
       comp.organizationId = this.organization.id;
-      comp.cipherId = cipherId;
+      comp.cipherId = cipher.id;
       comp.onSavedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
         modal.close();
         this.refresh();
@@ -869,13 +866,13 @@ export class VaultComponent implements OnInit, OnDestroy {
    * Edit a cipher using the new AddEditCipherDialogV2 component.
    * Only to be used behind the ExtensionRefresh feature flag.
    */
-  private async editCipherIdV2(cipherId: CipherId, cloneCipher: boolean) {
+  private async editCipherIdV2(cipher: CipherView, cloneCipher: boolean) {
     const cipherFormConfig = await this.cipherFormConfigService.buildConfig(
       cloneCipher ? "clone" : "edit",
-      cipherId,
+      cipher.id as CipherId,
     );
 
-    await this.openVaultItemDialog("form", cipherFormConfig);
+    await this.openVaultItemDialog("form", cipherFormConfig, cipher);
   }
 
   /** Opens the view dialog for the given cipher unless password reprompt fails */
@@ -908,8 +905,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     cipher?: CipherView,
   ) {
     const disableForm = cipher ? !cipher.edit && !this.organization.canEditAllCiphers : false;
+    // If the form is disabled, force the mode into `view`
+    const dialogMode = disableForm ? "view" : mode;
     this.vaultItemDialogRef = VaultItemDialogComponent.open(this.dialogService, {
-      mode,
+      mode: dialogMode,
       formConfig,
       disableForm,
     });
