@@ -241,7 +241,7 @@ import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/a
 import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import {
   CipherAuthorizationService,
-  CipherAuthorizationServiceAbstraction,
+  DefaultCipherAuthorizationService,
 } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
@@ -1321,8 +1321,8 @@ const safeProviders: SafeProvider[] = [
     deps: [],
   }),
   safeProvider({
-    provide: CipherAuthorizationServiceAbstraction,
-    useClass: CipherAuthorizationService,
+    provide: CipherAuthorizationService,
+    useClass: DefaultCipherAuthorizationService,
     deps: [CollectionServiceAbstraction, OrganizationServiceAbstraction],
   }),
 ];

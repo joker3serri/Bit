@@ -28,7 +28,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-array-buffer";
-import { CollectionId } from "@bitwarden/common/types/guid";
+import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
@@ -38,7 +38,7 @@ import { Launchable } from "@bitwarden/common/vault/interfaces/launchable";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { CipherAuthorizationServiceAbstraction } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -109,7 +109,7 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected datePipe: DatePipe,
     protected accountService: AccountService,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
-    private cipherAuthorizationService: CipherAuthorizationServiceAbstraction,
+    private cipherAuthorizationService: CipherAuthorizationService,
   ) {}
 
   ngOnInit() {
@@ -150,7 +150,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.showPremiumRequiredTotp =
       this.cipher.login.totp && !this.canAccessPremium && !this.cipher.organizationUseTotp;
     this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
-      this.cipher,
+      this.cipher.organizationId as OrganizationId,
+      this.cipher.collectionIds as CollectionId[],
       this.collectionId as CollectionId,
     );
 

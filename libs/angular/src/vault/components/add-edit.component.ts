@@ -22,7 +22,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { CollectionId, UserId } from "@bitwarden/common/types/guid";
+import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -37,7 +37,7 @@ import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view"
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
-import { CipherAuthorizationServiceAbstraction } from "@bitwarden/common/vault/services/cipher-authorization.service";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -49,7 +49,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   @Input() type: CipherType;
   @Input() collectionIds: string[];
   @Input() organizationId: string = null;
-  @Input() canDeleteCipher: boolean = false;
   @Input() collectionId: string = null;
   @Output() onSavedCipher = new EventEmitter<CipherView>();
   @Output() onDeletedCipher = new EventEmitter<CipherView>();
@@ -124,7 +123,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected win: Window,
     protected datePipe: DatePipe,
     protected configService: ConfigService,
-    protected cipherAuthorizationService: CipherAuthorizationServiceAbstraction,
+    protected cipherAuthorizationService: CipherAuthorizationService,
   ) {
     this.typeOptions = [
       { name: i18nService.t("typeLogin"), value: CipherType.Login },
@@ -325,7 +324,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     }
 
     this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
-      this.cipher,
+      this.cipher.organizationId as OrganizationId,
+      this.cipher.collectionIds as CollectionId[],
       this.collectionId as CollectionId,
     );
   }
