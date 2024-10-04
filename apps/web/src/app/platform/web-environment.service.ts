@@ -82,7 +82,7 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
       // We can't return the region urls because the env base url is modified
       // in the constructor to match the current window.location.origin.
       const currentEnv = await firstValueFrom(this.environment$);
-      return Promise.resolve(currentEnv.getUrls());
+      return currentEnv.getUrls();
     }
 
     const chosenRegionConfig = this.availableRegions().find((r) => r.key === region);
@@ -96,7 +96,7 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     this.win.location.href = chosenRegionConfig.urls.webVault + routeAndParams;
 
     // This return shouldn't matter as we are about to leave the current window
-    return Promise.resolve(chosenRegionConfig.urls);
+    return chosenRegionConfig.urls;
   }
 }
 
