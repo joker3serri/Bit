@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { combineLatest, defer, filter, firstValueFrom, map, switchMap } from "rxjs";
+import { combineLatest, filter, firstValueFrom, map, switchMap } from "rxjs";
 
 import { CollectionAdminService } from "@bitwarden/admin-console/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -9,7 +9,6 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
@@ -27,7 +26,6 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
   private policyService: PolicyService = inject(PolicyService);
   private organizationService: OrganizationService = inject(OrganizationService);
   private cipherService: CipherService = inject(CipherService);
-  private collectionService: CollectionService = inject(CollectionService);
   private routedVaultFilterService: RoutedVaultFilterService = inject(RoutedVaultFilterService);
   private collectionAdminService: CollectionAdminService = inject(CollectionAdminService);
   private apiService: ApiService = inject(ApiService);
@@ -45,25 +43,15 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
     switchMap((organizationId) => this.organizationService.get$(organizationId)),
   );
 
-  private allCollectionsWithoutUnassigned$ = combineLatest([
-    this.organizationId$.pipe(switchMap((orgId) => this.collectionAdminService.getAll(orgId))),
-    defer(() => this.collectionService.getAllDecrypted()),
-  ]).pipe(
-    map(([adminCollections, syncCollections]) => {
-      const syncCollectionDict = Object.fromEntries(syncCollections.map((c) => [c.id, c]));
-
-      return adminCollections.map((collection) => {
-        const currentId: any = collection.id;
-
-        const match = syncCollectionDict[currentId];
-
-        if (match) {
-          collection.manage = match.manage;
-          collection.readOnly = match.readOnly;
-          collection.hidePasswords = match.hidePasswords;
-        }
-        return collection;
-      });
+  private editableCollections$ = this.organization$.pipe(
+    switchMap(async (org) => {
+      const collections = await this.collectionAdminService.getAll(org.id);
+      // Users that can edit all ciphers can implicitly add to / edit within any collection
+      if (org.canEditAllCiphers) {
+        return collections;
+      }
+      // The user is only allowed to add/edit items to assigned collections that are not readonly
+      return collections.filter((c) => c.assigned && !c.readOnly);
     }),
   );
 
@@ -73,11 +61,7 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
     cipherType?: CipherType,
   ): Promise<CipherFormConfig> {
     const [organization, allowPersonalOwnership, allCollections] = await firstValueFrom(
-      combineLatest([
-        this.organization$,
-        this.allowPersonalOwnership$,
-        this.allCollectionsWithoutUnassigned$,
-      ]),
+      combineLatest([this.organization$, this.allowPersonalOwnership$, this.editableCollections$]),
     );
 
     const cipher = await this.getCipher(organization, cipherId);

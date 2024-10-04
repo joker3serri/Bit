@@ -8,7 +8,6 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 
 import { RoutedVaultFilterService } from "../../individual-vault/vault-filter/services/routed-vault-filter.service";
 
@@ -37,7 +36,6 @@ describe("AdminConsoleCipherFormConfigService", () => {
         },
         { provide: OrganizationService, useValue: { get$: () => organization$ } },
         { provide: CipherService, useValue: { get: getCipher } },
-        { provide: CollectionService, useValue: { getAllDecrypted: () => Promise.resolve([]) } },
         { provide: CollectionAdminService, useValue: { getAll: () => Promise.resolve([]) } },
         {
           provide: RoutedVaultFilterService,
