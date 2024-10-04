@@ -128,7 +128,7 @@ import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.ty
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import {
   CipherAuthorizationService,
-  CipherAuthorizationServiceAbstraction,
+  DefaultCipherAuthorizationService,
 } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/services/collection.service";
@@ -254,7 +254,7 @@ export class ServiceContainer {
   userAutoUnlockKeyService: UserAutoUnlockKeyService;
   kdfConfigService: KdfConfigServiceAbstraction;
   taskSchedulerService: TaskSchedulerService;
-  cipherAuthorizationService: CipherAuthorizationServiceAbstraction;
+  cipherAuthorizationService: CipherAuthorizationService;
 
   constructor() {
     let p = null;
@@ -787,7 +787,7 @@ export class ServiceContainer {
 
     this.providerApiService = new ProviderApiService(this.apiService);
 
-    this.cipherAuthorizationService = new CipherAuthorizationService(
+    this.cipherAuthorizationService = new DefaultCipherAuthorizationService(
       this.collectionService,
       this.organizationService,
     );
