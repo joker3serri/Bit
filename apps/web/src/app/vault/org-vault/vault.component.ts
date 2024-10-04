@@ -896,16 +896,22 @@ export class VaultComponent implements OnInit, OnDestroy {
       cipher?.type,
     );
 
-    await this.openVaultItemDialog("view", cipherFormConfig);
+    await this.openVaultItemDialog("view", cipherFormConfig, cipher);
   }
 
   /**
    * Open the combined view / edit dialog for a cipher.
    */
-  async openVaultItemDialog(mode: VaultItemDialogMode, formConfig: CipherFormConfig) {
+  async openVaultItemDialog(
+    mode: VaultItemDialogMode,
+    formConfig: CipherFormConfig,
+    cipher?: CipherView,
+  ) {
+    const disableForm = cipher ? !cipher.edit && !this.organization.canEditAllCiphers : false;
     this.vaultItemDialogRef = VaultItemDialogComponent.open(this.dialogService, {
       mode,
       formConfig,
+      disableForm,
     });
 
     const result = await lastValueFrom(this.vaultItemDialogRef.closed);
