@@ -62,10 +62,6 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
-import {
-  BiometricStateService,
-  DefaultBiometricStateService,
-} from "@bitwarden/common/platform/biometrics/biometric-state.service";
 import { KeySuffixOptions, LogLevelType } from "@bitwarden/common/platform/enums";
 import { StateFactory } from "@bitwarden/common/platform/factories/state-factory";
 import { MessageSender } from "@bitwarden/common/platform/messaging";
