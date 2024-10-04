@@ -782,6 +782,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       cipher.edit ? "edit" : "partial-edit",
       cipher.id as CipherId,
       cipher.type,
+      this.selectedCollection?.node.id as CollectionId,
     );
 
     await this.openVaultItemDialog("view", cipherFormConfig);

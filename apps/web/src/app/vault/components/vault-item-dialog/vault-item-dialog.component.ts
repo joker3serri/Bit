@@ -2,7 +2,7 @@ import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, Subject } from "rxjs";
+import { firstValueFrom, Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -11,13 +11,14 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CipherId } from "@bitwarden/common/types/guid";
+import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
 import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -195,6 +196,8 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
 
   protected formConfig: CipherFormConfig = this.params.formConfig;
 
+  protected canDeleteCipher$: Observable<boolean>;
+
   constructor(
     @Inject(DIALOG_DATA) protected params: VaultItemDialogParams,
     private dialogRef: DialogRef<VaultItemDialogResult>,
@@ -207,6 +210,7 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private router: Router,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
+    private cipherAuthorizationService: CipherAuthorizationService,
   ) {
     this.updateTitle();
   }
@@ -220,6 +224,12 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
       );
       this.organization = this.formConfig.organizations.find(
         (o) => o.id === this.cipher.organizationId,
+      );
+
+      this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
+        this.cipher.organizationId as OrganizationId,
+        this.cipher.collectionIds as CollectionId[],
+        this.params.formConfig.activeCollectionId,
       );
     }
 

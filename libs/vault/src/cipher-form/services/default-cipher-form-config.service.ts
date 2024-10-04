@@ -4,7 +4,7 @@ import { combineLatest, firstValueFrom, map } from "rxjs";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { OrganizationUserStatusType, PolicyType } from "@bitwarden/common/admin-console/enums";
-import { CipherId } from "@bitwarden/common/types/guid";
+import { CipherId, CollectionId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -34,6 +34,7 @@ export class DefaultCipherFormConfigService implements CipherFormConfigService {
     mode: CipherFormMode,
     cipherId?: CipherId,
     cipherType?: CipherType,
+    activeCollectionId?: CollectionId,
   ): Promise<CipherFormConfig> {
     const [organizations, collections, allowPersonalOwnership, folders, cipher] =
       await firstValueFrom(
@@ -55,6 +56,7 @@ export class DefaultCipherFormConfigService implements CipherFormConfigService {
       collections,
       organizations,
       folders,
+      activeCollectionId,
     };
   }
 
