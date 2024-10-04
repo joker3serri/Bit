@@ -358,5 +358,100 @@ describe("WebEnvironmentService", () => {
         });
       });
     });
+
+    describe("EU Region", () => {
+      const initial_QA_EU_Urls = {
+        icons: "https://icons.euqa.bitwarden.pw",
+        notifications: "https://notifications.euqa.bitwarden.pw",
+        scim: "https://scim.euqa.bitwarden.pw",
+      } as Urls;
+
+      const mock_QA_EU_BaseUrl = "https://vault.euqa.bitwarden.pw";
+
+      const expected_QA_EU_Urls: Urls = {
+        ...initial_QA_EU_Urls,
+        base: mock_QA_EU_BaseUrl,
+      };
+
+      const expectedModifiedScimUrl = expected_QA_EU_Urls.scim + "/v2";
+
+      const expectedSendUrl = QA_EU_WEB_REGION_CONFIG.urls.webVault + "/#/send/";
+
+      const QA_EU_Env = new WebCloudEnvironment(QA_EU_WEB_REGION_CONFIG, expected_QA_EU_Urls);
+
+      beforeEach(() => {
+        window = mock<Window>();
+        window.location = {
+          origin: mock_QA_EU_BaseUrl,
+          href: mock_QA_EU_BaseUrl + "/#/example",
+        } as Location;
+        accountService = mockAccountServiceWith(mockUserId);
+        stateProvider = new FakeStateProvider(accountService);
+        router = mock<Router>();
+        (router as any).url = "";
+        service = new WebEnvironmentService(
+          window,
+          stateProvider,
+          accountService,
+          additionalRegionConfigs,
+          router,
+          initial_QA_EU_Urls,
+        );
+      });
+
+      it("initializes the environment to be the QA US environment", async () => {
+        const env = await firstValueFrom(service.environment$);
+
+        expect(env).toEqual(QA_EU_Env);
+        expect(env.getRegion()).toEqual(QA_EU_REGION_KEY);
+        expect(env.getUrls()).toEqual(expected_QA_EU_Urls);
+        expect(env.isCloud()).toBeTruthy();
+
+        expect(env.getApiUrl()).toEqual(expected_QA_EU_Urls.base + "/api");
+        expect(env.getIdentityUrl()).toEqual(expected_QA_EU_Urls.base + "/identity");
+        expect(env.getIconsUrl()).toEqual(expected_QA_EU_Urls.icons);
+
+        expect(env.getWebVaultUrl()).toEqual(QA_EU_WEB_REGION_CONFIG.urls.webVault);
+
+        expect(env.getNotificationsUrl()).toEqual(expected_QA_EU_Urls.notifications);
+        expect(env.getEventsUrl()).toEqual(expected_QA_EU_Urls.base + "/events");
+
+        expect(env.getScimUrl()).toEqual(expectedModifiedScimUrl);
+
+        expect(env.getSendUrl()).toEqual(expectedSendUrl);
+
+        expect(env.getHostname()).toEqual(QA_EU_WEB_REGION_CONFIG.domain);
+      });
+
+      describe("setEnvironment", () => {
+        it("throws an error when trying to set the environment to self-hosted", async () => {
+          await expect(service.setEnvironment(Region.SelfHosted)).rejects.toThrow(
+            "setEnvironment does not work in web for self-hosted.",
+          );
+        });
+
+        it("only returns the current env's urls when trying to set the environment to the current region", async () => {
+          const urls = await service.setEnvironment(QA_EU_REGION_KEY);
+          expect(urls).toEqual(expected_QA_EU_Urls);
+        });
+
+        it("errors if the selected region is unknown", async () => {
+          await expect(service.setEnvironment("unknown" as Region)).rejects.toThrow(
+            "The selected region is not known as an available region.",
+          );
+        });
+
+        it("sets the window location to a new region's web vault url and preserves any query params", async () => {
+          const routeAndQueryParams = "/signup?example=1&another=2";
+          (router as any).url = routeAndQueryParams;
+
+          await service.setEnvironment(QA_US_REGION_KEY);
+
+          expect(window.location.href).toEqual(
+            QA_US_WEB_REGION_CONFIG.urls.webVault + "/#" + routeAndQueryParams,
+          );
+        });
+      });
+    });
   });
 });
