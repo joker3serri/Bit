@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "あいまいな文字を省く"
   },
+  "generatorPolicyInEffect": {
+    "message": "生成オプションにエンタープライズポリシー要件を適用しました",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "コレクションの検索"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "保管庫がロックされています。開くにはマスターパスワードを入力してください。"
+  },
+  "yourAccountIsLocked": {
+    "message": "アカウントがロックされています"
+  },
+  "or": {
+    "message": "または"
+  },
+  "unlockWithBiometrics": {
+    "message": "生体認証でロック解除"
+  },
+  "unlockWithMasterPassword": {
+    "message": "マスターパスワードでロック解除"
   },
   "unlock": {
     "message": "ロック解除"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "ブラウザ統合を有効にする"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "ブラウザでの生体認証のためにブラウザ統合を使用します。"
+  "enableBrowserIntegrationDesc1": {
+    "message": "Safari 以外のブラウザで生体認証によるロック解除を許可するために使用されます。"
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckGo ブラウザの統合を許可する"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "ロック中"
   },
+  "yourVaultIsLockedV2": {
+    "message": "保管庫がロックされています"
+  },
   "unlocked": {
     "message": "ロック解除済み"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "重要"
+  },
+  "accessing": {
+    "message": "アクセス中"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "アクセストークンを復号できなかったためログアウトしました。この問題を解決するためには再度ログインしてください。"

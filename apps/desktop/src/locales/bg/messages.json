@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Без нееднозначни знаци"
   },
+  "generatorPolicyInEffect": {
+    "message": "Изискванията на политиката за големи компании бяха приложени към настройките на генератора.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Търсене в колекцията"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Трезорът е заключен — въведете главната си парола, за да продължите."
+  },
+  "yourAccountIsLocked": {
+    "message": "Регистрацията Ви е заключена"
+  },
+  "or": {
+    "message": "или"
+  },
+  "unlockWithBiometrics": {
+    "message": "Отключване с биометрични данни"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Отключване с главната парола"
   },
   "unlock": {
     "message": "Отключване"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Включване на интеграцията с браузър"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "За потвърждаване с биометрични данни е необходима интеграция с браузъра."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Използва се за разрешаване на отключването чрез биометрични данни в браузъри различни от Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Разрешаване на интеграцията на DuckDuckGo в браузъра"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Заключено"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Трезорът Ви е заключен"
+  },
   "unlocked": {
     "message": "Отключено"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Важно:"
+  },
+  "accessing": {
+    "message": "Използване на"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "Бяхте отписан(а), тъй като идентификаторът Ви за достъп не може да бъде дешифриран. Впишете се отново, за да отстраните проблема."

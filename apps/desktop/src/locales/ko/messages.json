@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "모호한 문자 사용 안 함"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "컬렉션 검색"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "보관함이 잠겨 있습니다. 마스터 비밀번호를 입력하여 계속하세요."
+  },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
   },
   "unlock": {
     "message": "잠금 해제"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "브라우저와 연결 활성화"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "브라우저와 연결하면 브라우저에서 생체 인식을 사용할 수 있습니다."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckgo 브라우저와 연결 허용"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "잠김"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "잠금 해제됨"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "중요:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

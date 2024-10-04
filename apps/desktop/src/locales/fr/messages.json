@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Éviter les caractères ambigus"
   },
+  "generatorPolicyInEffect": {
+    "message": "Les exigences de la politique d'entreprise ont été appliquées à vos options de générateur.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Rechercher dans la collection"
   },
@@ -914,6 +918,18 @@
   "yourVaultIsLocked": {
     "message": "Votre coffre est verrouillé. Vérifiez votre identité pour continuer."
   },
+  "yourAccountIsLocked": {
+    "message": "Votre compte est verrouillé"
+  },
+  "or": {
+    "message": "ou"
+  },
+  "unlockWithBiometrics": {
+    "message": "Déverrouiller par biométrie"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Déverrouiller avec le mot de passe principal"
+  },
   "unlock": {
     "message": "Déverrouiller"
   },
@@ -1196,7 +1212,7 @@
     "message": "Vous pouvez acheter une adhésion Premium sur le coffre web de bitwarden.com. Voulez-vous visiter le site web maintenant ?"
   },
   "premiumPurchaseAlertV2": {
-    "message": "You can purchase Premium from your account settings on the Bitwarden web app."
+    "message": "Vous pouvez faire des achats Prenium à partir des paramètres de votre compte sur l'application web Bitwarden."
   },
   "premiumCurrentMember": {
     "message": "Vous êtes un membre Premium !"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Activer l'intégration avec le navigateur"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "L'intégration avec le navigateur est utilisée pour le déverrouillage biométrique dans le navigateur."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Utilisé pour permettre le déverrouillage biométrique dans les navigateurs autres que Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Autoriser l'intégration DuckDuckGo au navigateur"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Verrouillé"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Votre coffre est verrouillé"
+  },
   "unlocked": {
     "message": "Déverrouillé"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Important :"
+  },
+  "accessing": {
+    "message": "Accès en cours"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "Vous avez été déconnecté car votre jeton d'accès n'a pas pu être déchiffré.  Veuillez vous reconnecter pour résoudre ce problème."

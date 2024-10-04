@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Eviteu caràcters ambigus"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Cerca en la col·lecció"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "La caixa forta està bloquejada. Comproveu la contrasenya mestra per continuar."
+  },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
   },
   "unlock": {
     "message": "Desbloqueja"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Habilita la integració amb el navegador"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "S'utilitza per a la biometria al navegador."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Permet la integració del navegador DuckDuckGo"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Bloquejat"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "Desbloquejat"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Important:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

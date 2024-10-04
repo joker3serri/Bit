@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Väldi ebamääraseid kirjamärke"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Otsi kogumikku"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Hoidla on lukus. Jätkamiseks sisesta ülemparool."
+  },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
   },
   "unlock": {
     "message": "Lukusta lahti"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Lülita sisse brauseri integratsioon"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Brauseri integratsioon on vajalik biomeetria kasutamiseks brauseris."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Lubage DuckDuckGo brauseri integreerimine"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Lukustatud"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "Lukustamata"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Tähtis:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "Sind logiti välja, sest sinu juurdepääsuvõtit (access token) ei õnnestunud dekrüpteerida. Probleemi lahendamiseks palun logige uuesti sisse."

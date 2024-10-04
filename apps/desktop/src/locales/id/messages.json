@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Hindari Karakter Ambigu"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Cari koleksi"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Brankas Anda terkunci. Verifikasi sandi utama Anda untuk melanjutkan."
+  },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
   },
   "unlock": {
     "message": "Buka"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Aktifkan integrasi browser"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Integrasi browser digunakan untuk biometrik di browser."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Izinkan integrasi browser DuckDuckGo"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Terkunci"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "Tidak terkunci"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Penting:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

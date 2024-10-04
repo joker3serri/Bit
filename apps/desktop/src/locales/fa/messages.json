@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "از کاراکترهای مبهم اجتناب کن"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "جستجوی مجموعه"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "گاوصندوق شما قفل شده است. برای ادامه هویت خود را تأیید کنید."
+  },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
   },
   "unlock": {
     "message": "باز کردن قفل"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "فعال کردن ادغام مرورگر"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "یکپارچه سازی مرورگر برای بیومتریک در مرورگر استفاده می‌شود."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "اجازه ادغام مرورگر DuckDuckGo را بدهید"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "قفل شده"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "باز شده"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "مهم:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

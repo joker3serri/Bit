@@ -490,7 +490,7 @@
     "description": "Label for the avoid ambiguous characters checkbox."
   },
   "generatorPolicyInEffect": {
-    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "message": "Bedrijfsbeleidseisen zijn toegepast op je generator-instellingen.",
     "description": "Indicates that a policy limits the credential generator screen."
   },
   "searchVault": {
@@ -603,6 +603,15 @@
   },
   "yourVaultIsLocked": {
     "message": "Je kluis is vergrendeld. Bevestig je identiteit om door te gaan."
+  },
+  "yourVaultIsLockedV2": {
+    "message": "Je kluis is vergrendeld"
+  },
+  "yourAccountIsLocked": {
+    "message": "Je account is vergrendeld"
+  },
+  "or": {
+    "message": "of"
   },
   "unlock": {
     "message": "Ontgrendelen"
@@ -1936,6 +1945,9 @@
   "unlockWithBiometrics": {
     "message": "Biometrisch ontgrendelen"
   },
+  "unlockWithMasterPassword": {
+    "message": "Ontgrendelen met hoofdwachtwoord"
+  },
   "awaitDesktop": {
     "message": "Wacht op bevestiging van de desktop"
   },
@@ -2374,6 +2386,10 @@
     "message": "Weet je zeker dat je deze Send wilt verwijderen?",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
+  "deleteSendPermanentConfirmation": {
+    "message": "Weet je zeker dat je deze Send permanent wil verwijderen?",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
   "editSend": {
     "message": "Send bewerken",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
@@ -2500,6 +2516,14 @@
     "message": "Send bewerkt",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
+  "sendFilePopoutDialogText": {
+    "message": "Extensie uitklappen?",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendFilePopoutDialogDesc": {
+    "message": "Om een bestand te versturen via Send, moet je de extensie naar een nieuw venster uitklappen.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
   "sendLinuxChromiumFileWarning": {
     "message": "Om een bestand te kiezen open je de extensie in de zijbalk (indien mogelijk) of pop-out naar een nieuw venster door op deze banner te klikken."
   },
@@ -2508,6 +2532,9 @@
   },
   "sendSafariFileWarning": {
     "message": "Om een bestand te kiezen met Safari, open je een nieuw pop-up-venster door op deze banner te klikken."
+  },
+  "popOut": {
+    "message": "Uitklappen"
   },
   "sendFileCalloutHeader": {
     "message": "Voor je begint"
@@ -3608,6 +3635,9 @@
   "typePasskey": {
     "message": "Passkey"
   },
+  "accessing": {
+    "message": "Toegang verkrijgen"
+  },
   "passkeyNotCopied": {
     "message": "Passkey wordt niet gekopieerd"
   },
@@ -4085,7 +4115,7 @@
     }
   },
   "permanentlyDeleteAttachmentConfirmation": {
-    "message": "Weet je zeker dat je deze bijlage definitief permanen wilt verwijderen?"
+    "message": "Weet je zeker dat je deze bijlage definitief wilt verwijderen?"
   },
   "premium": {
     "message": "Premium"
@@ -4200,6 +4230,9 @@
   },
   "enableAnimations": {
     "message": "Animaties inschakelen"
+  },
+  "showAnimations": {
+    "message": "Animaties weergeven"
   },
   "addAccount": {
     "message": "Account toevoegen"
@@ -4478,5 +4511,8 @@
   },
   "noEditPermissions": {
     "message": "Je hebt geen toestemming om dit item te bewerken"
+  },
+  "authenticating": {
+    "message": "Aan het inloggen"
   }
 }

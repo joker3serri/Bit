@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Mehrdeutige Zeichen vermeiden"
   },
+  "generatorPolicyInEffect": {
+    "message": "Die Unternehmensrichtlinien-Anforderungen wurden auf deine Generator-Optionen angewendet.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Sammlung durchsuchen"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Dein Tresor ist gesperrt. Verifiziere deine Identität, um fortzufahren."
+  },
+  "yourAccountIsLocked": {
+    "message": "Dein Konto ist gesperrt"
+  },
+  "or": {
+    "message": "oder"
+  },
+  "unlockWithBiometrics": {
+    "message": "Mit Biometrie entsperren"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Mit Master-Passwort entsperren"
   },
   "unlock": {
     "message": "Entsperren"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Browser-Integration erlauben"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Die Browser-Integration wird für Biometrie im Browser verwendet."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Wird verwendet, um biometrisches Entsperren in Browsern zu ermöglichen, die nicht Safari sind."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckGo Browser-Integration erlauben"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Gesperrt"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Dein Tresor ist gesperrt"
+  },
   "unlocked": {
     "message": "Entsperrt"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Wichtig:"
+  },
+  "accessing": {
+    "message": "Zugriff auf"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "Du wurdest abgemeldet, weil dein Zugangs-Token nicht entschlüsselt werden konnte. Bitte melde dich erneut an, um dieses Problem zu beheben."

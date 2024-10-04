@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Okurken karışabilecek karakterleri kullanma"
   },
+  "generatorPolicyInEffect": {
+    "message": "Üreteç seçeneklerinize kurumsal ilke gereksinimleri uygulandı.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Koleksiyonda ara"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Kasanız kilitli. Devam etmek için kimliğinizi doğrulayın."
+  },
+  "yourAccountIsLocked": {
+    "message": "Hesabınız kilitlendi"
+  },
+  "or": {
+    "message": "veya"
+  },
+  "unlockWithBiometrics": {
+    "message": "Kilidi biyometri ile aç"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Kilidi ana parola ile aç"
   },
   "unlock": {
     "message": "Kilidi aç"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Tarayıcı entegrasyonuna izin ver"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Tarayıcıda biyometrik doğrulama için kullanılır."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Safari dışındaki tarayıcılarda biyometrik kilit açmaya izin vermek için kullanılır."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckGo tarayıcı entegrasyonuna izin ver"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Kilitli"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Kasanız kilitli"
+  },
   "unlocked": {
     "message": "Kilitli değil"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Önemli:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Vengti dviprasmiškų simbolių"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Ieškoti rinkinyje"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Jūsų saugykla užrakinta. Norėdami tęsti, patvirtinkite savo tapatybę."
+  },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
   },
   "unlock": {
     "message": "Atrakinti"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Leisti naršyklės integravimą"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Naudojama biometrikai naršyklėje."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Leisti DuckDuckGo naršyklės integravimą"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Užrakinta"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "Atrakinta"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Svarbu:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

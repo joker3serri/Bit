@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Anlaşılmaz simvollardan çəkinin"
   },
+  "generatorPolicyInEffect": {
+    "message": "Müəssisə siyasət tələbləri, yaradıcı seçimlərinizə tətbiq edildi.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Kolleksiya axtar"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Anbarınız kilidlənib. Davam etmək üçün kimliyinizi doğrulayın."
+  },
+  "yourAccountIsLocked": {
+    "message": "Hesabınız kilidlənib"
+  },
+  "or": {
+    "message": "və ya"
+  },
+  "unlockWithBiometrics": {
+    "message": "Biometriklə kilidi aç"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Ana parolla kilidi aç"
   },
   "unlock": {
     "message": "Kilidi aç"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Brauzer inteqrasiyasını fəallaşdır"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Brauzerdə biometriklər üçün istifadə olunur."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Safari xaricindəki brauzerlərdə biometrik kilid açmağa icazə vermək üçün istifadə olunur."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckGo brauzer inteqrasiyasına icazə ver"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Kilidli"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Anbarınız kilidlənib"
+  },
   "unlocked": {
     "message": "Kilidi açıldı"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Vacib:"
+  },
+  "accessing": {
+    "message": "Müraciət edilir"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "Müraciət tokeninizin şifrəsi açıla bilmədiyi üçün çıxış etdiniz. Bu problemi həll etmək üçün lütfən yenidən giriş edin."

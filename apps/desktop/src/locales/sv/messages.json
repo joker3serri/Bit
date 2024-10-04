@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Undvik tvetydiga tecken"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Sök i samling"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Ditt valv är låst. Bekräfta din identitet för att fortsätta."
+  },
+  "yourAccountIsLocked": {
+    "message": "Ditt konto är låst"
+  },
+  "or": {
+    "message": "eller"
+  },
+  "unlockWithBiometrics": {
+    "message": "Lås upp med biometri"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Lås upp med huvudlösenord"
   },
   "unlock": {
     "message": "Lås upp"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Tillåt webbläsarintegration"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Webbläsarintegration används för biometri i webbläsaren."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Tillåt integration av webbläsaren DuckDuckGo"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Låst"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Ditt valv är låst"
+  },
   "unlocked": {
     "message": "Upplåst"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Viktigt:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

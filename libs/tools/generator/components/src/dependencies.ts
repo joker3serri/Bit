@@ -5,7 +5,6 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens";
-import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
@@ -19,6 +18,7 @@ import {
   ItemModule,
   SectionComponent,
   SectionHeaderComponent,
+  SelectModule,
   ToggleGroupModule,
 } from "@bitwarden/components";
 import {
@@ -42,10 +42,10 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
     InputModule,
     ItemModule,
     JslibModule,
-    JslibServicesModule,
     ReactiveFormsModule,
     SectionComponent,
     SectionHeaderComponent,
+    SelectModule,
     ToggleGroupModule,
   ],
   providers: [

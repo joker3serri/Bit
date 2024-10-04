@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Iwasan ang mga hindi malinaw na character"
   },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Maghanap ng koleksyon"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "Naka-lock ang iyong vault. Patunayan ang iyong pagkakakilanlan upang magpatuloy."
+  },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
   },
   "unlock": {
     "message": "Buksan"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Payagan ang pagsasama ng browser"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Ginagamit para sa biometrics sa browser."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Payagan ang pagsasama ng browser ng DuckDuckGo"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Naka-lock"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "Hindi naka-lock"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Mahalaga:"
+  },
+  "accessing": {
+    "message": "Accessing"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."

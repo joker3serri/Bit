@@ -444,6 +444,10 @@
   "ambiguous": {
     "message": "Félreérthető karakterek mellőzése"
   },
+  "generatorPolicyInEffect": {
+    "message": "A vállalati házirend követelményei kerülnek alkalmazásra a generátor beállításaira.",
+    "description": "Indicates that a policy limits the credential generator screen."
+  },
   "searchCollection": {
     "message": "Gyűjtemény keresése"
   },
@@ -913,6 +917,18 @@
   },
   "yourVaultIsLocked": {
     "message": "A széf zárolásra került. A folytatáshoz meg kell adni a mesterjelszót."
+  },
+  "yourAccountIsLocked": {
+    "message": "A fiók zárolva van."
+  },
+  "or": {
+    "message": "vagy"
+  },
+  "unlockWithBiometrics": {
+    "message": "Biometrikus feloldás"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Feloldás mesterjelszóval"
   },
   "unlock": {
     "message": "Feloldás"
@@ -1771,8 +1787,8 @@
   "enableBrowserIntegration": {
     "message": "Böngésző integráció engedélyezése"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "A böngésző integrációt a biometrikus adatokhoz használják a böngészőben."
+  "enableBrowserIntegrationDesc1": {
+    "message": "A biometrikus feloldás engedélyezésére szolgál olyan böngészőkben, amelyek nem Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "DuckDuckGo böngésző integráció engedélyezése"
@@ -2252,6 +2268,9 @@
   "locked": {
     "message": "Lezárva"
   },
+  "yourVaultIsLockedV2": {
+    "message": "A széf zárolva van."
+  },
   "unlocked": {
     "message": "Feloldva"
   },
@@ -2603,6 +2622,9 @@
   },
   "important": {
     "message": "Fontos:"
+  },
+  "accessing": {
+    "message": "Elérés"
   },
   "accessTokenUnableToBeDecrypted": {
     "message": "Megtörtént a kijelentkezés, mert a hozzáférési vezérjelet nem sikerült visszafejteni. Jelentkezzünk be újra a probléma megoldásához."
