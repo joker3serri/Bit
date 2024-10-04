@@ -787,13 +787,17 @@ export class VaultComponent implements OnInit, OnDestroy {
     await this.openVaultItemDialog("form", cipherFormConfig);
   }
 
+  /**
+   * Edit the given cipher
+   * @param cipherView - The cipher to be edited
+   * @param cloneCipher - `true` when the cipher should be cloned.
+   * Used in place of the `additionalComponentParameters`, as
+   * the `editCipherIdV2` method has a differing implementation.
+   * @param defaultComponentParameters - A method that takes in an instance of
+   * the `AddEditComponent` to edit methods directly.
+   */
   async editCipher(
     cipher: CipherView,
-    /**
-     * True when the cipher should be cloned
-     * Used in place of the `additionalComponentParameters` above, as
-     * the `editCipherIdV2` method has a differing implementation.
-     */
     cloneCipher: boolean,
     additionalComponentParameters?: (comp: AddEditComponent) => void,
   ) {
