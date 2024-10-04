@@ -258,7 +258,27 @@ export class ItemDetailsSectionComponent implements OnInit {
 
     collectionsControl.reset();
     collectionsControl.enable();
-    this.showCollectionsControl = true;
+
+    const organization = this.organizations.find((org) => {
+      return org.id === this.originalCipherView.organizationId;
+    });
+
+    const filteredCollections = this.originalCipherView.collectionIds.find((id) => {
+      return this.collections.find((collection) => {
+        return collection.id === id && collection.manage;
+      });
+    });
+
+    // Show Assign To Collections if
+    // The user has "Can Manage" or "Can Edit" permissions
+    // The Organization has "Owners and Admins Can Manage" setting on
+    if (
+      organization.canEditAllCiphers ||
+      filteredCollections?.length > 0 ||
+      (this.originalCipherView.edit && this.originalCipherView.viewPassword)
+    ) {
+      this.showCollectionsControl = true;
+    }
 
     // If there is only one collection, select it by default.
     if (this.collectionOptions.length === 1) {
