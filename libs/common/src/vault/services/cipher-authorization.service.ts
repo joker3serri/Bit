@@ -1,30 +1,34 @@
 import { map, Observable, of, switchMap } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionId } from "@bitwarden/common/types/guid";
+import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 
 import { CollectionService } from "../abstractions/collection.service";
-import { CipherView } from "../models/view/cipher.view";
 
 /**
  * Service for managing user cipher authorization.
  */
-export abstract class CipherAuthorizationServiceAbstraction {
+export abstract class CipherAuthorizationService {
   /**
    * Determines if the user can delete the specified cipher.
    *
-   * @param {CipherView} cipher - The cipher used to determine if the user can delete it.
+   * @param {OrganizationId} organizationId - The organization id of the cipher.
+   * @param {CollectionId[]} collectionIds - The collection ids related to the cipher.
    * @param {CollectionId} [activeCollectionId] - Optional. The selected collection id from the vault filter.
    *
    * @returns {Observable<boolean>} - An observable that emits a boolean value indicating if the user can delete the cipher.
    */
-  canDeleteCipher$: (cipher: CipherView, activeCollectionId?: CollectionId) => Observable<boolean>;
+  canDeleteCipher$: (
+    organizationId: OrganizationId,
+    collectionIds: CollectionId[],
+    activeCollectionId?: CollectionId,
+  ) => Observable<boolean>;
 }
 
 /**
- * {@link CipherAuthorizationServiceAbstraction}
+ * {@link CipherAuthorizationService}
  */
-export class CipherAuthorizationService implements CipherAuthorizationServiceAbstraction {
+export class DefaultCipherAuthorizationService implements CipherAuthorizationService {
   constructor(
     private collectionService: CollectionService,
     private organizationService: OrganizationService,
@@ -32,36 +36,39 @@ export class CipherAuthorizationService implements CipherAuthorizationServiceAbs
 
   /**
    *
-   * {@link CipherAuthorizationServiceAbstraction.canDeleteCipher$}
+   * {@link CipherAuthorizationService.canDeleteCipher$}
    */
-  canDeleteCipher$(cipher: CipherView, activeCollectionId?: CollectionId): Observable<boolean> {
-    if (cipher.organizationId == null || cipher.collectionIds?.length === 0) {
-      return of(cipher.edit);
+  canDeleteCipher$(
+    organizationId: OrganizationId,
+    collectionIds: CollectionId[],
+    activeCollectionId?: CollectionId,
+  ): Observable<boolean> {
+    if (organizationId == null) {
+      return of(true);
     }
 
-    return this.organizationService.get$(cipher.organizationId).pipe(
+    return this.organizationService.get$(organizationId).pipe(
       switchMap((organization) => {
-        if (
-          organization?.permissions.editAnyCollection ||
-          (organization?.allowAdminAccessToAllCollectionItems && organization.isAdmin)
-        ) {
+        // If the user is an admin, they can delete an unassigned cipher
+        if (collectionIds.length === 0) {
+          return of(organization?.canEditUnmanagedCollections === true);
+        }
+
+        if (organization?.canEditAllCiphers) {
           return of(true);
         }
 
         return this.collectionService
-          .decryptedCollectionViews$(cipher.collectionIds as CollectionId[])
+          .decryptedCollectionViews$(collectionIds as CollectionId[])
           .pipe(
             map((allCollections) => {
               if (activeCollectionId) {
                 const activeCollection = allCollections.find((c) => c.id === activeCollectionId);
-                if (activeCollection) {
-                  return activeCollection.manage === true;
-                }
+
+                return activeCollection ? activeCollection.manage === true : false;
               }
 
-              return allCollections
-                .filter((c) => cipher.collectionIds.includes(c.id))
-                .some((collection) => collection.manage);
+              return allCollections.some((collection) => collection.manage);
             }),
           );
       }),
