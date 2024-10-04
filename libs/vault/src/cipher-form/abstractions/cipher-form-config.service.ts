@@ -80,8 +80,8 @@ type BaseCipherFormConfig = {
    */
   organizations?: Organization[];
 
-  /** Hides the folder form field, useful in the Admin Console where folders aren't applicable */
-  hideFolderSelection?: true;
+  /** Hides the fields that are only applicable to individuals, useful in the Admin Console where folders aren't applicable */
+  hideIndividualVaultFields?: true;
 };
 
 /**

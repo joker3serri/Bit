@@ -49,16 +49,16 @@ describe("AdminConsoleCipherFormConfigService", () => {
   });
 
   describe("buildConfig", () => {
-    it("sets folder attributes", async () => {
+    it("sets individual attributes", async () => {
       adminConsoleConfigService = TestBed.inject(AdminConsoleCipherFormConfigService);
 
-      const { folders, hideFolderSelection } = await adminConsoleConfigService.buildConfig(
+      const { folders, hideIndividualVaultFields } = await adminConsoleConfigService.buildConfig(
         "add",
         cipherId,
       );
 
       expect(folders).toEqual([]);
-      expect(hideFolderSelection).toBe(true);
+      expect(hideIndividualVaultFields).toBe(true);
     });
 
     it("sets mode based on passed mode", async () => {

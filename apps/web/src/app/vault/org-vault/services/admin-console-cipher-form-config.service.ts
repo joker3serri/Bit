@@ -79,7 +79,7 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
       collections,
       organizations: [organization], // only a single org is in context at a time
       folders: [], // folders not applicable in the admin console
-      hideFolderSelection: true,
+      hideIndividualVaultFields: true,
     };
   }
 
