@@ -15,6 +15,12 @@ import {
 } from "@bitwarden/common/platform/services/default-environment.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 
+export type WebRegionConfig = RegionConfig & {
+  key: Region | string; // strings are used for custom environments
+  domain: string;
+  urls: Urls;
+};
+
 /**
  * Web specific environment service. Ensures that the urls are set from the window location.
  */
@@ -23,7 +29,7 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
     private win: Window,
     stateProvider: StateProvider,
     accountService: AccountService,
-    additionalRegionConfigs: RegionConfig[] = [],
+    additionalRegionConfigs: WebRegionConfig[] = [],
     private router: Router,
     private envUrls: Urls,
   ) {
@@ -56,7 +62,7 @@ export class WebEnvironmentService extends DefaultEnvironmentService {
   }
 
   // Web setting env means navigating to a new location
-  async setEnvironment(region: Region, urls?: Urls): Promise<Urls> {
+  async setEnvironment(region: Region | string, urls?: Urls): Promise<Urls> {
     if (region === Region.SelfHosted) {
       throw new Error("setEnvironment does not work in web for self-hosted.");
     }
