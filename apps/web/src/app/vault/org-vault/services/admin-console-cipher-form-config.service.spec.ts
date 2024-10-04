@@ -26,6 +26,8 @@ describe("AdminConsoleCipherFormConfigService", () => {
   beforeEach(async () => {
     getCipherAdmin.mockClear();
     getCipher.mockClear();
+    getCipher.mockResolvedValue({ id: cipherId, name: "Test Cipher - (non-admin)" });
+    getCipherAdmin.mockResolvedValue({ id: cipherId, name: "Test Cipher - (admin)" });
 
     await TestBed.configureTestingModule({
       providers: [
@@ -101,7 +103,6 @@ describe("AdminConsoleCipherFormConfigService", () => {
 
     describe("getCipher", () => {
       it("retrieves the cipher from the cipher service", async () => {
-        getCipher.mockResolvedValueOnce({ id: cipherId, name: "Test Cipher - (non-admin)" });
         testOrg.canEditAllCiphers = false;
 
         adminConsoleConfigService = TestBed.inject(AdminConsoleCipherFormConfigService);
@@ -116,6 +117,7 @@ describe("AdminConsoleCipherFormConfigService", () => {
       });
 
       it("retrieves the cipher from the admin service", async () => {
+        getCipher.mockResolvedValueOnce(null);
         getCipherAdmin.mockResolvedValue({ id: cipherId, name: "Test Cipher - (admin)" });
 
         adminConsoleConfigService = TestBed.inject(AdminConsoleCipherFormConfigService);

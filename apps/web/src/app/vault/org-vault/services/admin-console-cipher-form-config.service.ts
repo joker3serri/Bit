@@ -98,8 +98,9 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
 
     // Retrieve the cipher through the means of an admin
     const cipherResponse = await this.apiService.getCipherAdmin(id);
-    const cipherData = new CipherData(cipherResponse);
+    cipherResponse.edit = true;
 
+    const cipherData = new CipherData(cipherResponse);
     return new Cipher(cipherData);
   }
 }
