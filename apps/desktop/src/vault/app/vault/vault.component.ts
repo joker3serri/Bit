@@ -137,9 +137,6 @@ export class VaultComponent implements OnInit, OnDestroy {
             (document.querySelector("#search") as HTMLInputElement).select();
             detectChanges = false;
             break;
-          case "openGenerator":
-            await this.openGenerator(false);
-            break;
           case "syncCompleted":
             await this.vaultItemsComponent.reload(this.activeFilter.buildFilter());
             await this.vaultFilterComponent.reloadCollectionsAndFolders(this.activeFilter);
