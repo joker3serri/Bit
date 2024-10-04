@@ -500,7 +500,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             }
 
             if (action === "view") {
-              await this.viewCipherById(cipherId);
+              await this.viewCipherById(cipher);
             } else {
               await this.editCipherId(cipherId, false);
             }
@@ -879,10 +879,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   /** Opens the view dialog for the given cipher unless password reprompt fails */
-  async viewCipherById(id: string) {
-    const cipher = await this.cipherService.get(id);
-    // If cipher exists (cipher is null when new) and MP reprompt
-    // is on for this cipher, then show password reprompt.
+  async viewCipherById(cipher: CipherView) {
     if (
       cipher &&
       cipher.reprompt !== 0 &&
@@ -895,7 +892,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const cipherFormConfig = await this.cipherFormConfigService.buildConfig(
       cipher?.edit ? "edit" : "partial-edit",
-      id as CipherId,
+      cipher.id as CipherId,
       cipher?.type,
     );
 
