@@ -237,7 +237,9 @@ export default class AutofillService implements AutofillServiceInterface {
       FeatureFlag.InlineMenuPositioningImprovements,
     );
     if (!inlineMenuPositioningImprovements) {
-      return "bootstrap-legacy-autofill-overlay.js";
+      return !inlineMenuVisibility
+        ? "bootstrap-autofill.js"
+        : "bootstrap-legacy-autofill-overlay.js";
     }
 
     const enableChangedPasswordPrompt = await firstValueFrom(
@@ -885,7 +887,10 @@ export default class AutofillService implements AutofillServiceInterface {
           options.allowTotpAutofill &&
           f.viewable &&
           (f.type === "text" || f.type === "number") &&
-          (AutofillService.fieldIsFuzzyMatch(f, AutoFillConstants.TotpFieldNames) ||
+          (AutofillService.fieldIsFuzzyMatch(f, [
+            ...AutoFillConstants.TotpFieldNames,
+            ...AutoFillConstants.AmbiguousTotpFieldNames,
+          ]) ||
             f.autoCompleteType === "one-time-code")
         ) {
           totps.push(f);
@@ -2556,6 +2561,11 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
+      // We want to avoid treating TOTP fields as password fields
+      if (AutofillService.fieldIsFuzzyMatch(f, AutoFillConstants.TotpFieldNames)) {
+        return;
+      }
+
       const isLikePassword = () => {
         if (f.type !== "text") {
           return false;
@@ -2668,12 +2678,18 @@ export default class AutofillService implements AutofillServiceInterface {
         (withoutForm || f.form === passwordField.form) &&
         (canBeHidden || f.viewable) &&
         (f.type === "text" || f.type === "number") &&
-        AutofillService.fieldIsFuzzyMatch(f, AutoFillConstants.TotpFieldNames)
+        AutofillService.fieldIsFuzzyMatch(f, [
+          ...AutoFillConstants.TotpFieldNames,
+          ...AutoFillConstants.AmbiguousTotpFieldNames,
+        ])
       ) {
         totpField = f;
 
         if (
-          this.findMatchingFieldIndex(f, AutoFillConstants.TotpFieldNames) > -1 ||
+          this.findMatchingFieldIndex(f, [
+            ...AutoFillConstants.TotpFieldNames,
+            ...AutoFillConstants.AmbiguousTotpFieldNames,
+          ]) > -1 ||
           f.autoCompleteType === "one-time-code"
         ) {
           // We found an exact match. No need to keep looking.
