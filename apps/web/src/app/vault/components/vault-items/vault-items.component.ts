@@ -216,24 +216,23 @@ export class VaultItemsComponent {
   }
 
   protected canManageCollection(cipher: CipherView) {
-    // If the cipher is not part of an organization (personal item) or has no collections, user can manage it
-    if (
-      cipher.organizationId == null ||
-      !cipher.collectionIds ||
-      cipher.collectionIds.length === 0
-    ) {
-      return cipher.edit;
+    // If the cipher is not part of an organization (personal item), user can manage it
+    if (cipher.organizationId == null) {
+      return true;
     }
 
     // Check for admin access in AC vault
     if (this.showAdminActions) {
       const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
-
-      if (organization?.permissions.editAnyCollection) {
-        return true;
+      // If the user is an admin, they can delete an unassigned cipher
+      if (cipher.collectionIds.length === 0) {
+        return organization?.canEditUnmanagedCollections === true;
       }
 
-      if (organization?.allowAdminAccessToAllCollectionItems && organization.isAdmin) {
+      if (
+        organization?.permissions.editAnyCollection ||
+        (organization?.allowAdminAccessToAllCollectionItems && organization.isAdmin)
+      ) {
         return true;
       }
     }
