@@ -113,7 +113,6 @@ export class OssServeConfigurator {
       this.serviceContainer.apiService,
       this.serviceContainer.folderApiService,
       this.serviceContainer.billingAccountProfileStateService,
-      this.serviceContainer.accountService,
       this.serviceContainer.cipherAuthorizationService,
     );
     this.confirmCommand = new ConfirmCommand(
