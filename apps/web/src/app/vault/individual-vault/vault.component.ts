@@ -279,7 +279,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.currentSearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
     const ciphers$ = combineLatest([
-      this.cipherService.cipherViews$,
+      this.cipherService.cipherViews$.pipe(filter((c) => c !== null)),
       filter$,
       this.currentSearchText$,
     ]).pipe(
