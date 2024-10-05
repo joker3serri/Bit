@@ -1,10 +1,11 @@
 import {
+  combineLatest,
+  filter,
   firstValueFrom,
   map,
   merge,
   Observable,
   shareReplay,
-  skipWhile,
   Subject,
   switchMap,
 } from "rxjs";
@@ -33,13 +34,7 @@ import Domain from "../../platform/models/domain/domain-base";
 import { EncArrayBuffer } from "../../platform/models/domain/enc-array-buffer";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
-import {
-  ActiveUserState,
-  CIPHERS_MEMORY,
-  DeriveDefinition,
-  DerivedState,
-  StateProvider,
-} from "../../platform/state";
+import { ActiveUserState, StateProvider } from "../../platform/state";
 import { CipherId, CollectionId, OrganizationId, UserId } from "../../types/guid";
 import { OrgKey, UserKey } from "../../types/key";
 import { CipherService as CipherServiceAbstraction } from "../abstractions/cipher.service";
@@ -90,7 +85,6 @@ export class CipherService implements CipherServiceAbstraction {
   private sortedCiphersCache: SortedCiphersCache = new SortedCiphersCache(
     this.sortCiphersByLastUsed,
   );
-  private ciphersExpectingUpdate: DerivedState<boolean>;
   /**
    * Observable that forces the `cipherViews$` observable to re-emit with the provided value.
    * Used to let subscribers of `cipherViews$` know that the decrypted ciphers have been cleared for the active user.
@@ -100,7 +94,16 @@ export class CipherService implements CipherServiceAbstraction {
 
   localData$: Observable<Record<CipherId, LocalData>>;
   ciphers$: Observable<Record<CipherId, CipherData>>;
-  cipherViews$: Observable<CipherView[]>;
+
+  /**
+   * Observable that emits an array of decrypted ciphers for the active user.
+   * This observable will not emit until the encrypted ciphers have either been loaded from state or after sync.
+   *
+   * A `null` value indicates that the latest encrypted ciphers have not been decrypted yet and that
+   * decryption is in progress. The latest decrypted ciphers will be emitted once decryption is complete.
+   *
+   */
+  cipherViews$: Observable<CipherView[] | null>;
   addEditCipherInfo$: Observable<AddEditCipherInfo>;
 
   private localDataState: ActiveUserState<Record<CipherId, LocalData>>;
@@ -127,25 +130,13 @@ export class CipherService implements CipherServiceAbstraction {
     this.encryptedCiphersState = this.stateProvider.getActive(ENCRYPTED_CIPHERS);
     this.decryptedCiphersState = this.stateProvider.getActive(DECRYPTED_CIPHERS);
     this.addEditCipherInfoState = this.stateProvider.getActive(ADD_EDIT_CIPHER_INFO_KEY);
-    this.ciphersExpectingUpdate = this.stateProvider.getDerived(
-      this.encryptedCiphersState.state$,
-      new DeriveDefinition(CIPHERS_MEMORY, "ciphersExpectingUpdate", {
-        derive: (_: Record<CipherId, CipherData>) => false,
-        deserializer: (value) => value,
-      }),
-      {},
-    );
 
     this.localData$ = this.localDataState.state$.pipe(map((data) => data ?? {}));
-    // First wait for ciphersExpectingUpdate to be false before emitting ciphers
-    this.ciphers$ = this.ciphersExpectingUpdate.state$.pipe(
-      skipWhile((expectingUpdate) => expectingUpdate),
-      switchMap(() => this.encryptedCiphersState.state$),
-      map((ciphers) => ciphers ?? {}),
-    );
+    this.ciphers$ = this.encryptedCiphersState.state$.pipe(map((ciphers) => ciphers ?? {}));
 
     // Decrypted ciphers depend on both ciphers and local data and need to be updated when either changes
-    this.cipherViews$ = merge(this.ciphers$, this.localData$).pipe(
+    this.cipherViews$ = combineLatest([this.encryptedCiphersState.state$, this.localData$]).pipe(
+      filter(([ciphers]) => ciphers != null), // Skip if ciphers haven't been loaded yor synced yet
       switchMap(() => merge(this.forceCipherViews$, this.getAllDecrypted())),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
@@ -183,7 +174,7 @@ export class CipherService implements CipherServiceAbstraction {
 
     // Force the cipherView$ observable (which always tracks the active user) to re-emit
     if (userId == activeUserId) {
-      this.forceCipherViews$.next([]);
+      this.forceCipherViews$.next(null);
     }
   }
 
@@ -953,8 +944,6 @@ export class CipherService implements CipherServiceAbstraction {
     userId: UserId = null,
   ): Promise<Record<CipherId, CipherData>> {
     userId ||= await firstValueFrom(this.stateProvider.activeUserId$);
-    // Store that we should wait for an update to return any ciphers
-    await this.ciphersExpectingUpdate.forceValue(true);
     await this.clearDecryptedCiphersState(userId);
     const updatedCiphers = await this.stateProvider
       .getUser(userId, ENCRYPTED_CIPHERS)
