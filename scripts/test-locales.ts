@@ -12,6 +12,7 @@ function findLocaleFiles(dir: string): string[] {
   return fs
     .readdirSync(dir, { encoding: null, recursive: true })
     .filter((file) => path.basename(file) === "messages.json")
+    .filter((file) => path.dirname(file).endsWith("en"))
     .map((file) => path.join(dir, file));
 }
 
@@ -53,7 +54,7 @@ function compareMessagesJson(beforeFile: string, afterFile: string): boolean {
       }
 
       if (messagesIdMapBefore.get(id) !== message) {
-        console.warn(`Message changed: "${id}" message ${message} file ${afterFile}`);
+        console.error(`Message changed: "${id}" message ${message} file ${afterFile}`);
         changed = true;
       }
     }
@@ -77,12 +78,14 @@ const baseBranchRootDir = path.join(rootDir, "base");
 
 const files = findAllLocaleFiles(rootDir);
 
+console.log("Detected valid English locale files:", files);
+
 let changedFiles = false;
 
 for (const file of files) {
   const baseBranchFile = path.join(baseBranchRootDir, file);
   if (!fs.existsSync(baseBranchFile)) {
-    console.warn(`File not found in base branch: ${file}`);
+    console.warn("File not found in base branch:", file);
     continue;
   }
 
