@@ -25,7 +25,7 @@ jobs:
         run: npm ci
       - name: Compare
         run: |
-          rpm run test:locales
+          npm run test:locales
           if [ $? -eq 0 ]; then
             echo "Lint check successful."
           else
