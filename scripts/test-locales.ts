@@ -32,13 +32,15 @@ function readMessagesJson(file: string): Messages {
   try {
     return JSON.parse(content);
   } catch (e: unknown) {
-    console.error(`Invalid JSON file ${file}`, e);
+    console.error(`ERROR: Invalid JSON file ${file}`, e);
     throw e;
   }
 }
 
 function compareMessagesJson(beforeFile: string, afterFile: string): boolean {
   try {
+    console.log("Comparing locale files:", beforeFile, afterFile);
+
     const messagesBeforeJson = readMessagesJson(beforeFile);
     const messagesAfterJson = readMessagesJson(afterFile);
 
@@ -49,19 +51,19 @@ function compareMessagesJson(beforeFile: string, afterFile: string): boolean {
 
     for (const [id, message] of messagesIdMapAfter.entries()) {
       if (!messagesIdMapBefore.has(id)) {
-        console.warn(`Message not found in base branch: "${id}" for file ${beforeFile}`);
+        console.log("New message:", id);
         continue;
       }
 
       if (messagesIdMapBefore.get(id) !== message) {
-        console.error(`Message changed: "${id}" message ${message} file ${afterFile}`);
+        console.error("ERROR: Message changed:", id);
         changed = true;
       }
     }
 
     return changed;
   } catch (e: unknown) {
-    console.error(`Error for file ${beforeFile} or ${afterFile}`, e);
+    console.error(`ERROR: Unable to compare files ${beforeFile} and ${afterFile}`, e);
     throw e;
   }
 }
@@ -85,7 +87,7 @@ let changedFiles = false;
 for (const file of files) {
   const baseBranchFile = path.join(baseBranchRootDir, file);
   if (!fs.existsSync(baseBranchFile)) {
-    console.warn("File not found in base branch:", file);
+    console.error("ERROR: File not found in base branch:", file);
     continue;
   }
 
@@ -95,9 +97,9 @@ for (const file of files) {
 
 if (changedFiles) {
   console.error(
-    "Incompatible Crowdin locale files. " +
+    "ERROR: Incompatible Crowdin locale files. " +
       "All messages in messages.json locale files needs to be immutable and cannot be updated. " +
-      "If a message needs to be updated, create a new message id and update the code to use the new message id.",
+      "If a message needs to be changed, create a new message id and update your code to use it instead.",
   );
   process.exit(1);
 }
