@@ -1,4 +1,8 @@
-<form [bitSubmit]="submitForm.bind(null, false)" [formGroup]="formGroup">
+<form
+  [bitSubmit]="submitForm.bind(null, false)"
+  [appApiAction]="formPromise"
+  [formGroup]="formGroup"
+>
   <ng-container *ngIf="!validatedEmail">
     <div class="tw-mb-3">
       <bit-form-field>

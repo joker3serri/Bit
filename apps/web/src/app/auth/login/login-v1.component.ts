@@ -20,8 +20,6 @@ import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstraction
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { HttpStatusCode } from "@bitwarden/common/enums";
-import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -29,7 +27,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ToastService } from "@bitwarden/components";
@@ -77,7 +74,6 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
-    private validationService: ValidationService,
   ) {
     super(
       devicesApiService,
@@ -110,41 +106,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
   };
 
   private async submitFormHelper(showToast: boolean) {
-    try {
-      await super.submit(showToast);
-    } catch (e) {
-      this.handleSubmitError(e);
-    }
-  }
-
-  /**
-   * Handles the error from the submit function.
-   *
-   * @param error The error object.
-   */
-  private handleSubmitError(error: unknown) {
-    if (error instanceof ErrorResponse) {
-      const errorResponse: ErrorResponse = error as ErrorResponse;
-      switch (errorResponse.statusCode) {
-        case HttpStatusCode.BadRequest: {
-          if (errorResponse.message.toLowerCase().includes("username or password is incorrect")) {
-            this.formGroup.controls.masterPassword.setErrors({
-              error: {
-                message: this.i18nService.t("invalidMasterPassword"),
-              },
-            });
-          }
-          break;
-        }
-        default: {
-          // Allow all other errors to be handled by toast
-          this.validationService.showError(errorResponse);
-        }
-      }
-    } else {
-      // Allow all other errors to be handled by toast
-      this.validationService.showError(error);
-    }
+    await super.submit(showToast);
   }
 
   async ngOnInit() {
