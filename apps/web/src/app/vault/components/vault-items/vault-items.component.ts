@@ -216,7 +216,7 @@ export class VaultItemsComponent {
 
     // Apply sorting only for organization vault
     if (this.showAdminActions) {
-      items = items.sort(this.sortByGroups);
+      items = items.sort(this.defaultSort);
     }
 
     this.dataSource.data = items;
