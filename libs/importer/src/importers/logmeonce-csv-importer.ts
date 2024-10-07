@@ -16,13 +16,24 @@ export class LogMeOnceCsvImporter extends BaseImporter implements Importer {
       if (value.length < 4) {
         return;
       }
-      const cipher = this.initLoginCipher();
-      cipher.name = this.getValueOrDefault(value[0], "--");
-      cipher.login.username = this.getValueOrDefault(value[2]);
-      cipher.login.password = this.getValueOrDefault(value[3]);
-      cipher.login.uris = this.makeUriArray(value[1]);
-      this.cleanupCipher(cipher);
-      result.ciphers.push(cipher);
+
+      if (
+        value[0] !== "name" ||
+        value[1] !== "url" ||
+        value[2] !== "note" ||
+        value[4] !== "username" ||
+        value[5] !== "password"
+      ) {
+        const cipher = this.initLoginCipher();
+        cipher.name = this.getValueOrDefault(value[0], "--");
+        cipher.login.uris = this.makeUriArray(value[1]);
+        cipher.notes = this.getValueOrDefault(value[2]);
+        cipher.login.username = this.getValueOrDefault(value[4]);
+        cipher.login.password = this.getValueOrDefault(value[5]);
+
+        this.cleanupCipher(cipher);
+        result.ciphers.push(cipher);
+      }
     });
 
     result.success = true;
