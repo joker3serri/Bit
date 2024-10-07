@@ -4,7 +4,11 @@ import { MessageType } from "./messaging/message";
 import { Messenger } from "./messaging/messenger";
 
 (function (globalContext) {
-  globalContext.document.currentScript.parentNode.removeChild(globalContext.document.currentScript);
+  if (globalContext.document.currentScript) {
+    globalContext.document.currentScript.parentNode.removeChild(
+      globalContext.document.currentScript,
+    );
+  }
 
   const shouldExecuteContentScript =
     globalContext.document.contentType === "text/html" &&
