@@ -1,6 +1,8 @@
 import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
 import type { BitwardenClient } from "@bitwarden/sdk-internal";
 
+import { BrowserApi } from "../../browser/browser-api";
+
 // https://stackoverflow.com/a/47880734
 const supported = (() => {
   try {
@@ -18,15 +20,33 @@ const supported = (() => {
   return false;
 })();
 
-async function load() {
+// Manifest v3 does not support dynamic imports in the service worker.
+if (BrowserApi.isManifestVersion(3)) {
   if (supported) {
     // eslint-disable-next-line no-console
     console.debug("WebAssembly is supported in this environment");
-    await import("./wasm");
+    import("./wasm");
   } else {
     // eslint-disable-next-line no-console
     console.debug("WebAssembly is not supported in this environment");
-    await import("./fallback");
+    import("./fallback");
+  }
+}
+
+// Manifest v2 expects dynamic imports to prevent timing issues.
+async function load() {
+  if (BrowserApi.isManifestVersion(3)) {
+    return;
+  }
+
+  if (supported) {
+    // eslint-disable-next-line no-console
+    console.debug("WebAssembly is supported in this environment");
+    import("./wasm");
+  } else {
+    // eslint-disable-next-line no-console
+    console.debug("WebAssembly is not supported in this environment");
+    import("./fallback");
   }
 }
 
