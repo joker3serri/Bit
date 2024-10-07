@@ -59,7 +59,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
 
   /** Tracks the selected generation algorithm */
   protected credential = this.formBuilder.group({
-    type: ["username" as CredentialAlgorithm],
+    type: [null as CredentialAlgorithm],
   });
 
   async ngOnInit() {
@@ -114,7 +114,11 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     // assume the last-visible generator algorithm is the user's preferred one
     const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
     this.credential.valueChanges
-      .pipe(withLatestFrom(preferences), takeUntil(this.destroyed))
+      .pipe(
+        filter(({ type }) => !!type),
+        withLatestFrom(preferences),
+        takeUntil(this.destroyed),
+      )
       .subscribe(([{ type }, preference]) => {
         if (isEmailAlgorithm(type)) {
           preference.email.algorithm = type;

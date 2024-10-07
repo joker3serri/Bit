@@ -28,7 +28,13 @@ import {
   isEmailAlgorithm,
   isPasswordAlgorithm,
   isUsernameAlgorithm,
+  PasswordAlgorithm,
 } from "@bitwarden/generator-core";
+
+/** root category that drills into username and email categories */
+const IDENTIFIER = "identifier";
+/** options available for the top-level navigation */
+type RootNavValue = PasswordAlgorithm | typeof IDENTIFIER;
 
 @Component({
   selector: "tools-credential-generator",
@@ -53,11 +59,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   @Output()
   readonly onGenerated = new EventEmitter<GeneratedCredential>();
 
-  protected root$ = new BehaviorSubject<{ nav: "password" | "passphrase" | "username" }>({
-    nav: "password",
+  protected root$ = new BehaviorSubject<{ nav: RootNavValue }>({
+    nav: null,
   });
 
-  protected onRootChanged(nav: "password" | "passphrase" | "username") {
+  protected onRootChanged(nav: RootNavValue) {
     // prevent subscription cycle
     if (this.root$.value.nav !== nav) {
       this.zone.run(() => {
@@ -67,7 +73,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   }
 
   protected username = this.formBuilder.group({
-    nav: ["username" as CredentialAlgorithm],
+    nav: [null as CredentialAlgorithm],
   });
 
   async ngOnInit() {
@@ -90,6 +96,18 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed),
       )
       .subscribe(this.usernameOptions$);
+
+    this.generatorService
+      .algorithms$("password", { userId$: this.userId$ })
+      .pipe(
+        map((algorithms) => {
+          const options = this.toOptions(algorithms) as Option<RootNavValue>[];
+          options.push({ value: IDENTIFIER, label: this.i18nService.t("username") });
+          return options;
+        }),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(this.rootOptions$);
 
     this.algorithm$
       .pipe(
@@ -137,13 +155,15 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
     this.root$
       .pipe(
+        filter(({ nav }) => !!nav),
         switchMap((root) => {
-          if (root.nav === "username") {
+          if (root.nav === IDENTIFIER) {
             return concat(of(this.username.value), this.username.valueChanges);
           } else {
-            return of(root);
+            return of(root as { nav: PasswordAlgorithm });
           }
         }),
+        filter(({ nav }) => !!nav),
         withLatestFrom(preferences),
         takeUntil(this.destroyed),
       )
@@ -172,8 +192,8 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     preferences.pipe(takeUntil(this.destroyed)).subscribe(({ email, username, password }) => {
       // the last preference set by the user "wins"
       const userNav = email.updated > username.updated ? email : username;
-      const rootNav: any = userNav.updated > password.updated ? "username" : password.algorithm;
-      const credentialType = rootNav === "username" ? userNav.algorithm : password.algorithm;
+      const rootNav: any = userNav.updated > password.updated ? IDENTIFIER : password.algorithm;
+      const credentialType = rootNav === IDENTIFIER ? userNav.algorithm : password.algorithm;
 
       // update navigation; break subscription loop
       this.onRootChanged(rootNav);
@@ -226,8 +246,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Lists the credential types supported by the component. */
+  /** Lists the credential types of the username algorithm box. */
   protected usernameOptions$ = new BehaviorSubject<Option<CredentialAlgorithm>[]>([]);
+
+  /** Lists the top-level credential types supported by the component. */
+  protected rootOptions$ = new BehaviorSubject<Option<RootNavValue>[]>([]);
 
   /** tracks the currently selected credential type */
   protected algorithm$ = new ReplaySubject<CredentialGeneratorInfo>(1);
