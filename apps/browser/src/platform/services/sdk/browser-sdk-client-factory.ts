@@ -42,11 +42,11 @@ async function load() {
   if (supported) {
     // eslint-disable-next-line no-console
     console.debug("WebAssembly is supported in this environment");
-    import("./wasm");
+    await import("./wasm");
   } else {
     // eslint-disable-next-line no-console
     console.debug("WebAssembly is not supported in this environment");
-    import("./fallback");
+    await import("./fallback");
   }
 }
 
