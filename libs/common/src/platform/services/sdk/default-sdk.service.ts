@@ -26,7 +26,7 @@ export class DefaultSdkService implements SdkService {
 
   supported$ = this.client$.pipe(
     concatMap(async (client) => {
-      return client.echo("bitwarden wasm!") !== "bitwarden wasm!";
+      return client.echo("bitwarden wasm!") === "bitwarden wasm!";
     }),
   );
 
