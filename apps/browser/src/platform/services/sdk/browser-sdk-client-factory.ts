@@ -18,14 +18,16 @@ const supported = (() => {
   return false;
 })();
 
-if (supported) {
-  // eslint-disable-next-line no-console
-  console.debug("WebAssembly is supported in this environment");
-  import("./wasm");
-} else {
-  // eslint-disable-next-line no-console
-  console.debug("WebAssembly is not supported in this environment");
-  import("./fallback");
+async function load() {
+  if (supported) {
+    // eslint-disable-next-line no-console
+    console.debug("WebAssembly is supported in this environment");
+    await import("./wasm");
+  } else {
+    // eslint-disable-next-line no-console
+    console.debug("WebAssembly is not supported in this environment");
+    await import("./fallback");
+  }
 }
 
 /**
@@ -37,6 +39,8 @@ export class BrowserSdkClientFactory implements SdkClientFactory {
   async createSdkClient(
     ...args: ConstructorParameters<typeof BitwardenClient>
   ): Promise<BitwardenClient> {
+    await load();
+
     return Promise.resolve((globalThis as any).init_sdk(...args));
   }
 }
