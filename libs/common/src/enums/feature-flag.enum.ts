@@ -33,6 +33,7 @@ export enum FeatureFlag {
   CipherKeyEncryption = "cipher-key-encryption",
   PM11901_RefactorSelfHostingLicenseUploader = "PM-11901-refactor-self-hosting-license-uploader",
   Pm3478RefactorOrganizationUserApi = "pm-3478-refactor-organizationuser-api",
+  VerifiedSsoDomainEndpoint = "pm-12337-refactor-sso-details-endpoint",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -76,6 +77,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.CipherKeyEncryption]: FALSE,
   [FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader]: FALSE,
   [FeatureFlag.Pm3478RefactorOrganizationUserApi]: FALSE,
+  [FeatureFlag.VerifiedSsoDomainEndpoint]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
