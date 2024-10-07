@@ -102,7 +102,7 @@ export class ChipSelectComponent<T = unknown> implements ControlValueAccessor, A
    * The initial calculated width of the menu when it opens, which is used to
    * keep the width consistent as the user navigates through submenus
    */
-  protected menuWidth: number | undefined;
+  protected menuWidth: number | null = null;
 
   /** The label to show in the chip button */
   protected get label(): string {
@@ -129,7 +129,7 @@ export class ChipSelectComponent<T = unknown> implements ControlValueAccessor, A
   protected handleMenuClosed(): void {
     this.setOrResetRenderedOptions();
     // reset menu width so that it can be recalculated upon open
-    this.menuWidth = undefined;
+    this.menuWidth = null;
   }
 
   protected selectOption(option: ChipSelectOption<T>, _event: MouseEvent) {
