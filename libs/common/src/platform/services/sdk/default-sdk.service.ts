@@ -40,7 +40,10 @@ export class DefaultSdkService implements SdkService {
 
   async failedToInitialize(): Promise<void> {
     // Only log on cloud instances
-    if (!(await firstValueFrom(this.environmentService.environment$)).isCloud) {
+    if (
+      this.platformUtilsService.isDev() ||
+      !(await firstValueFrom(this.environmentService.environment$)).isCloud
+    ) {
       return;
     }
 
