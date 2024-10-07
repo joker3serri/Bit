@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { UntypedFormBuilder } from "@angular/forms";
 
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 
@@ -15,4 +16,12 @@ export class PersonalOwnershipPolicy extends BasePolicy {
   selector: "policy-personal-ownership",
   templateUrl: "personal-ownership.component.html",
 })
-export class PersonalOwnershipPolicyComponent extends BasePolicyComponent {}
+export class PersonalOwnershipPolicyComponent extends BasePolicyComponent {
+  constructor(private formBuilder: UntypedFormBuilder) {
+    super();
+  }
+
+  data = this.formBuilder.group({
+    enabled: false,
+  });
+}
