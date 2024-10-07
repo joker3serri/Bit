@@ -224,6 +224,7 @@ export class LoginComponentV1 extends CaptchaProtectedComponent implements OnIni
       }
     } catch (e) {
       this.logService.error(e);
+      throw e;
     }
   }
 
