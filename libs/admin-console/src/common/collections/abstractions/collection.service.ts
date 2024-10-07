@@ -7,6 +7,7 @@ import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CollectionData, Collection, CollectionView } from "../models";
 
 export abstract class CollectionService {
+  encryptedCollections$: Observable<Collection[]>;
   decryptedCollections$: Observable<CollectionView[]>;
 
   clearActiveUserCache: () => Promise<void>;

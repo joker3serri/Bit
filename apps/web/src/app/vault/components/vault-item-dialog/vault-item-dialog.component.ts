@@ -179,6 +179,15 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
     return this.cipher?.edit ?? false;
   }
 
+  protected get showDelete() {
+    // Don't show the delete button when cloning a cipher
+    if (this.params.mode == "form" && this.formConfig.mode === "clone") {
+      return false;
+    }
+    // Never show the delete button for new ciphers
+    return this.cipher != null;
+  }
+
   protected get showCipherView() {
     return this.cipher != undefined && (this.params.mode === "view" || this.loadingForm);
   }
@@ -207,6 +216,7 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private router: Router,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
+    private premiumUpgradeService: PremiumUpgradePromptService,
   ) {
     this.updateTitle();
   }
@@ -297,6 +307,13 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
   };
 
   openAttachmentsDialog = async () => {
+    const canAccessAttachments = await firstValueFrom(this.canAccessAttachments$);
+
+    if (!canAccessAttachments) {
+      await this.premiumUpgradeService.promptForPremium();
+      return;
+    }
+
     const dialogRef = this.dialogService.open<AttachmentDialogCloseResult, { cipherId: CipherId }>(
       AttachmentsV2Component,
       {
@@ -324,8 +341,8 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
   };
 
   cancel = async () => {
-    // We're in View mode, or we don't have a cipher, close the dialog.
-    if (this.params.mode === "view" || this.cipher == null) {
+    // We're in View mode, we don't have a cipher, or we were cloning, close the dialog.
+    if (this.params.mode === "view" || this.cipher == null || this.formConfig.mode === "clone") {
       this.dialogRef.close(this._cipherModified ? VaultItemDialogResult.Saved : undefined);
       return;
     }
