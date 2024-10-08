@@ -841,6 +841,10 @@ export class CryptoService implements CryptoServiceAbstraction {
     return this.userPrivateKeyHelper$(userId, false).pipe(map((keys) => keys?.userPrivateKey));
   }
 
+  userEncryptedPrivateKey$(userId: UserId): Observable<EncryptedString> {
+    return this.stateProvider.getUser(userId, USER_ENCRYPTED_PRIVATE_KEY).state$;
+  }
+
   userPrivateKeyWithLegacySupport$(userId: UserId): Observable<UserPrivateKey> {
     return this.userPrivateKeyHelper$(userId, true).pipe(map((keys) => keys?.userPrivateKey));
   }

@@ -15,7 +15,7 @@ import {
   UserPublicKey,
 } from "../../types/key";
 import { KeySuffixOptions, HashPurpose } from "../enums";
-import { EncString } from "../models/domain/enc-string";
+import { EncryptedString, EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
 export class UserPrivateKeyDecryptionFailedError extends Error {
@@ -287,6 +287,17 @@ export abstract class CryptoService {
    * @param userId The user id of the user to get the data for.
    */
   abstract userPrivateKey$(userId: UserId): Observable<UserPrivateKey>;
+
+  /**
+   * Gets an observable stream of the given users encrypted private key, will emit null if the user
+   * doesn't have an encrypted private key at all.
+   *
+   * @param userId The user id of the user to get the data for.
+   *
+   * @deprecated Temporary function to allow the SDK to be initialized after the login process, it
+   * will be removed when auth has been migrated to the SDK.
+   */
+  abstract userEncryptedPrivateKey$(userId: UserId): Observable<EncryptedString>;
 
   /**
    * Gets an observable stream of the given users decrypted private key with legacy support,

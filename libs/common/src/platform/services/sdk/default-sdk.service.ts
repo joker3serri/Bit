@@ -4,7 +4,6 @@ import {
   firstValueFrom,
   Observable,
   shareReplay,
-  tap,
   map,
   filter,
 } from "rxjs";
@@ -18,13 +17,15 @@ import {
 
 import { ApiService } from "../../../abstractions/api.service";
 import { AccountService } from "../../../auth/abstractions/account.service";
-import { TokenService } from "../../../auth/abstractions/token.service";
+import { KdfConfigService } from "../../../auth/abstractions/kdf-config.service";
 import { DeviceType } from "../../../enums/device-type.enum";
 import { UserId } from "../../../types/guid";
+import { CryptoService } from "../../abstractions/crypto.service";
 import { Environment, EnvironmentService } from "../../abstractions/environment.service";
 import { PlatformUtilsService } from "../../abstractions/platform-utils.service";
 import { SdkClientFactory } from "../../abstractions/sdk/sdk-client-factory";
 import { SdkService } from "../../abstractions/sdk/sdk.service";
+import { KdfType } from "../../enums";
 
 export class DefaultSdkService implements SdkService {
   private sdkClientCache = new Map<UserId, Observable<BitwardenClient>>();
@@ -35,9 +36,6 @@ export class DefaultSdkService implements SdkService {
       return await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
     }),
     shareReplay({ refCount: true, bufferSize: 1 }),
-    tap((client) => {
-      (window as any).client = client;
-    }),
   );
 
   supported$ = this.client$.pipe(
@@ -51,7 +49,8 @@ export class DefaultSdkService implements SdkService {
     private environmentService: EnvironmentService,
     private platformUtilsService: PlatformUtilsService,
     private accountService: AccountService,
-    private tokenService: TokenService,
+    private kdfConfigService: KdfConfigService,
+    private cryptoService: CryptoService,
     private apiService: ApiService, // Yes we shouldn't import ApiService, but it's temporary
     private userAgent: string = null,
   ) {}
@@ -63,17 +62,40 @@ export class DefaultSdkService implements SdkService {
     }
 
     const account$ = this.accountService.accounts$.pipe(map((accounts) => accounts[userId]));
-    const token$ = this.tokenService.hasAccessToken$(userId).pipe(
-      filter((hasToken) => hasToken),
-      concatMap(() => this.tokenService.getAccessToken(userId)),
-    );
+    const kdfParams$ = this.kdfConfigService.getKdfConfig$(userId);
+    const privateKey$ = this.cryptoService
+      .userEncryptedPrivateKey$(userId)
+      .pipe(filter((key) => key != null));
+    const userKey$ = this.cryptoService.userKey$(userId).pipe(filter((key) => key != null));
 
-    const client$ = combineLatest([this.environmentService.environment$, account$, token$]).pipe(
-      concatMap(async ([env, account, token]) => {
+    const client$ = combineLatest([
+      this.environmentService.environment$,
+      account$,
+      kdfParams$,
+      privateKey$,
+      userKey$,
+    ]).pipe(
+      concatMap(async ([env, account, kdfParams, privateKey, userKey]) => {
         const settings = this.toSettings(env);
         const client = await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
 
-        // TODO: Init client crypto
+        await client.crypto().initialize_user_crypto({
+          email: account.email,
+          method: { decryptedKey: { decrypted_user_key: userKey.keyB64 } },
+          kdfParams:
+            kdfParams.kdfType === KdfType.PBKDF2_SHA256
+              ? {
+                  pBKDF2: { iterations: kdfParams.iterations },
+                }
+              : {
+                  argon2id: {
+                    iterations: kdfParams.iterations,
+                    memory: kdfParams.memory,
+                    parallelism: kdfParams.parallelism,
+                  },
+                },
+          privateKey,
+        });
 
         return client;
       }),

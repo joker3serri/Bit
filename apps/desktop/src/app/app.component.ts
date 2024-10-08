@@ -10,7 +10,17 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { catchError, filter, firstValueFrom, map, of, Subject, takeUntil, timeout } from "rxjs";
+import {
+  catchError,
+  filter,
+  firstValueFrom,
+  map,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  timeout,
+} from "rxjs";
 
 import { CollectionService } from "@bitwarden/admin-console/common";
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
@@ -171,6 +181,18 @@ export class AppComponent implements OnInit, OnDestroy {
           } else {
             this.logService.debug("SDK is supported");
           }
+        });
+
+      this.accountService.activeAccount$
+        .pipe(
+          switchMap((account) => this.sdkService.userClient$(account.id)),
+          takeUntilDestroyed(),
+        )
+        .subscribe({
+          error: (e: unknown) => this.logService.error(e),
+          next: (client) => {
+            this.logService.info("userClient$", client);
+          },
         });
     }
   }
