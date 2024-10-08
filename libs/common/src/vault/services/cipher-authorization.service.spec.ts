@@ -1,13 +1,12 @@
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
+import { CollectionService, CollectionView } from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionId } from "@bitwarden/common/types/guid";
 
-import { CollectionService } from "../abstractions/collection.service";
 import { CipherView } from "../models/view/cipher.view";
-import { CollectionView } from "../models/view/collection.view";
 
 import {
   CipherAuthorizationService,

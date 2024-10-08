@@ -1,14 +1,14 @@
 import { map, Observable, of, switchMap } from "rxjs";
 
+import { CollectionService } from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { CollectionId } from "@bitwarden/common/types/guid";
 
-import { CollectionService } from "../abstractions/collection.service";
 import { Cipher } from "../models/domain/cipher";
 import { CipherView } from "../models/view/cipher.view";
 
 /**
- * A cipher or cipher view.
+ * Represents either a cipher or a cipher view.
  */
 type CipherLike = Cipher | CipherView;
 
@@ -19,7 +19,7 @@ export abstract class CipherAuthorizationService {
   /**
    * Determines if the user can delete the specified cipher.
    *
-   * @param {CipherLike} cipher - The cipher used to determine if the user can delete it.
+   * @param {CipherLike} cipher - The cipher object to evaluate for deletion permissions.
    * @param {CollectionId[]} [allowedCollections] - Optional. The selected collection id from the vault filter.
    *
    * @returns {Observable<boolean>} - An observable that emits a boolean value indicating if the user can delete the cipher.
