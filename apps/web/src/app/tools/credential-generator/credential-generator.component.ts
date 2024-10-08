@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { PasswordGeneratorComponent } from "@bitwarden/generator-components";
+import { GeneratorModule } from "@bitwarden/generator-components";
 
 import { HeaderModule } from "../../layouts/header/header.module";
 import { SharedModule } from "../../shared";
@@ -9,6 +9,6 @@ import { SharedModule } from "../../shared";
   standalone: true,
   selector: "credential-generator",
   templateUrl: "credential-generator.component.html",
-  imports: [SharedModule, HeaderModule, PasswordGeneratorComponent],
+  imports: [SharedModule, HeaderModule, GeneratorModule],
 })
 export class CredentialGeneratorComponent {}
