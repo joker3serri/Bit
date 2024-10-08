@@ -827,7 +827,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     const defaultComponentParameters = (comp: AddEditComponent) => {
       comp.organization = this.organization;
       comp.organizationId = this.organization.id;
-      comp.cipherId = cipher.id;
+      comp.cipherId = cipher?.id;
+      comp.collectionId = this.activeFilter.collectionId;
       comp.onSavedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
         modal.close();
         this.refresh();
@@ -895,6 +896,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       "edit",
       cipher.id as CipherId,
       cipher.type,
+      this.activeFilter.collectionId as CollectionId,
     );
 
     await this.openVaultItemDialog("view", cipherFormConfig, cipher);
