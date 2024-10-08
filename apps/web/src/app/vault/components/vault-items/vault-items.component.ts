@@ -1,11 +1,10 @@
 import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 
-import { CollectionAdminView, Unassigned } from "@bitwarden/admin-console/common";
+import { CollectionAdminView, Unassigned, CollectionView } from "@bitwarden/admin-console/common";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { TableDataSource } from "@bitwarden/components";
 
 import { GroupView } from "../../../admin-console/organizations/core";
@@ -98,7 +97,12 @@ export class VaultItemsComponent {
   }
 
   get disableMenu() {
-    return !this.bulkMoveAllowed && !this.showAssignToCollections() && !this.showDelete();
+    return (
+      !this.bulkMoveAllowed &&
+      !this.showAssignToCollections() &&
+      !this.showDelete() &&
+      !this.showBulkEditCollectionAccess
+    );
   }
 
   get bulkAssignToCollectionsAllowed() {
