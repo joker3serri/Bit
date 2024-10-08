@@ -160,6 +160,9 @@ export class OverlayNotificationsBackground implements OverlayNotificationsBackg
     );
   };
 
+  /**
+   * Clears the timeout used when triggering a notification on click of the submit button.
+   */
   private clearNotificationFallbackTimeout() {
     if (this.notificationFallbackTimeout) {
       clearTimeout(this.notificationFallbackTimeout);
