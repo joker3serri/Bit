@@ -91,13 +91,6 @@ export class FakeAccountService implements AccountService {
     await this.mock.setAccountEmailVerified(userId, emailVerified);
   }
 
-  async setAccountManagedByOrganizationId(
-    userId: UserId,
-    managedByOrganizationId?: string | null,
-  ): Promise<void> {
-    await this.mock.setAccountManagedByOrganizationId(userId, managedByOrganizationId);
-  }
-
   async switchAccount(userId: UserId): Promise<void> {
     const next =
       userId == null ? null : { id: userId, ...this.accountsSubject["_buffer"]?.[0]?.[userId] };
