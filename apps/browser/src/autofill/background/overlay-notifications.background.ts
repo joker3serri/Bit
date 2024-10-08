@@ -329,9 +329,13 @@ export class OverlayNotificationsBackground implements OverlayNotificationsBackg
   private handleOnCompletedRequestEvent = async (details: chrome.webRequest.WebResponseDetails) => {
     if (
       this.requestHostIsInvalid(details) ||
-      isInvalidResponseStatusCode(details.statusCode) ||
       !this.activeFormSubmissionRequests.has(details.requestId)
     ) {
+      return;
+    }
+
+    if (isInvalidResponseStatusCode(details.statusCode)) {
+      this.clearNotificationFallbackTimeout();
       return;
     }
 
