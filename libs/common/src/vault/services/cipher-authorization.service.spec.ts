@@ -3,7 +3,7 @@ import { of } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionId } from "@bitwarden/common/types/guid";
 
 import { CollectionService } from "../abstractions/collection.service";
 import { CipherView } from "../models/view/cipher.view";
@@ -58,15 +58,10 @@ describe("CipherAuthorizationService", () => {
     it("should return true if cipher has no organizationId", (done) => {
       const cipher = createMockCipher(null, []) as CipherView;
 
-      cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-        )
-        .subscribe((result) => {
-          expect(result).toBe(true);
-          done();
-        });
+      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+        expect(result).toBe(true);
+        done();
+      });
     });
 
     it("should return true if cipher is unassigned and user can edit unmanaged collections", (done) => {
@@ -74,15 +69,10 @@ describe("CipherAuthorizationService", () => {
       const organization = createMockOrganization({ canEditUnmanagedCollections: true });
       mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
 
-      cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-        )
-        .subscribe((result) => {
-          expect(result).toBe(true);
-          done();
-        });
+      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+        expect(result).toBe(true);
+        done();
+      });
     });
 
     it("should return false if cipher is unassigned and user cannot can edit unmanaged collections", (done) => {
@@ -90,15 +80,10 @@ describe("CipherAuthorizationService", () => {
       const organization = createMockOrganization();
       mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
 
-      cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-        )
-        .subscribe((result) => {
-          expect(result).toBe(false);
-          done();
-        });
+      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+        expect(result).toBe(false);
+        done();
+      });
     });
 
     it("should return true if user can edit all ciphers in the org", (done) => {
@@ -106,16 +91,11 @@ describe("CipherAuthorizationService", () => {
       const organization = createMockOrganization({ canEditAllCiphers: true });
       mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
 
-      cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-        )
-        .subscribe((result) => {
-          expect(result).toBe(true);
-          expect(mockOrganizationService.get$).toHaveBeenCalledWith("org1");
-          done();
-        });
+      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+        expect(result).toBe(true);
+        expect(mockOrganizationService.get$).toHaveBeenCalledWith("org1");
+        done();
+      });
     });
 
     it("should return true if activeCollectionId is provided and has manage permission", (done) => {
@@ -133,11 +113,7 @@ describe("CipherAuthorizationService", () => {
       );
 
       cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-          activeCollectionId,
-        )
+        .canDeleteCipher$(cipher, [activeCollectionId])
         .subscribe((result) => {
           expect(result).toBe(true);
           expect(mockCollectionService.decryptedCollectionViews$).toHaveBeenCalledWith([
@@ -163,11 +139,7 @@ describe("CipherAuthorizationService", () => {
       );
 
       cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-          activeCollectionId,
-        )
+        .canDeleteCipher$(cipher, [activeCollectionId])
         .subscribe((result) => {
           expect(result).toBe(false);
           expect(mockCollectionService.decryptedCollectionViews$).toHaveBeenCalledWith([
@@ -192,20 +164,15 @@ describe("CipherAuthorizationService", () => {
         of(allCollections as CollectionView[]),
       );
 
-      cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-        )
-        .subscribe((result) => {
-          expect(result).toBe(true);
-          expect(mockCollectionService.decryptedCollectionViews$).toHaveBeenCalledWith([
-            "col1",
-            "col2",
-            "col3",
-          ] as CollectionId[]);
-          done();
-        });
+      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+        expect(result).toBe(true);
+        expect(mockCollectionService.decryptedCollectionViews$).toHaveBeenCalledWith([
+          "col1",
+          "col2",
+          "col3",
+        ] as CollectionId[]);
+        done();
+      });
     });
 
     it("should return false if no collection has manage permission", (done) => {
@@ -221,19 +188,14 @@ describe("CipherAuthorizationService", () => {
         of(allCollections as CollectionView[]),
       );
 
-      cipherAuthorizationService
-        .canDeleteCipher$(
-          cipher.organizationId as OrganizationId,
-          cipher.collectionIds as CollectionId[],
-        )
-        .subscribe((result) => {
-          expect(result).toBe(false);
-          expect(mockCollectionService.decryptedCollectionViews$).toHaveBeenCalledWith([
-            "col1",
-            "col2",
-          ] as CollectionId[]);
-          done();
-        });
+      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+        expect(result).toBe(false);
+        expect(mockCollectionService.decryptedCollectionViews$).toHaveBeenCalledWith([
+          "col1",
+          "col2",
+        ] as CollectionId[]);
+        done();
+      });
     });
   });
 });

@@ -1,9 +1,16 @@
 import { map, Observable, of, switchMap } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CollectionId } from "@bitwarden/common/types/guid";
 
 import { CollectionService } from "../abstractions/collection.service";
+import { Cipher } from "../models/domain/cipher";
+import { CipherView } from "../models/view/cipher.view";
+
+/**
+ * A cipher or cipher view.
+ */
+type CipherLike = Cipher | CipherView;
 
 /**
  * Service for managing user cipher authorization.
@@ -12,16 +19,14 @@ export abstract class CipherAuthorizationService {
   /**
    * Determines if the user can delete the specified cipher.
    *
-   * @param {OrganizationId} organizationId - The organization id of the cipher.
-   * @param {CollectionId[]} collectionIds - The collection ids related to the cipher.
-   * @param {CollectionId} [activeCollectionId] - Optional. The selected collection id from the vault filter.
+   * @param {CipherLike} cipher - The cipher used to determine if the user can delete it.
+   * @param {CollectionId[]} [allowedCollections] - Optional. The selected collection id from the vault filter.
    *
    * @returns {Observable<boolean>} - An observable that emits a boolean value indicating if the user can delete the cipher.
    */
   canDeleteCipher$: (
-    organizationId: OrganizationId,
-    collectionIds: CollectionId[],
-    activeCollectionId?: CollectionId,
+    cipher: CipherLike,
+    allowedCollections?: CollectionId[],
   ) => Observable<boolean>;
 }
 
@@ -38,19 +43,15 @@ export class DefaultCipherAuthorizationService implements CipherAuthorizationSer
    *
    * {@link CipherAuthorizationService.canDeleteCipher$}
    */
-  canDeleteCipher$(
-    organizationId: OrganizationId,
-    collectionIds: CollectionId[],
-    activeCollectionId?: CollectionId,
-  ): Observable<boolean> {
-    if (organizationId == null) {
+  canDeleteCipher$(cipher: CipherLike, allowedCollections?: CollectionId[]): Observable<boolean> {
+    if (cipher.organizationId == null) {
       return of(true);
     }
 
-    return this.organizationService.get$(organizationId).pipe(
+    return this.organizationService.get$(cipher.organizationId).pipe(
       switchMap((organization) => {
         // If the user is an admin, they can delete an unassigned cipher
-        if (collectionIds.length === 0) {
+        if (cipher.collectionIds.length === 0) {
           return of(organization?.canEditUnmanagedCollections === true);
         }
 
@@ -59,16 +60,14 @@ export class DefaultCipherAuthorizationService implements CipherAuthorizationSer
         }
 
         return this.collectionService
-          .decryptedCollectionViews$(collectionIds as CollectionId[])
+          .decryptedCollectionViews$(cipher.collectionIds as CollectionId[])
           .pipe(
             map((allCollections) => {
-              if (activeCollectionId) {
-                const activeCollection = allCollections.find((c) => c.id === activeCollectionId);
+              const collections = allowedCollections
+                ? allCollections.filter((c) => allowedCollections.includes(c.id as CollectionId))
+                : allCollections;
 
-                return activeCollection ? activeCollection.manage === true : false;
-              }
-
-              return allCollections.some((collection) => collection.manage);
+              return collections.some((collection) => collection.manage);
             }),
           );
       }),
