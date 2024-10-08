@@ -896,10 +896,14 @@ export class VaultComponent implements OnInit, OnDestroy {
       "edit",
       cipher.id as CipherId,
       cipher.type,
-      this.activeFilter.collectionId as CollectionId,
     );
 
-    await this.openVaultItemDialog("view", cipherFormConfig, cipher);
+    await this.openVaultItemDialog(
+      "view",
+      cipherFormConfig,
+      cipher,
+      this.activeFilter.collectionId as CollectionId,
+    );
   }
 
   /**
@@ -909,6 +913,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     mode: VaultItemDialogMode,
     formConfig: CipherFormConfig,
     cipher?: CipherView,
+    activeCollectionId?: CollectionId,
   ) {
     const disableForm = cipher ? !cipher.edit && !this.organization.canEditAllCiphers : false;
     // If the form is disabled, force the mode into `view`
@@ -917,6 +922,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       mode: dialogMode,
       formConfig,
       disableForm,
+      activeCollectionId,
     });
 
     const result = await lastValueFrom(this.vaultItemDialogRef.closed);

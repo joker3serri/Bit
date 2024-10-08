@@ -608,11 +608,17 @@ export class VaultComponent implements OnInit, OnDestroy {
    * Open the combined view / edit dialog for a cipher.
    * @param mode - Starting mode of the dialog.
    * @param formConfig - Configuration for the form when editing/adding a cipher.
+   * @param activeCollectionId - The active collection ID.
    */
-  async openVaultItemDialog(mode: VaultItemDialogMode, formConfig: CipherFormConfig) {
+  async openVaultItemDialog(
+    mode: VaultItemDialogMode,
+    formConfig: CipherFormConfig,
+    activeCollectionId?: CollectionId,
+  ) {
     this.vaultItemDialogRef = VaultItemDialogComponent.open(this.dialogService, {
       mode,
       formConfig,
+      activeCollectionId,
     });
 
     const result = await lastValueFrom(this.vaultItemDialogRef.closed);
@@ -792,10 +798,13 @@ export class VaultComponent implements OnInit, OnDestroy {
       cipher.edit ? "edit" : "partial-edit",
       cipher.id as CipherId,
       cipher.type,
-      this.selectedCollection?.node.id as CollectionId,
     );
 
-    await this.openVaultItemDialog("view", cipherFormConfig);
+    await this.openVaultItemDialog(
+      "view",
+      cipherFormConfig,
+      this.selectedCollection?.node.id as CollectionId,
+    );
   }
 
   async addCollection() {

@@ -12,7 +12,7 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CipherId } from "@bitwarden/common/types/guid";
+import { CipherId, CollectionId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
 import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
@@ -64,6 +64,11 @@ export interface VaultItemDialogParams {
    * If true, the "edit" button will be disabled in the dialog.
    */
   disableForm?: boolean;
+
+  /**
+   * The ID of the active collection. This is know the collection filter selected by the user.
+   */
+  activeCollectionId?: CollectionId;
 }
 
 export enum VaultItemDialogResult {
@@ -237,7 +242,7 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
       );
 
       this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(this.cipher, [
-        this.params.formConfig.activeCollectionId,
+        this.params.activeCollectionId,
       ]);
     }
 

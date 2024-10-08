@@ -82,11 +82,6 @@ type BaseCipherFormConfig = {
 
   /** Hides the fields that are only applicable to individuals, useful in the Admin Console where folders aren't applicable */
   hideIndividualVaultFields?: true;
-
-  /**
-   * The ID of the active collection. This is know the collection filter selected by the user.
-   */
-  activeCollectionId?: CollectionId;
 };
 
 /**
@@ -138,12 +133,10 @@ export abstract class CipherFormConfigService {
    * @param mode
    * @param cipherId
    * @param cipherType
-   * @param activeCollectionId
    */
   abstract buildConfig(
     mode: CipherFormMode,
     cipherId?: CipherId,
     cipherType?: CipherType,
-    activeCollectionId?: CollectionId,
   ): Promise<CipherFormConfig>;
 }
