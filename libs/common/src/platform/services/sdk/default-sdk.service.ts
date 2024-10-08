@@ -67,6 +67,7 @@ export class DefaultSdkService implements SdkService {
       .userEncryptedPrivateKey$(userId)
       .pipe(filter((key) => key != null));
     const userKey$ = this.cryptoService.userKey$(userId).pipe(filter((key) => key != null));
+    const orgKeys$ = this.cryptoService.orgKeys$(userId).pipe(filter((keys) => keys != null));
 
     const client$ = combineLatest([
       this.environmentService.environment$,
@@ -74,8 +75,9 @@ export class DefaultSdkService implements SdkService {
       kdfParams$,
       privateKey$,
       userKey$,
+      orgKeys$,
     ]).pipe(
-      concatMap(async ([env, account, kdfParams, privateKey, userKey]) => {
+      concatMap(async ([env, account, kdfParams, privateKey, userKey, orgKeys]) => {
         const settings = this.toSettings(env);
         const client = await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
 
@@ -95,6 +97,10 @@ export class DefaultSdkService implements SdkService {
                   },
                 },
           privateKey,
+        });
+
+        await client.crypto().initialize_org_crypto({
+          organizationKeys: new Map(Object.entries(orgKeys).map(([k, v]) => [k, v.keyB64])),
         });
 
         return client;
