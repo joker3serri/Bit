@@ -38,11 +38,11 @@ describe("CipherAuthorizationService", () => {
   const createMockOrganization = ({
     allowAdminAccessToAllCollectionItems = false,
     canEditAllCiphers = false,
-    canEditUnmanagedCollections = false,
+    canEditUnassignedCiphers = false,
   } = {}) => ({
     allowAdminAccessToAllCollectionItems,
     canEditAllCiphers,
-    canEditUnmanagedCollections,
+    canEditUnassignedCiphers,
   });
 
   beforeEach(() => {
@@ -63,9 +63,9 @@ describe("CipherAuthorizationService", () => {
       });
     });
 
-    it("should return true if cipher is unassigned and user can edit unmanaged collections", (done) => {
+    it("should return true if cipher is unassigned and user can edit unassigned ciphers", (done) => {
       const cipher = createMockCipher("org1", []) as CipherView;
-      const organization = createMockOrganization({ canEditUnmanagedCollections: true });
+      const organization = createMockOrganization({ canEditUnassignedCiphers: true });
       mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
 
       cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
