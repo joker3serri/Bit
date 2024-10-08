@@ -56,7 +56,7 @@ export class SendCreatedComponent {
       this.send = sendViews.find((s) => s.id === sendId);
       if (this.send) {
         this.hoursAvailable = this.getHoursAvailable(this.send);
-        this.daysAvailable = this.hoursAvailable / 24;
+        this.daysAvailable = Math.ceil(this.hoursAvailable / 24);
       }
     });
   }
