@@ -2,9 +2,8 @@ import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
-import zxcvbn from "zxcvbn";
 
-import { PasswordStrengthComponent } from "@bitwarden/angular/tools/password-strength/password-strength.component";
+import { PasswordStrengthV2Component } from "@bitwarden/angular/tools/password-strength/password-strength-v2.component";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -60,11 +59,11 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     newPassword: ["", Validators.required],
   });
 
-  @ViewChild(PasswordStrengthComponent) passwordStrengthComponent: PasswordStrengthComponent;
+  @ViewChild(PasswordStrengthV2Component) passwordStrengthComponent: PasswordStrengthV2Component;
 
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   showPassword = false;
-  passwordStrengthResult: zxcvbn.ZXCVBNResult;
+  passwordStrengthScore: number;
 
   private destroy$ = new Subject<void>();
 
@@ -151,7 +150,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     if (
       this.enforcedPolicyOptions != null &&
       !this.policyService.evaluateMasterPassword(
-        this.passwordStrengthResult.score,
+        this.passwordStrengthScore,
         this.formGroup.value.newPassword,
         this.enforcedPolicyOptions,
       )
@@ -164,7 +163,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.passwordStrengthResult.score < 3) {
+    if (this.passwordStrengthScore < 3) {
       const result = await this.dialogService.openSimpleDialog({
         title: { key: "weakMasterPassword" },
         content: { key: "weakMasterPasswordDesc" },
@@ -195,8 +194,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.dialogRef.close(ResetPasswordDialogResult.Ok);
   };
 
-  getStrengthResult(result: zxcvbn.ZXCVBNResult) {
-    this.passwordStrengthResult = result;
+  getStrengthScore(result: number) {
+    this.passwordStrengthScore = result;
   }
 
   static open = (dialogService: DialogService, input: DialogConfig<ResetPasswordDialogData>) => {
