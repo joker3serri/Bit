@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { lastValueFrom, map, Observable, of, switchMap } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
@@ -28,8 +28,8 @@ export class AccountComponent implements OnInit {
     private modalService: ModalService,
     private dialogService: DialogService,
     private userVerificationService: UserVerificationService,
-    private accountService: AccountService,
     private configService: ConfigService,
+    private organizationService: OrganizationService,
   ) {}
 
   async ngOnInit() {
@@ -39,8 +39,8 @@ export class AccountComponent implements OnInit {
       .pipe(
         switchMap((isAccountDeprovisioningEnabled) =>
           isAccountDeprovisioningEnabled
-            ? this.accountService.activeAccount$.pipe(
-                map((account) => account?.managedByOrganizationId === null),
+            ? this.organizationService.organizations$.pipe(
+                map((organizations) => !organizations.some((o) => o.managesActiveUser === true)),
               )
             : of(true),
         ),
