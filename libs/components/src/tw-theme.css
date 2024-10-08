@@ -223,8 +223,8 @@ summary.tw-list-none::-webkit-details-marker {
 
 /**
  * Bootstrap uses z-index: 1050 for modals, dialogs and drag-and-drop previews should appear above them.
- * Remove once bootstrap is removed from our codebase.
- * CL-XYZ
+ * Remove once bootstrap these styles should revisited to ensure that overlays display properly over other content.
+ * CL-483
  */
 .cdk-drag-preview,
 .cdk-overlay-container,
