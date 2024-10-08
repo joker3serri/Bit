@@ -112,12 +112,6 @@ describe("SendCreatedComponent", () => {
     expect(component["daysAvailable"]).toBe(7);
   });
 
-  it("should initialize send and hours", () => {
-    fixture.detectChanges();
-    expect(component["send"]).toBe(sendView);
-    expect(component["daysAvailable"]).toBe(7);
-  });
-
   it("should navigate back to send list on close", async () => {
     fixture.detectChanges();
     await component.close();
