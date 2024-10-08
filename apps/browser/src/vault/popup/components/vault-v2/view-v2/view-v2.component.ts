@@ -13,7 +13,6 @@ import { AUTOFILL_ID, SHOW_AUTOFILL_BUTTON } from "@bitwarden/common/autofill/co
 import { EventType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -105,10 +104,7 @@ export class ViewV2Component {
             await this.vaultPopupAutofillService.doAutofill(this.cipher);
           }
 
-          this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
-            cipher.organizationId as OrganizationId,
-            cipher.collectionIds as CollectionId[],
-          );
+          this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(cipher);
 
           await this.eventCollectionService.collect(
             EventType.Cipher_ClientViewed,

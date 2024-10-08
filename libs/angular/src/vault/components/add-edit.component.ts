@@ -22,7 +22,7 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { CollectionId, UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -321,11 +321,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.cipher.login.autofillOnPageLoad = this.autofillOnPageLoadOptions[2].value;
     }
 
-    this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
-      this.cipher.organizationId as OrganizationId,
-      this.cipher.collectionIds as CollectionId[],
+    this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(this.cipher, [
       this.collectionId as CollectionId,
-    );
+    ]);
   }
 
   async submit(): Promise<boolean> {

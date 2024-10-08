@@ -3,7 +3,6 @@ import { firstValueFrom } from "rxjs";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -49,10 +48,7 @@ export class DeleteCommand {
     }
 
     const canDeleteCipher = await firstValueFrom(
-      this.cipherAuthorizationService.canDeleteCipher$(
-        cipher.organizationId as OrganizationId,
-        cipher.collectionIds as CollectionId[],
-      ),
+      this.cipherAuthorizationService.canDeleteCipher$(cipher),
     );
 
     if (!canDeleteCipher) {

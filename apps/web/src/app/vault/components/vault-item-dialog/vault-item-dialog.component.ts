@@ -11,7 +11,7 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PremiumUpgradePromptService } from "@bitwarden/common/vault/abstractions/premium-upgrade-prompt.service";
 import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
@@ -236,11 +236,9 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
         (o) => o.id === this.cipher.organizationId,
       );
 
-      this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
-        this.cipher.organizationId as OrganizationId,
-        this.cipher.collectionIds as CollectionId[],
+      this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(this.cipher, [
         this.params.formConfig.activeCollectionId,
-      );
+      ]);
     }
 
     this.performingInitialLoad = false;
