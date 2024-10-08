@@ -2,9 +2,7 @@
   {{ "personalOwnershipExemption" | i18n }}
 </bit-callout>
 
-<ng-container [formGroup]="data">
-  <bit-form-control>
-    <input type="checkbox" bitCheckbox formControlName="enabled" id="enabled" />
-    <bit-label>{{ "turnOn" | i18n }}</bit-label>
-  </bit-form-control>
-</ng-container>
+<bit-form-control>
+  <input type="checkbox" bitCheckbox [formControl]="enabled" id="enabled" />
+  <bit-label>{{ "turnOn" | i18n }}</bit-label>
+</bit-form-control>
