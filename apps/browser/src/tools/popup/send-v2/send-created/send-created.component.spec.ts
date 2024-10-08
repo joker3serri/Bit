@@ -112,16 +112,36 @@ describe("SendCreatedComponent", () => {
     expect(component["daysAvailable"]).toBe(7);
   });
 
+  it("should initialize send and hours", () => {
+    fixture.detectChanges();
+    expect(component["send"]).toBe(sendView);
+    expect(component["daysAvailable"]).toBe(7);
+  });
+
   it("should navigate back to send list on close", async () => {
     fixture.detectChanges();
     await component.close();
     expect(router.navigate).toHaveBeenCalledWith(["/tabs/send"]);
   });
 
-  describe("getDaysAvailable", () => {
-    it("returns the correct number of days", () => {
+  describe("getHoursAvailable", () => {
+    it("returns the correct number of hours", () => {
       fixture.detectChanges();
-      expect(component.getDaysAvailable(sendView)).toBe(7);
+      expect(component.getHoursAvailable(sendView)).toBe(168);
+    });
+  });
+
+  describe("formatExpirationDate", () => {
+    it("returns hours if less than 24", () => {
+      fixture.detectChanges();
+      expect(component.formatExpirationDate()).toBe("sendExpiresInDays 7");
+    });
+
+    it("returns days if 24 or more", () => {
+      sendView.deletionDate = new Date();
+      sendView.deletionDate.setDate(sendView.deletionDate.getDate() + 1);
+      fixture.detectChanges();
+      expect(component.formatExpirationDate()).toBe("sendExpiresInDaySingle");
     });
   });
 
