@@ -80,6 +80,9 @@ type BaseCipherFormConfig = {
    */
   organizations?: Organization[];
 
+  /** Hides the fields that are only applicable to individuals, useful in the Admin Console where folders aren't applicable */
+  hideIndividualVaultFields?: true;
+
   /**
    * The ID of the active collection. This is know the collection filter selected by the user.
    */
