@@ -1334,6 +1334,8 @@ const safeProviders: SafeProvider[] = [
       SdkClientFactory,
       EnvironmentService,
       PlatformUtilsServiceAbstraction,
+      AccountServiceAbstraction,
+      TokenServiceAbstraction,
       ApiServiceAbstraction,
     ],
   }),
