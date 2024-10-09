@@ -9,6 +9,10 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
+import {
+  convertToPermission,
+  getPermissionList,
+} from "./../../../admin-console/organizations/shared/components/access-selector/access-selector.models";
 import { VaultItemEvent } from "./vault-item-event";
 import { RowHeightClass } from "./vault-items.component";
 
@@ -43,6 +47,14 @@ export class VaultCipherRowComponent implements OnInit {
   @Output() checkedToggled = new EventEmitter<void>();
 
   protected CipherType = CipherType;
+  private permissionList = getPermissionList();
+  private permissionPriority = [
+    "canManage",
+    "canEdit",
+    "canEditExceptPass",
+    "canView",
+    "canViewExceptPass",
+  ];
 
   constructor(
     private configService: ConfigService,
@@ -95,24 +107,33 @@ export class VaultCipherRowComponent implements OnInit {
       return this.i18nService.t("canManage");
     }
 
-    const filteredCollections = this.cipher.collectionIds.find((id) => {
-      return this.collections.find((collection) => {
-        return collection.id === id && collection.manage;
-      });
+    const filteredCollections = this.collections.filter((collection) => {
+      if (collection.assigned) {
+        return this.cipher.collectionIds.find((id) => {
+          if (collection.id === id) {
+            return collection;
+          }
+        });
+      }
     });
-    if (filteredCollections?.length > 0) {
-      return this.i18nService.t("canManage");
+
+    if (filteredCollections?.length === 1) {
+      return this.i18nService.t(
+        this.permissionList.find((p) => p.perm === convertToPermission(filteredCollections[0]))
+          ?.labelId,
+      );
     }
 
-    if (this.cipher.edit) {
-      return this.cipher.viewPassword
-        ? this.i18nService.t("canEdit")
-        : this.i18nService.t("canEditExceptPass");
-    } else {
-      return this.cipher.viewPassword
-        ? this.i18nService.t("canView")
-        : this.i18nService.t("canViewExceptPass");
+    if (filteredCollections?.length > 1) {
+      const labels = filteredCollections.map((collection) => {
+        return this.permissionList.find((p) => p.perm === convertToPermission(collection))?.labelId;
+      });
+
+      const highestPerm = this.permissionPriority.find((perm) => labels.includes(perm));
+      return this.i18nService.t(highestPerm);
     }
+
+    return this.i18nService.t("noAccess");
   }
 
   protected get showCopyPassword(): boolean {
