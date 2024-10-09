@@ -17,6 +17,9 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService, ToastService } from "@bitwarden/components";
 
 import { ViewCipherDialogParams, ViewCipherDialogResult, ViewComponent } from "./view.component";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { mockAccountServiceWith } from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
 
 describe("ViewComponent", () => {
   let component: ViewComponent;
@@ -62,6 +65,7 @@ describe("ViewComponent", () => {
           useValue: mock<BillingAccountProfileStateService>(),
         },
         { provide: ConfigService, useValue: mock<ConfigService>() },
+        { provide: AccountService, useValue: mockAccountServiceWith("UserId" as UserId) },
       ],
     }).compileComponents();
 

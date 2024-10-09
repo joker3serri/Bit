@@ -14,6 +14,9 @@ import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { cipherData } from "./reports-ciphers.mock";
 import { UnsecuredWebsitesReportComponent } from "./unsecured-websites-report.component";
+import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 describe("UnsecuredWebsitesReportComponent", () => {
   let component: UnsecuredWebsitesReportComponent;
@@ -21,12 +24,14 @@ describe("UnsecuredWebsitesReportComponent", () => {
   let organizationService: MockProxy<OrganizationService>;
   let syncServiceMock: MockProxy<SyncService>;
   let collectionService: MockProxy<CollectionService>;
+  let accountService: FakeAccountService;
 
   beforeEach(() => {
     organizationService = mock<OrganizationService>();
     organizationService.organizations$ = of([]);
     syncServiceMock = mock<SyncService>();
     collectionService = mock<CollectionService>();
+    accountService = mockAccountServiceWith("UserId" as UserId);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TestBed.configureTestingModule({
@@ -59,6 +64,10 @@ describe("UnsecuredWebsitesReportComponent", () => {
         {
           provide: CollectionService,
           useValue: collectionService,
+        },
+        {
+          provide: AccountService,
+          useValue: accountService,
         },
       ],
       schemas: [],

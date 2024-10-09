@@ -78,6 +78,7 @@ describe("vault filter service", () => {
       i18nService,
       stateProvider,
       collectionService,
+      accountService,
     );
     collapsedGroupingsState = stateProvider.activeUser.getFake(COLLAPSED_GROUPINGS);
   });
