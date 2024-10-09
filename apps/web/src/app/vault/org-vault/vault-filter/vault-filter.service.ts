@@ -12,6 +12,7 @@ import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
 import { VaultFilterService as BaseVaultFilterService } from "../../individual-vault/vault-filter/services/vault-filter.service";
 import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 @Injectable()
 export class VaultFilterService extends BaseVaultFilterService implements OnDestroy {
@@ -32,6 +33,7 @@ export class VaultFilterService extends BaseVaultFilterService implements OnDest
     i18nService: I18nService,
     stateProvider: StateProvider,
     collectionService: CollectionService,
+    accountService: AccountService,
   ) {
     super(
       organizationService,
@@ -41,6 +43,7 @@ export class VaultFilterService extends BaseVaultFilterService implements OnDest
       i18nService,
       stateProvider,
       collectionService,
+      accountService,
     );
   }
 

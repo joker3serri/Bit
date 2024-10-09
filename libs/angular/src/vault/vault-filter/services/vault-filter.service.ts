@@ -20,6 +20,7 @@ import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction
 import { DynamicTreeNode } from "../models/dynamic-tree-node.model";
 
 import { COLLAPSED_GROUPINGS } from "./../../../../../common/src/vault/services/key-state/collapsed-groupings.state";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 const NestingDelimiter = "/";
 
@@ -30,6 +31,8 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
   private readonly collapsedGroupings$: Observable<Set<string>> =
     this.collapsedGroupingsState.state$.pipe(map((c) => new Set(c)));
 
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
+
   constructor(
     protected organizationService: OrganizationService,
     protected folderService: FolderService,
@@ -37,6 +40,7 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
     protected collectionService: CollectionService,
     protected policyService: PolicyService,
     protected stateProvider: StateProvider,
+    protected accountService: AccountService,
   ) {}
 
   async storeCollapsedFilterNodes(collapsedFilterNodes: Set<string>): Promise<void> {
@@ -85,7 +89,9 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
   }
 
   async buildCollections(organizationId?: string): Promise<DynamicTreeNode<CollectionView>> {
-    const storedCollections = await firstValueFrom(this.collectionService.decryptedCollections$);
+    const storedCollections = await firstValueFrom(
+      this.collectionService.decryptedCollections$(this.activeUserId$),
+    );
     let collections: CollectionView[];
     if (organizationId != null) {
       collections = storedCollections.filter((c) => c.organizationId === organizationId);

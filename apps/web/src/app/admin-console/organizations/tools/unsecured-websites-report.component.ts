@@ -12,6 +12,7 @@ import { PasswordRepromptService } from "@bitwarden/vault";
 
 // eslint-disable-next-line no-restricted-imports
 import { UnsecuredWebsitesReportComponent as BaseUnsecuredWebsitesReportComponent } from "../../../tools/reports/pages/unsecured-websites-report.component";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 @Component({
   selector: "app-unsecured-websites-report",
@@ -31,6 +32,7 @@ export class UnsecuredWebsitesReportComponent
     i18nService: I18nService,
     syncService: SyncService,
     collectionService: CollectionService,
+    accountService: AccountService,
   ) {
     super(
       cipherService,
@@ -40,6 +42,7 @@ export class UnsecuredWebsitesReportComponent
       i18nService,
       syncService,
       collectionService,
+      accountService,
     );
   }
 

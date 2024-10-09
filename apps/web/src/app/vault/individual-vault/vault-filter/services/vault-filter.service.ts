@@ -37,11 +37,14 @@ import {
 } from "../shared/models/vault-filter.type";
 
 import { VaultFilterService as VaultFilterServiceAbstraction } from "./abstractions/vault-filter.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 const NestingDelimiter = "/";
 
 @Injectable()
 export class VaultFilterService implements VaultFilterServiceAbstraction {
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
+
   organizationTree$: Observable<TreeNode<OrganizationFilter>> = combineLatest([
     this.organizationService.memberOrganizations$,
     this.policyService.policyAppliesToActiveUser$(PolicyType.SingleOrg),
@@ -64,8 +67,9 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     map((folders) => this.buildFolderTree(folders)),
   );
 
-  filteredCollections$: Observable<CollectionView[]> =
-    this.collectionService.decryptedCollections$.pipe(
+  filteredCollections$: Observable<CollectionView[]> = this.collectionService
+    .decryptedCollections$(this.activeUserId$)
+    .pipe(
       combineLatestWith(this._organizationFilter),
       switchMap(([collections, org]) => {
         return this.filterCollections(collections, org);
@@ -92,6 +96,7 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     protected i18nService: I18nService,
     protected stateProvider: StateProvider,
     protected collectionService: CollectionService,
+    protected accountService: AccountService,
   ) {}
 
   async getCollectionNodeFromTree(id: string) {

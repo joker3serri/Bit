@@ -16,6 +16,7 @@ import {
   CipherFormConfigService,
   CipherFormMode,
 } from "../abstractions/cipher-form-config.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 /**
  * Default implementation of the `CipherFormConfigService`. This service should suffice for most use cases, however
@@ -29,6 +30,9 @@ export class DefaultCipherFormConfigService implements CipherFormConfigService {
   private cipherService: CipherService = inject(CipherService);
   private folderService: FolderService = inject(FolderService);
   private collectionService: CollectionService = inject(CollectionService);
+  private accountService: AccountService = inject(AccountService);
+
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
 
   async buildConfig(
     mode: CipherFormMode,
@@ -39,9 +43,9 @@ export class DefaultCipherFormConfigService implements CipherFormConfigService {
       await firstValueFrom(
         combineLatest([
           this.organizations$,
-          this.collectionService.encryptedCollections$.pipe(
+          this.collectionService.encryptedCollections$(this.activeUserId$).pipe(
             switchMap((c) =>
-              this.collectionService.decryptedCollections$.pipe(
+              this.collectionService.decryptedCollections$(this.activeUserId$).pipe(
                 filter((d) => d.length === c.length), // Ensure all collections have been decrypted
               ),
             ),

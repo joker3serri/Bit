@@ -37,6 +37,7 @@ import { PopupCipherView } from "../views/popup-cipher.view";
 
 import { VaultPopupAutofillService } from "./vault-popup-autofill.service";
 import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 /**
  * Service for managing the various item lists on the new Vault tab in the browser popup.
@@ -45,6 +46,8 @@ import { MY_VAULT_ID, VaultPopupListFiltersService } from "./vault-popup-list-fi
   providedIn: "root",
 })
 export class VaultPopupItemsService {
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
+
   private _searchText$ = new BehaviorSubject<string>("");
 
   /**
@@ -91,7 +94,7 @@ export class VaultPopupItemsService {
     switchMap((ciphers) =>
       combineLatest([
         this.organizationService.organizations$,
-        this.collectionService.decryptedCollections$,
+        this.collectionService.decryptedCollections$(this.activeUserId$),
       ]).pipe(
         map(([organizations, collections]) => {
           const orgMap = Object.fromEntries(organizations.map((org) => [org.id, org]));
@@ -254,6 +257,7 @@ export class VaultPopupItemsService {
     private collectionService: CollectionService,
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private syncService: SyncService,
+    private accountService: AccountService,
   ) {}
 
   applyFilter(newSearchText: string) {

@@ -20,6 +20,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { ChipSelectOption } from "@bitwarden/components";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 /** All available cipher filters */
 export type PopupListFilter = {
@@ -46,6 +47,8 @@ const INITIAL_FILTERS: PopupListFilter = {
   providedIn: "root",
 })
 export class VaultPopupListFiltersService {
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
+
   /**
    * UI form for all filters
    */
@@ -81,6 +84,7 @@ export class VaultPopupListFiltersService {
     private collectionService: CollectionService,
     private formBuilder: FormBuilder,
     private policyService: PolicyService,
+    private accountService: AccountService,
   ) {
     this.filterForm.controls.organization.valueChanges
       .pipe(takeUntilDestroyed())
@@ -294,7 +298,7 @@ export class VaultPopupListFiltersService {
           previousFilter.organization?.id === currentFilter.organization?.id,
       ),
     ),
-    this.collectionService.decryptedCollections$,
+    this.collectionService.decryptedCollections$(this.activeUserId$),
   ]).pipe(
     map(([filters, allCollections]) => {
       const organizationId = filters.organization?.id ?? null;

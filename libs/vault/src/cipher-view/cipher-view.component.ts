@@ -21,6 +21,7 @@ import { ItemDetailsV2Component } from "./item-details/item-details-v2.component
 import { ItemHistoryV2Component } from "./item-history/item-history-v2.component";
 import { LoginCredentialsViewComponent } from "./login-credentials/login-credentials-view.component";
 import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-identity-sections.component";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 @Component({
   selector: "app-cipher-view",
@@ -54,11 +55,13 @@ export class CipherViewComponent implements OnChanges, OnDestroy {
   folder$: Observable<FolderView>;
   private destroyed$: Subject<void> = new Subject();
   cardIsExpired: boolean = false;
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
 
   constructor(
     private organizationService: OrganizationService,
     private collectionService: CollectionService,
     private folderService: FolderService,
+    private accountService: AccountService,
   ) {}
 
   async ngOnChanges() {
@@ -97,11 +100,13 @@ export class CipherViewComponent implements OnChanges, OnDestroy {
       (!this.collections || this.collections.length === 0)
     ) {
       this.collections = await firstValueFrom(
-        this.collectionService.decryptedCollections$.pipe(
-          map((allCollections) =>
-            allCollections.filter((c) => this.cipher.collectionIds.includes(c.id)),
+        this.collectionService
+          .decryptedCollections$(this.activeUserId$)
+          .pipe(
+            map((allCollections) =>
+              allCollections.filter((c) => this.cipher.collectionIds.includes(c.id)),
+            ),
           ),
-        ),
       );
     }
 

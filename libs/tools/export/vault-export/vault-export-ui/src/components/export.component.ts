@@ -45,6 +45,7 @@ import { VaultExportServiceAbstraction } from "@bitwarden/vault-export-core";
 import { EncryptedExportType } from "../enums/encrypted-export-type.enum";
 
 import { ExportScopeCalloutComponent } from "./export-scope-callout.component";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 @Component({
   selector: "tools-export",
@@ -152,6 +153,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private destroy$ = new Subject<void>();
   private onlyManagedCollections = true;
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
 
   constructor(
     protected i18nService: I18nService,
@@ -159,7 +161,6 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
     protected exportService: VaultExportServiceAbstraction,
     protected eventCollectionService: EventCollectionService,
     protected passwordGenerationService: PasswordGenerationServiceAbstraction,
-    private platformUtilsService: PlatformUtilsService,
     private policyService: PolicyService,
     private logService: LogService,
     private formBuilder: UntypedFormBuilder,
@@ -167,6 +168,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
     protected dialogService: DialogService,
     protected organizationService: OrganizationService,
     private collectionService: CollectionService,
+    private accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -204,7 +206,7 @@ export class ExportComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.organizations$ = combineLatest({
-      collections: this.collectionService.decryptedCollections$,
+      collections: this.collectionService.decryptedCollections$(this.activeUserId$),
       memberOrganizations: this.organizationService.memberOrganizations$,
     }).pipe(
       map(({ collections, memberOrganizations }) => {
