@@ -6,6 +6,7 @@ import {
   shareReplay,
   map,
   distinctUntilChanged,
+  tap,
 } from "rxjs";
 
 import {
@@ -118,6 +119,13 @@ export class DefaultSdkService implements SdkService {
         });
 
         return client;
+      }),
+      tap({
+        finalize: () => {
+          if (this.sdkClientCache.has(userId)) {
+            this.sdkClientCache.delete(userId);
+          }
+        },
       }),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
