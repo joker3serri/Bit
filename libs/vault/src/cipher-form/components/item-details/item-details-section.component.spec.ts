@@ -145,15 +145,6 @@ describe("ItemDetailsSectionComponent", () => {
     it("should disable organizationId control if ownership change is not allowed", async () => {
       component.config.allowPersonalOwnership = false;
       component.config.organizations = [{ id: "org1" } as Organization];
-      component.originalCipherView = {
-        name: "cipher1",
-        organizationId: "org1",
-        edit: true,
-        folderId: "folder1",
-        collectionIds: ["col1", "col2"],
-        favorite: true,
-        viewPassword: true,
-      } as CipherView;
       jest.spyOn(component, "allowOwnershipChange", "get").mockReturnValue(false);
 
       await component.ngOnInit();
@@ -312,15 +303,6 @@ describe("ItemDetailsSectionComponent", () => {
         { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
         { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
       ];
-      component.originalCipherView = {
-        name: "cipher1",
-        organizationId: "org1",
-        edit: true,
-        folderId: "folder1",
-        collectionIds: ["col1", "col2"],
-        favorite: true,
-        viewPassword: true,
-      } as CipherView;
 
       fixture.detectChanges();
       await fixture.whenStable();
@@ -371,15 +353,6 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.collections = [
         { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
       ];
-      component.originalCipherView = {
-        name: "cipher1",
-        organizationId: "org1",
-        edit: true,
-        folderId: "folder1",
-        collectionIds: ["col1", "col2"],
-        favorite: true,
-        viewPassword: true,
-      } as CipherView;
 
       fixture.detectChanges();
       await fixture.whenStable();
@@ -399,11 +372,9 @@ describe("ItemDetailsSectionComponent", () => {
       component.originalCipherView = {
         name: "cipher1",
         organizationId: "org1",
-        edit: true,
         folderId: "folder1",
         collectionIds: ["col1", "col2", "col3"],
         favorite: true,
-        viewPassword: true,
       } as CipherView;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [

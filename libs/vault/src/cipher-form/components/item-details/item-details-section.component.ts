@@ -213,6 +213,10 @@ export class ItemDetailsSectionComponent implements OnInit {
         (this.originalCipherView.collectionIds as CollectionId[]),
     );
 
+    if (!(this.originalCipherView?.edit && this.originalCipherView?.viewPassword)) {
+      this.itemDetailsForm.controls.collectionIds.disable();
+    }
+
     if (this.partialEdit) {
       this.itemDetailsForm.disable();
       this.itemDetailsForm.controls.favorite.enable();
@@ -258,27 +262,7 @@ export class ItemDetailsSectionComponent implements OnInit {
 
     collectionsControl.reset();
     collectionsControl.enable();
-
-    const organization = this.organizations.find((org) => {
-      return org.id === this.originalCipherView.organizationId;
-    });
-
-    const filteredCollections = this.originalCipherView.collectionIds.find((id) => {
-      return this.collections.find((collection) => {
-        return collection.id === id && collection.manage;
-      });
-    });
-
-    // Show Assign To Collections if
-    // The user has "Can Manage" or "Can Edit" permissions
-    // The Organization has "Owners and Admins Can Manage" setting on
-    if (
-      organization?.canEditAllCiphers ||
-      filteredCollections?.length > 0 ||
-      (this.originalCipherView.edit && this.originalCipherView.viewPassword)
-    ) {
-      this.showCollectionsControl = true;
-    }
+    this.showCollectionsControl = true;
 
     // If there is only one collection, select it by default.
     if (this.collectionOptions.length === 1) {
