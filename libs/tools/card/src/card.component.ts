@@ -15,7 +15,16 @@ import { TypographyModule } from "@bitwarden/components";
   },
 })
 export class CardComponent {
+  /**
+   * The title of the card
+   */
   @Input() title: string;
+  /**
+   * The current value of the card as emphasized text
+   */
   @Input() value: number;
+  /**
+   * The maximum value of the card
+   */
   @Input() maxValue: number;
 }

@@ -5,7 +5,5 @@
     "**/locales/*[^n]/messages.json": true,
     "**/_locales/[^e]*/messages.json": true,
     "**/_locales/*[^n]/messages.json": true
-  },
-  "rust-analyzer.linkedProjects": ["apps/desktop/desktop_native/Cargo.toml"],
-  "angular.enable-strict-mode-prompt": false
+  }
 }
