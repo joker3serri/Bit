@@ -5,7 +5,7 @@ import {
   Observable,
   shareReplay,
   map,
-  filter,
+  distinctUntilChanged,
 } from "rxjs";
 
 import {
@@ -26,6 +26,7 @@ import { PlatformUtilsService } from "../../abstractions/platform-utils.service"
 import { SdkClientFactory } from "../../abstractions/sdk/sdk-client-factory";
 import { SdkService } from "../../abstractions/sdk/sdk.service";
 import { KdfType } from "../../enums";
+import { compareValues } from "../../misc/compare-values";
 
 export class DefaultSdkService implements SdkService {
   private sdkClientCache = new Map<UserId, Observable<BitwardenClient>>();
@@ -55,21 +56,24 @@ export class DefaultSdkService implements SdkService {
     private userAgent: string = null,
   ) {}
 
-  userClient$(userId: UserId): Observable<BitwardenClient> {
+  userClient$(userId: UserId): Observable<BitwardenClient | undefined> {
     // TODO: Figure out what happens when the user logs out
     if (this.sdkClientCache.has(userId)) {
       return this.sdkClientCache.get(userId);
     }
 
-    const account$ = this.accountService.accounts$.pipe(map((accounts) => accounts[userId]));
-    const kdfParams$ = this.kdfConfigService.getKdfConfig$(userId);
+    const account$ = this.accountService.accounts$.pipe(
+      map((accounts) => accounts[userId]),
+      distinctUntilChanged(),
+    );
+    const kdfParams$ = this.kdfConfigService.getKdfConfig$(userId).pipe(distinctUntilChanged());
     const privateKey$ = this.cryptoService
       .userEncryptedPrivateKey$(userId)
-      .pipe(filter((key) => key != null));
-    const userKey$ = this.cryptoService.userKey$(userId).pipe(filter((key) => key != null));
-    const orgKeys$ = this.cryptoService
-      .encryptedOrgKeys$(userId)
-      .pipe(filter((keys) => keys != null));
+      .pipe(distinctUntilChanged());
+    const userKey$ = this.cryptoService.userKey$(userId).pipe(distinctUntilChanged());
+    const orgKeys$ = this.cryptoService.encryptedOrgKeys$(userId).pipe(
+      distinctUntilChanged(compareValues), // The upstream observable emits different objects with the same values
+    );
 
     const client$ = combineLatest([
       this.environmentService.environment$,
@@ -80,6 +84,10 @@ export class DefaultSdkService implements SdkService {
       orgKeys$,
     ]).pipe(
       concatMap(async ([env, account, kdfParams, privateKey, userKey, orgKeys]) => {
+        if (privateKey == null || userKey == null || orgKeys == null) {
+          return undefined;
+        }
+
         const settings = this.toSettings(env);
         const client = await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
 
