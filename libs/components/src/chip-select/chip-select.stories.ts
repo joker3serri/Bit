@@ -40,17 +40,32 @@ export const Default: Story = {
       ...args,
     },
     template: /* html */ `
-      <bit-chip-select
-        placeholderText="Folder"
-        placeholderIcon="bwi-folder"
-        [options]="options"
-      ></bit-chip-select>
-      <bit-chip-select
-        placeholderText="Folder"
-        placeholderIcon="bwi-folder"
-        [options]="options"
-        [ngModel]="value"
-      ></bit-chip-select>
+      <div class="hover-p-100 tw-mb-10">
+        <bit-chip-select
+          placeholderText="Folder"
+          placeholderIcon="bwi-folder"
+          [options]="options"
+        ></bit-chip-select>
+        <bit-chip-select
+          placeholderText="Folder"
+          placeholderIcon="bwi-folder"
+          [options]="options"
+          [ngModel]="value"
+        ></bit-chip-select>
+      </div>
+      <div class="hover-s-100">
+        <bit-chip-select
+          placeholderText="Folder"
+          placeholderIcon="bwi-folder"
+          [options]="options"
+        ></bit-chip-select>
+        <bit-chip-select
+          placeholderText="Folder"
+          placeholderIcon="bwi-folder"
+          [options]="options"
+          [ngModel]="value"
+        ></bit-chip-select>
+      </div>
     `,
   }),
   args: {

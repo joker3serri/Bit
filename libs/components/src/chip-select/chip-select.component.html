@@ -4,7 +4,8 @@
   [ngClass]="{
     'tw-bg-text-muted hover:tw-bg-secondary-700 tw-text-contrast hover:!tw-border-secondary-700':
       selectedOption && !disabled,
-    'tw-bg-transparent hover:tw-border-secondary-700 !tw-text-muted': !selectedOption && !disabled,
+    'tw-bg-transparent hover:tw-border-secondary-700 !tw-text-muted [&:is(div.hover-p-100_*)]:hover:tw-bg-primary-100 [&:is(div.hover-s-100_*)]:hover:tw-bg-secondary-100':
+      !selectedOption && !disabled,
     'tw-bg-secondary-300 tw-text-muted tw-border-transparent': disabled,
     'tw-border-text-muted': !disabled,
     'tw-ring-2 tw-ring-primary-600 tw-ring-offset-1': focusVisibleWithin(),
