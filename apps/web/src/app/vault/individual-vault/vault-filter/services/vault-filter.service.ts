@@ -19,6 +19,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ActiveUserState, StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -37,7 +38,6 @@ import {
 } from "../shared/models/vault-filter.type";
 
 import { VaultFilterService as VaultFilterServiceAbstraction } from "./abstractions/vault-filter.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 const NestingDelimiter = "/";
 

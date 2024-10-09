@@ -5,6 +5,7 @@ import { CollectionService } from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { OrganizationUserStatusType, PolicyType } from "@bitwarden/common/admin-console/enums";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -16,7 +17,6 @@ import {
   CipherFormConfigService,
   CipherFormMode,
 } from "../abstractions/cipher-form-config.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 /**
  * Default implementation of the `CipherFormConfigService`. This service should suffice for most use cases, however

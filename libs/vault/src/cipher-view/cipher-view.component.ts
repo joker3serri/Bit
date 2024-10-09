@@ -6,6 +6,7 @@ import { CollectionService, CollectionView } from "@bitwarden/admin-console/comm
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { isCardExpired } from "@bitwarden/common/autofill/utils";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -21,7 +22,6 @@ import { ItemDetailsV2Component } from "./item-details/item-details-v2.component
 import { ItemHistoryV2Component } from "./item-history/item-history-v2.component";
 import { LoginCredentialsViewComponent } from "./login-credentials/login-credentials-view.component";
 import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-identity-sections.component";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 @Component({
   selector: "app-cipher-view",

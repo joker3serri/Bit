@@ -9,6 +9,7 @@ import {
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ActiveUserState, StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -20,7 +21,6 @@ import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction
 import { DynamicTreeNode } from "../models/dynamic-tree-node.model";
 
 import { COLLAPSED_GROUPINGS } from "./../../../../../common/src/vault/services/key-state/collapsed-groupings.state";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 
 const NestingDelimiter = "/";
 
