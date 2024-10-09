@@ -74,11 +74,11 @@ export class Organization {
    */
   allowAdminAccessToAllCollectionItems: boolean;
   /**
-   * Indicates if this organization manages the active user.
+   * Indicates if this organization manages the user.
    * A user is considered managed by an organization if their email domain
    * matches one of the verified domains of that organization, and the user is a member of it.
    */
-  managesActiveUser?: boolean | null;
+  userIsManagedByOrganization?: boolean | null;
 
   constructor(obj?: OrganizationData) {
     if (obj == null) {
@@ -133,7 +133,7 @@ export class Organization {
     this.accessSecretsManager = obj.accessSecretsManager;
     this.limitCollectionCreationDeletion = obj.limitCollectionCreationDeletion;
     this.allowAdminAccessToAllCollectionItems = obj.allowAdminAccessToAllCollectionItems;
-    this.managesActiveUser = obj.managesActiveUser;
+    this.userIsManagedByOrganization = obj.userIsManagedByOrganization;
   }
 
   get canAccess() {

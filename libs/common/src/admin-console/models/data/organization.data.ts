@@ -54,7 +54,7 @@ export class OrganizationData {
   accessSecretsManager: boolean;
   limitCollectionCreationDeletion: boolean;
   allowAdminAccessToAllCollectionItems: boolean;
-  managesActiveUser?: boolean | null;
+  userIsManagedByOrganization?: boolean | null;
 
   constructor(
     response?: ProfileOrganizationResponse,
@@ -113,7 +113,7 @@ export class OrganizationData {
     this.accessSecretsManager = response.accessSecretsManager;
     this.limitCollectionCreationDeletion = response.limitCollectionCreationDeletion;
     this.allowAdminAccessToAllCollectionItems = response.allowAdminAccessToAllCollectionItems;
-    this.managesActiveUser = response.managesActiveUser;
+    this.userIsManagedByOrganization = response.userIsManagedByOrganization;
 
     this.isMember = options.isMember;
     this.isProviderUser = options.isProviderUser;

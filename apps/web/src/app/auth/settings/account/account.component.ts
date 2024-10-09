@@ -40,7 +40,10 @@ export class AccountComponent implements OnInit {
         switchMap((isAccountDeprovisioningEnabled) =>
           isAccountDeprovisioningEnabled
             ? this.organizationService.organizations$.pipe(
-                map((organizations) => !organizations.some((o) => o.managesActiveUser === true)),
+                map(
+                  (organizations) =>
+                    !organizations.some((o) => o.userIsManagedByOrganization === true),
+                ),
               )
             : of(true),
         ),
