@@ -18,7 +18,6 @@ import { PasswordRepromptService } from "@bitwarden/vault";
 import { cipherData } from "./reports-ciphers.mock";
 import { UnsecuredWebsitesReportComponent } from "./unsecured-websites-report.component";
 
-
 describe("UnsecuredWebsitesReportComponent", () => {
   let component: UnsecuredWebsitesReportComponent;
   let fixture: ComponentFixture<UnsecuredWebsitesReportComponent>;
@@ -32,6 +31,7 @@ describe("UnsecuredWebsitesReportComponent", () => {
     organizationService.organizations$ = of([]);
     syncServiceMock = mock<SyncService>();
     collectionService = mock<CollectionService>();
+    collectionService.encryptedCollections$.mockReturnValue(of([]));
     accountService = mockAccountServiceWith("UserId" as UserId);
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

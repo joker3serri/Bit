@@ -30,7 +30,7 @@ describe("VaultPopupListFiltersService", () => {
   const policyAppliesToActiveUser$ = new BehaviorSubject<boolean>(false);
 
   const collectionService = {
-    decryptedCollections$,
+    decryptedCollections$: () => decryptedCollections$,
     getAllNested: () => [] as TreeNode<CollectionView>[],
   } as unknown as CollectionService;
 
