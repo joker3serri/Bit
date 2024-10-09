@@ -20,6 +20,7 @@ import {
 } from "rxjs";
 import { Simplify } from "type-fest";
 
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -73,13 +74,13 @@ export class CredentialGeneratorService {
     private randomizer: Randomizer,
     private stateProvider: StateProvider,
     private policyService: PolicyService,
-    private client: RestClient,
+    private apiService: ApiService,
     private i18nService: I18nService
   ) {}
 
   private getDependencyProvider() : GeneratorDependencyProvider {
     return {
-      client: this.client,
+      client: new RestClient(this.apiService, this.i18nService),
       i18nService: this.i18nService,
       randomizer: this.randomizer
     };
