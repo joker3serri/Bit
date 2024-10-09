@@ -7,7 +7,7 @@ import { first } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { TabsModule } from "@bitwarden/components";
 
-import { HeaderModule } from "../../../layouts/header/header.module";
+import { HeaderModule } from "../../layouts/header/header.module";
 
 import { ApplicationTableComponent } from "./application-table.component";
 import { NotifiedMembersTableComponent } from "./notified-members-table.component";
