@@ -1,10 +1,18 @@
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { UserKeyDefinition } from "@bitwarden/common/platform/state";
+import { RestClient } from "@bitwarden/common/tools/integration/rpc";
 import { Constraints } from "@bitwarden/common/tools/types";
 
 import { Randomizer } from "../abstractions";
 import { CredentialAlgorithm, CredentialCategory, PolicyConfiguration } from "../types";
 
 import { CredentialGenerator } from "./credential-generator";
+
+export type GeneratorDependencyProvider = {
+  randomizer: Randomizer,
+  client: RestClient,
+  i18nService: I18nService
+};
 
 /** Credential generator metadata common across credential generators */
 export type CredentialGeneratorInfo = {
@@ -40,7 +48,7 @@ export type CredentialGeneratorConfiguration<Settings, Policy> = CredentialGener
     // the credential generator, but engine configurations should return
     // the underlying type. `create` may be able to do double-duty w/ an
     // engine definition if `CredentialGenerator` can be made covariant.
-    create: (randomizer: Randomizer) => CredentialGenerator<Settings>;
+    create: (randomizer: GeneratorDependencyProvider) => CredentialGenerator<Settings>;
   };
   /** Defines the stored parameters for credential generation */
   settings: {

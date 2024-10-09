@@ -1,5 +1,7 @@
 import { Simplify } from "type-fest";
 
+import { IntegrationId } from "./integration";
+
 /** Constraints that are shared by all primitive field types */
 type PrimitiveConstraint = {
   /** `true` indicates the field is required; otherwise the field is optional */
@@ -144,4 +146,6 @@ export type VaultItemRequest = {
 /** Options that provide contextual information about the application state
  *  when a generator is invoked.
  */
-export type GenerationRequest = Partial<VaultItemRequest>;
+export type GenerationRequest = Partial<VaultItemRequest> & Partial<{
+  integration: IntegrationId | null
+}>;

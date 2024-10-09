@@ -1,9 +1,11 @@
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { GENERATOR_DISK, UserKeyDefinition } from "@bitwarden/common/platform/state";
 import { IdentityConstraint } from "@bitwarden/common/tools/state/identity-state-constraint";
 
-import { Randomizer } from "../abstractions";
 import { EmailRandomizer, PasswordRandomizer, UsernameRandomizer } from "../engine";
+import { Forwarder } from "../engine/forwarder";
+import { AddyIoSettings } from "../integration";
 import {
   DefaultPolicyEvaluator,
   DynamicPasswordPolicyConstraints,
@@ -25,6 +27,7 @@ import {
   CredentialGenerator,
   CredentialGeneratorConfiguration,
   EffUsernameGenerationOptions,
+  GeneratorDependencyProvider,
   NoPolicy,
   PassphraseGenerationOptions,
   PassphraseGeneratorPolicy,
@@ -33,6 +36,7 @@ import {
   SubaddressGenerationOptions,
 } from "../types";
 
+import { DefaultAddyIoOptions } from "./default-addy-io-options";
 import { DefaultCatchallOptions } from "./default-catchall-options";
 import { DefaultEffUsernameOptions } from "./default-eff-username-options";
 import { DefaultPassphraseBoundaries } from "./default-passphrase-boundaries";
@@ -47,8 +51,8 @@ const PASSPHRASE = Object.freeze({
   nameKey: "passphrase",
   onlyOnRequest: false,
   engine: {
-    create(randomizer: Randomizer): CredentialGenerator<PassphraseGenerationOptions> {
-      return new PasswordRandomizer(randomizer);
+    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<PassphraseGenerationOptions> {
+      return new PasswordRandomizer(dependencies.randomizer);
     },
   },
   settings: {
@@ -84,8 +88,8 @@ const PASSWORD = Object.freeze({
   nameKey: "password",
   onlyOnRequest: false,
   engine: {
-    create(randomizer: Randomizer): CredentialGenerator<PasswordGenerationOptions> {
-      return new PasswordRandomizer(randomizer);
+    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<PasswordGenerationOptions> {
+      return new PasswordRandomizer(dependencies.randomizer);
     },
   },
   settings: {
@@ -129,8 +133,8 @@ const USERNAME = Object.freeze({
   nameKey: "randomWord",
   onlyOnRequest: false,
   engine: {
-    create(randomizer: Randomizer): CredentialGenerator<EffUsernameGenerationOptions> {
-      return new UsernameRandomizer(randomizer);
+    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<EffUsernameGenerationOptions> {
+      return new UsernameRandomizer(dependencies.randomizer);
     },
   },
   settings: {
@@ -160,8 +164,8 @@ const CATCHALL = Object.freeze({
   descriptionKey: "catchallEmailDesc",
   onlyOnRequest: false,
   engine: {
-    create(randomizer: Randomizer): CredentialGenerator<CatchallGenerationOptions> {
-      return new EmailRandomizer(randomizer);
+    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<CatchallGenerationOptions> {
+      return new EmailRandomizer(dependencies.randomizer);
     },
   },
   settings: {
@@ -191,8 +195,8 @@ const SUBADDRESS = Object.freeze({
   descriptionKey: "plusAddressedEmailDesc",
   onlyOnRequest: false,
   engine: {
-    create(randomizer: Randomizer): CredentialGenerator<SubaddressGenerationOptions> {
-      return new EmailRandomizer(randomizer);
+    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<SubaddressGenerationOptions> {
+      return new EmailRandomizer(dependencies.randomizer);
     },
   },
   settings: {
@@ -215,6 +219,42 @@ const SUBADDRESS = Object.freeze({
   },
 } satisfies CredentialGeneratorConfiguration<SubaddressGenerationOptions, NoPolicy>);
 
+// FIXME: forwarders should dynamically extend generators; they shouldn't
+// have their own entries. They're included here solely in order to quickly
+// create generator configurations during UI modernization
+const ADDYIO = Object.freeze({
+  id: "addyio",
+  category: "email",
+  nameKey: "addyIoKey",
+  onlyOnRequest: true,
+  engine: {
+    create(dependencies: GeneratorDependencyProvider) {
+      return new Forwarder(dependencies.client, dependencies.i18nService);
+    }
+  },
+  settings: {
+    initial: DefaultAddyIoOptions,
+    constraints: {},
+    account: new UserKeyDefinition<AddyIoSettings>(GENERATOR_DISK, "addyIoGenerator", {
+      deserializer: (value) => value,
+      clearOn: [],
+    })
+  },
+  policy: {
+    type: PolicyType.PasswordGenerator,
+    disabledValue: {},
+    combine(_acc: NoPolicy, _policy: Policy) {
+      return {};
+    },
+    createEvaluator(_policy: NoPolicy) {
+      return new DefaultPolicyEvaluator<AddyIoSettings>();
+    },
+    toConstraints(_policy: NoPolicy) {
+      return new IdentityConstraint<AddyIoSettings>();
+    },
+  }
+} satisfies CredentialGeneratorConfiguration<AddyIoSettings, NoPolicy>);
+
 /** Generator configurations */
 export const Generators = Object.freeze({
   /** Passphrase generator configuration */
@@ -231,4 +271,6 @@ export const Generators = Object.freeze({
 
   /** Email subaddress generator configuration */
   subaddress: SUBADDRESS,
+
+  addyio: ADDYIO,
 });

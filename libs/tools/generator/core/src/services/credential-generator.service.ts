@@ -22,12 +22,15 @@ import { Simplify } from "type-fest";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import {
   OnDependency,
   SingleUserDependency,
   UserDependency,
 } from "@bitwarden/common/tools/dependencies";
+import { IntegrationId } from "@bitwarden/common/tools/integration";
+import { RestClient } from "@bitwarden/common/tools/integration/rpc";
 import { isDynamic } from "@bitwarden/common/tools/state/state-constraints-dependency";
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
 
@@ -42,7 +45,7 @@ import {
   CredentialGeneratorInfo,
   CredentialPreference,
 } from "../types";
-import { CredentialGeneratorConfiguration as Configuration } from "../types/credential-generator-configuration";
+import { CredentialGeneratorConfiguration as Configuration, GeneratorDependencyProvider } from "../types/credential-generator-configuration";
 import { GeneratorConstraints } from "../types/generator-constraints";
 
 import { PREFERENCES } from "./credential-preferences";
@@ -59,6 +62,8 @@ type Generate$Dependencies = Simplify<Partial<OnDependency> & Partial<UserDepend
    *  When `website$` errors, the generator forwards the error.
    */
   website$?: Observable<string>;
+
+  integration$?: Observable<IntegrationId>
 };
 
 type Algorithms$Dependencies = Partial<UserDependency>;
@@ -68,7 +73,17 @@ export class CredentialGeneratorService {
     private randomizer: Randomizer,
     private stateProvider: StateProvider,
     private policyService: PolicyService,
+    private client: RestClient,
+    private i18nService: I18nService
   ) {}
+
+  private getDependencyProvider() : GeneratorDependencyProvider {
+    return {
+      client: this.client,
+      i18nService: this.i18nService,
+      randomizer: this.randomizer
+    };
+  }
 
   // FIXME: the rxjs methods of this service can be a lot more resilient if
   // `Subjects` are introduced where sharing occurs
@@ -84,11 +99,14 @@ export class CredentialGeneratorService {
     dependencies?: Generate$Dependencies,
   ) {
     // instantiate the engine
-    const engine = configuration.engine.create(this.randomizer);
+    const engine = configuration.engine.create(this.getDependencyProvider());
 
     // stream blocks until all of these values are received
     const website$ = dependencies?.website$ ?? new BehaviorSubject<string>(null);
-    const request$ = website$.pipe(map((website) => ({ website })));
+    const integration$ = dependencies?.integration$ ?? new BehaviorSubject<IntegrationId>(null);
+    const request$ = combineLatest([website$, integration$]).pipe(
+      map(([website, integration]) => ({ website, integration }))
+    );
     const settings$ = this.settings$(configuration, dependencies);
 
     // monitor completion

@@ -1,3 +1,7 @@
+import { IntegrationId } from "@bitwarden/common/tools/integration";
+import { ApiSettings } from "@bitwarden/common/tools/integration/rpc";
+
+import { ForwarderConfiguration } from "../engine";
 import { AddyIo } from "../integration/addy-io";
 import { DuckDuckGo } from "../integration/duck-duck-go";
 import { Fastmail } from "../integration/fastmail";
@@ -13,3 +17,9 @@ export const Integrations = Object.freeze({
   ForwardEmail,
   SimpleLogin,
 } as const);
+
+const integrations = Object.fromEntries(Object.values(Integrations).map((i) => [i.id, i as ForwarderConfiguration<object>]));
+
+export function getIntegration(id: IntegrationId) : ForwarderConfiguration<ApiSettings> {
+  return integrations[id as string]
+}
