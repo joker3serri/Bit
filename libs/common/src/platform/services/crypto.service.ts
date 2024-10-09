@@ -933,6 +933,12 @@ export class CryptoService implements CryptoServiceAbstraction {
     return this.cipherDecryptionKeys$(userId, true).pipe(map((keys) => keys?.orgKeys));
   }
 
+  encryptedOrgKeys$(
+    userId: UserId,
+  ): Observable<Record<OrganizationId, EncryptedOrganizationKeyData>> {
+    return this.stateProvider.getUser(userId, USER_ENCRYPTED_ORGANIZATION_KEYS).state$;
+  }
+
   cipherDecryptionKeys$(
     userId: UserId,
     legacySupport: boolean = false,

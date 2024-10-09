@@ -67,7 +67,9 @@ export class DefaultSdkService implements SdkService {
       .userEncryptedPrivateKey$(userId)
       .pipe(filter((key) => key != null));
     const userKey$ = this.cryptoService.userKey$(userId).pipe(filter((key) => key != null));
-    const orgKeys$ = this.cryptoService.orgKeys$(userId).pipe(filter((keys) => keys != null));
+    const orgKeys$ = this.cryptoService
+      .encryptedOrgKeys$(userId)
+      .pipe(filter((keys) => keys != null));
 
     const client$ = combineLatest([
       this.environmentService.environment$,
@@ -100,11 +102,16 @@ export class DefaultSdkService implements SdkService {
         });
 
         await client.crypto().initialize_org_crypto({
-          organizationKeys: new Map(Object.entries(orgKeys).map(([k, v]) => [k, v.keyB64])),
+          organizationKeys: new Map(
+            Object.entries(orgKeys)
+              .filter(([_, v]) => v.type === "organization")
+              .map(([k, v]) => [k, v.key]),
+          ),
         });
 
         return client;
       }),
+      shareReplay({ refCount: true, bufferSize: 1 }),
     );
 
     this.sdkClientCache.set(userId, client$);
