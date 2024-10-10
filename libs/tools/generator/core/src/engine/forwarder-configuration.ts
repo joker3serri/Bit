@@ -35,9 +35,11 @@ export type ForwarderConfiguration<
     defaultSettings: Partial<Settings>;
 
     /** forwarder settings storage */
+    // FIXME: this should be a `SubjectConfiguration<Settings>`
     settings: UserKeyDefinition<Settings>;
 
     /** forwarder settings import buffer; `undefined` when there is no buffer. */
+    // FIXME: this should be a `SubjectConfiguration<Settings>`
     importBuffer?: BufferedKeyDefinition<Settings>;
 
     /** createForwardingEmail RPC definition */

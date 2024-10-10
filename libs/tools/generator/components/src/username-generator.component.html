@@ -31,6 +31,13 @@
             credentialTypeHint$ | async
           }}</bit-hint>
         </bit-form-field>
+        <bit-form-field>
+          <bit-label>{{ "forwarder" | i18n }}</bit-label>
+          <bit-select [items]="forwarderOptions$ | async" formControlName="forwarder"> </bit-select>
+          <bit-hint *ngIf="!!(forwarderTypeHint$ | async)">{{
+            forwarderTypeHint$ | async
+          }}</bit-hint>
+        </bit-form-field>
       </form>
       <tools-catchall-settings
         *ngIf="(algorithm$ | async)?.id === 'catchall'"
@@ -47,6 +54,7 @@
         [userId]="this.userId$ | async"
         (onUpdated)="generate$.next()"
       />
+      <!-- TODO: list forwarder settings components -->
     </bit-card>
   </div>
 </bit-section>

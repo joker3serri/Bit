@@ -20,6 +20,12 @@ export const Integrations = Object.freeze({
 
 const integrations = Object.fromEntries(Object.values(Integrations).map((i) => [i.id, i as ForwarderConfiguration<object>]));
 
-export function getIntegration(id: IntegrationId) : ForwarderConfiguration<ApiSettings> {
-  return integrations[id as string]
+export function getForwarderConfiguration(id: IntegrationId) : ForwarderConfiguration<ApiSettings> {
+  const maybeForwarder =  integrations[id as string];
+
+  if("forwarder" in maybeForwarder) {
+    return maybeForwarder as ForwarderConfiguration<ApiSettings>
+  } else {
+    return null;
+  }
 }

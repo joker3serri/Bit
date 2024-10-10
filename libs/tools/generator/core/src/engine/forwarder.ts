@@ -2,7 +2,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { ApiSettings, IntegrationRequest, RestClient } from "@bitwarden/common/tools/integration/rpc";
 import { GenerationRequest } from "@bitwarden/common/tools/types";
 
-import { getIntegration } from "../data";
 import {
   CredentialGenerator,
   GeneratedCredential,
@@ -20,32 +19,24 @@ export class Forwarder
   /** Instantiates the email randomizer
    *  @param random data source for random data
    */
-  constructor(private client: RestClient, private i18nService: I18nService) {}
+  constructor(private configuration: ForwarderConfiguration<ApiSettings>, private client: RestClient, private i18nService: I18nService) {}
 
   async generate(
     request: GenerationRequest,
     settings: ApiSettings,
   ) {
-    if(!request.integration) {
-      throw new Error("Invalid integration request received by generator.");
-    }
-
-    const integration = getIntegration(request.integration);
-    if(!integration) {
-      throw new Error("Invalid integration request received by generator.");
-    }
-
     const requestOptions: IntegrationRequest & AccountRequest = { website: request.website };
 
-    const getAccount = await this.getAccountId(integration, settings);
+    const getAccount = await this.getAccountId(this.configuration, settings);
     if (getAccount) {
       requestOptions.accountId = await this.client.fetchJson(getAccount, requestOptions);
     }
 
-    const create = this.createForwardingAddress(integration, settings);
+    const create = this.createForwardingAddress(this.configuration, settings);
     const result = await this.client.fetchJson(create, requestOptions);
+    const id = { forwarder: this.configuration.id };
 
-    return new GeneratedCredential(result, "forwarder", Date.now());
+    return new GeneratedCredential(result, id, Date.now());
   }
 
   private createContext<Settings>(

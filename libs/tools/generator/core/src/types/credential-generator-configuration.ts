@@ -60,6 +60,9 @@ export type CredentialGeneratorConfiguration<Settings, Policy> = CredentialGener
 
     /** storage location for account-global settings */
     account: UserKeyDefinition<Settings>;
+
+    /** storage location for *plaintext* settings imports */
+    import?: UserKeyDefinition<Settings>;
   };
 
   /** defines how to construct policy for this settings instance */

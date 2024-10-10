@@ -23,6 +23,7 @@ import {
   GeneratedCredential,
   Generators,
   isEmailAlgorithm,
+  isForwarderIntegration,
   isUsernameAlgorithm,
 } from "@bitwarden/generator-core";
 
@@ -78,10 +79,16 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     this.generatorService
       .algorithms$(["email", "username"], { userId$: this.userId$ })
       .pipe(
-        map((algorithms) => this.toOptions(algorithms)),
+        map((algorithms) => [
+          this.toOptions(algorithms.filter(a => !isForwarderIntegration(a.id))),
+          this.toOptions(algorithms.filter(a => isForwarderIntegration(a.id)))
+        ] as const),
         takeUntil(this.destroyed),
       )
-      .subscribe(this.typeOptions$);
+      .subscribe(([type, forwarder]) => {
+        this.typeOptions$.next(type);
+        this.forwarderOptions$.next(forwarder);
+      });
 
     this.algorithm$
       .pipe(
@@ -183,6 +190,9 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
 
   /** Lists the credential types supported by the component. */
   protected typeOptions$ = new BehaviorSubject<Option<CredentialAlgorithm>[]>([]);
+
+  /** Lists the credential types supported by the component. */
+  protected forwarderOptions$ = new BehaviorSubject<Option<CredentialAlgorithm>[]>([]);
 
   /** tracks the currently selected credential type */
   protected algorithm$ = new ReplaySubject<CredentialGeneratorInfo>(1);

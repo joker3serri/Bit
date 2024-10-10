@@ -160,7 +160,14 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
           if (root.nav === IDENTIFIER) {
             return concat(of(this.username.value), this.username.valueChanges);
           } else {
-            return of(root as { nav: PasswordAlgorithm });
+            return of(root as { nav: CredentialAlgorithm });
+          }
+        }),
+        switchMap((tier1) => {
+          if (tier1.nav === FORWARDER) {
+            return concat(of(this.forwarder.value), this.forwarder.valueChanges);
+          } else {
+            return of(tier1 as { nav: CredentialAlgorithm });
           }
         }),
         filter(({ nav }) => !!nav),

@@ -1,11 +1,10 @@
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import { GENERATOR_DISK, UserKeyDefinition } from "@bitwarden/common/platform/state";
+import { ApiSettings } from "@bitwarden/common/tools/integration/rpc";
 import { IdentityConstraint } from "@bitwarden/common/tools/state/identity-state-constraint";
 
 import { EmailRandomizer, PasswordRandomizer, UsernameRandomizer } from "../engine";
 import { Forwarder } from "../engine/forwarder";
-import { AddyIoSettings } from "../integration";
 import {
   DefaultPolicyEvaluator,
   DynamicPasswordPolicyConstraints,
@@ -27,6 +26,7 @@ import {
   CredentialGenerator,
   CredentialGeneratorConfiguration,
   EffUsernameGenerationOptions,
+  ForwarderIntegration,
   GeneratorDependencyProvider,
   NoPolicy,
   PassphraseGenerationOptions,
@@ -36,7 +36,6 @@ import {
   SubaddressGenerationOptions,
 } from "../types";
 
-import { DefaultAddyIoOptions } from "./default-addy-io-options";
 import { DefaultCatchallOptions } from "./default-catchall-options";
 import { DefaultEffUsernameOptions } from "./default-eff-username-options";
 import { DefaultPassphraseBoundaries } from "./default-passphrase-boundaries";
@@ -44,6 +43,8 @@ import { DefaultPassphraseGenerationOptions } from "./default-passphrase-generat
 import { DefaultPasswordBoundaries } from "./default-password-boundaries";
 import { DefaultPasswordGenerationOptions } from "./default-password-generation-options";
 import { DefaultSubaddressOptions } from "./default-subaddress-generator-options";
+import { getForwarderConfiguration } from "./integrations";
+
 
 const PASSPHRASE = Object.freeze({
   id: "passphrase",
@@ -219,41 +220,45 @@ const SUBADDRESS = Object.freeze({
   },
 } satisfies CredentialGeneratorConfiguration<SubaddressGenerationOptions, NoPolicy>);
 
-// FIXME: forwarders should dynamically extend generators; they shouldn't
-// have their own entries. They're included here solely in order to quickly
-// create generator configurations during UI modernization
-const ADDYIO = Object.freeze({
-  id: "addyio",
-  category: "email",
-  nameKey: "addyIoKey",
-  onlyOnRequest: true,
-  engine: {
-    create(dependencies: GeneratorDependencyProvider) {
-      return new Forwarder(dependencies.client, dependencies.i18nService);
-    }
-  },
-  settings: {
-    initial: DefaultAddyIoOptions,
-    constraints: {},
-    account: new UserKeyDefinition<AddyIoSettings>(GENERATOR_DISK, "addyIoGenerator", {
-      deserializer: (value) => value,
-      clearOn: [],
-    })
-  },
-  policy: {
-    type: PolicyType.PasswordGenerator,
-    disabledValue: {},
-    combine(_acc: NoPolicy, _policy: Policy) {
-      return {};
-    },
-    createEvaluator(_policy: NoPolicy) {
-      return new DefaultPolicyEvaluator<AddyIoSettings>();
-    },
-    toConstraints(_policy: NoPolicy) {
-      return new IdentityConstraint<AddyIoSettings>();
-    },
+export function toCredentialGeneratorConfiguration<Settings extends ApiSettings = ApiSettings>(id :ForwarderIntegration) {
+  // TODO: eliminate the type erasure
+  const configuration = getForwarderConfiguration(id.forwarder) as any;
+  if(!configuration) {
+    throw new Error(`Invalid forwarder id: ${id.forwarder}`);
   }
-} satisfies CredentialGeneratorConfiguration<AddyIoSettings, NoPolicy>);
+
+  const forwarder = Object.freeze({
+    id: { forwarder: configuration.id },
+    category: "email",
+    nameKey: configuration.name,
+    onlyOnRequest: true,
+    engine: {
+      create(dependencies: GeneratorDependencyProvider) {
+        return new Forwarder(configuration, dependencies.client, dependencies.i18nService);
+      }
+    },
+    settings: {
+      initial: configuration.forwarder.defaultSettings,
+      constraints: {},
+      account: configuration.forwarder.settings
+    },
+    policy: {
+      type: PolicyType.PasswordGenerator,
+      disabledValue: {},
+      combine(_acc: NoPolicy, _policy: Policy) {
+        return {};
+      },
+      createEvaluator(_policy: NoPolicy) {
+        return new DefaultPolicyEvaluator<Settings>();
+      },
+      toConstraints(_policy: NoPolicy) {
+        return new IdentityConstraint<Settings>();
+      },
+    }
+  } satisfies CredentialGeneratorConfiguration<Settings, NoPolicy>);
+
+  return forwarder;
+}
 
 /** Generator configurations */
 export const Generators = Object.freeze({
@@ -271,6 +276,4 @@ export const Generators = Object.freeze({
 
   /** Email subaddress generator configuration */
   subaddress: SUBADDRESS,
-
-  addyio: ADDYIO,
 });

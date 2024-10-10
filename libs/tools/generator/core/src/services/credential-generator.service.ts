@@ -36,7 +36,7 @@ import { isDynamic } from "@bitwarden/common/tools/state/state-constraints-depen
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
 
 import { Randomizer } from "../abstractions";
-import { Generators } from "../data";
+import { Generators, toCredentialGeneratorConfiguration } from "../data";
 import { availableAlgorithms } from "../policies/available-algorithms-policy";
 import { mapPolicyToConstraints } from "../rx";
 import {
@@ -45,6 +45,7 @@ import {
   CredentialCategory,
   CredentialGeneratorInfo,
   CredentialPreference,
+  isForwarderIntegration
 } from "../types";
 import { CredentialGeneratorConfiguration as Configuration, GeneratorDependencyProvider } from "../types/credential-generator-configuration";
 import { GeneratorConstraints } from "../types/generator-constraints";
@@ -182,7 +183,7 @@ export class CredentialGeneratorService {
         return policies$;
       }),
       map((available) => {
-        const filtered = algorithms.filter((c) => available.has(c.id));
+        const filtered = algorithms.filter((c) => isForwarderIntegration(c.id) || available.has(c.id));
         return filtered;
       }),
     );
@@ -200,7 +201,7 @@ export class CredentialGeneratorService {
     const categories = Array.isArray(category) ? category : [category];
     const algorithms = categories
       .flatMap((c) => CredentialCategories[c])
-      .map((c) => (c === "forwarder" ? null : Generators[c]))
+      .map((id) => this.algorithm(id))
       .filter((info) => info !== null);
 
     return algorithms;
@@ -211,7 +212,11 @@ export class CredentialGeneratorService {
    *  @returns the requested metadata, or `null` if the metadata wasn't found.
    */
   algorithm(id: CredentialAlgorithm): CredentialGeneratorInfo {
-    return (id === "forwarder" ? null : Generators[id]) ?? null;
+    if(isForwarderIntegration(id)) {
+      return toCredentialGeneratorConfiguration(id);
+    } else {
+      return Generators[id];
+    }
   }
 
   /** Get the settings for the provided configuration
