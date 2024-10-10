@@ -38,7 +38,10 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
     if (qParams.providerId != null && qParams.token != null && qParams.name != null) {
       this.providerId = qParams.providerId;
       this.token = qParams.token;
-      this.name = this.sanitizer.sanitize(SecurityContext.HTML, qParams.name);
+      this.name =
+        qParams.name && typeof qParams.name === "string"
+          ? this.sanitizer.sanitize(SecurityContext.HTML, qParams.name) || ""
+          : "";
     } else {
       await this.router.navigate(["/"]);
     }
