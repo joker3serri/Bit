@@ -30,7 +30,7 @@ import {
   SingleUserDependency,
   UserDependency,
 } from "@bitwarden/common/tools/dependencies";
-import { IntegrationId } from "@bitwarden/common/tools/integration";
+import { IntegrationId, IntegrationMetadata } from "@bitwarden/common/tools/integration";
 import { RestClient } from "@bitwarden/common/tools/integration/rpc";
 import { isDynamic } from "@bitwarden/common/tools/state/state-constraints-dependency";
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
@@ -43,12 +43,13 @@ import {
   CredentialAlgorithm,
   CredentialCategories,
   CredentialCategory,
-  CredentialGeneratorInfo,
+  AlgorithmInfo,
   CredentialPreference,
   isForwarderIntegration,
 } from "../types";
 import {
   CredentialGeneratorConfiguration as Configuration,
+  CredentialGeneratorInfo,
   GeneratorDependencyProvider,
 } from "../types/credential-generator-configuration";
 import { GeneratorConstraints } from "../types/generator-constraints";
@@ -152,11 +153,11 @@ export class CredentialGeneratorService {
   algorithms$(
     category: CredentialCategory,
     dependencies?: Algorithms$Dependencies,
-  ): Observable<CredentialGeneratorInfo[]>;
+  ): Observable<AlgorithmInfo[]>;
   algorithms$(
     category: CredentialCategory[],
     dependencies?: Algorithms$Dependencies,
-  ): Observable<CredentialGeneratorInfo[]>;
+  ): Observable<AlgorithmInfo[]>;
   algorithms$(
     category: CredentialCategory | CredentialCategory[],
     dependencies?: Algorithms$Dependencies,
@@ -197,9 +198,9 @@ export class CredentialGeneratorService {
    *  @param category the category or categories of interest
    *  @returns A list containing the requested metadata.
    */
-  algorithms(category: CredentialCategory): CredentialGeneratorInfo[];
-  algorithms(category: CredentialCategory[]): CredentialGeneratorInfo[];
-  algorithms(category: CredentialCategory | CredentialCategory[]): CredentialGeneratorInfo[] {
+  algorithms(category: CredentialCategory): AlgorithmInfo[];
+  algorithms(category: CredentialCategory[]): AlgorithmInfo[];
+  algorithms(category: CredentialCategory | CredentialCategory[]): AlgorithmInfo[] {
     const categories = Array.isArray(category) ? category : [category];
     const algorithms = categories
       .flatMap((c) => CredentialCategories[c])
@@ -213,18 +214,37 @@ export class CredentialGeneratorService {
    *  @param id identifies the algorithm
    *  @returns the requested metadata, or `null` if the metadata wasn't found.
    */
-  algorithm(id: CredentialAlgorithm): CredentialGeneratorInfo {
-    if (isForwarderIntegration(id)) {
-      const forwarder = getForwarderConfiguration(id.forwarder);
-      if (!forwarder) {
-        throw new Error(`Invalid forwarder id: ${id.forwarder}`);
-      }
+  algorithm(id: CredentialAlgorithm): AlgorithmInfo {
+    let generator: CredentialGeneratorInfo = null;
+    let integration: IntegrationMetadata = null;
 
-      const generator = toCredentialGeneratorConfiguration(forwarder);
-      return generator;
+    if (isForwarderIntegration(id)) {
+      const forwarderConfig = getForwarderConfiguration(id.forwarder);
+      integration = forwarderConfig;
+
+      if (forwarderConfig) {
+        generator = toCredentialGeneratorConfiguration(forwarderConfig);
+      }
     } else {
-      return Generators[id];
+      generator = Generators[id];
     }
+
+    if (!generator) {
+      throw new Error(`Invalid credential algorithm: ${JSON.stringify(id)}`);
+    }
+
+    const info: AlgorithmInfo = {
+      id: generator.id,
+      category: generator.category,
+      name: integration ? integration.name : this.i18nService.t(generator.nameKey),
+      onlyOnRequest: generator.onlyOnRequest,
+    };
+
+    if (generator.descriptionKey) {
+      info.description = this.i18nService.t(generator.descriptionKey);
+    }
+
+    return info;
   }
 
   /** Get the settings for the provided configuration

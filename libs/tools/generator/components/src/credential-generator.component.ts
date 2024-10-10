@@ -19,9 +19,9 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { UserId } from "@bitwarden/common/types/guid";
 import { Option } from "@bitwarden/components/src/select/option";
 import {
+  AlgorithmInfo,
   CredentialAlgorithm,
   CredentialCategory,
-  CredentialGeneratorInfo,
   CredentialGeneratorService,
   GeneratedCredential,
   Generators,
@@ -114,7 +114,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
     this.algorithm$
       .pipe(
-        map((a) => a?.descriptionKey && this.i18nService.t(a?.descriptionKey)),
+        map((a) => a?.description),
         takeUntil(this.destroyed),
       )
       .subscribe((hint) => {
@@ -268,7 +268,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   protected rootOptions$ = new BehaviorSubject<Option<RootNavValue>[]>([]);
 
   /** tracks the currently selected credential type */
-  protected algorithm$ = new ReplaySubject<CredentialGeneratorInfo>(1);
+  protected algorithm$ = new ReplaySubject<AlgorithmInfo>(1);
 
   /** Emits hint key for the currently selected credential type */
   protected credentialTypeHint$ = new ReplaySubject<string>(1);
@@ -285,10 +285,10 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   /** Emits when a new credential is requested */
   protected readonly generate$ = new Subject<void>();
 
-  private toOptions(algorithms: CredentialGeneratorInfo[]) {
+  private toOptions(algorithms: AlgorithmInfo[]) {
     const options: Option<CredentialAlgorithm>[] = algorithms.map((algorithm) => ({
       value: algorithm.id,
-      label: this.i18nService.t(algorithm.nameKey),
+      label: this.i18nService.t(algorithm.name),
     }));
 
     return options;
