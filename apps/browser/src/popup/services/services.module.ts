@@ -563,7 +563,13 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: ForegroundTaskSchedulerService,
-    useClass: ForegroundTaskSchedulerService,
+    useFactory: (logService: LogService, stateProvider: StateProvider) => {
+      if (needsBackgroundInit) {
+        return getBgService<ForegroundTaskSchedulerService>("taskSchedulerService")();
+      }
+
+      return new ForegroundTaskSchedulerService(logService, stateProvider);
+    },
     deps: [LogService, StateProvider],
   }),
   safeProvider({
