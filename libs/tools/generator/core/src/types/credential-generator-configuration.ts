@@ -9,14 +9,19 @@ import { CredentialAlgorithm, CredentialCategory, PolicyConfiguration } from "..
 import { CredentialGenerator } from "./credential-generator";
 
 export type GeneratorDependencyProvider = {
-  randomizer: Randomizer,
-  client: RestClient,
-  i18nService: I18nService
+  randomizer: Randomizer;
+  client: RestClient;
+  i18nService: I18nService;
 };
 
 /** Credential generator metadata common across credential generators */
 export type CredentialGeneratorInfo = {
   /** Uniquely identifies the credential configuration
+   * @example
+   *   // Use `isForwarderIntegration(algorithm: CredentialAlgorithm)`
+   *   // to pattern test whether the credential describes a forwarder algorithm
+   *   const meta : CredentialGeneratorInfo = // ...
+   *   const { forwarder } = isForwarderIntegration(meta.id) ? credentialId : {};
    */
   id: CredentialAlgorithm;
 
@@ -37,7 +42,13 @@ export type CredentialGeneratorInfo = {
   onlyOnRequest: boolean;
 };
 
-/** Credential generator metadata that relies upon typed setting and policy definitions. */
+/** Credential generator metadata that relies upon typed setting and policy definitions.
+ * @example
+ *   // Use `isForwarderIntegration(algorithm: CredentialAlgorithm)`
+ *   // to pattern test whether the credential describes a forwarder algorithm
+ *   const meta : CredentialGeneratorInfo = // ...
+ *   const { forwarder } = isForwarderIntegration(meta.id) ? credentialId : {};
+ */
 export type CredentialGeneratorConfiguration<Settings, Policy> = CredentialGeneratorInfo & {
   /** An algorithm that generates credentials when ran. */
   engine: {

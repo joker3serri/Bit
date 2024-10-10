@@ -3,7 +3,12 @@ import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { ApiSettings } from "@bitwarden/common/tools/integration/rpc";
 import { IdentityConstraint } from "@bitwarden/common/tools/state/identity-state-constraint";
 
-import { EmailRandomizer, PasswordRandomizer, UsernameRandomizer } from "../engine";
+import {
+  EmailRandomizer,
+  ForwarderConfiguration,
+  PasswordRandomizer,
+  UsernameRandomizer,
+} from "../engine";
 import { Forwarder } from "../engine/forwarder";
 import {
   DefaultPolicyEvaluator,
@@ -26,7 +31,6 @@ import {
   CredentialGenerator,
   CredentialGeneratorConfiguration,
   EffUsernameGenerationOptions,
-  ForwarderIntegration,
   GeneratorDependencyProvider,
   NoPolicy,
   PassphraseGenerationOptions,
@@ -43,8 +47,6 @@ import { DefaultPassphraseGenerationOptions } from "./default-passphrase-generat
 import { DefaultPasswordBoundaries } from "./default-password-boundaries";
 import { DefaultPasswordGenerationOptions } from "./default-password-generation-options";
 import { DefaultSubaddressOptions } from "./default-subaddress-generator-options";
-import { getForwarderConfiguration } from "./integrations";
-
 
 const PASSPHRASE = Object.freeze({
   id: "passphrase",
@@ -52,7 +54,9 @@ const PASSPHRASE = Object.freeze({
   nameKey: "passphrase",
   onlyOnRequest: false,
   engine: {
-    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<PassphraseGenerationOptions> {
+    create(
+      dependencies: GeneratorDependencyProvider,
+    ): CredentialGenerator<PassphraseGenerationOptions> {
       return new PasswordRandomizer(dependencies.randomizer);
     },
   },
@@ -89,7 +93,9 @@ const PASSWORD = Object.freeze({
   nameKey: "password",
   onlyOnRequest: false,
   engine: {
-    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<PasswordGenerationOptions> {
+    create(
+      dependencies: GeneratorDependencyProvider,
+    ): CredentialGenerator<PasswordGenerationOptions> {
       return new PasswordRandomizer(dependencies.randomizer);
     },
   },
@@ -134,7 +140,9 @@ const USERNAME = Object.freeze({
   nameKey: "randomWord",
   onlyOnRequest: false,
   engine: {
-    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<EffUsernameGenerationOptions> {
+    create(
+      dependencies: GeneratorDependencyProvider,
+    ): CredentialGenerator<EffUsernameGenerationOptions> {
       return new UsernameRandomizer(dependencies.randomizer);
     },
   },
@@ -165,7 +173,9 @@ const CATCHALL = Object.freeze({
   descriptionKey: "catchallEmailDesc",
   onlyOnRequest: false,
   engine: {
-    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<CatchallGenerationOptions> {
+    create(
+      dependencies: GeneratorDependencyProvider,
+    ): CredentialGenerator<CatchallGenerationOptions> {
       return new EmailRandomizer(dependencies.randomizer);
     },
   },
@@ -196,7 +206,9 @@ const SUBADDRESS = Object.freeze({
   descriptionKey: "plusAddressedEmailDesc",
   onlyOnRequest: false,
   engine: {
-    create(dependencies: GeneratorDependencyProvider): CredentialGenerator<SubaddressGenerationOptions> {
+    create(
+      dependencies: GeneratorDependencyProvider,
+    ): CredentialGenerator<SubaddressGenerationOptions> {
       return new EmailRandomizer(dependencies.randomizer);
     },
   },
@@ -220,13 +232,9 @@ const SUBADDRESS = Object.freeze({
   },
 } satisfies CredentialGeneratorConfiguration<SubaddressGenerationOptions, NoPolicy>);
 
-export function toCredentialGeneratorConfiguration<Settings extends ApiSettings = ApiSettings>(id :ForwarderIntegration) {
-  // TODO: eliminate the type erasure
-  const configuration = getForwarderConfiguration(id.forwarder) as any;
-  if(!configuration) {
-    throw new Error(`Invalid forwarder id: ${id.forwarder}`);
-  }
-
+export function toCredentialGeneratorConfiguration<Settings extends ApiSettings = ApiSettings>(
+  configuration: ForwarderConfiguration<Settings>,
+) {
   const forwarder = Object.freeze({
     id: { forwarder: configuration.id },
     category: "email",
@@ -234,13 +242,15 @@ export function toCredentialGeneratorConfiguration<Settings extends ApiSettings 
     onlyOnRequest: true,
     engine: {
       create(dependencies: GeneratorDependencyProvider) {
-        return new Forwarder(configuration, dependencies.client, dependencies.i18nService);
-      }
+        // FIXME: figure out why `configuration` fails to typecheck
+        const config: any = configuration;
+        return new Forwarder(config, dependencies.client, dependencies.i18nService);
+      },
     },
     settings: {
       initial: configuration.forwarder.defaultSettings,
       constraints: {},
-      account: configuration.forwarder.settings
+      account: configuration.forwarder.settings,
     },
     policy: {
       type: PolicyType.PasswordGenerator,
@@ -254,7 +264,7 @@ export function toCredentialGeneratorConfiguration<Settings extends ApiSettings 
       toConstraints(_policy: NoPolicy) {
         return new IdentityConstraint<Settings>();
       },
-    }
+    },
   } satisfies CredentialGeneratorConfiguration<Settings, NoPolicy>);
 
   return forwarder;

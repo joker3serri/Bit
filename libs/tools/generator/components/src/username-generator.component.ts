@@ -22,9 +22,11 @@ import {
   CredentialGeneratorService,
   GeneratedCredential,
   Generators,
+  getForwarderConfiguration,
   isEmailAlgorithm,
   isForwarderIntegration,
   isUsernameAlgorithm,
+  toCredentialGeneratorConfiguration,
 } from "@bitwarden/generator-core";
 
 /** Component that generates usernames and emails */
@@ -79,10 +81,13 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     this.generatorService
       .algorithms$(["email", "username"], { userId$: this.userId$ })
       .pipe(
-        map((algorithms) => [
-          this.toOptions(algorithms.filter(a => !isForwarderIntegration(a.id))),
-          this.toOptions(algorithms.filter(a => isForwarderIntegration(a.id)))
-        ] as const),
+        map(
+          (algorithms) =>
+            [
+              this.toOptions(algorithms.filter((a) => !isForwarderIntegration(a.id))),
+              this.toOptions(algorithms.filter((a) => isForwarderIntegration(a.id))),
+            ] as const,
+        ),
         takeUntil(this.destroyed),
       )
       .subscribe(([type, forwarder]) => {
@@ -182,10 +187,15 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
 
       case "username":
         return this.generatorService.generate$(Generators.username, dependencies);
-
-      default:
-        throw new Error(`Invalid generator type: "${type}"`);
     }
+
+    if (isForwarderIntegration(type)) {
+      const forwarder = getForwarderConfiguration(type.forwarder);
+      const configuration = toCredentialGeneratorConfiguration(forwarder);
+      return this.generatorService.generate$(configuration, dependencies);
+    }
+
+    throw new Error(`Invalid generator type: "${type}"`);
   }
 
   /** Lists the credential types supported by the component. */

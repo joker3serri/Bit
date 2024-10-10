@@ -25,10 +25,13 @@ import {
   CredentialGeneratorService,
   GeneratedCredential,
   Generators,
+  getForwarderConfiguration,
   isEmailAlgorithm,
+  isForwarderIntegration,
   isPasswordAlgorithm,
   isUsernameAlgorithm,
   PasswordAlgorithm,
+  toCredentialGeneratorConfiguration,
 } from "@bitwarden/generator-core";
 
 /** root category that drills into username and email categories */
@@ -247,10 +250,15 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
       case "passphrase":
         return this.generatorService.generate$(Generators.passphrase, dependencies);
-
-      default:
-        throw new Error(`Invalid generator type: "${type}"`);
     }
+
+    if (isForwarderIntegration(type)) {
+      const forwarder = getForwarderConfiguration(type.forwarder);
+      const configuration = toCredentialGeneratorConfiguration(forwarder);
+      return this.generatorService.generate$(configuration, dependencies);
+    }
+
+    throw new Error(`Invalid generator type: "${type}"`);
   }
 
   /** Lists the credential types of the username algorithm box. */

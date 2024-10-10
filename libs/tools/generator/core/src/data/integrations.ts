@@ -9,6 +9,13 @@ import { FirefoxRelay } from "../integration/firefox-relay";
 import { ForwardEmail } from "../integration/forward-email";
 import { SimpleLogin } from "../integration/simple-login";
 
+/** Fixed list of integrations available to the application
+ *  @example
+ *
+ *  // Use `toCredentialGeneratorConfiguration(id :ForwarderIntegration)`
+ *  // to convert an integration to a generator configuration
+ *  const generator = toCredentialGeneratorConfiguration(Integrations.AddyIo);
+ */
 export const Integrations = Object.freeze({
   AddyIo,
   DuckDuckGo,
@@ -18,13 +25,13 @@ export const Integrations = Object.freeze({
   SimpleLogin,
 } as const);
 
-const integrations = Object.fromEntries(Object.values(Integrations).map((i) => [i.id, i as ForwarderConfiguration<object>]));
+const integrations = new Map(Object.values(Integrations).map((i) => [i.id, i]));
 
-export function getForwarderConfiguration(id: IntegrationId) : ForwarderConfiguration<ApiSettings> {
-  const maybeForwarder =  integrations[id as string];
+export function getForwarderConfiguration(id: IntegrationId): ForwarderConfiguration<ApiSettings> {
+  const maybeForwarder = integrations.get(id);
 
-  if("forwarder" in maybeForwarder) {
-    return maybeForwarder as ForwarderConfiguration<ApiSettings>
+  if ("forwarder" in maybeForwarder) {
+    return maybeForwarder as ForwarderConfiguration<ApiSettings>;
   } else {
     return null;
   }
