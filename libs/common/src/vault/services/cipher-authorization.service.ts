@@ -51,7 +51,7 @@ export class DefaultCipherAuthorizationService implements CipherAuthorizationSer
     return this.organizationService.get$(cipher.organizationId).pipe(
       switchMap((organization) => {
         // If the user is an admin, they can delete an unassigned cipher
-        if (cipher.collectionIds.length === 0) {
+        if (!cipher.collectionIds || cipher.collectionIds.length === 0) {
           return of(organization?.canEditUnassignedCiphers === true);
         }
 
