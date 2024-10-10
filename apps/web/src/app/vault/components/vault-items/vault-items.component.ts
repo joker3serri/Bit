@@ -91,11 +91,39 @@ export class VaultItemsComponent {
     );
   }
 
+  get showDelete(): boolean {
+    if (this.selection.selected.length === 0) {
+      return true;
+    }
+
+    const hasPersonalItems = this.hasPersonalItems();
+    const uniqueCipherOrgIds = this.getUniqueOrganizationIds();
+
+    const canManageCollectionCiphers = this.selection.selected
+      .filter((item) => item.cipher)
+      .every(({ cipher }) => this.canManageCollection(cipher));
+
+    const canDeleteCollections = this.selection.selected
+      .filter((item) => item.collection)
+      .every((item) => item.collection && this.canDeleteCollection(item.collection));
+
+    const userCanDeleteAccess = canManageCollectionCiphers && canDeleteCollections;
+
+    if (
+      userCanDeleteAccess ||
+      (hasPersonalItems && (!uniqueCipherOrgIds.size || userCanDeleteAccess))
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   get disableMenu() {
     return (
       !this.bulkMoveAllowed &&
       !this.showAssignToCollections() &&
-      !this.showDelete() &&
+      !this.showDelete &&
       !this.showBulkEditCollectionAccess
     );
   }
@@ -296,34 +324,6 @@ export class VaultItemsComponent {
       this.selection.selected.filter((item) => item.collection).length === 0;
 
     return (canEditOrManageAllCiphers || this.allCiphersHaveEditAccess()) && collectionNotSelected;
-  }
-
-  protected showDelete(): boolean {
-    if (this.selection.selected.length === 0) {
-      return true;
-    }
-
-    const hasPersonalItems = this.hasPersonalItems();
-    const uniqueCipherOrgIds = this.getUniqueOrganizationIds();
-
-    const canManageCollectionCiphers = this.selection.selected
-      .filter((item) => item.cipher)
-      .every(({ cipher }) => this.canManageCollection(cipher));
-
-    const canDeleteCollections = this.selection.selected
-      .filter((item) => item.collection)
-      .every((item) => item.collection && this.canDeleteCollection(item.collection));
-
-    const userCanDeleteAccess = canManageCollectionCiphers && canDeleteCollections;
-
-    if (
-      userCanDeleteAccess ||
-      (hasPersonalItems && (!uniqueCipherOrgIds.size || userCanDeleteAccess))
-    ) {
-      return true;
-    }
-
-    return false;
   }
 
   private hasPersonalItems(): boolean {
