@@ -19,6 +19,7 @@ export class AutoFillConstants {
     "customer id",
     "login id",
     "login",
+    "loginusername",
     // German
     "benutzername",
     "benutzer name",
