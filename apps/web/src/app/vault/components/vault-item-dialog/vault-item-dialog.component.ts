@@ -329,6 +329,9 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
       result.action === AttachmentDialogResult.Removed ||
       result.action === AttachmentDialogResult.Uploaded
     ) {
+      this.formConfig.originalCipher = await this.cipherService.get(
+        this.formConfig.originalCipher?.id,
+      );
       this._cipherModified = true;
     }
   };
