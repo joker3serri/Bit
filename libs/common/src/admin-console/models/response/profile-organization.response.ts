@@ -51,7 +51,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
   accessSecretsManager: boolean;
   limitCollectionCreationDeletion: boolean;
   allowAdminAccessToAllCollectionItems: boolean;
-  userIsManagedByOrganization?: boolean | null;
+  userIsManagedByOrganization: boolean;
 
   constructor(response: any) {
     super(response);
