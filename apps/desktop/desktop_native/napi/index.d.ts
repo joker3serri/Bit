@@ -14,7 +14,7 @@ export declare namespace passwords {
   export function deletePassword(service: string, account: string): Promise<void>
   export function isAvailable(): Promise<boolean>
 }
-export namespace biometrics {
+export declare namespace biometrics {
   export function prompt(hwnd: Buffer, message: string): Promise<boolean>
   export function available(): Promise<boolean>
   export function setBiometricSecret(service: string, account: string, secret: string, keyMaterial: KeyMaterial | undefined | null, ivB64: string): Promise<string>
@@ -51,7 +51,7 @@ export declare namespace powermonitors {
   export function onLock(callback: (err: Error | null, ) => any): Promise<void>
   export function isLockMonitorAvailable(): Promise<boolean>
 }
-export declare namespace ipc {
+export namespace ipc {
   export interface IpcMessage {
     clientId: number
     kind: IpcMessageType
