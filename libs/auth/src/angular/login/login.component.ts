@@ -289,16 +289,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     // If none of the above cases are true, proceed with login...
-    // ...on Web
     if (this.clientType === ClientType.Web) {
       await this.goAfterLogIn(authResult.userId);
-      // ...on Browser/Desktop
-    } else if (this.clientType === ClientType.Browser) {
-      this.loginEmailService.clearValues();
+    }
+
+    this.loginEmailService.clearValues();
+
+    if (this.clientType === ClientType.Browser) {
       await this.router.navigate(["/tabs/vault"]);
     } else {
       await this.router.navigate(["vault"]);
-      this.loginEmailService.clearValues();
     }
   }
 
@@ -425,7 +425,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   protected async saveEmailSettings(): Promise<void> {
-    this.loginEmailService.setLoginEmail(this.formGroup.value.email);
+    await this.loginEmailService.setLoginEmail(this.formGroup.value.email);
     this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
     await this.loginEmailService.saveEmailSettings();
   }
@@ -596,5 +596,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
 
     this.messagingService.send("getWindowIsFocused");
+  }
+
+  /**
+   * Helper function to determine if the back button should be shown.
+   * @returns true if the back button should be shown.
+   */
+  protected showBackButton(): boolean {
+    return this.validatedEmail && this.clientType !== ClientType.Browser;
   }
 }

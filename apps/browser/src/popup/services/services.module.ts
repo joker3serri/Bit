@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, NgModule, NgZone } from "@angular/core";
 import { Subject, merge, of } from "rxjs";
 
+import { CollectionService } from "@bitwarden/admin-console/common";
 import { ViewCacheService } from "@bitwarden/angular/platform/abstractions/view-cache.service";
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
 import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
@@ -22,16 +23,13 @@ import {
   LoginComponentService,
   LockComponentService,
 } from "@bitwarden/auth/angular";
-import { LockService, LoginEmailService, PinServiceAbstraction } from "@bitwarden/auth/common";
+import { LockService, PinServiceAbstraction } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import {
-  AccountService,
-  AccountService as AccountServiceAbstraction,
-} from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
@@ -72,6 +70,7 @@ import {
   PlatformUtilsService,
   PlatformUtilsService as PlatformUtilsServiceAbstraction,
 } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import {
   AbstractStorageService,
@@ -80,9 +79,11 @@ import {
 import { Message, MessageListener, MessageSender } from "@bitwarden/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports -- Used for dependency injection
 import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
+import { flagEnabled } from "@bitwarden/common/platform/misc/flags";
 import { TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
+import { NoopSdkClientFactory } from "@bitwarden/common/platform/services/sdk/noop-sdk-client-factory";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
@@ -97,7 +98,6 @@ import { WindowStorageService } from "@bitwarden/common/platform/storage/window-
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
@@ -130,6 +130,7 @@ import BrowserLocalStorageService from "../../platform/services/browser-local-st
 import { BrowserScriptInjectorService } from "../../platform/services/browser-script-injector.service";
 import I18nService from "../../platform/services/i18n.service";
 import { ForegroundPlatformUtilsService } from "../../platform/services/platform-utils/foreground-platform-utils.service";
+import { BrowserSdkClientFactory } from "../../platform/services/sdk/browser-sdk-client-factory";
 import { ForegroundTaskSchedulerService } from "../../platform/services/task-scheduler/foreground-task-scheduler.service";
 import { BrowserStorageServiceProvider } from "../../platform/storage/browser-storage-service.provider";
 import { ForegroundMemoryStorageService } from "../../platform/storage/foreground-memory-storage.service";
@@ -600,9 +601,9 @@ const safeProviders: SafeProvider[] = [
     deps: [MessageSender, MessageListener],
   }),
   safeProvider({
-    provide: LoginEmailService,
-    useClass: LoginEmailService,
-    deps: [AccountService, AuthService, StateProvider],
+    provide: SdkClientFactory,
+    useClass: flagEnabled("sdk") ? BrowserSdkClientFactory : NoopSdkClientFactory,
+    deps: [],
   }),
 ];
 
