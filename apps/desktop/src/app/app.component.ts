@@ -8,9 +8,11 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { filter, firstValueFrom, map, Subject, takeUntil, timeout } from "rxjs";
+import { catchError, filter, firstValueFrom, map, of, Subject, takeUntil, timeout } from "rxjs";
 
+import { CollectionService } from "@bitwarden/admin-console/common";
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { FingerprintDialogComponent } from "@bitwarden/auth/angular";
@@ -21,7 +23,6 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
@@ -38,6 +39,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SystemService } from "@bitwarden/common/platform/abstractions/system.service";
 import { clearCaches } from "@bitwarden/common/platform/misc/sequentialize";
@@ -46,7 +48,6 @@ import { SyncService } from "@bitwarden/common/platform/sync";
 import { UserId } from "@bitwarden/common/types/guid";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { DialogService, ToastOptions, ToastService } from "@bitwarden/components";
@@ -56,6 +57,7 @@ import { BiometricStateService } from "@bitwarden/key-management";
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { LoginApprovalComponent } from "../auth/login/login-approval.component";
 import { MenuAccount, MenuUpdateRequest } from "../main/menu/menu.updater";
+import { flagEnabled } from "../platform/flags";
 import { PremiumComponent } from "../vault/app/accounts/premium.component";
 import { FolderAddEditComponent } from "../vault/app/vault/folder-add-edit.component";
 
@@ -150,9 +152,28 @@ export class AppComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private biometricStateService: BiometricStateService,
     private stateEventRunnerService: StateEventRunnerService,
-    private providerService: ProviderService,
     private accountService: AccountService,
-  ) {}
+    private sdkService: SdkService,
+  ) {
+    if (flagEnabled("sdk")) {
+      // Warn if the SDK for some reason can't be initialized
+      this.sdkService.supported$
+        .pipe(
+          takeUntilDestroyed(),
+          catchError(() => {
+            return of(false);
+          }),
+        )
+        .subscribe((supported) => {
+          if (!supported) {
+            this.logService.debug("SDK is not supported");
+            this.sdkService.failedToInitialize().catch(this.logService.error);
+          } else {
+            this.logService.debug("SDK is supported");
+          }
+        });
+    }
+  }
 
   ngOnInit() {
     this.accountService.activeAccount$.pipe(takeUntil(this.destroy$)).subscribe((account) => {
