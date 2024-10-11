@@ -210,22 +210,23 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   submitCollectionManagement = async () => {
     // Early exit if self-hosted
-    if (this.selfHosted) {
+    if (this.selfHosted && !this.limitCollectionCreationDeletionSplitFeatureFlagIsEnabled) {
       return;
     }
-
     const request = new OrganizationCollectionManagementUpdateRequest();
     if (this.limitCollectionCreationDeletionSplitFeatureFlagIsEnabled) {
       request.limitCollectionCreation =
         this.collectionManagementFormGroup_VNext.value.limitCollectionCreation;
       request.limitCollectionDeletion =
         this.collectionManagementFormGroup_VNext.value.limitCollectionDeletion;
+      request.allowAdminAccessToAllCollectionItems =
+        this.collectionManagementFormGroup_VNext.value.allowAdminAccessToAllCollectionItems;
     } else {
       request.limitCreateDeleteOwnerAdmin =
         this.collectionManagementFormGroup.value.limitCollectionCreationDeletion;
+      request.allowAdminAccessToAllCollectionItems =
+        this.collectionManagementFormGroup.value.allowAdminAccessToAllCollectionItems;
     }
-    request.allowAdminAccessToAllCollectionItems =
-      this.collectionManagementFormGroup.value.allowAdminAccessToAllCollectionItems;
 
     await this.organizationApiService.updateCollectionManagement(this.organizationId, request);
 

@@ -81,7 +81,7 @@
       </bit-form-control>
     </ng-container>
     <button
-      *ngIf="!selfHosted"
+      *ngIf="!selfHosted || limitCollectionCreationDeletionSplitFeatureFlagIsEnabled"
       type="submit"
       bitButton
       bitFormButton
