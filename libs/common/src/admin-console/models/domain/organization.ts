@@ -78,7 +78,7 @@ export class Organization {
    * A user is considered managed by an organization if their email domain
    * matches one of the verified domains of that organization, and the user is a member of it.
    */
-  userIsManagedByOrganization?: boolean | null;
+  userIsManagedByOrganization: boolean;
 
   constructor(obj?: OrganizationData) {
     if (obj == null) {

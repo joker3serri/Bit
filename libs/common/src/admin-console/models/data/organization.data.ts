@@ -54,7 +54,7 @@ export class OrganizationData {
   accessSecretsManager: boolean;
   limitCollectionCreationDeletion: boolean;
   allowAdminAccessToAllCollectionItems: boolean;
-  userIsManagedByOrganization?: boolean | null;
+  userIsManagedByOrganization: boolean;
 
   constructor(
     response?: ProfileOrganizationResponse,
