@@ -53,8 +53,8 @@ export class SendOptionsComponent implements OnInit {
     hideEmail: [false as boolean],
   });
 
-  get showNewPassword(): boolean {
-    return this.config.mode === "edit" && this.originalSendView?.password !== null;
+  get shouldShowNewPassword(): boolean {
+    return this.originalSendView && this.originalSendView.password !== null;
   }
 
   get shouldShowCount(): boolean {
