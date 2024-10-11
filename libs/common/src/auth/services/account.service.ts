@@ -23,6 +23,24 @@ import {
 } from "../../platform/state";
 import { UserId } from "../../types/guid";
 
+/**
+ * An rxjs map operator that extracts the UserId from an account. Throws if the account or UserId are null.
+ */
+export const getUserId = map<{ id: UserId | undefined }, UserId>((account) => {
+  if (account?.id == null) {
+    throw new Error("Null account or account ID");
+  }
+
+  return account.id;
+});
+
+/**
+ * An rxjs map operator that extracts the UserId from an account, or returns undefined if the account or UserId are null.
+ */
+export const getOptionalUserId = map<{ id: UserId | undefined }, UserId | undefined>(
+  (account) => account?.id ?? undefined,
+);
+
 export const ACCOUNT_ACCOUNTS = KeyDefinition.record<AccountInfo, UserId>(
   ACCOUNT_DISK,
   "accounts",
