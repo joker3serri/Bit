@@ -14,7 +14,7 @@ export declare namespace passwords {
   export function deletePassword(service: string, account: string): Promise<void>
   export function isAvailable(): Promise<boolean>
 }
-export declare namespace biometrics {
+export namespace biometrics {
   export function prompt(hwnd: Buffer, message: string): Promise<boolean>
   export function available(): Promise<boolean>
   export function setBiometricSecret(service: string, account: string, secret: string, keyMaterial: KeyMaterial | undefined | null, ivB64: string): Promise<string>
