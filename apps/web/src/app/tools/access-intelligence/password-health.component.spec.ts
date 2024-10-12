@@ -10,24 +10,21 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import {
-  TableBodyDirective,
-  TableComponent,
-} from "@bitwarden/components/src/table/table.component";
+import { TableModule } from "@bitwarden/components";
+import { TableBodyDirective } from "@bitwarden/components/src/table/table.component";
 import { PasswordRepromptService } from "@bitwarden/vault";
 // eslint-disable-next-line no-restricted-imports
 import { PipesModule } from "@bitwarden/web-vault/app/vault/individual-vault/pipes/pipes.module";
 
 // eslint-disable-next-line no-restricted-imports
-import { PasswordsReportComponent } from "../reports/pages/passwords-report.component";
-// eslint-disable-next-line no-restricted-imports
-import { userData } from "../reports/pages/passwords-report.mock";
-// eslint-disable-next-line no-restricted-imports
 import { cipherData } from "../reports/pages/reports-ciphers.mock";
 
-describe("PasswordsReportComponent", () => {
-  let component: PasswordsReportComponent;
-  let fixture: ComponentFixture<PasswordsReportComponent>;
+import { PasswordHealthComponent } from "./password-health.component";
+import { userData } from "./password-health.mock";
+
+describe("PasswordHealthComponent", () => {
+  let component: PasswordHealthComponent;
+  let fixture: ComponentFixture<PasswordHealthComponent>;
   let passwordStrengthService: MockProxy<PasswordStrengthServiceAbstraction>;
   let organizationService: MockProxy<OrganizationService>;
   let syncServiceMock: MockProxy<SyncService>;
@@ -44,8 +41,8 @@ describe("PasswordsReportComponent", () => {
     organizationService.organizations$ = of([]);
 
     await TestBed.configureTestingModule({
-      imports: [PipesModule],
-      declarations: [PasswordsReportComponent, I18nPipe, TableComponent, TableBodyDirective],
+      imports: [PipesModule, TableModule, TableBodyDirective],
+      declarations: [I18nPipe],
       providers: [
         { provide: CipherService, useValue: cipherServiceMock },
         { provide: PasswordStrengthServiceAbstraction, useValue: passwordStrengthService },
@@ -60,7 +57,7 @@ describe("PasswordsReportComponent", () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PasswordsReportComponent);
+    fixture = TestBed.createComponent(PasswordHealthComponent);
     component = fixture.componentInstance;
 
     (component as any).cipherData = cipherData;
