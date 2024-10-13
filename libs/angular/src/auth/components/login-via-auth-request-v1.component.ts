@@ -43,7 +43,7 @@ enum State {
 }
 
 @Directive()
-export class LoginViaAuthRequestComponent
+export class LoginViaAuthRequestComponentV1
   extends CaptchaProtectedComponent
   implements OnInit, OnDestroy
 {

@@ -40,7 +40,7 @@ import { deepLinkGuard } from "./auth/guards/deep-link.guard";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
 import { LoginDecryptionOptionsComponent } from "./auth/login/login-decryption-options/login-decryption-options.component";
-import { LoginViaAuthRequestComponent } from "./auth/login/login-via-auth-request.component";
+import { LoginViaAuthRequestComponentV1 } from "./auth/login/login-via-auth-request-v1.component";
 import { LoginViaWebAuthnComponent } from "./auth/login/login-via-webauthn/login-via-webauthn.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { AcceptOrganizationComponent } from "./auth/organization-invite/accept-organization.component";
@@ -93,7 +93,7 @@ const routes: Routes = [
       },
       {
         path: "login-with-device",
-        component: LoginViaAuthRequestComponent,
+        component: LoginViaAuthRequestComponentV1,
         data: { titleId: "loginWithDevice" } satisfies RouteDataProperties,
       },
       {
@@ -103,7 +103,7 @@ const routes: Routes = [
       },
       {
         path: "admin-approval-requested",
-        component: LoginViaAuthRequestComponent,
+        component: LoginViaAuthRequestComponentV1,
         data: { titleId: "adminApprovalRequested" } satisfies RouteDataProperties,
       },
       {
