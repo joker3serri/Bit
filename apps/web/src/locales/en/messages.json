@@ -3782,7 +3782,7 @@
     "message": "Join organization"
   },
   "joinOrganizationName": {
-    "message": "Join $ORGANIZATION_NAME$",
+    "message": "Join $ORGANIZATIONNAME$",
     "placeholders": {
       "organizationName": {
         "content": "$1",
