@@ -25,6 +25,9 @@ export class CollectionsComponent implements OnInit {
   collections: CollectionView[] = [];
   organization: Organization;
 
+  // Using to disable collections edit in desktop unless user has "Can Manage" or "Can Edit" permissions
+  canAssignCollections: boolean;
+
   protected cipherDomain: Cipher;
 
   constructor(
@@ -52,7 +55,7 @@ export class CollectionsComponent implements OnInit {
       await this.cipherService.getKeyForCipherKeyDecryption(this.cipherDomain, activeUserId),
     );
     this.collections = await this.loadCollections();
-
+    this.subscribeAssignCollectionsCheck(this.cipher);
     this.collections.forEach((c) => ((c as any).checked = false));
     if (this.collectionIds != null) {
       this.collections.forEach((c) => {
@@ -63,6 +66,16 @@ export class CollectionsComponent implements OnInit {
     if (this.organization == null) {
       this.organization = await this.organizationService.get(this.cipher.organizationId);
     }
+  }
+
+  protected subscribeAssignCollectionsCheck(cipher: CipherView): void {
+    if (cipher?.organizationId == null) {
+      this.canAssignCollections = true;
+    }
+
+    this.organizationService.get$(cipher.organizationId).subscribe((org) => {
+      this.canAssignCollections = org.canEditAllCiphers || (cipher.edit && cipher.viewPassword);
+    });
   }
 
   async submit(): Promise<boolean> {
