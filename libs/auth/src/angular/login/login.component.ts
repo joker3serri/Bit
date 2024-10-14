@@ -148,12 +148,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     await this.defaultOnInit();
 
-    if (this.clientType === ClientType.Browser) {
-      if (this.loginViaAuthRequestSupported) {
-        await this.validateEmail();
-      }
-    }
-
     if (this.clientType === ClientType.Desktop) {
       await this.desktopOnInit();
     }
@@ -310,23 +304,32 @@ export class LoginComponent implements OnInit, OnDestroy {
     await this.router.navigate(["/login-with-device"]);
   }
 
-  protected async validateEmail(): Promise<void> {
+  protected async continue(): Promise<void> {
     this.formGroup.controls.email.markAsTouched();
     const emailValid = this.formGroup.controls.email.valid;
 
-    if (emailValid) {
-      this.toggleValidateEmail(true);
-      await this.getLoginWithDevice(this.loggedEmail);
-
-      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
-        pageTitle: "welcomeBack",
-        pageSubtitle: {
-          subtitle: `${this.loggedEmail}`,
-          translate: false,
-        },
-        pageIcon: this.Icons.WaveIcon,
+    if (!emailValid) {
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccured"),
+        message: this.i18nService.t("invalidEmail"),
       });
+      return;
     }
+
+    this.toggleValidateEmail(true);
+    await this.getLoginWithDevice(this.loggedEmail);
+
+    this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+      pageTitle: "welcomeBack",
+      pageSubtitle: {
+        subtitle: `${this.loggedEmail}`,
+        translate: false,
+      },
+      pageIcon: this.Icons.WaveIcon,
+    });
+
+    this.focusInput();
   }
 
   protected toggleValidateEmail(value: boolean): void {
@@ -388,21 +391,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     await this.loginEmailService.setLoginEmail(this.formGroup.value.email);
     this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
     await this.loginEmailService.saveEmailSettings();
-  }
-
-  protected async continue(): Promise<void> {
-    await this.validateEmail();
-
-    if (!this.formGroup.controls.email.valid) {
-      this.toastService.showToast({
-        variant: "error",
-        title: this.i18nService.t("errorOccured"),
-        message: this.i18nService.t("invalidEmail"),
-      });
-      return;
-    }
-
-    this.focusInput();
   }
 
   private async getLoginWithDevice(email: string): Promise<void> {
