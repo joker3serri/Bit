@@ -1,30 +1,29 @@
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { ApiSettings, IntegrationRequest, RestClient } from "@bitwarden/common/tools/integration/rpc";
+import {
+  ApiSettings,
+  IntegrationRequest,
+  RestClient,
+} from "@bitwarden/common/tools/integration/rpc";
 import { GenerationRequest } from "@bitwarden/common/tools/types";
 
-import {
-  CredentialGenerator,
-  GeneratedCredential,
-} from "../types";
+import { CredentialGenerator, GeneratedCredential } from "../types";
 
 import { AccountRequest, ForwarderConfiguration } from "./forwarder-configuration";
 import { ForwarderContext } from "./forwarder-context";
 import { CreateForwardingAddressRpc, GetAccountIdRpc } from "./rpc";
 
 /** Generation algorithms that produce randomized email addresses */
-export class Forwarder
-  implements
-    CredentialGenerator<ApiSettings>
-{
+export class Forwarder implements CredentialGenerator<ApiSettings> {
   /** Instantiates the email randomizer
    *  @param random data source for random data
    */
-  constructor(private configuration: ForwarderConfiguration<ApiSettings>, private client: RestClient, private i18nService: I18nService) {}
+  constructor(
+    private configuration: ForwarderConfiguration<ApiSettings>,
+    private client: RestClient,
+    private i18nService: I18nService,
+  ) {}
 
-  async generate(
-    request: GenerationRequest,
-    settings: ApiSettings,
-  ) {
+  async generate(request: GenerationRequest, settings: ApiSettings) {
     const requestOptions: IntegrationRequest & AccountRequest = { website: request.website };
 
     const getAccount = await this.getAccountId(this.configuration, settings);

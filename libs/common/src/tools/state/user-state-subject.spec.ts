@@ -1,5 +1,6 @@
 import { BehaviorSubject, of, Subject } from "rxjs";
 
+import { GENERATOR_DISK, UserKeyDefinition } from "@bitwarden/common/platform/state";
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { awaitAsync, FakeSingleUserState, ObservableTracker } from "../../../spec";
@@ -9,6 +10,10 @@ import { UserStateSubject } from "./user-state-subject";
 
 const SomeUser = "some user" as UserId;
 type TestType = { foo: string };
+const SomeKey = new UserKeyDefinition<TestType>(GENERATOR_DISK, "TestKey", {
+  deserializer: (d) => d as TestType,
+  clearOn: [],
+});
 
 function fooMaxLength(maxLength: number): StateConstraints<TestType> {
   return Object.freeze({
@@ -43,7 +48,11 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const nextValue = jest.fn((_, next) => next);
       const when$ = new BehaviorSubject(true);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
+      const subject = new UserStateSubject(SomeKey, () => state, {
+        singleUserId$,
+        nextValue,
+        when$,
+      });
 
       // the interleaved await asyncs are only necessary b/c `nextValue` is called asynchronously
       subject.next({ foo: "next" });
@@ -65,7 +74,11 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const nextValue = jest.fn((_, next) => next);
       const when$ = new BehaviorSubject(true);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
+      const subject = new UserStateSubject(SomeKey, () => state, {
+        singleUserId$,
+        nextValue,
+        when$,
+      });
 
       // the interleaved await asyncs are only necessary b/c `nextValue` is called asynchronously
       subject.next({ foo: "next" });
@@ -83,7 +96,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new Subject<StateConstraints<TestType>>();
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject);
 
       constraints$.next(fooMaxLength(3));
@@ -97,7 +110,7 @@ describe("UserStateSubject", () => {
     it("emits the next value", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
       const expected: TestType = { foo: "next" };
 
       let actual: TestType = null;
@@ -114,7 +127,7 @@ describe("UserStateSubject", () => {
       const initialState = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       let actual: TestType = null;
       subject.subscribe((value) => {
@@ -132,7 +145,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const shouldUpdate = jest.fn(() => true);
-      const subject = new UserStateSubject(state, { singleUserId$, shouldUpdate });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, shouldUpdate });
 
       const nextVal: TestType = { foo: "next" };
       subject.next(nextVal);
@@ -147,7 +160,7 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const shouldUpdate = jest.fn(() => true);
       const dependencyValue = { bar: "dependency" };
-      const subject = new UserStateSubject(state, {
+      const subject = new UserStateSubject(SomeKey, () => state, {
         singleUserId$,
         shouldUpdate,
         dependencies$: of(dependencyValue),
@@ -165,7 +178,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const shouldUpdate = jest.fn(() => true);
-      const subject = new UserStateSubject(state, { singleUserId$, shouldUpdate });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, shouldUpdate });
       const expected: TestType = { foo: "next" };
 
       let actual: TestType = null;
@@ -183,7 +196,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const shouldUpdate = jest.fn(() => false);
-      const subject = new UserStateSubject(state, { singleUserId$, shouldUpdate });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, shouldUpdate });
 
       subject.next({ foo: "next" });
       await awaitAsync();
@@ -200,7 +213,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const nextValue = jest.fn((_, next) => next);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, nextValue });
 
       const nextVal: TestType = { foo: "next" };
       subject.next(nextVal);
@@ -215,7 +228,7 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const nextValue = jest.fn((_, next) => next);
       const dependencyValue = { bar: "dependency" };
-      const subject = new UserStateSubject(state, {
+      const subject = new UserStateSubject(SomeKey, () => state, {
         singleUserId$,
         nextValue,
         dependencies$: of(dependencyValue),
@@ -236,7 +249,11 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const nextValue = jest.fn((_, next) => next);
       const when$ = new BehaviorSubject(true);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
+      const subject = new UserStateSubject(SomeKey, () => state, {
+        singleUserId$,
+        nextValue,
+        when$,
+      });
 
       const nextVal: TestType = { foo: "next" };
       subject.next(nextVal);
@@ -253,7 +270,11 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const nextValue = jest.fn((_, next) => next);
       const when$ = new BehaviorSubject(false);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue, when$ });
+      const subject = new UserStateSubject(SomeKey, () => state, {
+        singleUserId$,
+        nextValue,
+        when$,
+      });
 
       const nextVal: TestType = { foo: "next" };
       subject.next(nextVal);
@@ -265,42 +286,30 @@ describe("UserStateSubject", () => {
       expect(nextValue).toHaveBeenCalled();
     });
 
-    it("waits to evaluate nextValue until singleUserId$ emits", async () => {
-      // this test looks for `nextValue` because a subscription isn't necessary for
+    it("waits to evaluate `UserState.update` until singleUserId$ emits", async () => {
+      // this test looks for `nextMock` because a subscription isn't necessary for
       // the subject to update.
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new Subject<UserId>();
       const nextValue = jest.fn((_, next) => next);
-      const subject = new UserStateSubject(state, { singleUserId$, nextValue });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, nextValue });
 
       const nextVal: TestType = { foo: "next" };
       subject.next(nextVal);
       await awaitAsync();
-      expect(nextValue).not.toHaveBeenCalled();
+      expect(state.nextMock).not.toHaveBeenCalled();
       singleUserId$.next(SomeUser);
       await awaitAsync();
 
-      expect(nextValue).toHaveBeenCalled();
-    });
-
-    it("applies constraints$ on init", async () => {
-      const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
-      const singleUserId$ = new BehaviorSubject(SomeUser);
-      const constraints$ = new BehaviorSubject(fooMaxLength(2));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
-      const tracker = new ObservableTracker(subject);
-
-      const [result] = await tracker.pauseUntilReceived(1);
-
-      expect(result).toEqual({ foo: "in" });
+      expect(state.nextMock).toHaveBeenCalled();
     });
 
     it("applies dynamic constraints", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(DynamicFooMaxLength);
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject);
       const expected: TestType = { foo: "next" };
       const emission = tracker.expectEmission();
@@ -311,24 +320,11 @@ describe("UserStateSubject", () => {
       expect(actual).toEqual({ foo: "" });
     });
 
-    it("applies constraints$ on constraints$ emission", async () => {
-      const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
-      const singleUserId$ = new BehaviorSubject(SomeUser);
-      const constraints$ = new BehaviorSubject(fooMaxLength(2));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
-      const tracker = new ObservableTracker(subject);
-
-      constraints$.next(fooMaxLength(1));
-      const [, result] = await tracker.pauseUntilReceived(2);
-
-      expect(result).toEqual({ foo: "i" });
-    });
-
     it("applies constraints$ on next", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(fooMaxLength(2));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject);
 
       subject.next({ foo: "next" });
@@ -341,7 +337,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(fooMaxLength(2));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject);
 
       constraints$.next(fooMaxLength(3));
@@ -355,7 +351,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new Subject<StateConstraints<TestType>>();
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject);
 
       subject.next({ foo: "next" });
@@ -370,7 +366,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(fooMaxLength(3));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject);
 
       constraints$.error({ some: "error" });
@@ -384,7 +380,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(fooMaxLength(3));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject);
 
       constraints$.complete();
@@ -399,7 +395,7 @@ describe("UserStateSubject", () => {
     it("emits errors", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
       const expected: TestType = { foo: "error" };
 
       let actual: TestType = null;
@@ -418,7 +414,7 @@ describe("UserStateSubject", () => {
       const initialState = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       let actual: TestType = null;
       subject.subscribe({
@@ -437,7 +433,7 @@ describe("UserStateSubject", () => {
       const initialState = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       let shouldNotRun = false;
       subject.subscribe({
@@ -457,7 +453,7 @@ describe("UserStateSubject", () => {
     it("emits completes", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       let actual = false;
       subject.subscribe({
@@ -475,7 +471,7 @@ describe("UserStateSubject", () => {
       const initialState = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       let shouldNotRun = false;
       subject.subscribe({
@@ -496,7 +492,7 @@ describe("UserStateSubject", () => {
       const initialState = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       let timesRun = 0;
       subject.subscribe({
@@ -513,11 +509,36 @@ describe("UserStateSubject", () => {
   });
 
   describe("subscribe", () => {
+    it("applies constraints$ on init", async () => {
+      const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const constraints$ = new BehaviorSubject(fooMaxLength(2));
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
+      const tracker = new ObservableTracker(subject);
+
+      const [result] = await tracker.pauseUntilReceived(1);
+
+      expect(result).toEqual({ foo: "in" });
+    });
+
+    it("applies constraints$ on constraints$ emission", async () => {
+      const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
+      const singleUserId$ = new BehaviorSubject(SomeUser);
+      const constraints$ = new BehaviorSubject(fooMaxLength(2));
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
+      const tracker = new ObservableTracker(subject);
+
+      constraints$.next(fooMaxLength(1));
+      const [, result] = await tracker.pauseUntilReceived(2);
+
+      expect(result).toEqual({ foo: "i" });
+    });
+
     it("completes when singleUserId$ completes", async () => {
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       let actual = false;
       subject.subscribe({
@@ -536,7 +557,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const when$ = new BehaviorSubject(true);
-      const subject = new UserStateSubject(state, { singleUserId$, when$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, when$ });
 
       let actual = false;
       subject.subscribe({
@@ -557,7 +578,7 @@ describe("UserStateSubject", () => {
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
       const errorUserId = "error" as UserId;
 
       let error = false;
@@ -576,7 +597,7 @@ describe("UserStateSubject", () => {
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
       const expected = { error: "description" };
 
       let actual = false;
@@ -596,7 +617,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const when$ = new BehaviorSubject(true);
-      const subject = new UserStateSubject(state, { singleUserId$, when$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, when$ });
       const expected = { error: "description" };
 
       let actual = false;
@@ -616,7 +637,7 @@ describe("UserStateSubject", () => {
     it("returns the userId to which the subject is bound", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new Subject<UserId>();
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
       expect(subject.userId).toEqual(SomeUser);
     });
@@ -626,7 +647,7 @@ describe("UserStateSubject", () => {
     it("emits the next value with an empty constraint", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
       const expected: TestType = { foo: "next" };
       const emission = tracker.expectEmission();
@@ -642,7 +663,7 @@ describe("UserStateSubject", () => {
       const initialState = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialState);
       const singleUserId$ = new BehaviorSubject(SomeUser);
-      const subject = new UserStateSubject(state, { singleUserId$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
 
       subject.complete();
@@ -657,7 +678,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(fooMaxLength(2));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
       const expected = fooMaxLength(1);
       const emission = tracker.expectEmission();
@@ -673,7 +694,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(DynamicFooMaxLength);
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
       const expected: TestType = { foo: "next" };
       const emission = tracker.expectEmission();
@@ -690,7 +711,7 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const expected = fooMaxLength(2);
       const constraints$ = new BehaviorSubject(expected);
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
       const emission = tracker.expectEmission();
 
@@ -705,7 +726,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new BehaviorSubject(fooMaxLength(2));
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
       const expected = fooMaxLength(3);
       constraints$.next(expected);
@@ -722,7 +743,7 @@ describe("UserStateSubject", () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new Subject<StateConstraints<TestType>>();
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
       const expected = fooMaxLength(3);
 
@@ -740,7 +761,7 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const expected = fooMaxLength(3);
       const constraints$ = new BehaviorSubject(expected);
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
 
       constraints$.error({ some: "error" });
@@ -756,7 +777,7 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const expected = fooMaxLength(3);
       const constraints$ = new BehaviorSubject(expected);
-      const subject = new UserStateSubject(state, { singleUserId$, constraints$ });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
       const tracker = new ObservableTracker(subject.withConstraints$);
 
       constraints$.complete();

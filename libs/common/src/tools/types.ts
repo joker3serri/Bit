@@ -131,6 +131,8 @@ export type StateConstraints<State> = {
   fix: (state: State) => State;
 };
 
+export type SubjectConstraints<T> = StateConstraints<T> | DynamicStateConstraints<T>;
+
 /** Options that provide contextual information about the application state
  *  when a generator is invoked.
  */
@@ -146,6 +148,7 @@ export type VaultItemRequest = {
 /** Options that provide contextual information about the application state
  *  when a generator is invoked.
  */
-export type GenerationRequest = Partial<VaultItemRequest> & Partial<{
-  integration: IntegrationId | null
-}>;
+export type GenerationRequest = Partial<VaultItemRequest> &
+  Partial<{
+    integration: IntegrationId | null;
+  }>;
