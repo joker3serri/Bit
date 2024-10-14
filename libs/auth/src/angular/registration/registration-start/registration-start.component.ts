@@ -152,7 +152,9 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     // Result is null, so email verification is required
     this.state = RegistrationStartState.CHECK_EMAIL;
     this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
-      pageTitle: "checkYourEmail",
+      pageTitle: {
+        key: "checkYourEmail",
+      },
       pageIcon: RegistrationCheckEmailIcon,
     });
     this.registrationStartStateChange.emit(this.state);
@@ -180,7 +182,9 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
     this.state = RegistrationStartState.USER_DATA_ENTRY;
     this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
       pageIcon: RegistrationUserAddIcon,
-      pageTitle: "createAccount",
+      pageTitle: {
+        key: "createAccount",
+      },
     });
     this.registrationStartStateChange.emit(this.state);
   }
