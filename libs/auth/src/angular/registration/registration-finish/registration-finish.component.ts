@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Params, Router, RouterModule } from "@angular/router";
-import { EMPTY, Subject, from, switchMap, takeUntil, tap } from "rxjs";
+import { Subject, firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
@@ -65,11 +65,54 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.listenForQueryParamChanges();
-    await this.handleOrgInviteIfPresent();
+    const qParams = await firstValueFrom(this.activatedRoute.queryParams);
+    await this.handleQueryParams(qParams);
+    const orgInviteFlow = await this.handleOrgInviteIfPresent();
+
+    if (!orgInviteFlow) {
+      // Set the default page title and subtitle
+      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+        pageTitle: {
+          key: "setAStrongPassword",
+        },
+        pageSubtitle: {
+          key: "finishCreatingYourAccountBySettingAPassword",
+        },
+      });
+    }
+
+    this.loading = false;
   }
 
-  private async handleOrgInviteIfPresent() {
+  private async handleQueryParams(qParams: Params) {
+    if (qParams.email != null && qParams.email.indexOf("@") > -1) {
+      this.email = qParams.email;
+    }
+
+    if (qParams.token != null) {
+      this.emailVerificationToken = qParams.token;
+    }
+
+    if (qParams.orgSponsoredFreeFamilyPlanToken != null) {
+      this.orgSponsoredFreeFamilyPlanToken = qParams.orgSponsoredFreeFamilyPlanToken;
+    }
+
+    if (qParams.acceptEmergencyAccessInviteToken != null && qParams.emergencyAccessId) {
+      this.acceptEmergencyAccessInviteToken = qParams.acceptEmergencyAccessInviteToken;
+      this.emergencyAccessId = qParams.emergencyAccessId;
+    }
+
+    if (
+      qParams.fromEmail &&
+      qParams.fromEmail === "true" &&
+      this.email &&
+      this.emailVerificationToken
+    ) {
+      await this.registerVerificationEmailClicked(this.email, this.emailVerificationToken);
+    }
+  }
+
+  private async handleOrgInviteIfPresent(): Promise<boolean> {
     this.masterPasswordPolicyOptions =
       await this.registrationFinishService.getMasterPasswordPolicyOptsFromOrgInvite();
 
@@ -77,55 +120,19 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
     if (orgName) {
       // Org invite exists
       // Set the page subtitle to the org name
-      // TODO: can't proceed until we support translations w/ placeholders.
-      // this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
-      //   pageTitle:
-      //   pageSubtitle: "finishJoiningThisOrganizationBySettingAMasterPassword"
-      // })
+      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+        pageTitle: {
+          key: "joinOrganizationName",
+          placeholders: [orgName],
+        },
+        pageSubtitle: {
+          key: "finishJoiningThisOrganizationBySettingAMasterPassword",
+        },
+      });
+      return true;
     }
-  }
 
-  private listenForQueryParamChanges() {
-    this.activatedRoute.queryParams
-      .pipe(
-        tap((qParams: Params) => {
-          if (qParams.email != null && qParams.email.indexOf("@") > -1) {
-            this.email = qParams.email;
-          }
-
-          if (qParams.token != null) {
-            this.emailVerificationToken = qParams.token;
-          }
-
-          if (qParams.orgSponsoredFreeFamilyPlanToken != null) {
-            this.orgSponsoredFreeFamilyPlanToken = qParams.orgSponsoredFreeFamilyPlanToken;
-          }
-
-          if (qParams.acceptEmergencyAccessInviteToken != null && qParams.emergencyAccessId) {
-            this.acceptEmergencyAccessInviteToken = qParams.acceptEmergencyAccessInviteToken;
-            this.emergencyAccessId = qParams.emergencyAccessId;
-          }
-        }),
-        switchMap((qParams: Params) => {
-          if (
-            qParams.fromEmail &&
-            qParams.fromEmail === "true" &&
-            this.email &&
-            this.emailVerificationToken
-          ) {
-            return from(
-              this.registerVerificationEmailClicked(this.email, this.emailVerificationToken),
-            );
-          } else {
-            // org invite flow
-            this.loading = false;
-            return EMPTY;
-          }
-        }),
-
-        takeUntil(this.destroy$),
-      )
-      .subscribe();
+    return false;
   }
 
   async handlePasswordFormSubmit(passwordInputResult: PasswordInputResult) {
@@ -191,11 +198,9 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
           message: this.i18nService.t("emailVerifiedV2"),
           variant: "success",
         });
-        this.loading = false;
       }
     } catch (e) {
       await this.handleRegisterVerificationEmailClickedError(e);
-      this.loading = false;
     }
   }
 
