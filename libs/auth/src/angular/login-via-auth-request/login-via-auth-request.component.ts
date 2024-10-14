@@ -18,6 +18,7 @@ import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/a
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { CreateAuthRequest } from "@bitwarden/common/auth/models/request/create-auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
+import { HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
@@ -160,7 +161,52 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     adminAuthReqStorable: AdminAuthRequestStorable,
     userId: UserId,
   ): Promise<void> {
-    // code...
+    // Note: on login, the SSOLoginStrategy will also call to see an existing admin auth req
+    // has been approved and handle it if so.
+
+    // Regardless, we always retrieve the auth request from the server verify and handle status changes here as well
+    let adminAuthReqResponse: AuthRequestResponse;
+    try {
+      adminAuthReqResponse = await this.apiService.getAuthRequest(adminAuthReqStorable.id);
+    } catch (error) {
+      if (error instanceof ErrorResponse && error.statusCode === HttpStatusCode.NotFound) {
+        return await this.handleExistingAdminAuthReqDeletedOrDenied(userId);
+      }
+    }
+
+    // Request doesn't exist anymore
+    if (!adminAuthReqResponse) {
+      return await this.handleExistingAdminAuthReqDeletedOrDenied(userId);
+    }
+
+    // Re-derive the user's fingerprint phrase
+    // It is important to not use the server's public key here as it could have been compromised via MITM
+    const derivedPublicKeyArrayBuffer = await this.cryptoFunctionService.rsaExtractPublicKey(
+      adminAuthReqStorable.privateKey,
+    );
+    this.fingerprintPhrase = await this.authRequestService.getFingerprintPhrase(
+      this.email,
+      derivedPublicKeyArrayBuffer,
+    );
+
+    // Request denied
+    if (adminAuthReqResponse.isAnswered && !adminAuthReqResponse.requestApproved) {
+      return await this.handleExistingAdminAuthReqDeletedOrDenied(userId);
+    }
+
+    // Request approved
+    if (adminAuthReqResponse.requestApproved) {
+      return await this.handleApprovedAdminAuthRequest(
+        adminAuthReqResponse,
+        adminAuthReqStorable.privateKey,
+        userId,
+      );
+    }
+
+    // Request still pending response from admin
+    // set keypair and create hub connection so that any approvals will be received via push notification
+    this.authRequestKeyPair = { privateKey: adminAuthReqStorable.privateKey, publicKey: null };
+    await this.anonymousHubService.createHubConnection(adminAuthReqStorable.id);
   }
 
   private async startAuthRequestLogin(): Promise<void> {
@@ -364,5 +410,15 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       authRequestType,
       accessCode,
     );
+  }
+
+  private async handleExistingAdminAuthReqDeletedOrDenied(userId: UserId) {
+    // clear the admin auth request from state
+    await this.authRequestService.clearAdminAuthRequest(userId);
+
+    // start new auth request
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    this.startAuthRequestLogin();
   }
 }
