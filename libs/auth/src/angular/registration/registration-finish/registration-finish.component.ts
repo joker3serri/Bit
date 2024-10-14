@@ -66,25 +66,28 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     const qParams = await firstValueFrom(this.activatedRoute.queryParams);
-    await this.handleQueryParams(qParams);
-    const orgInviteFlow = await this.handleOrgInviteIfPresent();
+    this.handleQueryParams(qParams);
 
-    if (!orgInviteFlow) {
-      // Set the default page title and subtitle
-      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
-        pageTitle: {
-          key: "setAStrongPassword",
-        },
-        pageSubtitle: {
-          key: "finishCreatingYourAccountBySettingAPassword",
-        },
-      });
+    if (
+      qParams.fromEmail &&
+      qParams.fromEmail === "true" &&
+      this.email &&
+      this.emailVerificationToken
+    ) {
+      await this.initEmailVerificationFlow();
+    } else {
+      // Org Invite flow OR registration with email verification disabled Flow
+      const orgInviteFlow = await this.initOrgInviteFlowIfPresent();
+
+      if (!orgInviteFlow) {
+        this.initRegistrationWithEmailVerificationDisabledFlow();
+      }
     }
 
     this.loading = false;
   }
 
-  private async handleQueryParams(qParams: Params) {
+  private handleQueryParams(qParams: Params) {
     if (qParams.email != null && qParams.email.indexOf("@") > -1) {
       this.email = qParams.email;
     }
@@ -101,25 +104,16 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
       this.acceptEmergencyAccessInviteToken = qParams.acceptEmergencyAccessInviteToken;
       this.emergencyAccessId = qParams.emergencyAccessId;
     }
-
-    if (
-      qParams.fromEmail &&
-      qParams.fromEmail === "true" &&
-      this.email &&
-      this.emailVerificationToken
-    ) {
-      await this.registerVerificationEmailClicked(this.email, this.emailVerificationToken);
-    }
   }
 
-  private async handleOrgInviteIfPresent(): Promise<boolean> {
+  private async initOrgInviteFlowIfPresent(): Promise<boolean> {
     this.masterPasswordPolicyOptions =
       await this.registrationFinishService.getMasterPasswordPolicyOptsFromOrgInvite();
 
     const orgName = await this.registrationFinishService.getOrgNameFromOrgInvite();
     if (orgName) {
       // Org invite exists
-      // Set the page subtitle to the org name
+      // Set the page title and subtitle appropriately
       this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
         pageTitle: {
           key: "joinOrganizationName",
@@ -186,9 +180,24 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
     this.submitting = false;
   }
 
+  private setDefaultPageTitleAndSubtitle() {
+    this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+      pageTitle: {
+        key: "setAStrongPassword",
+      },
+      pageSubtitle: {
+        key: "finishCreatingYourAccountBySettingAPassword",
+      },
+    });
+  }
+
+  private async initEmailVerificationFlow() {
+    this.setDefaultPageTitleAndSubtitle();
+    await this.registerVerificationEmailClicked(this.email, this.emailVerificationToken);
+  }
+
   private async registerVerificationEmailClicked(email: string, emailVerificationToken: string) {
     const request = new RegisterVerificationEmailClickedRequest(email, emailVerificationToken);
-
     try {
       const result = await this.accountApiService.registerVerificationEmailClicked(request);
 
@@ -224,6 +233,10 @@ export class RegistrationFinishComponent implements OnInit, OnDestroy {
     } else {
       this.validationService.showError(e);
     }
+  }
+
+  private initRegistrationWithEmailVerificationDisabledFlow() {
+    this.setDefaultPageTitleAndSubtitle();
   }
 
   ngOnDestroy(): void {
