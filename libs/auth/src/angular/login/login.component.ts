@@ -332,11 +332,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     await this.getLoginWithDevice(this.loggedEmail);
 
     this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
-      pageTitle: "welcomeBack",
-      pageSubtitle: {
-        subtitle: `${this.loggedEmail}`,
-        translate: false,
+      pageTitle: {
+        key: "welcomeBack",
       },
+      pageSubtitle: this.loggedEmail,
       pageIcon: this.Icons.WaveIcon,
     });
 
