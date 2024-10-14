@@ -42,13 +42,10 @@ import { CipherReportComponent } from "../reports/pages/cipher-report.component"
 export class PasswordHealthComponent extends CipherReportComponent implements OnInit {
   passwordStrengthMap = new Map<string, [string, BadgeVariant]>();
 
-  private passwordStrengthCache = new Map<string, number>();
   weakPasswordCiphers: CipherView[] = [];
 
-  reusedPasswordCiphers: CipherView[] = [];
-  passwordUseMap: Map<string, number>;
+  passwordUseMap = new Map<string, number>();
 
-  exposedPasswordCiphers: CipherView[] = [];
   exposedPasswordMap = new Map<string, number>();
 
   reportCiphers: CipherView[] = [];
@@ -80,10 +77,12 @@ export class PasswordHealthComponent extends CipherReportComponent implements On
 
   async setCiphers() {
     const allCiphers = await this.getAllCiphers();
-    this.filterStatus = [0];
-    this.setWeakPasswordMap(allCiphers);
-    this.setReusedPasswordMap(allCiphers);
-    await this.setExposedPasswordMap(allCiphers);
+    allCiphers.forEach(async (cipher) => {
+      this.findWeakPassword(cipher);
+      this.findReusedPassword(cipher);
+      await this.findExposedPassword(cipher);
+    });
+    this.filterCiphersByOrg(this.reportCiphers);
 
     // const reportIssues = allCiphers.map((c) => {
     //   if (this.passwordStrengthMap.has(c.id)) {
@@ -98,149 +97,106 @@ export class PasswordHealthComponent extends CipherReportComponent implements On
     //     return c;
     //   }
     // });
-
-    this.filterCiphersByOrg(this.reportCiphers);
   }
 
-  protected setWeakPasswordMap(ciphers: any[]) {
-    this.weakPasswordCiphers = [];
-    this.filterStatus = [0];
-    this.findWeakPasswords(ciphers);
+  protected checkForExistingCipher(ciph: CipherView) {
+    if (!this.reportCipherIds.includes(ciph.id)) {
+      this.reportCipherIds.push(ciph.id);
+      this.reportCiphers.push(ciph);
+    }
   }
 
-  protected async setExposedPasswordMap(ciphers: any[]) {
-    const promises: Promise<void>[] = [];
+  protected async findExposedPassword(cipher: CipherView) {
+    const { type, login, isDeleted, edit, viewPassword, id } = cipher;
+    if (
+      type !== CipherType.Login ||
+      login.password == null ||
+      login.password === "" ||
+      isDeleted ||
+      (!this.organization && !edit) ||
+      !viewPassword
+    ) {
+      return;
+    }
 
-    ciphers.forEach((ciph: any) => {
-      const { type, login, isDeleted, edit, viewPassword, id } = ciph;
-      if (
-        type !== CipherType.Login ||
-        login.password == null ||
-        login.password === "" ||
-        isDeleted ||
-        (!this.organization && !edit) ||
-        !viewPassword
-      ) {
-        return;
-      }
-
-      const promise = this.auditService.passwordLeaked(login.password).then((exposedCount) => {
-        if (exposedCount > 0) {
-          this.exposedPasswordCiphers.push(ciph);
-          this.exposedPasswordMap.set(id, exposedCount);
-          if (!this.reportCipherIds.includes(ciph.id)) {
-            this.reportCipherIds.push(ciph.id);
-            this.reportCiphers.push(ciph);
-          }
-        }
-      });
-      promises.push(promise);
-    });
-    await Promise.all(promises);
+    const exposedCount = await this.auditService.passwordLeaked(login.password);
+    if (exposedCount > 0) {
+      this.exposedPasswordMap.set(id, exposedCount);
+      this.checkForExistingCipher(cipher);
+    }
   }
 
-  protected setReusedPasswordMap(ciphers: any[]): void {
-    const ciphersWithPasswords: CipherView[] = [];
-    this.passwordUseMap = new Map<string, number>();
+  protected findReusedPassword(cipher: CipherView) {
+    const { type, login, isDeleted, edit, viewPassword } = cipher;
+    if (
+      type !== CipherType.Login ||
+      login.password == null ||
+      login.password === "" ||
+      isDeleted ||
+      (!this.organization && !edit) ||
+      !viewPassword
+    ) {
+      return;
+    }
 
-    ciphers.forEach((ciph) => {
-      const { type, login, isDeleted, edit, viewPassword } = ciph;
-      if (
-        type !== CipherType.Login ||
-        login.password == null ||
-        login.password === "" ||
-        isDeleted ||
-        (!this.organization && !edit) ||
-        !viewPassword
-      ) {
-        return;
-      }
+    if (this.passwordUseMap.has(login.password)) {
+      this.passwordUseMap.set(login.password, this.passwordUseMap.get(login.password) || 0 + 1);
+    } else {
+      this.passwordUseMap.set(login.password, 1);
+    }
 
-      ciphersWithPasswords.push(ciph);
-      if (this.passwordUseMap.has(login.password)) {
-        this.passwordUseMap.set(login.password, this.passwordUseMap.get(login.password) || 0 + 1);
-      } else {
-        this.passwordUseMap.set(login.password, 1);
-      }
-    });
-    this.reusedPasswordCiphers = ciphersWithPasswords.filter(
-      (c) =>
-        (this.passwordUseMap.has(c.login.password) && this.passwordUseMap.get(c.login.password)) ||
-        0 > 1,
-    );
+    this.checkForExistingCipher(cipher);
   }
 
-  protected findWeakPasswords(ciphers: any[]): void {
-    ciphers.forEach((ciph) => {
-      const { type, login, isDeleted, edit, viewPassword, id } = ciph;
-      if (
-        type !== CipherType.Login ||
-        login.password == null ||
-        login.password === "" ||
-        isDeleted ||
-        (!this.organization && !edit) ||
-        !viewPassword
-      ) {
-        return;
-      }
+  protected findWeakPassword(cipher: CipherView): void {
+    const { type, login, isDeleted, edit, viewPassword } = cipher;
+    if (
+      type !== CipherType.Login ||
+      login.password == null ||
+      login.password === "" ||
+      isDeleted ||
+      (!this.organization && !edit) ||
+      !viewPassword
+    ) {
+      return;
+    }
 
-      const hasUserName = this.isUserNameNotEmpty(ciph);
-      const cacheKey = this.getCacheKey(ciph);
-      if (!this.passwordStrengthCache.has(cacheKey)) {
-        let userInput: string[] = [];
-        if (hasUserName) {
-          const atPosition = login.username.indexOf("@");
-          if (atPosition > -1) {
-            userInput = userInput
-              .concat(
-                login.username
-                  .substr(0, atPosition)
-                  .trim()
-                  .toLowerCase()
-                  .split(/[^A-Za-z0-9]/),
-              )
-              .filter((i) => i.length >= 3);
-          } else {
-            userInput = login.username
+    const hasUserName = this.isUserNameNotEmpty(cipher);
+    let userInput: string[] = [];
+    if (hasUserName) {
+      const atPosition = login.username.indexOf("@");
+      if (atPosition > -1) {
+        userInput = userInput
+          .concat(
+            login.username
+              .substring(0, atPosition)
               .trim()
               .toLowerCase()
-              .split(/[^A-Za-z0-9]/)
-              .filter((i: any) => i.length >= 3);
-          }
-        }
-        const result = this.passwordStrengthService.getPasswordStrength(
-          login.password,
-          null,
-          userInput.length > 0 ? userInput : null,
-        );
-        this.passwordStrengthCache.set(cacheKey, result.score);
+              .split(/[^A-Za-z0-9]/),
+          )
+          .filter((i) => i.length >= 3);
+      } else {
+        userInput = login.username
+          .trim()
+          .toLowerCase()
+          .split(/[^A-Za-z0-9]/)
+          .filter((i) => i.length >= 3);
       }
-      const score = this.passwordStrengthCache.get(cacheKey);
+    }
+    const { score } = this.passwordStrengthService.getPasswordStrength(
+      login.password,
+      null,
+      userInput.length > 0 ? userInput : null,
+    );
 
-      if (score != null && score <= 2) {
-        this.passwordStrengthMap.set(id, this.scoreKey(score));
-        this.weakPasswordCiphers.push(ciph);
-      }
-    });
-    this.weakPasswordCiphers.sort((a, b) => {
-      return (
-        (this.passwordStrengthCache.get(this.getCacheKey(a)) || 0) -
-        (this.passwordStrengthCache.get(this.getCacheKey(b)) || 0)
-      );
-    });
-  }
-
-  protected canManageCipher(c: CipherView): boolean {
-    // this will only ever be false from the org view;
-    return true;
+    if (score != null && score <= 2) {
+      this.passwordStrengthMap.set(cipher.id, this.scoreKey(score));
+      this.checkForExistingCipher(cipher);
+    }
   }
 
   private isUserNameNotEmpty(c: CipherView): boolean {
     return !Utils.isNullOrWhitespace(c.login.username);
-  }
-
-  private getCacheKey(c: CipherView): string {
-    return c.login.password + "_____" + (this.isUserNameNotEmpty(c) ? c.login.username : "");
   }
 
   private scoreKey(score: number): [string, BadgeVariant] {

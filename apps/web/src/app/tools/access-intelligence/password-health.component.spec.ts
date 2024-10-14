@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MockProxy, mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -13,9 +12,9 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { TableModule } from "@bitwarden/components";
 import { TableBodyDirective } from "@bitwarden/components/src/table/table.component";
 import { PasswordRepromptService } from "@bitwarden/vault";
-// eslint-disable-next-line no-restricted-imports
-import { PipesModule } from "@bitwarden/web-vault/app/vault/individual-vault/pipes/pipes.module";
 
+import { LooseComponentsModule } from "../../shared";
+import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 // eslint-disable-next-line no-restricted-imports
 import { cipherData } from "../reports/pages/reports-ciphers.mock";
 
@@ -36,13 +35,15 @@ describe("PasswordHealthComponent", () => {
     auditServiceMock = mock<AuditService>();
     organizationService = mock<OrganizationService>();
     syncServiceMock = mock<SyncService>();
-    cipherServiceMock = mock<CipherService>();
+    cipherServiceMock = mock<CipherService>({
+      getAllDecrypted: jest.fn().mockResolvedValue(cipherData),
+    });
 
     organizationService.organizations$ = of([]);
 
     await TestBed.configureTestingModule({
-      imports: [PipesModule, TableModule, TableBodyDirective],
-      declarations: [I18nPipe],
+      imports: [PasswordHealthComponent, PipesModule, TableModule, LooseComponentsModule],
+      declarations: [TableBodyDirective],
       providers: [
         { provide: CipherService, useValue: cipherServiceMock },
         { provide: PasswordStrengthServiceAbstraction, useValue: passwordStrengthService },
