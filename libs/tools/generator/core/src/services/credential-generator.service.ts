@@ -303,8 +303,11 @@ export class CredentialGeneratorService {
     );
 
     // FIXME: enforce policy
-    const state = this.stateProvider.getUser(userId, PREFERENCES);
-    const subject = new UserStateSubject(state, { ...dependencies });
+    const subject = new UserStateSubject(
+      PREFERENCES,
+      (key) => this.stateProvider.getUser(userId, key),
+      { ...dependencies },
+    );
 
     return subject;
   }
@@ -323,10 +326,14 @@ export class CredentialGeneratorService {
     const userId = await firstValueFrom(
       dependencies.singleUserId$.pipe(filter((userId) => !!userId)),
     );
-    const state = this.stateProvider.getUser(userId, configuration.settings.account);
+
     const constraints$ = this.policy$(configuration, { userId$: dependencies.singleUserId$ });
 
-    const subject = new UserStateSubject(state, { ...dependencies, constraints$ });
+    const subject = new UserStateSubject(
+      configuration.settings.account,
+      (key) => this.stateProvider.getUser(userId, key),
+      { ...dependencies, constraints$ },
+    );
 
     return subject;
   }

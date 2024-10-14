@@ -14,6 +14,7 @@ import {
   first,
   takeUntil,
   withLatestFrom,
+  concatMap,
 } from "rxjs";
 
 /**
@@ -129,4 +130,32 @@ export function withLatestReady<Source, Watch>(
       takeUntil(anyComplete(source)),
     );
   });
+}
+
+/**
+ * Create an observable that emits the latest value of the source stream
+ *  when `watch$` emits. If `watch$` emits before the stream emits, then
+ *  an emission occurs as soon as a value becomes ready.
+ * @param watch$ the observable that triggers emissions
+ * @returns An observable that emits when `watch$` emits. The observable
+ *  errors if its source stream errors. It also errors if `on` errors. It
+ *  completes if its watch completes.
+ *
+ * @remarks This works like `audit`, but it repeats emissions when
+ *  watch$ fires.
+ */
+export function on<T>(watch$: Observable<any>) {
+  return pipe(
+    connect<T, Observable<T>>((source$) => {
+      const source = new ReplaySubject<T>(1);
+      source$.subscribe(source);
+
+      return watch$
+        .pipe(
+          ready(source),
+          concatMap(() => source.pipe(first())),
+        )
+        .pipe(takeUntil(anyComplete(source)));
+    }),
+  );
 }
