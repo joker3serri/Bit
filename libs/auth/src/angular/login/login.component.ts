@@ -309,11 +309,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     const emailValid = this.formGroup.controls.email.valid;
 
     if (!emailValid) {
-      this.toastService.showToast({
-        variant: "error",
-        title: this.i18nService.t("errorOccured"),
-        message: this.i18nService.t("invalidEmail"),
-      });
       return;
     }
 
