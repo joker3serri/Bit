@@ -500,12 +500,6 @@ const routes: Routes = [
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
           pageIcon: RegistrationLockAltIcon,
-          pageTitle: {
-            key: "setAStrongPassword",
-          },
-          pageSubtitle: {
-            key: "finishCreatingYourAccountBySettingAPassword",
-          },
           state: "finish-signup",
         } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
