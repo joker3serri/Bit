@@ -147,7 +147,7 @@ describe("VaultBannersComponent", () => {
 
           dismissButton.dispatchEvent(new Event("click"));
 
-          expect(bannerService.dismissBanner).toHaveBeenCalledWith(banner);
+          expect(bannerService.dismissBanner).toHaveBeenCalledWith(mockUserId, banner);
 
           expect(component.visibleBanners).toEqual([]);
         });
