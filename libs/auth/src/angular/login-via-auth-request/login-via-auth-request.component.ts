@@ -10,18 +10,24 @@ import {
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { CreateAuthRequest } from "@bitwarden/common/auth/models/request/create-auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ToastService } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 enum State {
   StandardAuthRequest,
@@ -38,20 +44,27 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private authRequestKeyPair: { publicKey: Uint8Array; privateKey: Uint8Array };
   private authStatus: AuthenticationStatus;
   private destroy$ = new Subject<void>();
+  private resendTimeout = 12000;
 
   protected email: string;
+  protected fingerprintPhrase: string;
+  protected showResendNotification = false;
   protected StateEnum = State;
   protected state = State.StandardAuthRequest;
 
   constructor(
     private accountService: AccountService,
+    private anonymousHubService: AnonymousHubService,
     private apiService: ApiService,
+    private appIdService: AppIdService,
     private authRequestService: AuthRequestServiceAbstraction,
     private authService: AuthService,
+    private cryptoFunctionService: CryptoFunctionService,
     private i18nService: I18nService,
     private logService: LogService,
     private loginEmailService: LoginEmailServiceAbstraction,
     private loginStrategyService: LoginStrategyServiceAbstraction,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private router: Router,
     private toastService: ToastService,
     private validationService: ValidationService,
@@ -151,7 +164,37 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   private async startAuthRequestLogin(): Promise<void> {
-    // code...
+    this.showResendNotification = false;
+
+    try {
+      let reqResponse: AuthRequestResponse;
+
+      if (this.state === State.AdminAuthRequest) {
+        await this.buildAuthRequest(AuthRequestType.AdminApproval);
+        reqResponse = await this.apiService.postAdminAuthRequest(this.authRequest);
+
+        const adminAuthReqStorable = new AdminAuthRequestStorable({
+          id: reqResponse.id,
+          privateKey: this.authRequestKeyPair.privateKey,
+        });
+
+        const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+        await this.authRequestService.setAdminAuthRequest(adminAuthReqStorable, userId);
+      } else {
+        await this.buildAuthRequest(AuthRequestType.AuthenticateAndUnlock);
+        reqResponse = await this.apiService.postAuthRequest(this.authRequest);
+      }
+
+      if (reqResponse.id) {
+        await this.anonymousHubService.createHubConnection(reqResponse.id);
+      }
+    } catch (e) {
+      this.logService.error(e);
+    }
+
+    setTimeout(() => {
+      this.showResendNotification = true;
+    }, this.resendTimeout);
   }
 
   private async verifyAndHandleApprovedAuthReq(requestId: string): Promise<void> {
@@ -292,5 +335,34 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         null, // no masterKeyHash
       );
     }
+  }
+
+  private async buildAuthRequest(authRequestType: AuthRequestType): Promise<void> {
+    const authRequestKeyPairArray = await this.cryptoFunctionService.rsaGenerateKeyPair(2048);
+
+    this.authRequestKeyPair = {
+      publicKey: authRequestKeyPairArray[0],
+      privateKey: authRequestKeyPairArray[1],
+    };
+
+    const deviceIdentifier = await this.appIdService.getAppId();
+    const publicKey = Utils.fromBufferToB64(this.authRequestKeyPair.publicKey);
+    const accessCode = await this.passwordGenerationService.generatePassword({
+      type: "password",
+      length: 25,
+    });
+
+    this.fingerprintPhrase = await this.authRequestService.getFingerprintPhrase(
+      this.email,
+      this.authRequestKeyPair.publicKey,
+    );
+
+    this.authRequest = new CreateAuthRequest(
+      this.email,
+      deviceIdentifier,
+      publicKey,
+      authRequestType,
+      accessCode,
+    );
   }
 }
