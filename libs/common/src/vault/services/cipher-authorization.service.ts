@@ -63,7 +63,9 @@ export class DefaultCipherAuthorizationService implements CipherAuthorizationSer
           .decryptedCollectionViews$(cipher.collectionIds as CollectionId[])
           .pipe(
             map((allCollections) => {
-              const collections = allowedCollections
+              const shouldFilter = allowedCollections?.some(Boolean);
+
+              const collections = shouldFilter
                 ? allCollections.filter((c) => allowedCollections.includes(c.id as CollectionId))
                 : allCollections;
 
