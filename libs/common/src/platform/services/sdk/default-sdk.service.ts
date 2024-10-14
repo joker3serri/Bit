@@ -7,6 +7,7 @@ import {
   map,
   distinctUntilChanged,
   tap,
+  switchMap,
 } from "rxjs";
 
 import {
@@ -17,10 +18,13 @@ import {
 } from "@bitwarden/sdk-internal";
 
 import { ApiService } from "../../../abstractions/api.service";
-import { AccountService } from "../../../auth/abstractions/account.service";
+import { EncryptedOrganizationKeyData } from "../../../admin-console/models/data/encrypted-organization-key.data";
+import { AccountInfo, AccountService } from "../../../auth/abstractions/account.service";
 import { KdfConfigService } from "../../../auth/abstractions/kdf-config.service";
+import { KdfConfig } from "../../../auth/models/domain/kdf-config";
 import { DeviceType } from "../../../enums/device-type.enum";
-import { UserId } from "../../../types/guid";
+import { OrganizationId, UserId } from "../../../types/guid";
+import { UserKey } from "../../../types/key";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { Environment, EnvironmentService } from "../../abstractions/environment.service";
 import { PlatformUtilsService } from "../../abstractions/platform-utils.service";
@@ -28,6 +32,7 @@ import { SdkClientFactory } from "../../abstractions/sdk/sdk-client-factory";
 import { SdkService } from "../../abstractions/sdk/sdk.service";
 import { KdfType } from "../../enums";
 import { compareValues } from "../../misc/compare-values";
+import { EncryptedString } from "../../models/domain/enc-string";
 
 export class DefaultSdkService implements SdkService {
   private sdkClientCache = new Map<UserId, Observable<BitwardenClient>>();
@@ -84,41 +89,36 @@ export class DefaultSdkService implements SdkService {
       userKey$,
       orgKeys$,
     ]).pipe(
-      concatMap(async ([env, account, kdfParams, privateKey, userKey, orgKeys]) => {
-        if (privateKey == null || userKey == null || orgKeys == null) {
-          return undefined;
-        }
+      // switchMap is required to allow the clean-up logic to be executed when `combineLatest` emits a new value.
+      switchMap(([env, account, kdfParams, privateKey, userKey, orgKeys]) => {
+        // Create our own observable to be able to implement clean-up logic
+        return new Observable<BitwardenClient>((subscriber) => {
+          let client: BitwardenClient;
 
-        const settings = this.toSettings(env);
-        const client = await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
+          void (async (): Promise<void> => {
+            if (privateKey == null || userKey == null || orgKeys == null) {
+              subscriber.next(undefined);
+              return;
+            }
 
-        await client.crypto().initialize_user_crypto({
-          email: account.email,
-          method: { decryptedKey: { decrypted_user_key: userKey.keyB64 } },
-          kdfParams:
-            kdfParams.kdfType === KdfType.PBKDF2_SHA256
-              ? {
-                  pBKDF2: { iterations: kdfParams.iterations },
-                }
-              : {
-                  argon2id: {
-                    iterations: kdfParams.iterations,
-                    memory: kdfParams.memory,
-                    parallelism: kdfParams.parallelism,
-                  },
-                },
-          privateKey,
+            try {
+              const settings = this.toSettings(env);
+              client = await this.sdkClientFactory.createSdkClient(settings, LogLevel.Info);
+
+              await this.initializeClient(client, account, kdfParams, privateKey, userKey, orgKeys);
+
+              subscriber.next(client);
+            } catch (error) {
+              subscriber.error(error);
+            }
+          })();
+
+          return () => {
+            if (client != null) {
+              client.free();
+            }
+          };
         });
-
-        await client.crypto().initialize_org_crypto({
-          organizationKeys: new Map(
-            Object.entries(orgKeys)
-              .filter(([_, v]) => v.type === "organization")
-              .map(([k, v]) => [k, v.key]),
-          ),
-        });
-
-        return client;
       }),
       tap({
         finalize: () => {
@@ -145,6 +145,40 @@ export class DefaultSdkService implements SdkService {
 
     return this.apiService.send("POST", "/wasm-debug", null, false, false, null, (headers) => {
       headers.append("SDK-Version", "1.0.0");
+    });
+  }
+
+  private async initializeClient(
+    client: BitwardenClient,
+    account: AccountInfo,
+    kdfParams: KdfConfig,
+    privateKey: EncryptedString,
+    userKey: UserKey,
+    orgKeys: Record<OrganizationId, EncryptedOrganizationKeyData>,
+  ) {
+    await client.crypto().initialize_user_crypto({
+      email: account.email,
+      method: { decryptedKey: { decrypted_user_key: userKey.keyB64 } },
+      kdfParams:
+        kdfParams.kdfType === KdfType.PBKDF2_SHA256
+          ? {
+              pBKDF2: { iterations: kdfParams.iterations },
+            }
+          : {
+              argon2id: {
+                iterations: kdfParams.iterations,
+                memory: kdfParams.memory,
+                parallelism: kdfParams.parallelism,
+              },
+            },
+      privateKey,
+    });
+    await client.crypto().initialize_org_crypto({
+      organizationKeys: new Map(
+        Object.entries(orgKeys)
+          .filter(([_, v]) => v.type === "organization")
+          .map(([k, v]) => [k, v.key]),
+      ),
     });
   }
 
