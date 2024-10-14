@@ -1,7 +1,9 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { IsActiveMatchOptions, Router } from "@angular/router";
+import { IsActiveMatchOptions, Router, RouterModule } from "@angular/router";
 import { firstValueFrom, map, Subject, takeUntil } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
   AuthRequestLoginCredentials,
   AuthRequestServiceAbstraction,
@@ -40,7 +42,7 @@ enum State {
 @Component({
   standalone: true,
   templateUrl: "./login-via-auth-request.component.html",
-  imports: [],
+  imports: [CommonModule, JslibModule, RouterModule],
 })
 export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private authRequest: CreateAuthRequest;
@@ -217,7 +219,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     await this.anonymousHubService.createHubConnection(adminAuthReqStorable.id);
   }
 
-  private async startAuthRequestLogin(): Promise<void> {
+  protected async startAuthRequestLogin(): Promise<void> {
     this.showResendNotification = false;
 
     try {
