@@ -143,8 +143,12 @@ const routes: Routes = [
           path: "hint",
           canActivate: [unauthGuardFn()],
           data: {
-            pageTitle: "requestPasswordHint",
-            pageSubtitle: "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou",
+            pageTitle: {
+              key: "requestPasswordHint",
+            },
+            pageSubtitle: {
+              key: "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou",
+            },
             pageIcon: UserLockIcon,
           } satisfies AnonLayoutWrapperData,
           children: [
@@ -168,7 +172,9 @@ const routes: Routes = [
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
           pageIcon: RegistrationUserAddIcon,
-          pageTitle: "createAccount",
+          pageTitle: {
+            key: "createAccount",
+          },
         } satisfies AnonLayoutWrapperData,
         children: [
           {
@@ -190,8 +196,12 @@ const routes: Routes = [
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
           pageIcon: RegistrationLockAltIcon,
-          pageTitle: "setAStrongPassword",
-          pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
+          pageTitle: {
+            key: "setAStrongPassword",
+          },
+          pageSubtitle: {
+            key: "finishCreatingYourAccountBySettingAPassword",
+          },
         } satisfies AnonLayoutWrapperData,
         children: [
           {
@@ -205,7 +215,9 @@ const routes: Routes = [
         canActivate: [canAccessFeature(FeatureFlag.ExtensionRefresh), lockGuard()],
         data: {
           pageIcon: LockIcon,
-          pageTitle: "yourVaultIsLockedV2",
+          pageTitle: {
+            key: "yourVaultIsLockedV2",
+          },
           showReadonlyHostname: true,
         } satisfies AnonLayoutWrapperData,
         children: [
@@ -220,8 +232,12 @@ const routes: Routes = [
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification)],
         component: SetPasswordJitComponent,
         data: {
-          pageTitle: "joinOrganization",
-          pageSubtitle: "finishJoiningThisOrganizationBySettingAMasterPassword",
+          pageTitle: {
+            key: "joinOrganization",
+          },
+          pageSubtitle: {
+            key: "finishJoiningThisOrganizationBySettingAMasterPassword",
+          },
         } satisfies AnonLayoutWrapperData,
       },
     ],
