@@ -12,6 +12,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
@@ -53,6 +54,11 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   protected StateEnum = State;
   protected state = State.StandardAuthRequest;
 
+  onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
+  onSuccessfulLogin: () => Promise<any>;
+  onSuccessfulLoginNavigate: () => Promise<any>;
+  onSuccessfulLoginForceResetNavigate: () => Promise<any>;
+
   constructor(
     private accountService: AccountService,
     private anonymousHubService: AnonymousHubService,
@@ -61,6 +67,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     private authRequestService: AuthRequestServiceAbstraction,
     private authService: AuthService,
     private cryptoFunctionService: CryptoFunctionService,
+    private deviceTrustService: DeviceTrustServiceAbstraction,
     private i18nService: I18nService,
     private logService: LogService,
     private loginEmailService: LoginEmailServiceAbstraction,
@@ -324,7 +331,44 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     privateKey: ArrayBuffer,
     userId: UserId,
   ): Promise<void> {
-    // code...
+    // See verifyAndHandleApprovedAuthReq(...) for flow details
+    // it's flow 2 or 3 based on presence of masterPasswordHash
+    if (adminAuthReqResponse.masterPasswordHash) {
+      // Flow 2: masterPasswordHash is not null
+      // key is authRequestPublicKey(masterKey) + we have authRequestPublicKey(masterPasswordHash)
+      await this.authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash(
+        adminAuthReqResponse,
+        privateKey,
+        userId,
+      );
+    } else {
+      // Flow 3: masterPasswordHash is null
+      // we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
+      await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
+        adminAuthReqResponse,
+        privateKey,
+        userId,
+      );
+    }
+
+    // clear the admin auth request from state so it cannot be used again (it's a one time use)
+    // TODO: this should eventually be enforced via deleting this on the server once it is used
+    await this.authRequestService.clearAdminAuthRequest(userId);
+
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("loginApproved"),
+    });
+
+    // Now that we have a decrypted user key in memory, we can check if we
+    // need to establish trust on the current device
+    const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
+    await this.deviceTrustService.trustDeviceIfRequired(activeAccount.id);
+
+    // TODO: don't forget to use auto enrollment service everywhere we trust device
+
+    await this.handleSuccessfulLoginNavigation();
   }
 
   // TODO-rr-bw: remove void return type
@@ -420,5 +464,22 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.startAuthRequestLogin();
+  }
+
+  private async handleSuccessfulLoginNavigation() {
+    if (this.state === State.StandardAuthRequest) {
+      // Only need to set remembered email on standard login with auth req flow
+      await this.loginEmailService.saveEmailSettings();
+    }
+
+    if (this.onSuccessfulLogin != null) {
+      await this.onSuccessfulLogin();
+    }
+
+    if (this.onSuccessfulLoginNavigate != null) {
+      await this.onSuccessfulLoginNavigate();
+    } else {
+      await this.router.navigate(["vault"]);
+    }
   }
 }
