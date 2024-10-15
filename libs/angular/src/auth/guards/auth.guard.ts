@@ -28,7 +28,6 @@ export const authGuard: CanActivateFn = async (
   const masterPasswordService = inject(MasterPasswordServiceAbstraction);
 
   const authStatus = await authService.getAuthStatus();
-  x;
 
   if (authStatus === AuthenticationStatus.LoggedOut) {
     messagingService.send("authBlocked", { url: routerState.url });
