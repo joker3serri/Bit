@@ -25,6 +25,7 @@ import {
   LockV2Component,
   LockIcon,
   UserLockIcon,
+  LoginViaAuthRequestComponent,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -90,11 +91,6 @@ const routes: Routes = [
         pathMatch: "full",
         children: [], // Children lets us have an empty component.
         canActivate: [redirectGuard()], // Redirects either to vault, login, or lock page.
-      },
-      {
-        path: "login-with-device",
-        component: LoginViaAuthRequestComponentV1,
-        data: { titleId: "loginWithDevice" } satisfies RouteDataProperties,
       },
       {
         path: "login-with-passkey",
@@ -177,6 +173,30 @@ const routes: Routes = [
       },
     ],
   },
+  ...unauthUiRefreshSwap(
+    LoginViaAuthRequestComponentV1,
+    AnonLayoutWrapperComponent,
+    {
+      path: "login-with-device",
+      component: LoginViaAuthRequestComponentV1,
+      data: { titleId: "loginWithDevice" } satisfies RouteDataProperties,
+    },
+    {
+      path: "login-with-device",
+      data: {
+        pageTitle: "loginWithDevice",
+        titleId: "loginWithDevice",
+      } satisfies RouteDataProperties & AnonLayoutWrapperData,
+      children: [
+        { path: "", component: LoginViaAuthRequestComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+        },
+      ],
+    },
+  ),
   ...unauthUiRefreshSwap(
     AnonLayoutWrapperComponent,
     AnonLayoutWrapperComponent,
