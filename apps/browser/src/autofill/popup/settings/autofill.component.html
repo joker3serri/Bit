@@ -11,7 +11,7 @@
         <h2 bitTypography="h6">{{ "autofillSuggestionsSectionTitle" | i18n }}</h2>
       </bit-section-header>
       <bit-card>
-        <bit-form-control [disableMargin]="!enableInlineMenu">
+        <bit-form-control [disableMargin]="!enableInlineMenu && !canOverrideBrowserAutofillSetting">
           <input
             bitCheckbox
             id="show-inline-menu"
@@ -25,6 +25,22 @@
             class="tw-text-sm"
           >
             {{ "showInlineMenuOnFormFieldsDescAlt" | i18n }}
+          </bit-hint>
+          <bit-hint
+            *ngIf="!canOverrideBrowserAutofillSetting"
+            [class]="!enableInlineMenu ? 'tw-text-sm tw-mb-6' : 'tw-text-sm'"
+          >
+            {{ "turnOffBrowserBuiltInPasswordManagerSettings" | i18n }}
+            <a
+              bitLink
+              class="tw-no-underline"
+              rel="noreferrer"
+              target="_blank"
+              (click)="openURI($event, disablePasswordManagerURI)"
+              [attr.href]="disablePasswordManagerURI"
+            >
+              {{ "turnOffBrowserBuiltInPasswordManagerSettingsLink" | i18n }}
+            </a>
           </bit-hint>
         </bit-form-control>
         <bit-form-control
@@ -57,11 +73,7 @@
             {{ "showInlineMenuCardsLabel" | i18n }}
           </bit-label>
         </bit-form-control>
-        <bit-form-control
-          *ngIf="enableInlineMenu"
-          class="tw-ml-5"
-          [disableMargin]="!canOverrideBrowserAutofillSetting"
-        >
+        <bit-form-control *ngIf="enableInlineMenu" class="tw-ml-5">
           <input
             bitCheckbox
             id="show-autofill-suggestions-on-icon"
@@ -73,7 +85,7 @@
             {{ "showInlineMenuOnIconSelectionLabel" | i18n }}
           </bit-label>
         </bit-form-control>
-        <bit-form-control *ngIf="canOverrideBrowserAutofillSetting" disableMargin>
+        <bit-form-control *ngIf="canOverrideBrowserAutofillSetting">
           <input
             bitCheckbox
             id="overrideBrowserAutofill"
@@ -84,7 +96,7 @@
           <bit-label for="overrideBrowserAutofill">{{
             "overrideDefaultBrowserAutoFillSettings" | i18n
           }}</bit-label>
-          <bit-hint class="tw-text-sm tw-mb-6">
+          <bit-hint class="tw-text-sm">
             {{ "turnOffBrowserBuiltInPasswordManagerSettings" | i18n }}
             <a
               bitLink
@@ -98,19 +110,6 @@
             </a>
           </bit-hint>
         </bit-form-control>
-        <bit-hint *ngIf="!canOverrideBrowserAutofillSetting" class="tw-text-sm tw-mb-6">
-          {{ "turnOffBrowserBuiltInPasswordManagerSettings" | i18n }}
-          <a
-            bitLink
-            class="tw-no-underline"
-            rel="noreferrer"
-            target="_blank"
-            (click)="openURI($event, disablePasswordManagerURI)"
-            [attr.href]="disablePasswordManagerURI"
-          >
-            {{ "turnOffBrowserBuiltInPasswordManagerSettingsLink" | i18n }}
-          </a>
-        </bit-hint>
         <bit-form-control>
           <input
             bitCheckbox
