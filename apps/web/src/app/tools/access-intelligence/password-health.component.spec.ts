@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { MockProxy, mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
@@ -25,12 +26,14 @@ describe("PasswordHealthComponent", () => {
   let organizationService: MockProxy<OrganizationService>;
   let cipherServiceMock: MockProxy<CipherService>;
   let auditServiceMock: MockProxy<AuditService>;
+  const activeRouteParams = convertToParamMap({ organizationId: "orgId" });
 
   beforeEach(async () => {
     passwordStrengthService = mock<PasswordStrengthServiceAbstraction>();
     auditServiceMock = mock<AuditService>();
-    organizationService = mock<OrganizationService>();
-    organizationService.organizations$ = of([{ id: "orgId" } as Organization]);
+    organizationService = mock<OrganizationService>({
+      get: jest.fn().mockResolvedValue({ id: "orgId" } as Organization),
+    });
     cipherServiceMock = mock<CipherService>({
       getAllFromApiForOrganization: jest.fn().mockResolvedValue(cipherData),
     });
@@ -44,6 +47,13 @@ describe("PasswordHealthComponent", () => {
         { provide: OrganizationService, useValue: organizationService },
         { provide: I18nService, useValue: mock<I18nService>() },
         { provide: AuditService, useValue: auditServiceMock },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(activeRouteParams),
+            url: of([]),
+          },
+        },
       ],
     }).compileComponents();
   });
