@@ -1,7 +1,7 @@
 import { svgIcon } from "@bitwarden/components";
 
 export const RegistrationUserAddIcon = svgIcon`
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 120 100" fill="none">
     <path class="tw-art-primary tw-art-accent"  fill="#020F66" fill-rule="evenodd"
         d="M0 21.627a7.798 7.798 0 0 1 7.798-7.798H89.38a7.798 7.798 0 0 1 7.799 7.798v8.764h-2.4v-8.764a5.399 5.399 0 0 0-5.398-5.398H7.797A5.399 5.399 0 0 0 2.4 21.627v49.19a5.399 5.399 0 0 0 5.4 5.399h9.483v2.399H7.798A7.798 7.798 0 0 1 0 70.817v-49.19Zm49.378 54.589h13.498v2.399H49.378v-2.4Z"
         clip-rule="evenodd" />

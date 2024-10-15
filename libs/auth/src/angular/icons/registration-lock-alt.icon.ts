@@ -1,7 +1,7 @@
 import { svgIcon } from "@bitwarden/components";
 
 export const RegistrationLockAltIcon = svgIcon`
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" fill="none">
     <path class="tw-art-primary tw-art-accent" fill="#020F66" fill-rule="evenodd"
         d="M47.048 77.093a1 1 0 0 1 1 1v5.811a1 1 0 0 1-2 0v-5.811a1 1 0 0 1 1-1Z"
         clip-rule="evenodd" />
