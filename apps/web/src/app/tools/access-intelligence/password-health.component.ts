@@ -1,19 +1,24 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { BadgeModule, BadgeVariant, ContainerComponent, TableModule } from "@bitwarden/components";
-import { PasswordRepromptService } from "@bitwarden/vault";
+import {
+  BadgeModule,
+  BadgeVariant,
+  ContainerComponent,
+  TableDataSource,
+  TableModule,
+} from "@bitwarden/components";
 
 // eslint-disable-next-line no-restricted-imports
 import { HeaderModule } from "../../layouts/header/header.module";
@@ -21,8 +26,6 @@ import { HeaderModule } from "../../layouts/header/header.module";
 import { OrganizationBadgeModule } from "../../vault/individual-vault/organization-badge/organization-badge.module";
 // eslint-disable-next-line no-restricted-imports
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
-// eslint-disable-next-line no-restricted-imports
-import { CipherReportComponent } from "../reports/pages/cipher-report.component";
 
 @Component({
   standalone: true,
@@ -39,7 +42,7 @@ import { CipherReportComponent } from "../reports/pages/cipher-report.component"
     TableModule,
   ],
 })
-export class PasswordHealthComponent extends CipherReportComponent implements OnInit {
+export class PasswordHealthComponent implements OnInit {
   passwordStrengthMap = new Map<string, [string, BadgeVariant]>();
 
   weakPasswordCiphers: CipherView[] = [];
@@ -48,41 +51,40 @@ export class PasswordHealthComponent extends CipherReportComponent implements On
 
   exposedPasswordMap = new Map<string, number>();
 
+  dataSource = new TableDataSource<CipherView>();
+
   reportCiphers: CipherView[] = [];
   reportCipherIds: string[] = [];
+
+  organization: Organization;
+
+  loading = true;
 
   constructor(
     protected cipherService: CipherService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected organizationService: OrganizationService,
     protected auditService: AuditService,
-    modalService: ModalService,
-    passwordRepromptService: PasswordRepromptService,
-    i18nService: I18nService,
-    syncService: SyncService,
+    protected i18nService: I18nService,
   ) {
-    super(
-      cipherService,
-      modalService,
-      passwordRepromptService,
-      organizationService,
-      i18nService,
-      syncService,
-    );
+    this.organizationService.organizations$.pipe(takeUntilDestroyed()).subscribe((orgs) => {
+      this.organization = orgs[0];
+    });
   }
 
   async ngOnInit() {
-    await super.load();
+    await this.setCiphers();
   }
 
   async setCiphers() {
-    const allCiphers = await this.getAllCiphers();
+    const allCiphers = await this.cipherService.getAllFromApiForOrganization(this.organization.id);
     allCiphers.forEach(async (cipher) => {
       this.findWeakPassword(cipher);
       this.findReusedPassword(cipher);
       await this.findExposedPassword(cipher);
     });
-    this.filterCiphersByOrg(this.reportCiphers);
+    this.dataSource.data = this.reportCiphers;
+    this.loading = false;
 
     // const reportIssues = allCiphers.map((c) => {
     //   if (this.passwordStrengthMap.has(c.id)) {
