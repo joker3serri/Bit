@@ -1,0 +1,68 @@
+import { Meta, Story, Controls } from "@storybook/addon-docs";
+
+import * as stories from "./icon.stories";
+
+<Meta of={stories} />
+
+# Icon Use Instructions
+
+- Icons will generally be attached to the associated Jira task.
+  - Designers should minify any SVGs before attaching them to Jira using a tool like
+    [SVGOMG](https://jakearchibald.github.io/svgomg/).
+    - **Note:** Ensure the "Remove viewbox" option is toggled off if responsive resizing of the icon
+      is desired.
+
+## Developer Instructions
+
+1. **Download the SVG** and import it as an `.svg` initially into the IDE of your choice.
+
+   - The SVG should be formatted using either a built-in formatter or an external tool like
+     [SVG Formatter Beautifier](https://codebeautify.org/svg-formatter-beautifier) to make applying
+     classes easier.
+
+2. **Rename the file** as a `<name>.icon.ts` TypeScript file.
+
+3. **Import** `svgIcon` from `@bitwarden/components`.
+
+4. **Define and export** a `const` to represent your `svgIcon`.
+
+   ```typescript
+   export const ExampleIcon = svgIcon`<svg … </svg>`;
+   ```
+
+5. **Replace any hardcoded strokes or fills** with the appropriate Tailwind class. A
+   non-comprehensive list of common colors and their associated classes is below:
+
+   | Hardcoded Value     | Tailwind Class          |
+   | ------------------- | ----------------------- |
+   | `#020F66` (Primary) | `tw-stroke-art-primary` |
+   | `#10949D` (Accent)  | `tw-stroke-art-accent`  |
+   | `#2CDDE9` (Accent)  | `tw-stroke-art-accent`  |
+
+6. **Import your SVG const** anywhere you want to use the SVG.
+
+   - **Angular Component Example:**
+
+     - **TypeScript:**
+
+       ```typescript
+       import { Component } from "@angular/core";
+       import { ExampleIcon } from "your/path/here";
+       import { IconModule } from '@bitwarden/components';
+
+       @Component({
+         selector: "app-example",
+         standalone: true,
+         imports: [IconModule],
+         templateUrl: "./example.component.html",
+       })
+       export class ExampleComponent {
+         readonly Icons = { ExampleIcon, Example2Icon };
+         ...
+       }
+       ```
+
+     - **HTML:**
+       ```html
+       <bit-icon [icon]="Icons.ExampleIcon"></bit-icon>
+       ```
