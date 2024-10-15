@@ -56,7 +56,6 @@ export class RegistrationStartComponent implements OnInit, OnDestroy {
 
   state: RegistrationStartState = RegistrationStartState.USER_DATA_ENTRY;
   RegistrationStartState = RegistrationStartState;
-  readonly Icons = { RegistrationCheckEmailIcon };
 
   isSelfHost = false;
 
