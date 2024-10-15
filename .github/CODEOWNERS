@@ -108,10 +108,26 @@ apps/cli/src/locales/en/messages.json
 apps/desktop/src/locales/en/messages.json
 apps/web/src/locales/en/messages.json
 
-# BRE for release workflow changes
-.github/workflows/release-desktop-beta.yml @bitwarden/dept-bre
-.github/workflows/release-web.yml @bitwarden/dept-bre
-.github/workflows/release-desktop.yml @bitwarden/dept-bre
-.github/workflows/release-cli.yml @bitwarden/dept-bre
-.github/workflows/release-browser.yml @bitwarden/dept-bre
+## BRE team owns these workflows ##
+.github/workflows/brew-bump-desktop.yml @bitwarden/dept-bre
+.github/workflows/deploy-web.yml @bitwarden/dept-bre
+.github/workflows/publish-cli.yml @bitwarden/dept-bre
+.github/workflows/publish-desktop.yml @bitwarden/dept-bre
+.github/workflows/publish-web.yml @bitwarden/dept-bre
+.github/workflows/retrieve-current-desktop-rollout.yml @bitwarden/dept-bre
 .github/workflows/staged-rollout-desktop.yml @bitwarden/dept-bre
+
+## Shared ownership workflows ##
+.github/workflows/release-browser.yml
+.github/workflows/release-cli.yml
+.github/workflows/release-desktop-beta.yml
+.github/workflows/release-desktop.yml
+.github/workflows/release-web.yml
+.github/workflows/version-auto-bump.yml
+.github/workflows/version-bump.yml
+
+## Docker files have shared ownership ##
+**/Dockerfile
+**/*.Dockerfile
+**/.dockerignore
+**/entrypoint.sh
