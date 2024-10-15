@@ -19,7 +19,7 @@ export type ObjectKey<State, Secret = State, Disclosed = Record<string, never>> 
   target: "object";
   key: string;
   state: StateDefinition;
-  classifier: Classifier<void, Disclosed, Secret>;
+  classifier: Classifier<State, Disclosed, Secret>;
   format: "plain" | "classified";
   options: UserKeyDefinitionOptions<State>;
 };

@@ -16,6 +16,7 @@ import {
   skipUntil,
   switchMap,
   takeUntil,
+  takeWhile,
   withLatestFrom,
 } from "rxjs";
 import { Simplify } from "type-fest";
@@ -23,17 +24,24 @@ import { Simplify } from "type-fest";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import {
   OnDependency,
   SingleUserDependency,
+  UserBound,
   UserDependency,
 } from "@bitwarden/common/tools/dependencies";
 import { IntegrationId, IntegrationMetadata } from "@bitwarden/common/tools/integration";
 import { RestClient } from "@bitwarden/common/tools/integration/rpc";
+import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
 import { isDynamic } from "@bitwarden/common/tools/state/state-constraints-dependency";
+import { UserEncryptor } from "@bitwarden/common/tools/state/user-encryptor.abstraction";
+import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { Randomizer } from "../abstractions";
 import { Generators, getForwarderConfiguration, toCredentialGeneratorConfiguration } from "../data";
@@ -74,6 +82,8 @@ type Generate$Dependencies = Simplify<Partial<OnDependency> & Partial<UserDepend
 
 type Algorithms$Dependencies = Partial<UserDependency>;
 
+const OPTIONS_FRAME_SIZE = 512;
+
 export class CredentialGeneratorService {
   constructor(
     private randomizer: Randomizer,
@@ -81,6 +91,8 @@ export class CredentialGeneratorService {
     private policyService: PolicyService,
     private apiService: ApiService,
     private i18nService: I18nService,
+    private readonly encryptService: EncryptService,
+    private cryptoService: CryptoService,
   ) {}
 
   private getDependencyProvider(): GeneratorDependencyProvider {
@@ -247,6 +259,21 @@ export class CredentialGeneratorService {
     return info;
   }
 
+  private encryptor$(userId: UserId) {
+    const packer = new PaddedDataPacker(OPTIONS_FRAME_SIZE);
+    const encryptor$ = this.cryptoService.userKey$(userId).pipe(
+      // complete when the account locks
+      takeWhile((key) => !!key),
+      map((key) => {
+        const encryptor = new UserKeyEncryptor(userId, this.encryptService, key, packer);
+
+        return { userId, encryptor } satisfies UserBound<"encryptor", UserEncryptor>;
+      }),
+    );
+
+    return encryptor$;
+  }
+
   /** Get the settings for the provided configuration
    * @param configuration determines which generator's settings are loaded
    * @param dependencies.userId$ identifies the user to which the settings are bound.
@@ -260,16 +287,16 @@ export class CredentialGeneratorService {
     dependencies?: Settings$Dependencies,
   ) {
     const userId$ = dependencies?.userId$ ?? this.stateProvider.activeUserId$;
-    const completion$ = userId$.pipe(ignoreElements(), endWith(true));
 
     const state$ = userId$.pipe(
       filter((userId) => !!userId),
       distinctUntilChanged(),
       switchMap((userId) => {
-        const state$ = this.stateProvider
-          .getUserState$(configuration.settings.account, userId)
-          .pipe(takeUntil(completion$));
-
+        const state$ = new UserStateSubject(
+          configuration.settings.account,
+          (key) => this.stateProvider.getUser(userId, key),
+          { singleUserEncryptor$: this.encryptor$(userId) },
+        );
         return state$;
       }),
       map((settings) => settings ?? structuredClone(configuration.settings.initial)),
@@ -332,7 +359,7 @@ export class CredentialGeneratorService {
     const subject = new UserStateSubject(
       configuration.settings.account,
       (key) => this.stateProvider.getUser(userId, key),
-      { ...dependencies, constraints$ },
+      { constraints$, singleUserEncryptor$: this.encryptor$(userId) },
     );
 
     return subject;

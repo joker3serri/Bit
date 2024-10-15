@@ -1,6 +1,7 @@
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { UserKeyDefinition } from "@bitwarden/common/platform/state";
 import { RestClient } from "@bitwarden/common/tools/integration/rpc";
+import { ObjectKey } from "@bitwarden/common/tools/state/subject-key";
 import { Constraints } from "@bitwarden/common/tools/types";
 
 import { Randomizer } from "../abstractions";
@@ -97,10 +98,10 @@ export type CredentialGeneratorConfiguration<Settings, Policy> = CredentialGener
     constraints: Constraints<Settings>;
 
     /** storage location for account-global settings */
-    account: UserKeyDefinition<Settings>;
+    account: UserKeyDefinition<Settings> | ObjectKey<Settings>;
 
     /** storage location for *plaintext* settings imports */
-    import?: UserKeyDefinition<Settings>;
+    import?: UserKeyDefinition<Settings> | ObjectKey<Settings, Record<string, never>, Settings>;
   };
 
   /** defines how to construct policy for this settings instance */

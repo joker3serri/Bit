@@ -4,6 +4,7 @@ import { ApiSettings } from "@bitwarden/common/tools/integration/rpc";
 import { IntegrationRequest } from "@bitwarden/common/tools/integration/rpc/integration-request";
 import { RpcConfiguration } from "@bitwarden/common/tools/integration/rpc/rpc-definition";
 import { BufferedKeyDefinition } from "@bitwarden/common/tools/state/buffered-key-definition";
+import { ObjectKey } from "@bitwarden/common/tools/state/subject-key";
 
 import { ForwarderContext } from "./forwarder-context";
 
@@ -34,13 +35,24 @@ export type ForwarderConfiguration<
     /** default value of all fields */
     defaultSettings: Partial<Settings>;
 
-    /** forwarder settings storage */
-    // FIXME: this should be a `SubjectConfiguration<Settings>`
+    /** forwarder settings storage
+     * @deprecated use local.settings instead
+     */
     settings: UserKeyDefinition<Settings>;
 
-    /** forwarder settings import buffer; `undefined` when there is no buffer. */
-    // FIXME: this should be a `SubjectConfiguration<Settings>`
+    /** forwarder settings import buffer; `undefined` when there is no buffer.
+     * @deprecated use local.settings import
+     */
     importBuffer?: BufferedKeyDefinition<Settings>;
+
+    /** locally stored data; forwarder-partitioned */
+    local: {
+      /** integration settings storage */
+      settings: ObjectKey<Settings>;
+
+      /** plaintext import buffer - used during data migrations */
+      import?: ObjectKey<Settings, Record<string, never>, Settings>;
+    };
 
     /** createForwardingEmail RPC definition */
     createForwardingEmail: CreateForwardingEmailRpcDef<Settings, Request>;
