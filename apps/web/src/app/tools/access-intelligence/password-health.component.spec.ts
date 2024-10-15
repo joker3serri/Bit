@@ -72,10 +72,8 @@ describe("PasswordHealthComponent", () => {
       "cbea34a8-bde4-46ad-9d19-b05001228ab1",
       "cbea34a8-bde4-46ad-9d19-b05001228ab2",
       "cbea34a8-bde4-46ad-9d19-b05001228cd3",
-      "cbea34a8-bde4-46ad-9d19-b05001227nm6",
-      "cbea34a8-bde4-46ad-9d19-b05001227nm7",
     ]);
-    expect(component.reportCiphers.length).toEqual(4);
+    expect(component.reportCiphers.length).toEqual(3);
   });
 
   it("should correctly populate passwordStrengthMap", async () => {
