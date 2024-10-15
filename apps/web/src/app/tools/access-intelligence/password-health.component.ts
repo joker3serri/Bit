@@ -1,6 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { ActivatedRoute } from "@angular/router";
+import { from, map, switchMap, tap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
@@ -60,20 +62,31 @@ export class PasswordHealthComponent implements OnInit {
 
   loading = true;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     protected cipherService: CipherService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
     protected organizationService: OrganizationService,
     protected auditService: AuditService,
     protected i18nService: I18nService,
-  ) {
-    this.organizationService.organizations$.pipe(takeUntilDestroyed()).subscribe((orgs) => {
-      this.organization = orgs[0];
-    });
-  }
+    protected activatedRoute: ActivatedRoute,
+  ) {}
 
-  async ngOnInit() {
-    await this.setCiphers();
+  ngOnInit() {
+    this.activatedRoute.paramMap
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        map((params) => params.get("organizationId")),
+        switchMap((organizationId) => {
+          return from(this.organizationService.get(organizationId));
+        }),
+        tap((organization) => {
+          this.organization = organization;
+        }),
+        switchMap(() => from(this.setCiphers())),
+      )
+      .subscribe();
   }
 
   async setCiphers() {
