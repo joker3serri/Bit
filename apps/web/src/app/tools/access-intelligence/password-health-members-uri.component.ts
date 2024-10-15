@@ -29,8 +29,6 @@ import { OrganizationBadgeModule } from "../../vault/individual-vault/organizati
 // eslint-disable-next-line no-restricted-imports
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 
-import { userData } from "./password-health.mock";
-
 @Component({
   standalone: true,
   selector: "tools-password-health-members-uri",
@@ -56,8 +54,6 @@ export class PasswordHealthMembersURIComponent implements OnInit {
   exposedPasswordMap = new Map<string, number>();
 
   dataSource = new TableDataSource<CipherView>();
-
-  totalMembersMap = new Map<string, number>();
 
   reportCiphers: (CipherView & { hostURI: string })[] = [];
   reportCipherURIs: string[] = [];
@@ -91,17 +87,6 @@ export class PasswordHealthMembersURIComponent implements OnInit {
         switchMap(() => from(this.setCiphers())),
       )
       .subscribe();
-
-    // mock data - will be replaced with actual data
-    userData.forEach((user) => {
-      user.cipherIds.forEach((cipherId: string) => {
-        if (this.totalMembersMap.has(cipherId)) {
-          this.totalMembersMap.set(cipherId, (this.totalMembersMap.get(cipherId) || 0) + 1);
-        } else {
-          this.totalMembersMap.set(cipherId, 1);
-        }
-      });
-    });
   }
 
   async setCiphers() {
