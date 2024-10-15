@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { takeUntil } from "rxjs";
+import { firstValueFrom, takeUntil } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
@@ -9,6 +9,7 @@ import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstrac
 import {
   LoginStrategyServiceAbstraction,
   LoginEmailServiceAbstraction,
+  RegisterRouteService,
 } from "@bitwarden/auth/common";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -25,11 +26,14 @@ import { EnvironmentService } from "@bitwarden/common/platform/abstractions/envi
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
+import { UserId } from "@bitwarden/common/types/guid";
+import { ToastService } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { flagEnabled } from "../../../utils/flags";
-import { RouterService, StateService } from "../../core";
+import { RouterService } from "../../core";
 import { AcceptOrganizationInviteService } from "../organization-invite/accept-organization.service";
 import { OrganizationInvite } from "../organization-invite/organization-invite";
 
@@ -43,7 +47,6 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
   enforcedPasswordPolicyOptions: MasterPasswordPolicyOptions;
   policies: Policy[];
   showPasswordless = false;
-
   constructor(
     private acceptOrganizationInviteService: AcceptOrganizationInviteService,
     devicesApiService: DevicesApiServiceAbstraction,
@@ -68,6 +71,8 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     loginEmailService: LoginEmailServiceAbstraction,
     ssoLoginService: SsoLoginServiceAbstraction,
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
+    registerRouteService: RegisterRouteService,
+    toastService: ToastService,
   ) {
     super(
       devicesApiService,
@@ -88,11 +93,19 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       loginEmailService,
       ssoLoginService,
       webAuthnLoginService,
+      registerRouteService,
+      toastService,
     );
     this.onSuccessfulLoginNavigate = this.goAfterLogIn;
     this.showPasswordless = flagEnabled("showPasswordless");
   }
+  submitForm = async (showToast = true) => {
+    return await this.submitFormHelper(showToast);
+  };
 
+  private async submitFormHelper(showToast: boolean) {
+    await super.submit(showToast);
+  }
   async ngOnInit() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
@@ -120,7 +133,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
     }
   }
 
-  async goAfterLogIn() {
+  async goAfterLogIn(userId: UserId) {
     const masterPassword = this.formGroup.value.masterPassword;
 
     // Check master password against policy
@@ -141,7 +154,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       ) {
         const policiesData: { [id: string]: PolicyData } = {};
         this.policies.map((p) => (policiesData[p.id] = PolicyData.fromPolicy(p)));
-        await this.policyService.replace(policiesData);
+        await this.policyService.replace(policiesData, userId);
         await this.router.navigate(["update-password"]);
         return;
       }
@@ -152,19 +165,22 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
   }
 
   async goToHint() {
-    this.setLoginEmailValues();
+    await this.saveEmailSettings();
     await this.router.navigateByUrl("/hint");
   }
 
   async goToRegister() {
-    const email = this.formGroup.value.email;
+    // TODO: remove when email verification flag is removed
+    const registerRoute = await firstValueFrom(this.registerRoute$);
 
-    if (email) {
-      await this.router.navigate(["/register"], { queryParams: { email: email } });
+    if (this.emailFormControl.valid) {
+      await this.router.navigate([registerRoute], {
+        queryParams: { email: this.emailFormControl.value },
+      });
       return;
     }
 
-    await this.router.navigate(["/register"]);
+    await this.router.navigate([registerRoute]);
   }
 
   protected override async handleMigrateEncryptionKey(result: AuthResult): Promise<boolean> {

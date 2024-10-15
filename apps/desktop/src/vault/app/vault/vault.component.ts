@@ -8,7 +8,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
@@ -16,7 +16,6 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { VaultFilter } from "@bitwarden/angular/vault/vault-filter/models/vault-filter.model";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { EventType } from "@bitwarden/common/enums";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
@@ -32,7 +31,6 @@ import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
-import { AuthRequestServiceAbstraction } from "../../../../../../libs/auth/src/common/abstractions";
 import { SearchBarService } from "../../../app/layout/search/search-bar.service";
 import { GeneratorComponent } from "../../../app/tools/generator.component";
 import { invokeMenu, RendererMenuItem } from "../../../utils";
@@ -107,8 +105,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private dialogService: DialogService,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
-    private authRequestService: AuthRequestServiceAbstraction,
-    private accountService: AccountService,
   ) {}
 
   async ngOnInit() {
@@ -140,9 +136,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           case "focusSearch":
             (document.querySelector("#search") as HTMLInputElement).select();
             detectChanges = false;
-            break;
-          case "openGenerator":
-            await this.openGenerator(false);
             break;
           case "syncCompleted":
             await this.vaultItemsComponent.reload(this.activeFilter.buildFilter());
@@ -226,15 +219,11 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.searchBarService.setEnabled(true);
     this.searchBarService.setPlaceholderText(this.i18nService.t("searchVault"));
 
-    const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
-    const approveLoginRequests = await this.authRequestService.getAcceptAuthRequests(userId);
-    if (approveLoginRequests) {
-      const authRequest = await this.apiService.getLastAuthRequest();
-      if (authRequest != null) {
-        this.messagingService.send("openLoginApproval", {
-          notificationId: authRequest.id,
-        });
-      }
+    const authRequest = await this.apiService.getLastAuthRequest();
+    if (authRequest != null) {
+      this.messagingService.send("openLoginApproval", {
+        notificationId: authRequest.id,
+      });
     }
   }
 
@@ -631,6 +620,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async openGenerator(comingFromAddEdit: boolean, passwordType = true) {
+    // FIXME: Will need to be extended to use the cipher-form-generator component introduced with https://github.com/bitwarden/clients/pull/11350
     if (this.modal != null) {
       this.modal.close();
     }

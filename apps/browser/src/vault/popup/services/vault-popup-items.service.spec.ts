@@ -1,23 +1,23 @@
 import { TestBed } from "@angular/core/testing";
 import { mock } from "jest-mock-extended";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, firstValueFrom, timeout } from "rxjs";
 
+import { CollectionService, CollectionView } from "@bitwarden/admin-console/common";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductType } from "@bitwarden/common/enums";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
+import { SyncService } from "@bitwarden/common/platform/sync";
 import { ObservableTracker } from "@bitwarden/common/spec";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
-import BrowserPopupUtils from "../../../platform/popup/browser-popup-utils";
 
+import { VaultPopupAutofillService } from "./vault-popup-autofill.service";
 import { VaultPopupItemsService } from "./vault-popup-items.service";
 import { VaultPopupListFiltersService } from "./vault-popup-list-filters.service";
 
@@ -29,6 +29,7 @@ describe("VaultPopupItemsService", () => {
 
   let mockOrg: Organization;
   let mockCollections: CollectionView[];
+  let activeUserLastSync$: BehaviorSubject<Date>;
 
   const cipherServiceMock = mock<CipherService>();
   const vaultSettingsServiceMock = mock<VaultSettingsService>();
@@ -36,6 +37,8 @@ describe("VaultPopupItemsService", () => {
   const vaultPopupListFiltersServiceMock = mock<VaultPopupListFiltersService>();
   const searchService = mock<SearchService>();
   const collectionService = mock<CollectionService>();
+  const vaultAutofillServiceMock = mock<VaultPopupAutofillService>();
+  const syncServiceMock = mock<SyncService>();
 
   beforeEach(() => {
     allCiphers = cipherFactory(10);
@@ -70,15 +73,15 @@ describe("VaultPopupItemsService", () => {
     vaultPopupListFiltersServiceMock.filterFunction$ = new BehaviorSubject(
       (ciphers: CipherView[]) => ciphers,
     );
-    jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false);
-    jest
-      .spyOn(BrowserApi, "getTabFromCurrentWindow")
-      .mockResolvedValue({ url: "https://example.com" } as chrome.tabs.Tab);
+
+    vaultAutofillServiceMock.currentAutofillTab$ = new BehaviorSubject({
+      url: "https://example.com",
+    } as chrome.tabs.Tab);
 
     mockOrg = {
       id: "org1",
       name: "Organization 1",
-      planProductType: ProductType.Enterprise,
+      productTierType: ProductTierType.Enterprise,
     } as Organization;
 
     mockCollections = [
@@ -89,6 +92,9 @@ describe("VaultPopupItemsService", () => {
     organizationServiceMock.organizations$ = new BehaviorSubject([mockOrg]);
     collectionService.decryptedCollections$ = new BehaviorSubject(mockCollections);
 
+    activeUserLastSync$ = new BehaviorSubject(new Date());
+    syncServiceMock.activeUserLastSync$.mockReturnValue(activeUserLastSync$);
+
     testBed = TestBed.configureTestingModule({
       providers: [
         { provide: CipherService, useValue: cipherServiceMock },
@@ -97,6 +103,8 @@ describe("VaultPopupItemsService", () => {
         { provide: OrganizationService, useValue: organizationServiceMock },
         { provide: VaultPopupListFiltersService, useValue: vaultPopupListFiltersServiceMock },
         { provide: CollectionService, useValue: collectionService },
+        { provide: VaultPopupAutofillService, useValue: vaultAutofillServiceMock },
+        { provide: SyncService, useValue: syncServiceMock },
       ],
     });
 
@@ -153,17 +161,17 @@ describe("VaultPopupItemsService", () => {
     await expect(tracker.pauseUntilReceived(3)).rejects.toThrow("Timeout exceeded");
   });
 
+  it("should not emit cipher list if syncService.getLastSync returns null", async () => {
+    activeUserLastSync$.next(null);
+
+    const obs$ = service.autoFillCiphers$.pipe(timeout(50));
+
+    await expect(firstValueFrom(obs$)).rejects.toThrow("Timeout has occurred");
+  });
+
   describe("autoFillCiphers$", () => {
     it("should return empty array if there is no current tab", (done) => {
-      jest.spyOn(BrowserApi, "getTabFromCurrentWindow").mockResolvedValue(null);
-      service.autoFillCiphers$.subscribe((ciphers) => {
-        expect(ciphers).toEqual([]);
-        done();
-      });
-    });
-
-    it("should return empty array if in Popout window", (done) => {
-      jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true);
+      (vaultAutofillServiceMock.currentAutofillTab$ as BehaviorSubject<any>).next(null);
       service.autoFillCiphers$.subscribe((ciphers) => {
         expect(ciphers).toEqual([]);
         done();
@@ -317,28 +325,16 @@ describe("VaultPopupItemsService", () => {
         done();
       });
     });
-  });
 
-  describe("autoFillAllowed$", () => {
-    it("should return true if there is a current tab", (done) => {
-      service.autofillAllowed$.subscribe((allowed) => {
-        expect(allowed).toBe(true);
-        done();
-      });
-    });
+    it("should return true when all ciphers are deleted", (done) => {
+      cipherServiceMock.getAllDecrypted.mockResolvedValue([
+        { id: "1", type: CipherType.Login, name: "Login 1", isDeleted: true },
+        { id: "2", type: CipherType.Login, name: "Login 2", isDeleted: true },
+        { id: "3", type: CipherType.Login, name: "Login 3", isDeleted: true },
+      ] as CipherView[]);
 
-    it("should return false if there is no current tab", (done) => {
-      jest.spyOn(BrowserApi, "getTabFromCurrentWindow").mockResolvedValue(null);
-      service.autofillAllowed$.subscribe((allowed) => {
-        expect(allowed).toBe(false);
-        done();
-      });
-    });
-
-    it("should return false if in a Popout", (done) => {
-      jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true);
-      service.autofillAllowed$.subscribe((allowed) => {
-        expect(allowed).toBe(false);
+      service.emptyVault$.subscribe((empty) => {
+        expect(empty).toBe(true);
         done();
       });
     });
@@ -361,6 +357,24 @@ describe("VaultPopupItemsService", () => {
     });
   });
 
+  describe("deletedCiphers$", () => {
+    it("should return deleted ciphers", (done) => {
+      const ciphers = [
+        { id: "1", type: CipherType.Login, name: "Login 1", isDeleted: true },
+        { id: "2", type: CipherType.Login, name: "Login 2", isDeleted: true },
+        { id: "3", type: CipherType.Login, name: "Login 3", isDeleted: true },
+        { id: "4", type: CipherType.Login, name: "Login 4", isDeleted: false },
+      ] as CipherView[];
+
+      cipherServiceMock.getAllDecrypted.mockResolvedValue(ciphers);
+
+      service.deletedCiphers$.subscribe((deletedCiphers) => {
+        expect(deletedCiphers.length).toBe(3);
+        done();
+      });
+    });
+  });
+
   describe("hasFilterApplied$", () => {
     it("should return true if the search term provided is searchable", (done) => {
       searchService.isSearchable.mockImplementation(async () => true);
@@ -376,6 +390,41 @@ describe("VaultPopupItemsService", () => {
         expect(canSearch).toBe(false);
         done();
       });
+    });
+  });
+
+  describe("loading$", () => {
+    let tracked: ObservableTracker<boolean>;
+    let trackedCiphers: ObservableTracker<any>;
+    beforeEach(() => {
+      // Start tracking loading$ emissions
+      tracked = new ObservableTracker(service.loading$);
+
+      // Track remainingCiphers$ to make cipher observables active
+      trackedCiphers = new ObservableTracker(service.remainingCiphers$);
+    });
+
+    it("should initialize with true first", async () => {
+      expect(tracked.emissions[0]).toBe(true);
+    });
+
+    it("should emit false once ciphers are available", async () => {
+      expect(tracked.emissions.length).toBe(2);
+      expect(tracked.emissions[0]).toBe(true);
+      expect(tracked.emissions[1]).toBe(false);
+    });
+
+    it("should cycle when cipherService.ciphers$ emits", async () => {
+      // Restart tracking
+      tracked = new ObservableTracker(service.loading$);
+      (cipherServiceMock.ciphers$ as BehaviorSubject<any>).next(null);
+
+      await trackedCiphers.pauseUntilReceived(2);
+
+      expect(tracked.emissions.length).toBe(3);
+      expect(tracked.emissions[0]).toBe(false);
+      expect(tracked.emissions[1]).toBe(true);
+      expect(tracked.emissions[2]).toBe(false);
     });
   });
 

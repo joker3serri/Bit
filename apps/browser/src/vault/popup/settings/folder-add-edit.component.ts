@@ -1,9 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { FolderAddEditComponent as BaseFolderAddEditComponent } from "@bitwarden/angular/vault/components/folder-add-edit.component";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -16,10 +18,12 @@ import { DialogService } from "@bitwarden/components";
   templateUrl: "folder-add-edit.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class FolderAddEditComponent extends BaseFolderAddEditComponent {
+export class FolderAddEditComponent extends BaseFolderAddEditComponent implements OnInit {
   constructor(
     folderService: FolderService,
     folderApiService: FolderApiServiceAbstraction,
+    accountService: AccountService,
+    cryptoService: CryptoService,
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
     private router: Router,
@@ -31,6 +35,8 @@ export class FolderAddEditComponent extends BaseFolderAddEditComponent {
     super(
       folderService,
       folderApiService,
+      accountService,
+      cryptoService,
       i18nService,
       platformUtilsService,
       logService,

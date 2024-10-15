@@ -6,6 +6,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 import { of } from "rxjs";
 
+import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-api.service";
 import { ClientType } from "@bitwarden/common/enums";
 import {
   Environment,
@@ -26,6 +27,8 @@ import {
   TypographyModule,
 } from "@bitwarden/components";
 
+// FIXME: remove `/apps` import from `/libs`
+// eslint-disable-next-line import/no-restricted-paths
 import { PreloadedEnglishI18nModule } from "../../../../../../apps/web/src/app/core/tests";
 
 import { RegistrationStartComponent } from "./registration-start.component";
@@ -53,7 +56,6 @@ const decorators = (options: {
         LinkModule,
         TypographyModule,
         AsyncActionsModule,
-        BrowserAnimationsModule,
       ],
       providers: [
         {
@@ -64,6 +66,7 @@ const decorators = (options: {
     }),
     applicationConfig({
       providers: [
+        importProvidersFrom(BrowserAnimationsModule),
         importProvidersFrom(PreloadedEnglishI18nModule),
         {
           provide: EnvironmentService,
@@ -90,6 +93,12 @@ const decorators = (options: {
           useValue: {
             showToast: (options: ToastOptions) => {},
           } as Partial<ToastService>,
+        },
+        {
+          provide: AccountApiService,
+          useValue: {
+            registerSendVerificationEmail: () => Promise.resolve(null),
+          } as Partial<AccountApiService>,
         },
       ],
     }),

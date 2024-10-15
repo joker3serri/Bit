@@ -407,16 +407,55 @@
     "message": "Minimum password length"
   },
   "uppercase": {
-    "message": "Вялікія літары (A-Z)"
+    "message": "Вялікія літары (A-Z)",
+    "description": "deprecated. Use uppercaseLabel instead."
   },
   "lowercase": {
-    "message": "Маленькія літары (a-z)"
+    "message": "Маленькія літары (a-z)",
+    "description": "deprecated. Use lowercaseLabel instead."
   },
   "numbers": {
-    "message": "Лічбы (0-9)"
+    "message": "Лічбы (0-9)",
+    "description": "deprecated. Use numbersLabel instead."
   },
   "specialCharacters": {
     "message": "Спецыяльныя сімвалы (!@#$%^&*)"
+  },
+  "include": {
+    "message": "Include",
+    "description": "Card header for password generator include block"
+  },
+  "uppercaseDescription": {
+    "message": "Include uppercase characters",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Include lowercase characters",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Include numbers",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Include special characters",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
   },
   "numWords": {
     "message": "Колькасць слоў"
@@ -442,7 +481,16 @@
     "description": "Minimum Special Characters"
   },
   "ambiguous": {
-    "message": "Пазбягаць неадназначных сімвалаў"
+    "message": "Пазбягаць неадназначных сімвалаў",
+    "description": "deprecated. Use avoidAmbiguous instead."
+  },
+  "avoidAmbiguous": {
+    "message": "Avoid ambiguous characters",
+    "description": "Label for the avoid ambiguous characters checkbox."
+  },
+  "generatorPolicyInEffect": {
+    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "description": "Indicates that a policy limits the credential generator screen."
   },
   "searchCollection": {
     "message": "Пошук у калекцыі"
@@ -499,6 +547,12 @@
   "createAccount": {
     "message": "Стварыць уліковы запіс"
   },
+  "setAStrongPassword": {
+    "message": "Set a strong password"
+  },
+  "finishCreatingYourAccountBySettingAPassword": {
+    "message": "Finish creating your account by setting a password"
+  },
   "logIn": {
     "message": "Увайсці"
   },
@@ -520,8 +574,51 @@
   "masterPassHint": {
     "message": "Падказка да асноўнага пароля (неабавязкова)"
   },
+  "masterPassHintText": {
+    "message": "If you forget your password, the password hint can be sent to your email. $CURRENT$/$MAXIMUM$ character maximum.",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "0"
+      },
+      "maximum": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
+  "masterPassword": {
+    "message": "Master password"
+  },
+  "masterPassImportant": {
+    "message": "Your master password cannot be recovered if you forget it!"
+  },
+  "confirmMasterPassword": {
+    "message": "Confirm master password"
+  },
+  "masterPassHintLabel": {
+    "message": "Master password hint"
+  },
+  "joinOrganization": {
+    "message": "Join organization"
+  },
+  "finishJoiningThisOrganizationBySettingAMasterPassword": {
+    "message": "Finish joining this organization by setting a master password."
+  },
   "settings": {
     "message": "Налады"
+  },
+  "accountEmail": {
+    "message": "Account email"
+  },
+  "requestHint": {
+    "message": "Request hint"
+  },
+  "requestPasswordHint": {
+    "message": "Request password hint"
+  },
+  "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
+    "message": "Enter your account email address and your password hint will be sent to you"
   },
   "passwordHint": {
     "message": "Падказка да пароля"
@@ -554,17 +651,23 @@
       }
     }
   },
+  "youSuccessfullyLoggedIn": {
+    "message": "You successfully logged in"
+  },
+  "youMayCloseThisWindow": {
+    "message": "You may close this window"
+  },
   "masterPassDoesntMatch": {
     "message": "Пацвярджэнне асноўнага пароля не супадае."
   },
   "newAccountCreated": {
     "message": "Ваш уліковы запіс створаны! Цяпер вы можаце ўвайсці ў яго."
   },
-  "youSuccessfullyLoggedIn": {
-    "message": "You successfully logged in"
+  "newAccountCreated2": {
+    "message": "Your new account has been created!"
   },
-  "youMayCloseThisWindow": {
-    "message": "You may close this window"
+  "youHaveBeenLoggedIn": {
+    "message": "You have been logged in!"
   },
   "masterPassSent": {
     "message": "Мы адправілі вам на электронную пошту падказку да асноўнага пароля."
@@ -595,6 +698,9 @@
   },
   "verificationCodeRequired": {
     "message": "Патрабуецца праверачны код."
+  },
+  "webauthnCancelOrTimeout": {
+    "message": "The authentication was cancelled or took too long. Please try again."
   },
   "invalidVerificationCode": {
     "message": "Памылковы праверачны код"
@@ -647,18 +753,18 @@
   "authenticatorAppTitle": {
     "message": "Праграма аўтэнтыфікацыі"
   },
-  "authenticatorAppDesc": {
-    "message": "Выкарыстоўвайце праграму праграму аўтэнтыфікацыі (напрыклад, Authy або Google Authenticator) для генерацыі праверачных кодаў на падставе часу.",
-    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  "authenticatorAppDescV2": {
+    "message": "Enter a code generated by an authenticator app like Bitwarden Authenticator.",
+    "description": "'Bitwarden Authenticator' is a product name and should not be translated."
   },
-  "yubiKeyTitle": {
-    "message": "Ключ бяспекі YubiKey OTP"
+  "yubiKeyTitleV2": {
+    "message": "Yubico OTP security key"
   },
   "yubiKeyDesc": {
     "message": "Выкарыстоўвайце YubiKey для доступу да вашага ўліковага запісу. Працуе з ключамі бяспекі YubiKey 4, 4 Nano, 4C і NEO."
   },
-  "duoDesc": {
-    "message": "Праверка з дапамогай Duo Security, выкарыстоўваючы праграму Duo Mobile, SMS, тэлефонны выклік або ключ бяспекі U2F.",
+  "duoDescV2": {
+    "message": "Enter a code generated by Duo Security.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -674,8 +780,8 @@
   "emailTitle": {
     "message": "Электронная пошта"
   },
-  "emailDesc": {
-    "message": "Праверачныя коды будуць адпраўляцца вам па электронную пошту."
+  "emailDescV2": {
+    "message": "Enter a code sent to your email."
   },
   "loginUnavailable": {
     "message": "Уваход недаступны"
@@ -694,6 +800,15 @@
   },
   "selfHostedEnvironmentFooter": {
     "message": "Увядзіце асноўны URL-адрас вашага лакальнага размяшчэння ўсталяванага Bitwarden."
+  },
+  "selfHostedBaseUrlHint": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation. Example: https://bitwarden.company.com"
+  },
+  "selfHostedCustomEnvHeader": {
+    "message": "For advanced configuration, you can specify the base URL of each service independently."
+  },
+  "selfHostedEnvFormInvalid": {
+    "message": "You must add either the base Server URL or at least one custom environment."
   },
   "customEnvironment": {
     "message": "Карыстальніцкае асяроддзе"
@@ -743,8 +858,23 @@
   "loggedOut": {
     "message": "Вы выйшлі"
   },
+  "loggedOutDesc": {
+    "message": "You have been logged out of your account."
+  },
   "loginExpired": {
     "message": "Тэрмін дзеяння вашага сеансу завяршыўся."
+  },
+  "restartRegistration": {
+    "message": "Restart registration"
+  },
+  "expiredLink": {
+    "message": "Expired link"
+  },
+  "pleaseRestartRegistrationOrTryLoggingIn": {
+    "message": "Please restart registration or try logging in."
+  },
+  "youMayAlreadyHaveAnAccount": {
+    "message": "You may already have an account"
   },
   "logOutConfirmation": {
     "message": "Вы сапраўды хочаце выйсці?"
@@ -832,6 +962,18 @@
   "yourVaultIsLocked": {
     "message": "Ваша сховішча заблакіравана. Каб працягнуць, пацвердзіце сваю асобу."
   },
+  "yourAccountIsLocked": {
+    "message": "Your account is locked"
+  },
+  "or": {
+    "message": "or"
+  },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Unlock with master password"
+  },
   "unlock": {
     "message": "Разблакіраваць"
   },
@@ -859,6 +1001,9 @@
   },
   "vaultTimeout": {
     "message": "Час чакання сховішча"
+  },
+  "vaultTimeout1": {
+    "message": "Timeout"
   },
   "vaultTimeoutDesc": {
     "message": "Выберыце тайм-аўт для сховішча і дзеянне, якое неабходна зрабіць."
@@ -1110,6 +1255,9 @@
   "premiumPurchaseAlert": {
     "message": "Вы можаце купіць прэміяльны статус на bitwarden.com. Перайсці на вэб-сайт зараз?"
   },
+  "premiumPurchaseAlertV2": {
+    "message": "You can purchase Premium from your account settings on the Bitwarden web app."
+  },
   "premiumCurrentMember": {
     "message": "У вас прэміяльны статус!"
   },
@@ -1211,6 +1359,15 @@
         "example": "Password"
       }
     }
+  },
+  "copySuccessful": {
+    "message": "Copy Successful"
+  },
+  "errorRefreshingAccessToken": {
+    "message": "Access Token Refresh Error"
+  },
+  "errorRefreshingAccessTokenDesc": {
+    "message": "No refresh token or API keys found. Please try logging out and logging back in."
   },
   "help": {
     "message": "Даведка"
@@ -1440,8 +1597,14 @@
   "additionalWindowsHelloSettings": {
     "message": "Дадатковыя налады Windows Hello"
   },
+  "unlockWithPolkit": {
+    "message": "Unlock with system authentication"
+  },
   "windowsHelloConsentMessage": {
     "message": "Праверыць на Bitwarden."
+  },
+  "polkitConsentMessage": {
+    "message": "Authenticate to unlock Bitwarden."
   },
   "unlockWithTouchId": {
     "message": "Разблакіраваць з Touch ID"
@@ -1455,6 +1618,9 @@
   "autoPromptWindowsHello": {
     "message": "Пытацца пра Windows Hello пры запуску"
   },
+  "autoPromptPolkit": {
+    "message": "Ask for system authentication on launch"
+  },
   "autoPromptTouchId": {
     "message": "Пытацца пра Touch ID пры запуску"
   },
@@ -1464,8 +1630,8 @@
   "recommendedForSecurity": {
     "message": "Рэкамендуецца ў мэтах бяспекі."
   },
-  "lockWithMasterPassOnRestart": {
-    "message": "Блакіраваць асноўным паролем пры перазапуску"
+  "lockWithMasterPassOnRestart1": {
+    "message": "Lock with master password on restart"
   },
   "deleteAccount": {
     "message": "Выдаліць уліковы запіс"
@@ -1542,7 +1708,7 @@
   },
   "lock": {
     "message": "Заблакіраваць",
-    "description": "Verb form: to make secure or inaccesible by"
+    "description": "Verb form: to make secure or inaccessible by"
   },
   "trash": {
     "message": "Сметніца",
@@ -1641,6 +1807,21 @@
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "Ваш новы асноўны пароль не адпавядае патрабаванням палітыкі."
   },
+  "receiveMarketingEmailsV2": {
+    "message": "Get advice, announcements, and research opportunities from Bitwarden in your inbox."
+  },
+  "unsubscribe": {
+    "message": "Unsubscribe"
+  },
+  "atAnyTime": {
+    "message": "at any time."
+  },
+  "byContinuingYouAgreeToThe": {
+    "message": "By continuing, you agree to the"
+  },
+  "and": {
+    "message": "and"
+  },
   "acceptPolicies": {
     "message": "Ставячы гэты сцяжок вы пагаджаецеся з наступным:"
   },
@@ -1650,8 +1831,8 @@
   "enableBrowserIntegration": {
     "message": "Дазволіць інтэграцыю з браўзерам"
   },
-  "enableBrowserIntegrationDesc": {
-    "message": "Выкарыстоўваецца для біяметрыі ў браўзеры."
+  "enableBrowserIntegrationDesc1": {
+    "message": "Used to allow biometric unlock in browsers that are not Safari."
   },
   "enableDuckDuckGoBrowserIntegration": {
     "message": "Дазволіць інтэграцыю браўзера з DuckDuckGo"
@@ -1718,6 +1899,12 @@
   },
   "biometricsNotEnabledDesc": {
     "message": "Для актывацыі біяметрыі ў браўзеры неабходна спачатку ўключыць яе ў наладах праграмы для камп'ютара."
+  },
+  "biometricsManualSetupTitle": {
+    "message": "Automatic setup not available"
+  },
+  "biometricsManualSetupDesc": {
+    "message": "Due to the installation method, biometrics support could not be automatically enabled. Would you like to open the documentation on how to do this manually?"
   },
   "personalOwnershipSubmitError": {
     "message": "У адпаведнасці з палітыкай прадпрыемства вам забаронена захоўваць элементы ў асабістым сховішчы. Змяніце параметры ўласнасці на арганізацыю і выберыце з даступных калекцый."
@@ -1903,6 +2090,9 @@
   "emailVerificationRequired": {
     "message": "Патрабуецца праверка электроннай пошты"
   },
+  "emailVerifiedV2": {
+    "message": "Email verified"
+  },
   "emailVerificationRequiredDesc": {
     "message": "Для выкарыстання гэтай функцыі патрабуецца праверыць электронную пошту."
   },
@@ -1926,6 +2116,9 @@
   },
   "updateWeakMasterPasswordWarning": {
     "message": "Ваш асноўны пароль не адпавядае адной або некалькім палітыкам арганізацыі. Для атрымання доступу да сховішча, вы павінны абнавіць яго. Працягваючы, вы выйдзіце з бягучага сеанса і вам неабходна будзе ўвайсці паўторна. Актыўныя сеансы на іншых прыладах могуць заставацца актыўнымі на працягу адной гадзіны."
+  },
+  "tdeDisabledMasterPasswordRequired": {
+    "message": "Your organization has disabled trusted device encryption. Please set a master password to access your vault."
   },
   "tryAgain": {
     "message": "Try again"
@@ -1969,8 +2162,8 @@
   "minutes": {
     "message": "Хвіліны"
   },
-  "vaultTimeoutPolicyInEffect": {
-    "message": "Палітыка вашай арганізацыі ўплывае на час чакання сховішча. Максімальны дазволены час чакання сховішча складае $HOURS$ гадз. і $MINUTES$ хв.",
+  "vaultTimeoutPolicyInEffect1": {
+    "message": "$HOURS$ hour(s) and $MINUTES$ minute(s) maximum.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -2010,6 +2203,9 @@
   },
   "vaultTimeoutTooLarge": {
     "message": "Час чакання вашага сховішча перавышае дазволеныя абмежаванні, якія прызначыла ваша арганізацыя."
+  },
+  "inviteAccepted": {
+    "message": "Invitation accepted"
   },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Аўтаматычная рэгістрацыя"
@@ -2116,11 +2312,15 @@
   "locked": {
     "message": "Заблакіравана"
   },
+  "yourVaultIsLockedV2": {
+    "message": "Your vault is locked"
+  },
   "unlocked": {
     "message": "Разблакіравана"
   },
   "generator": {
-    "message": "Генератар"
+    "message": "Генератар",
+    "description": "Short for 'credential generator'."
   },
   "whatWouldYouLikeToGenerate": {
     "message": "Што вы хочаце генерыраваць?"
@@ -2383,9 +2583,6 @@
   "denyLogIn": {
     "message": "Адхіліць уваход"
   },
-  "approveLoginRequests": {
-    "message": "Ухваліць запыт уваходу"
-  },
   "logInConfirmedForEmailOnDevice": {
     "message": "Уваход пацверджаны для $EMAIL$ на $DEVICE$",
     "placeholders": {
@@ -2419,9 +2616,6 @@
   },
   "thisRequestIsNoLongerValid": {
     "message": "Гэты запыт больш не дзейнічае."
-  },
-  "approveLoginRequestDesc": {
-    "message": "Выкарыстоўваць гэту прыладу для ўхвалення запытаў на ўваход, якія зроблены з іншых прылад."
   },
   "confirmLoginAtemptForMail": {
     "message": "Пацвердзіць спробу ўваходу для $EMAIL$",
@@ -2473,6 +2667,15 @@
   },
   "important": {
     "message": "Важна:"
+  },
+  "accessing": {
+    "message": "Accessing"
+  },
+  "accessTokenUnableToBeDecrypted": {
+    "message": "You have been logged out because your access token could not be decrypted. Please log in again to resolve this issue."
+  },
+  "refreshTokenSecureStorageRetrievalFailure": {
+    "message": "You have been logged out because your refresh token could not be retrieved. Please log in again to resolve this issue."
   },
   "masterPasswordHint": {
     "message": "Ваш асноўны пароль немагчыма будзе аднавіць, калі вы яго забудзеце!"
@@ -2653,6 +2856,9 @@
   "submenu": {
     "message": "Падменю"
   },
+  "toggleSideNavigation": {
+    "message": "Toggle side navigation"
+  },
   "skipToContent": {
     "message": "Skip to content"
   },
@@ -2708,6 +2914,9 @@
       }
     }
   },
+  "duoHealthCheckResultsInNullAuthUrlError": {
+    "message": "Error connecting with the Duo service. Use a different two-step login method or contact Duo for assistance."
+  },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
     "message": "Launch Duo and follow the steps to finish logging in."
   },
@@ -2729,8 +2938,8 @@
   "invalidFilePassword": {
     "message": "Invalid file password, please use the password you entered when you created the export file."
   },
-  "importDestination": {
-    "message": "Import destination"
+  "destination": {
+    "message": "Destination"
   },
   "learnAboutImportOptions": {
     "message": "Learn about your import options"
@@ -2787,6 +2996,9 @@
   },
   "confirmFilePassword": {
     "message": "Confirm file password"
+  },
+  "exportSuccess": {
+    "message": "Vault data exported"
   },
   "multifactorAuthenticationCancelled": {
     "message": "Multifactor authentication cancelled"
@@ -2922,5 +3134,26 @@
         "example": "Work"
       }
     }
+  },
+  "data": {
+    "message": "Data"
+  },
+  "fileSends": {
+    "message": "File Sends"
+  },
+  "textSends": {
+    "message": "Text Sends"
+  },
+  "allowScreenshots": {
+    "message": "Allow screen capture"
+  },
+  "allowScreenshotsDesc": {
+    "message": "Allow screen capture of the Bitwarden desktop application."
+  },
+  "ssoError": {
+    "message": "No free ports could be found for the sso login."
+  },
+  "fileSavedToDevice": {
+    "message": "File saved to device. Manage from your device downloads."
   }
 }

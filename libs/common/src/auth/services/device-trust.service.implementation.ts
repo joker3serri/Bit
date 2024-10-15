@@ -3,6 +3,7 @@ import { firstValueFrom, map, Observable } from "rxjs";
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
 import { AppIdService } from "../../platform/abstractions/app-id.service";
+import { ConfigService } from "../../platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
 import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
@@ -28,13 +29,23 @@ import {
 } from "../models/request/update-devices-trust.request";
 
 /** Uses disk storage so that the device key can persist after log out and tab removal. */
-export const DEVICE_KEY = new UserKeyDefinition<DeviceKey>(DEVICE_TRUST_DISK_LOCAL, "deviceKey", {
-  deserializer: (deviceKey) => SymmetricCryptoKey.fromJSON(deviceKey) as DeviceKey,
-  clearOn: [], // Device key is needed to log back into device, so we can't clear it automatically during lock or logout
-});
+export const DEVICE_KEY = new UserKeyDefinition<DeviceKey | null>(
+  DEVICE_TRUST_DISK_LOCAL,
+  "deviceKey",
+  {
+    deserializer: (deviceKey) =>
+      deviceKey ? (SymmetricCryptoKey.fromJSON(deviceKey) as DeviceKey) : null,
+    clearOn: [], // Device key is needed to log back into device, so we can't clear it automatically during lock or logout
+    cleanupDelayMs: 0,
+    debug: {
+      enableRetrievalLogging: true,
+      enableUpdateLogging: true,
+    },
+  },
+);
 
 /** Uses disk storage so that the shouldTrustDevice bool can persist across login. */
-export const SHOULD_TRUST_DEVICE = new UserKeyDefinition<boolean>(
+export const SHOULD_TRUST_DEVICE = new UserKeyDefinition<boolean | null>(
   DEVICE_TRUST_DISK_LOCAL,
   "shouldTrustDevice",
   {
@@ -63,6 +74,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     private secureStorageService: AbstractStorageService,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private logService: LogService,
+    private configService: ConfigService,
   ) {
     this.supportsDeviceTrust$ = this.userDecryptionOptionsService.userDecryptionOptions$.pipe(
       map((options) => options?.trustedDeviceOption != null ?? false),
@@ -102,7 +114,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     if (shouldTrustDevice) {
       await this.trustDevice(userId);
       // reset the trust choice
-      await this.setShouldTrustDevice(userId, false);
+      await this.setShouldTrustDevice(userId, null);
     }
   }
 
@@ -132,7 +144,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       deviceKeyEncryptedDevicePrivateKey,
     ] = await Promise.all([
       // Encrypt user key with the DevicePublicKey
-      this.cryptoService.rsaEncrypt(userKey.key, devicePublicKey),
+      this.encryptService.rsaEncrypt(userKey.key, devicePublicKey),
 
       // Encrypt devicePublicKey with user key
       this.encryptService.encrypt(devicePublicKey, userKey),
@@ -194,7 +206,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     );
 
     // Encrypt the brand new user key with the now-decrypted public key for the device
-    const encryptedNewUserKey = await this.cryptoService.rsaEncrypt(
+    const encryptedNewUserKey = await this.encryptService.rsaEncrypt(
       newUserKey.key,
       decryptedDevicePublicKey,
     );
@@ -282,6 +294,16 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       throw new Error("UserId is required. Cannot decrypt user key with device key.");
     }
 
+    if (!encryptedDevicePrivateKey) {
+      throw new Error(
+        "Encrypted device private key is required. Cannot decrypt user key with device key.",
+      );
+    }
+
+    if (!encryptedUserKey) {
+      throw new Error("Encrypted user key is required. Cannot decrypt user key with device key.");
+    }
+
     if (!deviceKey) {
       // User doesn't have a device key anymore so device is untrusted
       return null;
@@ -295,8 +317,8 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       );
 
       // Attempt to decrypt encryptedUserDataKey with devicePrivateKey
-      const userKey = await this.cryptoService.rsaDecrypt(
-        encryptedUserKey.encryptedString,
+      const userKey = await this.encryptService.rsaDecrypt(
+        new EncString(encryptedUserKey.encryptedString),
         devicePrivateKey,
       );
 
@@ -308,6 +330,11 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
 
       return null;
     }
+  }
+
+  async recordDeviceTrustLoss(): Promise<void> {
+    const deviceIdentifier = await this.appIdService.getAppId();
+    await this.devicesApiService.postDeviceTrustLoss(deviceIdentifier);
   }
 
   private getSecureStorageOptions(userId: UserId): StorageOptions {

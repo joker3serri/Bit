@@ -1,0 +1,8 @@
+<tools-password-generator
+  *ngIf="type === 'password'"
+  (onGenerated)="onCredentialGenerated($event)"
+></tools-password-generator>
+<tools-username-generator
+  *ngIf="type === 'username'"
+  (onGenerated)="onCredentialGenerated($event)"
+></tools-username-generator>

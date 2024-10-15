@@ -4,6 +4,8 @@ import mock from "jest-mock-extended/lib/Mock";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { UserKeyResponse } from "@bitwarden/common/models/response/user-key.response";
+import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -11,6 +13,7 @@ import { EncryptionType, KdfType } from "@bitwarden/common/platform/enums";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
+import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 
@@ -30,15 +33,18 @@ describe("EmergencyAccessService", () => {
   let apiService: MockProxy<ApiService>;
   let cryptoService: MockProxy<CryptoService>;
   let encryptService: MockProxy<EncryptService>;
+  let bulkEncryptService: MockProxy<BulkEncryptService>;
   let cipherService: MockProxy<CipherService>;
   let logService: MockProxy<LogService>;
   let emergencyAccessService: EmergencyAccessService;
+  let configService: ConfigService;
 
   beforeAll(() => {
     emergencyAccessApiService = mock<EmergencyAccessApiService>();
     apiService = mock<ApiService>();
     cryptoService = mock<CryptoService>();
     encryptService = mock<EncryptService>();
+    bulkEncryptService = mock<BulkEncryptService>();
     cipherService = mock<CipherService>();
     logService = mock<LogService>();
 
@@ -47,8 +53,10 @@ describe("EmergencyAccessService", () => {
       apiService,
       cryptoService,
       encryptService,
+      bulkEncryptService,
       cipherService,
       logService,
+      configService,
     );
   });
 
@@ -124,7 +132,7 @@ describe("EmergencyAccessService", () => {
         cryptoService.getUserKey.mockResolvedValueOnce(mockUserKey);
         apiService.getUserPublicKey.mockResolvedValueOnce(mockUserPublicKeyResponse);
 
-        cryptoService.rsaEncrypt.mockResolvedValueOnce(mockUserPublicKeyEncryptedUserKey);
+        encryptService.rsaEncrypt.mockResolvedValueOnce(mockUserPublicKeyEncryptedUserKey);
 
         emergencyAccessApiService.postEmergencyAccessConfirm.mockResolvedValueOnce();
 
@@ -154,7 +162,7 @@ describe("EmergencyAccessService", () => {
 
       const mockDecryptedGrantorUserKey = new Uint8Array(64);
       cryptoService.getPrivateKey.mockResolvedValue(new Uint8Array(64));
-      cryptoService.rsaDecrypt.mockResolvedValueOnce(mockDecryptedGrantorUserKey);
+      encryptService.rsaDecrypt.mockResolvedValueOnce(mockDecryptedGrantorUserKey);
 
       const mockMasterKey = new SymmetricCryptoKey(new Uint8Array(64) as CsprngArray) as MasterKey;
 
@@ -192,7 +200,7 @@ describe("EmergencyAccessService", () => {
     });
 
     it("should not post a new password if decryption fails", async () => {
-      cryptoService.rsaDecrypt.mockResolvedValueOnce(null);
+      encryptService.rsaDecrypt.mockResolvedValueOnce(null);
       emergencyAccessApiService.postEmergencyAccessTakeover.mockResolvedValueOnce({
         keyEncrypted: "EncryptedKey",
         kdf: KdfType.PBKDF2_SHA256,
@@ -223,8 +231,11 @@ describe("EmergencyAccessService", () => {
     });
   });
 
-  describe("getRotatedKeys", () => {
-    let mockUserKey: UserKey;
+  describe("getRotatedData", () => {
+    const mockRandomBytes = new Uint8Array(64) as CsprngArray;
+    const mockOriginalUserKey = new SymmetricCryptoKey(mockRandomBytes) as UserKey;
+    const mockNewUserKey = new SymmetricCryptoKey(mockRandomBytes) as UserKey;
+
     const allowedStatuses = [
       EmergencyAccessStatusType.Confirmed,
       EmergencyAccessStatusType.RecoveryInitiated,
@@ -242,16 +253,13 @@ describe("EmergencyAccessService", () => {
     } as ListResponse<EmergencyAccessGranteeDetailsResponse>;
 
     beforeEach(() => {
-      const mockRandomBytes = new Uint8Array(64) as CsprngArray;
-      mockUserKey = new SymmetricCryptoKey(mockRandomBytes) as UserKey;
-
       emergencyAccessApiService.getEmergencyAccessTrusted.mockResolvedValue(mockEmergencyAccess);
       apiService.getUserPublicKey.mockResolvedValue({
         userId: "mockUserId",
         publicKey: "mockPublicKey",
       } as UserKeyResponse);
 
-      cryptoService.rsaEncrypt.mockImplementation((plainValue, publicKey) => {
+      encryptService.rsaEncrypt.mockImplementation((plainValue, publicKey) => {
         return Promise.resolve(
           new EncString(EncryptionType.Rsa2048_OaepSha1_B64, "Encrypted: " + plainValue),
         );
@@ -259,9 +267,19 @@ describe("EmergencyAccessService", () => {
     });
 
     it("Only returns emergency accesses with allowed statuses", async () => {
-      const result = await emergencyAccessService.getRotatedKeys(mockUserKey);
+      const result = await emergencyAccessService.getRotatedData(
+        mockOriginalUserKey,
+        mockNewUserKey,
+        "mockUserId" as UserId,
+      );
 
       expect(result).toHaveLength(allowedStatuses.length);
+    });
+
+    it("throws if new user key is null", async () => {
+      await expect(
+        emergencyAccessService.getRotatedData(mockOriginalUserKey, null, "mockUserId" as UserId),
+      ).rejects.toThrow("New user key is required for rotation.");
     });
   });
 });

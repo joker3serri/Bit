@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, firstValueFrom, map } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
 import {
+  OrganizationUserApiService,
   OrganizationUserAcceptRequest,
   OrganizationUserAcceptInitRequest,
-} from "@bitwarden/common/admin-console/abstractions/organization-user/requests";
+} from "@bitwarden/admin-console/common";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -32,17 +32,17 @@ import { OrganizationInvite } from "./organization-invite";
 // We're storing the organization invite for 2 reasons:
 // 1. If the org requires a MP policy check, we need to keep track that the user has already been redirected when they return.
 // 2. The MP policy check happens on login/register flows, we need to store the token to retrieve the policies then.
-export const ORGANIZATION_INVITE = new KeyDefinition<OrganizationInvite>(
+export const ORGANIZATION_INVITE = new KeyDefinition<OrganizationInvite | null>(
   ORGANIZATION_INVITE_DISK,
   "organizationInvite",
   {
-    deserializer: (invite) => OrganizationInvite.fromJSON(invite),
+    deserializer: (invite) => (invite ? OrganizationInvite.fromJSON(invite) : null),
   },
 );
 
 @Injectable()
 export class AcceptOrganizationInviteService {
-  private organizationInvitationState: GlobalState<OrganizationInvite>;
+  private organizationInvitationState: GlobalState<OrganizationInvite | null>;
   private orgNameSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private policyCache: Policy[];
 
@@ -58,7 +58,7 @@ export class AcceptOrganizationInviteService {
     private readonly policyService: PolicyService,
     private readonly logService: LogService,
     private readonly organizationApiService: OrganizationApiServiceAbstraction,
-    private readonly organizationUserService: OrganizationUserService,
+    private readonly organizationUserApiService: OrganizationUserApiService,
     private readonly i18nService: I18nService,
     private readonly globalStateProvider: GlobalStateProvider,
   ) {
@@ -66,7 +66,7 @@ export class AcceptOrganizationInviteService {
   }
 
   /** Returns the currently stored organization invite */
-  async getOrganizationInvite(): Promise<OrganizationInvite> {
+  async getOrganizationInvite(): Promise<OrganizationInvite | null> {
     return await firstValueFrom(this.organizationInvitationState.state$);
   }
 
@@ -121,7 +121,7 @@ export class AcceptOrganizationInviteService {
 
   private async acceptAndInitOrganization(invite: OrganizationInvite): Promise<void> {
     await this.prepareAcceptAndInitRequest(invite).then((request) =>
-      this.organizationUserService.postOrganizationUserAcceptInit(
+      this.organizationUserApiService.postOrganizationUserAcceptInit(
         invite.organizationId,
         invite.organizationUserId,
         request,
@@ -156,7 +156,7 @@ export class AcceptOrganizationInviteService {
 
   private async accept(invite: OrganizationInvite): Promise<void> {
     await this.prepareAcceptRequest(invite).then((request) =>
-      this.organizationUserService.postOrganizationUserAccept(
+      this.organizationUserApiService.postOrganizationUserAccept(
         invite.organizationId,
         invite.organizationUserId,
         request,
@@ -184,7 +184,7 @@ export class AcceptOrganizationInviteService {
 
       // RSA Encrypt user's encKey.key with organization public key
       const userKey = await this.cryptoService.getUserKey();
-      const encryptedKey = await this.cryptoService.rsaEncrypt(userKey.key, publicKey);
+      const encryptedKey = await this.encryptService.rsaEncrypt(userKey.key, publicKey);
 
       // Add reset password key to accept request
       request.resetPasswordKey = encryptedKey.encryptedString;

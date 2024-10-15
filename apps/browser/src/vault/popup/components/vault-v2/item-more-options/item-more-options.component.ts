@@ -1,17 +1,27 @@
 import { CommonModule } from "@angular/common";
 import { booleanAttribute, Component, Input } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
+import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService, IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
+import {
+  DialogService,
+  IconButtonModule,
+  ItemModule,
+  MenuModule,
+  ToastService,
+} from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
-import { VaultPopupItemsService } from "../../../services/vault-popup-items.service";
+import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
+import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
 
 @Component({
   standalone: true,
@@ -26,24 +36,34 @@ export class ItemMoreOptionsComponent {
   cipher: CipherView;
 
   /**
-   * Flag to hide the login specific menu options. Used for login items that are
+   * Flag to hide the autofill menu options. Used for items that are
    * already in the autofill list suggestion.
    */
   @Input({ transform: booleanAttribute })
-  hideLoginOptions: boolean;
+  hideAutofillOptions: boolean;
 
-  protected autofillAllowed$ = this.vaultPopupItemsService.autofillAllowed$;
+  protected autofillAllowed$ = this.vaultPopupAutofillService.autofillAllowed$;
 
   constructor(
     private cipherService: CipherService,
-    private vaultPopupItemsService: VaultPopupItemsService,
     private passwordRepromptService: PasswordRepromptService,
+    private toastService: ToastService,
     private dialogService: DialogService,
     private router: Router,
+    private i18nService: I18nService,
+    private vaultPopupAutofillService: VaultPopupAutofillService,
+    private accountService: AccountService,
   ) {}
 
   get canEdit() {
     return this.cipher.edit;
+  }
+
+  /**
+   * Determines if the cipher can be autofilled.
+   */
+  get canAutofill() {
+    return [CipherType.Login, CipherType.Card, CipherType.Identity].includes(this.cipher.type);
   }
 
   get isLogin() {
@@ -54,11 +74,19 @@ export class ItemMoreOptionsComponent {
     return this.cipher.favorite ? "unfavorite" : "favorite";
   }
 
+  async doAutofill() {
+    await this.vaultPopupAutofillService.doAutofill(this.cipher);
+  }
+
+  async doAutofillAndSave() {
+    await this.vaultPopupAutofillService.doAutofillAndSave(this.cipher, false);
+  }
+
   /**
    * Determines if the login cipher can be launched in a new browser tab.
    */
   get canLaunch() {
-    return this.isLogin && this.cipher.login.canLaunch;
+    return this.cipher.type === CipherType.Login && this.cipher.login.canLaunch;
   }
 
   /**
@@ -83,8 +111,18 @@ export class ItemMoreOptionsComponent {
    */
   async toggleFavorite() {
     this.cipher.favorite = !this.cipher.favorite;
-    const encryptedCipher = await this.cipherService.encrypt(this.cipher);
+    const activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
+    const encryptedCipher = await this.cipherService.encrypt(this.cipher, activeUserId);
     await this.cipherService.updateWithServer(encryptedCipher);
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t(
+        this.cipher.favorite ? "itemAddedToFavorites" : "itemRemovedFromFavorites",
+      ),
+    });
   }
 
   /**
@@ -114,9 +152,21 @@ export class ItemMoreOptionsComponent {
 
     await this.router.navigate(["/clone-cipher"], {
       queryParams: {
-        cloneMode: true,
+        clone: true.toString(),
         cipherId: this.cipher.id,
-      },
+        type: this.cipher.type.toString(),
+      } as AddEditQueryParams,
+    });
+  }
+
+  /** Prompts for password when necessary then navigates to the assign collections route */
+  async conditionallyNavigateToAssignCollections() {
+    if (this.cipher.reprompt && !(await this.passwordRepromptService.showPasswordPrompt())) {
+      return;
+    }
+
+    await this.router.navigate(["/assign-collections"], {
+      queryParams: { cipherId: this.cipher.id },
     });
   }
 }

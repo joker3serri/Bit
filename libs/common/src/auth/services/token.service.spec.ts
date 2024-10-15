@@ -15,6 +15,7 @@ import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypt
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { VaultTimeout, VaultTimeoutStringType } from "../../types/vault-timeout.type";
+import { SetTokensResult } from "../models/domain/set-tokens-result";
 
 import { ACCOUNT_ACTIVE_ACCOUNT_ID } from "./account.service";
 import {
@@ -125,7 +126,7 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+          .nextState(accessTokenJwt);
 
         // Act
         const result = await firstValueFrom(tokenService.hasAccessToken$(userIdFromAccessToken));
@@ -138,11 +139,11 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, undefined]);
+          .nextState(undefined);
 
         singleUserStateProvider
           .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-          .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+          .nextState(accessTokenJwt);
 
         // Act
         const result = await firstValueFrom(tokenService.hasAccessToken$(userIdFromAccessToken));
@@ -155,7 +156,7 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-          .stateSubject.next([userIdFromAccessToken, "encryptedAccessToken"]);
+          .nextState("encryptedAccessToken");
 
         secureStorageService.get.mockResolvedValue(accessTokenKeyB64);
 
@@ -232,7 +233,7 @@ describe("TokenService", () => {
       describe("Memory storage tests", () => {
         it("set the access token in memory", async () => {
           // Act
-          await tokenService.setAccessToken(
+          const result = await tokenService.setAccessToken(
             accessTokenJwt,
             memoryVaultTimeoutAction,
             memoryVaultTimeout,
@@ -241,13 +242,14 @@ describe("TokenService", () => {
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
           ).toHaveBeenCalledWith(accessTokenJwt);
+          expect(result).toEqual(accessTokenJwt);
         });
       });
 
       describe("Disk storage tests (secure storage not supported on platform)", () => {
         it("should set the access token in disk", async () => {
           // Act
-          await tokenService.setAccessToken(
+          const result = await tokenService.setAccessToken(
             accessTokenJwt,
             diskVaultTimeoutAction,
             diskVaultTimeout,
@@ -256,6 +258,7 @@ describe("TokenService", () => {
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
           ).toHaveBeenCalledWith(accessTokenJwt);
+          expect(result).toEqual(accessTokenJwt);
         });
       });
 
@@ -279,7 +282,7 @@ describe("TokenService", () => {
           // For testing purposes, let's assume that the access token is already in memory
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+            .nextState(accessTokenJwt);
 
           keyGenerationService.createKey.mockResolvedValue(accessTokenKey);
 
@@ -295,7 +298,7 @@ describe("TokenService", () => {
           secureStorageService.get.mockResolvedValueOnce(null).mockResolvedValue(accessTokenKeyB64);
 
           // Act
-          await tokenService.setAccessToken(
+          const result = await tokenService.setAccessToken(
             accessTokenJwt,
             diskVaultTimeoutAction,
             diskVaultTimeout,
@@ -318,6 +321,9 @@ describe("TokenService", () => {
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY).nextMock,
           ).toHaveBeenCalledWith(null);
+
+          // assert that the decrypted access token was returned
+          expect(result).toEqual(accessTokenJwt);
         });
 
         it("should fallback to disk storage for the access token if the access token cannot be set in secure storage", async () => {
@@ -331,7 +337,7 @@ describe("TokenService", () => {
           secureStorageService.get.mockResolvedValueOnce(null).mockResolvedValue(null);
 
           // Act
-          await tokenService.setAccessToken(
+          const result = await tokenService.setAccessToken(
             accessTokenJwt,
             diskVaultTimeoutAction,
             diskVaultTimeout,
@@ -355,6 +361,9 @@ describe("TokenService", () => {
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
           ).toHaveBeenCalledWith(accessTokenJwt);
+
+          // assert that the decrypted access token was returned
+          expect(result).toEqual(accessTokenJwt);
         });
 
         it("should fallback to disk storage for the access token if secure storage errors on trying to get an existing access token key", async () => {
@@ -368,7 +377,7 @@ describe("TokenService", () => {
           secureStorageService.get.mockRejectedValue(new Error(secureStorageError));
 
           // Act
-          await tokenService.setAccessToken(
+          const result = await tokenService.setAccessToken(
             accessTokenJwt,
             diskVaultTimeoutAction,
             diskVaultTimeout,
@@ -385,6 +394,9 @@ describe("TokenService", () => {
           expect(
             singleUserStateProvider.getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK).nextMock,
           ).toHaveBeenCalledWith(accessTokenJwt);
+
+          // assert that the decrypted access token was returned
+          expect(result).toEqual(accessTokenJwt);
         });
       });
     });
@@ -399,9 +411,7 @@ describe("TokenService", () => {
 
       it("returns null when no access token is found in memory, disk, or secure storage", async () => {
         // Arrange
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = await tokenService.getAccessToken();
@@ -417,18 +427,16 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+            .nextState(accessTokenJwt);
 
           // set disk to undefined
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           // Need to have global active id set to the user id
           if (!userId) {
-            globalStateProvider
-              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-              .stateSubject.next(userIdFromAccessToken);
+            globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
           }
 
           // Act
@@ -447,17 +455,15 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+            .nextState(accessTokenJwt);
 
           // Need to have global active id set to the user id
           if (!userId) {
-            globalStateProvider
-              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-              .stateSubject.next(userIdFromAccessToken);
+            globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
           }
 
           // Act
@@ -486,20 +492,18 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, "encryptedAccessToken"]);
+            .nextState("encryptedAccessToken");
 
           secureStorageService.get.mockResolvedValue(accessTokenKeyB64);
           encryptService.decryptToUtf8.mockResolvedValue("decryptedAccessToken");
 
           // Need to have global active id set to the user id
           if (!userId) {
-            globalStateProvider
-              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-              .stateSubject.next(userIdFromAccessToken);
+            globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
           }
 
           // Act
@@ -522,17 +526,15 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+            .nextState(accessTokenJwt);
 
           // Need to have global active id set to the user id
           if (!userId) {
-            globalStateProvider
-              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-              .stateSubject.next(userIdFromAccessToken);
+            globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
           }
 
           // No access token key set
@@ -552,11 +554,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, encryptedAccessToken]);
+            .nextState(encryptedAccessToken);
 
           // No access token key set
 
@@ -584,11 +586,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, encryptedAccessToken]);
+            .nextState(encryptedAccessToken);
 
           // Mock linux secure storage error
           const secureStorageError = "Secure storage error";
@@ -643,17 +645,15 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+            .nextState(accessTokenJwt);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+            .nextState(accessTokenJwt);
 
           // Need to have global active id set to the user id
           if (!userId) {
-            globalStateProvider
-              .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-              .stateSubject.next(userIdFromAccessToken);
+            globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
           }
 
           // Act
@@ -676,8 +676,32 @@ describe("TokenService", () => {
     });
 
     describe("decodeAccessToken", () => {
+      it("retrieves the requested user's token when the passed in parameter is a Guid", async () => {
+        // Arrange
+        tokenService.getAccessToken = jest.fn().mockResolvedValue(accessTokenJwt);
+
+        // Act
+        const result = await tokenService.decodeAccessToken(userIdFromAccessToken);
+
+        // Assert
+        expect(result).toEqual(accessTokenDecoded);
+        expect(tokenService.getAccessToken).toHaveBeenCalledWith(userIdFromAccessToken);
+      });
+
+      it("decodes the given token when a string is passed in that is not a Guid", async () => {
+        // Arrange
+        tokenService.getAccessToken = jest.fn();
+
+        // Act
+        const result = await tokenService.decodeAccessToken(accessTokenJwt);
+
+        // Assert
+        expect(result).toEqual(accessTokenDecoded);
+        expect(tokenService.getAccessToken).not.toHaveBeenCalled();
+      });
+
       it("throws an error when no access token is provided or retrievable from state", async () => {
-        // Access
+        // Arrange
         tokenService.getAccessToken = jest.fn().mockResolvedValue(null);
 
         // Act
@@ -1182,7 +1206,7 @@ describe("TokenService", () => {
 
           // Act
           // note: don't await here because we want to test the error
-          const result = tokenService.getIsExternal();
+          const result = tokenService.getIsExternal(null);
           // Assert
           await expect(result).rejects.toThrow("Failed to decode access token: Mock error");
         });
@@ -1198,7 +1222,7 @@ describe("TokenService", () => {
             .mockResolvedValue(accessTokenDecodedWithoutExternalAmr);
 
           // Act
-          const result = await tokenService.getIsExternal();
+          const result = await tokenService.getIsExternal(null);
 
           // Assert
           expect(result).toEqual(false);
@@ -1215,10 +1239,21 @@ describe("TokenService", () => {
             .mockResolvedValue(accessTokenDecodedWithExternalAmr);
 
           // Act
-          const result = await tokenService.getIsExternal();
+          const result = await tokenService.getIsExternal(null);
 
           // Assert
           expect(result).toEqual(true);
+        });
+
+        it("passes the requested userId to decode", async () => {
+          // Arrange
+          tokenService.decodeAccessToken = jest.fn().mockResolvedValue(accessTokenDecoded);
+
+          // Act
+          await tokenService.getIsExternal(userIdFromAccessToken);
+
+          // Assert
+          expect(tokenService.decodeAccessToken).toHaveBeenCalledWith(userIdFromAccessToken);
         });
       });
     });
@@ -1314,11 +1349,11 @@ describe("TokenService", () => {
           // For testing purposes, let's assume that the token is already in disk and memory
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           // We immediately call to get the refresh token from secure storage after setting it to ensure it was set.
           secureStorageService.get.mockResolvedValue(refreshToken);
@@ -1411,11 +1446,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, accessTokenJwt]);
+            .nextState(accessTokenJwt);
 
           // Mock linux secure storage error
           const secureStorageError = "Secure storage error";
@@ -1468,11 +1503,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, ACCESS_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, encryptedAccessToken]);
+            .nextState(encryptedAccessToken);
 
           secureStorageService.get.mockResolvedValue(accessTokenKeyB64);
           encryptService.decryptToUtf8.mockRejectedValue(new Error("Decryption error"));
@@ -1508,9 +1543,7 @@ describe("TokenService", () => {
 
       it("returns null when no refresh token is found in memory, disk, or secure storage", async () => {
         // Arrange
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = await (tokenService as any).getRefreshToken();
@@ -1523,16 +1556,14 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getRefreshToken();
@@ -1545,11 +1576,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           // Act
           const result = await tokenService.getRefreshToken(userIdFromAccessToken);
@@ -1563,16 +1594,14 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getRefreshToken();
@@ -1584,11 +1613,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           // Act
           const result = await tokenService.getRefreshToken(userIdFromAccessToken);
@@ -1607,18 +1636,16 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           secureStorageService.get.mockResolvedValue(refreshToken);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getRefreshToken();
@@ -1631,11 +1658,11 @@ describe("TokenService", () => {
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           secureStorageService.get.mockResolvedValue(refreshToken);
 
@@ -1649,11 +1676,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           // Act
           const result = await tokenService.getRefreshToken(userIdFromAccessToken);
@@ -1669,16 +1696,14 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getRefreshToken();
@@ -1707,11 +1732,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           secureStorageService.get.mockResolvedValue(null);
 
@@ -1731,11 +1756,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           const secureStorageSvcMockErrorMsg = "Secure storage retrieval error";
 
@@ -1780,11 +1805,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, REFRESH_TOKEN_DISK)
-            .stateSubject.next([userIdFromAccessToken, refreshToken]);
+            .nextState(refreshToken);
 
           // Act
           await (tokenService as any).clearRefreshToken(userIdFromAccessToken);
@@ -1821,9 +1846,7 @@ describe("TokenService", () => {
       it("should throw an error if the vault timeout is missing", async () => {
         // Arrange
 
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = tokenService.setClientId(clientId, VaultTimeoutAction.Lock, null);
@@ -1835,9 +1858,7 @@ describe("TokenService", () => {
       it("should throw an error if the vault timeout action is missing", async () => {
         // Arrange
 
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = tokenService.setClientId(clientId, null, VaultTimeoutStringType.Never);
@@ -1849,9 +1870,7 @@ describe("TokenService", () => {
       describe("Memory storage tests", () => {
         it("sets the client id in memory when there is an active user in global state", async () => {
           // Arrange
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           await tokenService.setClientId(clientId, memoryVaultTimeoutAction, memoryVaultTimeout);
@@ -1883,9 +1902,7 @@ describe("TokenService", () => {
       describe("Disk storage tests", () => {
         it("sets the client id in disk when there is an active user in global state", async () => {
           // Arrange
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           await tokenService.setClientId(clientId, diskVaultTimeoutAction, diskVaultTimeout);
@@ -1923,9 +1940,7 @@ describe("TokenService", () => {
 
       it("returns null when no client id is found in memory or disk", async () => {
         // Arrange
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = await tokenService.getClientId();
@@ -1938,17 +1953,15 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, clientId]);
+            .nextState(clientId);
 
           // set disk to undefined
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getClientId();
@@ -1961,12 +1974,12 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, clientId]);
+            .nextState(clientId);
 
           // set disk to undefined
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           // Act
           const result = await tokenService.getClientId(userIdFromAccessToken);
@@ -1980,16 +1993,14 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-            .stateSubject.next([userIdFromAccessToken, clientId]);
+            .nextState(clientId);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getClientId();
@@ -2001,11 +2012,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-            .stateSubject.next([userIdFromAccessToken, clientId]);
+            .nextState(clientId);
 
           // Act
           const result = await tokenService.getClientId(userIdFromAccessToken);
@@ -2028,11 +2039,11 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, clientId]);
+          .nextState(clientId);
 
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-          .stateSubject.next([userIdFromAccessToken, clientId]);
+          .nextState(clientId);
 
         // Act
         await (tokenService as any).clearClientId(userIdFromAccessToken);
@@ -2050,16 +2061,14 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, clientId]);
+          .nextState(clientId);
 
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_ID_DISK)
-          .stateSubject.next([userIdFromAccessToken, clientId]);
+          .nextState(clientId);
 
         // Need to have global active id set to the user id
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         await (tokenService as any).clearClientId();
@@ -2094,9 +2103,7 @@ describe("TokenService", () => {
       it("should throw an error if the vault timeout is missing", async () => {
         // Arrange
 
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = tokenService.setClientSecret(clientSecret, VaultTimeoutAction.Lock, null);
@@ -2108,9 +2115,7 @@ describe("TokenService", () => {
       it("should throw an error if the vault timeout action is missing", async () => {
         // Arrange
 
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = tokenService.setClientSecret(
@@ -2126,9 +2131,7 @@ describe("TokenService", () => {
       describe("Memory storage tests", () => {
         it("sets the client secret in memory when there is an active user in global state", async () => {
           // Arrange
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           await tokenService.setClientSecret(
@@ -2164,9 +2167,7 @@ describe("TokenService", () => {
       describe("Disk storage tests", () => {
         it("sets the client secret on disk when there is an active user in global state", async () => {
           // Arrange
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           await tokenService.setClientSecret(
@@ -2210,9 +2211,7 @@ describe("TokenService", () => {
 
       it("returns null when no client secret is found in memory or disk", async () => {
         // Arrange
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         const result = await tokenService.getClientSecret();
@@ -2225,17 +2224,15 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+            .nextState(clientSecret);
 
           // set disk to undefined
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getClientSecret();
@@ -2248,12 +2245,12 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+            .nextState(clientSecret);
 
           // set disk to undefined
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           // Act
           const result = await tokenService.getClientSecret(userIdFromAccessToken);
@@ -2267,16 +2264,14 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+            .nextState(clientSecret);
 
           // Need to have global active id set to the user id
-          globalStateProvider
-            .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-            .stateSubject.next(userIdFromAccessToken);
+          globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
           // Act
           const result = await tokenService.getClientSecret();
@@ -2288,11 +2283,11 @@ describe("TokenService", () => {
           // Arrange
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
-            .stateSubject.next([userIdFromAccessToken, undefined]);
+            .nextState(undefined);
 
           singleUserStateProvider
             .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-            .stateSubject.next([userIdFromAccessToken, clientSecret]);
+            .nextState(clientSecret);
 
           // Act
           const result = await tokenService.getClientSecret(userIdFromAccessToken);
@@ -2315,11 +2310,11 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+          .nextState(clientSecret);
 
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+          .nextState(clientSecret);
 
         // Act
         await (tokenService as any).clearClientSecret(userIdFromAccessToken);
@@ -2339,16 +2334,14 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+          .nextState(clientSecret);
 
         singleUserStateProvider
           .getFake(userIdFromAccessToken, API_KEY_CLIENT_SECRET_DISK)
-          .stateSubject.next([userIdFromAccessToken, clientSecret]);
+          .nextState(clientSecret);
 
         // Need to have global active id set to the user id
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         await (tokenService as any).clearClientSecret();
@@ -2376,18 +2369,21 @@ describe("TokenService", () => {
       const clientId = "clientId";
       const clientSecret = "clientSecret";
 
-      (tokenService as any)._setAccessToken = jest.fn();
       // any hack allows for mocking private method.
-      (tokenService as any).setRefreshToken = jest.fn();
-      tokenService.setClientId = jest.fn();
-      tokenService.setClientSecret = jest.fn();
+      (tokenService as any)._setAccessToken = jest.fn().mockReturnValue(accessTokenJwt);
+      (tokenService as any).setRefreshToken = jest.fn().mockReturnValue(refreshToken);
+      tokenService.setClientId = jest.fn().mockReturnValue(clientId);
+      tokenService.setClientSecret = jest.fn().mockReturnValue(clientSecret);
 
       // Act
       // Note: passing a valid access token so that a valid user id can be determined from the access token
-      await tokenService.setTokens(accessTokenJwt, vaultTimeoutAction, vaultTimeout, refreshToken, [
-        clientId,
-        clientSecret,
-      ]);
+      const result = await tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        refreshToken,
+        [clientId, clientSecret],
+      );
 
       // Assert
       expect((tokenService as any)._setAccessToken).toHaveBeenCalledWith(
@@ -2417,6 +2413,44 @@ describe("TokenService", () => {
         vaultTimeout,
         userIdFromAccessToken,
       );
+
+      expect(result).toStrictEqual(
+        new SetTokensResult(accessTokenJwt, refreshToken, [clientId, clientSecret]),
+      );
+    });
+
+    it("does not try to set the refresh token when it is not passed in", async () => {
+      // Arrange
+      const vaultTimeoutAction = VaultTimeoutAction.Lock;
+      const vaultTimeout = 30;
+
+      (tokenService as any)._setAccessToken = jest.fn().mockReturnValue(accessTokenJwt);
+      (tokenService as any).setRefreshToken = jest.fn();
+      tokenService.setClientId = jest.fn();
+      tokenService.setClientSecret = jest.fn();
+
+      // Act
+      const result = await tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        null,
+      );
+
+      // Assert
+      expect((tokenService as any)._setAccessToken).toHaveBeenCalledWith(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        userIdFromAccessToken,
+      );
+
+      // any hack allows for testing private methods
+      expect((tokenService as any).setRefreshToken).not.toHaveBeenCalled();
+      expect(tokenService.setClientId).not.toHaveBeenCalled();
+      expect(tokenService.setClientSecret).not.toHaveBeenCalled();
+
+      expect(result).toStrictEqual(new SetTokensResult(accessTokenJwt));
     });
 
     it("does not try to set client id and client secret when they are not passed in", async () => {
@@ -2425,13 +2459,18 @@ describe("TokenService", () => {
       const vaultTimeoutAction = VaultTimeoutAction.Lock;
       const vaultTimeout = 30;
 
-      (tokenService as any)._setAccessToken = jest.fn();
-      (tokenService as any).setRefreshToken = jest.fn();
+      (tokenService as any)._setAccessToken = jest.fn().mockReturnValue(accessTokenJwt);
+      (tokenService as any).setRefreshToken = jest.fn().mockReturnValue(refreshToken);
       tokenService.setClientId = jest.fn();
       tokenService.setClientSecret = jest.fn();
 
       // Act
-      await tokenService.setTokens(accessTokenJwt, vaultTimeoutAction, vaultTimeout, refreshToken);
+      const result = await tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        refreshToken,
+      );
 
       // Assert
       expect((tokenService as any)._setAccessToken).toHaveBeenCalledWith(
@@ -2451,6 +2490,8 @@ describe("TokenService", () => {
 
       expect(tokenService.setClientId).not.toHaveBeenCalled();
       expect(tokenService.setClientSecret).not.toHaveBeenCalled();
+
+      expect(result).toStrictEqual(new SetTokensResult(accessTokenJwt, refreshToken));
     });
 
     it("throws an error when the access token is invalid", async () => {
@@ -2535,10 +2576,16 @@ describe("TokenService", () => {
       (tokenService as any).setRefreshToken = jest.fn();
 
       // Act
-      await tokenService.setTokens(accessTokenJwt, vaultTimeoutAction, vaultTimeout, refreshToken);
+      const result = await tokenService.setTokens(
+        accessTokenJwt,
+        vaultTimeoutAction,
+        vaultTimeout,
+        refreshToken,
+      );
 
       // Assert
       expect((tokenService as any).setRefreshToken).not.toHaveBeenCalled();
+      expect(result).toStrictEqual(new SetTokensResult(accessTokenJwt));
     });
   });
 
@@ -2568,7 +2615,7 @@ describe("TokenService", () => {
       // Arrange
       const userId = "userId" as UserId;
 
-      globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).stateSubject.next(userId);
+      globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userId);
 
       tokenService.clearAccessToken = jest.fn();
       (tokenService as any).clearRefreshToken = jest.fn();
@@ -2627,7 +2674,7 @@ describe("TokenService", () => {
 
         globalStateProvider
           .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(initialTwoFactorTokenRecord);
+          .nextState(initialTwoFactorTokenRecord);
 
         // Act
         await tokenService.setTwoFactorToken(email, twoFactorToken);
@@ -2650,7 +2697,7 @@ describe("TokenService", () => {
 
         globalStateProvider
           .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(initialTwoFactorTokenRecord);
+          .nextState(initialTwoFactorTokenRecord);
 
         // Act
         const result = await tokenService.getTwoFactorToken(email);
@@ -2668,7 +2715,7 @@ describe("TokenService", () => {
 
         globalStateProvider
           .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(initialTwoFactorTokenRecord);
+          .nextState(initialTwoFactorTokenRecord);
 
         // Act
         const result = await tokenService.getTwoFactorToken(email);
@@ -2679,9 +2726,7 @@ describe("TokenService", () => {
 
       it("returns null when there is no two factor token record", async () => {
         // Arrange
-        globalStateProvider
-          .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(null);
+        globalStateProvider.getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL).nextState(null);
 
         // Act
         const result = await tokenService.getTwoFactorToken("testUser");
@@ -2702,7 +2747,7 @@ describe("TokenService", () => {
 
         globalStateProvider
           .getFake(EMAIL_TWO_FACTOR_TOKEN_RECORD_DISK_LOCAL)
-          .stateSubject.next(initialTwoFactorTokenRecord);
+          .nextState(initialTwoFactorTokenRecord);
 
         // Act
         await tokenService.clearTwoFactorToken(email);
@@ -2742,9 +2787,7 @@ describe("TokenService", () => {
 
       it("sets the security stamp in memory when there is an active user in global state", async () => {
         // Arrange
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         // Act
         await tokenService.setSecurityStamp(mockSecurityStamp);
@@ -2777,13 +2820,11 @@ describe("TokenService", () => {
 
       it("returns the security stamp from memory when no user id is specified (uses global active user)", async () => {
         // Arrange
-        globalStateProvider
-          .getFake(ACCOUNT_ACTIVE_ACCOUNT_ID)
-          .stateSubject.next(userIdFromAccessToken);
+        globalStateProvider.getFake(ACCOUNT_ACTIVE_ACCOUNT_ID).nextState(userIdFromAccessToken);
 
         singleUserStateProvider
           .getFake(userIdFromAccessToken, SECURITY_STAMP_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, mockSecurityStamp]);
+          .nextState(mockSecurityStamp);
 
         // Act
         const result = await tokenService.getSecurityStamp();
@@ -2796,7 +2837,7 @@ describe("TokenService", () => {
         // Arrange
         singleUserStateProvider
           .getFake(userIdFromAccessToken, SECURITY_STAMP_MEMORY)
-          .stateSubject.next([userIdFromAccessToken, mockSecurityStamp]);
+          .nextState(mockSecurityStamp);
 
         // Act
         const result = await tokenService.getSecurityStamp(userIdFromAccessToken);
