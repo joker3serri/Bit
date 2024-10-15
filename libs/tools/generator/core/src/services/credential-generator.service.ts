@@ -201,9 +201,9 @@ export class CredentialGeneratorService {
   algorithms(category: CredentialCategory): AlgorithmInfo[];
   algorithms(category: CredentialCategory[]): AlgorithmInfo[];
   algorithms(category: CredentialCategory | CredentialCategory[]): AlgorithmInfo[] {
-    const categories = Array.isArray(category) ? category : [category];
+    const categories: CredentialCategory[] = Array.isArray(category) ? category : [category];
     const algorithms = categories
-      .flatMap((c) => CredentialCategories[c])
+      .flatMap((c) => CredentialCategories[c] as CredentialAlgorithm[])
       .map((id) => this.algorithm(id))
       .filter((info) => info !== null);
 

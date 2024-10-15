@@ -23,6 +23,8 @@ import {
   CredentialAlgorithm,
   CredentialCategory,
   CredentialGeneratorService,
+  EmailAlgorithm,
+  ForwarderIntegration,
   GeneratedCredential,
   Generators,
   getForwarderConfiguration,
@@ -32,12 +34,19 @@ import {
   isUsernameAlgorithm,
   PasswordAlgorithm,
   toCredentialGeneratorConfiguration,
+  UsernameAlgorithm,
 } from "@bitwarden/generator-core";
 
 /** root category that drills into username and email categories */
 const IDENTIFIER = "identifier";
 /** options available for the top-level navigation */
 type RootNavValue = PasswordAlgorithm | typeof IDENTIFIER;
+
+const FORWARDER = "forwarder";
+type UsernameNavValue = UsernameAlgorithm | EmailAlgorithm | typeof FORWARDER;
+
+const NONE_SELECTED = "none";
+type ForwarderNavValue = ForwarderIntegration | typeof NONE_SELECTED;
 
 @Component({
   selector: "tools-credential-generator",
@@ -66,17 +75,21 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     nav: null,
   });
 
-  protected onRootChanged(nav: RootNavValue) {
+  protected onRootChanged(value: { nav: RootNavValue }) {
     // prevent subscription cycle
-    if (this.root$.value.nav !== nav) {
+    if (this.root$.value.nav !== value.nav) {
       this.zone.run(() => {
-        this.root$.next({ nav });
+        this.root$.next(value);
       });
     }
   }
 
   protected username = this.formBuilder.group({
-    nav: [null as CredentialAlgorithm],
+    nav: [null as UsernameNavValue],
+  });
+
+  protected forwarder = this.formBuilder.group({
+    nav: [null as ForwarderNavValue],
   });
 
   async ngOnInit() {
@@ -95,10 +108,23 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     this.generatorService
       .algorithms$(["email", "username"], { userId$: this.userId$ })
       .pipe(
-        map((algorithms) => this.toOptions(algorithms)),
+        map((algorithms) => {
+          const usernames = algorithms.filter((a) => !isForwarderIntegration(a.id));
+          const usernameOptions = this.toOptions(usernames) as Option<UsernameNavValue>[];
+          usernameOptions.push({ value: FORWARDER, label: this.i18nService.t("forwarder") });
+
+          const forwarders = algorithms.filter((a) => isForwarderIntegration(a.id));
+          const forwarderOptions = this.toOptions(forwarders) as Option<ForwarderNavValue>[];
+          forwarderOptions.unshift({ value: NONE_SELECTED, label: this.i18nService.t("select") });
+
+          return [usernameOptions, forwarderOptions] as const;
+        }),
         takeUntil(this.destroyed),
       )
-      .subscribe(this.usernameOptions$);
+      .subscribe(([usernames, forwarders]) => {
+        this.usernameOptions$.next(usernames);
+        this.forwarderOptions$.next(forwarders);
+      });
 
     this.generatorService
       .algorithms$("password", { userId$: this.userId$ })
@@ -166,11 +192,18 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
             return of(root as { nav: CredentialAlgorithm });
           }
         }),
-        switchMap((tier1) => {
-          if (tier1.nav === FORWARDER) {
+        switchMap((username) => {
+          if (username.nav === FORWARDER) {
             return concat(of(this.forwarder.value), this.forwarder.valueChanges);
           } else {
-            return of(tier1 as { nav: CredentialAlgorithm });
+            return of(username as { nav: CredentialAlgorithm });
+          }
+        }),
+        map((forwarder) => {
+          if (forwarder.nav === NONE_SELECTED) {
+            return { nav: null };
+          } else {
+            return forwarder as { nav: CredentialAlgorithm };
           }
         }),
         filter(({ nav }) => !!nav),
@@ -201,16 +234,27 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     // populate the form with the user's preferences to kick off interactivity
     preferences.pipe(takeUntil(this.destroyed)).subscribe(({ email, username, password }) => {
       // the last preference set by the user "wins"
-      const userNav = email.updated > username.updated ? email : username;
-      const rootNav: any = userNav.updated > password.updated ? IDENTIFIER : password.algorithm;
-      const credentialType = rootNav === IDENTIFIER ? userNav.algorithm : password.algorithm;
+      const forwarderPref = isForwarderIntegration(email.algorithm) ? email : null;
+      const usernamePref = email.updated > username.updated ? email : username;
+      const rootPref = username.updated > password.updated ? username : password;
+
+      // inject drilldown flags
+      const forwarderNav = !forwarderPref
+        ? NONE_SELECTED
+        : (forwarderPref.algorithm as ForwarderIntegration);
+      const userNav = forwarderPref ? FORWARDER : (usernamePref.algorithm as UsernameAlgorithm);
+      const rootNav =
+        rootPref.algorithm == usernamePref.algorithm
+          ? IDENTIFIER
+          : (rootPref.algorithm as PasswordAlgorithm);
 
       // update navigation; break subscription loop
-      this.onRootChanged(rootNav);
-      this.username.setValue({ nav: userNav.algorithm }, { emitEvent: false });
+      this.onRootChanged({ nav: rootNav });
+      this.username.setValue({ nav: userNav }, { emitEvent: false });
+      this.forwarder.setValue({ nav: forwarderNav }, { emitEvent: false });
 
       // load algorithm metadata
-      const algorithm = this.generatorService.algorithm(credentialType);
+      const algorithm = this.generatorService.algorithm(rootPref.algorithm);
 
       // update subjects within the angular zone so that the
       // template bindings refresh immediately
@@ -261,11 +305,14 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     throw new Error(`Invalid generator type: "${type}"`);
   }
 
-  /** Lists the credential types of the username algorithm box. */
-  protected usernameOptions$ = new BehaviorSubject<Option<CredentialAlgorithm>[]>([]);
-
   /** Lists the top-level credential types supported by the component. */
   protected rootOptions$ = new BehaviorSubject<Option<RootNavValue>[]>([]);
+
+  /** Lists the credential types of the username algorithm box. */
+  protected usernameOptions$ = new BehaviorSubject<Option<UsernameNavValue>[]>([]);
+
+  /** Lists the credential types of the username algorithm box. */
+  protected forwarderOptions$ = new BehaviorSubject<Option<ForwarderNavValue>[]>([]);
 
   /** tracks the currently selected credential type */
   protected algorithm$ = new ReplaySubject<AlgorithmInfo>(1);
