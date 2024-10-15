@@ -63,36 +63,36 @@ describe("CipherAuthorizationService", () => {
       });
     });
 
-    it("should return true if cipher is unassigned and user can edit unassigned ciphers", (done) => {
+    it("should return true if isAdminConsoleAction is true and cipher is unassigned", (done) => {
       const cipher = createMockCipher("org1", []) as CipherView;
       const organization = createMockOrganization({ canEditUnassignedCiphers: true });
       mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
 
-      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+      cipherAuthorizationService.canDeleteCipher$(cipher, [], true).subscribe((result) => {
         expect(result).toBe(true);
         done();
       });
     });
 
-    it("should return false if cipher is unassigned and user cannot can edit unmanaged collections", (done) => {
-      const cipher = createMockCipher("org1", []) as CipherView;
-      const organization = createMockOrganization();
-      mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
-
-      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
-        expect(result).toBe(false);
-        done();
-      });
-    });
-
-    it("should return true if user can edit all ciphers in the org", (done) => {
+    it("should return true if isAdminConsoleAction is true and user can edit all ciphers in the org", (done) => {
       const cipher = createMockCipher("org1", ["col1"]) as CipherView;
       const organization = createMockOrganization({ canEditAllCiphers: true });
       mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
 
-      cipherAuthorizationService.canDeleteCipher$(cipher).subscribe((result) => {
+      cipherAuthorizationService.canDeleteCipher$(cipher, [], true).subscribe((result) => {
         expect(result).toBe(true);
         expect(mockOrganizationService.get$).toHaveBeenCalledWith("org1");
+        done();
+      });
+    });
+
+    it("should return false if isAdminConsoleAction is true but user does not have permission to edit unassigned ciphers", (done) => {
+      const cipher = createMockCipher("org1", []) as CipherView;
+      const organization = createMockOrganization({ canEditUnassignedCiphers: false });
+      mockOrganizationService.get$.mockReturnValue(of(organization as Organization));
+
+      cipherAuthorizationService.canDeleteCipher$(cipher, [], true).subscribe((result) => {
+        expect(result).toBe(false);
         done();
       });
     });

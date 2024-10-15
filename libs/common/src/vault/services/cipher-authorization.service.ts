@@ -21,12 +21,14 @@ export abstract class CipherAuthorizationService {
    *
    * @param {CipherLike} cipher - The cipher object to evaluate for deletion permissions.
    * @param {CollectionId[]} [allowedCollections] - Optional. The selected collection id from the vault filter.
+   * @param {boolean} isAdminConsoleAction - Optional. A flag indicating if the action is being performed from the admin console.
    *
    * @returns {Observable<boolean>} - An observable that emits a boolean value indicating if the user can delete the cipher.
    */
   canDeleteCipher$: (
     cipher: CipherLike,
     allowedCollections?: CollectionId[],
+    isAdminConsoleAction?: boolean,
   ) => Observable<boolean>;
 }
 
@@ -43,20 +45,26 @@ export class DefaultCipherAuthorizationService implements CipherAuthorizationSer
    *
    * {@link CipherAuthorizationService.canDeleteCipher$}
    */
-  canDeleteCipher$(cipher: CipherLike, allowedCollections?: CollectionId[]): Observable<boolean> {
+  canDeleteCipher$(
+    cipher: CipherLike,
+    allowedCollections?: CollectionId[],
+    isAdminConsoleAction?: boolean,
+  ): Observable<boolean> {
     if (cipher.organizationId == null) {
       return of(true);
     }
 
     return this.organizationService.get$(cipher.organizationId).pipe(
       switchMap((organization) => {
-        // If the user is an admin, they can delete an unassigned cipher
-        if (!cipher.collectionIds || cipher.collectionIds.length === 0) {
-          return of(organization?.canEditUnassignedCiphers === true);
-        }
+        if (isAdminConsoleAction) {
+          // If the user is an admin, they can delete an unassigned cipher
+          if (!cipher.collectionIds || cipher.collectionIds.length === 0) {
+            return of(organization?.canEditUnassignedCiphers === true);
+          }
 
-        if (organization?.canEditAllCiphers) {
-          return of(true);
+          if (organization?.canEditAllCiphers) {
+            return of(true);
+          }
         }
 
         return this.collectionService
