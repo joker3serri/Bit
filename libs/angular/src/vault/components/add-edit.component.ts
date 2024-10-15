@@ -87,6 +87,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
   reprompt = false;
   canUseReprompt = true;
   organization: Organization;
+  /**
+   * Flag to determine if the action is being performed from the admin console.
+   */
+  isAdminConsoleAction: boolean = false;
 
   protected componentName = "";
   protected destroy$ = new Subject<void>();
@@ -320,9 +324,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.cipher.login.autofillOnPageLoad = this.autofillOnPageLoadOptions[2].value;
     }
 
-    this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(this.cipher, [
-      this.collectionId as CollectionId,
-    ]);
+    this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
+      this.cipher,
+      [this.collectionId as CollectionId],
+      this.isAdminConsoleAction,
+    );
   }
 
   async submit(): Promise<boolean> {

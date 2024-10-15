@@ -69,6 +69,11 @@ export interface VaultItemDialogParams {
    * The ID of the active collection. This is know the collection filter selected by the user.
    */
   activeCollectionId?: CollectionId;
+
+  /**
+   * If true, the dialog is being opened from the admin console.
+   */
+  isAdminConsoleAction?: boolean;
 }
 
 export enum VaultItemDialogResult {
@@ -241,9 +246,11 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
         (o) => o.id === this.cipher.organizationId,
       );
 
-      this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(this.cipher, [
-        this.params.activeCollectionId,
-      ]);
+      this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
+        this.cipher,
+        [this.params.activeCollectionId],
+        this.params.isAdminConsoleAction,
+      );
     }
 
     this.performingInitialLoad = false;

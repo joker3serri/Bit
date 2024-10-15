@@ -93,6 +93,7 @@ export class AddEditComponent extends BaseAddEditComponent {
   }
 
   protected async loadCipher() {
+    this.isAdminConsoleAction = true;
     // Calling loadCipher first to assess if the cipher is unassigned. If null use apiService getCipherAdmin
     const firstCipherCheck = await super.loadCipher();
 

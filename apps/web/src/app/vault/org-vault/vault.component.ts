@@ -923,6 +923,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       formConfig,
       disableForm,
       activeCollectionId,
+      isAdminConsoleAction: true,
     });
 
     const result = await lastValueFrom(this.vaultItemDialogRef.closed);
