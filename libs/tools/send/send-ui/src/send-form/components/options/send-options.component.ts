@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { map } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -17,6 +17,7 @@ import {
   SectionHeaderComponent,
   TypographyModule,
 } from "@bitwarden/components";
+import { CredentialGeneratorService, Generators } from "@bitwarden/generator-core";
 
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
 import { SendFormContainer } from "../../send-form-container";
@@ -52,10 +53,8 @@ export class SendOptionsComponent implements OnInit {
     hideEmail: [false as boolean],
   });
 
-  get hasPassword(): boolean {
-    return (
-      this.sendOptionsForm.value.password !== null && this.sendOptionsForm.value.password !== ""
-    );
+  get shouldShowNewPassword(): boolean {
+    return this.originalSendView && this.originalSendView.password !== null;
   }
 
   get shouldShowCount(): boolean {
@@ -72,6 +71,7 @@ export class SendOptionsComponent implements OnInit {
     private sendFormContainer: SendFormContainer,
     private formBuilder: FormBuilder,
     private policyService: PolicyService,
+    private generatorService: CredentialGeneratorService,
   ) {
     this.sendFormContainer.registerChildForm("sendOptionsForm", this.sendOptionsForm);
     this.policyService
@@ -97,6 +97,16 @@ export class SendOptionsComponent implements OnInit {
       });
     });
   }
+
+  generatePassword = async () => {
+    const generatedCredential = await firstValueFrom(
+      this.generatorService.generate$(Generators.password),
+    );
+
+    this.sendOptionsForm.patchValue({
+      password: generatedCredential.credential,
+    });
+  };
 
   ngOnInit() {
     if (this.sendFormContainer.originalSendView) {
