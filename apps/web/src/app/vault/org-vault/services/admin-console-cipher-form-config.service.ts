@@ -5,7 +5,7 @@ import { CollectionAdminService } from "@bitwarden/admin-console/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums";
+import { PolicyType, OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -39,12 +39,24 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
     filter((filter) => filter !== undefined),
   );
 
-  private organization$ = this.organizationId$.pipe(
-    switchMap((organizationId) => this.organizationService.get$(organizationId)),
+  private allOrganizations$ = this.organizationService.organizations$.pipe(
+    map((orgs) => {
+      return orgs.filter(
+        (o) => o.isMember && o.enabled && o.status === OrganizationUserStatusType.Confirmed,
+      );
+    }),
+  );
+
+  private organization$ = combineLatest([this.allOrganizations$, this.organizationId$]).pipe(
+    map(([orgs, orgId]) => orgs.find((o) => o.id === orgId)),
   );
 
   private editableCollections$ = this.organization$.pipe(
     switchMap(async (org) => {
+      if (!org) {
+        return [];
+      }
+
       const collections = await this.collectionAdminService.getAll(org.id);
       // Users that can edit all ciphers can implicitly add to / edit within any collection
       if (org.canEditAllCiphers) {
@@ -60,26 +72,39 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
     cipherId?: CipherId,
     cipherType?: CipherType,
   ): Promise<CipherFormConfig> {
-    const [organization, allowPersonalOwnership, allCollections] = await firstValueFrom(
-      combineLatest([this.organization$, this.allowPersonalOwnership$, this.editableCollections$]),
-    );
+    const [organization, allowPersonalOwnership, allOrganizations, allCollections] =
+      await firstValueFrom(
+        combineLatest([
+          this.organization$,
+          this.allowPersonalOwnership$,
+          this.allOrganizations$,
+          this.editableCollections$,
+        ]),
+      );
 
     const cipher = await this.getCipher(organization, cipherId);
 
     const collections = allCollections.filter(
       (c) => c.organizationId === organization.id && c.assigned && !c.readOnly,
     );
+    // When cloning from within the Admin Console, all organizations should be available.
+    // Otherwise only the one in context should be
+    const organizations = mode === "clone" ? allOrganizations : [organization];
+    // Only allow the user to assign to their personal vault when cloning and
+    // the policies are enabled for it.
+    const allowPersonalOwnershipOnlyForClone = mode === "clone" ? allowPersonalOwnership : false;
 
     return {
       mode,
       cipherType: cipher?.type ?? cipherType ?? CipherType.Login,
       admin: organization.canEditAllCiphers ?? false,
-      allowPersonalOwnership,
+      allowPersonalOwnership: allowPersonalOwnershipOnlyForClone,
       originalCipher: cipher,
       collections,
-      organizations: [organization], // only a single org is in context at a time
+      organizations,
       folders: [], // folders not applicable in the admin console
       hideIndividualVaultFields: true,
+      isAdminConsole: true,
     };
   }
 
