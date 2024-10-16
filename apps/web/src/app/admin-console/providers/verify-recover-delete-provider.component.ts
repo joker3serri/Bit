@@ -46,7 +46,7 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
     }
   }
 
-  async submit() {
+  submit = async () => {
     try {
       const request = new ProviderVerifyRecoverDeleteRequest(this.token);
       this.formPromise = this.providerApiService.providerRecoverDeleteToken(
@@ -63,5 +63,5 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 }
