@@ -17,11 +17,12 @@ import { ProviderUserUserDetailsResponse } from "@bitwarden/common/admin-console
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 import { BasePeopleComponent } from "@bitwarden/web-vault/app/admin-console/common/base.people.component";
 import { openEntityEventsDialog } from "@bitwarden/web-vault/app/admin-console/organizations/manage/entity-events.component";
 import { BulkStatusComponent } from "@bitwarden/web-vault/app/admin-console/organizations/members/components/bulk/bulk-status.component";
@@ -65,6 +66,7 @@ export class PeopleComponent
     modalService: ModalService,
     platformUtilsService: PlatformUtilsService,
     cryptoService: CryptoService,
+    private encryptService: EncryptService,
     private router: Router,
     searchService: SearchService,
     validationService: ValidationService,
@@ -75,6 +77,7 @@ export class PeopleComponent
     dialogService: DialogService,
     organizationManagementPreferencesService: OrganizationManagementPreferencesService,
     private configService: ConfigService,
+    protected toastService: ToastService,
   ) {
     super(
       apiService,
@@ -89,6 +92,7 @@ export class PeopleComponent
       userNamePipe,
       dialogService,
       organizationManagementPreferencesService,
+      toastService,
     );
   }
 
@@ -148,7 +152,7 @@ export class PeopleComponent
 
   async confirmUser(user: ProviderUserUserDetailsResponse, publicKey: Uint8Array): Promise<any> {
     const providerKey = await this.cryptoService.getProviderKey(this.providerId);
-    const key = await this.cryptoService.rsaEncrypt(providerKey.key, publicKey);
+    const key = await this.encryptService.rsaEncrypt(providerKey.key, publicKey);
     const request = new ProviderUserConfirmRequest();
     request.key = key.encryptedString;
     await this.apiService.postProviderUserConfirm(this.providerId, user.id, request);
@@ -213,11 +217,11 @@ export class PeopleComponent
     const filteredUsers = users.filter((u) => u.status === ProviderUserStatusType.Invited);
 
     if (filteredUsers.length <= 0) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("noSelectedUsersApplicable"),
-      );
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccurred"),
+        message: this.i18nService.t("noSelectedUsersApplicable"),
+      });
       return;
     }
 

@@ -8,7 +8,9 @@ import {
   AutofillOverlayVisibility,
   AUTOFILL_OVERLAY_HANDLE_REPOSITION,
   AUTOFILL_TRIGGER_FORM_FIELD_SUBMIT,
+  AUTOFILL_OVERLAY_HANDLE_SCROLL,
 } from "@bitwarden/common/autofill/constants";
+import { InlineMenuVisibilitySetting } from "@bitwarden/common/autofill/types";
 import { CipherType } from "@bitwarden/common/vault/enums";
 
 import {
@@ -32,6 +34,8 @@ import {
   elementIsFillableFormField,
   elementIsSelectElement,
   getAttributeBoolean,
+  nodeIsButtonElement,
+  nodeIsTypeSubmitElement,
   sendExtensionMessage,
   throttle,
 } from "../utils";
@@ -49,7 +53,9 @@ import { AutoFillConstants } from "./autofill-constants";
 
 export class AutofillOverlayContentService implements AutofillOverlayContentServiceInterface {
   pageDetailsUpdateRequired = false;
-  inlineMenuVisibility: number;
+  inlineMenuVisibility: InlineMenuVisibilitySetting;
+  private showInlineMenuIdentities: boolean;
+  private showInlineMenuCards: boolean;
   private readonly findTabs = tabbable;
   private readonly sendExtensionMessage = sendExtensionMessage;
   private formFieldElements: Map<ElementWithOpId<FormFieldElement>, AutofillField> = new Map();
@@ -86,6 +92,11 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     setupRebuildSubFrameOffsetsListeners: () => this.setupRebuildSubFrameOffsetsListeners(),
     destroyAutofillInlineMenuListeners: () => this.destroy(),
     getFormFieldDataForNotification: () => this.handleGetFormFieldDataForNotificationMessage(),
+  };
+  private readonly loginFieldQualifiers: Record<string, CallableFunction> = {
+    [AutofillFieldQualifier.username]: this.inlineMenuFieldQualificationService.isUsernameField,
+    [AutofillFieldQualifier.password]:
+      this.inlineMenuFieldQualificationService.isCurrentPasswordField,
   };
   private readonly cardFieldQualifiers: Record<string, CallableFunction> = {
     [AutofillFieldQualifier.cardholderName]:
@@ -176,6 +187,18 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     autofillFieldData: AutofillField,
     pageDetails: AutofillPageDetails,
   ) {
+    if (!this.inlineMenuVisibility) {
+      await this.getInlineMenuVisibility();
+    }
+
+    if (this.showInlineMenuCards == null) {
+      await this.getInlineMenuCardsVisibility();
+    }
+
+    if (this.showInlineMenuIdentities == null) {
+      await this.getInlineMenuIdentitiesVisibility();
+    }
+
     if (
       this.formFieldElements.has(formFieldElement) ||
       this.isIgnoredField(autofillFieldData, pageDetails)
@@ -503,12 +526,20 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    * @param element - The element to find the submit button within.
    */
   private findSubmitButton(element: HTMLElement): HTMLElement | null {
-    const genericSubmitElement = this.querySubmitButtonElement(element, "[type='submit']");
+    const genericSubmitElement = this.querySubmitButtonElement(
+      element,
+      "[type='submit']",
+      (node: Node) => nodeIsTypeSubmitElement(node),
+    );
     if (genericSubmitElement) {
       return genericSubmitElement;
     }
 
-    const submitButtonElement = this.querySubmitButtonElement(element, "button, [type='button']");
+    const submitButtonElement = this.querySubmitButtonElement(
+      element,
+      "button, [type='button']",
+      (node: Node) => nodeIsButtonElement(node),
+    );
     if (submitButtonElement) {
       return submitButtonElement;
     }
@@ -519,11 +550,17 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    *
    * @param element - The element to query for a submit button.
    * @param selector - The selector to use to query the element for a submit button.
+   * @param treeWalkerFilter - The tree walker filter to use when querying the element.
    */
-  private querySubmitButtonElement(element: HTMLElement, selector: string) {
-    const submitButtonElements = this.domQueryService.deepQueryElements<HTMLButtonElement>(
+  private querySubmitButtonElement(
+    element: HTMLElement,
+    selector: string,
+    treeWalkerFilter: CallableFunction,
+  ) {
+    const submitButtonElements = this.domQueryService.query<HTMLButtonElement>(
       element,
       selector,
+      treeWalkerFilter,
     );
     for (let index = 0; index < submitButtonElements.length; index++) {
       const submitElement = submitButtonElements[index];
@@ -781,12 +818,14 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    * @param autofillFieldData - Autofill field data captured from the form field element.
    */
   private qualifyUserFilledLoginField(autofillFieldData: AutofillField) {
-    if (autofillFieldData.type === "password") {
-      autofillFieldData.fieldQualifier = AutofillFieldQualifier.password;
-      return;
+    for (const [fieldQualifier, fieldQualifierFunction] of Object.entries(
+      this.loginFieldQualifiers,
+    )) {
+      if (fieldQualifierFunction(autofillFieldData)) {
+        autofillFieldData.fieldQualifier = fieldQualifier as AutofillFieldQualifierType;
+        return;
+      }
     }
-
-    autofillFieldData.fieldQualifier = AutofillFieldQualifier.username;
   }
 
   /**
@@ -996,10 +1035,16 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     const { width, height, top, left } =
       await this.getMostRecentlyFocusedFieldRects(formFieldElement);
     const autofillFieldData = this.formFieldElements.get(formFieldElement);
+
     let accountCreationFieldType = null;
+
     if (
+      // user setting allows display of identities in inline menu
+      this.showInlineMenuIdentities &&
+      // `showInlineMenuAccountCreation` has been set or field is filled by Login cipher
       (autofillFieldData?.showInlineMenuAccountCreation ||
         autofillFieldData?.filledByCipherType === CipherType.Login) &&
+      // field is a username field, which is relevant to both Identity and Login ciphers
       this.inlineMenuFieldQualificationService.isUsernameField(autofillFieldData)
     ) {
       accountCreationFieldType = this.inlineMenuFieldQualificationService.isEmailField(
@@ -1102,6 +1147,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     }
 
     if (
+      this.showInlineMenuCards &&
       this.inlineMenuFieldQualificationService.isFieldForCreditCardForm(
         autofillFieldData,
         pageDetails,
@@ -1112,6 +1158,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     }
 
     if (
+      this.showInlineMenuIdentities &&
       this.inlineMenuFieldQualificationService.isFieldForAccountCreationForm(
         autofillFieldData,
         pageDetails,
@@ -1123,6 +1170,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
     }
 
     if (
+      this.showInlineMenuIdentities &&
       this.inlineMenuFieldQualificationService.isFieldForIdentityForm(
         autofillFieldData,
         pageDetails,
@@ -1221,6 +1269,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
       autofillFieldData.readonly = getAttributeBoolean(formFieldElement, "disabled");
       autofillFieldData.disabled = getAttributeBoolean(formFieldElement, "disabled");
       autofillFieldData.viewable = true;
+
       void this.setupOverlayListenersOnQualifiedField(formFieldElement, autofillFieldData);
     }
 
@@ -1243,10 +1292,6 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
       await this.updateMostRecentlyFocusedField(formFieldElement);
     }
 
-    if (!this.inlineMenuVisibility) {
-      await this.getInlineMenuVisibility();
-    }
-
     this.setupFormFieldElementEventListeners(formFieldElement);
     this.setupFormSubmissionEventListeners(formFieldElement, autofillFieldData);
 
@@ -1266,6 +1311,30 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
   private async getInlineMenuVisibility() {
     const inlineMenuVisibility = await this.sendExtensionMessage("getAutofillInlineMenuVisibility");
     this.inlineMenuVisibility = inlineMenuVisibility || AutofillOverlayVisibility.OnFieldFocus;
+  }
+
+  /**
+   * Queries the background script for the autofill inline menu's Cards visibility setting.
+   * If the setting is not found, a default value of true will be used
+   * @private
+   */
+  private async getInlineMenuCardsVisibility() {
+    const inlineMenuCardsVisibility = await this.sendExtensionMessage(
+      "getInlineMenuCardsVisibility",
+    );
+    this.showInlineMenuCards = inlineMenuCardsVisibility ?? true;
+  }
+
+  /**
+   * Queries the background script for the autofill inline menu's Identities visibility setting.
+   * If the setting is not found, a default value of true will be used
+   * @private
+   */
+  private async getInlineMenuIdentitiesVisibility() {
+    const inlineMenuIdentitiesVisibility = await this.sendExtensionMessage(
+      "getInlineMenuIdentitiesVisibility",
+    );
+    this.showInlineMenuIdentities = inlineMenuIdentitiesVisibility ?? true;
   }
 
   /**
@@ -1295,8 +1364,10 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    * @param data - The data object from the extension message.
    */
   private updateInlineMenuVisibility({ data }: AutofillExtensionMessage) {
-    if (!isNaN(data?.inlineMenuVisibility)) {
-      this.inlineMenuVisibility = data.inlineMenuVisibility;
+    const newSettingValue = data?.newSettingValue;
+
+    if (!isNaN(newSettingValue)) {
+      this.inlineMenuVisibility = newSettingValue;
     }
   }
 
@@ -1577,15 +1648,28 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    * the overlay elements on scroll or resize.
    */
   private setOverlayRepositionEventListeners() {
-    const handler = this.useEventHandlersMemo(
+    const repositionHandler = this.useEventHandlersMemo(
       throttle(this.handleOverlayRepositionEvent, 250),
       AUTOFILL_OVERLAY_HANDLE_REPOSITION,
     );
-    globalThis.addEventListener(EVENTS.SCROLL, handler, {
+
+    const eventTargetDoesNotContainFocusedField = (element: Element) =>
+      typeof element?.contains === "function" && !element.contains(this.mostRecentlyFocusedField);
+    const scrollHandler = this.useEventHandlersMemo(
+      throttle((event) => {
+        if (eventTargetDoesNotContainFocusedField(event.target as Element)) {
+          return;
+        }
+        repositionHandler(event);
+      }, 50),
+      AUTOFILL_OVERLAY_HANDLE_SCROLL,
+    );
+
+    globalThis.addEventListener(EVENTS.SCROLL, scrollHandler, {
       capture: true,
       passive: true,
     });
-    globalThis.addEventListener(EVENTS.RESIZE, handler);
+    globalThis.addEventListener(EVENTS.RESIZE, repositionHandler);
   }
 
   /**
@@ -1593,12 +1677,19 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    * the overlay elements on scroll or resize.
    */
   private removeOverlayRepositionEventListeners() {
-    const handler = this.eventHandlersMemo[AUTOFILL_OVERLAY_HANDLE_REPOSITION];
-    globalThis.removeEventListener(EVENTS.SCROLL, handler, {
-      capture: true,
-    });
-    globalThis.removeEventListener(EVENTS.RESIZE, handler);
+    globalThis.removeEventListener(
+      EVENTS.SCROLL,
+      this.eventHandlersMemo[AUTOFILL_OVERLAY_HANDLE_SCROLL],
+      {
+        capture: true,
+      },
+    );
+    globalThis.removeEventListener(
+      EVENTS.RESIZE,
+      this.eventHandlersMemo[AUTOFILL_OVERLAY_HANDLE_REPOSITION],
+    );
 
+    delete this.eventHandlersMemo[AUTOFILL_OVERLAY_HANDLE_SCROLL];
     delete this.eventHandlersMemo[AUTOFILL_OVERLAY_HANDLE_REPOSITION];
   }
 

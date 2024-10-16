@@ -1,13 +1,12 @@
 import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
+import { CollectionView, Unassigned } from "@bitwarden/admin-console/common";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { TableDataSource } from "@bitwarden/components";
 
 import { GroupView } from "../../../admin-console/organizations/core";
-import { Unassigned } from "../../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
 
 import { VaultItem } from "./vault-item";
 import { VaultItemEvent } from "./vault-item-event";
@@ -46,8 +45,6 @@ export class VaultItemsComponent {
   @Input() viewingOrgVault: boolean;
   @Input() addAccessStatus: number;
   @Input() addAccessToggle: boolean;
-  @Input() restrictProviderAccess: boolean;
-  @Input() vaultBulkManagementActionEnabled = false;
 
   private _ciphers?: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
@@ -95,20 +92,15 @@ export class VaultItemsComponent {
 
   get disableMenu() {
     return (
-      this.vaultBulkManagementActionEnabled &&
       !this.bulkMoveAllowed &&
       !this.showAssignToCollections() &&
-      !this.showDelete()
+      !this.showDelete() &&
+      !this.showBulkEditCollectionAccess
     );
   }
 
   get bulkAssignToCollectionsAllowed() {
     return this.showBulkAddToCollections && this.ciphers.length > 0;
-  }
-
-  // Use new bulk management delete if vaultBulkManagementActionEnabled feature flag is enabled
-  get deleteAllowed() {
-    return this.vaultBulkManagementActionEnabled ? this.showDelete() : true;
   }
 
   protected canEditCollection(collection: CollectionView): boolean {
@@ -151,15 +143,6 @@ export class VaultItemsComponent {
   protected bulkMoveToFolder() {
     this.event({
       type: "moveToFolder",
-      items: this.selection.selected
-        .filter((item) => item.cipher !== undefined)
-        .map((item) => item.cipher),
-    });
-  }
-
-  protected bulkMoveToOrganization() {
-    this.event({
-      type: "moveToOrganization",
       items: this.selection.selected
         .filter((item) => item.cipher !== undefined)
         .map((item) => item.cipher),
@@ -212,10 +195,7 @@ export class VaultItemsComponent {
     }
 
     const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
-    return (
-      (organization.canEditAllCiphers(this.restrictProviderAccess) && this.viewingOrgVault) ||
-      cipher.edit
-    );
+    return (organization.canEditAllCiphers && this.viewingOrgVault) || cipher.edit;
   }
 
   private refreshItems() {
@@ -225,11 +205,12 @@ export class VaultItemsComponent {
 
     this.selection.clear();
 
-    // Every item except for the Unassigned collection is selectable, individual bulk actions check the user's permission
+    // All ciphers are selectable, collections only if they can be edited or deleted
     this.editableItems = items.filter(
       (item) =>
         item.cipher !== undefined ||
-        (item.collection !== undefined && item.collection.id !== Unassigned),
+        (item.collection !== undefined &&
+          (this.canEditCollection(item.collection) || this.canDeleteCollection(item.collection))),
     );
 
     this.dataSource.data = items;
@@ -278,8 +259,7 @@ export class VaultItemsComponent {
     const [orgId] = uniqueCipherOrgIds;
     const organization = this.allOrganizations.find((o) => o.id === orgId);
 
-    const canEditOrManageAllCiphers =
-      organization?.canEditAllCiphers(this.restrictProviderAccess) && this.viewingOrgVault;
+    const canEditOrManageAllCiphers = organization?.canEditAllCiphers && this.viewingOrgVault;
 
     const collectionNotSelected =
       this.selection.selected.filter((item) => item.collection).length === 0;
@@ -299,8 +279,7 @@ export class VaultItemsComponent {
     );
 
     const canEditOrManageAllCiphers =
-      organizations.length > 0 &&
-      organizations.every((org) => org?.canEditAllCiphers(this.restrictProviderAccess));
+      organizations.length > 0 && organizations.every((org) => org?.canEditAllCiphers);
 
     const canDeleteCollections = this.selection.selected
       .filter((item) => item.collection)

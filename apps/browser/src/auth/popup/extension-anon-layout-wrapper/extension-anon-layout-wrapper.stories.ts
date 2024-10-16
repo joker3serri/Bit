@@ -22,8 +22,6 @@ import {
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ThemeType } from "@bitwarden/common/platform/enums";
-import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ButtonModule, I18nMockService } from "@bitwarden/components";
 
@@ -47,7 +45,6 @@ const decorators = (options: {
   applicationVersion?: string;
   clientType?: ClientType;
   hostName?: string;
-  themeType?: ThemeType;
 }) => {
   return [
     componentWrapperDecorator(
@@ -119,12 +116,6 @@ const decorators = (options: {
               Promise.resolve(options.applicationVersion || "FAKE_APP_VERSION"),
             getClientType: () => options.clientType || ClientType.Web,
           } as Partial<PlatformUtilsService>,
-        },
-        {
-          provide: ThemeStateService,
-          useValue: {
-            selectedTheme$: of(options.themeType || ThemeType.Light),
-          } as Partial<ThemeStateService>,
         },
         {
           provide: I18nService,
@@ -230,8 +221,12 @@ export const DefaultContentExample: Story = {
 
 // Dynamic Content Example
 const initialData: ExtensionAnonLayoutWrapperData = {
-  pageTitle: "setAStrongPassword",
-  pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
+  pageTitle: {
+    key: "setAStrongPassword",
+  },
+  pageSubtitle: {
+    key: "finishCreatingYourAccountBySettingAPassword",
+  },
   pageIcon: LockIcon,
   showAcctSwitcher: true,
   showBackButton: true,
@@ -239,8 +234,12 @@ const initialData: ExtensionAnonLayoutWrapperData = {
 };
 
 const changedData: ExtensionAnonLayoutWrapperData = {
-  pageTitle: "enterpriseSingleSignOn",
-  pageSubtitle: "checkYourEmail",
+  pageTitle: {
+    key: "enterpriseSingleSignOn",
+  },
+  pageSubtitle: {
+    key: "checkYourEmail",
+  },
   pageIcon: RegistrationCheckEmailIcon,
   showAcctSwitcher: false,
   showBackButton: false,

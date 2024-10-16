@@ -188,6 +188,8 @@ export type OverlayBackgroundExtensionMessageHandlers = {
   updateIsFieldCurrentlyFilling: ({ message }: BackgroundMessageParam) => void;
   checkIsFieldCurrentlyFilling: () => boolean;
   getAutofillInlineMenuVisibility: () => void;
+  getInlineMenuCardsVisibility: () => void;
+  getInlineMenuIdentitiesVisibility: () => void;
   openAutofillInlineMenu: () => void;
   closeAutofillInlineMenu: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
   checkAutofillInlineMenuFocused: ({ sender }: BackgroundSenderParam) => void;
@@ -217,6 +219,7 @@ export type OverlayBackgroundExtensionMessageHandlers = {
   addEditCipherSubmitted: () => void;
   editedCipher: () => void;
   deletedCipher: () => void;
+  fido2AbortRequest: ({ message, sender }: BackgroundOnMessageHandlerParams) => void;
 };
 
 export type PortMessageParam = {

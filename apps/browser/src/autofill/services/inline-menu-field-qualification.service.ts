@@ -1,6 +1,6 @@
 import AutofillField from "../models/autofill-field";
 import AutofillPageDetails from "../models/autofill-page-details";
-import { sendExtensionMessage } from "../utils";
+import { getSubmitButtonKeywordsSet, sendExtensionMessage } from "../utils";
 
 import {
   AutofillKeywordsMap,
@@ -30,7 +30,6 @@ export class InlineMenuFieldQualificationService
     this.webAuthnAutocompleteValue,
   ]);
   private fieldIgnoreListString = AutoFillConstants.FieldIgnoreList.join(",");
-  private passwordFieldExcludeListString = AutoFillConstants.PasswordFieldExcludeList.join(",");
   private currentPasswordAutocompleteValue = "current-password";
   private newPasswordAutoCompleteValue = "new-password";
   private autofillFieldKeywordsMap: AutofillKeywordsMap = new WeakMap();
@@ -122,29 +121,10 @@ export class InlineMenuFieldQualificationService
     ...this.identityAddressAutoCompleteValues,
     ...this.identityCountryAutocompleteValues,
     ...this.identityPhoneNumberAutocompleteValues,
+    this.identityCompanyAutocompleteValue,
     this.identityPostalCodeAutocompleteValue,
   ]);
-  private identityFieldKeywords = [
-    ...new Set([
-      ...IdentityAutoFillConstants.TitleFieldNames,
-      ...IdentityAutoFillConstants.FullNameFieldNames,
-      ...IdentityAutoFillConstants.FirstnameFieldNames,
-      ...IdentityAutoFillConstants.MiddlenameFieldNames,
-      ...IdentityAutoFillConstants.LastnameFieldNames,
-      ...IdentityAutoFillConstants.AddressFieldNames,
-      ...IdentityAutoFillConstants.Address1FieldNames,
-      ...IdentityAutoFillConstants.Address2FieldNames,
-      ...IdentityAutoFillConstants.Address3FieldNames,
-      ...IdentityAutoFillConstants.PostalCodeFieldNames,
-      ...IdentityAutoFillConstants.CityFieldNames,
-      ...IdentityAutoFillConstants.StateFieldNames,
-      ...IdentityAutoFillConstants.CountryFieldNames,
-      ...IdentityAutoFillConstants.CompanyFieldNames,
-      ...IdentityAutoFillConstants.PhoneFieldNames,
-      ...IdentityAutoFillConstants.EmailFieldNames,
-      ...IdentityAutoFillConstants.UserNameFieldNames,
-    ]),
-  ];
+  private totpFieldAutocompleteValue = "one-time-code";
   private inlineMenuFieldQualificationFlagSet = false;
 
   constructor() {
@@ -163,6 +143,11 @@ export class InlineMenuFieldQualificationService
   isFieldForLoginForm(field: AutofillField, pageDetails: AutofillPageDetails): boolean {
     if (!this.inlineMenuFieldQualificationFlagSet) {
       return this.isFieldForLoginFormFallback(field);
+    }
+
+    const isTotpField = this.isTotpField(field);
+    if (isTotpField) {
+      return false;
     }
 
     const isCurrentPasswordField = this.isCurrentPasswordField(field);
@@ -288,14 +273,7 @@ export class InlineMenuFieldQualificationService
       return false;
     }
 
-    if (this.fieldContainsAutocompleteValues(field, this.identityAutocompleteValues)) {
-      return true;
-    }
-
-    return (
-      !this.fieldContainsAutocompleteValues(field, this.autocompleteDisabledValues) &&
-      this.keywordsFoundInFieldData(field, this.identityFieldKeywords, false)
-    );
+    return this.fieldContainsAutocompleteValues(field, this.identityAutocompleteValues);
   }
 
   /**
@@ -865,7 +843,7 @@ export class InlineMenuFieldQualificationService
    *
    * @param field - The field to validate
    */
-  private isCurrentPasswordField = (field: AutofillField): boolean => {
+  isCurrentPasswordField = (field: AutofillField): boolean => {
     if (
       this.fieldContainsAutocompleteValues(field, this.newPasswordAutoCompleteValue) ||
       this.keywordsFoundInFieldData(field, this.accountCreationFieldKeywords)
@@ -902,7 +880,8 @@ export class InlineMenuFieldQualificationService
     if (
       (!isInputPasswordType &&
         this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet)) ||
-      this.fieldHasDisqualifyingAttributeValue(field)
+      this.fieldHasDisqualifyingAttributeValue(field) ||
+      this.isTotpField(field)
     ) {
       return false;
     }
@@ -947,8 +926,24 @@ export class InlineMenuFieldQualificationService
       return false;
     }
 
-    return !(this.passwordFieldExcludeListString.indexOf(cleanedValue) > -1);
+    return !AutoFillConstants.PasswordFieldExcludeList.some((i) => cleanedValue.indexOf(i) > -1);
   }
+
+  /**
+   * Validates whether the provided field is a TOTP field.
+   *
+   * @param field - The field to validate
+   */
+  private isTotpField = (field: AutofillField): boolean => {
+    if (this.fieldContainsAutocompleteValues(field, this.totpFieldAutocompleteValue)) {
+      return true;
+    }
+
+    return (
+      !this.isExcludedFieldType(field, this.excludedAutofillFieldTypesSet) &&
+      this.keywordsFoundInFieldData(field, AutoFillConstants.TotpFieldNames)
+    );
+  };
 
   /**
    * Validates the provided field to indicate if the field has a
@@ -1041,34 +1036,7 @@ export class InlineMenuFieldQualificationService
    */
   private getSubmitButtonKeywords(element: HTMLElement): string {
     if (!this.submitButtonKeywordsMap.has(element)) {
-      const keywords = [
-        element.textContent,
-        element.getAttribute("value"),
-        element.getAttribute("aria-label"),
-        element.getAttribute("aria-labelledby"),
-        element.getAttribute("aria-describedby"),
-        element.getAttribute("title"),
-        element.getAttribute("id"),
-        element.getAttribute("name"),
-        element.getAttribute("class"),
-      ];
-
-      const keywordsSet = new Set<string>();
-      for (let i = 0; i < keywords.length; i++) {
-        if (typeof keywords[i] === "string") {
-          keywords[i]
-            .toLowerCase()
-            .replace(/[-\s]/g, "")
-            .replace(/[^a-zA-Z0-9]+/g, "|")
-            .split("|")
-            .forEach((keyword) => {
-              if (keyword) {
-                keywordsSet.add(keyword);
-              }
-            });
-        }
-      }
-
+      const keywordsSet = getSubmitButtonKeywordsSet(element);
       this.submitButtonKeywordsMap.set(element, Array.from(keywordsSet).join(","));
     }
 
@@ -1125,13 +1093,29 @@ export class InlineMenuFieldQualificationService
       ];
       const keywordsSet = new Set<string>();
       for (let i = 0; i < keywords.length; i++) {
-        if (typeof keywords[i] === "string") {
-          keywords[i]
-            .toLowerCase()
-            .replace(/-/g, "")
-            .replace(/[^a-zA-Z0-9]+/g, "|")
-            .split("|")
-            .forEach((keyword) => keywordsSet.add(keyword));
+        if (keywords[i] && typeof keywords[i] === "string") {
+          let keywordEl = keywords[i].toLowerCase();
+          keywordsSet.add(keywordEl);
+
+          // Remove hyphens from all potential keywords, we want to treat these as a single word.
+          keywordEl = keywordEl.replace(/-/g, "");
+
+          // Split the keyword by non-alphanumeric characters to get the keywords without treating a space as a separator.
+          keywordEl.split(/[^\p{L}\d]+/gu).forEach((keyword) => {
+            if (keyword) {
+              keywordsSet.add(keyword);
+            }
+          });
+
+          // Collapse all spaces and split by non-alphanumeric characters to get the keywords
+          keywordEl
+            .replace(/\s/g, "")
+            .split(/[^\p{L}\d]+/gu)
+            .forEach((keyword) => {
+              if (keyword) {
+                keywordsSet.add(keyword);
+              }
+            });
         }
       }
 
