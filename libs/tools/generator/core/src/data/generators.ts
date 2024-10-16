@@ -53,6 +53,7 @@ const PASSPHRASE = Object.freeze({
   category: "password",
   nameKey: "passphrase",
   onlyOnRequest: false,
+  request: [],
   engine: {
     create(
       dependencies: GeneratorDependencyProvider,
@@ -92,6 +93,7 @@ const PASSWORD = Object.freeze({
   category: "password",
   nameKey: "password",
   onlyOnRequest: false,
+  request: [],
   engine: {
     create(
       dependencies: GeneratorDependencyProvider,
@@ -139,6 +141,7 @@ const USERNAME = Object.freeze({
   category: "username",
   nameKey: "randomWord",
   onlyOnRequest: false,
+  request: [],
   engine: {
     create(
       dependencies: GeneratorDependencyProvider,
@@ -172,6 +175,7 @@ const CATCHALL = Object.freeze({
   nameKey: "catchallEmail",
   descriptionKey: "catchallEmailDesc",
   onlyOnRequest: false,
+  request: [],
   engine: {
     create(
       dependencies: GeneratorDependencyProvider,
@@ -205,6 +209,7 @@ const SUBADDRESS = Object.freeze({
   nameKey: "plusAddressedEmail",
   descriptionKey: "plusAddressedEmailDesc",
   onlyOnRequest: false,
+  request: [],
   engine: {
     create(
       dependencies: GeneratorDependencyProvider,
@@ -240,6 +245,7 @@ export function toCredentialGeneratorConfiguration<Settings extends ApiSettings 
     category: "email",
     nameKey: configuration.name,
     onlyOnRequest: true,
+    request: configuration.forwarder.request,
     engine: {
       create(dependencies: GeneratorDependencyProvider) {
         // FIXME: figure out why `configuration` fails to typecheck
@@ -249,7 +255,7 @@ export function toCredentialGeneratorConfiguration<Settings extends ApiSettings 
     },
     settings: {
       initial: configuration.forwarder.defaultSettings,
-      constraints: {},
+      constraints: configuration.forwarder.settingsConstraints,
       account: configuration.forwarder.settings,
     },
     policy: {

@@ -43,6 +43,11 @@
         [userId]="this.userId$ | async"
         (onUpdated)="generate$.next()"
       />
+      <tools-forwarder-settings
+        *ngIf="!!(forwarderId$ | async)"
+        [forwarder]="forwarderId$ | async"
+        [userId]="this.userId$ | async"
+      />
       <tools-subaddress-settings
         *ngIf="(algorithm$ | async)?.id === 'subaddress'"
         [userId]="this.userId$ | async"
@@ -53,7 +58,6 @@
         [userId]="this.userId$ | async"
         (onUpdated)="generate$.next()"
       />
-      <!-- TODO: list forwarder settings components -->
     </bit-card>
   </div>
 </bit-section>

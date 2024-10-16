@@ -40,6 +40,11 @@ export type AlgorithmInfo = {
    *   to Bitwarden.
    */
   onlyOnRequest: boolean;
+
+  /** Well-known fields to display on the options panel or collect from the environment.
+   *  @remarks: at present, this is only used by forwarders
+   */
+  request: readonly string[];
 };
 
 /** Credential generator metadata common across credential generators */
@@ -68,6 +73,11 @@ export type CredentialGeneratorInfo = {
    *   to Bitwarden.
    */
   onlyOnRequest: boolean;
+
+  /** Well-known fields to display on the options panel or collect from the environment.
+   *  @remarks: at present, this is only used by forwarders
+   */
+  request: readonly string[];
 };
 
 /** Credential generator metadata that relies upon typed setting and policy definitions.

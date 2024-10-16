@@ -37,8 +37,8 @@ import { Constraints, SubjectConstraints, WithConstraints } from "../types";
 
 import { ClassifiedFormat, isClassifiedFormat } from "./classified-format";
 import { unconstrained$ } from "./identity-state-constraint";
+import { isObjectKey, ObjectKey, toUserKeyDefinition } from "./object-key";
 import { isDynamic } from "./state-constraints-dependency";
-import { isObjectKey, ObjectKey, toUserKeyDefinition } from "./subject-key";
 import { UserEncryptor } from "./user-encryptor.abstraction";
 import { UserStateSubjectDependencies } from "./user-state-subject-dependencies";
 

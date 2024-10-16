@@ -16,6 +16,7 @@ import {
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { IntegrationId } from "@bitwarden/common/tools/integration";
 import { UserId } from "@bitwarden/common/types/guid";
 import { Option } from "@bitwarden/components/src/select/option";
 import {
@@ -260,6 +261,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       // template bindings refresh immediately
       this.zone.run(() => {
         this.algorithm$.next(algorithm);
+        if (userNav === FORWARDER && forwarderNav !== NONE_SELECTED) {
+          this.forwarderId$.next(forwarderNav.forwarder);
+        } else {
+          this.forwarderId$.next(null);
+        }
       });
     });
 
@@ -313,6 +319,9 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
   /** Lists the credential types of the username algorithm box. */
   protected forwarderOptions$ = new BehaviorSubject<Option<ForwarderNavValue>[]>([]);
+
+  /** Tracks the currently selected forwarder. */
+  protected forwarderId$ = new BehaviorSubject<IntegrationId>(null);
 
   /** tracks the currently selected credential type */
   protected algorithm$ = new ReplaySubject<AlgorithmInfo>(1);

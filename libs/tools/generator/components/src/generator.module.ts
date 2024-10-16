@@ -33,6 +33,7 @@ import {
 
 import { CatchallSettingsComponent } from "./catchall-settings.component";
 import { CredentialGeneratorComponent } from "./credential-generator.component";
+import { ForwarderSettingsComponent } from "./forwarder-settings.component";
 import { PassphraseSettingsComponent } from "./passphrase-settings.component";
 import { PasswordGeneratorComponent } from "./password-generator.component";
 import { PasswordSettingsComponent } from "./password-settings.component";
@@ -84,12 +85,13 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
   declarations: [
     CatchallSettingsComponent,
     CredentialGeneratorComponent,
+    ForwarderSettingsComponent,
     SubaddressSettingsComponent,
-    UsernameSettingsComponent,
     PasswordGeneratorComponent,
-    PasswordSettingsComponent,
     PassphraseSettingsComponent,
+    PasswordSettingsComponent,
     UsernameGeneratorComponent,
+    UsernameSettingsComponent,
   ],
   exports: [CredentialGeneratorComponent, PasswordGeneratorComponent, UsernameGeneratorComponent],
 })

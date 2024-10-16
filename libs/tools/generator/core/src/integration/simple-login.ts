@@ -53,6 +53,10 @@ const createForwardingEmail = Object.freeze({
 const forwarder = Object.freeze({
   defaultSettings,
   createForwardingEmail,
+  request: ["token", "baseUrl"],
+  settingsConstraints: {
+    token: { required: true },
+  },
   local: {
     settings: {
       // FIXME: integration should issue keys at runtime
