@@ -345,13 +345,15 @@ export class ViewComponent implements OnDestroy, OnInit {
       return;
     }
 
-    if (cipherId) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.cipherService.updateLastLaunchedDate(cipherId);
+    if (!cipherId) {
+      this.platformUtilsService.launchUri(uri.launchUri);
+      return;
     }
 
-    this.platformUtilsService.launchUri(uri.launchUri);
+    this.cipherService
+      .updateLastLaunchedDate(cipherId)
+      .then(() => this.platformUtilsService.launchUri(uri.launchUri))
+      .catch((e) => this.logService.error(e));
   }
 
   async copy(value: string, typeI18nKey: string, aType: string): Promise<boolean> {
