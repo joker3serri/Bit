@@ -12,7 +12,7 @@ import {
 import { PrivateClassifier } from "@bitwarden/common/tools/private-classifier";
 import { PublicClassifier } from "@bitwarden/common/tools/public-classifier";
 import { BufferedKeyDefinition } from "@bitwarden/common/tools/state/buffered-key-definition";
-import { ObjectKey } from "@bitwarden/common/tools/state/subject-key";
+import { ObjectKey } from "@bitwarden/common/tools/state/object-key";
 
 import { ForwarderConfiguration, ForwarderContext, EmailDomainSettings } from "../engine";
 import { CreateForwardingEmailRpcDef } from "../engine/forwarder-configuration";

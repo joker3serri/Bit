@@ -112,7 +112,7 @@ export function ready<T>(watch$: Observable<any> | Observable<any>[]) {
 export function withLatestReady<Source, Watch>(
   watch$: Observable<Watch>,
 ): OperatorFunction<Source, [Source, Watch]> {
-  return pipe((source$) => {
+  return connect((source$) => {
     // these subscriptions are safe because `source$` connects only after there
     // is an external subscriber.
     const source = new ReplaySubject<Source>(1);

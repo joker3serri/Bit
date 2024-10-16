@@ -6,7 +6,14 @@ import { of, firstValueFrom, Subject, tap, EmptyError } from "rxjs";
 
 import { awaitAsync, trackEmissions } from "../../spec";
 
-import { anyComplete, distinctIfShallowMatch, on, ready, reduceCollection } from "./rx";
+import {
+  anyComplete,
+  distinctIfShallowMatch,
+  on,
+  ready,
+  reduceCollection,
+  withLatestReady,
+} from "./rx";
 
 describe("reduceCollection", () => {
   it.each([[null], [undefined], [[]]])(
@@ -280,6 +287,142 @@ describe("ready", () => {
     const watch$ = new Subject<void>();
     const source$ = new Subject<number>();
     const ready$ = source$.pipe(ready(watch$));
+    let error = null;
+    ready$.subscribe({ error: (e: unknown) => (error = e) });
+
+    watch$.complete();
+
+    expect(error).toBeInstanceOf(EmptyError);
+  });
+});
+
+describe("withLatestReady", () => {
+  it("connects when subscribed", () => {
+    const watch$ = new Subject<string>();
+    let connected = false;
+    const source$ = new Subject<number>().pipe(tap({ subscribe: () => (connected = true) }));
+
+    // precondition: ready$ should be cold
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    expect(connected).toBe(false);
+
+    ready$.subscribe();
+
+    expect(connected).toBe(true);
+  });
+
+  it("suppresses source emissions until its watch emits", () => {
+    const watch$ = new Subject<string>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    const results: [number, string][] = [];
+    ready$.subscribe((n) => results.push(n));
+
+    // precondition: no emissions
+    source$.next(1);
+    expect(results).toEqual([]);
+
+    watch$.next("watch");
+
+    expect(results).toEqual([[1, "watch"]]);
+  });
+
+  it("emits the last source emission when its watch emits", () => {
+    const watch$ = new Subject<string>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    const results: [number, string][] = [];
+    ready$.subscribe((n) => results.push(n));
+
+    // precondition: no emissions
+    source$.next(1);
+    expect(results).toEqual([]);
+
+    source$.next(2);
+    watch$.next("watch");
+
+    expect(results).toEqual([[2, "watch"]]);
+  });
+
+  it("emits all source emissions after its watch emits", () => {
+    const watch$ = new Subject<string>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    const results: [number, string][] = [];
+    ready$.subscribe((n) => results.push(n));
+
+    watch$.next("watch");
+    source$.next(1);
+    source$.next(2);
+
+    expect(results).toEqual([
+      [1, "watch"],
+      [2, "watch"],
+    ]);
+  });
+
+  it("appends the latest watch emission", () => {
+    const watch$ = new Subject<string>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    const results: [number, string][] = [];
+    ready$.subscribe((n) => results.push(n));
+
+    watch$.next("ignored");
+    watch$.next("watch");
+    source$.next(1);
+    watch$.next("ignored");
+    watch$.next("watch");
+    source$.next(2);
+
+    expect(results).toEqual([
+      [1, "watch"],
+      [2, "watch"],
+    ]);
+  });
+
+  it("completes when its source completes", () => {
+    const watch$ = new Subject<string>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    let completed = false;
+    ready$.subscribe({ complete: () => (completed = true) });
+
+    source$.complete();
+
+    expect(completed).toBeTruthy();
+  });
+
+  it("errors when its source errors", () => {
+    const watch$ = new Subject<void>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    const expected = { some: "error" };
+    let error = null;
+    ready$.subscribe({ error: (e: unknown) => (error = e) });
+
+    source$.error(expected);
+
+    expect(error).toEqual(expected);
+  });
+
+  it("errors when its watch errors", () => {
+    const watch$ = new Subject<string>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
+    const expected = { some: "error" };
+    let error = null;
+    ready$.subscribe({ error: (e: unknown) => (error = e) });
+
+    watch$.error(expected);
+
+    expect(error).toEqual(expected);
+  });
+
+  it("errors when its watch completes before emitting", () => {
+    const watch$ = new Subject<string>();
+    const source$ = new Subject<number>();
+    const ready$ = source$.pipe(withLatestReady(watch$));
     let error = null;
     ready$.subscribe({ error: (e: unknown) => (error = e) });
 
