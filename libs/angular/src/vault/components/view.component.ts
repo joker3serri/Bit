@@ -340,20 +340,16 @@ export class ViewComponent implements OnDestroy, OnInit {
     }
   }
 
-  launch(uri: Launchable, cipherId?: string) {
+  async launch(uri: Launchable, cipherId?: string) {
     if (!uri.canLaunch) {
       return;
     }
 
-    if (!cipherId) {
-      this.platformUtilsService.launchUri(uri.launchUri);
-      return;
+    if (cipherId) {
+      await this.cipherService.updateLastLaunchedDate(cipherId);
     }
 
-    this.cipherService
-      .updateLastLaunchedDate(cipherId)
-      .then(() => this.platformUtilsService.launchUri(uri.launchUri))
-      .catch((e) => this.logService.error(e));
+    this.platformUtilsService.launchUri(uri.launchUri);
   }
 
   async copy(value: string, typeI18nKey: string, aType: string): Promise<boolean> {
