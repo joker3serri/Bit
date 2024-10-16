@@ -132,7 +132,7 @@ export class CipherView implements View, InitializerMetadata {
     );
   }
 
-  get canAssignCollections(): boolean {
+  get canEditWithPassword(): boolean {
     return this.edit && this.viewPassword;
   }
 

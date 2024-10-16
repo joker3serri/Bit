@@ -204,10 +204,7 @@ export class VaultItemsComponent {
     }
 
     const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
-    return (
-      (organization.canEditAllCiphers && this.viewingOrgVault) ||
-      (cipher.edit && cipher.viewPassword)
-    );
+    return (organization.canEditAllCiphers && this.viewingOrgVault) || cipher.canEditWithPassword;
   }
 
   private refreshItems() {
