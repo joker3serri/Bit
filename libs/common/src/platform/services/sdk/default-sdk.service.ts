@@ -113,19 +113,11 @@ export class DefaultSdkService implements SdkService {
             }
           })();
 
-          return () => {
-            if (client != null) {
-              client.free();
-            }
-          };
+          return () => client?.free();
         });
       }),
       tap({
-        finalize: () => {
-          if (this.sdkClientCache.has(userId)) {
-            this.sdkClientCache.delete(userId);
-          }
-        },
+        finalize: () => this.sdkClientCache.delete(userId),
       }),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
