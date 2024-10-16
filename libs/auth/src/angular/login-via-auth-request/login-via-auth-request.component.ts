@@ -31,7 +31,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
-import { ToastService } from "@bitwarden/components";
+import { ButtonModule, LinkModule, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 enum State {
@@ -42,7 +42,7 @@ enum State {
 @Component({
   standalone: true,
   templateUrl: "./login-via-auth-request.component.html",
-  imports: [CommonModule, JslibModule, RouterModule],
+  imports: [ButtonModule, CommonModule, JslibModule, LinkModule, RouterModule],
 })
 export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private authRequest: CreateAuthRequest;

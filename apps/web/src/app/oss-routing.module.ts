@@ -184,8 +184,13 @@ const routes: Routes = [
     {
       path: "login-with-device",
       data: {
-        pageTitle: "loginWithDevice",
-        titleId: "loginWithDevice",
+        pageTitle: {
+          key: "loginInitiated",
+        },
+        pageSubtitle: {
+          key: "aNotificationWasSentToYourDevice",
+        },
+        titleId: "loginInitiated",
       } satisfies RouteDataProperties & AnonLayoutWrapperData,
       children: [
         { path: "", component: LoginViaAuthRequestComponent },

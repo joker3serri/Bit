@@ -1,10 +1,33 @@
+<div *ngIf="state === StateEnum.StandardAuthRequest" class="tw-text-center">
+  <p>{{ "makeSureYourAccountIsUnlockedAndTheFingerprintEtc" | i18n }}</p>
+
+  <div class="tw-font-semibold">{{ "fingerprintPhraseHeader" | i18n }}</div>
+  <code class="tw-text-code">{{ fingerprintPhrase }}</code>
+
+  <button
+    *ngIf="showResendNotification"
+    type="button"
+    bitButton
+    block
+    buttonType="secondary"
+    class="tw-mt-4"
+  >
+    {{ "resendNotification" | i18n }}
+  </button>
+
+  <div class="tw-mt-4">
+    <span>{{ "needAnotherOptionV1" | i18n }}</span>
+    <a routerLink="/login" bitLink linkType="primary">{{ "viewAllLoginOptions" | i18n }}</a>
+  </div>
+</div>
+
+<!-- TODO-rr-bw: Hiding during development (remove later) -->
 <div
+  *ngIf="false"
   class="tw-mx-auto tw-mt-5 tw-flex tw-max-w-lg tw-flex-col tw-items-center tw-justify-center tw-p-8"
 >
   <div>
     <img class="logo logo-themed" alt="Bitwarden" />
-
-    TESTING
 
     <ng-container *ngIf="state == StateEnum.StandardAuthRequest">
       <p class="tw-mx-4 tw-mb-4 tw-mt-3 tw-text-center tw-text-xl">
