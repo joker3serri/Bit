@@ -4332,6 +4332,9 @@
     "message": "Never prompt to verify fingerprint phrases for invited users (not recommended)",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "You will be notified once the request is approved"
+  },
   "free": {
     "message": "Free",
     "description": "Free, as in 'Free beer'"

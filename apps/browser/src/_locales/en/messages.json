@@ -3069,6 +3069,9 @@
   "makeSureYourAccountIsUnlockedAndTheFingerprintEtc": {
     "message": "Make sure your account is unlocked and the fingerprint phrase matches on the other device"
   },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "You will be notified once the request is approved"
+  },
   "needAnotherOptionV1": {
     "message": "Need another option?"
   },
