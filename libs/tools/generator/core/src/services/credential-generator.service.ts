@@ -11,7 +11,6 @@ import {
   ignoreElements,
   map,
   Observable,
-  race,
   share,
   skipUntil,
   switchMap,
@@ -36,8 +35,8 @@ import {
 } from "@bitwarden/common/tools/dependencies";
 import { IntegrationId, IntegrationMetadata } from "@bitwarden/common/tools/integration";
 import { RestClient } from "@bitwarden/common/tools/integration/rpc";
+import { anyComplete } from "@bitwarden/common/tools/rx";
 import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
-import { isDynamic } from "@bitwarden/common/tools/state/state-constraints-dependency";
 import { UserEncryptor } from "@bitwarden/common/tools/state/user-encryptor.abstraction";
 import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
@@ -86,13 +85,13 @@ const OPTIONS_FRAME_SIZE = 512;
 
 export class CredentialGeneratorService {
   constructor(
-    private randomizer: Randomizer,
-    private stateProvider: StateProvider,
-    private policyService: PolicyService,
-    private apiService: ApiService,
-    private i18nService: I18nService,
+    private readonly randomizer: Randomizer,
+    private readonly stateProvider: StateProvider,
+    private readonly policyService: PolicyService,
+    private readonly apiService: ApiService,
+    private readonly i18nService: I18nService,
     private readonly encryptService: EncryptService,
-    private cryptoService: CryptoService,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   private getDependencyProvider(): GeneratorDependencyProvider {
@@ -124,11 +123,6 @@ export class CredentialGeneratorService {
     const request$ = website$.pipe(map((website) => ({ website })));
     const settings$ = this.settings$(configuration, dependencies);
 
-    // monitor completion
-    const requestComplete$ = request$.pipe(ignoreElements(), endWith(true));
-    const settingsComplete$ = request$.pipe(ignoreElements(), endWith(true));
-    const complete$ = race(requestComplete$, settingsComplete$);
-
     // if on$ triggers before settings are loaded, trigger as soon
     // as they become available.
     let readyOn$: Observable<any> = null;
@@ -149,7 +143,7 @@ export class CredentialGeneratorService {
     const generate$ = (readyOn$ ?? settings$).pipe(
       withLatestFrom(request$, settings$),
       concatMap(([, request, settings]) => engine.generate(request, settings)),
-      takeUntil(complete$),
+      takeUntil(anyComplete([request$, settings$])),
     );
 
     return generate$;
@@ -287,27 +281,21 @@ export class CredentialGeneratorService {
     dependencies?: Settings$Dependencies,
   ) {
     const userId$ = dependencies?.userId$ ?? this.stateProvider.activeUserId$;
+    const constraints$ = this.policy$(configuration, { userId$ });
 
-    const state$ = userId$.pipe(
+    const settings$ = userId$.pipe(
       filter((userId) => !!userId),
       distinctUntilChanged(),
       switchMap((userId) => {
         const state$ = new UserStateSubject(
           configuration.settings.account,
           (key) => this.stateProvider.getUser(userId, key),
-          { singleUserEncryptor$: this.encryptor$(userId) },
+          { constraints$, singleUserEncryptor$: this.encryptor$(userId) },
         );
         return state$;
       }),
       map((settings) => settings ?? structuredClone(configuration.settings.initial)),
-    );
-
-    const settings$ = combineLatest([state$, this.policy$(configuration, { userId$ })]).pipe(
-      map(([settings, policy]) => {
-        const calibration = isDynamic(policy) ? policy.calibrate(settings) : policy;
-        const adjusted = calibration.adjust(settings);
-        return adjusted;
-      }),
+      takeUntil(anyComplete(userId$)),
     );
 
     return settings$;
@@ -333,7 +321,7 @@ export class CredentialGeneratorService {
     const subject = new UserStateSubject(
       PREFERENCES,
       (key) => this.stateProvider.getUser(userId, key),
-      { ...dependencies },
+      { singleUserEncryptor$: this.encryptor$(userId) },
     );
 
     return subject;

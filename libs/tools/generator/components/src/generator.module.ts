@@ -8,6 +8,7 @@ import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import {
@@ -69,7 +70,15 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
     safeProvider({
       provide: CredentialGeneratorService,
       useClass: CredentialGeneratorService,
-      deps: [RANDOMIZER, StateProvider, PolicyService, ApiService, I18nService],
+      deps: [
+        RANDOMIZER,
+        StateProvider,
+        PolicyService,
+        ApiService,
+        I18nService,
+        EncryptService,
+        CryptoService,
+      ],
     }),
   ],
   declarations: [
