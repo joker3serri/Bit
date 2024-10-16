@@ -5,7 +5,6 @@ import {
   ReplaySubject,
   filter,
   map,
-  Subject,
   takeUntil,
   pairwise,
   distinctUntilChanged,
@@ -137,8 +136,6 @@ export class UserStateSubject<
     // the update stream simulates the stateProvider's "shouldUpdate"
     // functionality & applies policy
     const updates$ = concat(
-      // normalize input in case this `UserStateSubject` is not the only
-      // observer of the backing store
       this.input.pipe(
         this.when(when$),
         this.adjust(withLatestReady(constraints$)),
@@ -326,7 +323,8 @@ export class UserStateSubject<
   }
 
   private classify(encryptor$: Observable<UserEncryptor>): OperatorFunction<State, unknown> {
-    // short-circuit if they key lacks encryption support
+    // short-circuit if they key lacks encryption support; `encryptor` is
+    // readied to preserve `dependencies.singleUserId$` emission contract
     if (!this.objectKey || this.objectKey.format === "plain") {
       return pipe(
         ready(encryptor$),
@@ -337,7 +335,7 @@ export class UserStateSubject<
     // if the key supports encryption, enable encryptor support
     if (this.objectKey && this.objectKey.format === "classified") {
       return pipe(
-        combineLatestWith(encryptor$),
+        withLatestReady(encryptor$),
         concatMap(async ([input, encryptor]) => {
           // fail fast if there's no value
           if (input === null || input === undefined) {
@@ -400,7 +398,7 @@ export class UserStateSubject<
   // using subjects to ensure the right semantics are followed;
   // if greater efficiency becomes desirable, consider implementing
   // `SubjectLike` directly
-  private input = new Subject<State>();
+  private input = new ReplaySubject<State>(1);
   private state: SingleUserState<unknown>;
   private readonly output = new ReplaySubject<WithConstraints<State>>(1);
 

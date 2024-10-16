@@ -352,12 +352,16 @@ describe("UserStateSubject", () => {
       const singleUserId$ = new BehaviorSubject(SomeUser);
       const constraints$ = new Subject<StateConstraints<TestType>>();
       const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, constraints$ });
-      const tracker = new ObservableTracker(subject);
+      const results: any[] = [];
+      subject.subscribe((r) => {
+        results.push(r);
+      });
 
       subject.next({ foo: "next" });
       constraints$.next(fooMaxLength(3));
+      await awaitAsync();
       // `init` is also waiting and is processed before `next`
-      const [, nextResult] = await tracker.pauseUntilReceived(2);
+      const [, nextResult] = results;
 
       expect(nextResult).toEqual({ foo: "nex" });
     });

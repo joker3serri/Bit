@@ -117,7 +117,7 @@ export function withLatestReady<Source, Watch>(
     // is an external subscriber.
     const source = new ReplaySubject<Source>(1);
     source$.subscribe(source);
-    const watch = new ReplaySubject<Watch>(null);
+    const watch = new ReplaySubject<Watch>(1);
     watch$.subscribe(watch);
 
     // `concat` is subscribed immediately after it's returned, at which point
