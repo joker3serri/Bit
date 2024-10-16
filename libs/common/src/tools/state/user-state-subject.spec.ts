@@ -4,8 +4,13 @@ import { GENERATOR_DISK, UserKeyDefinition } from "@bitwarden/common/platform/st
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { awaitAsync, FakeSingleUserState, ObservableTracker } from "../../../spec";
+import { UserBound } from "../dependencies";
+import { PrivateClassifier } from "../private-classifier";
 import { StateConstraints } from "../types";
 
+import { ClassifiedFormat } from "./classified-format";
+import { ObjectKey } from "./object-key";
+import { UserEncryptor } from "./user-encryptor.abstraction";
 import { UserStateSubject } from "./user-state-subject";
 
 const SomeUser = "some user" as UserId;
@@ -14,6 +19,32 @@ const SomeKey = new UserKeyDefinition<TestType>(GENERATOR_DISK, "TestKey", {
   deserializer: (d) => d as TestType,
   clearOn: [],
 });
+
+const SomeObjectKey = {
+  target: "object",
+  key: "TestObjectKey",
+  state: GENERATOR_DISK,
+  classifier: new PrivateClassifier(),
+  format: "classified",
+  options: {
+    deserializer: (d) => d as TestType,
+    clearOn: ["logout"],
+  },
+} satisfies ObjectKey<TestType>;
+
+const SomeEncryptor: UserEncryptor = {
+  userId: SomeUser,
+
+  encrypt(secret) {
+    const tmp: any = secret;
+    return Promise.resolve({ foo: `encrypt(${tmp.foo})` } as any);
+  },
+
+  decrypt(secret) {
+    const tmp: any = JSON.parse(secret.encryptedString);
+    return Promise.resolve({ foo: `decrypt(${tmp.foo})` } as any);
+  },
+};
 
 function fooMaxLength(maxLength: number): StateConstraints<TestType> {
   return Object.freeze({
@@ -92,6 +123,30 @@ describe("UserStateSubject", () => {
       expect(nextValue).toHaveBeenCalledTimes(1);
     });
 
+    it("ignores repeated singleUserEncryptor$ emissions", async () => {
+      // this test looks for `nextValue` because a subscription isn't necessary for
+      // the subject to update
+      const initialValue: TestType = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
+      const nextValue = jest.fn((_, next) => next);
+      const singleUserEncryptor$ = new BehaviorSubject({ userId: SomeUser, encryptor: null });
+      const subject = new UserStateSubject(SomeKey, () => state, {
+        nextValue,
+        singleUserEncryptor$,
+      });
+
+      // the interleaved await asyncs are only necessary b/c `nextValue` is called asynchronously
+      subject.next({ foo: "next" });
+      await awaitAsync();
+      singleUserEncryptor$.next({ userId: SomeUser, encryptor: null });
+      await awaitAsync();
+      singleUserEncryptor$.next({ userId: SomeUser, encryptor: null });
+      singleUserEncryptor$.next({ userId: SomeUser, encryptor: null });
+      await awaitAsync();
+
+      expect(nextValue).toHaveBeenCalledTimes(1);
+    });
+
     it("waits for constraints$", async () => {
       const state = new FakeSingleUserState<TestType>(SomeUser, { foo: "init" });
       const singleUserId$ = new BehaviorSubject(SomeUser);
@@ -103,6 +158,21 @@ describe("UserStateSubject", () => {
       const [initResult] = await tracker.pauseUntilReceived(1);
 
       expect(initResult).toEqual({ foo: "ini" });
+    });
+
+    it("waits for singleUserEncryptor$", async () => {
+      const state = new FakeSingleUserState<ClassifiedFormat<void, Record<string, never>>>(
+        SomeUser,
+        { id: null, secret: '{"foo":"init"}', disclosed: {} },
+      );
+      const singleUserEncryptor$ = new Subject<UserBound<"encryptor", UserEncryptor>>();
+      const subject = new UserStateSubject(SomeObjectKey, () => state, { singleUserEncryptor$ });
+      const tracker = new ObservableTracker(subject);
+
+      singleUserEncryptor$.next({ userId: SomeUser, encryptor: SomeEncryptor });
+      const [initResult] = await tracker.pauseUntilReceived(1);
+
+      expect(initResult).toEqual({ foo: "decrypt(init)" });
     });
   });
 
@@ -292,17 +362,39 @@ describe("UserStateSubject", () => {
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
       const singleUserId$ = new Subject<UserId>();
-      const nextValue = jest.fn((_, next) => next);
-      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$, nextValue });
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserId$ });
 
+      // precondition: subject doesn't update after `next`
       const nextVal: TestType = { foo: "next" };
       subject.next(nextVal);
       await awaitAsync();
       expect(state.nextMock).not.toHaveBeenCalled();
+
       singleUserId$.next(SomeUser);
       await awaitAsync();
 
-      expect(state.nextMock).toHaveBeenCalled();
+      expect(state.nextMock).toHaveBeenCalledWith({ foo: "next" });
+    });
+
+    it("waits to evaluate `UserState.update` until singleUserEncryptor$ emits", async () => {
+      const state = new FakeSingleUserState<ClassifiedFormat<void, Record<string, never>>>(
+        SomeUser,
+        { id: null, secret: '{"foo":"init"}', disclosed: null },
+      );
+      const singleUserEncryptor$ = new Subject<UserBound<"encryptor", UserEncryptor>>();
+      const subject = new UserStateSubject(SomeObjectKey, () => state, { singleUserEncryptor$ });
+
+      // precondition: subject doesn't update after `next`
+      const nextVal: TestType = { foo: "next" };
+      subject.next(nextVal);
+      await awaitAsync();
+      expect(state.nextMock).not.toHaveBeenCalled();
+
+      singleUserEncryptor$.next({ userId: SomeUser, encryptor: SomeEncryptor });
+      await awaitAsync();
+
+      const encrypted = { foo: "encrypt(next)" };
+      expect(state.nextMock).toHaveBeenCalledWith({ id: null, secret: encrypted, disclosed: null });
     });
 
     it("applies dynamic constraints", async () => {
@@ -556,6 +648,26 @@ describe("UserStateSubject", () => {
       expect(actual).toBeTruthy();
     });
 
+    it("completes when singleUserId$ completes", async () => {
+      const state = new FakeSingleUserState<ClassifiedFormat<void, Record<string, never>>>(
+        SomeUser,
+        { id: null, secret: '{"foo":"init"}', disclosed: null },
+      );
+      const singleUserEncryptor$ = new Subject<UserBound<"encryptor", UserEncryptor>>();
+      const subject = new UserStateSubject(SomeObjectKey, () => state, { singleUserEncryptor$ });
+
+      let actual = false;
+      subject.subscribe({
+        complete: () => {
+          actual = true;
+        },
+      });
+      singleUserEncryptor$.complete();
+      await awaitAsync();
+
+      expect(actual).toBeTruthy();
+    });
+
     it("completes when when$ completes", async () => {
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
@@ -597,6 +709,27 @@ describe("UserStateSubject", () => {
       expect(error).toEqual({ expectedUserId: SomeUser, actualUserId: errorUserId });
     });
 
+    it("errors when singleUserEncryptor$ changes", async () => {
+      const state = new FakeSingleUserState<ClassifiedFormat<void, Record<string, never>>>(
+        SomeUser,
+        { id: null, secret: '{"foo":"init"}', disclosed: null },
+      );
+      const singleUserEncryptor$ = new Subject<UserBound<"encryptor", UserEncryptor>>();
+      const subject = new UserStateSubject(SomeObjectKey, () => state, { singleUserEncryptor$ });
+      const errorUserId = "error" as UserId;
+
+      let error = false;
+      subject.subscribe({
+        error: (e: unknown) => {
+          error = e as any;
+        },
+      });
+      singleUserEncryptor$.next({ userId: errorUserId, encryptor: SomeEncryptor });
+      await awaitAsync();
+
+      expect(error).toEqual({ expectedUserId: SomeUser, actualUserId: errorUserId });
+    });
+
     it("errors when singleUserId$ errors", async () => {
       const initialValue: TestType = { foo: "init" };
       const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
@@ -611,6 +744,25 @@ describe("UserStateSubject", () => {
         },
       });
       singleUserId$.error(expected);
+      await awaitAsync();
+
+      expect(actual).toEqual(expected);
+    });
+
+    it("errors when singleUserEncryptor$ errors", async () => {
+      const initialValue: TestType = { foo: "init" };
+      const state = new FakeSingleUserState<TestType>(SomeUser, initialValue);
+      const singleUserEncryptor$ = new Subject<UserBound<"encryptor", UserEncryptor>>();
+      const subject = new UserStateSubject(SomeKey, () => state, { singleUserEncryptor$ });
+      const expected = { error: "description" };
+
+      let actual = false;
+      subject.subscribe({
+        error: (e: unknown) => {
+          actual = e as any;
+        },
+      });
+      singleUserEncryptor$.error(expected);
       await awaitAsync();
 
       expect(actual).toEqual(expected);
