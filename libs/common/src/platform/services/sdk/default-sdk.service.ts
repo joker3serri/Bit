@@ -110,7 +110,10 @@ export class DefaultSdkService implements SdkService {
           }
 
           createAndInitializeClient()
-            .then((c) => subscriber.next(c))
+            .then((c) => {
+              client = c;
+              subscriber.next(c);
+            })
             .catch((e) => {
               subscriber.error(e);
             });
