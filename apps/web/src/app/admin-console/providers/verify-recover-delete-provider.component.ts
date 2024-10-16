@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -29,7 +30,10 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
     private route: ActivatedRoute,
     private logService: LogService,
     private toastService: ToastService,
+    private formBuilder: UntypedFormBuilder,
   ) {}
+
+  formGroup = this.formBuilder.group({});
 
   async ngOnInit() {
     const qParams = await firstValueFrom(this.route.queryParams);
