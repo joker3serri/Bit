@@ -4,6 +4,8 @@ import { combineLatest, filter, firstValueFrom, map, switchMap } from "rxjs";
 import { CollectionAdminService } from "@bitwarden/admin-console/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -21,11 +23,16 @@ import { RoutedVaultFilterService } from "../../individual-vault/vault-filter/se
 /** Admin Console implementation of the `CipherFormConfigService`. */
 @Injectable()
 export class AdminConsoleCipherFormConfigService implements CipherFormConfigService {
+  private policyService: PolicyService = inject(PolicyService);
   private organizationService: OrganizationService = inject(OrganizationService);
   private cipherService: CipherService = inject(CipherService);
   private routedVaultFilterService: RoutedVaultFilterService = inject(RoutedVaultFilterService);
   private collectionAdminService: CollectionAdminService = inject(CollectionAdminService);
   private apiService: ApiService = inject(ApiService);
+
+  private allowPersonalOwnership$ = this.policyService
+    .policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
+    .pipe(map((p) => !p));
 
   private organizationId$ = this.routedVaultFilterService.filter$.pipe(
     map((filter) => filter.organizationId),
@@ -53,8 +60,8 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
     cipherId?: CipherId,
     cipherType?: CipherType,
   ): Promise<CipherFormConfig> {
-    const [organization, allCollections] = await firstValueFrom(
-      combineLatest([this.organization$, this.editableCollections$]),
+    const [organization, allowPersonalOwnership, allCollections] = await firstValueFrom(
+      combineLatest([this.organization$, this.allowPersonalOwnership$, this.editableCollections$]),
     );
 
     const cipher = await this.getCipher(organization, cipherId);
@@ -67,7 +74,7 @@ export class AdminConsoleCipherFormConfigService implements CipherFormConfigServ
       mode,
       cipherType: cipher?.type ?? cipherType ?? CipherType.Login,
       admin: organization.canEditAllCiphers ?? false,
-      allowPersonalOwnership: false,
+      allowPersonalOwnership,
       originalCipher: cipher,
       collections,
       organizations: [organization], // only a single org is in context at a time
