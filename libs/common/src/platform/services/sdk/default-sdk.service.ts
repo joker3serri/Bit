@@ -95,10 +95,9 @@ export class DefaultSdkService implements SdkService {
         return new Observable<BitwardenClient>((subscriber) => {
           let client: BitwardenClient;
 
-          async function createAndInitializeClient() {
+          const createAndInitializeClient = async () => {
             if (privateKey == null || userKey == null || orgKeys == null) {
-              subscriber.next(undefined);
-              return;
+              return undefined;
             }
 
             const settings = this.toSettings(env);
@@ -107,7 +106,7 @@ export class DefaultSdkService implements SdkService {
             await this.initializeClient(client, account, kdfParams, privateKey, userKey, orgKeys);
 
             return client;
-          }
+          };
 
           createAndInitializeClient()
             .then((c) => {

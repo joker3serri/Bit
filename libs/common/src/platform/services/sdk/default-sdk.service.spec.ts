@@ -122,9 +122,10 @@ describe("DefaultSdkService", () => {
         await new Promise(process.nextTick);
 
         userKey$.next(undefined);
+        await new Promise(process.nextTick);
 
         expect(mockClient.free).toHaveBeenCalledTimes(1);
-        expect(subject.value).toBeUndefined();
+        expect(subject.value).toBe(undefined);
       });
     });
   });
