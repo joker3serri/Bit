@@ -133,11 +133,10 @@ export class PasswordHealthMembersComponent implements OnInit {
   }
 
   formatUrisToHostnames(ciphers: any[]) {
-    const allCiphers = cipherData;
+    const allCiphers = ciphers;
     allCiphers.map((cipher) => {
       const uris = cipher.login?.uris ?? [];
       uris.map((u: { uri: string }) => (u.uri = Utils.getHostname(u.uri)));
-      // console.log(`modified uris: ${JSON.stringify(uris)}`);
     });
     return allCiphers;
   }
