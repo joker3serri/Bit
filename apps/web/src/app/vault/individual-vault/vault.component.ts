@@ -72,7 +72,6 @@ import {
   PasswordRepromptService,
 } from "@bitwarden/vault";
 
-import { RouterService } from "../../core";
 import { SharedModule } from "../../shared/shared.module";
 import { AssignCollectionsWebComponent } from "../components/assign-collections";
 import {
@@ -210,7 +209,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     private billingAccountProfileStateService: BillingAccountProfileStateService,
     private toastService: ToastService,
     private accountService: AccountService,
-    private routerService: RouterService,
     private cipherFormConfigService: DefaultCipherFormConfigService,
   ) {}
 
