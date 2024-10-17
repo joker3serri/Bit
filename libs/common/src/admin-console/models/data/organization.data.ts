@@ -52,6 +52,9 @@ export class OrganizationData {
   familySponsorshipValidUntil?: Date;
   familySponsorshipToDelete?: boolean;
   accessSecretsManager: boolean;
+  limitCollectionCreation: boolean;
+  limitCollectionDeletion: boolean;
+  // Deprecated: https://bitwarden.atlassian.net/browse/PM-10863
   limitCollectionCreationDeletion: boolean;
   allowAdminAccessToAllCollectionItems: boolean;
   userIsManagedByOrganization: boolean;
@@ -111,6 +114,9 @@ export class OrganizationData {
     this.familySponsorshipValidUntil = response.familySponsorshipValidUntil;
     this.familySponsorshipToDelete = response.familySponsorshipToDelete;
     this.accessSecretsManager = response.accessSecretsManager;
+    this.limitCollectionCreation = response.limitCollectionCreation;
+    this.limitCollectionDeletion = response.limitCollectionDeletion;
+    // Deprecated: https://bitwarden.atlassian.net/browse/PM-10863
     this.limitCollectionCreationDeletion = response.limitCollectionCreationDeletion;
     this.allowAdminAccessToAllCollectionItems = response.allowAdminAccessToAllCollectionItems;
     this.userIsManagedByOrganization = response.userIsManagedByOrganization;
