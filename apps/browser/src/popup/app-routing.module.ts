@@ -11,7 +11,6 @@ import {
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
 import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
-import { generatorSwap } from "@bitwarden/angular/tools/generator/generator-swap";
 import { extensionRefreshRedirect } from "@bitwarden/angular/utils/extension-refresh-redirect";
 import { extensionRefreshSwap } from "@bitwarden/angular/utils/extension-refresh-swap";
 import {
@@ -21,9 +20,11 @@ import {
   LockV2Component,
   PasswordHintComponent,
   RegistrationFinishComponent,
+  RegistrationLockAltIcon,
   RegistrationStartComponent,
   RegistrationStartSecondaryComponent,
   RegistrationStartSecondaryComponentData,
+  RegistrationUserAddIcon,
   SetPasswordJitComponent,
   UserLockIcon,
 } from "@bitwarden/auth/angular";
@@ -423,8 +424,12 @@ const routes: Routes = [
           path: "hint",
           canActivate: [unauthGuardFn(unauthRouteOverrides)],
           data: {
-            pageTitle: "requestPasswordHint",
-            pageSubtitle: "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou",
+            pageTitle: {
+              key: "requestPasswordHint",
+            },
+            pageSubtitle: {
+              key: "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou",
+            },
             pageIcon: UserLockIcon,
             showBackButton: true,
             state: "hint",
@@ -446,34 +451,16 @@ const routes: Routes = [
     component: ExtensionAnonLayoutWrapperComponent,
     children: [
       {
-        path: "lockV2",
-        canActivate: [canAccessFeature(FeatureFlag.ExtensionRefresh), lockGuard()],
-        data: {
-          pageIcon: LockIcon,
-          pageTitle: "yourVaultIsLockedV2",
-          showReadonlyHostname: true,
-          showAcctSwitcher: true,
-        } satisfies ExtensionAnonLayoutWrapperData,
-        children: [
-          {
-            path: "",
-            component: LockV2Component,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: "",
-    component: AnonLayoutWrapperComponent,
-    children: [
-      {
         path: "signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
           state: "signup",
-          pageTitle: "createAccount",
-        } satisfies RouteDataProperties & AnonLayoutWrapperData,
+          pageIcon: RegistrationUserAddIcon,
+          pageTitle: {
+            key: "createAccount",
+          },
+          showBackButton: true,
+        } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -493,10 +480,10 @@ const routes: Routes = [
         path: "finish-signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
-          pageTitle: "setAStrongPassword",
-          pageSubtitle: "finishCreatingYourAccountBySettingAPassword",
+          pageIcon: RegistrationLockAltIcon,
           state: "finish-signup",
-        } satisfies RouteDataProperties & AnonLayoutWrapperData,
+          showBackButton: true,
+        } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
         children: [
           {
             path: "",
@@ -505,12 +492,40 @@ const routes: Routes = [
         ],
       },
       {
+        path: "lockV2",
+        canActivate: [canAccessFeature(FeatureFlag.ExtensionRefresh), lockGuard()],
+        data: {
+          pageIcon: LockIcon,
+          pageTitle: {
+            key: "yourVaultIsLockedV2",
+          },
+          showReadonlyHostname: true,
+          showAcctSwitcher: true,
+        } satisfies ExtensionAnonLayoutWrapperData,
+        children: [
+          {
+            path: "",
+            component: LockV2Component,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
         path: "set-password-jit",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification)],
         component: SetPasswordJitComponent,
         data: {
-          pageTitle: "joinOrganization",
-          pageSubtitle: "finishJoiningThisOrganizationBySettingAMasterPassword",
+          pageTitle: {
+            key: "joinOrganization",
+          },
+          pageSubtitle: {
+            key: "finishJoiningThisOrganizationBySettingAMasterPassword",
+          },
           state: "set-password-jit",
         } satisfies RouteDataProperties & AnonLayoutWrapperData,
       },
@@ -555,7 +570,7 @@ const routes: Routes = [
         canDeactivate: [clearVaultStateGuard],
         data: { state: "tabs_vault" } satisfies RouteDataProperties,
       }),
-      ...generatorSwap(GeneratorComponent, CredentialGeneratorComponent, {
+      ...extensionRefreshSwap(GeneratorComponent, CredentialGeneratorComponent, {
         path: "generator",
         canActivate: [authGuard],
         data: { state: "tabs_generator" } satisfies RouteDataProperties,
