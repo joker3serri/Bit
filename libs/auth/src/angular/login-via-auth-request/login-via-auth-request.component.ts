@@ -86,6 +86,8 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   ) {
     this.clientType = this.platformUtilsService.getClientType();
 
+    // Gets SignalR push notification
+    // Only fires on approval to prevent enumeration
     this.authRequestService.authRequestPushNotification$
       .pipe(takeUntil(this.destroy$))
       .subscribe((requestId) => {
@@ -117,9 +119,9 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     }
 
     if (this.state === State.AdminAuthRequest) {
-      // Pull email from state for admin auth reqs b/c it is available
-      // This also prevents it from being lost on refresh as the
-      // login service email does not persist.
+      // Get email from state for admin auth requests because it is available.
+      // TODO-rr-bw: Verify if the comment below is still true
+      // This also prevents it from being lost on refresh as the login service email does not persist.
       this.email = await firstValueFrom(
         this.accountService.activeAccount$.pipe(map((a) => a?.email)),
       );
@@ -167,7 +169,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy(): Promise<void> {
-    // await this.anonymousHubService.stopHubConnection();
+    await this.anonymousHubService.stopHubConnection();
 
     this.destroy$.next();
     this.destroy$.complete();
@@ -380,7 +382,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     await this.handleSuccessfulLoginNavigation();
   }
 
-  // TODO-rr-bw: remove void return type
   private async loginViaAuthRequestStrategy(
     requestId: string,
     authReqResponse: AuthRequestResponse,
