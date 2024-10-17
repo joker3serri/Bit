@@ -88,7 +88,7 @@ export class ForwarderSettingsComponent implements OnInit, OnDestroy {
       .subscribe(({ constraints }) => {
         for (const name in Controls) {
           const control = this.settings.get(name);
-          if (configuration.request.includes(control as any)) {
+          if (configuration.request.includes(name as any)) {
             control.enable({ emitEvent: false });
             control.setValidators(
               // the configuration's type erasure affects `toValidators` as well
