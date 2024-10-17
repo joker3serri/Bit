@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
+import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { PolicyRequest } from "@bitwarden/common/admin-console/models/request/policy.request";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -19,12 +20,31 @@ export class SingleOrgPolicy extends BasePolicy {
   selector: "policy-single-org",
   templateUrl: "single-org.component.html",
 })
-export class SingleOrgPolicyComponent extends BasePolicyComponent {
+export class SingleOrgPolicyComponent extends BasePolicyComponent implements OnInit {
   constructor(
     private i18nService: I18nService,
     private configService: ConfigService,
+    private orgDomainApiService: OrgDomainApiServiceAbstraction,
   ) {
     super();
+  }
+
+  async ngOnInit() {
+    super.ngOnInit();
+
+    if (await this.hasVerifiedDomains()) {
+      this.enabled.disable();
+    }
+  }
+
+  private async hasVerifiedDomains(): Promise<boolean> {
+    return (
+      this.enabled.value &&
+      (await this.configService.getFeatureFlag(FeatureFlag.AccountDeprovisioning)) &&
+      (await this.orgDomainApiService.getAllByOrgId(this.policyResponse.organizationId)).some(
+        (x) => x.verifiedDate !== null,
+      )
+    );
   }
 
   async buildRequest(policiesEnabledMap: Map<PolicyType, boolean>): Promise<PolicyRequest> {
