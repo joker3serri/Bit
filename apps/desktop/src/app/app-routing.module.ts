@@ -74,10 +74,6 @@ const routes: Routes = [
     component: LoginComponent,
     canActivate: [maxAccountsGuardFn()],
   },
-  {
-    path: "admin-approval-requested",
-    component: LoginViaAuthRequestComponentV1,
-  },
   ...twofactorRefactorSwap(
     TwoFactorComponent,
     AnonLayoutWrapperComponent,
@@ -141,6 +137,34 @@ const routes: Routes = [
         },
         pageSubtitle: {
           key: "aNotificationWasSentToYourDevice",
+        },
+      } satisfies AnonLayoutWrapperData,
+      children: [
+        { path: "", component: LoginViaAuthRequestComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+        },
+      ],
+    },
+  ),
+  ...unauthUiRefreshSwap(
+    LoginViaAuthRequestComponentV1,
+    AnonLayoutWrapperComponent,
+    {
+      path: "admin-approval-requested",
+      component: LoginViaAuthRequestComponentV1,
+    },
+    {
+      path: "admin-approval-requested",
+      data: {
+        pageIcon: DevicesIcon,
+        pageTitle: {
+          key: "adminApprovalRequested",
+        },
+        pageSubtitle: {
+          key: "adminApprovalRequestSentToAdmins",
         },
       } satisfies AnonLayoutWrapperData,
       children: [

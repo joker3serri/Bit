@@ -169,12 +169,6 @@ const routes: Routes = [
     data: { state: "login" } satisfies RouteDataProperties,
   },
   {
-    path: "admin-approval-requested",
-    component: LoginViaAuthRequestComponentV1,
-    canActivate: [],
-    data: { state: "login-with-device" } satisfies RouteDataProperties,
-  },
-  {
     path: "lock",
     component: LockComponent,
     canActivate: [lockGuard()],
@@ -423,6 +417,39 @@ const routes: Routes = [
         showLogo: false,
         showBackButton: true,
         state: "login-with-device",
+      } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
+      children: [
+        { path: "", component: LoginViaAuthRequestComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+        },
+      ],
+    },
+  ),
+  ...unauthUiRefreshSwap(
+    LoginViaAuthRequestComponentV1,
+    ExtensionAnonLayoutWrapperComponent,
+    {
+      path: "admin-approval-requested",
+      component: LoginViaAuthRequestComponentV1,
+      canActivate: [],
+      data: { state: "admin-approval-requested" } satisfies RouteDataProperties,
+    },
+    {
+      path: "admin-approval-requested",
+      data: {
+        pageIcon: DevicesIcon,
+        pageTitle: {
+          key: "adminApprovalRequested",
+        },
+        pageSubtitle: {
+          key: "adminApprovalRequestSentToAdmins",
+        },
+        showLogo: false,
+        showBackButton: true,
+        state: "admin-approval-requested",
       } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
       children: [
         { path: "", component: LoginViaAuthRequestComponent },
