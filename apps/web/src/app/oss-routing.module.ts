@@ -99,11 +99,6 @@ const routes: Routes = [
         data: { titleId: "loginWithPasskey" } satisfies RouteDataProperties,
       },
       {
-        path: "admin-approval-requested",
-        component: LoginViaAuthRequestComponentV1,
-        data: { titleId: "adminApprovalRequested" } satisfies RouteDataProperties,
-      },
-      {
         path: "login-initiated",
         component: LoginDecryptionOptionsComponent,
         canActivate: [tdeDecryptionRequiredGuard()],
@@ -193,6 +188,36 @@ const routes: Routes = [
           key: "aNotificationWasSentToYourDevice",
         },
         titleId: "loginInitiated",
+      } satisfies RouteDataProperties & AnonLayoutWrapperData,
+      children: [
+        { path: "", component: LoginViaAuthRequestComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+        },
+      ],
+    },
+  ),
+  ...unauthUiRefreshSwap(
+    LoginViaAuthRequestComponentV1,
+    AnonLayoutWrapperComponent,
+    {
+      path: "admin-approval-requested",
+      component: LoginViaAuthRequestComponentV1,
+      data: { titleId: "adminApprovalRequested" } satisfies RouteDataProperties,
+    },
+    {
+      path: "admin-approval-requested",
+      data: {
+        pageIcon: DevicesIcon,
+        pageTitle: {
+          key: "adminApprovalRequested",
+        },
+        pageSubtitle: {
+          key: "adminApprovalRequestSentToAdmins",
+        },
+        titleId: "adminApprovalRequested",
       } satisfies RouteDataProperties & AnonLayoutWrapperData,
       children: [
         { path: "", component: LoginViaAuthRequestComponent },
