@@ -17,6 +17,7 @@ import {
   AnonLayoutWrapperData,
   LockIcon,
   LockV2Component,
+  LoginViaAuthRequestComponent,
   PasswordHintComponent,
   RegistrationFinishComponent,
   RegistrationStartComponent,
@@ -73,10 +74,6 @@ const routes: Routes = [
     canActivate: [maxAccountsGuardFn()],
   },
   {
-    path: "login-with-device",
-    component: LoginViaAuthRequestComponentV1,
-  },
-  {
     path: "admin-approval-requested",
     component: LoginViaAuthRequestComponentV1,
   },
@@ -127,6 +124,33 @@ const routes: Routes = [
     component: RemovePasswordComponent,
     canActivate: [authGuard],
   },
+  ...unauthUiRefreshSwap(
+    LoginViaAuthRequestComponentV1,
+    AnonLayoutWrapperComponent,
+    {
+      path: "login-with-device",
+      component: LoginViaAuthRequestComponentV1,
+    },
+    {
+      path: "login-with-device",
+      data: {
+        pageTitle: {
+          key: "loginInitiated",
+        },
+        pageSubtitle: {
+          key: "aNotificationWasSentToYourDevice",
+        },
+      } satisfies AnonLayoutWrapperData,
+      children: [
+        { path: "", component: LoginViaAuthRequestComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+        },
+      ],
+    },
+  ),
   ...unauthUiRefreshSwap(
     HintComponent,
     AnonLayoutWrapperComponent,
