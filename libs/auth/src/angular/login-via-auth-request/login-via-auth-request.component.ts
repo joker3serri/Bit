@@ -105,7 +105,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
-    this.authStatus = await this.authService.getAuthStatus();
+    this.authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
 
     const matchOptions: IsActiveMatchOptions = {
       paths: "exact",
@@ -139,7 +139,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       }
 
       // We only allow a single admin approval request to be active at a time
-      // so must check state to see if we have an existing one or not
+      // so we must check state to see if we have an existing one or not
       const adminAuthReqStorable = await this.authRequestService.getAdminAuthRequest(userId);
 
       if (adminAuthReqStorable) {
