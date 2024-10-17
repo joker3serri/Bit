@@ -401,7 +401,6 @@ const routes: Routes = [
     {
       path: "login-with-device",
       component: LoginViaAuthRequestComponentV1,
-      canActivate: [],
       data: { state: "login-with-device" } satisfies RouteDataProperties,
     },
     {
@@ -434,7 +433,7 @@ const routes: Routes = [
     {
       path: "admin-approval-requested",
       component: LoginViaAuthRequestComponentV1,
-      canActivate: [],
+      // TODO-rr-bw: Verify that changing the `state` from `login-with-device` is correct (see also in route extensionAnon route a few lines below)
       data: { state: "admin-approval-requested" } satisfies RouteDataProperties,
     },
     {
