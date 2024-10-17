@@ -76,7 +76,7 @@ export class SignalRConnectionService {
       let reconnectSubscription: Subscription | null = null;
 
       // Create schedule reconnect function
-      const sheduleReconnect = (): Subscription => {
+      const scheduleReconnect = (): Subscription => {
         if (
           connection == null ||
           connection.state !== HubConnectionState.Disconnected ||
@@ -91,7 +91,7 @@ export class SignalRConnectionService {
             .start()
             .then(() => (reconnectSubscription = null))
             .catch(() => {
-              reconnectSubscription = sheduleReconnect();
+              reconnectSubscription = scheduleReconnect();
             });
         }, randomTime);
 
@@ -99,12 +99,12 @@ export class SignalRConnectionService {
       };
 
       connection.onclose((error) => {
-        reconnectSubscription = sheduleReconnect();
+        reconnectSubscription = scheduleReconnect();
       });
 
       // Start connection
       connection.start().catch(() => {
-        reconnectSubscription = sheduleReconnect();
+        reconnectSubscription = scheduleReconnect();
       });
 
       return () => {
