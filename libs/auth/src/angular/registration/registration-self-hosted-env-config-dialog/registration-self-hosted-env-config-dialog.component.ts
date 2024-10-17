@@ -132,6 +132,9 @@ export class RegistrationSelfHostedEnvConfigDialogComponent implements OnInit, O
   ) {}
 
   ngOnInit() {
+    /**
+     * Populate the form with the current self-hosted environment settings.
+     */
     this.environmentService.environment$
       .pipe(
         take(1),
