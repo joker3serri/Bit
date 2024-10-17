@@ -27,10 +27,10 @@
               <bit-label>{{ "email" | i18n }}</bit-label>
               <input id="emails" type="text" appAutoFocus bitInput formControlName="emails" />
               <bit-hint *ngIf="remainingSeats > 1; else singleSeat">{{
-                "inviteMultipleEmailDesc" | i18n: (remainingSeats$ | async)
+                "inviteMultipleEmailDesc" | i18n: remainingSeats
               }}</bit-hint>
               <ng-template #singleSeat>
-                <bit-hint>{{ "inviteSingleEmailDesc" | i18n: (remainingSeats$ | async) }}</bit-hint>
+                <bit-hint>{{ "inviteSingleEmailDesc" | i18n: remainingSeats }}</bit-hint>
               </ng-template>
             </bit-form-field>
           </ng-container>
