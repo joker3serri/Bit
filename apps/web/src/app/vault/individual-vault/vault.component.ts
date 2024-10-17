@@ -1204,17 +1204,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   private async go(queryParams: any = null) {
-    if (
-      !this.router.isActive("/vault", {
-        paths: "exact",
-        queryParams: "exact",
-        fragment: "ignored",
-        matrixParams: "ignored",
-      })
-    ) {
-      return;
-    }
-
     if (queryParams == null) {
       queryParams = {
         favorites: this.activeFilter.isFavorites || null,
