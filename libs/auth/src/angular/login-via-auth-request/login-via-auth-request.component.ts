@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { IsActiveMatchOptions, Router, RouterModule } from "@angular/router";
-import { firstValueFrom, map, Subject, takeUntil } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -50,7 +51,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private authRequest: CreateAuthRequest;
   private authRequestKeyPair: { publicKey: Uint8Array; privateKey: Uint8Array };
   private authStatus: AuthenticationStatus;
-  private destroy$ = new Subject<void>();
   private resendTimeoutSeconds = 12;
 
   protected clientType: ClientType;
@@ -86,7 +86,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     // Gets SignalR push notification
     // Only fires on approval to prevent enumeration
     this.authRequestService.authRequestPushNotification$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed())
       .subscribe((requestId) => {
         this.verifyAndHandleApprovedAuthReq(requestId).catch((e: Error) => {
           this.toastService.showToast({
@@ -167,9 +167,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
   async ngOnDestroy(): Promise<void> {
     await this.anonymousHubService.stopHubConnection();
-
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private async handleExistingAdminAuthRequest(
@@ -323,9 +320,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
           errorRoute = "/login-initiated";
         }
 
-        // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.router.navigate([errorRoute]);
+        await this.router.navigate([errorRoute]);
         this.validationService.showError(error);
         return;
       }
