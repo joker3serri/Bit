@@ -246,10 +246,14 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed),
       )
       .subscribe((showForwarder) => {
-        if (showForwarder) {
-          this.value$.next("-");
-        }
-        this.showForwarder$.next(showForwarder);
+        // update subjects within the angular zone so that the
+        // template bindings refresh immediately
+        this.zone.run(() => {
+          if (showForwarder) {
+            this.value$.next("-");
+          }
+          this.showForwarder$.next(showForwarder);
+        });
       });
 
     // populate the form with the user's preferences to kick off interactivity
