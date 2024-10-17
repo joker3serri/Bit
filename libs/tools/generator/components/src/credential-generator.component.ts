@@ -8,6 +8,7 @@ import {
   map,
   of,
   ReplaySubject,
+  startWith,
   Subject,
   switchMap,
   takeUntil,
@@ -48,6 +49,8 @@ type UsernameNavValue = UsernameAlgorithm | EmailAlgorithm | typeof FORWARDER;
 
 const NONE_SELECTED = "none";
 type ForwarderNavValue = ForwarderIntegration | typeof NONE_SELECTED;
+
+const FORWARDER_INITIALIZED = new GeneratedCredential("-", null, Date.now());
 
 @Component({
   selector: "tools-credential-generator",
@@ -112,7 +115,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         map((algorithms) => {
           const usernames = algorithms.filter((a) => !isForwarderIntegration(a.id));
           const usernameOptions = this.toOptions(usernames) as Option<UsernameNavValue>[];
-          usernameOptions.push({ value: FORWARDER, label: this.i18nService.t("forwarder") });
+          usernameOptions.push({ value: FORWARDER, label: this.i18nService.t("forwardedEmail") });
 
           const forwarders = algorithms.filter((a) => isForwarderIntegration(a.id));
           const forwarderOptions = this.toOptions(forwarders) as Option<ForwarderNavValue>[];
@@ -226,11 +229,19 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         } else if (isPasswordAlgorithm(algorithm)) {
           setPreference("password");
         } else {
+          this.showForwarder$.next(false);
           return;
         }
 
         preferences.next(preference);
       });
+
+    this.username.valueChanges
+      .pipe(
+        map(({ nav }) => nav === FORWARDER),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(this.showForwarder$);
 
     // populate the form with the user's preferences to kick off interactivity
     preferences.pipe(takeUntil(this.destroyed)).subscribe(({ email, username, password }) => {
@@ -305,7 +316,9 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     if (isForwarderIntegration(type)) {
       const forwarder = getForwarderConfiguration(type.forwarder);
       const configuration = toCredentialGeneratorConfiguration(forwarder);
-      return this.generatorService.generate$(configuration, dependencies);
+      const generator = this.generatorService.generate$(configuration, dependencies);
+
+      return generator.pipe(startWith(FORWARDER_INITIALIZED));
     }
 
     throw new Error(`Invalid generator type: "${type}"`);
@@ -322,6 +335,9 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
   /** Tracks the currently selected forwarder. */
   protected forwarderId$ = new BehaviorSubject<IntegrationId>(null);
+
+  /** Tracks forwarder control visibility */
+  protected showForwarder$ = new BehaviorSubject<boolean>(false);
 
   /** tracks the currently selected credential type */
   protected algorithm$ = new ReplaySubject<AlgorithmInfo>(1);
@@ -344,7 +360,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   private toOptions(algorithms: AlgorithmInfo[]) {
     const options: Option<CredentialAlgorithm>[] = algorithms.map((algorithm) => ({
       value: algorithm.id,
-      label: this.i18nService.t(algorithm.name),
+      label: algorithm.name,
     }));
 
     return options;

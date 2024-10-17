@@ -43,7 +43,12 @@ import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subje
 import { UserId } from "@bitwarden/common/types/guid";
 
 import { Randomizer } from "../abstractions";
-import { Generators, getForwarderConfiguration, toCredentialGeneratorConfiguration } from "../data";
+import {
+  Generators,
+  getForwarderConfiguration,
+  Integrations,
+  toCredentialGeneratorConfiguration,
+} from "../data";
 import { availableAlgorithms } from "../policies/available-algorithms-policy";
 import { mapPolicyToConstraints } from "../rx";
 import {
@@ -53,6 +58,7 @@ import {
   AlgorithmInfo,
   CredentialPreference,
   isForwarderIntegration,
+  ForwarderIntegration,
 } from "../types";
 import {
   CredentialGeneratorConfiguration as Configuration,
@@ -208,12 +214,20 @@ export class CredentialGeneratorService {
   algorithms(category: CredentialCategory[]): AlgorithmInfo[];
   algorithms(category: CredentialCategory | CredentialCategory[]): AlgorithmInfo[] {
     const categories: CredentialCategory[] = Array.isArray(category) ? category : [category];
+
     const algorithms = categories
       .flatMap((c) => CredentialCategories[c] as CredentialAlgorithm[])
       .map((id) => this.algorithm(id))
       .filter((info) => info !== null);
 
-    return algorithms;
+    const forwarders = Object.keys(Integrations)
+      .map((key: keyof typeof Integrations) => {
+        const forwarder: ForwarderIntegration = { forwarder: Integrations[key].id };
+        return this.algorithm(forwarder);
+      })
+      .filter((forwarder) => categories.includes(forwarder.category));
+
+    return algorithms.concat(forwarders);
   }
 
   /** Look up the metadata for a specific generator algorithm
