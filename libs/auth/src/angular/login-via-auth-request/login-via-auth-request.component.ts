@@ -32,6 +32,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ButtonModule, LinkModule, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
@@ -50,7 +51,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private authRequestKeyPair: { publicKey: Uint8Array; privateKey: Uint8Array };
   private authStatus: AuthenticationStatus;
   private destroy$ = new Subject<void>();
-  private resendTimeout = 12000;
+  private resendTimeoutSeconds = 12;
 
   protected clientType: ClientType;
   protected ClientType = ClientType;
@@ -59,11 +60,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   protected showResendNotification = false;
   protected StateEnum = State;
   protected state = State.StandardAuthRequest;
-
-  onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
-  onSuccessfulLogin: () => Promise<any>;
-  onSuccessfulLoginNavigate: () => Promise<any>;
-  onSuccessfulLoginForceResetNavigate: () => Promise<any>;
 
   constructor(
     private accountService: AccountService,
@@ -81,6 +77,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
     private router: Router,
+    private syncService: SyncService,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) {
@@ -258,7 +255,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.showResendNotification = true;
-    }, this.resendTimeout);
+    }, this.resendTimeoutSeconds * 1000);
   }
 
   private async verifyAndHandleApprovedAuthReq(requestId: string): Promise<void> {
@@ -396,17 +393,9 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   // Routing logic
   private async handlePostLoginNavigation(loginResponse: AuthResult) {
     if (loginResponse.requiresTwoFactor) {
-      if (this.onSuccessfulLoginTwoFactorNavigate != null) {
-        await this.onSuccessfulLoginTwoFactorNavigate();
-      } else {
-        await this.router.navigate(["2fa"]);
-      }
+      await this.router.navigate(["2fa"]);
     } else if (loginResponse.forcePasswordReset != ForceSetPasswordReason.None) {
-      if (this.onSuccessfulLoginForceResetNavigate != null) {
-        await this.onSuccessfulLoginForceResetNavigate();
-      } else {
-        await this.router.navigate(["update-temp-password"]);
-      }
+      await this.router.navigate(["update-temp-password"]);
     } else {
       await this.handleSuccessfulLoginNavigation();
     }
@@ -485,9 +474,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     await this.authRequestService.clearAdminAuthRequest(userId);
 
     // start new auth request
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.startAuthRequestLogin();
+    await this.startAuthRequestLogin();
   }
 
   private async handleSuccessfulLoginNavigation() {
@@ -496,14 +483,8 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       await this.loginEmailService.saveEmailSettings();
     }
 
-    if (this.onSuccessfulLogin != null) {
-      await this.onSuccessfulLogin();
-    }
-
-    if (this.onSuccessfulLoginNavigate != null) {
-      await this.onSuccessfulLoginNavigate();
-    } else {
-      await this.router.navigate(["vault"]);
-    }
+    // TODO-rr-bw: Verify if we want to await a fullSync on all clients now (not just Extension/Desktop as before)
+    await this.syncService.fullSync(true);
+    await this.router.navigate(["vault"]);
   }
 }
