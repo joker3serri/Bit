@@ -30,7 +30,7 @@ const integrations = new Map(Object.values(Integrations).map((i) => [i.id, i]));
 export function getForwarderConfiguration(id: IntegrationId): ForwarderConfiguration<ApiSettings> {
   const maybeForwarder = integrations.get(id);
 
-  if ("forwarder" in maybeForwarder) {
+  if (maybeForwarder && "forwarder" in maybeForwarder) {
     return maybeForwarder as ForwarderConfiguration<ApiSettings>;
   } else {
     return null;

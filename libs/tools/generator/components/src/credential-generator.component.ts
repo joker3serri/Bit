@@ -2,13 +2,13 @@ import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } fro
 import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
+  combineLatestWith,
   concat,
   distinctUntilChanged,
   filter,
   map,
   of,
   ReplaySubject,
-  startWith,
   Subject,
   switchMap,
   takeUntil,
@@ -49,8 +49,6 @@ type UsernameNavValue = UsernameAlgorithm | EmailAlgorithm | typeof FORWARDER;
 
 const NONE_SELECTED = "none";
 type ForwarderNavValue = ForwarderIntegration | typeof NONE_SELECTED;
-
-const FORWARDER_INITIALIZED = new GeneratedCredential("-", null, Date.now());
 
 @Component({
   selector: "tools-credential-generator",
@@ -184,8 +182,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         });
       });
 
-    // assume the last-visible generator algorithm is the user's preferred one
-    const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
+    const username$ = new Subject<{ nav: UsernameNavValue }>();
     this.root$
       .pipe(
         filter(({ nav }) => !!nav),
@@ -196,6 +193,14 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
             return of(maybeAlgorithm as { nav: CredentialAlgorithm });
           }
         }),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(username$);
+
+    // assume the last-visible generator algorithm is the user's preferred one
+    const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
+    username$
+      .pipe(
         switchMap((maybeAlgorithm) => {
           if (maybeAlgorithm.nav === FORWARDER) {
             return concat(of(this.forwarder.value), this.forwarder.valueChanges);
@@ -229,19 +234,23 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         } else if (isPasswordAlgorithm(algorithm)) {
           setPreference("password");
         } else {
-          this.showForwarder$.next(false);
           return;
         }
 
         preferences.next(preference);
       });
 
-    this.username.valueChanges
+    username$
       .pipe(
         map(({ nav }) => nav === FORWARDER),
         takeUntil(this.destroyed),
       )
-      .subscribe(this.showForwarder$);
+      .subscribe((showForwarder) => {
+        if (showForwarder) {
+          this.value$.next("-");
+        }
+        this.showForwarder$.next(showForwarder);
+      });
 
     // populate the form with the user's preferences to kick off interactivity
     preferences.pipe(takeUntil(this.destroyed)).subscribe(({ email, username, password }) => {
@@ -317,8 +326,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       const forwarder = getForwarderConfiguration(type.forwarder);
       const configuration = toCredentialGeneratorConfiguration(forwarder);
       const generator = this.generatorService.generate$(configuration, dependencies);
-
-      return generator.pipe(startWith(FORWARDER_INITIALIZED));
+      return generator;
     }
 
     throw new Error(`Invalid generator type: "${type}"`);
@@ -341,6 +349,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
   /** tracks the currently selected credential type */
   protected algorithm$ = new ReplaySubject<AlgorithmInfo>(1);
+
+  protected showAlgorithm$ = this.algorithm$.pipe(
+    combineLatestWith(this.showForwarder$),
+    map(([algorithm, showForwarder]) => (showForwarder ? null : algorithm)),
+  );
 
   /** Emits hint key for the currently selected credential type */
   protected credentialTypeHint$ = new ReplaySubject<string>(1);
