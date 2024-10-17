@@ -26,6 +26,7 @@ import {
   LockIcon,
   UserLockIcon,
   LoginViaAuthRequestComponent,
+  DevicesIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -184,6 +185,7 @@ const routes: Routes = [
     {
       path: "login-with-device",
       data: {
+        pageIcon: DevicesIcon,
         pageTitle: {
           key: "loginInitiated",
         },

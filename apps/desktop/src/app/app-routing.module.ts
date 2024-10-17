@@ -15,6 +15,7 @@ import { extensionRefreshRedirect } from "@bitwarden/angular/utils/extension-ref
 import {
   AnonLayoutWrapperComponent,
   AnonLayoutWrapperData,
+  DevicesIcon,
   LockIcon,
   LockV2Component,
   LoginViaAuthRequestComponent,
@@ -134,6 +135,7 @@ const routes: Routes = [
     {
       path: "login-with-device",
       data: {
+        pageIcon: DevicesIcon,
         pageTitle: {
           key: "loginInitiated",
         },

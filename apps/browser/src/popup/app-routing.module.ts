@@ -16,6 +16,7 @@ import { extensionRefreshSwap } from "@bitwarden/angular/utils/extension-refresh
 import {
   AnonLayoutWrapperComponent,
   AnonLayoutWrapperData,
+  DevicesIcon,
   LockIcon,
   LockV2Component,
   LoginViaAuthRequestComponent,
@@ -412,6 +413,7 @@ const routes: Routes = [
     {
       path: "login-with-device",
       data: {
+        pageIcon: DevicesIcon,
         pageTitle: {
           key: "loginInitiated",
         },
