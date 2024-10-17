@@ -40,7 +40,7 @@ interface PushEvent {
 /**
  * An implementation for connecting to web push based notifications running in a Worker.
  */
-export class WorkerWebPushConnectionService implements WebPushConnectionService, WebPushConnector {
+export class WorkerWebPushConnectionService implements WebPushConnectionService {
   private pushEvent = new Subject<PushEvent>();
   private pushChangeEvent = new Subject<PushSubscriptionChangeEvent>();
 
@@ -78,7 +78,14 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService,
         if (config.push?.pushTechnology === PushTechnology.WebPush) {
           return {
             type: "supported",
-            service: this,
+            service: new MyWebPushConnector(
+              config.push.vapidPublicKey,
+              userId,
+              this.webPushApiService,
+              this.serviceWorkerRegistration,
+              this.pushEvent,
+              this.pushChangeEvent,
+            ),
           };
         }
 
@@ -86,29 +93,36 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService,
       }),
     );
   }
+}
 
-  connect$(userId: UserId): Observable<NotificationResponse> {
-    // Do connection
-    return this.configService.serverConfig$.pipe(
-      switchMap((config) => {
-        if (config.push?.pushTechnology !== PushTechnology.WebPush) {
-          throw new Error(
-            "This client does not support WebPush, call 'supportStatus$' to check if the WebPush is supported before calling 'connect$'",
-          );
-        }
+class MyWebPushConnector implements WebPushConnector {
+  constructor(
+    private readonly vapidPublicKey: string,
+    private readonly userId: UserId,
+    private readonly webPushApiService: WebPushNotificationsApiService,
+    private readonly serviceWorkerRegistration: ServiceWorkerRegistration,
+    private readonly pushEvent$: Observable<PushEvent>,
+    private readonly pushChangeEvent$: Observable<PushSubscriptionChangeEvent>,
+  ) {}
 
-        // Create connection
-        return this.getOrCreateSubscription$(config.push.vapidPublicKey).pipe(
-          concatMap((subscription) => {
-            return defer(async () => {
-              await this.webPushApiService.putSubscription(subscription.toJSON());
-            }).pipe(
-              switchMap(() => this.pushEvent),
-              map((e) => new NotificationResponse(e.data.json().data)),
-            );
-          }),
+  connect$(): Observable<NotificationResponse> {
+    return this.getOrCreateSubscription$(this.vapidPublicKey).pipe(
+      concatMap((subscription) => {
+        return defer(() => this.webPushApiService.putSubscription(subscription.toJSON())).pipe(
+          switchMap(() => this.pushEvent$),
+          map((e) => new NotificationResponse(e.data.json().data)),
         );
       }),
+    );
+  }
+
+  private pushManagerSubscribe$(key: string) {
+    return defer(
+      async () =>
+        await this.serviceWorkerRegistration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: key,
+        }),
     );
   }
 
@@ -133,22 +147,12 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService,
           return of(subscription);
         }),
       ),
-      this.pushChangeEvent.pipe(
+      this.pushChangeEvent$.pipe(
         concatMap((event) => {
           // TODO: Is this enough, do I need to do something with oldSubscription
           return of(event.newSubscription);
         }),
       ),
-    );
-  }
-
-  private pushManagerSubscribe$(key: string) {
-    return defer(
-      async () =>
-        await this.serviceWorkerRegistration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: key,
-        }),
     );
   }
 }
