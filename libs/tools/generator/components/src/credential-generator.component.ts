@@ -186,25 +186,25 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     this.root$
       .pipe(
         filter(({ nav }) => !!nav),
-        switchMap((root) => {
-          if (root.nav === IDENTIFIER) {
+        switchMap((maybeAlgorithm) => {
+          if (maybeAlgorithm.nav === IDENTIFIER) {
             return concat(of(this.username.value), this.username.valueChanges);
           } else {
-            return of(root as { nav: CredentialAlgorithm });
+            return of(maybeAlgorithm as { nav: CredentialAlgorithm });
           }
         }),
-        switchMap((username) => {
-          if (username.nav === FORWARDER) {
+        switchMap((maybeAlgorithm) => {
+          if (maybeAlgorithm.nav === FORWARDER) {
             return concat(of(this.forwarder.value), this.forwarder.valueChanges);
           } else {
-            return of(username as { nav: CredentialAlgorithm });
+            return of(maybeAlgorithm as { nav: CredentialAlgorithm });
           }
         }),
-        map((forwarder) => {
-          if (forwarder.nav === NONE_SELECTED) {
+        map((maybeAlgorithm) => {
+          if (maybeAlgorithm.nav === NONE_SELECTED) {
             return { nav: null };
           } else {
-            return forwarder as { nav: CredentialAlgorithm };
+            return maybeAlgorithm as { nav: CredentialAlgorithm };
           }
         }),
         filter(({ nav }) => !!nav),
@@ -237,7 +237,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       // the last preference set by the user "wins"
       const forwarderPref = isForwarderIntegration(email.algorithm) ? email : null;
       const usernamePref = email.updated > username.updated ? email : username;
-      const rootPref = username.updated > password.updated ? username : password;
+      const rootPref = usernamePref.updated > password.updated ? usernamePref : password;
 
       // inject drilldown flags
       const forwarderNav = !forwarderPref
