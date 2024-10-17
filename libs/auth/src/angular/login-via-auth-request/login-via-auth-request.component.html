@@ -16,7 +16,7 @@
       {{ "resendNotification" | i18n }}
     </button>
 
-    <div class="tw-mt-4">
+    <div *ngIf="clientType !== ClientType.Browser" class="tw-mt-4">
       <span>{{ "needAnotherOptionV1" | i18n }}</span>
       <a routerLink="/login" bitLink linkType="primary">{{ "viewAllLoginOptions" | i18n }}</a>
     </div>

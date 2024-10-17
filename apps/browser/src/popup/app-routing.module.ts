@@ -18,6 +18,7 @@ import {
   AnonLayoutWrapperData,
   LockIcon,
   LockV2Component,
+  LoginViaAuthRequestComponent,
   PasswordHintComponent,
   RegistrationFinishComponent,
   RegistrationStartComponent,
@@ -165,12 +166,6 @@ const routes: Routes = [
     component: LoginComponent,
     canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "login" } satisfies RouteDataProperties,
-  },
-  {
-    path: "login-with-device",
-    component: LoginViaAuthRequestComponentV1,
-    canActivate: [],
-    data: { state: "login-with-device" } satisfies RouteDataProperties,
   },
   {
     path: "admin-approval-requested",
@@ -405,6 +400,38 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { state: "update-temp-password" } satisfies RouteDataProperties,
   },
+  ...unauthUiRefreshSwap(
+    LoginViaAuthRequestComponentV1,
+    ExtensionAnonLayoutWrapperComponent,
+    {
+      path: "login-with-device",
+      component: LoginViaAuthRequestComponentV1,
+      canActivate: [],
+      data: { state: "login-with-device" } satisfies RouteDataProperties,
+    },
+    {
+      path: "login-with-device",
+      data: {
+        pageTitle: {
+          key: "loginInitiated",
+        },
+        pageSubtitle: {
+          key: "aNotificationWasSentToYourDevice",
+        },
+        showLogo: false,
+        showBackButton: true,
+        state: "login-with-device",
+      } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
+      children: [
+        { path: "", component: LoginViaAuthRequestComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+        },
+      ],
+    },
+  ),
   ...unauthUiRefreshSwap(
     HintComponent,
     ExtensionAnonLayoutWrapperComponent,

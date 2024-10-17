@@ -22,12 +22,13 @@ import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { CreateAuthRequest } from "@bitwarden/common/auth/models/request/create-auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
-import { HttpStatusCode } from "@bitwarden/common/enums";
+import { ClientType, HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -51,6 +52,8 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private resendTimeout = 12000;
 
+  protected clientType: ClientType;
+  protected ClientType = ClientType;
   protected email: string;
   protected fingerprintPhrase: string;
   protected showResendNotification = false;
@@ -76,10 +79,13 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     private loginEmailService: LoginEmailServiceAbstraction,
     private loginStrategyService: LoginStrategyServiceAbstraction,
     private passwordGenerationService: PasswordGenerationServiceAbstraction,
+    private platformUtilsService: PlatformUtilsService,
     private router: Router,
     private toastService: ToastService,
     private validationService: ValidationService,
   ) {
+    this.clientType = this.platformUtilsService.getClientType();
+
     this.authRequestService.authRequestPushNotification$
       .pipe(takeUntil(this.destroy$))
       .subscribe((requestId) => {
