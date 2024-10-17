@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -7,7 +6,6 @@ import { ProviderApiServiceAbstraction } from "@bitwarden/common/admin-console/a
 import { ProviderVerifyRecoverDeleteRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-verify-recover-delete.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ToastService } from "@bitwarden/components";
 
 @Component({
@@ -25,15 +23,11 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
   constructor(
     private router: Router,
     private providerApiService: ProviderApiServiceAbstraction,
-    private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private route: ActivatedRoute,
     private logService: LogService,
     private toastService: ToastService,
-    private formBuilder: UntypedFormBuilder,
   ) {}
-
-  formGroup = this.formBuilder.group({});
 
   async ngOnInit() {
     const qParams = await firstValueFrom(this.route.queryParams);

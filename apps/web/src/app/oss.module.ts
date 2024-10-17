@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 
-import { ProviderModule } from "./admin-console/providers/provider.module";
 import { AuthModule } from "./auth";
 import { LoginModule } from "./auth/login/login.module";
 import { TrialInitiationModule } from "./auth/trial-initiation/trial-initiation.module";
@@ -19,7 +18,6 @@ import { VaultFilterModule } from "./vault/individual-vault/vault-filter/vault-f
     LoginModule,
     AuthModule,
     AccessComponent,
-    ProviderModule,
   ],
   exports: [
     SharedModule,
