@@ -108,7 +108,7 @@ export class PasswordHealthMembersComponent implements OnInit {
 
   async setCiphers() {
     // const allCiphers = await this.cipherService.getAllFromApiForOrganization(this.organization.id);
-    const allCiphers = cipherData;
+    const allCiphers = this.formatUrisToHostnames(cipherData);
     allCiphers.forEach(async (cipher) => {
       this.findWeakPassword(cipher);
       this.findReusedPassword(cipher);
@@ -130,6 +130,16 @@ export class PasswordHealthMembersComponent implements OnInit {
     //     return c;
     //   }
     // });
+  }
+
+  formatUrisToHostnames(ciphers: any[]) {
+    const allCiphers = cipherData;
+    allCiphers.map((cipher) => {
+      const uris = cipher.login?.uris ?? [];
+      uris.map((u: { uri: string }) => (u.uri = Utils.getHostname(u.uri)));
+      // console.log(`modified uris: ${JSON.stringify(uris)}`);
+    });
+    return allCiphers;
   }
 
   protected checkForExistingCipher(ciph: CipherView) {
