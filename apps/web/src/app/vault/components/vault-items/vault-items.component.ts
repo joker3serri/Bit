@@ -329,25 +329,27 @@ export class VaultItemsComponent {
    * Sorts VaultItems based on group names
    */
   protected sortByGroups = (a: VaultItem, b: VaultItem): number => {
-    const getGroupNames = (item: VaultItem): string => {
-      if (item.collection instanceof CollectionAdminView) {
-        return item.collection.groups
-          .map((group) => this.getGroupName(group.id))
-          .filter(Boolean)
-          .join(",");
+    const getFirstGroupName = (item: VaultItem): string => {
+      if (item.collection instanceof CollectionAdminView && item.collection.groups.length > 0) {
+        return item.collection.groups.map((group) => this.getGroupName(group.id) || "").sort()[0];
       }
-
-      return "";
+      return null;
     };
 
-    const aGroupNames = getGroupNames(a);
-    const bGroupNames = getGroupNames(b);
+    const aGroupName = getFirstGroupName(a);
+    const bGroupName = getFirstGroupName(b);
 
-    if (aGroupNames.length !== bGroupNames.length) {
-      return bGroupNames.length - aGroupNames.length;
+    // Collections with groups come before collections without groups.
+    // If a collection has no groups, getFirstGroupName returns null.
+    if (aGroupName === null) {
+      return 1;
     }
 
-    return aGroupNames.localeCompare(bGroupNames);
+    if (bGroupName === null) {
+      return -1;
+    }
+
+    return aGroupName.localeCompare(bGroupName);
   };
 
   /**
