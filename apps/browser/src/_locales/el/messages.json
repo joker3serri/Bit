@@ -71,6 +71,15 @@
   "joinOrganization": {
     "message": "Συμμετοχή στον οργανισμό"
   },
+  "joinOrganizationName": {
+    "message": "Join $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "Ολοκληρώστε τη συμμετοχή σας σε αυτόν τον οργανισμό ορίζοντας έναν κύριο κωδικό πρόσβασης."
   },
@@ -381,7 +390,7 @@
   },
   "generator": {
     "message": "Γεννήτρια",
-    "description": "Short for 'Password Generator'."
+    "description": "Short for 'credential generator'."
   },
   "passGenInfo": {
     "message": "Δημιουργήστε αυτόματα ισχυρούς και μοναδικούς κωδικούς πρόσβασης για τις συνδέσεις σας."
@@ -1407,6 +1416,12 @@
   },
   "showInlineMenuLabel": {
     "message": "Εμφάνιση μενού αυτόματης συμπλήρωσης στα πεδία της φόρμας"
+  },
+  "showInlineMenuIdentitiesLabel": {
+    "message": "Εμφάνιση ταυτοτήτων ως προτάσεις"
+  },
+  "showInlineMenuCardsLabel": {
+    "message": "Εμφάνιση καρτών ως προτάσεις"
   },
   "showInlineMenuOnIconSelectionLabel": {
     "message": "Εμφάνιση προτάσεων όταν το εικονίδιο είναι επιλεγμένο"
@@ -2498,7 +2513,25 @@
     "message": "Το Send δημιουργήθηκε επιτυχώς!",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendAvailability": {
+  "sendExpiresInHoursSingle": {
+    "message": "Το Send θα είναι διαθέσιμο σε όποιον έχει τον σύνδεσμο για την επόμενη 1 ώρα.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInHours": {
+    "message": "Το Send θα είναι διαθέσιμο σε όποιον έχει τον σύνδεσμο για τις επόμενες $HOURS$ ώρες.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "sendExpiresInDaysSingle": {
+    "message": "Το Send θα είναι διαθέσιμο σε όποιον έχει τον σύνδεσμο για την επόμενη 1 ημέρα.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInDays": {
     "message": "Το Send θα είναι διαθέσιμο σε όποιον έχει τον σύνδεσμο για τις επόμενες $DAYS$ ημέρες.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
     "placeholders": {
@@ -2628,6 +2661,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "Ο οργανισμός σας απαιτεί να ορίσετε έναν κύριο κωδικό πρόσβασης.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": "από $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "Απαιτείται επαλήθευση",
@@ -3661,6 +3703,9 @@
   },
   "noMatchingLoginsForSite": {
     "message": "Δεν υπάρχουν αντίστοιχες συνδέσεις για αυτόν τον ιστότοπο"
+  },
+  "searchSavePasskeyNewLogin": {
+    "message": "Αναζήτηση ή αποθήκευση κωδικού πρόσβασης ως νέα σύνδεση"
   },
   "confirm": {
     "message": "Επιβεβαίωση"
