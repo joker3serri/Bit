@@ -63,8 +63,6 @@ export class AccountComponent implements OnInit {
           !isAccountDeprovisioningEnabled || !userIsManagedByOrganization,
       ),
     );
-
-    await this.modalService.openViewRef(DeauthorizeSessionsComponent, this.deauthModalRef);
   }
 
   async deauthorizeSessions() {
