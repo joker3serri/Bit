@@ -229,8 +229,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         // `is*Algorithm` decides `algorithm`'s type, which flows into `setPreference`
         if (isForwarderIntegration(algorithm) && algorithm.forwarder === null) {
           return;
-        }
-        if (isEmailAlgorithm(algorithm)) {
+        } else if (isEmailAlgorithm(algorithm)) {
           setPreference("email");
         } else if (isUsernameAlgorithm(algorithm)) {
           setPreference("username");
@@ -288,7 +287,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       // template bindings refresh immediately
       this.zone.run(() => {
         this.algorithm$.next(algorithm);
-        if (userNav === FORWARDER && forwarderNav !== NONE_SELECTED) {
+
+        const showForwarder = userNav === FORWARDER;
+        this.showForwarder$.next(showForwarder);
+
+        if (showForwarder && forwarderNav !== NONE_SELECTED) {
           this.forwarderId$.next(forwarderNav.forwarder);
         } else {
           this.forwarderId$.next(null);
