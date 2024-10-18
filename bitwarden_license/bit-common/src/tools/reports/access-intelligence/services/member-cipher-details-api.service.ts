@@ -1,12 +1,11 @@
-import { Injectable } from "@angular/core";
-
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
 import { MemberCipherDetailsResponse } from "../response/member-cipher-details.response";
 
-@Injectable({ providedIn: "root" })
 export class MemberCipherDetailsApiService {
-  constructor(protected apiService: ApiService) {}
+  constructor(private apiService: ApiService) {}
+
   async getMemberCipherDetails(orgId: string): Promise<MemberCipherDetailsResponse[]> {
     const response = await this.apiService.send(
       "GET",
@@ -15,8 +14,8 @@ export class MemberCipherDetailsApiService {
       true,
       true,
     );
-    const responses = response.map((o: any) => new MemberCipherDetailsResponse(o));
 
-    return responses;
+    const listResponse = new ListResponse(response, MemberCipherDetailsResponse);
+    return listResponse.data.map((r) => new MemberCipherDetailsResponse(r));
   }
 }
