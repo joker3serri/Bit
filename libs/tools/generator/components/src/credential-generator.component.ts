@@ -2,12 +2,11 @@ import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } fro
 import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
+  combineLatest,
   combineLatestWith,
-  concat,
   distinctUntilChanged,
   filter,
   map,
-  of,
   ReplaySubject,
   Subject,
   switchMap,
@@ -31,6 +30,7 @@ import {
   isEmailAlgorithm,
   isForwarderIntegration,
   isPasswordAlgorithm,
+  isSameAlgorithm,
   isUsernameAlgorithm,
   toCredentialGeneratorConfiguration,
 } from "@bitwarden/generator-core";
@@ -173,59 +173,111 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         });
       });
 
-    const username$ = new Subject<{ nav: string }>();
+    // normalize cascade selections; introduce subjects to allow changes
+    // from user selections and changes from preference updates to
+    // update the template
+    type CascadeValue = { nav: string; algorithm?: CredentialAlgorithm };
+    const activeRoot$ = new Subject<CascadeValue>();
+    const activeIdentifier$ = new Subject<CascadeValue>();
+    const activeForwarder$ = new Subject<CascadeValue>();
+
     this.root$
       .pipe(
-        filter(({ nav }) => !!nav),
-        switchMap((maybeAlgorithm) => {
-          if (maybeAlgorithm.nav === IDENTIFIER) {
-            return concat(of(this.username.value), this.username.valueChanges);
+        map(
+          (root): CascadeValue =>
+            root.nav === IDENTIFIER
+              ? { nav: root.nav }
+              : { nav: root.nav, algorithm: JSON.parse(root.nav) },
+        ),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(activeRoot$);
+
+    this.username.valueChanges
+      .pipe(
+        map(
+          (username): CascadeValue =>
+            username.nav === FORWARDER
+              ? { nav: username.nav }
+              : { nav: username.nav, algorithm: JSON.parse(username.nav) },
+        ),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(activeIdentifier$);
+
+    this.forwarder.valueChanges
+      .pipe(
+        map(
+          (forwarder): CascadeValue =>
+            forwarder.nav === NONE_SELECTED
+              ? { nav: forwarder.nav }
+              : { nav: forwarder.nav, algorithm: JSON.parse(forwarder.nav) },
+        ),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(activeForwarder$);
+
+    // update forwarder cascade visibility
+    combineLatest([activeRoot$, activeIdentifier$, activeForwarder$])
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(([root, username, forwarder]) => {
+        const showForwarder = !root.algorithm && !username.algorithm;
+        const forwarderId =
+          showForwarder && isForwarderIntegration(forwarder.algorithm)
+            ? forwarder.algorithm.forwarder
+            : null;
+
+        // update subjects within the angular zone so that the
+        // template bindings refresh immediately
+        this.zone.run(() => {
+          this.showForwarder$.next(showForwarder);
+          this.forwarderId$.next(forwarderId);
+        });
+      });
+
+    // update active algorithm
+    combineLatest([activeRoot$, activeIdentifier$, activeForwarder$])
+      .pipe(
+        map(([root, username, forwarder]) => {
+          const selection = root.algorithm ?? username.algorithm ?? forwarder.algorithm;
+          if (selection) {
+            return this.generatorService.algorithm(selection);
           } else {
-            return of(maybeAlgorithm);
+            return null;
           }
         }),
         takeUntil(this.destroyed),
       )
-      .subscribe(username$);
+      .subscribe((algorithm) => {
+        // update subjects within the angular zone so that the
+        // template bindings refresh immediately
+        this.zone.run(() => {
+          this.algorithm$.next(algorithm);
+        });
+      });
 
-    // assume the last-visible generator algorithm is the user's preferred one
+    // assume the last-selected generator algorithm is the user's preferred one
     const preferences = await this.generatorService.preferences({ singleUserId$: this.userId$ });
-    username$
+    this.algorithm$
       .pipe(
-        switchMap((maybeAlgorithm) => {
-          if (maybeAlgorithm.nav === FORWARDER) {
-            return concat(of(this.forwarder.value), this.forwarder.valueChanges);
-          } else {
-            return of(maybeAlgorithm);
-          }
-        }),
-        map((maybeAlgorithm) => {
-          if (maybeAlgorithm.nav === NONE_SELECTED) {
-            return { nav: null };
-          } else {
-            return maybeAlgorithm;
-          }
-        }),
-        filter(({ nav }) => !!nav),
+        filter((algorithm) => !!algorithm),
+        distinctUntilChanged((prev, next) => isSameAlgorithm(prev.id, next.id)),
         withLatestFrom(preferences),
         takeUntil(this.destroyed),
       )
-      .subscribe(([{ nav }, preference]) => {
+      .subscribe(([algorithm, preference]) => {
         function setPreference(category: CredentialCategory) {
           const p = preference[category];
-          p.algorithm = algorithm;
+          p.algorithm = algorithm.id;
           p.updated = new Date();
         }
 
-        const algorithm = JSON.parse(nav);
         // `is*Algorithm` decides `algorithm`'s type, which flows into `setPreference`
-        if (isForwarderIntegration(algorithm) && algorithm.forwarder === null) {
-          return;
-        } else if (isEmailAlgorithm(algorithm)) {
+        if (isEmailAlgorithm(algorithm.id)) {
           setPreference("email");
-        } else if (isUsernameAlgorithm(algorithm)) {
+        } else if (isUsernameAlgorithm(algorithm.id)) {
           setPreference("username");
-        } else if (isPasswordAlgorithm(algorithm)) {
+        } else if (isPasswordAlgorithm(algorithm.id)) {
           setPreference("password");
         } else {
           return;
@@ -234,74 +286,80 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         preferences.next(preference);
       });
 
-    username$
+    // populate the form with the user's preferences to kick off interactivity
+    preferences
       .pipe(
-        map(({ nav }) => nav === FORWARDER),
+        map(({ email, username, password }) => {
+          const forwarderPref = isForwarderIntegration(email.algorithm) ? email : null;
+          const usernamePref = email.updated > username.updated ? email : username;
+
+          // inject drilldown flags
+          const forwarderNav = !forwarderPref
+            ? NONE_SELECTED
+            : JSON.stringify(forwarderPref.algorithm);
+          const userNav = forwarderPref ? FORWARDER : JSON.stringify(usernamePref.algorithm);
+          const rootNav =
+            usernamePref.updated > password.updated
+              ? IDENTIFIER
+              : JSON.stringify(password.algorithm);
+
+          // construct cascade metadata
+          const cascade = {
+            root: {
+              selection: { nav: rootNav },
+              active: {
+                nav: rootNav,
+                algorithm: rootNav === IDENTIFIER ? null : password.algorithm,
+              } as CascadeValue,
+            },
+            username: {
+              selection: { nav: userNav },
+              active: {
+                nav: userNav,
+                algorithm: forwarderPref ? null : usernamePref.algorithm,
+              },
+            },
+            forwarder: {
+              selection: { nav: forwarderNav },
+              active: {
+                nav: forwarderNav,
+                algorithm: forwarderPref?.algorithm,
+              },
+            },
+          };
+
+          return cascade;
+        }),
         takeUntil(this.destroyed),
       )
-      .subscribe((showForwarder) => {
-        // update subjects within the angular zone so that the
-        // template bindings refresh immediately
-        this.zone.run(() => {
-          if (showForwarder) {
-            this.value$.next("-");
-          }
-          this.showForwarder$.next(showForwarder);
-        });
+      .subscribe(({ root, username, forwarder }) => {
+        // update navigation; break subscription loop
+        this.onRootChanged(root.selection);
+        this.username.setValue(username.selection, { emitEvent: false });
+        this.forwarder.setValue(forwarder.selection, { emitEvent: false });
+
+        // update cascade visibility
+        activeRoot$.next(root.active);
+        activeIdentifier$.next(username.active);
+        activeForwarder$.next(forwarder.active);
       });
 
-    // populate the form with the user's preferences to kick off interactivity
-    preferences.pipe(takeUntil(this.destroyed)).subscribe(({ email, username, password }) => {
-      // the last preference set by the user "wins"
-      let forwarderPref = null;
-      let forwarderId: IntegrationId = null;
-      if (isForwarderIntegration(email.algorithm)) {
-        forwarderPref = email;
-        forwarderId = email.algorithm.forwarder;
-      }
-      const usernamePref = email.updated > username.updated ? email : username;
-      const rootPref = usernamePref.updated > password.updated ? usernamePref : password;
-
-      // inject drilldown flags
-      const forwarderNav = !forwarderPref ? NONE_SELECTED : JSON.stringify(forwarderPref.algorithm);
-      const userNav = forwarderPref ? FORWARDER : JSON.stringify(usernamePref.algorithm);
-      const rootNav =
-        rootPref.algorithm == usernamePref.algorithm
-          ? IDENTIFIER
-          : JSON.stringify(rootPref.algorithm);
-
-      // update navigation; break subscription loop
-      this.onRootChanged({ nav: rootNav });
-      this.username.setValue({ nav: userNav }, { emitEvent: false });
-      this.forwarder.setValue({ nav: forwarderNav }, { emitEvent: false });
-
-      // load algorithm metadata
-      const algorithm = this.generatorService.algorithm(rootPref.algorithm);
-
-      // update subjects within the angular zone so that the
-      // template bindings refresh immediately
-      this.zone.run(() => {
-        this.algorithm$.next(algorithm);
-
-        const showForwarder = userNav === FORWARDER;
-        this.showForwarder$.next(showForwarder);
-
-        if (showForwarder && forwarderNav !== NONE_SELECTED) {
-          this.forwarderId$.next(forwarderId);
-        } else {
-          this.forwarderId$.next(null);
-        }
-      });
-    });
-
-    // generate on load unless the generator prohibits it
+    // automatically regenerate when the algorithm switches if the algorithm
+    // allows it; otherwise set a placeholder
     this.algorithm$
       .pipe(
-        distinctUntilChanged((prev, next) => prev.id === next.id),
-        filter((a) => !a.onlyOnRequest),
+        distinctUntilChanged((prev, next) => isSameAlgorithm(prev.id, next.id)),
         takeUntil(this.destroyed),
       )
-      .subscribe(() => this.generate$.next());
+      .subscribe((a) => {
+        this.zone.run(() => {
+          if (!a || a.onlyOnRequest) {
+            this.value$.next("-");
+          } else {
+            this.generate$.next();
+          }
+        });
+      });
   }
 
   private typeToGenerator$(type: CredentialAlgorithm) {
