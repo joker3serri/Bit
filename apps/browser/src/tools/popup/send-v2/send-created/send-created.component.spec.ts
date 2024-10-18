@@ -129,9 +129,9 @@ describe("SendCreatedComponent", () => {
     expect(component["hoursAvailable"]).toBe(0);
   });
 
-  it("should navigate back to send list on close", async () => {
-    await component.close();
-    expect(router.navigate).toHaveBeenCalledWith(["/tabs/send"]);
+  it("should navigate back to the edit send form on close", async () => {
+    await component.goToEditSend();
+    expect(router.navigate).toHaveBeenCalledWith([`/tabs/send/${sendId}`]);
   });
 
   describe("getHoursAvailable", () => {
