@@ -83,7 +83,7 @@ export class LoginViaAuthRequestComponentV1 extends BaseLoginViaAuthRequestCompo
       toastService,
     );
 
-    super.onSuccessfulLogin = () => {
+    this.onSuccessfulLogin = () => {
       return syncService.fullSync(true);
     };
   }

@@ -27,6 +27,9 @@ import {
   UserLockIcon,
   LoginViaAuthRequestComponent,
   DevicesIcon,
+  RegistrationUserAddIcon,
+  RegistrationLockAltIcon,
+  RegistrationExpiredLinkIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -287,6 +290,7 @@ const routes: Routes = [
         path: "signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
+          pageIcon: RegistrationUserAddIcon,
           pageTitle: {
             key: "createAccount",
           },
@@ -311,12 +315,7 @@ const routes: Routes = [
         path: "finish-signup",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
-          pageTitle: {
-            key: "setAStrongPassword",
-          },
-          pageSubtitle: {
-            key: "finishCreatingYourAccountBySettingAPassword",
-          },
+          pageIcon: RegistrationLockAltIcon,
           titleId: "setAStrongPassword",
         } satisfies RouteDataProperties & AnonLayoutWrapperData,
         children: [
@@ -363,6 +362,7 @@ const routes: Routes = [
         path: "signup-link-expired",
         canActivate: [canAccessFeature(FeatureFlag.EmailVerification), unauthGuardFn()],
         data: {
+          pageIcon: RegistrationExpiredLinkIcon,
           pageTitle: {
             key: "expiredLink",
           },

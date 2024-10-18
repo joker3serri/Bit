@@ -74,7 +74,7 @@ export class LoginViaAuthRequestComponentV1 extends BaseLoginViaAuthRequestCompo
       loginStrategyService,
       toastService,
     );
-    super.onSuccessfulLogin = async () => {
+    this.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);
     };
   }
