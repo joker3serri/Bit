@@ -383,7 +383,7 @@ export class VaultItemsComponent {
 
     // Higher priority first
     if (priorityA !== priorityB) {
-      return priorityB - priorityA;
+      return priorityA - priorityB;
     }
 
     return this.sortByName(a, b);
