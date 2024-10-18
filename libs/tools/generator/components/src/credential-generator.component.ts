@@ -227,6 +227,9 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         }
 
         // `is*Algorithm` decides `algorithm`'s type, which flows into `setPreference`
+        if (isForwarderIntegration(algorithm) && algorithm.forwarder === null) {
+          return;
+        }
         if (isEmailAlgorithm(algorithm)) {
           setPreference("email");
         } else if (isUsernameAlgorithm(algorithm)) {
