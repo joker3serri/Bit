@@ -1,3 +1,4 @@
+import { NgIf } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs/operators";
@@ -21,6 +22,7 @@ import { PopupRouterCacheService } from "../../../../../platform/popup/view-cach
     PopOutComponent,
     PopupHeaderComponent,
     PasswordHistoryViewComponent,
+    NgIf,
   ],
 })
 export class PasswordHistoryV2Component implements OnInit {
