@@ -146,7 +146,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
     this.algorithm$
       .pipe(
-        map((a) => a.category),
+        map((a) => a?.category),
         distinctUntilChanged(),
         takeUntil(this.destroyed),
       )
@@ -161,6 +161,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     // wire up the generator
     this.algorithm$
       .pipe(
+        filter((algorithm) => !!algorithm),
         switchMap((algorithm) => this.typeToGenerator$(algorithm.id)),
         takeUntil(this.destroyed),
       )
@@ -219,14 +220,19 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
     // update forwarder cascade visibility
     combineLatest([activeRoot$, activeIdentifier$, activeForwarder$])
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(([root, username, forwarder]) => {
-        const showForwarder = !root.algorithm && !username.algorithm;
-        const forwarderId =
-          showForwarder && isForwarderIntegration(forwarder.algorithm)
-            ? forwarder.algorithm.forwarder
-            : null;
-
+      .pipe(
+        map(([root, username, forwarder]) => {
+          const showForwarder = !root.algorithm && !username.algorithm;
+          const forwarderId =
+            showForwarder && isForwarderIntegration(forwarder.algorithm)
+              ? forwarder.algorithm.forwarder
+              : null;
+          return [showForwarder, forwarderId] as const;
+        }),
+        distinctUntilChanged((prev, next) => prev[0] === next[0] && prev[1] === next[1]),
+        takeUntil(this.destroyed),
+      )
+      .subscribe(([showForwarder, forwarderId]) => {
         // update subjects within the angular zone so that the
         // template bindings refresh immediately
         this.zone.run(() => {
@@ -246,6 +252,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
             return null;
           }
         }),
+        distinctUntilChanged((prev, next) => isSameAlgorithm(prev?.id, next?.id)),
         takeUntil(this.destroyed),
       )
       .subscribe((algorithm) => {
@@ -261,7 +268,6 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     this.algorithm$
       .pipe(
         filter((algorithm) => !!algorithm),
-        distinctUntilChanged((prev, next) => isSameAlgorithm(prev.id, next.id)),
         withLatestFrom(preferences),
         takeUntil(this.destroyed),
       )
@@ -346,20 +352,15 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
     // automatically regenerate when the algorithm switches if the algorithm
     // allows it; otherwise set a placeholder
-    this.algorithm$
-      .pipe(
-        distinctUntilChanged((prev, next) => isSameAlgorithm(prev.id, next.id)),
-        takeUntil(this.destroyed),
-      )
-      .subscribe((a) => {
-        this.zone.run(() => {
-          if (!a || a.onlyOnRequest) {
-            this.value$.next("-");
-          } else {
-            this.generate$.next();
-          }
-        });
+    this.algorithm$.pipe(takeUntil(this.destroyed)).subscribe((a) => {
+      this.zone.run(() => {
+        if (!a || a.onlyOnRequest) {
+          this.value$.next("-");
+        } else {
+          this.generate$.next();
+        }
       });
+    });
   }
 
   private typeToGenerator$(type: CredentialAlgorithm) {
