@@ -41,21 +41,14 @@ export class VerifyRecoverDeleteProviderComponent implements OnInit {
   }
 
   submit = async () => {
-    try {
-      const request = new ProviderVerifyRecoverDeleteRequest(this.token);
-      this.formPromise = this.providerApiService.providerRecoverDeleteToken(
-        this.providerId,
-        request,
-      );
-      await this.formPromise;
-      this.toastService.showToast({
-        variant: "success",
-        title: this.i18nService.t("providerDeleted"),
-        message: this.i18nService.t("providerDeletedDesc"),
-      });
-      await this.router.navigate(["/"]);
-    } catch (e) {
-      this.logService.error(e);
-    }
+    const request = new ProviderVerifyRecoverDeleteRequest(this.token);
+    this.formPromise = this.providerApiService.providerRecoverDeleteToken(this.providerId, request);
+    await this.formPromise;
+    this.toastService.showToast({
+      variant: "success",
+      title: this.i18nService.t("providerDeleted"),
+      message: this.i18nService.t("providerDeletedDesc"),
+    });
+    await this.router.navigate(["/"]);
   };
 }
