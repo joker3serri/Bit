@@ -42,6 +42,13 @@ enum State {
   AdminAuthRequest,
 }
 
+const matchOptions: IsActiveMatchOptions = {
+  paths: "exact",
+  queryParams: "ignored",
+  fragment: "ignored",
+  matrixParams: "ignored",
+};
+
 @Component({
   standalone: true,
   templateUrl: "./login-via-auth-request.component.html",
@@ -101,66 +108,52 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
-    this.authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
-
-    const matchOptions: IsActiveMatchOptions = {
-      paths: "exact",
-      queryParams: "ignored",
-      fragment: "ignored",
-      matrixParams: "ignored",
-    };
-
+    // Check if we are in an admin auth request flow
     if (this.router.isActive("admin-approval-requested", matchOptions)) {
       this.state = State.AdminAuthRequest;
     }
 
+    // Get email based on auth request flow
     if (this.state === State.AdminAuthRequest) {
-      // Get email from state for admin auth requests because it is available.
-      // TODO-rr-bw: Verify if the comment below is still true
-      // This also prevents it from being lost on refresh as the login service email does not persist.
+      // Get email from state for admin auth requests because it is available and also
+      // prevents it from being lost on refresh as the loginEmailService email does not persist.
       this.email = await firstValueFrom(
         this.accountService.activeAccount$.pipe(map((a) => a?.email)),
       );
-      const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+    } else {
+      this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
+    }
 
-      if (!this.email) {
-        this.toastService.showToast({
-          variant: "error",
-          title: null,
-          message: this.i18nService.t("userEmailMissing"),
-        });
+    // If email is missing, show error toast and redirect
+    if (!this.email) {
+      this.toastService.showToast({
+        variant: "error",
+        title: null,
+        message: this.i18nService.t("userEmailMissing"),
+      });
 
-        await this.router.navigate(["/login-initiated"]);
-        return;
-      }
+      await this.router.navigate([
+        this.state === State.AdminAuthRequest ? "/login-initiated" : "/login",
+      ]);
 
+      return;
+    }
+
+    this.authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
+
+    if (this.state === State.AdminAuthRequest) {
       // We only allow a single admin approval request to be active at a time
       // so we must check state to see if we have an existing one or not
+      const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
       const adminAuthReqStorable = await this.authRequestService.getAdminAuthRequest(userId);
 
       if (adminAuthReqStorable) {
         await this.handleExistingAdminAuthRequest(adminAuthReqStorable, userId);
       } else {
-        // No existing admin auth request; so we need to create one
         await this.startAuthRequestLogin();
       }
     } else {
-      // Standard auth request
-      // TODO: evaluate if we can remove the setting of this.email in the constructor
-      this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
-
-      if (!this.email) {
-        this.toastService.showToast({
-          variant: "error",
-          title: null,
-          message: this.i18nService.t("userEmailMissing"),
-        });
-
-        await this.router.navigate(["/login"]);
-        return;
-      }
-
+      // Standard auth request flow
       await this.startAuthRequestLogin();
     }
   }
