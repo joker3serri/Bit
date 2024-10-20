@@ -1,13 +1,35 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, skip, Subject, takeUntil } from "rxjs";
+import {
+  BehaviorSubject,
+  concatMap,
+  map,
+  ReplaySubject,
+  skip,
+  Subject,
+  switchAll,
+  switchMap,
+  takeUntil,
+  withLatestFrom,
+} from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { IntegrationId } from "@bitwarden/common/tools/integration";
 import { UserId } from "@bitwarden/common/types/guid";
 import {
+  CredentialGeneratorConfiguration,
   CredentialGeneratorService,
   getForwarderConfiguration,
+  NoPolicy,
   toCredentialGeneratorConfiguration,
 } from "@bitwarden/generator-core";
 
@@ -24,7 +46,7 @@ const Controls = Object.freeze({
   selector: "tools-forwarder-settings",
   templateUrl: "forwarder-settings.component.html",
 })
-export class ForwarderSettingsComponent implements OnInit, OnDestroy {
+export class ForwarderSettingsComponent implements OnInit, OnChanges, OnDestroy {
   /** Instantiates the component
    *  @param accountService queries user availability
    *  @param generatorService settings and policy logic
@@ -43,7 +65,7 @@ export class ForwarderSettingsComponent implements OnInit, OnDestroy {
   @Input()
   userId: UserId | null;
 
-  @Input()
+  @Input({ required: true })
   forwarder: IntegrationId;
 
   /** Emits settings updates and completes if the settings become unavailable.
@@ -61,38 +83,60 @@ export class ForwarderSettingsComponent implements OnInit, OnDestroy {
     [Controls.baseUrl]: [""],
   });
 
+  private forwarderId$ = new ReplaySubject<IntegrationId>(1);
+
   async ngOnInit() {
     const singleUserId$ = this.singleUserId$();
-    const forwarder = getForwarderConfiguration(this.forwarder);
 
-    // type erasure necessary because the configuration properties are
-    // determined dynamically at runtime
-    // FIXME: this can be eliminated by unifying the forwarder settings types;
-    // see `ForwarderConfiguration<...>` for details.
-    const configuration = toCredentialGeneratorConfiguration<any>(forwarder);
-    this.displayDomain = configuration.request.includes("domain");
-    this.displayToken = configuration.request.includes("token");
-    this.displayBaseUrl = configuration.request.includes("baseUrl");
+    const forwarder$ = new ReplaySubject<CredentialGeneratorConfiguration<any, NoPolicy>>(1);
+    this.forwarderId$
+      .pipe(
+        map((id) => getForwarderConfiguration(id)),
+        // type erasure necessary because the configuration properties are
+        // determined dynamically at runtime
+        // FIXME: this can be eliminated by unifying the forwarder settings types;
+        // see `ForwarderConfiguration<...>` for details.
+        map((forwarder) => toCredentialGeneratorConfiguration<any>(forwarder)),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe((forwarder) => {
+        this.displayDomain = forwarder.request.includes("domain");
+        this.displayToken = forwarder.request.includes("token");
+        this.displayBaseUrl = forwarder.request.includes("baseUrl");
 
-    // bind settings to the UI
-    const settings = await this.generatorService.settings(configuration, { singleUserId$ });
-    settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
+        forwarder$.next(forwarder);
+      });
+
+    const settings$$ = forwarder$.pipe(
+      concatMap((forwarder) => this.generatorService.settings(forwarder, { singleUserId$ })),
+    );
+
+    // bind settings to the reactive form
+    settings$$.pipe(switchAll(), takeUntil(this.destroyed$)).subscribe((settings) => {
       // skips reactive event emissions to break a subscription cycle
-      this.settings.patchValue(s, { emitEvent: false });
+      this.settings.patchValue(settings as any, { emitEvent: false });
     });
 
-    // bind policy to the template
-    this.generatorService
-      .policy$(configuration, { userId$: singleUserId$ })
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(({ constraints }) => {
+    // bind policy to the reactive form
+    forwarder$
+      .pipe(
+        switchMap((forwarder) => {
+          const constraints$ = this.generatorService
+            .policy$(forwarder, { userId$: singleUserId$ })
+            .pipe(map(({ constraints }) => [constraints, forwarder] as const));
+
+          return constraints$;
+        }),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe(([constraints, forwarder]) => {
         for (const name in Controls) {
           const control = this.settings.get(name);
-          if (configuration.request.includes(name as any)) {
+          if (forwarder.request.includes(name as any)) {
             control.enable({ emitEvent: false });
             control.setValidators(
               // the configuration's type erasure affects `toValidators` as well
-              toValidators(name, configuration, constraints),
+              toValidators(name, forwarder, constraints),
             );
           } else {
             control.disable({ emitEvent: false });
@@ -102,10 +146,27 @@ export class ForwarderSettingsComponent implements OnInit, OnDestroy {
       });
 
     // the first emission is the current value; subsequent emissions are updates
-    settings.pipe(skip(1), takeUntil(this.destroyed$)).subscribe(this.onUpdated);
+    settings$$
+      .pipe(
+        map((settings$) => settings$.pipe(skip(1))),
+        switchAll(),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe(this.onUpdated);
 
     // now that outputs are set up, connect inputs
-    this.settings.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(settings);
+    this.settings.valueChanges
+      .pipe(withLatestFrom(settings$$), takeUntil(this.destroyed$))
+      .subscribe(([value, settings]) => {
+        settings.next(value);
+      });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.refresh$.complete();
+    if ("forwarder" in changes) {
+      this.forwarderId$.next(this.forwarder);
+    }
   }
 
   protected displayDomain: boolean;
@@ -124,6 +185,8 @@ export class ForwarderSettingsComponent implements OnInit, OnDestroy {
       takeUntil(this.destroyed$),
     );
   }
+
+  private readonly refresh$ = new Subject<void>();
 
   private readonly destroyed$ = new Subject<void>();
   ngOnDestroy(): void {
