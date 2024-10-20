@@ -18,7 +18,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { CreateAuthRequest } from "@bitwarden/common/auth/models/request/create-auth.request";
+import { AuthRequest } from "@bitwarden/common/auth/models/request/auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { HttpStatusCode } from "@bitwarden/common/enums/http-status-code.enum";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
@@ -51,7 +51,7 @@ export class LoginViaAuthRequestComponentV1
   userAuthNStatus: AuthenticationStatus;
   email: string;
   showResendNotification = false;
-  authRequest: CreateAuthRequest;
+  authRequest: AuthRequest;
   fingerprintPhrase: string;
   onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
   onSuccessfulLogin: () => Promise<any>;
@@ -265,7 +265,7 @@ export class LoginViaAuthRequestComponentV1
       this.authRequestKeyPair.publicKey,
     );
 
-    this.authRequest = new CreateAuthRequest(
+    this.authRequest = new AuthRequest(
       this.email,
       deviceIdentifier,
       publicKey,

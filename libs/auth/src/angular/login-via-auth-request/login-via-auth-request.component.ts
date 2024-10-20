@@ -21,7 +21,7 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { AdminAuthRequestStorable } from "@bitwarden/common/auth/models/domain/admin-auth-req-storable";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { CreateAuthRequest } from "@bitwarden/common/auth/models/request/create-auth.request";
+import { AuthRequest } from "@bitwarden/common/auth/models/request/auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { ClientType, HttpStatusCode } from "@bitwarden/common/enums";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
@@ -38,8 +38,8 @@ import { ButtonModule, LinkModule, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 enum State {
-  StandardAuthRequest,
-  AdminAuthRequest,
+  StandardAuthRequest, // used in Login with Device flow
+  AdminAuthRequest, // used in SSO with Trusted Devices flow
 }
 
 const matchOptions: IsActiveMatchOptions = {
@@ -55,7 +55,7 @@ const matchOptions: IsActiveMatchOptions = {
   imports: [ButtonModule, CommonModule, JslibModule, LinkModule, RouterModule],
 })
 export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
-  private authRequest: CreateAuthRequest;
+  private authRequest: AuthRequest;
   private authRequestKeyPair: { publicKey: Uint8Array; privateKey: Uint8Array };
   private authStatus: AuthenticationStatus;
   private resendTimeoutSeconds = 12;
@@ -145,10 +145,10 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       // We only allow a single admin approval request to be active at a time
       // so we must check state to see if we have an existing one or not
       const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
-      const adminAuthReqStorable = await this.authRequestService.getAdminAuthRequest(userId);
+      const existingAdminAuthRequest = await this.authRequestService.getAdminAuthRequest(userId);
 
-      if (adminAuthReqStorable) {
-        await this.handleExistingAdminAuthRequest(adminAuthReqStorable, userId);
+      if (existingAdminAuthRequest) {
+        await this.handleExistingAdminAuthRequest(existingAdminAuthRequest, userId);
       } else {
         await this.startAuthRequestLogin();
       }
@@ -251,27 +251,20 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private async verifyAndHandleApprovedAuthReq(requestId: string): Promise<void> {
     try {
       // Retrieve the auth request from server and verify it's approved
-      let authReqResponse: AuthRequestResponse;
+      let authRequestResponse: AuthRequestResponse;
 
-      switch (this.state) {
-        case State.StandardAuthRequest:
-          // Unauthed - access code required for user verification
-          authReqResponse = await this.apiService.getAuthResponse(
-            requestId,
-            this.authRequest.accessCode,
-          );
-          break;
-
-        case State.AdminAuthRequest:
-          // Authed - no access code required
-          authReqResponse = await this.apiService.getAuthRequest(requestId);
-          break;
-
-        default:
-          break;
+      if (this.state === State.AdminAuthRequest) {
+        // Authed - no access code required
+        authRequestResponse = await this.apiService.getAuthRequest(requestId);
+      } else {
+        // Unauthed - access code required for user verification
+        authRequestResponse = await this.apiService.getAuthResponse(
+          requestId,
+          this.authRequest.accessCode,
+        );
       }
 
-      if (!authReqResponse.requestApproved) {
+      if (!authRequestResponse.requestApproved) {
         return;
       }
 
@@ -297,14 +290,17 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
 
         return await this.handleApprovedAdminAuthRequest(
-          authReqResponse,
+          authRequestResponse,
           this.authRequestKeyPair.privateKey,
           userId,
         );
       }
 
       // Flow 1 and 4:
-      const loginAuthResult = await this.loginViaAuthRequestStrategy(requestId, authReqResponse);
+      const loginAuthResult = await this.loginViaAuthRequestStrategy(
+        requestId,
+        authRequestResponse,
+      );
       await this.handlePostLoginNavigation(loginAuthResult);
     } catch (error) {
       if (error instanceof ErrorResponse) {
@@ -448,7 +444,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       this.authRequestKeyPair.publicKey,
     );
 
-    this.authRequest = new CreateAuthRequest(
+    this.authRequest = new AuthRequest(
       this.email,
       deviceIdentifier,
       publicKey,
