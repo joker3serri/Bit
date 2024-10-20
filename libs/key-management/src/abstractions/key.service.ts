@@ -1,11 +1,13 @@
 import { Observable } from "rxjs";
 
+import { EncryptedOrganizationKeyData } from "@bitwarden/common/admin-console/models/data/encrypted-organization-key.data";
+
 import { ProfileOrganizationResponse } from "../../../common/src/admin-console/models/response/profile-organization.response";
 import { ProfileProviderOrganizationResponse } from "../../../common/src/admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../../common/src/admin-console/models/response/profile-provider.response";
 import { KdfConfig } from "../../../common/src/auth/models/domain/kdf-config";
 import { KeySuffixOptions, HashPurpose } from "../../../common/src/platform/enums";
-import { EncString } from "../../../common/src/platform/models/domain/enc-string";
+import { EncryptedString, EncString } from "../../../common/src/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../common/src/platform/models/domain/symmetric-crypto-key";
 import { OrganizationId, UserId } from "../../../common/src/types/guid";
 import {

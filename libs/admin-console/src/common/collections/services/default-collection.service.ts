@@ -80,7 +80,7 @@ export class DefaultCollectionService implements CollectionService {
 
     const encryptedCollectionsWithKeys = this.encryptedCollectionDataState.combinedState$.pipe(
       switchMap(([userId, collectionData]) =>
-        combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
+        combineLatest([of(collectionData), this.keyService.orgKeys$(userId)]),
       ),
     );
 
