@@ -65,6 +65,8 @@ export class DefaultRegistrationFinishService implements RegistrationFinishServi
     orgSponsoredFreeFamilyPlanToken?: string, // web only
     acceptEmergencyAccessInviteToken?: string, // web only
     emergencyAccessId?: string, // web only
+    providerInviteToken?: string, // web only
+    providerUserId?: string, // web only
   ): Promise<RegisterFinishRequest> {
     const userAsymmetricKeysRequest = new KeysRequest(
       userAsymmetricKeys[0],
