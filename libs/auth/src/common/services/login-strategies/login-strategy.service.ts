@@ -264,6 +264,9 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
         throw e;
       }
     }
+
+    kdfConfig.validateKdfConfigForPrelogin();
+
     return await this.keyService.makeMasterKey(masterPassword, email, kdfConfig);
   }
 

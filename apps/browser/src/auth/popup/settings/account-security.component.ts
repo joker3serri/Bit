@@ -558,7 +558,11 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
   }
 
   async fingerprint() {
-    const fingerprint = await this.keyService.getFingerprint(await this.stateService.getUserId());
+    const activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
+    const publicKey = await firstValueFrom(this.keyService.userPublicKey$(activeUserId));
+    const fingerprint = await this.keyService.getFingerprint(activeUserId, publicKey);
 
     const dialogRef = FingerprintDialogComponent.open(this.dialogService, {
       fingerprint,
