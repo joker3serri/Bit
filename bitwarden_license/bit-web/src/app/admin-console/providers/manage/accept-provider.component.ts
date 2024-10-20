@@ -74,8 +74,6 @@ export class AcceptProviderComponent extends BaseAcceptComponent {
       registerRoute = "/finish-signup";
       queryParams = {
         email: this.email,
-        // providerName: this.providerName, // TODO: determine if this is required.
-        providerId: this.providerId,
         providerUserId: this.providerUserId,
         providerInviteToken: this.providerInviteToken,
       };
