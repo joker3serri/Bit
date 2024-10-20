@@ -244,6 +244,7 @@ export function toCredentialGeneratorConfiguration<Settings extends ApiSettings 
     id: { forwarder: configuration.id },
     category: "email",
     nameKey: configuration.name,
+    descriptionKey: "forwardedEmailDesc",
     onlyOnRequest: true,
     request: configuration.forwarder.request,
     engine: {

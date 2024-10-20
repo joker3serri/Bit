@@ -4,7 +4,7 @@
     <input bitInput formControlName="domain" type="text" />
   </bit-form-field>
   <bit-form-field *ngIf="displayToken">
-    <bit-label>{{ "apiAccessToken" | i18n }}</bit-label>
+    <bit-label>{{ "apiKey" | i18n }}</bit-label>
     <input bitInput formControlName="token" type="password" />
     <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
   </bit-form-field>
