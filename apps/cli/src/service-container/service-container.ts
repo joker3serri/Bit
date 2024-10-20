@@ -541,7 +541,7 @@ export class ServiceContainer {
       this.platformUtilsService,
       this.accountService,
       this.kdfConfigService,
-      this.cryptoService,
+      this.keyService,
       this.apiService,
       customUserAgent,
     );
