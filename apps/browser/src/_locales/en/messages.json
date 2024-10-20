@@ -2867,6 +2867,10 @@
   "forwardedEmailDesc": {
     "message": "Generate an email alias with an external forwarding service."
   },
+  "forwarderDomainNameHint": {
+    "message": "Domain name",
+    "description": "Some forwarders provide several domains to choose from."
+  },
   "forwarderError": {
     "message": "$SERVICENAME$ error: $ERRORMESSAGE$",
     "description": "Reports an error returned by a forwarding service to the user.",

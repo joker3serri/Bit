@@ -1,7 +1,8 @@
 <form class="box" [formGroup]="settings" class="tw-container">
   <bit-form-field *ngIf="displayDomain">
-    <bit-label>{{ "aliasDomain" | i18n }}</bit-label>
+    <bit-label>{{ "domainName" | i18n }}</bit-label>
     <input bitInput formControlName="domain" type="text" />
+    <bit-hint>{{ "forwarderDomainNameHint" | i18n }}</bit-hint>
   </bit-form-field>
   <bit-form-field *ngIf="displayToken">
     <bit-label>{{ "apiKey" | i18n }}</bit-label>
