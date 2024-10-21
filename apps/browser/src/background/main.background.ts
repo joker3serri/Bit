@@ -850,26 +850,24 @@ export default class MainBackground {
 
     this.vaultSettingsService = new VaultSettingsService(this.stateProvider);
 
-    if (!this.popupOnlyContext) {
-      this.vaultTimeoutService = new VaultTimeoutService(
-        this.accountService,
-        this.masterPasswordService,
-        this.cipherService,
-        this.folderService,
-        this.collectionService,
-        this.platformUtilsService,
-        this.messagingService,
-        this.searchService,
-        this.stateService,
-        this.authService,
-        this.vaultTimeoutSettingsService,
-        this.stateEventRunnerService,
-        this.taskSchedulerService,
-        this.logService,
-        lockedCallback,
-        logoutCallback,
-      );
-    }
+    this.vaultTimeoutService = new VaultTimeoutService(
+      this.accountService,
+      this.masterPasswordService,
+      this.cipherService,
+      this.folderService,
+      this.collectionService,
+      this.platformUtilsService,
+      this.messagingService,
+      this.searchService,
+      this.stateService,
+      this.authService,
+      this.vaultTimeoutSettingsService,
+      this.stateEventRunnerService,
+      this.taskSchedulerService,
+      this.logService,
+      lockedCallback,
+      logoutCallback,
+    );
     this.containerService = new ContainerService(this.cryptoService, this.encryptService);
 
     this.sendStateProvider = new SendStateProvider(this.stateProvider);
@@ -1092,7 +1090,6 @@ export default class MainBackground {
       this.messagingService,
       this.logService,
       this.configService,
-      this.fido2Background,
       messageListener,
       this.accountService,
       lockService,
