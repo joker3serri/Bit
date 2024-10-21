@@ -116,7 +116,9 @@ export class PasswordHealthMembersURIComponent implements OnInit {
   }
 
   protected checkForExistingCipher(ciph: CipherView) {
-    ciph.trimmedURIs.forEach((uri: string) => {
+    const uris = ciph.login?.uris ?? [];
+    uris.map((u: { uri: string }) => {
+      const uri = Utils.getHostname(u.uri).replace(/[www.]+/, "");
       if (!this.reportCipherURIs.includes(uri)) {
         this.reportCiphers.push({ ...ciph, hostURI: uri } as CipherView & { hostURI: string });
       }
