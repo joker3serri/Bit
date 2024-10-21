@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
@@ -16,7 +16,6 @@ import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -26,10 +25,10 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { DialogService, ToastService } from "@bitwarden/components";
+import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
-import { RegistrationSelfHostedEnvConfigDialogComponent } from "../../../../../libs/auth/src/angular/registration/registration-self-hosted-env-config-dialog/registration-self-hosted-env-config-dialog.component";
+import { EnvironmentComponent } from "../environment.component";
 
 const BroadcasterSubscriptionId = "LoginComponent";
 
@@ -77,8 +76,6 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
-    private configService: ConfigService,
-    private dialogService: DialogService,
   ) {
     super(
       devicesApiService,
@@ -140,23 +137,25 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     this.componentDestroyed$.complete();
   }
 
-  /**
-   * Opens the environment configuration dialog.
-   */
   async settings() {
-    await this.showEnvConfigDialog();
-  }
+    const [modal, childComponent] = await this.modalService.openViewRef(
+      EnvironmentComponent,
+      this.environmentModal,
+    );
 
-  /**
-   * Show the environment configuration dialog).
-   */
-  async showEnvConfigDialog() {
-    this.showingModal = true;
-    const wasSaved = await RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService);
-    this.showingModal = false;
-    if (wasSaved) {
+    modal.onShown.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
+      this.showingModal = true;
+    });
+
+    modal.onClosed.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
+      this.showingModal = false;
+    });
+
+    // eslint-disable-next-line rxjs/no-async-subscribe
+    childComponent.onSaved.pipe(takeUntil(this.componentDestroyed$)).subscribe(async () => {
+      modal.close();
       await this.getLoginWithDevice(this.loggedEmail);
-    }
+    });
   }
 
   onWindowHidden() {
