@@ -5,8 +5,6 @@ import { Subject, firstValueFrom, switchMap, takeUntil } from "rxjs";
 
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
 import { LoginEmailServiceAbstraction, RegisterRouteService } from "@bitwarden/auth/common";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ToastService, DialogService } from "@bitwarden/components";
@@ -42,7 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private accountSwitcherService: AccountSwitcherService,
     private registerRouteService: RegisterRouteService,
     private toastService: ToastService,
-    private configService: ConfigService,
     private dialogService: DialogService,
   ) {}
 
@@ -64,13 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(async () => {
           await this.setLoginEmailValues();
-          if (
-            await this.configService.getFeatureFlag(FeatureFlag.UnauthenticatedExtensionUIRefresh)
-          ) {
-            await RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService);
-          } else {
-            await this.router.navigate(["environment"]);
-          }
+          await RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService);
         }),
         takeUntil(this.destroyed$),
       )
