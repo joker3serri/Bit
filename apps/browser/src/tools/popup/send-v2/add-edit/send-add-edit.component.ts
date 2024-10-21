@@ -2,12 +2,13 @@ import { CommonModule, Location } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { map, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
+import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { SendId } from "@bitwarden/common/types/guid";
 import {
@@ -29,6 +30,7 @@ import { SendFormModule } from "../../../../../../../libs/tools/send/send-ui/src
 import { PopupFooterComponent } from "../../../../platform/popup/layout/popup-footer.component";
 import { PopupHeaderComponent } from "../../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page.component";
+import { SendFilePopoutDialogContainerComponent } from "../send-file-popout-dialog/send-file-popout-dialog-container.component";
 
 /**
  * Helper class to parse query parameters for the AddEdit route.
@@ -70,6 +72,7 @@ export type AddEditQueryParams = Partial<Record<keyof QueryParams, string>>;
     PopupPageComponent,
     PopupHeaderComponent,
     PopupFooterComponent,
+    SendFilePopoutDialogContainerComponent,
     SendFormModule,
     AsyncActionsModule,
   ],
@@ -93,14 +96,25 @@ export class SendAddEditComponent {
     private sendApiService: SendApiService,
     private toastService: ToastService,
     private dialogService: DialogService,
+    private router: Router,
   ) {
     this.subscribeToParams();
   }
 
   /**
-   * Handles the event when the send is saved.
+   * Handles the event when the send is created.
    */
-  onSendSaved() {
+  async onSendCreated(send: SendView) {
+    await this.router.navigate(["/send-created"], {
+      queryParams: { sendId: send.id },
+    });
+    return;
+  }
+
+  /**
+   * Handles the event when the send is updated.
+   */
+  onSendUpdated(send: SendView) {
     this.location.back();
   }
 
