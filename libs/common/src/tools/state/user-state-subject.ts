@@ -252,6 +252,14 @@ export class UserStateSubject<
       // * `input` needs to wait until a message flows through the pipe
       withConstraints,
       map(([loadedState, constraints]) => {
+        // bypass nulls
+        if (!loadedState) {
+          return {
+            constraints: {} as Constraints<State>,
+            state: null,
+          } satisfies Constrained<State>;
+        }
+
         const calibration = isDynamic(constraints)
           ? constraints.calibrate(loadedState)
           : constraints;
