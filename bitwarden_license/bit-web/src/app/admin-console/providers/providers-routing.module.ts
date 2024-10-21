@@ -59,7 +59,9 @@ const routes: Routes = [
         path: "accept-provider",
         component: AcceptProviderComponent,
         data: {
-          pageTitle: "joinProvider",
+          pageTitle: {
+            key: "joinProvider",
+          },
           titleId: "acceptProvider",
         },
       },
