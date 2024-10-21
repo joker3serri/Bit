@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } fro
 import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   combineLatestWith,
   distinctUntilChanged,
@@ -16,8 +17,10 @@ import {
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { IntegrationId } from "@bitwarden/common/tools/integration";
 import { UserId } from "@bitwarden/common/types/guid";
+import { ToastService } from "@bitwarden/components";
 import { Option } from "@bitwarden/components/src/select/option";
 import {
   AlgorithmInfo,
@@ -48,6 +51,8 @@ const NONE_SELECTED = "none";
 export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   constructor(
     private generatorService: CredentialGeneratorService,
+    private toastService: ToastService,
+    private logService: LogService,
     private i18nService: I18nService,
     private accountService: AccountService,
     private zone: NgZone,
@@ -163,6 +168,20 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       .pipe(
         filter((algorithm) => !!algorithm),
         switchMap((algorithm) => this.typeToGenerator$(algorithm.id)),
+        catchError((error: unknown, generator) => {
+          if (typeof error === "string") {
+            this.toastService.showToast({
+              message: error,
+              variant: "error",
+              title: "",
+            });
+          } else {
+            this.logService.error(error);
+          }
+
+          // continue with origin stream
+          return generator;
+        }),
         takeUntil(this.destroyed),
       )
       .subscribe((generated) => {
