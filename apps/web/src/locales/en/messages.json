@@ -8258,6 +8258,10 @@
   "baseUrl": {
     "message": "Server URL"
   },
+  "selfHostBaseUrl": {
+    "message": "Self-host server URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "aliasDomain": {
     "message": "Alias domain"
   },
