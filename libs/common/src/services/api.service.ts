@@ -1885,8 +1885,8 @@ export class ApiService implements ApiServiceAbstraction {
       "Device-Type": this.deviceType,
     });
 
-    if (flagEnabled("betaBuild")) {
-      headers.set("Is-Beta", "true");
+    if (flagEnabled("prereleaseBuild")) {
+      headers.set("Is-Prerelease", "true");
     }
     if (this.customUserAgent != null) {
       headers.set("User-Agent", this.customUserAgent);
