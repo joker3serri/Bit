@@ -52,7 +52,8 @@ const forwarder = Object.freeze({
     settings: {
       // FIXME: integration should issue keys at runtime
       // based on integrationId & extension metadata
-      key: "forwarder.DuckDuckGo.local.settings",
+      // e.g. key: "forwarder.DuckDuckGo.local.settings",
+      key: "duckDuckGoForwarder",
       target: "object",
       format: "classified",
       classifier: new PrivateClassifier<DuckDuckGoSettings>(),

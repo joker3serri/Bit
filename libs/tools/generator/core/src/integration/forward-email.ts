@@ -59,7 +59,8 @@ const forwarder = Object.freeze({
     settings: {
       // FIXME: integration should issue keys at runtime
       // based on integrationId & extension metadata
-      key: "forwarder.ForwardEmail.local.settings",
+      // e.g. key: "forwarder.ForwardEmail.local.settings",
+      key: "forwardEmailForwarder",
       target: "object",
       format: "classified",
       classifier: new PrivateClassifier<ForwardEmailSettings>(),

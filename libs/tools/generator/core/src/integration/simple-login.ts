@@ -61,7 +61,8 @@ const forwarder = Object.freeze({
     settings: {
       // FIXME: integration should issue keys at runtime
       // based on integrationId & extension metadata
-      key: "forwarder.SimpleLogin.local.settings",
+      // e.g. key: "forwarder.SimpleLogin.local.settings",
+      key: "simpleLoginForwarder",
       target: "object",
       format: "classified",
       classifier: new PrivateClassifier<SimpleLoginSettings>(),

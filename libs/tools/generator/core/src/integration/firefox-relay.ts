@@ -56,7 +56,8 @@ const forwarder = Object.freeze({
     settings: {
       // FIXME: integration should issue keys at runtime
       // based on integrationId & extension metadata
-      key: "forwarder.Firefox.local.settings",
+      // e.g. key: "forwarder.Firefox.local.settings",
+      key: "firefoxRelayForwarder",
       target: "object",
       format: "classified",
       classifier: new PrivateClassifier<FirefoxRelaySettings>(),

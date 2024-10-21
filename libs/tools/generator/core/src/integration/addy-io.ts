@@ -62,7 +62,8 @@ const forwarder = Object.freeze({
     settings: {
       // FIXME: integration should issue keys at runtime
       // based on integrationId & extension metadata
-      key: "forwarder.AddyIo.local.settings",
+      // e.g. key: "forwarder.AddyIo.local.settings",
+      key: "addyIoForwarder",
       target: "object",
       format: "classified",
       classifier: new PrivateClassifier<AddyIoSettings>(),
