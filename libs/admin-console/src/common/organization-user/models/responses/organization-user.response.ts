@@ -63,8 +63,11 @@ export class OrganizationUserUserDetailsResponse extends OrganizationUserRespons
 }
 
 export class OrganizationUserDetailsResponse extends OrganizationUserResponse {
+  managedByOrganization: boolean;
+
   constructor(response: any) {
     super(response);
+    this.managedByOrganization = this.getResponseProperty("ManagedByOrganization") ?? false;
   }
 }
 
