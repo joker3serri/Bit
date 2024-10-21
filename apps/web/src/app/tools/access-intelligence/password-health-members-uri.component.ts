@@ -99,20 +99,6 @@ export class PasswordHealthMembersURIComponent implements OnInit {
     });
     this.dataSource.data = this.reportCiphers;
     this.loading = false;
-
-    // const reportIssues = allCiphers.map((c) => {
-    //   if (this.passwordStrengthMap.has(c.id)) {
-    //     return c;
-    //   }
-
-    //   if (this.passwordUseMap.has(c.id)) {
-    //     return c;
-    //   }
-
-    //   if (this.exposedPasswordMap.has(c.id)) {
-    //     return c;
-    //   }
-    // });
   }
 
   protected checkForExistingCipher(ciph: CipherView) {
