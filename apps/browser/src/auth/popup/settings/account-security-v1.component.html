@@ -92,7 +92,7 @@
         appStopClick
         (click)="fingerprint()"
       >
-        <div>{{ "fingerprintPhrase" | i18n }}</div>
+        <div class="row-main">{{ "fingerprintPhrase" | i18n }}</div>
       </button>
       <button
         type="button"
@@ -100,7 +100,7 @@
         appStopClick
         (click)="twoStep()"
       >
-        <div>{{ "twoStepLogin" | i18n }}</div>
+        <div class="row-main">{{ "twoStepLogin" | i18n }}</div>
         <i class="bwi bwi-external-link bwi-lg row-sub-icon" aria-hidden="true"></i>
       </button>
       <button
@@ -110,7 +110,7 @@
         (click)="changePassword()"
         *ngIf="showChangeMasterPass"
       >
-        <div>{{ "changeMasterPassword" | i18n }}</div>
+        <div class="row-main">{{ "changeMasterPassword" | i18n }}</div>
         <i class="bwi bwi-external-link bwi-lg row-sub-icon" aria-hidden="true"></i>
       </button>
       <button
