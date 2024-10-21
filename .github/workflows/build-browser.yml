@@ -62,13 +62,6 @@ jobs:
           path: ../sdk-internal
           if_no_artifact_found: fail
 
-      - name: Override SDK
-        if: ${{ inputs.sdk_branch != '' }}
-        working-directory: ./
-        run: |
-          ls -l ../
-          npm link ../sdk-internal
-
       - name: Get Package Version
         id: gen_vars
         run: |
@@ -179,6 +172,13 @@ jobs:
       - name: NPM setup
         run: npm ci
         working-directory: browser-source/
+
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
 
       - name: Build
         run: npm run dist
@@ -351,6 +351,13 @@ jobs:
       - name: NPM setup
         run: npm ci
         working-directory: ./
+
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
 
       - name: Build Safari extension
         run: npm run dist:safari

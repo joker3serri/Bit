@@ -86,13 +86,6 @@ jobs:
           path: ../sdk-internal
           if_no_artifact_found: fail
 
-      - name: Override SDK
-        if: ${{ inputs.sdk_branch != '' }}
-        working-directory: ./
-        run: |
-          ls -l ../
-          npm link ../sdk-internal
-
       - name: Get Package Version
         id: retrieve-version
         run: |
@@ -191,6 +184,13 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
         working-directory: ./
+
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
 
       - name: Cache Native Module
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
@@ -321,6 +321,13 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
         working-directory: ./
+
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
 
       - name: Cache Native Module
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
@@ -607,6 +614,13 @@ jobs:
         run: npm ci
         working-directory: ./
 
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
+
       - name: Cache Native Module
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         id: cache
@@ -772,6 +786,13 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
         working-directory: ./
+
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
 
       - name: Cache Native Module
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
@@ -998,6 +1019,13 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
         working-directory: ./
+
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
 
       - name: Cache Native Module
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
@@ -1233,6 +1261,13 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
         working-directory: ./
+
+      - name: Override SDK
+        if: ${{ inputs.sdk_branch != '' }}
+        working-directory: ./
+        run: |
+          ls -l ../
+          npm link ../sdk-internal
 
       - name: Cache Native Module
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
