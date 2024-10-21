@@ -11,6 +11,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import {
+  AsyncActionsModule,
   ButtonModule,
   CardComponent,
   CheckboxModule,
@@ -32,6 +33,7 @@ import { SendFormContainer } from "../../send-form-container";
   templateUrl: "./send-options.component.html",
   standalone: true,
   imports: [
+    AsyncActionsModule,
     ButtonModule,
     CardComponent,
     CheckboxModule,
@@ -51,7 +53,6 @@ export class SendOptionsComponent implements OnInit {
   @Input()
   originalSendView: SendView;
   disableHideEmail = false;
-  removingPassword = false;
   sendOptionsForm = this.formBuilder.group({
     maxAccessCount: [null as number],
     accessCount: [null as number],
@@ -121,7 +122,7 @@ export class SendOptionsComponent implements OnInit {
     });
   };
 
-  async removePassword(): Promise<boolean> {
+  removePassword = async () => {
     if (!this.originalSendView || !this.originalSendView.password) {
       return;
     }
@@ -135,8 +136,6 @@ export class SendOptionsComponent implements OnInit {
       return false;
     }
 
-    this.removingPassword = true;
-
     await this.sendApiService.removePassword(this.originalSendView.id);
 
     this.toastService.showToast({
@@ -145,14 +144,12 @@ export class SendOptionsComponent implements OnInit {
       message: this.i18nService.t("removedPassword"),
     });
 
-    this.removingPassword = false;
-
     this.originalSendView.password = null;
     this.sendOptionsForm.patchValue({
       password: null,
     });
     this.sendOptionsForm.get("password")?.enable();
-  }
+  };
 
   ngOnInit() {
     if (this.sendFormContainer.originalSendView) {
