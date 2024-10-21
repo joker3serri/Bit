@@ -1,8 +1,10 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom, map } from "rxjs";
 
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
@@ -17,6 +19,7 @@ function isSetEqual(a: Set<string>, b: Set<string>) {
 export class DefaultCipherFormService implements CipherFormService {
   private cipherService: CipherService = inject(CipherService);
   private accountService: AccountService = inject(AccountService);
+  private apiService: ApiService = inject(ApiService);
 
   async decryptCipher(cipher: Cipher): Promise<CipherView> {
     const activeUserId = await firstValueFrom(
@@ -70,7 +73,20 @@ export class DefaultCipherFormService implements CipherFormService {
 
       // Then save the new collection changes separately
       encryptedCipher.collectionIds = cipher.collectionIds;
-      savedCipher = await this.cipherService.saveCollectionsWithServer(encryptedCipher);
+
+      if (config.admin) {
+        // When using an admin config, update collections as an admin
+        await this.cipherService.saveCollectionsWithServerAdmin(encryptedCipher);
+
+        // Get updated cipher from the admin endpoint as `saveCollectionsWithServerAdmin`
+        // doesn't return the updated cipher
+        const cipherResponse = await this.apiService.getCipherAdmin(encryptedCipher.id);
+        const cipherData = new CipherData(cipherResponse);
+
+        savedCipher = new Cipher(cipherData);
+      } else {
+        savedCipher = await this.cipherService.saveCollectionsWithServer(encryptedCipher);
+      }
     }
 
     // Its possible the cipher was made no longer available due to collection assignment changes
