@@ -2868,8 +2868,12 @@
     "message": "Generate an email alias with an external forwarding service."
   },
   "forwarderDomainNameHint": {
-    "message": "Domain name",
-    "description": "Some forwarders provide several domains to choose from."
+    "message": "The domain name for your forwarding email",
+    "description": "Guidance for forwarders that let you select the domain of your forwarded email."
+  },
+  "forwarderBaseUrlHint": {
+    "message": "If you self-host this service then set the URL of your host here.",
+    "description": "Guidance for forwarders that let you self-host their service."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ error: $ERRORMESSAGE$",
