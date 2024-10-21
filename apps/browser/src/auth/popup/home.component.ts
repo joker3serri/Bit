@@ -7,9 +7,7 @@ import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components
 import { LoginEmailServiceAbstraction, RegisterRouteService } from "@bitwarden/auth/common";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { ToastService, DialogService } from "@bitwarden/components";
-
-import { RegistrationSelfHostedEnvConfigDialogComponent } from "../../../../../libs/auth/src/angular/registration/registration-self-hosted-env-config-dialog/registration-self-hosted-env-config-dialog.component";
+import { ToastService } from "@bitwarden/components";
 
 import { AccountSwitcherService } from "./account-switching/services/account-switcher.service";
 
@@ -40,7 +38,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private accountSwitcherService: AccountSwitcherService,
     private registerRouteService: RegisterRouteService,
     private toastService: ToastService,
-    private dialogService: DialogService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -61,7 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(async () => {
           await this.setLoginEmailValues();
-          await RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService);
+          await this.router.navigate(["environment"]);
         }),
         takeUntil(this.destroyed$),
       )
