@@ -254,10 +254,10 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       let authRequestResponse: AuthRequestResponse;
 
       if (this.state === State.AdminAuthRequest) {
-        // Authed - no access code required
+        // User is authenticated, therefore no access code is required.
         authRequestResponse = await this.apiService.getAuthRequest(requestId);
       } else {
-        // Unauthed - access code required for user verification
+        // User is not authenticated, therefore an access code is required for user verification.
         authRequestResponse = await this.apiService.getAuthResponse(
           requestId,
           this.authRequest.accessCode,
@@ -298,7 +298,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
       // Flow 1 and 4:
 
-      // Note: credentials change based on if the authRequestResponse.key is a encryptedMasterKey or UserKey
       const credentials = await this.buildAuthRequestLoginCredentials(
         requestId,
         authRequestResponse,
@@ -374,12 +373,19 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Takes an `AuthRequestResponse` and decrypts the `key` to build an `AuthRequestLoginCredentials`
+   * object for use in the `AuthRequestLoginStrategy`.
+   *
+   * The credentials object that gets built is affected by whether the `authRequestResponse.key`
+   * is an encrypted MasterKey or an encrypted UserKey. We determine the type of `key` by checking
+   * if `masterPasswordHash` has a value or not.
+   */
   private async buildAuthRequestLoginCredentials(
     requestId: string,
     authRequestResponse: AuthRequestResponse,
   ): Promise<AuthRequestLoginCredentials> {
-    // if masterPasswordHash has a value, we will always receive key as authRequestPublicKey(masterKey) + authRequestPublicKey(masterPasswordHash)
-    // if masterPasswordHash is null, we will always receive key as authRequestPublicKey(userKey)
+    // If `masterPasswordHash` has a value, we receive the `key` as an auth request public key encrypted Master Key.
     if (authRequestResponse.masterPasswordHash) {
       const { masterKey, masterKeyHash } =
         await this.authRequestService.decryptPubKeyEncryptedMasterKeyAndHash(
@@ -397,6 +403,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         masterKeyHash,
       );
     } else {
+      // Else if `masterPasswordHash` is null, we receive the `key` as an auth request public key encrypted User Key.
       const userKey = await this.authRequestService.decryptPubKeyEncryptedUserKey(
         authRequestResponse.key,
         this.authRequestKeyPair.privateKey,
