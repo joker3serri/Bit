@@ -354,10 +354,7 @@ describe("AutofillOverlayContentService", () => {
 
         it("opens the overlay list and focuses it after a delay if it is not visible when the `ArrowDown` key is pressed", async () => {
           jest.useFakeTimers();
-          const updateMostRecentlyFocusedFieldSpy = jest.spyOn(
-            autofillOverlayContentService as any,
-            "updateMostRecentlyFocusedField",
-          );
+          autofillOverlayContentService["mostRecentlyFocusedField"] = autofillFieldElement;
           jest
             .spyOn(autofillOverlayContentService as any, "isInlineMenuListVisible")
             .mockResolvedValue(false);
@@ -365,7 +362,6 @@ describe("AutofillOverlayContentService", () => {
           autofillFieldElement.dispatchEvent(new KeyboardEvent("keyup", { code: "ArrowDown" }));
           await flushPromises();
 
-          expect(updateMostRecentlyFocusedFieldSpy).toHaveBeenCalledWith(autofillFieldElement);
           expect(sendExtensionMessageSpy).toHaveBeenCalledWith("openAutofillInlineMenu", {
             isOpeningFullInlineMenu: true,
           });
@@ -1183,7 +1179,7 @@ describe("AutofillOverlayContentService", () => {
             autofillFieldData,
             pageDetailsMock,
           );
-          autofillOverlayContentService["formFieldElements"].delete(autofillFieldElement);
+          autofillOverlayContentService["hiddenFormFieldElements"].delete(autofillFieldElement);
 
           autofillFieldElement.dispatchEvent(new Event("focus"));
 
@@ -1690,20 +1686,6 @@ describe("AutofillOverlayContentService", () => {
       );
 
       expect(sendExtensionMessageSpy).toHaveBeenCalledWith("openAutofillInlineMenu");
-      expect(autofillOverlayContentService["mostRecentlyFocusedField"]).toEqual(
-        autofillFieldElement,
-      );
-    });
-
-    it("sets the most recently focused field to the passed form field element if the value is not set", async () => {
-      autofillOverlayContentService["mostRecentlyFocusedField"] = undefined;
-
-      await autofillOverlayContentService.setupOverlayListeners(
-        autofillFieldElement,
-        autofillFieldData,
-        pageDetailsMock,
-      );
-
       expect(autofillOverlayContentService["mostRecentlyFocusedField"]).toEqual(
         autofillFieldElement,
       );

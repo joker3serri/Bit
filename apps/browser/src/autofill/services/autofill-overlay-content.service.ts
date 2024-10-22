@@ -1237,10 +1237,6 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
       this.storeModifiedFormElement(formFieldElement);
     }
 
-    if (!this.mostRecentlyFocusedField) {
-      await this.updateMostRecentlyFocusedField(formFieldElement);
-    }
-
     this.setupFormFieldElementEventListeners(formFieldElement);
     await this.setupFormSubmissionEventListeners(formFieldElement, autofillFieldData);
 
