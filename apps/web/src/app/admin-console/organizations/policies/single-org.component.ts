@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 
-import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { PolicyRequest } from "@bitwarden/common/admin-console/models/request/policy.request";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -24,7 +23,6 @@ export class SingleOrgPolicyComponent extends BasePolicyComponent implements OnI
   constructor(
     private i18nService: I18nService,
     private configService: ConfigService,
-    private orgDomainApiService: OrgDomainApiServiceAbstraction,
   ) {
     super();
   }
@@ -32,19 +30,9 @@ export class SingleOrgPolicyComponent extends BasePolicyComponent implements OnI
   async ngOnInit() {
     super.ngOnInit();
 
-    if (await this.hasVerifiedDomains()) {
+    if (!this.policyResponse.canToggleState) {
       this.enabled.disable();
     }
-  }
-
-  private async hasVerifiedDomains(): Promise<boolean> {
-    return (
-      this.enabled.value &&
-      (await this.configService.getFeatureFlag(FeatureFlag.AccountDeprovisioning)) &&
-      (await this.orgDomainApiService.getAllByOrgId(this.policyResponse.organizationId)).some(
-        (x) => x.verifiedDate !== null,
-      )
-    );
   }
 
   async buildRequest(policiesEnabledMap: Map<PolicyType, boolean>): Promise<PolicyRequest> {
@@ -66,6 +54,15 @@ export class SingleOrgPolicyComponent extends BasePolicyComponent implements OnI
             "disableRequiredError",
             this.i18nService.t("maximumVaultTimeoutLabel"),
           ),
+        );
+      }
+
+      if (
+        (await this.configService.getFeatureFlag(FeatureFlag.AccountDeprovisioning)) &&
+        !this.policyResponse.canToggleState
+      ) {
+        throw new Error(
+          this.i18nService.t("disableRequiredError", this.i18nService.t("singleOrg")),
         );
       }
     }

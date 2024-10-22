@@ -42,6 +42,7 @@ export class PolicyEditComponent implements AfterViewInit {
   policyType = PolicyType;
   loading = true;
   enabled = false;
+  saveDisabled = false;
   formPromise: Promise<any>;
   defaultTypes: any[];
   policyComponent: BasePolicyComponent;
@@ -72,6 +73,8 @@ export class PolicyEditComponent implements AfterViewInit {
       .instance as BasePolicyComponent;
     this.policyComponent.policy = this.data.policy;
     this.policyComponent.policyResponse = this.policyResponse;
+
+    this.saveDisabled = !this.policyResponse.canToggleState;
 
     this.cdr.detectChanges();
   }
