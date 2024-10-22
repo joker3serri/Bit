@@ -6,9 +6,9 @@ import { WordOptions } from "../types";
 /** A randomizer backed by a KeyService. */
 export class KeyServiceRandomizer implements Randomizer {
   /** instantiates the type.
-   * @param crypto generates random numbers
+   * @param keyService generates random numbers
    */
-  constructor(private crypto: KeyService) {}
+  constructor(private keyService: KeyService) {}
 
   async pick<Entry>(list: Array<Entry>): Promise<Entry> {
     const length = list?.length ?? 0;
@@ -28,7 +28,7 @@ export class KeyServiceRandomizer implements Randomizer {
     }
 
     if (options?.number ?? false) {
-      const num = await this.crypto.randomNumber(1, 9);
+      const num = await this.keyService.randomNumber(1, 9);
       word = word + num.toString();
     }
 
@@ -63,6 +63,6 @@ export class KeyServiceRandomizer implements Randomizer {
   }
 
   async uniform(min: number, max: number) {
-    return this.crypto.randomNumber(min, max);
+    return this.keyService.randomNumber(min, max);
   }
 }

@@ -3,7 +3,7 @@ import { LoginStrategyServiceAbstraction, WebAuthnLoginCredentials } from "@bitw
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PrfKey } from "../../../types/key";
 import { WebAuthnLoginApiServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-api.service.abstraction";
-import { WebAuthnLoginPrfKeyServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
+import { WebAuthnLoginPrfCryptoServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { WebAuthnLoginServiceAbstraction } from "../../abstractions/webauthn/webauthn-login.service.abstraction";
 import { AuthResult } from "../../models/domain/auth-result";
 import { WebAuthnLoginCredentialAssertionOptionsView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion-options.view";
@@ -17,7 +17,7 @@ export class WebAuthnLoginService implements WebAuthnLoginServiceAbstraction {
   constructor(
     private webAuthnLoginApiService: WebAuthnLoginApiServiceAbstraction,
     private loginStrategyService: LoginStrategyServiceAbstraction,
-    private webAuthnLoginPrfKeyService: WebAuthnLoginPrfKeyServiceAbstraction,
+    private webAuthnLoginPrfKeyService: WebAuthnLoginPrfCryptoServiceAbstraction,
     private window: Window,
     private logService?: LogService,
   ) {

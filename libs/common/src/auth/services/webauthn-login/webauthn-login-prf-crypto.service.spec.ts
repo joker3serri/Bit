@@ -2,15 +2,15 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { CryptoFunctionService } from "../../../platform/abstractions/crypto-function.service";
 
-import { WebAuthnLoginPrfKeyService } from "./webauthn-login-prf-crypto.service";
+import { WebAuthnLoginPrfCryptoService } from "./webauthn-login-prf-crypto.service";
 
 describe("WebAuthnLoginPrfKeyService", () => {
   let cryptoFunctionService: MockProxy<CryptoFunctionService>;
-  let service: WebAuthnLoginPrfKeyService;
+  let service: WebAuthnLoginPrfCryptoService;
 
   beforeEach(() => {
     cryptoFunctionService = mock<CryptoFunctionService>();
-    service = new WebAuthnLoginPrfKeyService(cryptoFunctionService);
+    service = new WebAuthnLoginPrfCryptoService(cryptoFunctionService);
   });
 
   describe("createSymmetricKeyFromPrf", () => {

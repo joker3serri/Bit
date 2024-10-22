@@ -3,7 +3,7 @@ import { PrfKey } from "../../../types/key";
 /**
  * Contains methods for all crypto operations specific to the WebAuthn login flow.
  */
-export abstract class WebAuthnLoginPrfKeyServiceAbstraction {
+export abstract class WebAuthnLoginPrfCryptoServiceAbstraction {
   /**
    * Get the salt used to generate the PRF-output used when logging in with WebAuthn.
    */

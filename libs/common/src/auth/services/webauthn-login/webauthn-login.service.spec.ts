@@ -7,7 +7,7 @@ import { Utils } from "../../../platform/misc/utils";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { PrfKey } from "../../../types/key";
 import { WebAuthnLoginApiServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-api.service.abstraction";
-import { WebAuthnLoginPrfKeyServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
+import { WebAuthnLoginPrfCryptoServiceAbstraction } from "../../abstractions/webauthn/webauthn-login-prf-crypto.service.abstraction";
 import { AuthResult } from "../../models/domain/auth-result";
 import { WebAuthnLoginCredentialAssertionOptionsView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion-options.view";
 import { WebAuthnLoginCredentialAssertionView } from "../../models/view/webauthn-login/webauthn-login-credential-assertion.view";
@@ -21,7 +21,7 @@ describe("WebAuthnLoginService", () => {
 
   const webAuthnLoginApiService = mock<WebAuthnLoginApiServiceAbstraction>();
   const loginStrategyService = mock<LoginStrategyServiceAbstraction>();
-  const webAuthnLoginPrfKeyService = mock<WebAuthnLoginPrfKeyServiceAbstraction>();
+  const webAuthnLoginPrfKeyService = mock<WebAuthnLoginPrfCryptoServiceAbstraction>();
   const navigatorCredentials = mock<CredentialsContainer>();
   const logService = mock<LogService>();
 

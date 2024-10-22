@@ -4,7 +4,7 @@
 import { KeyService } from "@bitwarden/key-management";
 
 import { Randomizer } from "./abstractions";
-import { KeyServiceRandomizer } from "./engine/crypto-service-randomizer";
+import { KeyServiceRandomizer } from "./engine/key-service-randomizer";
 
 export function createRandomizer(keyService: KeyService): Randomizer {
   return new KeyServiceRandomizer(keyService);

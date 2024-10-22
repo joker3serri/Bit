@@ -2,7 +2,7 @@ import { mock } from "jest-mock-extended";
 
 import { KeyService } from "@bitwarden/key-management";
 
-import { KeyServiceRandomizer } from "./crypto-service-randomizer";
+import { KeyServiceRandomizer } from "./key-service-randomizer";
 
 describe("KeyServiceRandomizer", () => {
   const keyService = mock<KeyService>();
