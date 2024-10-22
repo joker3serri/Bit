@@ -90,7 +90,7 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
                 return this.webPushConnectionService.supportStatus$(userId).pipe(
                   supportSwitch({
                     supported: (service) =>
-                      service.connect$(userId).pipe(map((n) => [n, userId] as const)),
+                      service.connect$().pipe(map((n) => [n, userId] as const)),
                     notSupported: () =>
                       this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
                         filter((n) => n.type === "ReceiveMessage"),

@@ -13,7 +13,7 @@ export class WebSocketWebPushConnectionService
     return of({ type: "not-supported", reason: "work-in-progress" });
   }
 
-  connect$(userId: UserId): Observable<NotificationResponse> {
+  connect$(): Observable<NotificationResponse> {
     // TODO: Not currently recieving notifications
     return new Observable<NotificationResponse>((subscriber) => {
       const socket = new WebSocket("wss://push.services.mozilla.com");
