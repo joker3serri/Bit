@@ -376,7 +376,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         if (!a || a.onlyOnRequest) {
           this.value$.next("-");
         } else {
-          this.generate$.next();
+          this.generate("autogenerate");
         }
       });
     });
@@ -472,7 +472,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   protected readonly userId$ = new BehaviorSubject<UserId>(null);
 
   /** Emits when a new credential is requested */
-  protected readonly generate$ = new Subject<void>();
+  private readonly generate$ = new Subject<string>();
+
+  protected generate(requestor: string) {
+    this.generate$.next(requestor);
+  }
 
   private toOptions(algorithms: AlgorithmInfo[]) {
     const options: Option<string>[] = algorithms.map((algorithm) => ({

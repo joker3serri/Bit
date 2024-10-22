@@ -59,7 +59,11 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
   protected readonly userId$ = new BehaviorSubject<UserId>(null);
 
   /** Emits when a new credential is requested */
-  protected readonly generate$ = new Subject<void>();
+  private readonly generate$ = new Subject<string>();
+
+  protected generate(requestor: string) {
+    this.generate$.next(requestor);
+  }
 
   /** Tracks changes to the selected credential type
    * @param type the new credential type
@@ -154,7 +158,7 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
         filter((a) => !a.onlyOnRequest),
         takeUntil(this.destroyed),
       )
-      .subscribe(() => this.generate$.next());
+      .subscribe(() => this.generate("autogenerate"));
   }
 
   private typeToGenerator$(type: CredentialAlgorithm) {
