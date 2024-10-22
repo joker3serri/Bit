@@ -874,6 +874,7 @@ export default class MainBackground {
         this.stateEventRunnerService,
         this.taskSchedulerService,
         this.logService,
+        this.biometricsService,
         lockedCallback,
         logoutCallback,
       );
