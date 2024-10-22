@@ -7,8 +7,8 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
-
 import { BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
+
 import { FakeAccountService, mockAccountServiceWith } from "../../../../spec";
 import { VaultTimeoutSettingsService } from "../../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { CryptoService } from "../../../platform/abstractions/crypto.service";
