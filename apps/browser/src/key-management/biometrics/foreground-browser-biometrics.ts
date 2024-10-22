@@ -1,8 +1,6 @@
-import { BiometricsService } from "@bitwarden/common/key-management/biometrics/biometric.service";
-import { BiometricsCommands } from "@bitwarden/common/key-management/biometrics/biometrics-commands";
-import { BiometricsStatus } from "@bitwarden/common/key-management/biometrics/biometrics-status";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
+import { BiometricsCommands, BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
 
 import { BrowserApi } from "../../platform/browser/browser-api";
 
