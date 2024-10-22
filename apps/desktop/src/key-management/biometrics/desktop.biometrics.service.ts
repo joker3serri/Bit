@@ -1,5 +1,5 @@
-import { BiometricsService } from "@bitwarden/common/key-management/biometrics/biometric.service";
 import { UserId } from "@bitwarden/common/types/guid";
+import { BiometricsService } from "@bitwarden/key-management";
 
 /**
  * This service extends the base biometrics service to provide desktop specific functions,

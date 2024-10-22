@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 
-import { BiometricsStatus } from "@bitwarden/common/key-management/biometrics/biometrics-status";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
+import { BiometricsStatus } from "@bitwarden/key-management";
 
 import { DesktopBiometricsService } from "./desktop.biometrics.service";
 

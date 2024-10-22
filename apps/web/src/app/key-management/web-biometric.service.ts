@@ -1,7 +1,7 @@
-import { BiometricsService } from "@bitwarden/common/key-management/biometrics/biometric.service";
-import { BiometricsStatus } from "@bitwarden/common/key-management/biometrics/biometrics-status";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
+import { BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
+
 export class WebBiometricsService extends BiometricsService {
   async authenticateWithBiometrics(): Promise<boolean> {
     return false;

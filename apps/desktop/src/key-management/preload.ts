@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 
-import { BiometricsStatus } from "@bitwarden/common/key-management/biometrics/biometrics-status";
 import { UserKey } from "@bitwarden/common/types/key";
+import { BiometricsStatus } from "@bitwarden/key-management";
 
 import { BiometricMessage, BiometricAction } from "../types/biometric-message";
 

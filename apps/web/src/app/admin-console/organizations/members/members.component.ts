@@ -13,15 +13,21 @@ import {
   switchMap,
 } from "rxjs";
 
+import {
+  OrganizationUserApiService,
+  OrganizationUserConfirmRequest,
+  OrganizationUserUserDetailsResponse,
+  CollectionService,
+  CollectionData,
+  Collection,
+  CollectionDetailsResponse,
+} from "@bitwarden/admin-console/common";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationManagementPreferencesService } from "@bitwarden/common/admin-console/abstractions/organization-management-preferences/organization-management-preferences.service";
-import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
-import { OrganizationUserConfirmRequest } from "@bitwarden/common/admin-console/abstractions/organization-user/requests";
-import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-user/responses";
 import { PolicyApiServiceAbstraction as PolicyApiService } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import {
@@ -37,14 +43,11 @@ import { isNotSelfUpgradable, ProductTierType } from "@bitwarden/common/billing/
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
-import { Collection } from "@bitwarden/common/vault/models/domain/collection";
-import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
 import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
 
 import {
@@ -67,7 +70,10 @@ import {
   MemberDialogTab,
   openUserAddEditDialog,
 } from "./components/member-dialog";
-import { ResetPasswordComponent } from "./components/reset-password.component";
+import {
+  ResetPasswordComponent,
+  ResetPasswordDialogResult,
+} from "./components/reset-password.component";
 
 class MembersTableDataSource extends PeopleTableDataSource<OrganizationUserView> {
   protected statusType = OrganizationUserStatusType;
@@ -105,6 +111,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     i18nService: I18nService,
     organizationManagementPreferencesService: OrganizationManagementPreferencesService,
     cryptoService: CryptoService,
+    private encryptService: EncryptService,
     validationService: ValidationService,
     logService: LogService,
     userNamePipe: UserNamePipe,
@@ -116,7 +123,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     private syncService: SyncService,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private organizationUserService: OrganizationUserService,
+    private organizationUserApiService: OrganizationUserApiService,
     private router: Router,
     private groupService: GroupService,
     private collectionService: CollectionService,
@@ -213,7 +220,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     let collectionsPromise: Promise<Map<string, string>>;
 
     // We don't need both groups and collections for the table, so only load one
-    const userPromise = this.organizationUserService.getAllUsers(this.organization.id, {
+    const userPromise = this.organizationUserApiService.getAllUsers(this.organization.id, {
       includeGroups: this.organization.useGroups,
       includeCollections: !this.organization.useGroups,
     });
@@ -270,27 +277,27 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   removeUser(id: string): Promise<void> {
-    return this.organizationUserService.removeOrganizationUser(this.organization.id, id);
+    return this.organizationUserApiService.removeOrganizationUser(this.organization.id, id);
   }
 
   revokeUser(id: string): Promise<void> {
-    return this.organizationUserService.revokeOrganizationUser(this.organization.id, id);
+    return this.organizationUserApiService.revokeOrganizationUser(this.organization.id, id);
   }
 
   restoreUser(id: string): Promise<void> {
-    return this.organizationUserService.restoreOrganizationUser(this.organization.id, id);
+    return this.organizationUserApiService.restoreOrganizationUser(this.organization.id, id);
   }
 
   reinviteUser(id: string): Promise<void> {
-    return this.organizationUserService.postOrganizationUserReinvite(this.organization.id, id);
+    return this.organizationUserApiService.postOrganizationUserReinvite(this.organization.id, id);
   }
 
   async confirmUser(user: OrganizationUserView, publicKey: Uint8Array): Promise<void> {
     const orgKey = await this.cryptoService.getOrgKey(this.organization.id);
-    const key = await this.cryptoService.rsaEncrypt(orgKey.key, publicKey);
+    const key = await this.encryptService.rsaEncrypt(orgKey.key, publicKey);
     const request = new OrganizationUserConfirmRequest();
     request.key = key.encryptedString;
-    await this.organizationUserService.postOrganizationUserConfirm(
+    await this.organizationUserApiService.postOrganizationUserConfirm(
       this.organization.id,
       user.id,
       request,
@@ -585,7 +592,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     }
 
     try {
-      const response = this.organizationUserService.postManyOrganizationUserReinvite(
+      const response = this.organizationUserApiService.postManyOrganizationUserReinvite(
         this.organization.id,
         filteredUsers.map((user) => user.id),
       );
@@ -659,24 +666,19 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   async resetPassword(user: OrganizationUserView) {
-    const [modal] = await this.modalService.openViewRef(
-      ResetPasswordComponent,
-      this.resetPasswordModalRef,
-      (comp) => {
-        comp.name = this.userNamePipe.transform(user);
-        comp.email = user != null ? user.email : null;
-        comp.organizationId = this.organization.id;
-        comp.id = user != null ? user.id : null;
-
-        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-        comp.passwordReset.subscribe(() => {
-          modal.close();
-          // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.load();
-        });
+    const dialogRef = ResetPasswordComponent.open(this.dialogService, {
+      data: {
+        name: this.userNamePipe.transform(user),
+        email: user != null ? user.email : null,
+        organizationId: this.organization.id,
+        id: user != null ? user.id : null,
       },
-    );
+    });
+
+    const result = await lastValueFrom(dialogRef.closed);
+    if (result === ResetPasswordDialogResult.Ok) {
+      await this.load();
+    }
   }
 
   protected async removeUserConfirmationDialog(user: OrganizationUserView) {

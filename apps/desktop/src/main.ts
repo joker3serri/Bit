@@ -5,7 +5,7 @@ import { Subject, firstValueFrom } from "rxjs";
 
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { ClientType } from "@bitwarden/common/enums";
-import { DefaultBiometricStateService } from "@bitwarden/common/key-management/biometrics/biometric-state.service";
+import { RegionConfig } from "@bitwarden/common/platform/abstractions/environment.service";
 import { Message, MessageSender } from "@bitwarden/common/platform/messaging";
 // eslint-disable-next-line no-restricted-imports -- For dependency creation
 import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
@@ -22,6 +22,7 @@ import { DefaultSingleUserStateProvider } from "@bitwarden/common/platform/state
 import { DefaultStateProvider } from "@bitwarden/common/platform/state/implementations/default-state.provider";
 import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
+import { DefaultBiometricStateService } from "@bitwarden/key-management";
 /* eslint-enable import/no-restricted-paths */
 
 import { DesktopAutofillSettingsService } from "./autofill/services/desktop-autofill-settings.service";
@@ -153,7 +154,11 @@ export class Main {
       new DefaultDerivedStateProvider(),
     );
 
-    this.environmentService = new DefaultEnvironmentService(stateProvider, accountService);
+    this.environmentService = new DefaultEnvironmentService(
+      stateProvider,
+      accountService,
+      process.env.ADDITIONAL_REGIONS as unknown as RegionConfig[],
+    );
 
     this.migrationRunner = new MigrationRunner(
       this.storageService,
@@ -233,6 +238,7 @@ export class Main {
       this.windowMain,
       app.getPath("userData"),
       app.getPath("exe"),
+      app.getAppPath(),
     );
 
     this.desktopAutofillSettingsService = new DesktopAutofillSettingsService(stateProvider);
@@ -279,13 +285,21 @@ export class Main {
         if (browserIntegrationEnabled || ddgIntegrationEnabled) {
           // Re-register the native messaging host integrations on startup, in case they are not present
           if (browserIntegrationEnabled) {
-            this.nativeMessagingMain.generateManifests().catch(this.logService.error);
+            this.nativeMessagingMain
+              .generateManifests()
+              .catch((err) => this.logService.error("Error while generating manifests", err));
           }
           if (ddgIntegrationEnabled) {
-            this.nativeMessagingMain.generateDdgManifests().catch(this.logService.error);
+            this.nativeMessagingMain
+              .generateDdgManifests()
+              .catch((err) => this.logService.error("Error while generating DDG manifests", err));
           }
 
-          this.nativeMessagingMain.listen();
+          this.nativeMessagingMain
+            .listen()
+            .catch((err) =>
+              this.logService.error("Error while starting native message listener", err),
+            );
         }
 
         app.removeAsDefaultProtocolClient("bitwarden");

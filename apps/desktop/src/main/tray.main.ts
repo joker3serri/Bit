@@ -3,9 +3,8 @@ import * as path from "path";
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, nativeImage, Tray } from "electron";
 import { firstValueFrom } from "rxjs";
 
-import { BiometricStateService } from "@bitwarden/common/key-management/biometrics/biometric-state.service";
-import { BiometricsService } from "@bitwarden/common/key-management/biometrics/biometric.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { BiometricStateService, BiometricsService } from "@bitwarden/key-management";
 
 import { DesktopSettingsService } from "../platform/services/desktop-settings.service";
 

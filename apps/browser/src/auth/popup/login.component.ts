@@ -78,18 +78,16 @@ export class LoginComponent extends BaseLoginComponent implements OnInit {
       registerRouteService,
       toastService,
     );
-    super.onSuccessfulLogin = async () => {
+    this.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);
     };
-    super.successRoute = "/tabs/vault";
+    this.successRoute = "/tabs/vault";
     this.showPasswordless = flagEnabled("showPasswordless");
   }
 
   async ngOnInit(): Promise<void> {
+    await super.ngOnInit();
     if (this.showPasswordless) {
-      const loginEmail = await firstValueFrom(this.loginEmailService.loginEmail$);
-      this.formGroup.controls.email.setValue(loginEmail);
-      this.formGroup.controls.rememberEmail.setValue(this.loginEmailService.getRememberEmail());
       await this.validateEmail();
     }
   }
