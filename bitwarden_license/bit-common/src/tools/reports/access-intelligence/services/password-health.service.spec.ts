@@ -3,12 +3,10 @@ import { TestBed } from "@angular/core/testing";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-// eslint-disable-next-line no-restricted-imports
-import { cipherData } from "../reports/pages/reports-ciphers.mock";
-
-import { userData } from "./password-health.mock";
+import { mockCiphers } from "./ciphers.mock";
 import { PasswordHealthService } from "./password-health.service";
 
 describe("PasswordHealthService", () => {
@@ -37,7 +35,7 @@ describe("PasswordHealthService", () => {
         {
           provide: CipherService,
           useValue: {
-            getAllFromApiForOrganization: jest.fn().mockResolvedValue(cipherData),
+            getAllFromApiForOrganization: jest.fn().mockResolvedValue(CipherData),
           },
         },
         { provide: "organizationId", useValue: "org1" },
@@ -63,8 +61,6 @@ describe("PasswordHealthService", () => {
 
   describe("generateReport", () => {
     beforeEach(async () => {
-      (service as any).userData = userData;
-
       await service.generateReport();
     });
 
@@ -114,7 +110,7 @@ describe("PasswordHealthService", () => {
 
   describe("findWeakPassword", () => {
     it("should add weak passwords to passwordStrengthMap", () => {
-      const weakCipher = cipherData.find((c) => c.login?.password === "123") as CipherView;
+      const weakCipher = mockCiphers.find((c) => c.login?.password === "123") as CipherView;
       service.findWeakPassword(weakCipher);
       expect(service.passwordStrengthMap.get(weakCipher.id)).toEqual(["veryWeak", "danger"]);
     });
@@ -122,7 +118,7 @@ describe("PasswordHealthService", () => {
 
   describe("findReusedPassword", () => {
     it("should detect password reuse", () => {
-      cipherData.forEach((cipher) => {
+      mockCiphers.forEach((cipher) => {
         service.findReusedPassword(cipher as CipherView);
       });
       const reuseCounts = Array.from(service.passwordUseMap.values()).filter((count) => count > 1);
@@ -132,7 +128,7 @@ describe("PasswordHealthService", () => {
 
   describe("findExposedPassword", () => {
     it("should add exposed passwords to exposedPasswordMap", async () => {
-      const exposedCipher = cipherData.find((c) => c.login?.password === "123") as CipherView;
+      const exposedCipher = mockCiphers.find((c) => c.login?.password === "123") as CipherView;
       await service.findExposedPassword(exposedCipher);
       expect(service.exposedPasswordMap.get(exposedCipher.id)).toBe(100);
     });

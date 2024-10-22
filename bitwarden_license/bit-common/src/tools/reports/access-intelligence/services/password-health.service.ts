@@ -8,10 +8,8 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { BadgeVariant } from "@bitwarden/components";
 
-// eslint-disable-next-line no-restricted-imports
-import { cipherData } from "../reports/pages/reports-ciphers.mock";
-
-import { userData } from "./password-health.mock";
+import { mockCiphers } from "./ciphers.mock";
+import { mockMemberCipherDetailsResponse } from "./member-cipher-details-response.mock";
 
 @Injectable()
 export class PasswordHealthService {
@@ -37,7 +35,7 @@ export class PasswordHealthService {
   async generateReport() {
     let allCiphers = await this.cipherService.getAllFromApiForOrganization(this.organizationId);
     // TODO remove when actual user member data is available
-    allCiphers = cipherData;
+    allCiphers = mockCiphers;
     allCiphers.forEach(async (cipher) => {
       this.findWeakPassword(cipher);
       this.findReusedPassword(cipher);
@@ -45,7 +43,7 @@ export class PasswordHealthService {
     });
 
     // TODO - fetch actual user member when data is available
-    userData.forEach((user) => {
+    mockMemberCipherDetailsResponse.data.forEach((user) => {
       user.cipherIds.forEach((cipherId: string) => {
         if (this.totalMembersMap.has(cipherId)) {
           this.totalMembersMap.set(cipherId, (this.totalMembersMap.get(cipherId) || 0) + 1);

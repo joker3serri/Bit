@@ -1,6 +1,6 @@
 {
   "extends": "../../libs/shared/tsconfig.libs",
-  "include": ["src", "spec"],
+  "include": ["src", "spec", "test.setup.ts", "test.setup.ts"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "baseUrl": ".",
