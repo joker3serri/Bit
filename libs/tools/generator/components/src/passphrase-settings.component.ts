@@ -91,6 +91,8 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
           .get(Controls.wordSeparator)
           .setValidators(toValidators(Controls.wordSeparator, Generators.passphrase, constraints));
 
+        this.settings.updateValueAndValidity({ emitEvent: false });
+
         // forward word boundaries to the template (can't do it through the rx form)
         this.minNumWords = constraints.numWords.min;
         this.maxNumWords = constraints.numWords.max;

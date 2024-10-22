@@ -132,6 +132,8 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
           toValidators(Controls.minSpecial, Generators.password, constraints),
         );
 
+        this.settings.updateValueAndValidity({ emitEvent: false });
+
         // forward word boundaries to the template (can't do it through the rx form)
         this.minLength = constraints.length.min;
         this.maxLength = constraints.length.max;
