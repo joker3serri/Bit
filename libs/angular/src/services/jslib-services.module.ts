@@ -244,6 +244,10 @@ import {
 } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
 import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
+import {
+  CipherAuthorizationService,
+  DefaultCipherAuthorizationService,
+} from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
@@ -1347,8 +1351,16 @@ const safeProviders: SafeProvider[] = [
       SdkClientFactory,
       EnvironmentService,
       PlatformUtilsServiceAbstraction,
+      AccountServiceAbstraction,
+      KdfConfigServiceAbstraction,
+      CryptoServiceAbstraction,
       ApiServiceAbstraction,
     ],
+  }),
+  safeProvider({
+    provide: CipherAuthorizationService,
+    useClass: DefaultCipherAuthorizationService,
+    deps: [CollectionService, OrganizationServiceAbstraction],
   }),
 ];
 
