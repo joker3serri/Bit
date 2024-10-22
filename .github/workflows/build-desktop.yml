@@ -181,7 +181,7 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.sdk_branch }}
           artifacts: sdk-internal
-          repo: bitwarden/sdk
+          repo: bitwarden/sdk-internal
           path: ../sdk-internal
           if_no_artifact_found: fail
 
@@ -331,7 +331,7 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.sdk_branch }}
           artifacts: sdk-internal
-          repo: bitwarden/sdk
+          repo: bitwarden/sdk-internal
           path: ../sdk-internal
           if_no_artifact_found: fail
 
@@ -636,7 +636,7 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.sdk_branch }}
           artifacts: sdk-internal
-          repo: bitwarden/sdk
+          repo: bitwarden/sdk-internal
           path: ../sdk-internal
           if_no_artifact_found: fail
 
@@ -822,7 +822,7 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.sdk_branch }}
           artifacts: sdk-internal
-          repo: bitwarden/sdk
+          repo: bitwarden/sdk-internal
           path: ../sdk-internal
           if_no_artifact_found: fail
 
@@ -1068,7 +1068,7 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.sdk_branch }}
           artifacts: sdk-internal
-          repo: bitwarden/sdk
+          repo: bitwarden/sdk-internal
           path: ../sdk-internal
           if_no_artifact_found: fail
 
@@ -1323,7 +1323,7 @@ jobs:
           workflow_conclusion: success
           branch: ${{ inputs.sdk_branch }}
           artifacts: sdk-internal
-          repo: bitwarden/sdk
+          repo: bitwarden/sdk-internal
           path: ../sdk-internal
           if_no_artifact_found: fail
 
