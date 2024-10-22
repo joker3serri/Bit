@@ -58,7 +58,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private authRequest: AuthRequest;
   private authRequestKeyPair: { publicKey: Uint8Array; privateKey: Uint8Array };
   private authStatus: AuthenticationStatus;
-  private resendTimeoutSeconds = 12;
+  private showResendNotificationTimeoutSeconds = 12;
 
   protected clientType: ClientType;
   protected ClientType = ClientType;
@@ -218,14 +218,14 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     this.showResendNotification = false;
 
     try {
-      let reqResponse: AuthRequestResponse;
+      let authRequestResponse: AuthRequestResponse;
 
       if (this.state === State.AdminAuthRequest) {
         await this.buildAuthRequest(AuthRequestType.AdminApproval);
-        reqResponse = await this.apiService.postAdminAuthRequest(this.authRequest);
+        authRequestResponse = await this.apiService.postAdminAuthRequest(this.authRequest);
 
         const adminAuthReqStorable = new AdminAuthRequestStorable({
-          id: reqResponse.id,
+          id: authRequestResponse.id,
           privateKey: this.authRequestKeyPair.privateKey,
         });
 
@@ -233,11 +233,11 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         await this.authRequestService.setAdminAuthRequest(adminAuthReqStorable, userId);
       } else {
         await this.buildAuthRequest(AuthRequestType.AuthenticateAndUnlock);
-        reqResponse = await this.apiService.postAuthRequest(this.authRequest);
+        authRequestResponse = await this.apiService.postAuthRequest(this.authRequest);
       }
 
-      if (reqResponse.id) {
-        await this.anonymousHubService.createHubConnection(reqResponse.id);
+      if (authRequestResponse.id) {
+        await this.anonymousHubService.createHubConnection(authRequestResponse.id);
       }
     } catch (e) {
       this.logService.error(e);
@@ -245,7 +245,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.showResendNotification = true;
-    }, this.resendTimeoutSeconds * 1000);
+    }, this.showResendNotificationTimeoutSeconds * 1000);
   }
 
   private async verifyAndHandleApprovedAuthReq(requestId: string): Promise<void> {
