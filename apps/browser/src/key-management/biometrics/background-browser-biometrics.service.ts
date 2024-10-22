@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
 
-import { BiometricsService } from "@bitwarden/common/key-management/biometrics/biometric.service";
-import { BiometricsCommands } from "@bitwarden/common/key-management/biometrics/biometrics-commands";
-import { BiometricsStatus } from "@bitwarden/common/key-management/biometrics/biometrics-status";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
+import { BiometricsService, BiometricsCommands, BiometricsStatus } from "@bitwarden/key-management";
 
 import { NativeMessagingBackground } from "../../background/nativeMessaging.background";
 
