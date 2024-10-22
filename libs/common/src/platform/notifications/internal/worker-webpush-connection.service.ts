@@ -5,7 +5,6 @@ import {
   fromEvent,
   map,
   Observable,
-  of,
   Subject,
   Subscription,
   switchMap,
@@ -116,42 +115,38 @@ class MyWebPushConnector implements WebPushConnector {
     );
   }
 
-  private pushManagerSubscribe$(key: string) {
-    return defer(
-      async () =>
-        await this.serviceWorkerRegistration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: key,
-        }),
-    );
+  private async pushManagerSubscribe(key: string) {
+    return await this.serviceWorkerRegistration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: key,
+    });
   }
 
   private getOrCreateSubscription$(key: string) {
     return concat(
-      defer(async () => await this.serviceWorkerRegistration.pushManager.getSubscription()).pipe(
-        concatMap((subscription) => {
-          if (subscription == null) {
-            return this.pushManagerSubscribe$(key);
-          }
+      defer(async () => {
+        const existingSubscription =
+          await this.serviceWorkerRegistration.pushManager.getSubscription();
 
-          const subscriptionKey = Utils.fromBufferToUrlB64(
-            subscription.options?.applicationServerKey,
-          );
-          if (subscriptionKey !== key) {
-            // There is a subscription, but it's not for the current server, unsubscribe and then make a new one
-            return defer(() => subscription.unsubscribe()).pipe(
-              concatMap(() => this.pushManagerSubscribe$(key)),
-            );
-          }
+        if (existingSubscription == null) {
+          return await this.pushManagerSubscribe(key);
+        }
 
-          return of(subscription);
-        }),
-      ),
+        const subscriptionKey = Utils.fromBufferToUrlB64(
+          existingSubscription.options?.applicationServerKey,
+        );
+
+        if (subscriptionKey !== key) {
+          // There is a subscription, but it's not for the current server, unsubscribe and then make a new one
+          await existingSubscription.unsubscribe();
+          return await this.pushManagerSubscribe(key);
+        }
+
+        return existingSubscription;
+      }),
       this.pushChangeEvent$.pipe(
-        concatMap((event) => {
-          // TODO: Is this enough, do I need to do something with oldSubscription
-          return of(event.newSubscription);
-        }),
+        // TODO: Is this enough, do I need to do something with oldSubscription?
+        map((event) => event.newSubscription),
       ),
     );
   }
