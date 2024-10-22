@@ -3,6 +3,8 @@ import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
+// eslint-disable-next-line no-restricted-imports
+import { PasswordHealthService } from "@bitwarden/bit-common/tools/reports/access-intelligence";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
@@ -14,7 +16,6 @@ import { LooseComponentsModule } from "../../shared";
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 
 import { PasswordHealthComponent } from "./password-health.component";
-import { PasswordHealthService } from "./password-health.service";
 
 describe("PasswordHealthComponent", () => {
   let component: PasswordHealthComponent;
