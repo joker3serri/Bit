@@ -3,9 +3,9 @@ import { BehaviorSubject, from, of } from "rxjs";
 
 import { CollectionService } from "@bitwarden/admin-console/common";
 import { LogoutReason } from "@bitwarden/auth/common";
-import { BiometricsService } from "@bitwarden/common/key-management/biometrics/biometric.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
+import { BiometricsService } from "@bitwarden/key-management";
 
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { SearchService } from "../../abstractions/search.service";
