@@ -1,7 +1,6 @@
-import { BiometricsService } from "@bitwarden/common/key-management/biometrics/biometric.service";
-import { BiometricsStatus } from "@bitwarden/common/key-management/biometrics/biometrics-status";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
+import { BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
 
 export class CliBiometricsService extends BiometricsService {
   async authenticateWithBiometrics(): Promise<boolean> {
@@ -12,7 +11,7 @@ export class CliBiometricsService extends BiometricsService {
     return BiometricsStatus.PlatformUnsupported;
   }
 
-  async unlockWithBiometricsForUser(userId: UserId): Promise<UserKey> {
+  async unlockWithBiometricsForUser(userId: UserId): Promise<UserKey | null> {
     return null;
   }
 
