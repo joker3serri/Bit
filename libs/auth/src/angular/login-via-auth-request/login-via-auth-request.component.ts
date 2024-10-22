@@ -60,6 +60,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   private authStatus: AuthenticationStatus;
   private showResendNotificationTimeoutSeconds = 12;
 
+  protected backToRoute = "/login";
   protected clientType: ClientType;
   protected ClientType = ClientType;
   protected email: string;
@@ -111,6 +112,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     // Check if we are in an admin auth request flow
     if (this.router.isActive("admin-approval-requested", matchOptions)) {
       this.state = State.AdminAuthRequest;
+      this.backToRoute = "/login-initiated";
     }
 
     // Get email based on auth request flow
@@ -132,9 +134,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         message: this.i18nService.t("userEmailMissing"),
       });
 
-      await this.router.navigate([
-        this.state === State.AdminAuthRequest ? "/login-initiated" : "/login",
-      ]);
+      await this.router.navigate([this.backToRoute]);
 
       return;
     }
@@ -297,19 +297,11 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       }
 
       // Flow 1 and 4:
-      const loginAuthResult = await this.loginViaAuthRequestStrategy(
-        requestId,
-        authRequestResponse,
-      );
-      await this.handlePostLoginNavigation(loginAuthResult);
+      const authResult = await this.loginViaAuthRequestStrategy(requestId, authRequestResponse);
+      await this.handlePostLoginNavigation(authResult);
     } catch (error) {
       if (error instanceof ErrorResponse) {
-        let errorRoute = "/login";
-        if (this.state === State.AdminAuthRequest) {
-          errorRoute = "/login-initiated";
-        }
-
-        await this.router.navigate([errorRoute]);
+        await this.router.navigate([this.backToRoute]);
         this.validationService.showError(error);
         return;
       }
@@ -365,10 +357,10 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
   private async loginViaAuthRequestStrategy(
     requestId: string,
-    authReqResponse: AuthRequestResponse,
+    authRequestResponse: AuthRequestResponse,
   ): Promise<AuthResult> {
-    // Note: credentials change based on if the authReqResponse.key is a encryptedMasterKey or UserKey
-    const credentials = await this.buildAuthRequestLoginCredentials(requestId, authReqResponse);
+    // Note: credentials change based on if the authRequestResponse.key is a encryptedMasterKey or UserKey
+    const credentials = await this.buildAuthRequestLoginCredentials(requestId, authRequestResponse);
 
     // Note: keys are set by AuthRequestLoginStrategy success handling
     return await this.loginStrategyService.logIn(credentials);
@@ -388,15 +380,15 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   // Authentication helper
   private async buildAuthRequestLoginCredentials(
     requestId: string,
-    response: AuthRequestResponse,
+    authRequestResponse: AuthRequestResponse,
   ): Promise<AuthRequestLoginCredentials> {
     // if masterPasswordHash has a value, we will always receive key as authRequestPublicKey(masterKey) + authRequestPublicKey(masterPasswordHash)
     // if masterPasswordHash is null, we will always receive key as authRequestPublicKey(userKey)
-    if (response.masterPasswordHash) {
+    if (authRequestResponse.masterPasswordHash) {
       const { masterKey, masterKeyHash } =
         await this.authRequestService.decryptPubKeyEncryptedMasterKeyAndHash(
-          response.key,
-          response.masterPasswordHash,
+          authRequestResponse.key,
+          authRequestResponse.masterPasswordHash,
           this.authRequestKeyPair.privateKey,
         );
 
@@ -410,7 +402,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       );
     } else {
       const userKey = await this.authRequestService.decryptPubKeyEncryptedUserKey(
-        response.key,
+        authRequestResponse.key,
         this.authRequestKeyPair.privateKey,
       );
       return new AuthRequestLoginCredentials(
