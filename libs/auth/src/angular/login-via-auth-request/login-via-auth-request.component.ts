@@ -297,7 +297,16 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       }
 
       // Flow 1 and 4:
-      const authResult = await this.loginViaAuthRequestStrategy(requestId, authRequestResponse);
+
+      // Note: credentials change based on if the authRequestResponse.key is a encryptedMasterKey or UserKey
+      const credentials = await this.buildAuthRequestLoginCredentials(
+        requestId,
+        authRequestResponse,
+      );
+
+      // Note: keys are set by AuthRequestLoginStrategy success handling
+      const authResult = await this.loginStrategyService.logIn(credentials);
+
       await this.handlePostLoginNavigation(authResult);
     } catch (error) {
       if (error instanceof ErrorResponse) {
@@ -355,18 +364,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     await this.handleSuccessfulLoginNavigation();
   }
 
-  private async loginViaAuthRequestStrategy(
-    requestId: string,
-    authRequestResponse: AuthRequestResponse,
-  ): Promise<AuthResult> {
-    // Note: credentials change based on if the authRequestResponse.key is a encryptedMasterKey or UserKey
-    const credentials = await this.buildAuthRequestLoginCredentials(requestId, authRequestResponse);
-
-    // Note: keys are set by AuthRequestLoginStrategy success handling
-    return await this.loginStrategyService.logIn(credentials);
-  }
-
-  // Routing logic
   private async handlePostLoginNavigation(loginResponse: AuthResult) {
     if (loginResponse.requiresTwoFactor) {
       await this.router.navigate(["2fa"]);
@@ -377,7 +374,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Authentication helper
   private async buildAuthRequestLoginCredentials(
     requestId: string,
     authRequestResponse: AuthRequestResponse,
