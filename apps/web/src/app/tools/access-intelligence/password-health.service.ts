@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -31,13 +31,13 @@ export class PasswordHealthService {
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private auditService: AuditService,
     private cipherService: CipherService,
-    private organizationId: string,
+    @Inject("organizationId") private organizationId: string,
   ) {}
 
   async generateReport() {
-    // TODO uncomment when actual user member data is available
-    // const allCiphers = await this.cipherService.getAllFromApiForOrganization(this.organizationId);
-    const allCiphers = cipherData;
+    let allCiphers = await this.cipherService.getAllFromApiForOrganization(this.organizationId);
+    // TODO remove when actual user member data is available
+    allCiphers = cipherData;
     allCiphers.forEach(async (cipher) => {
       this.findWeakPassword(cipher);
       this.findReusedPassword(cipher);
@@ -88,7 +88,7 @@ export class PasswordHealthService {
     }
 
     if (this.passwordUseMap.has(login.password)) {
-      this.passwordUseMap.set(login.password, this.passwordUseMap.get(login.password) || 0 + 1);
+      this.passwordUseMap.set(login.password, (this.passwordUseMap.get(login.password) || 0) + 1);
     } else {
       this.passwordUseMap.set(login.password, 1);
     }
