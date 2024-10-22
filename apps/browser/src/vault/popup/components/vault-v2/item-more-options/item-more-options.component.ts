@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
-import { booleanAttribute, Component, Input } from "@angular/core";
+import { booleanAttribute, Component, Input, OnInit } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom, map, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -9,6 +9,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import {
   DialogService,
   IconButtonModule,
@@ -29,7 +30,7 @@ import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
   templateUrl: "./item-more-options.component.html",
   imports: [ItemModule, IconButtonModule, MenuModule, CommonModule, JslibModule, RouterModule],
 })
-export class ItemMoreOptionsComponent {
+export class ItemMoreOptionsComponent implements OnInit {
   @Input({
     required: true,
   })
@@ -43,6 +44,7 @@ export class ItemMoreOptionsComponent {
   hideAutofillOptions: boolean;
 
   protected autofillAllowed$ = this.vaultPopupAutofillService.autofillAllowed$;
+  protected canClone$: Observable<boolean>;
 
   constructor(
     private cipherService: CipherService,
@@ -53,7 +55,12 @@ export class ItemMoreOptionsComponent {
     private i18nService: I18nService,
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private accountService: AccountService,
+    private cipherAuthorizationService: CipherAuthorizationService,
   ) {}
+
+  ngOnInit() {
+    this.canClone$ = this.cipherAuthorizationService.canCloneCipher$(this.cipher);
+  }
 
   get canEdit() {
     return this.cipher.edit;
