@@ -5,6 +5,8 @@ import { Router, RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   BadgeModule,
   BitItemHeight,
@@ -18,6 +20,8 @@ import {
 } from "@bitwarden/components";
 import { OrgIconDirective, PasswordRepromptService } from "@bitwarden/vault";
 
+import { BrowserApi } from "../../../../../platform/browser/browser-api";
+import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
 import { VaultPopupAutofillService } from "../../../services/vault-popup-autofill.service";
 import { PopupCipherView } from "../../../views/popup-cipher.view";
 import { ItemCopyActionsComponent } from "../item-copy-action/item-copy-actions.component";
@@ -108,8 +112,26 @@ export class VaultListItemsContainerComponent {
     private i18nService: I18nService,
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private passwordRepromptService: PasswordRepromptService,
+    private cipherService: CipherService,
     private router: Router,
   ) {}
+
+  /**
+   * Launches the login cipher in a new browser tab.
+   */
+  async launchCipher(cipher: CipherView) {
+    if (!cipher.canLaunch) {
+      return;
+    }
+
+    await this.cipherService.updateLastLaunchedDate(cipher.id);
+
+    await BrowserApi.createNewTab(cipher.login.launchUri);
+
+    if (BrowserPopupUtils.inPopup(window)) {
+      BrowserApi.closePopup(window);
+    }
+  }
 
   async doAutofill(cipher: PopupCipherView) {
     await this.vaultPopupAutofillService.doAutofill(cipher);
