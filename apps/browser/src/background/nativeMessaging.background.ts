@@ -264,7 +264,7 @@ export class NativeMessagingBackground {
       );
       if (!call) {
         this.logService.info(
-          `[Native Messaging IPC] Message of type ${message.command} was not sent because there is already a message with the same messageId in the queue.`,
+          `[Native Messaging IPC] Message of type ${message.command} did not get a response before timing out`,
         );
         return;
       }
