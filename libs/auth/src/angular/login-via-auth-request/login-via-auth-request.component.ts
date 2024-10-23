@@ -250,7 +250,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
   private async verifyAndHandleApprovedAuthReq(requestId: string): Promise<void> {
     try {
-      // Retrieve the auth request from server and verify it's approved
+      // Get the auth request from the server
       let authRequestResponse: AuthRequestResponse;
 
       if (this.state === State.AdminAuthRequest) {
@@ -264,49 +264,55 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         );
       }
 
+      // Verify that the auth request is approved
       if (!authRequestResponse.requestApproved) {
         return;
       }
+      // Approved so proceed...
 
-      // Approved so proceed:
+      /**
+       * There are 2 unauthed and 2 authed scenarios to handle for approved auth requests.
+       *
+       * Unauthed Flow 1
+       * - Unauthed user clicks Login with Device > receives approval from device with publicKey(masterKey)
+       *    > decrypts masterKey > gets masterKey(userKey) > decrypts userKey > proceeds to vault
+       *
+       * Unauthed Flow 2
+       * - Unauthed user clicks Login with Device > receives approval from device with publicKey(userKey)
+       *    > decrypts userKey > proceeds to vault
+       *
+       * Authed Flow 1
+       * - Post SSO user is authenticated > SSO login strategy success sets masterKey(userKey)
+       *    > receives approval from device with publicKey(masterKey) > decrypts masterKey > decrypts userKey
+       *      > establishes trust (if required) > proceeds to vault
+       *
+       * Authed Flow 2
+       * - Post SSO user is authenticated > receives approval from device with publicKey(userKey)
+       *    > decrypts userKey > establishes trust (if required) > proceeds to vault
+       */
 
-      // 4 Scenarios to handle for approved auth requests:
-      // Existing flow 1:
-      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(masterKey)
-      //    > decrypt masterKey > must authenticate > gets masterKey(userKey) > decrypt userKey and proceed to vault
-
-      // 3 new flows from TDE:
-      // Flow 2:
-      //  - Post SSO > User is AuthN > SSO login strategy success sets masterKey(userKey) > receives approval from device with pubKey(masterKey)
-      //    > decrypt masterKey > decrypt userKey > establish trust if required > proceed to vault
-      // Flow 3:
-      //  - Post SSO > User is AuthN > Receives approval from device with pubKey(userKey) > decrypt userKey > establish trust if required > proceed to vault
-      // Flow 4:
-      //  - Anon Login with Device > User is not AuthN > receives approval from device with pubKey(userKey)
-      //    > decrypt userKey > must authenticate > set userKey > proceed to vault
-
-      // if user has authenticated via SSO
+      // If user has authenticated via SSO
       if (this.authStatus === AuthenticationStatus.Locked) {
+        // Authed flows 1 and 2
         const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
 
-        return await this.handleApprovedAdminAuthRequest(
+        await this.handleApprovedAdminAuthRequest(
           authRequestResponse,
           this.authRequestKeyPair.privateKey,
           userId,
         );
+      } else {
+        // Unauthed flows 1 and 2
+        const credentials = await this.buildAuthRequestLoginCredentials(
+          requestId,
+          authRequestResponse,
+        );
+
+        // Note: keys are set by AuthRequestLoginStrategy success handling
+        const authResult = await this.loginStrategyService.logIn(credentials);
+
+        await this.handlePostLoginNavigation(authResult);
       }
-
-      // Flow 1 and 4:
-
-      const credentials = await this.buildAuthRequestLoginCredentials(
-        requestId,
-        authRequestResponse,
-      );
-
-      // Note: keys are set by AuthRequestLoginStrategy success handling
-      const authResult = await this.loginStrategyService.logIn(credentials);
-
-      await this.handlePostLoginNavigation(authResult);
     } catch (error) {
       if (error instanceof ErrorResponse) {
         await this.router.navigate([this.backToRoute]);
@@ -324,9 +330,9 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     userId: UserId,
   ): Promise<void> {
     // See verifyAndHandleApprovedAuthReq(...) for flow details
-    // it's flow 2 or 3 based on presence of masterPasswordHash
+    // We determine if it's Authed Flow 1 or 2 based on the presence of masterPasswordHash
     if (adminAuthReqResponse.masterPasswordHash) {
-      // Flow 2: masterPasswordHash is not null
+      // Authed Flow 1: masterPasswordHash is not null
       // key is authRequestPublicKey(masterKey) + we have authRequestPublicKey(masterPasswordHash)
       await this.authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash(
         adminAuthReqResponse,
@@ -334,7 +340,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         userId,
       );
     } else {
-      // Flow 3: masterPasswordHash is null
+      // Authed Flow 2: masterPasswordHash is null
       // we can assume key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
       await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
         adminAuthReqResponse,
@@ -385,7 +391,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     requestId: string,
     authRequestResponse: AuthRequestResponse,
   ): Promise<AuthRequestLoginCredentials> {
-    // If `masterPasswordHash` has a value, we receive the `key` as an auth request public key encrypted Master Key.
+    // If `masterPasswordHash` has a value, we receive the `key` as an auth request public key encrypted MasterKey.
     if (authRequestResponse.masterPasswordHash) {
       const { masterKey, masterKeyHash } =
         await this.authRequestService.decryptPubKeyEncryptedMasterKeyAndHash(
@@ -403,7 +409,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         masterKeyHash,
       );
     } else {
-      // Else if `masterPasswordHash` is null, we receive the `key` as an auth request public key encrypted User Key.
+      // Else if `masterPasswordHash` is null, we receive the `key` as an auth request public key encrypted UserKey.
       const userKey = await this.authRequestService.decryptPubKeyEncryptedUserKey(
         authRequestResponse.key,
         this.authRequestKeyPair.privateKey,
