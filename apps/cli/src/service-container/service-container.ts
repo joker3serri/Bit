@@ -129,6 +129,10 @@ import { SendStateProvider } from "@bitwarden/common/tools/send/services/send-st
 import { SendService } from "@bitwarden/common/tools/send/services/send.service";
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import {
+  CipherAuthorizationService,
+  DefaultCipherAuthorizationService,
+} from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
@@ -255,6 +259,7 @@ export class ServiceContainer {
   kdfConfigService: KdfConfigServiceAbstraction;
   taskSchedulerService: TaskSchedulerService;
   sdkService: SdkService;
+  cipherAuthorizationService: CipherAuthorizationService;
 
   constructor() {
     let p = null;
@@ -535,6 +540,9 @@ export class ServiceContainer {
       sdkClientFactory,
       this.environmentService,
       this.platformUtilsService,
+      this.accountService,
+      this.kdfConfigService,
+      this.cryptoService,
       this.apiService,
       customUserAgent,
     );
@@ -802,6 +810,11 @@ export class ServiceContainer {
       this.apiService,
       this.configService,
     );
+
+    this.cipherAuthorizationService = new DefaultCipherAuthorizationService(
+      this.collectionService,
+      this.organizationService,
+    );
   }
 
   async logout() {
@@ -858,7 +871,7 @@ export class ServiceContainer {
       }
 
       if (!supported) {
-        this.sdkService.failedToInitialize().catch(this.logService.error);
+        this.sdkService.failedToInitialize().catch((e) => this.logService.error(e));
       }
     }
   }

@@ -71,6 +71,15 @@
   "joinOrganization": {
     "message": "Join organization"
   },
+  "joinOrganizationName": {
+    "message": "Join $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "Finish joining this organization by setting a master password."
   },
@@ -97,6 +106,9 @@
   },
   "copyPassword": {
     "message": "Copy password"
+  },
+  "copyPassphrase": {
+    "message": "Copy passphrase"
   },
   "copyNote": {
     "message": "Copy note"
@@ -397,6 +409,9 @@
   },
   "generatePassword": {
     "message": "Generate password"
+  },
+  "generatePassphrase": {
+    "message": "Generate passphrase"
   },
   "regeneratePassword": {
     "message": "Regenerate password"
@@ -1380,6 +1395,10 @@
   "baseUrl": {
     "message": "Server URL"
   },
+  "selfHostBaseUrl": {
+    "message": "Self-host server URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "apiUrl": {
     "message": "API server URL"
   },
@@ -1407,6 +1426,12 @@
   },
   "showInlineMenuLabel": {
     "message": "Show autofill suggestions on form fields"
+  },
+  "showInlineMenuIdentitiesLabel": {
+    "message": "Display identities as suggestions"
+  },
+  "showInlineMenuCardsLabel": {
+    "message": "Display cards as suggestions"
   },
   "showInlineMenuOnIconSelectionLabel": {
     "message": "Display suggestions when icon is selected"
@@ -2449,8 +2474,8 @@
     "message": "Optionally require a password for users to access this Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendPasswordDescV2": {
-    "message": "Require this password to view the Send.",
+  "sendPasswordDescV3": {
+    "message": "Add an optional password for recipients to access this Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
@@ -2647,6 +2672,15 @@
     "message": "Your organization requires you to set a master password.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
+  "cardMetrics": {
+    "message": "out of $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "verificationRequired": {
     "message": "Verification required",
     "description": "Default title for the user verification dialog."
@@ -2803,6 +2837,9 @@
   "generateUsername": {
     "message": "Generate username"
   },
+  "generateEmail": {
+    "message": "Generate email"
+  },
   "usernameType": {
     "message": "Username type"
   },
@@ -2842,6 +2879,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Generate an email alias with an external forwarding service."
+  },
+  "forwarderDomainName": {
+    "message": "Email domain",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Choose a domain that is supported by the selected service",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ error: $ERRORMESSAGE$",
@@ -4470,8 +4515,14 @@
   "itemLocation": {
     "message": "Item Location"
   },
+  "fileSend": {
+    "message": "File Send"
+  },
   "fileSends": {
     "message": "File Sends"
+  },
+  "textSend": {
+    "message": "Text Send"
   },
   "textSends": {
     "message": "Text Sends"

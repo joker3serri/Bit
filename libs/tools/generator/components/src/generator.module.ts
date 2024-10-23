@@ -5,8 +5,11 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import {
   CardComponent,
@@ -20,6 +23,7 @@ import {
   SectionHeaderComponent,
   SelectModule,
   ToggleGroupModule,
+  TypographyModule,
 } from "@bitwarden/components";
 import {
   createRandomizer,
@@ -29,6 +33,7 @@ import {
 
 import { CatchallSettingsComponent } from "./catchall-settings.component";
 import { CredentialGeneratorComponent } from "./credential-generator.component";
+import { ForwarderSettingsComponent } from "./forwarder-settings.component";
 import { PassphraseSettingsComponent } from "./passphrase-settings.component";
 import { PasswordGeneratorComponent } from "./password-generator.component";
 import { PasswordSettingsComponent } from "./password-settings.component";
@@ -55,6 +60,7 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
     SectionHeaderComponent,
     SelectModule,
     ToggleGroupModule,
+    TypographyModule,
   ],
   providers: [
     safeProvider({
@@ -65,18 +71,27 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
     safeProvider({
       provide: CredentialGeneratorService,
       useClass: CredentialGeneratorService,
-      deps: [RANDOMIZER, StateProvider, PolicyService],
+      deps: [
+        RANDOMIZER,
+        StateProvider,
+        PolicyService,
+        ApiService,
+        I18nService,
+        EncryptService,
+        CryptoService,
+      ],
     }),
   ],
   declarations: [
     CatchallSettingsComponent,
     CredentialGeneratorComponent,
+    ForwarderSettingsComponent,
     SubaddressSettingsComponent,
-    UsernameSettingsComponent,
     PasswordGeneratorComponent,
-    PasswordSettingsComponent,
     PassphraseSettingsComponent,
+    PasswordSettingsComponent,
     UsernameGeneratorComponent,
+    UsernameSettingsComponent,
   ],
   exports: [CredentialGeneratorComponent, PasswordGeneratorComponent, UsernameGeneratorComponent],
 })
