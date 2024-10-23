@@ -5,8 +5,9 @@ import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+// eslint-disable-next-line no-restricted-imports
+import { PasswordHealthService } from "@bitwarden/bit-common/tools/reports/access-intelligence";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -25,8 +26,6 @@ import { HeaderModule } from "../../layouts/header/header.module";
 import { OrganizationBadgeModule } from "../../vault/individual-vault/organization-badge/organization-badge.module";
 // eslint-disable-next-line no-restricted-imports
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
-
-import { PasswordHealthService } from "./password-health.service";
 
 @Component({
   standalone: true,
@@ -62,7 +61,6 @@ export class PasswordHealthMembersComponent implements OnInit {
   constructor(
     protected cipherService: CipherService,
     protected passwordStrengthService: PasswordStrengthServiceAbstraction,
-    protected organizationService: OrganizationService,
     protected auditService: AuditService,
     protected i18nService: I18nService,
     protected activatedRoute: ActivatedRoute,

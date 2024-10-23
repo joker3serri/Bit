@@ -75,6 +75,8 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 import { ClientType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/abstractions/process-reload.service";
+import { ProcessReloadService } from "@bitwarden/common/key-management/services/process-reload.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
@@ -177,6 +179,10 @@ import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitw
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
 import { VaultSettingsService as VaultSettingsServiceAbstraction } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import {
+  CipherAuthorizationService,
+  DefaultCipherAuthorizationService,
+} from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { CipherFileUploadService } from "@bitwarden/common/vault/services/file-upload/cipher-file-upload.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
@@ -266,6 +272,7 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
+
 export default class MainBackground {
   messagingService: MessageSender;
   storageService: BrowserLocalStorageService;
@@ -310,6 +317,7 @@ export default class MainBackground {
   badgeSettingsService: BadgeSettingsServiceAbstraction;
   domainSettingsService: DomainSettingsService;
   systemService: SystemServiceAbstraction;
+  processReloadService: ProcessReloadServiceAbstraction;
   eventCollectionService: EventCollectionServiceAbstraction;
   eventUploadService: EventUploadServiceAbstraction;
   policyService: InternalPolicyServiceAbstraction;
@@ -369,6 +377,7 @@ export default class MainBackground {
   themeStateService: DefaultThemeStateService;
   autoSubmitLoginBackground: AutoSubmitLoginBackground;
   sdkService: SdkService;
+  cipherAuthorizationService: CipherAuthorizationService;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -403,7 +412,7 @@ export default class MainBackground {
       await this.refreshMenu(true);
       if (this.systemService != null) {
         await this.systemService.clearPendingClipboard();
-        await this.systemService.startProcessReload(this.authService);
+        await this.processReloadService.startProcessReload(this.authService);
       }
     };
 
@@ -1083,15 +1092,18 @@ export default class MainBackground {
     };
 
     this.systemService = new SystemService(
+      this.platformUtilsService,
+      this.autofillSettingsService,
+      this.taskSchedulerService,
+    );
+
+    this.processReloadService = new ProcessReloadService(
       this.pinService,
       this.messagingService,
-      this.platformUtilsService,
       systemUtilsServiceReloadCallback,
-      this.autofillSettingsService,
       this.vaultTimeoutSettingsService,
       this.biometricStateService,
       this.accountService,
-      this.taskSchedulerService,
     );
 
     // Other fields
@@ -1117,7 +1129,7 @@ export default class MainBackground {
         this.platformUtilsService as BrowserPlatformUtilsService,
         this.notificationsService,
         this.autofillSettingsService,
-        this.systemService,
+        this.processReloadService,
         this.environmentService,
         this.messagingService,
         this.logService,
@@ -1265,6 +1277,11 @@ export default class MainBackground {
     }
 
     this.userAutoUnlockKeyService = new UserAutoUnlockKeyService(this.cryptoService);
+
+    this.cipherAuthorizationService = new DefaultCipherAuthorizationService(
+      this.collectionService,
+      this.organizationService,
+    );
   }
 
   async bootstrap() {
@@ -1541,7 +1558,7 @@ export default class MainBackground {
     await this.mainContextMenuHandler?.noAccess();
     await this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
-    await this.systemService.startProcessReload(this.authService);
+    await this.processReloadService.startProcessReload(this.authService);
   }
 
   private async needsStorageReseed(userId: UserId): Promise<boolean> {
