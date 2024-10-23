@@ -2311,6 +2311,7 @@ describe("OverlayBackground", () => {
         });
 
         it("updates the position of both button and list elements if the inline menu is showing the save login view", async () => {
+          overlayBackground["inlineMenuCiphers"] = new Map([]);
           const formData = {
             uri: "https://example.com",
             username: "username",

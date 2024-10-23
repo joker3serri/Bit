@@ -1683,12 +1683,20 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param tab - The tab to check for login data
    */
   private async shouldShowSaveLoginInlineMenuList(tab: chrome.tabs.Tab) {
+    if (this.focusedFieldData?.tabId !== tab.id) {
+      return false;
+    }
+
     const loginData = await this.getInlineMenuFormFieldData(tab);
     if (!loginData) {
       return false;
     }
 
-    return !!(loginData.username && (loginData.password || loginData.newPassword));
+    return (
+      (this.shouldShowInlineMenuAccountCreation() ||
+        this.focusedFieldMatchesFillType(InlineMenuFillType.PasswordGeneration)) &&
+      !!(loginData.username && (loginData.password || loginData.newPassword))
+    );
   }
 
   /**
@@ -1697,10 +1705,16 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param tab - The tab to get the form field data from
    */
   private async getInlineMenuFormFieldData(tab: chrome.tabs.Tab): Promise<InlineMenuFormFieldData> {
-    return await BrowserApi.tabSendMessage(tab, {
-      command: "getInlineMenuFormFieldData",
-      ignoreFieldFocus: true,
-    });
+    return await BrowserApi.tabSendMessage(
+      tab,
+      {
+        command: "getInlineMenuFormFieldData",
+        ignoreFieldFocus: true,
+      },
+      {
+        frameId: this.focusedFieldData.frameId || 0,
+      },
+    );
   }
 
   /**
