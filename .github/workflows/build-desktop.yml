@@ -28,7 +28,7 @@ on:
   workflow_dispatch:
     inputs:
       sdk_branch:
-        description: "Custom SDK branch to use for the build"
+        description: "Custom SDK branch"
         required: false
         type: string
 
