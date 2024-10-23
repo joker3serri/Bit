@@ -9,7 +9,9 @@
       buttonType="main"
       (click)="generate('user request')"
       [appA11yTitle]="credentialTypeGenerateLabel$ | async"
-    >{{ credentialTypeGenerateLabel$ | async }}</button>
+    >
+      {{ credentialTypeGenerateLabel$ | async }}
+    </button>
     <button
       type="button"
       bitIconButton="bwi-clone"
@@ -17,7 +19,9 @@
       showToast
       [appA11yTitle]="credentialTypeCopyLabel$ | async"
       [appCopyClick]="value$ | async"
-    >{{credentialTypeCopyLabel$ | async}}</button>
+    >
+      {{ credentialTypeCopyLabel$ | async }}
+    </button>
   </div>
 </bit-card>
 <bit-section [disableMargin]="disableMargin">
