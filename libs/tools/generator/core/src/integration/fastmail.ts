@@ -110,7 +110,7 @@ const forwarder = Object.freeze({
   defaultSettings,
   createForwardingEmail,
   getAccountId,
-  request: ["token", "domain", "prefix"],
+  request: ["token"],
   settingsConstraints: {
     token: { required: true },
     domain: { required: true },
@@ -135,7 +135,7 @@ const forwarder = Object.freeze({
       key: "forwarder.Fastmail.local.import",
       target: "object",
       format: "plain",
-      classifier: new PublicClassifier<FastmailSettings>(["token", "domain", "prefix"]),
+      classifier: new PublicClassifier<FastmailSettings>(["token"]),
       state: GENERATOR_MEMORY,
       options: {
         deserializer: (value) => value,
