@@ -474,6 +474,10 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   /** Emits when a new credential is requested */
   private readonly generate$ = new Subject<string>();
 
+  /** Request a new value from the generator
+   * @param requestor a label used to trace generation request
+   *  origin in the debugger.
+   */
   protected generate(requestor: string) {
     this.generate$.next(requestor);
   }
