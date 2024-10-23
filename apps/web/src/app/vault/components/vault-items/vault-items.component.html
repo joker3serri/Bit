@@ -38,7 +38,13 @@
           {{ "owner" | i18n }}
         </th>
         <th bitCell class="tw-w-2/5" *ngIf="showCollections">{{ "collections" | i18n }}</th>
-        <th bitCell bitSortable="groups" [fn]="sortByGroups" class="tw-w-2/5" *ngIf="showGroups">
+        <th
+          bitCell
+          bitSortable="groups"
+          [fnFactory]="sortByGroups"
+          class="tw-w-2/5"
+          *ngIf="showGroups"
+        >
           {{ "groups" | i18n }}
         </th>
         <th

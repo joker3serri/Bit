@@ -313,12 +313,10 @@ export class VaultItemsComponent {
    */
   protected sortByName = (direction: "asc" | "desc") => {
     return (a: VaultItem, b: VaultItem): number => {
-      // First, sort collections before ciphers
-      if (a.collection && !b.collection) {
-        return direction === "asc" ? -1 : 1;
-      }
-      if (!a.collection && b.collection) {
-        return direction === "asc" ? 1 : -1;
+      // Collections before ciphers
+      const collectionCompare = this.prioritizeCollections(a, b, direction);
+      if (collectionCompare !== 0) {
+        return collectionCompare;
       }
 
       return this.compareNames(a, b);
@@ -328,28 +326,36 @@ export class VaultItemsComponent {
   /**
    * Sorts VaultItems based on group names
    */
-  protected sortByGroups = (a: VaultItem, b: VaultItem): number => {
-    const getFirstGroupName = (item: VaultItem): string => {
-      if (item.collection instanceof CollectionAdminView && item.collection.groups.length > 0) {
-        return item.collection.groups.map((group) => this.getGroupName(group.id) || "").sort()[0];
+  protected sortByGroups = (direction: "asc" | "desc") => {
+    return (a: VaultItem, b: VaultItem): number => {
+      const getFirstGroupName = (item: VaultItem): string => {
+        if (item.collection instanceof CollectionAdminView && item.collection.groups.length > 0) {
+          return item.collection.groups.map((group) => this.getGroupName(group.id) || "").sort()[0];
+        }
+        return null;
+      };
+
+      // Collections before ciphers
+      const collectionCompare = this.prioritizeCollections(a, b, direction);
+      if (collectionCompare !== 0) {
+        return collectionCompare;
       }
-      return null;
+
+      const aGroupName = getFirstGroupName(a);
+      const bGroupName = getFirstGroupName(b);
+
+      // Collections with groups come before collections without groups.
+      // If a collection has no groups, getFirstGroupName returns null.
+      if (aGroupName === null) {
+        return 1;
+      }
+
+      if (bGroupName === null) {
+        return -1;
+      }
+
+      return aGroupName.localeCompare(bGroupName);
     };
-
-    const aGroupName = getFirstGroupName(a);
-    const bGroupName = getFirstGroupName(b);
-
-    // Collections with groups come before collections without groups.
-    // If a collection has no groups, getFirstGroupName returns null.
-    if (aGroupName === null) {
-      return 1;
-    }
-
-    if (bGroupName === null) {
-      return -1;
-    }
-
-    return aGroupName.localeCompare(bGroupName);
   };
 
   /**
@@ -381,15 +387,14 @@ export class VaultItemsComponent {
         return -1;
       };
 
+      // Collections before ciphers
+      const collectionCompare = this.prioritizeCollections(a, b, direction);
+      if (collectionCompare !== 0) {
+        return collectionCompare;
+      }
+
       const priorityA = getPermissionPriority(a);
       const priorityB = getPermissionPriority(b);
-
-      if (a.collection && !b.collection) {
-        return direction === "asc" ? -1 : 1;
-      }
-      if (!a.collection && b.collection) {
-        return direction === "asc" ? 1 : -1;
-      }
 
       // Higher priority first
       if (priorityA !== priorityB) {
@@ -400,10 +405,26 @@ export class VaultItemsComponent {
     };
   };
 
-  private compareNames = (a: VaultItem, b: VaultItem): number => {
+  private compareNames(a: VaultItem, b: VaultItem): number {
     const getName = (item: VaultItem) => item.collection?.name || item.cipher?.name;
     return getName(a).localeCompare(getName(b));
-  };
+  }
+
+  /**
+   * Sorts VaultItems by prioritizing collections over ciphers.
+   * Collections are always placed before ciphers, regardless of the sorting direction.
+   */
+  private prioritizeCollections(a: VaultItem, b: VaultItem, direction: "asc" | "desc"): number {
+    if (a.collection && !b.collection) {
+      return direction === "asc" ? -1 : 1;
+    }
+
+    if (!a.collection && b.collection) {
+      return direction === "asc" ? 1 : -1;
+    }
+
+    return 0;
+  }
 
   private hasPersonalItems(): boolean {
     return this.selection.selected.some(({ cipher }) => cipher?.organizationId === null);
