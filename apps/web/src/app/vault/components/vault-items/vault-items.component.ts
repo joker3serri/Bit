@@ -207,7 +207,7 @@ export class VaultItemsComponent {
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
     const ciphers: VaultItem[] = this.ciphers.map((cipher) => ({ cipher }));
-    let items: VaultItem[] = [].concat(collections).concat(ciphers);
+    const items: VaultItem[] = [].concat(collections).concat(ciphers);
 
     this.selection.clear();
 
@@ -220,7 +220,7 @@ export class VaultItemsComponent {
 
     // Apply sorting only for organization vault
     if (this.showAdminActions) {
-      items = items.sort(this.defaultSort);
+      this.dataSource.data = items;
     }
 
     this.dataSource.data = items;
@@ -311,18 +311,18 @@ export class VaultItemsComponent {
   /**
    * Sorts VaultItems, grouping collections before ciphers, and sorting each group alphabetically by name.
    */
-  protected sortByName = (a: VaultItem, b: VaultItem) => {
-    const getName = (item: VaultItem) => item.collection?.name || item.cipher?.name;
+  protected sortByName = (direction: "asc" | "desc") => {
+    return (a: VaultItem, b: VaultItem): number => {
+      // First, sort collections before ciphers
+      if (a.collection && !b.collection) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (!a.collection && b.collection) {
+        return direction === "asc" ? 1 : -1;
+      }
 
-    // First, sort collections before ciphers
-    if (a.collection && !b.collection) {
-      return -1;
-    }
-    if (!a.collection && b.collection) {
-      return 1;
-    }
-
-    return getName(a).localeCompare(getName(b));
+      return this.compareNames(a, b);
+    };
   };
 
   /**
@@ -356,64 +356,53 @@ export class VaultItemsComponent {
    * Sorts VaultItems based on their permissions, with higher permissions taking precedence.
    * If permissions are equal, it falls back to sorting by name.
    */
-  protected sortByPermissions = (a: VaultItem, b: VaultItem): number => {
-    const getPermissionPriority = (item: VaultItem): number => {
-      if (item.collection instanceof CollectionAdminView) {
-        const permission = this.getCollectionPermission(item.collection);
+  protected sortByPermissions = (direction: "asc" | "desc") => {
+    return (a: VaultItem, b: VaultItem): number => {
+      const getPermissionPriority = (item: VaultItem): number => {
+        if (item.collection instanceof CollectionAdminView) {
+          const permission = this.getCollectionPermission(item.collection);
 
-        switch (permission) {
-          case CollectionPermission.Manage:
-            return 5;
-          case CollectionPermission.Edit:
-            return 4;
-          case CollectionPermission.EditExceptPass:
-            return 3;
-          case CollectionPermission.View:
-            return 2;
-          case CollectionPermission.ViewExceptPass:
-            return 1;
-          case "NoAccess":
-            return 0;
+          switch (permission) {
+            case CollectionPermission.Manage:
+              return 5;
+            case CollectionPermission.Edit:
+              return 4;
+            case CollectionPermission.EditExceptPass:
+              return 3;
+            case CollectionPermission.View:
+              return 2;
+            case CollectionPermission.ViewExceptPass:
+              return 1;
+            case "NoAccess":
+              return 0;
+          }
         }
+
+        return -1;
+      };
+
+      const priorityA = getPermissionPriority(a);
+      const priorityB = getPermissionPriority(b);
+
+      if (a.collection && !b.collection) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (!a.collection && b.collection) {
+        return direction === "asc" ? 1 : -1;
       }
 
-      return -1;
+      // Higher priority first
+      if (priorityA !== priorityB) {
+        return priorityB - priorityA;
+      }
+
+      return this.compareNames(a, b);
     };
-
-    const priorityA = getPermissionPriority(a);
-    const priorityB = getPermissionPriority(b);
-
-    // Higher priority first
-    if (priorityA !== priorityB) {
-      return priorityA - priorityB;
-    }
-
-    return this.sortByName(a, b);
   };
 
-  /**
-   * Default sorting function for vault items.
-   * Sorts by: 1. Collections before ciphers
-   *           2. Highest permission first
-   *           3. Alphabetical order of collections and ciphers
-   */
-  private defaultSort = (a: VaultItem, b: VaultItem) => {
-    // First, sort collections before ciphers
-    if (a.collection && !b.collection) {
-      return -1;
-    }
-    if (!a.collection && b.collection) {
-      return 1;
-    }
-
-    // Next, sort by permissions
-    const permissionSort = this.sortByPermissions(a, b);
-    if (permissionSort !== 0) {
-      return permissionSort;
-    }
-
-    // Finally, sort by name
-    return this.sortByName(a, b);
+  private compareNames = (a: VaultItem, b: VaultItem): number => {
+    const getName = (item: VaultItem) => item.collection?.name || item.cipher?.name;
+    return getName(a).localeCompare(getName(b));
   };
 
   private hasPersonalItems(): boolean {
