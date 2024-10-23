@@ -63,7 +63,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     nav: null,
   });
 
-  /** Emits the copy button aria-label respective of the selected credential type */
+  /**
+   * Emits the copy button aria-label respective of the selected credential type
+   *
+   * FIXME PM-13957: Move label and logic to `AlgorithmInfo` within the `CredentialGeneratorService`.
+   */
   protected credentialTypeCopyLabel$ = this.root$.pipe(
     map(({ nav }) => {
       if (nav === "password") {
@@ -78,7 +82,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     }),
   );
 
-  /** Emits the generate button aria-label respective of the selected credential type */
+  /**
+   * Emits the generate button aria-label respective of the selected credential type
+   *
+   * FIXME PM-13957: Move label and logic to `AlgorithmInfo` within the `CredentialGeneratorService`.
+   */
   protected credentialTypeGenerateLabel$ = this.root$.pipe(
     map(({ nav }) => {
       if (nav === "password") {

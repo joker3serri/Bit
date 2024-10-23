@@ -52,7 +52,11 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
   /** tracks the currently selected credential type */
   protected credentialType$ = new BehaviorSubject<PasswordAlgorithm>(null);
 
-  /** Emits the copy button aria-label respective of the selected credential */
+  /**
+   * Emits the copy button aria-label respective of the selected credential
+   *
+   * FIXME PM-13957: Move label and logic to `AlgorithmInfo` within the `CredentialGeneratorService`.
+   */
   protected credentialTypeCopyLabel$ = this.credentialType$.pipe(
     map((cred) => {
       if (cred === "password") {
@@ -63,7 +67,11 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
     }),
   );
 
-  /** Emits the generate button aria-label respective of the selected credential */
+  /**
+   * Emits the generate button aria-label respective of the selected credential
+   *
+   * FIXME PM-13957: Move label and logic to `AlgorithmInfo` within the `CredentialGeneratorService`.
+   */
   protected credentialTypeGenerateLabel$ = this.credentialType$.pipe(
     map((cred) => {
       if (cred === "password") {
