@@ -320,7 +320,6 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           }
           case "deleteAccount":
-            // check if can delete account
             await this.deleteAccount();
             break;
           case "openPasswordHistory":
