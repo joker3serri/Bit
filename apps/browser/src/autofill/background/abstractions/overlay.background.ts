@@ -250,8 +250,8 @@ export type InlineMenuButtonPortMessageHandlers = {
 
 export type InlineMenuListPortMessageHandlers = {
   [key: string]: CallableFunction;
-  checkAutofillInlineMenuButtonFocused: () => void;
-  autofillInlineMenuBlurred: () => void;
+  checkAutofillInlineMenuButtonFocused: ({ port }: PortConnectionParam) => void;
+  autofillInlineMenuBlurred: ({ port }: PortConnectionParam) => void;
   unlockVault: ({ port }: PortConnectionParam) => void;
   fillAutofillInlineMenuCipher: ({ message, port }: PortOnMessageHandlerParams) => void;
   addNewVaultItem: ({ message, port }: PortOnMessageHandlerParams) => void;
