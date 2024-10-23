@@ -37,6 +37,7 @@ import {
   isUsernameAlgorithm,
   toCredentialGeneratorConfiguration,
 } from "@bitwarden/generator-core";
+import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
 // constants used to identify navigation selections that are not
 // generator algorithms
@@ -51,6 +52,7 @@ const NONE_SELECTED = "none";
 export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   constructor(
     private generatorService: CredentialGeneratorService,
+    private generatorHistoryService: GeneratorHistoryService,
     private toastService: ToastService,
     private logService: LogService,
     private i18nService: I18nService,
@@ -185,6 +187,12 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed),
       )
       .subscribe((generated) => {
+        this.generatorHistoryService
+          .track(this.userId, generated.credential, generated.category, generated.generationDate)
+          .catch((e: unknown) => {
+            this.logService.error(e);
+          });
+
         // update subjects within the angular zone so that the
         // template bindings refresh immediately
         this.zone.run(() => {
