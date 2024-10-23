@@ -65,8 +65,9 @@ export class UserStateSubject<
   implements SubjectLike<State>
 {
   /**
-   * Instantiates the user state subject
-   * @param getState the backing store of the subject
+   * Instantiates the user state subject bound to a persistent backing store
+   * @param key identifies the persistent backing store
+   * @param getState creates a persistent backing store using a key
    * @param context tailor the subject's behavior for a particular
    *   purpose.
    * @param dependencies.when$ blocks updates to the state subject until

@@ -12,10 +12,15 @@ import { AccountRequest, ForwarderConfiguration } from "./forwarder-configuratio
 import { ForwarderContext } from "./forwarder-context";
 import { CreateForwardingAddressRpc, GetAccountIdRpc } from "./rpc";
 
-/** Generation algorithms that produce randomized email addresses */
+/** Generation algorithms that query an email forwarding service to
+ *  create anonymized email addresses.
+ */
 export class Forwarder implements CredentialGenerator<ApiSettings> {
-  /** Instantiates the email randomizer
-   *  @param random data source for random data
+  /** Instantiates the email forwarder engine
+   *  @param configuration The forwarder to query
+   *  @param client requests data from the forwarding service
+   *  @param i18nService localizes messages sent to the forwarding service
+   *   and user-addressable errors
    */
   constructor(
     private configuration: ForwarderConfiguration<ApiSettings>,

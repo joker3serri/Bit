@@ -37,6 +37,7 @@ export class IdentityConstraint<State extends object>
   }
 }
 
+/** Emits a constraint that does not alter the input state. */
 export function unconstrained$<State extends object>(): Observable<SubjectConstraints<State>> {
   const identity = new IdentityConstraint<State>();
   const constraints$ = new BehaviorSubject(identity);
