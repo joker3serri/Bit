@@ -218,11 +218,6 @@ export class VaultItemsComponent {
         (item.collection !== undefined && item.collection.id !== Unassigned),
     );
 
-    // Apply sorting only for organization vault
-    if (this.showAdminActions) {
-      this.dataSource.data = items;
-    }
-
     this.dataSource.data = items;
   }
 
