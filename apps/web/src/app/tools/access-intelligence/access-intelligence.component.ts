@@ -11,6 +11,8 @@ import { HeaderModule } from "../../layouts/header/header.module";
 
 import { ApplicationTableComponent } from "./application-table.component";
 import { NotifiedMembersTableComponent } from "./notified-members-table.component";
+import { PasswordHealthMembersComponent } from "./password-health-members.component";
+import { PasswordHealthComponent } from "./password-health.component";
 
 export enum AccessIntelligenceTabType {
   AllApps = 0,
@@ -26,6 +28,8 @@ export enum AccessIntelligenceTabType {
     CommonModule,
     JslibModule,
     HeaderModule,
+    PasswordHealthComponent,
+    PasswordHealthMembersComponent,
     NotifiedMembersTableComponent,
     TabsModule,
   ],
