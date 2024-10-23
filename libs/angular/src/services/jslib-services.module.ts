@@ -967,7 +967,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: OrganizationUserApiService,
     useClass: DefaultOrganizationUserApiService,
-    deps: [ApiServiceAbstraction, ConfigService],
+    deps: [ApiServiceAbstraction],
   }),
   safeProvider({
     provide: PasswordResetEnrollmentServiceAbstraction,
