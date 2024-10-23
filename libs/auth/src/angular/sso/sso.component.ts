@@ -1,10 +1,12 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { FormControl, FormGroup, Validators , ReactiveFormsModule } from "@angular/forms";
+import { ActivatedRoute, Router , RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { SsoComponent as BaseSsoComponent } from "@bitwarden/angular/auth/components/sso.component";
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
   LoginStrategyServiceAbstraction,
   UserDecryptionOptionsServiceAbstraction,
@@ -28,12 +30,33 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
-import { ToastService } from "@bitwarden/components";
+import {
+  AsyncActionsModule,
+  ButtonModule,
+  CheckboxModule,
+  FormFieldModule,
+  IconButtonModule,
+  LinkModule,
+  ToastService,
+} from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
+
 @Component({
-  selector: "app-sso",
+  standalone: true,
   templateUrl: "sso.component.html",
+  imports: [
+    AsyncActionsModule,
+    ButtonModule,
+    CheckboxModule,
+    CommonModule,
+    FormFieldModule,
+    IconButtonModule,
+    LinkModule,
+    JslibModule,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class SsoComponent extends BaseSsoComponent implements OnInit {

@@ -4575,6 +4575,9 @@
   "ssoLogInWithOrgIdentifier": {
     "message": "Log in using your organization's single sign-on portal. Please enter your organization's SSO identifier to begin."
   },
+  "singleSignOnEnterOrgIdentifier": {
+    "message": "Enter your organization's SSO identifier to begin"
+  },
   "enterpriseSingleSignOn": {
     "message": "Enterprise single sign-on"
   },

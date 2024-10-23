@@ -49,3 +49,6 @@ export * from "./lock/lock-component.service";
 
 // vault timeout
 export * from "./vault-timeout-input/vault-timeout-input.component";
+
+// sso
+export * from "./sso/sso.component";
