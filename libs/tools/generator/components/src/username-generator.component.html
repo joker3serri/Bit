@@ -3,7 +3,7 @@
     <bit-color-password class="tw-font-mono" [password]="value$ | async"></bit-color-password>
   </div>
   <div class="tw-flex tw-items-center tw-space-x-1">
-    <!-- FIXME PM-13957: Move appA11yTitle translation to `AlgorithmInfo` within the `CredentialGeneratorService`. -->
+    <!-- FIXME: Move appA11yTitle translation to `AlgorithmInfo` within the `CredentialGeneratorService`. -->
     <button
       type="button"
       bitIconButton="bwi-generate"
@@ -11,7 +11,7 @@
       (click)="generate$.next()"
       [appA11yTitle]="'generateUsername' | i18n"
     ></button>
-    <!-- FIXME PM-13957: Move appA11yTitle translation to `AlgorithmInfo` within the `CredentialGeneratorService`. -->
+    <!-- FIXME: Move appA11yTitle translation to `AlgorithmInfo` within the `CredentialGeneratorService`. -->
     <button
       type="button"
       bitIconButton="bwi-clone"
