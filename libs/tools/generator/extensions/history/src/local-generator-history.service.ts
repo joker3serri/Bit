@@ -26,7 +26,7 @@ export class LocalGeneratorHistoryService extends GeneratorHistoryService {
     private readonly encryptService: EncryptService,
     private readonly keyService: CryptoService,
     private readonly stateProvider: StateProvider,
-    private readonly options: HistoryServiceOptions = { maxTotal: 100 },
+    private readonly options: HistoryServiceOptions = { maxTotal: 200 },
   ) {
     super();
   }
