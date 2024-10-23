@@ -124,11 +124,12 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
           // continue with origin stream
           return generator;
         }),
+        withLatestFrom(this.userId$),
         takeUntil(this.destroyed),
       )
-      .subscribe((generated) => {
+      .subscribe(([generated, userId]) => {
         this.generatorHistoryService
-          .track(this.userId, generated.credential, generated.category, generated.generationDate)
+          .track(userId, generated.credential, generated.category, generated.generationDate)
           .catch((e: unknown) => {
             this.logService.error(e);
           });
