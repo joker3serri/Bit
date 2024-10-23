@@ -3,21 +3,19 @@
     <bit-color-password class="tw-font-mono" [password]="value$ | async"></bit-color-password>
   </div>
   <div class="tw-flex tw-items-center tw-space-x-1">
-    <!-- FIXME: Move appA11yTitle translation to `AlgorithmInfo` within the `CredentialGeneratorService`. -->
     <button
       type="button"
       bitIconButton="bwi-generate"
       buttonType="main"
       (click)="generate$.next()"
-      [appA11yTitle]="'generateUsername' | i18n"
+      [appA11yTitle]="credentialTypeGenerateLabel$ | async"
     ></button>
-    <!-- FIXME: Move appA11yTitle translation to `AlgorithmInfo` within the `CredentialGeneratorService`. -->
     <button
       type="button"
       bitIconButton="bwi-clone"
       buttonType="main"
       showToast
-      [appA11yTitle]="'copyUsername' | i18n"
+      [appA11yTitle]="credentialTypeCopyLabel$ | async"
       [appCopyClick]="value$ | async"
     ></button>
   </div>

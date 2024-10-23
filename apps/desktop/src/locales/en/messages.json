@@ -1229,6 +1229,9 @@
     "message": "Copy number",
     "description": "Copy credit card number"
   },
+  "copyEmail": {
+    "message": "Copy email"
+  },
   "copySecurityCode": {
     "message": "Copy security code",
     "description": "Copy credit card security code (CVV)"
@@ -2362,6 +2365,9 @@
   },
   "generateUsername": {
     "message": "Generate username"
+  },
+  "generateEmail": {
+    "message": "Generate email"
   },
   "usernameType": {
     "message": "Username type"

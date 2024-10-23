@@ -72,12 +72,16 @@ const SomeTime = new Date(1);
 const SomeAlgorithm = "passphrase";
 const SomeCategory = "password";
 const SomeNameKey = "passphraseKey";
+const SomeGenerateKey = "generateKey";
+const SomeCopyKey = "copyKey";
 
 // fake the configuration
 const SomeConfiguration: CredentialGeneratorConfiguration<SomeSettings, SomePolicy> = {
   id: SomeAlgorithm,
   category: SomeCategory,
   nameKey: SomeNameKey,
+  generateKey: SomeGenerateKey,
+  copyKey: SomeCopyKey,
   onlyOnRequest: false,
   request: [],
   engine: {

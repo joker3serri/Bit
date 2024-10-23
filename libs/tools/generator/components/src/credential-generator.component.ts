@@ -73,44 +73,6 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     nav: null,
   });
 
-  /**
-   * Emits the copy button aria-label respective of the selected credential type
-   *
-   * FIXME: Move label and logic to `AlgorithmInfo` within the `CredentialGeneratorService`.
-   */
-  protected credentialTypeCopyLabel$ = this.root$.pipe(
-    map(({ nav }) => {
-      if (nav === "password") {
-        return this.i18nService.t("copyPassword");
-      }
-
-      if (nav === "passphrase") {
-        return this.i18nService.t("copyPassphrase");
-      }
-
-      return this.i18nService.t("copyUsername");
-    }),
-  );
-
-  /**
-   * Emits the generate button aria-label respective of the selected credential type
-   *
-   * FIXME: Move label and logic to `AlgorithmInfo` within the `CredentialGeneratorService`.
-   */
-  protected credentialTypeGenerateLabel$ = this.root$.pipe(
-    map(({ nav }) => {
-      if (nav === "password") {
-        return this.i18nService.t("generatePassword");
-      }
-
-      if (nav === "passphrase") {
-        return this.i18nService.t("generatePassphrase");
-      }
-
-      return this.i18nService.t("generateUsername");
-    }),
-  );
-
   protected onRootChanged(value: { nav: string }) {
     // prevent subscription cycle
     if (this.root$.value.nav !== value.nav) {
@@ -479,6 +441,22 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   protected showAlgorithm$ = this.algorithm$.pipe(
     combineLatestWith(this.showForwarder$),
     map(([algorithm, showForwarder]) => (showForwarder ? null : algorithm)),
+  );
+
+  /**
+   * Emits the copy button aria-label respective of the selected credential type
+   */
+  protected credentialTypeCopyLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ copy }) => copy),
+  );
+
+  /**
+   * Emits the generate button aria-label respective of the selected credential type
+   */
+  protected credentialTypeGenerateLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ copy }) => copy),
   );
 
   /** Emits hint key for the currently selected credential type */

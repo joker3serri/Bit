@@ -52,6 +52,8 @@ const PASSPHRASE = Object.freeze({
   id: "passphrase",
   category: "password",
   nameKey: "passphrase",
+  generateKey: "generatePassphrase",
+  copyKey: "copyPassphrase",
   onlyOnRequest: false,
   request: [],
   engine: {
@@ -92,6 +94,8 @@ const PASSWORD = Object.freeze({
   id: "password",
   category: "password",
   nameKey: "password",
+  generateKey: "generatePassword",
+  copyKey: "copyPassword",
   onlyOnRequest: false,
   request: [],
   engine: {
@@ -140,6 +144,8 @@ const USERNAME = Object.freeze({
   id: "username",
   category: "username",
   nameKey: "randomWord",
+  generateKey: "generateUsername",
+  copyKey: "copyUsername",
   onlyOnRequest: false,
   request: [],
   engine: {
@@ -174,6 +180,8 @@ const CATCHALL = Object.freeze({
   category: "email",
   nameKey: "catchallEmail",
   descriptionKey: "catchallEmailDesc",
+  generateKey: "generateEmail",
+  copyKey: "copyEmail",
   onlyOnRequest: false,
   request: [],
   engine: {
@@ -208,6 +216,8 @@ const SUBADDRESS = Object.freeze({
   category: "email",
   nameKey: "plusAddressedEmail",
   descriptionKey: "plusAddressedEmailDesc",
+  generateKey: "generateEmail",
+  copyKey: "copyEmail",
   onlyOnRequest: false,
   request: [],
   engine: {
@@ -245,6 +255,8 @@ export function toCredentialGeneratorConfiguration<Settings extends ApiSettings 
     category: "email",
     nameKey: configuration.name,
     descriptionKey: "forwardedEmailDesc",
+    generateKey: "generateEmail",
+    copyKey: "copyEmail",
     onlyOnRequest: true,
     request: configuration.forwarder.request,
     engine: {

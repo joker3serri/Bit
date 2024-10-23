@@ -365,6 +365,22 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     map(([algorithm, showForwarder]) => (showForwarder ? null : algorithm)),
   );
 
+  /**
+   * Emits the copy button aria-label respective of the selected credential type
+   */
+  protected credentialTypeCopyLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ copy }) => copy),
+  );
+
+  /**
+   * Emits the generate button aria-label respective of the selected credential type
+   */
+  protected credentialTypeGenerateLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ copy }) => copy),
+  );
+
   /** Emits hint key for the currently selected credential type */
   protected credentialTypeHint$ = new ReplaySubject<string>(1);
 

@@ -31,6 +31,12 @@ export type AlgorithmInfo = {
   /** Localized algorithm name */
   name: string;
 
+  /* Localized generate button label */
+  generate: string;
+
+  /* Localized copy button label */
+  copy: string;
+
   /** Localized algorithm description */
   description?: string;
 
@@ -66,6 +72,12 @@ export type CredentialGeneratorInfo = {
 
   /** Key used to localize the credential description in the I18nService  */
   descriptionKey?: string;
+
+  /* Localized generate button label */
+  generateKey: string;
+
+  /* Localized copy button label */
+  copyKey: string;
 
   /** When true, credential generation must be explicitly requested.
    *  @remarks this property is useful when credential generation
