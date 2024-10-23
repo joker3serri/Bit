@@ -1,9 +1,8 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Unassigned, CollectionView, CollectionAdminView } from "@bitwarden/admin-console/common";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { TableDataSource } from "@bitwarden/components";
 
@@ -29,7 +28,6 @@ const MaxSelectionCount = 500;
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VaultItemsComponent {
-  protected i18nService = inject(I18nService);
   protected RowHeight = RowHeight;
 
   @Input() disabled: boolean;
