@@ -1,5 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { firstValueFrom, of, Subject } from "rxjs";
+import { firstValueFrom, of, ReplaySubject } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -30,7 +30,7 @@ describe("DefaultCollectionService", () => {
 
   let userId: UserId;
 
-  let cryptoKeys: Subject<Record<OrganizationId, OrgKey> | null>;
+  let cryptoKeys: ReplaySubject<Record<OrganizationId, OrgKey> | null>;
 
   let collectionService: DefaultCollectionvNextService;
 
@@ -42,8 +42,8 @@ describe("DefaultCollectionService", () => {
     i18nService = mock();
     stateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
 
-    cryptoKeys = new Subject();
-    cryptoService.orgKeys$.calledWith(userId).mockReturnValue(cryptoKeys);
+    cryptoKeys = new ReplaySubject(1);
+    cryptoService.orgKeys$.mockReturnValue(cryptoKeys);
 
     // Set up mock decryption
     encryptService.decryptToUtf8

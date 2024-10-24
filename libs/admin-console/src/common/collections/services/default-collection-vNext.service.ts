@@ -4,7 +4,7 @@ import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.se
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { ActiveUserState, StateProvider, DerivedState } from "@bitwarden/common/platform/state";
+import { StateProvider, DerivedState } from "@bitwarden/common/platform/state";
 import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { OrgKey } from "@bitwarden/common/types/key";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
@@ -21,40 +21,12 @@ import {
 const NestingDelimiter = "/";
 
 export class DefaultCollectionvNextService implements CollectionvNextService {
-  /**
-   * @deprecated use encryptedCollectionState instead
-   */
-  private activeUserEncryptedCollectionDataState: ActiveUserState<
-    Record<CollectionId, CollectionData>
-  >;
-  /**
-   * @deprecated use decryptedCollectionState instead
-   */
-  private activeUserDecryptedCollectionDataState: DerivedState<CollectionView[]>;
-
   constructor(
     private cryptoService: CryptoService,
     private encryptService: EncryptService,
     private i18nService: I18nService,
     protected stateProvider: StateProvider,
-  ) {
-    this.activeUserEncryptedCollectionDataState = this.stateProvider.getActive(
-      ENCRYPTED_COLLECTION_DATA_KEY,
-    );
-
-    const encryptedCollectionsWithKeys =
-      this.activeUserEncryptedCollectionDataState.combinedState$.pipe(
-        switchMap(([userId, collectionData]) =>
-          combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
-        ),
-      );
-
-    this.activeUserDecryptedCollectionDataState = this.stateProvider.getDerived(
-      encryptedCollectionsWithKeys,
-      DECRYPTED_COLLECTION_DATA_KEY,
-      { collectionService: this },
-    );
-  }
+  ) {}
 
   encryptedCollections$(userId$: Observable<UserId>) {
     return userId$.pipe(
