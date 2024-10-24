@@ -1,5 +1,9 @@
-import { inject, Inject, Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 
+// eslint-disable-next-line no-restricted-imports
+import { mockCiphers } from "@bitwarden/bit-common/tools/reports/access-intelligence/services/ciphers.mock";
+// eslint-disable-next-line no-restricted-imports
+import { mockMemberCipherDetailsResponse } from "@bitwarden/bit-common/tools/reports/access-intelligence/services/member-cipher-details-response.mock";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
@@ -7,9 +11,6 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { BadgeVariant } from "@bitwarden/components";
-
-import { mockCiphers } from "@bitwarden/bit-common/tools/reports/access-intelligence/services/ciphers.mock";
-import { mockMemberCipherDetailsResponse } from "@bitwarden/bit-common/tools/reports/access-intelligence/services/member-cipher-details-response.mock";
 
 @Injectable()
 export class PasswordHealthService {
@@ -164,9 +165,9 @@ export class PasswordHealthService {
     }
   }
 
-  public groupCiphersByLoginUri(): CipherView[] {
-    let cipherViews: CipherView[] = [];
-    let cipherUris: string[] = [];
+  groupCiphersByLoginUri(): CipherView[] {
+    const cipherViews: CipherView[] = [];
+    const cipherUris: string[] = [];
     const ciphers = this.reportCiphers;
 
     ciphers.forEach((ciph) => {
