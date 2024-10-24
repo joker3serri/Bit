@@ -112,6 +112,7 @@ import {
   WorkerWebPushConnectionService,
   SignalRConnectionService,
   UnsupportedWebPushConnectionService,
+  WebPushNotificationsApiService,
 } from "@bitwarden/common/platform/notifications/internal";
 import { ScheduledTaskNames } from "@bitwarden/common/platform/scheduling";
 import { AppIdService } from "@bitwarden/common/platform/services/app-id.service";
@@ -130,7 +131,6 @@ import { FileUploadService } from "@bitwarden/common/platform/services/file-uplo
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
-import { DefaultWebPushNotificationsApiService } from "@bitwarden/common/platform/services/notifications/web-push-notifications-api.service";
 import { DefaultSdkService } from "@bitwarden/common/platform/services/sdk/default-sdk.service";
 import { NoopSdkClientFactory } from "@bitwarden/common/platform/services/sdk/noop-sdk-client-factory";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
@@ -1039,7 +1039,7 @@ export default class MainBackground {
     if (BrowserApi.isManifestVersion(3)) {
       this.webPushConnectionService = new WorkerWebPushConnectionService(
         this.configService,
-        new DefaultWebPushNotificationsApiService(this.apiService, this.appIdService),
+        new WebPushNotificationsApiService(this.apiService, this.appIdService),
         (self as unknown as { registration: ServiceWorkerRegistration }).registration,
       );
     } else {

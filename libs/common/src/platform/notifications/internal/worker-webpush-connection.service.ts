@@ -16,8 +16,8 @@ import { UserId } from "../../../types/guid";
 import { ConfigService } from "../../abstractions/config/config.service";
 import { SupportStatus } from "../../misc/support-status";
 import { Utils } from "../../misc/utils";
-import { WebPushNotificationsApiService } from "../../services/notifications/web-push-notifications-api.service";
 
+import { WebPushNotificationsApiService } from "./web-push-notifications-api.service";
 import { WebPushConnectionService, WebPushConnector } from "./webpush-connection.service";
 
 // Ref: https://w3c.github.io/push-api/#the-pushsubscriptionchange-event

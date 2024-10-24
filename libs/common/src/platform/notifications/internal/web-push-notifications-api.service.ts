@@ -3,19 +3,15 @@ import { AppIdService } from "../../abstractions/app-id.service";
 
 import { WebPushRequest } from "./web-push.request";
 
-export abstract class WebPushNotificationsApiService {
-  /**
-   * Posts a device-user association to the server and ensures it's installed for push notifications
-   */
-  abstract putSubscription(pushSubscription: PushSubscriptionJSON): Promise<void>;
-}
-
-export class DefaultWebPushNotificationsApiService implements WebPushNotificationsApiService {
+export class WebPushNotificationsApiService {
   constructor(
     private readonly apiService: ApiService,
     private readonly appIdService: AppIdService,
   ) {}
 
+  /**
+   * Posts a device-user association to the server and ensures it's installed for push notifications
+   */
   async putSubscription(pushSubscription: PushSubscriptionJSON): Promise<void> {
     const request = WebPushRequest.from(pushSubscription);
     await this.apiService.send(

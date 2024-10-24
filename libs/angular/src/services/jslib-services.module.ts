@@ -172,6 +172,7 @@ import {
   SignalRConnectionService,
   UnsupportedWebPushConnectionService,
   WebPushConnectionService,
+  WebPushNotificationsApiService,
 } from "@bitwarden/common/platform/notifications/internal";
 import {
   TaskSchedulerService,
@@ -190,10 +191,6 @@ import { FileUploadService } from "@bitwarden/common/platform/services/file-uplo
 import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
-import {
-  DefaultWebPushNotificationsApiService,
-  WebPushNotificationsApiService,
-} from "@bitwarden/common/platform/services/notifications/web-push-notifications-api.service";
 import { DefaultSdkService } from "@bitwarden/common/platform/services/sdk/default-sdk.service";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
@@ -853,7 +850,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: WebPushNotificationsApiService,
-    useClass: DefaultWebPushNotificationsApiService,
+    useClass: WebPushNotificationsApiService,
     deps: [ApiServiceAbstraction, AppIdServiceAbstraction],
   }),
   safeProvider({
