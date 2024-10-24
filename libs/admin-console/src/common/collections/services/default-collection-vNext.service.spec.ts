@@ -19,10 +19,8 @@ import { OrgKey } from "@bitwarden/common/types/key";
 
 import { CollectionData, CollectionView } from "../models";
 
-import {
-  DefaultCollectionvNextService,
-  ENCRYPTED_COLLECTION_DATA_KEY,
-} from "./default-collection-vNext.service";
+import { ENCRYPTED_COLLECTION_DATA_KEY } from "./collection-vNext.state";
+import { DefaultCollectionvNextService } from "./default-collection-vNext.service";
 
 describe("DefaultCollectionService", () => {
   let cryptoService: MockProxy<CryptoService>;

@@ -1,18 +1,10 @@
 import { combineLatest, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
-import { Jsonify } from "type-fest";
 
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import {
-  ActiveUserState,
-  StateProvider,
-  COLLECTION_DATA,
-  DeriveDefinition,
-  DerivedState,
-  UserKeyDefinition,
-} from "@bitwarden/common/platform/state";
+import { ActiveUserState, StateProvider, DerivedState } from "@bitwarden/common/platform/state";
 import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { OrgKey } from "@bitwarden/common/types/key";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
@@ -21,30 +13,10 @@ import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { CollectionvNextService } from "../abstractions/collection-vNext.service";
 import { Collection, CollectionData, CollectionView } from "../models";
 
-export const ENCRYPTED_COLLECTION_DATA_KEY = UserKeyDefinition.record<CollectionData, CollectionId>(
-  COLLECTION_DATA,
-  "collections",
-  {
-    deserializer: (jsonData: Jsonify<CollectionData>) => CollectionData.fromJSON(jsonData),
-    clearOn: ["logout"],
-  },
-);
-
-const DECRYPTED_COLLECTION_DATA_KEY = new DeriveDefinition<
-  [Record<CollectionId, CollectionData>, Record<OrganizationId, OrgKey>],
-  CollectionView[],
-  { collectionService: DefaultCollectionvNextService }
->(COLLECTION_DATA, "decryptedCollections", {
-  deserializer: (obj) => obj.map((collection) => CollectionView.fromJSON(collection)),
-  derive: async ([collections, orgKeys], { collectionService }) => {
-    if (collections == null) {
-      return [];
-    }
-
-    const data = Object.values(collections).map((c) => new Collection(c));
-    return await collectionService.decryptMany(data, orgKeys);
-  },
-});
+import {
+  DECRYPTED_COLLECTION_DATA_KEY,
+  ENCRYPTED_COLLECTION_DATA_KEY,
+} from "./collection-vNext.state";
 
 const NestingDelimiter = "/";
 
