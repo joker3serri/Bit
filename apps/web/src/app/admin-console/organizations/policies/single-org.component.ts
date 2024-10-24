@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { firstValueFrom, Observable } from "rxjs";
 
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { PolicyRequest } from "@bitwarden/common/admin-console/models/request/policy.request";
@@ -10,7 +11,7 @@ import { BasePolicy, BasePolicyComponent } from "./base-policy.component";
 
 export class SingleOrgPolicy extends BasePolicy {
   name = "singleOrg";
-  description = "singleOrgPolicyDesc";
+  description = "singleOrgDesc";
   type = PolicyType.SingleOrg;
   component = SingleOrgPolicyComponent;
 }
@@ -27,8 +28,17 @@ export class SingleOrgPolicyComponent extends BasePolicyComponent implements OnI
     super();
   }
 
+  protected accountDeprovisioningEnabled$: Observable<boolean> = this.configService.getFeatureFlag$(
+    FeatureFlag.AccountDeprovisioning,
+  );
+
   async ngOnInit() {
     super.ngOnInit();
+
+    const isAccountDeprovisioningEnabled = await firstValueFrom(this.accountDeprovisioningEnabled$);
+    this.policy.description = isAccountDeprovisioningEnabled
+      ? "singleOrgPolicyDesc"
+      : "singleOrgDesc";
 
     if (!this.policyResponse.canToggleState) {
       this.enabled.disable();
