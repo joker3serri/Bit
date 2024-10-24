@@ -19,7 +19,11 @@ const EncryptionTypeNames = {
 };
 
 export function encryptionTypeToString(encryptionType: EncryptionType): string {
-  return EncryptionTypeNames[encryptionType];
+  if (encryptionType in EncryptionTypeNames) {
+    return EncryptionTypeNames[encryptionType];
+  } else {
+    return "Unknown encryption type " + encryptionType;
+  }
 }
 
 /** The expected number of parts to a serialized EncString of the given encryption type.
