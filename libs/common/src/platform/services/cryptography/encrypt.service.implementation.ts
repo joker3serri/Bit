@@ -116,7 +116,7 @@ export class EncryptServiceImplementation implements EncryptService {
             encryptionTypeName(key.encType) +
             "Payload type " +
             encryptionTypeName(encString.encryptionType) +
-            "Decrypt context: " +
+            " Decrypt context: " +
             decryptContext,
         );
         return null;
