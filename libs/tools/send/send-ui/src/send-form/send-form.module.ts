@@ -2,7 +2,10 @@ import { NgModule } from "@angular/core";
 
 import { safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import { SafeInjectionToken } from "@bitwarden/angular/services/injection-tokens";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
 import {
   createRandomizer,
@@ -32,7 +35,15 @@ const RANDOMIZER = new SafeInjectionToken<Randomizer>("Randomizer");
     safeProvider({
       useClass: CredentialGeneratorService,
       provide: CredentialGeneratorService,
-      deps: [RANDOMIZER, StateProvider, PolicyService],
+      deps: [
+        RANDOMIZER,
+        StateProvider,
+        PolicyService,
+        ApiService,
+        I18nService,
+        EncryptService,
+        KeyService,
+      ],
     }),
   ],
   exports: [SendFormComponent],
