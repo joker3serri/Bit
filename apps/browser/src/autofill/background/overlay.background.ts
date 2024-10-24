@@ -2779,8 +2779,8 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
     try {
       port.postMessage(message);
-    } catch (error) {
-      this.logService.error(error);
+    } catch {
+      // Catch when the port.postMessage call triggers an error to ensure login execution continues.
     }
   };
 
