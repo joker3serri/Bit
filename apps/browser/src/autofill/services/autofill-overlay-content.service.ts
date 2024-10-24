@@ -1513,7 +1513,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
   private setupGlobalEventListeners = () => {
     globalThis.addEventListener(EVENTS.MESSAGE, this.handleWindowMessageEvent);
     globalThis.document.addEventListener(EVENTS.VISIBILITYCHANGE, this.handleVisibilityChangeEvent);
-    globalThis.addEventListener(EVENTS.FOCUSOUT, this.handleFormFieldBlurEvent);
+    globalThis.addEventListener(EVENTS.FOCUSOUT, this.handleWindowFocusOutEvent);
     this.setOverlayRepositionEventListeners();
   };
 
@@ -1530,18 +1530,35 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
   };
 
   /**
+   * Handles the window focus out event, triggering a focus check on the
+   * inline menu if the document has focus and a closure of the inline
+   * menu if it does not have focus.
+   */
+  private handleWindowFocusOutEvent = () => {
+    if (document.hasFocus()) {
+      this.handleFormFieldBlurEvent();
+      return;
+    }
+
+    void this.sendExtensionMessage("closeAutofillInlineMenu", {
+      forceCloseInlineMenu: true,
+    });
+  };
+
+  /**
    * Handles the visibility change event. This method will remove the
    * autofill overlay if the document is not visible.
    */
   private handleVisibilityChangeEvent = () => {
-    if (!this.mostRecentlyFocusedField || globalThis.document.visibilityState === "visible") {
-      return;
+    if (globalThis.document.visibilityState === "hidden") {
+      void this.sendExtensionMessage("closeAutofillInlineMenu", {
+        forceCloseInlineMenu: true,
+      });
     }
 
-    this.unsetMostRecentlyFocusedField();
-    void this.sendExtensionMessage("closeAutofillInlineMenu", {
-      forceCloseInlineMenu: true,
-    });
+    if (this.mostRecentlyFocusedField) {
+      this.unsetMostRecentlyFocusedField();
+    }
   };
 
   /**

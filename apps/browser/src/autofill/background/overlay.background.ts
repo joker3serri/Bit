@@ -1483,7 +1483,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     { focusedFieldData }: OverlayBackgroundExtensionMessage,
     sender: chrome.runtime.MessageSender,
   ) {
-    if (this.focusedFieldData && !this.senderFrameHasFocusedField(sender)) {
+    if (
+      this.focusedFieldData &&
+      this.senderTabHasFocusedField(sender) &&
+      !this.senderFrameHasFocusedField(sender)
+    ) {
       BrowserApi.tabSendMessage(
         sender.tab,
         { command: "unsetMostRecentlyFocusedField" },

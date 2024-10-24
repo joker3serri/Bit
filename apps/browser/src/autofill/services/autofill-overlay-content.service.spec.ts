@@ -132,14 +132,17 @@ describe("AutofillOverlayContentService", () => {
     });
 
     it("sets up a focus out listener for the window", () => {
-      const handleFormFieldBlurEventSpy = jest.spyOn(
+      const handleWindowFocusOutEventSpy = jest.spyOn(
         autofillOverlayContentService as any,
-        "handleFormFieldBlurEvent",
+        "handleWindowFocusOutEvent",
       );
 
       autofillOverlayContentService.init();
 
-      expect(window.addEventListener).toHaveBeenCalledWith("focusout", handleFormFieldBlurEventSpy);
+      expect(window.addEventListener).toHaveBeenCalledWith(
+        "focusout",
+        handleWindowFocusOutEventSpy,
+      );
     });
   });
 
