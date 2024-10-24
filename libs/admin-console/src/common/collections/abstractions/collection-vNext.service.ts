@@ -20,8 +20,8 @@ export abstract class CollectionvNextService {
    * Clear decrypted and encrypted state.
    * Used for logging out.
    */
-  clear: (userId?: string) => Promise<void>;
-  delete: (id: string | string[]) => Promise<any>;
+  clear: (userId: string) => Promise<void>;
+  delete: (id: string | string[], userId: UserId) => Promise<any>;
   encrypt: (model: CollectionView) => Promise<Collection>;
   /**
    * @deprecated This method will soon be made private, use `decryptedCollections$` instead.

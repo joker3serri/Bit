@@ -104,17 +104,15 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
     await this.decryptedCollectionState(userId).forceValue(null);
   }
 
-  async clear(userId?: UserId): Promise<void> {
-    if (userId == null) {
-      await this.activeUserEncryptedCollectionDataState.update(() => null);
-      await this.activeUserDecryptedCollectionDataState.forceValue(null);
-    } else {
-      await this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY).update(() => null);
-    }
+  async clear(userId: UserId): Promise<void> {
+    await this.encryptedCollectionState(userId).update(() => null);
+    // This will propagate from the encrypted state update, but by doing it explicitly
+    // the promise doesn't resolve until the update is complete.
+    await this.decryptedCollectionState(userId).forceValue(null);
   }
 
-  async delete(id: CollectionId | CollectionId[]): Promise<any> {
-    await this.activeUserEncryptedCollectionDataState.update((collections) => {
+  async delete(id: CollectionId | CollectionId[], userId: UserId): Promise<any> {
+    await this.encryptedCollectionState(userId).update((collections) => {
       if (collections == null) {
         collections = {};
       }

@@ -233,6 +233,80 @@ describe("DefaultCollectionService", () => {
     });
   });
 
+  it("clearDecryptedState", async () => {
+    await setEncryptedState([collectionDataFactory(), collectionDataFactory()]);
+
+    await collectionService.clearDecryptedState(userId);
+
+    // Encrypted state remains
+    const encryptedState = await firstValueFrom(
+      collectionService.encryptedCollections$(of(userId)),
+    );
+    expect(encryptedState.length).toEqual(2);
+
+    // Decrypted state is cleared
+    const decryptedState = await firstValueFrom(
+      collectionService.decryptedCollections$(of(userId)),
+    );
+    expect(decryptedState).toBeNull();
+  });
+
+  it("clear", async () => {
+    await setEncryptedState([collectionDataFactory(), collectionDataFactory()]);
+    cryptoKeys.next({});
+
+    await collectionService.clear(userId);
+
+    // Encrypted state is cleared
+    const encryptedState = await firstValueFrom(
+      collectionService.encryptedCollections$(of(userId)),
+    );
+    expect(encryptedState.length).toEqual(0);
+
+    // Decrypted state is cleared
+    const decryptedState = await firstValueFrom(
+      collectionService.decryptedCollections$(of(userId)),
+    );
+    expect(decryptedState.length).toEqual(0);
+  });
+
+  describe("delete", () => {
+    it("deletes a collection", async () => {
+      const collection1 = collectionDataFactory();
+      const collection2 = collectionDataFactory();
+      await setEncryptedState([collection1, collection2]);
+
+      await collectionService.delete(collection1.id, userId);
+
+      const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
+      expect(result.length).toEqual(1);
+      expect(result[0]).toMatchObject({ id: collection2.id });
+    });
+
+    it("deletes several collections", async () => {
+      const collection1 = collectionDataFactory();
+      const collection2 = collectionDataFactory();
+      const collection3 = collectionDataFactory();
+      await setEncryptedState([collection1, collection2, collection3]);
+
+      await collectionService.delete([collection1.id, collection3.id], userId);
+
+      const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
+      expect(result.length).toEqual(1);
+      expect(result[0]).toMatchObject({ id: collection2.id });
+    });
+
+    it("handles null collections", async () => {
+      const collection1 = collectionDataFactory();
+      await setEncryptedState(null);
+
+      await collectionService.delete(collection1.id, userId);
+
+      const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
+      expect(result.length).toEqual(0);
+    });
+  });
+
   const setEncryptedState = (collectionData: CollectionData[] | null) =>
     stateProvider.setUserState(
       ENCRYPTED_COLLECTION_DATA_KEY,
