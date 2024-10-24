@@ -9,7 +9,7 @@ import { CollectionData, Collection, CollectionView } from "../models";
 export abstract class CollectionvNextService {
   encryptedCollections$: (userId$: Observable<UserId>) => Observable<Collection[]>;
   decryptedCollections$: (userId$: Observable<UserId>) => Observable<CollectionView[]>;
-  upsert: (collection: CollectionData | CollectionData[]) => Promise<any>;
+  upsert: (collection: CollectionData | CollectionData[], userId: UserId) => Promise<any>;
   replace: (collections: { [id: string]: CollectionData }, userId: UserId) => Promise<any>;
   /**
    * Clear decrypted state without affecting encrypted state.

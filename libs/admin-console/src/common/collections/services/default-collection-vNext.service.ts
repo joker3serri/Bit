@@ -73,11 +73,11 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
     return userId$.pipe(switchMap((userId) => this.decryptedCollectionState(userId).state$));
   }
 
-  async upsert(toUpdate: CollectionData | CollectionData[]): Promise<void> {
+  async upsert(toUpdate: CollectionData | CollectionData[], userId: UserId): Promise<void> {
     if (toUpdate == null) {
       return;
     }
-    await this.activeUserEncryptedCollectionDataState.update((collections) => {
+    await this.encryptedCollectionState(userId).update((collections) => {
       if (collections == null) {
         collections = {};
       }

@@ -167,12 +167,72 @@ describe("DefaultCollectionService", () => {
 
     it("handles null collection state", async () => {
       await stateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
-      cryptoKeys.next({});
 
       const decryptedCollections = await firstValueFrom(
-        collectionService.decryptedCollections$(of(userId)),
+        collectionService.encryptedCollections$(of(userId)),
       );
       expect(decryptedCollections.length).toBe(0);
+    });
+  });
+
+  describe("upsert", () => {
+    it("upserts to existing collections", async () => {
+      const org1 = Utils.newGuid() as OrganizationId;
+      const collection1 = collectionDataFactory(org1);
+
+      const org2 = Utils.newGuid() as OrganizationId;
+      const collection2 = collectionDataFactory(org2);
+
+      await stateProvider.setUserState(
+        ENCRYPTED_COLLECTION_DATA_KEY,
+        {
+          [collection1.id]: collection1,
+          [collection2.id]: collection2,
+        },
+        userId,
+      );
+
+      const updatedCollection1 = Object.assign(new CollectionData({} as any), collection1, {
+        name: makeEncString("UPDATED_ENC_NAME_" + collection1.id).encryptedString,
+      });
+      const newCollection3 = collectionDataFactory(org2);
+
+      await collectionService.upsert([updatedCollection1, newCollection3], userId);
+
+      const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
+      expect(result.length).toBe(3);
+      expect(result).toIncludeAllPartialMembers([
+        {
+          id: collection1.id,
+          name: makeEncString("UPDATED_ENC_NAME_" + collection1.id),
+        },
+        {
+          id: collection2.id,
+          name: makeEncString("ENC_NAME_" + collection2.id),
+        },
+        {
+          id: newCollection3.id,
+          name: makeEncString("ENC_NAME_" + newCollection3.id),
+        },
+      ]);
+    });
+
+    it("upserts to a null state", async () => {
+      const org1 = Utils.newGuid() as OrganizationId;
+      const collection1 = collectionDataFactory(org1);
+
+      await stateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
+
+      await collectionService.upsert(collection1, userId);
+
+      const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
+      expect(result.length).toBe(1);
+      expect(result).toIncludeAllPartialMembers([
+        {
+          id: collection1.id,
+          name: makeEncString("ENC_NAME_" + collection1.id),
+        },
+      ]);
     });
   });
 });
