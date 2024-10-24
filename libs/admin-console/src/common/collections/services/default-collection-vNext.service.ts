@@ -93,9 +93,7 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
   }
 
   async replace(collections: Record<CollectionId, CollectionData>, userId: UserId): Promise<void> {
-    await this.stateProvider
-      .getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY)
-      .update(() => collections);
+    await this.encryptedCollectionState(userId).update(() => collections);
   }
 
   async clearDecryptedState(userId: UserId): Promise<void> {

@@ -81,15 +81,7 @@ describe("DefaultCollectionService", () => {
       const collection2 = collectionDataFactory(org2);
 
       // Arrange dependencies
-      await stateProvider.setUserState(
-        ENCRYPTED_COLLECTION_DATA_KEY,
-        {
-          [collection1.id]: collection1,
-          [collection2.id]: collection2,
-        },
-        userId,
-      );
-
+      await setEncryptedState([collection1, collection2]);
       cryptoKeys.next({
         [org1]: orgKey1,
         [org2]: orgKey2,
@@ -122,16 +114,9 @@ describe("DefaultCollectionService", () => {
     });
 
     it("handles null collection state", async () => {
-      // Arrange test data
-      const org1 = Utils.newGuid() as OrganizationId;
-      const org2 = Utils.newGuid() as OrganizationId;
-
       // Arrange dependencies
-      await stateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
-      cryptoKeys.next({
-        [org1]: makeSymmetricCryptoKey<OrgKey>(),
-        [org2]: makeSymmetricCryptoKey<OrgKey>(),
-      });
+      await setEncryptedState(null);
+      cryptoKeys.next({});
 
       const encryptedCollections = await firstValueFrom(
         collectionService.encryptedCollections$(of(userId)),
@@ -144,21 +129,11 @@ describe("DefaultCollectionService", () => {
   describe("encryptedCollections$", () => {
     it("emits encrypted collections from state", async () => {
       // Arrange test data
-      const org1 = Utils.newGuid() as OrganizationId;
-      const collection1 = collectionDataFactory(org1);
-
-      const org2 = Utils.newGuid() as OrganizationId;
-      const collection2 = collectionDataFactory(org2);
+      const collection1 = collectionDataFactory();
+      const collection2 = collectionDataFactory();
 
       // Arrange dependencies
-      await stateProvider.setUserState(
-        ENCRYPTED_COLLECTION_DATA_KEY,
-        {
-          [collection1.id]: collection1,
-          [collection2.id]: collection2,
-        },
-        userId,
-      );
+      await setEncryptedState([collection1, collection2]);
 
       const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
 
@@ -176,7 +151,7 @@ describe("DefaultCollectionService", () => {
     });
 
     it("handles null collection state", async () => {
-      await stateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
+      await setEncryptedState(null);
 
       const decryptedCollections = await firstValueFrom(
         collectionService.encryptedCollections$(of(userId)),
@@ -187,25 +162,15 @@ describe("DefaultCollectionService", () => {
 
   describe("upsert", () => {
     it("upserts to existing collections", async () => {
-      const org1 = Utils.newGuid() as OrganizationId;
-      const collection1 = collectionDataFactory(org1);
+      const collection1 = collectionDataFactory();
+      const collection2 = collectionDataFactory();
 
-      const org2 = Utils.newGuid() as OrganizationId;
-      const collection2 = collectionDataFactory(org2);
-
-      await stateProvider.setUserState(
-        ENCRYPTED_COLLECTION_DATA_KEY,
-        {
-          [collection1.id]: collection1,
-          [collection2.id]: collection2,
-        },
-        userId,
-      );
+      await setEncryptedState([collection1, collection2]);
 
       const updatedCollection1 = Object.assign(new CollectionData({} as any), collection1, {
         name: makeEncString("UPDATED_ENC_NAME_" + collection1.id).encryptedString,
       });
-      const newCollection3 = collectionDataFactory(org2);
+      const newCollection3 = collectionDataFactory();
 
       await collectionService.upsert([updatedCollection1, newCollection3], userId);
 
@@ -228,10 +193,9 @@ describe("DefaultCollectionService", () => {
     });
 
     it("upserts to a null state", async () => {
-      const org1 = Utils.newGuid() as OrganizationId;
-      const collection1 = collectionDataFactory(org1);
+      const collection1 = collectionDataFactory();
 
-      await stateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
+      await setEncryptedState(null);
 
       await collectionService.upsert(collection1, userId);
 
@@ -245,12 +209,42 @@ describe("DefaultCollectionService", () => {
       ]);
     });
   });
+
+  describe("replace", () => {
+    it("replaces all collections", async () => {
+      await setEncryptedState([collectionDataFactory(), collectionDataFactory()]);
+
+      const newCollection3 = collectionDataFactory();
+      await collectionService.replace(
+        {
+          [newCollection3.id]: newCollection3,
+        },
+        userId,
+      );
+
+      const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
+      expect(result.length).toBe(1);
+      expect(result).toIncludeAllPartialMembers([
+        {
+          id: newCollection3.id,
+          name: makeEncString("ENC_NAME_" + newCollection3.id),
+        },
+      ]);
+    });
+  });
+
+  const setEncryptedState = (collectionData: CollectionData[] | null) =>
+    stateProvider.setUserState(
+      ENCRYPTED_COLLECTION_DATA_KEY,
+      collectionData == null ? null : Object.fromEntries(collectionData.map((c) => [c.id, c])),
+      userId,
+    );
 });
 
-const collectionDataFactory = (orgId: OrganizationId) => {
+const collectionDataFactory = (orgId?: OrganizationId) => {
   const collection = new CollectionData({} as any);
   collection.id = Utils.newGuid() as CollectionId;
-  collection.organizationId = orgId;
+  collection.organizationId = orgId ?? (Utils.newGuid() as OrganizationId);
   collection.name = makeEncString("ENC_NAME_" + collection.id).encryptedString;
 
   return collection;
