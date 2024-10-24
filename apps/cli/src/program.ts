@@ -1,6 +1,6 @@
 import * as chalk from "chalk";
 import { program, Command, OptionValues } from "commander";
-import { firstValueFrom, map } from "rxjs";
+import { catchError, firstValueFrom, map } from "rxjs";
 
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
@@ -26,7 +26,10 @@ export class Program extends BaseProgram {
   async register() {
     const clientVersion = await this.serviceContainer.platformUtilsService.getApplicationVersion();
     const sdkVersion = await firstValueFrom(
-      this.serviceContainer.sdkService.client$.pipe(map((client) => client.version())),
+      this.serviceContainer.sdkService.client$.pipe(
+        map((c) => c.version()),
+        catchError(() => "Unsupported"),
+      ),
     );
 
     program

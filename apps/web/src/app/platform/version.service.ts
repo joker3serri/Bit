@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { firstValueFrom, map } from "rxjs";
+import { catchError, firstValueFrom, map } from "rxjs";
 
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
@@ -22,7 +22,12 @@ export class VersionService {
     (window as any).__version = async (): Promise<Version> => {
       return {
         client: await this.platformUtilsService.getApplicationVersion(),
-        sdk: await firstValueFrom(this.sdkService.client$.pipe(map((client) => client.version()))),
+        sdk: await firstValueFrom(
+          this.sdkService.client$.pipe(
+            map((client) => client.version()),
+            catchError(() => "Unsupported"),
+          ),
+        ),
       };
     };
   }
