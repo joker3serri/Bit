@@ -29,7 +29,7 @@ import {
   RegistrationUserAddIcon,
   RegistrationLockAltIcon,
   RegistrationExpiredLinkIcon,
-  SsoComponent,
+  SsoComponent as SsoComponentV2,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -326,9 +326,9 @@ const routes: Routes = [
           },
         ],
       },
-      ...extensionRefreshSwap(
+      ...unauthUiRefreshSwap(
         SsoComponentV1,
-        SsoComponent,
+        SsoComponentV2,
         {
           path: "sso",
           canActivate: [unauthGuardFn()],
@@ -366,7 +366,7 @@ const routes: Routes = [
           children: [
             {
               path: "",
-              component: SsoComponent,
+              component: SsoComponentV2,
             },
             {
               path: "",
