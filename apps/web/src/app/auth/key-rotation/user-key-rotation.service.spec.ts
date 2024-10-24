@@ -8,6 +8,7 @@ import { WebauthnRotateCredentialRequest } from "@bitwarden/common/auth/models/r
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { SendWithIdRequest } from "@bitwarden/common/tools/send/models/request/send-with-id.request";
 import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
@@ -44,6 +45,7 @@ describe("KeyRotationService", () => {
   let mockConfigService: MockProxy<ConfigService>;
   let mockSyncService: MockProxy<SyncService>;
   let mockWebauthnLoginAdminService: MockProxy<WebauthnLoginAdminService>;
+  let mockLogService: MockProxy<LogService>;
 
   const mockUser = {
     id: "mockUserId" as UserId,
@@ -66,6 +68,7 @@ describe("KeyRotationService", () => {
     mockConfigService = mock<ConfigService>();
     mockSyncService = mock<SyncService>();
     mockWebauthnLoginAdminService = mock<WebauthnLoginAdminService>();
+    mockLogService = mock<LogService>();
 
     keyRotationService = new UserKeyRotationService(
       mockUserVerificationService,
@@ -80,6 +83,7 @@ describe("KeyRotationService", () => {
       mockEncryptService,
       mockSyncService,
       mockWebauthnLoginAdminService,
+      mockLogService,
     );
   });
 
