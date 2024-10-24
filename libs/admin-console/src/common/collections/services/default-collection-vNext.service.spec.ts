@@ -248,7 +248,7 @@ describe("DefaultCollectionService", () => {
     const decryptedState = await firstValueFrom(
       collectionService.decryptedCollections$(of(userId)),
     );
-    expect(decryptedState).toBeNull();
+    expect(decryptedState.length).toEqual(0);
   });
 
   it("clear", async () => {

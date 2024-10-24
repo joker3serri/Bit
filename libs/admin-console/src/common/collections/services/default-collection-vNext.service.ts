@@ -70,7 +70,10 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
   }
 
   decryptedCollections$(userId$: Observable<UserId>) {
-    return userId$.pipe(switchMap((userId) => this.decryptedCollectionState(userId).state$));
+    return userId$.pipe(
+      switchMap((userId) => this.decryptedCollectionState(userId).state$),
+      map((collections) => collections ?? []),
+    );
   }
 
   async upsert(toUpdate: CollectionData | CollectionData[], userId: UserId): Promise<void> {
