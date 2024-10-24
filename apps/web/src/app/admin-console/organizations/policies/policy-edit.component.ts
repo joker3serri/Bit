@@ -43,7 +43,6 @@ export class PolicyEditComponent implements AfterViewInit {
   loading = true;
   enabled = false;
   saveDisabled = false;
-  formPromise: Promise<any>;
   defaultTypes: any[];
   policyComponent: BasePolicyComponent;
 
@@ -102,12 +101,7 @@ export class PolicyEditComponent implements AfterViewInit {
       this.toastService.showToast({ variant: "error", title: null, message: e.message });
       return;
     }
-    this.formPromise = this.policyApiService.putPolicy(
-      this.data.organizationId,
-      this.data.policy.type,
-      request,
-    );
-    await this.formPromise;
+    await this.policyApiService.putPolicy(this.data.organizationId, this.data.policy.type, request);
     this.toastService.showToast({
       variant: "success",
       title: null,
