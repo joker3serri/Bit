@@ -7,8 +7,8 @@ import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-pack
 import { SecretState } from "@bitwarden/common/tools/state/secret-state";
 import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
 import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService } from "@bitwarden/key-management";
 import { CredentialAlgorithm } from "@bitwarden/generator-core";
+import { KeyService } from "@bitwarden/key-management";
 
 import { GeneratedCredential } from "./generated-credential";
 import { GeneratorHistoryService } from "./generator-history.abstraction";
