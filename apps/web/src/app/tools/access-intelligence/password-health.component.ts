@@ -27,8 +27,6 @@ import { OrganizationBadgeModule } from "../../vault/individual-vault/organizati
 // eslint-disable-next-line no-restricted-imports
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 
-import { PasswordHealthService } from "./password-health.service";
-
 @Component({
   standalone: true,
   selector: "tools-password-health",
