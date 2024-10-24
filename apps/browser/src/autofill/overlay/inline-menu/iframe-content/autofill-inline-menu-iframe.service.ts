@@ -372,6 +372,8 @@ export class AutofillInlineMenuIframeService implements AutofillInlineMenuIframe
 
     this.delayedCloseTimeout = globalThis.setTimeout(() => {
       this.updateElementStyles(this.iframe, { transition: this.fadeInOpacityTransition });
+      this.port?.disconnect();
+      this.port = null;
       this.forceCloseInlineMenu();
     }, 100);
   }
