@@ -155,6 +155,7 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
         this.activitySubject.next("active"); // Allow a reconnect
         break;
       case NotificationType.LogOut:
+        this.logService.info("[Notifications Service] Received logout notification");
         await this.logoutCallback("logoutNotification", userId);
         break;
       case NotificationType.SyncSendCreate:

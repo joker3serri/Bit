@@ -42,7 +42,6 @@ import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth
 import { ClientType } from "@bitwarden/common/enums";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import {
   EnvironmentService,
@@ -76,7 +75,7 @@ import {
   ThemeStateService,
 } from "@bitwarden/common/platform/theming/theme-state.service";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
-import { BiometricsService } from "@bitwarden/key-management";
+import { KeyService as KeyServiceAbstraction, BiometricsService } from "@bitwarden/key-management";
 
 import { flagEnabled } from "../../utils/flags";
 import { PolicyListService } from "../admin-console/core/policy-list.service";
@@ -215,7 +214,7 @@ const safeProviders: SafeProvider[] = [
     provide: RegistrationFinishServiceAbstraction,
     useClass: WebRegistrationFinishService,
     deps: [
-      CryptoServiceAbstraction,
+      KeyServiceAbstraction,
       AccountApiServiceAbstraction,
       AcceptOrganizationInviteService,
       PolicyApiServiceAbstraction,
@@ -239,7 +238,7 @@ const safeProviders: SafeProvider[] = [
     useClass: WebSetPasswordJitService,
     deps: [
       ApiService,
-      CryptoServiceAbstraction,
+      KeyServiceAbstraction,
       EncryptService,
       I18nServiceAbstraction,
       KdfConfigService,
@@ -257,7 +256,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: CollectionAdminService,
     useClass: DefaultCollectionAdminService,
-    deps: [ApiService, CryptoServiceAbstraction, EncryptService, CollectionService],
+    deps: [ApiService, KeyServiceAbstraction, EncryptService, CollectionService],
   }),
   safeProvider({
     provide: SdkClientFactory,
