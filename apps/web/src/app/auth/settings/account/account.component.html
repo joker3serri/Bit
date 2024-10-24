@@ -8,12 +8,12 @@
     <app-change-email></app-change-email>
   </div>
 
-  <app-danger-zone>
+  <app-danger-zone *ngIf="{ show: showPurgeVault$ | async } as showPurgeVault">
     <button type="button" bitButton buttonType="danger" (click)="deauthorizeSessions()">
-      {{ "deauthorizeSessions" | i18n }}
+      {{ !showPurgeVault.show ? ("deauthorizeSession" | i18n) : ("deauthorizeSessions" | i18n) }}
     </button>
     <button
-      *ngIf="showPurgeVault$ | async"
+      *ngIf="showPurgeVault.show"
       type="button"
       bitButton
       buttonType="danger"
