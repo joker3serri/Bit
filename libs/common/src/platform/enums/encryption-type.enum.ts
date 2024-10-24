@@ -8,19 +8,10 @@ export enum EncryptionType {
   Rsa2048_OaepSha1_HmacSha256_B64 = 6,
 }
 
-const EncryptionTypeNames = {
-  [EncryptionType.AesCbc256_B64]: "AesCbc256_B64",
-  [EncryptionType.AesCbc128_HmacSha256_B64]: "AesCbc128_HmacSha256_B64",
-  [EncryptionType.AesCbc256_HmacSha256_B64]: "AesCbc256_HmacSha256_B64",
-  [EncryptionType.Rsa2048_OaepSha256_B64]: "Rsa2048_OaeppSha256_B64",
-  [EncryptionType.Rsa2048_OaepSha1_B64]: "Rsa2048_OaepSha1_B64",
-  [EncryptionType.Rsa2048_OaepSha256_HmacSha256_B64]: "Rsa2048_OaepSha256_HmacSha256_B64",
-  [EncryptionType.Rsa2048_OaepSha1_HmacSha256_B64]: "Rsa2048_OaepSha1_HmacSha256_B64",
-};
 
 export function encryptionTypeToString(encryptionType: EncryptionType): string {
-  if (encryptionType in EncryptionTypeNames) {
-    return EncryptionTypeNames[encryptionType];
+  if (encryptionType in EncryptionType) {
+    return EncryptionType[encryptionType];
   } else {
     return "Unknown encryption type " + encryptionType;
   }
