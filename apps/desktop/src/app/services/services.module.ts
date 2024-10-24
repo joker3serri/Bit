@@ -37,6 +37,8 @@ import {
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ClientType } from "@bitwarden/common/enums";
+import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/abstractions/process-reload.service";
+import { ProcessReloadService } from "@bitwarden/common/key-management/services/process-reload.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import {
   CryptoService,
@@ -52,6 +54,7 @@ import {
 } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
 import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/platform/abstractions/system.service";
@@ -60,6 +63,8 @@ import { Message, MessageListener, MessageSender } from "@bitwarden/common/platf
 import { SubjectMessageSender } from "@bitwarden/common/platform/messaging/internal";
 import { TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
+import { DefaultSdkClientFactory } from "@bitwarden/common/platform/services/sdk/default-sdk-client-factory";
+import { NoopSdkClientFactory } from "@bitwarden/common/platform/services/sdk/noop-sdk-client-factory";
 import { SystemService } from "@bitwarden/common/platform/services/system.service";
 import { GlobalStateProvider, StateProvider } from "@bitwarden/common/platform/state";
 // eslint-disable-next-line import/no-restricted-paths -- Implementation for memory storage
@@ -73,6 +78,7 @@ import { BiometricStateService, BiometricsService } from "@bitwarden/key-managem
 
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { ElectronBiometricsService } from "../../key-management/biometrics/electron-biometrics.service";
+import { flagEnabled } from "../../platform/flags";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { ElectronCryptoService } from "../../platform/services/electron-crypto.service";
 import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
@@ -193,15 +199,21 @@ const safeProviders: SafeProvider[] = [
     provide: SystemServiceAbstraction,
     useClass: SystemService,
     deps: [
+      PlatformUtilsServiceAbstraction,
+      AutofillSettingsServiceAbstraction,
+      TaskSchedulerService,
+    ],
+  }),
+  safeProvider({
+    provide: ProcessReloadServiceAbstraction,
+    useClass: ProcessReloadService,
+    deps: [
       PinServiceAbstraction,
       MessagingServiceAbstraction,
-      PlatformUtilsServiceAbstraction,
       RELOAD_CALLBACK,
-      AutofillSettingsServiceAbstraction,
       VaultTimeoutSettingsService,
       BiometricStateService,
       AccountServiceAbstraction,
-      TaskSchedulerService,
     ],
   }),
   safeProvider({
@@ -301,6 +313,11 @@ const safeProviders: SafeProvider[] = [
       OrganizationUserApiService,
       InternalUserDecryptionOptionsServiceAbstraction,
     ],
+  }),
+  safeProvider({
+    provide: SdkClientFactory,
+    useClass: flagEnabled("sdk") ? DefaultSdkClientFactory : NoopSdkClientFactory,
+    deps: [],
   }),
 ];
 

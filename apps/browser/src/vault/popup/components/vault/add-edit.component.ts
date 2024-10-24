@@ -5,6 +5,7 @@ import qrcodeParser from "qrcode-parser";
 import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
+import { CollectionService } from "@bitwarden/admin-console/common";
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -20,10 +21,10 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -72,6 +73,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
     datePipe: DatePipe,
     configService: ConfigService,
     private fido2UserVerificationService: Fido2UserVerificationService,
+    cipherAuthorizationService: CipherAuthorizationService,
   ) {
     super(
       cipherService,
@@ -92,6 +94,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
       window,
       datePipe,
       configService,
+      cipherAuthorizationService,
     );
   }
 
@@ -107,6 +110,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
         this.folderId = params.folderId;
       }
       if (params.collectionId) {
+        this.collectionId = params.collectionId;
         const collection = this.writeableCollections.find((c) => c.id === params.collectionId);
         if (collection != null) {
           this.collectionIds = [collection.id];

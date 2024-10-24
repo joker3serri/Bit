@@ -71,6 +71,15 @@
   "joinOrganization": {
     "message": "Join organization"
   },
+  "joinOrganizationName": {
+    "message": "Join $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "Finish joining this organization by setting a master password."
   },
@@ -97,6 +106,9 @@
   },
   "copyPassword": {
     "message": "Copy password"
+  },
+  "copyPassphrase": {
+    "message": "Copy passphrase"
   },
   "copyNote": {
     "message": "Copy note"
@@ -142,6 +154,10 @@
   },
   "copyNotes": {
     "message": "Copy notes"
+  },
+  "fill":{
+    "message": "Fill",
+    "description": "This string is used on the vault page to indicate autofilling. Horizontal space is limited in the interface here so try and keep translations as concise as possible."
   },
   "autoFill": {
     "message": "Autofill"
@@ -381,7 +397,7 @@
   },
   "generator": {
     "message": "Generator",
-    "description": "Short for 'Password Generator'."
+    "description": "Short for 'credential generator'."
   },
   "passGenInfo": {
     "message": "Automatically generate strong, unique passwords for your logins."
@@ -397,6 +413,9 @@
   },
   "generatePassword": {
     "message": "Generate password"
+  },
+  "generatePassphrase": {
+    "message": "Generate passphrase"
   },
   "regeneratePassword": {
     "message": "Regenerate password"
@@ -1380,6 +1399,10 @@
   "baseUrl": {
     "message": "Server URL"
   },
+  "selfHostBaseUrl": {
+    "message": "Self-host server URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "apiUrl": {
     "message": "API server URL"
   },
@@ -1407,6 +1430,12 @@
   },
   "showInlineMenuLabel": {
     "message": "Show autofill suggestions on form fields"
+  },
+  "showInlineMenuIdentitiesLabel": {
+    "message": "Display identities as suggestions"
+  },
+  "showInlineMenuCardsLabel": {
+    "message": "Display cards as suggestions"
   },
   "showInlineMenuOnIconSelectionLabel": {
     "message": "Display suggestions when icon is selected"
@@ -2449,8 +2478,8 @@
     "message": "Optionally require a password for users to access this Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendPasswordDescV2": {
-    "message": "Require this password to view the Send.",
+  "sendPasswordDescV3": {
+    "message": "Add an optional password for recipients to access this Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
@@ -2498,7 +2527,25 @@
     "message": "Send created successfully!",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendAvailability": {
+  "sendExpiresInHoursSingle": {
+    "message": "The Send will be available to anyone with the link for the next 1 hour.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInHours": {
+    "message": "The Send will be available to anyone with the link for the next $HOURS$ hours.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "sendExpiresInDaysSingle": {
+    "message": "The Send will be available to anyone with the link for the next 1 day.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInDays": {
     "message": "The Send will be available to anyone with the link for the next $DAYS$ days.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
     "placeholders": {
@@ -2628,6 +2675,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "Your organization requires you to set a master password.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": "out of $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "Verification required",
@@ -2785,6 +2841,9 @@
   "generateUsername": {
     "message": "Generate username"
   },
+  "generateEmail": {
+    "message": "Generate email"
+  },
   "usernameType": {
     "message": "Username type"
   },
@@ -2824,6 +2883,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Generate an email alias with an external forwarding service."
+  },
+  "forwarderDomainName": {
+    "message": "Email domain",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Choose a domain that is supported by the selected service",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ error: $ERRORMESSAGE$",
@@ -3662,6 +3729,9 @@
   "noMatchingLoginsForSite": {
     "message": "No matching logins for this site"
   },
+  "searchSavePasskeyNewLogin": {
+    "message": "Search or save passkey as new login"
+  },
   "confirm": {
     "message": "Confirm"
   },
@@ -4449,8 +4519,14 @@
   "itemLocation": {
     "message": "Item Location"
   },
+  "fileSend": {
+    "message": "File Send"
+  },
   "fileSends": {
     "message": "File Sends"
+  },
+  "textSend": {
+    "message": "Text Send"
   },
   "textSends": {
     "message": "Text Sends"

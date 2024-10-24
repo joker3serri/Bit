@@ -1,4 +1,64 @@
 {
+  "allApplications": {
+    "message": "All applications"
+  },
+  "priorityApplications": {
+    "message": "Priority applications"
+  },
+  "accessIntelligence": {
+    "message": "Access Intelligence"
+  },
+  "notifiedMembers": {
+    "message": "Notified members"
+  },
+  "allApplicationsWithCount": {
+    "message": "All applications ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "priorityApplicationsWithCount": {
+    "message": "Priority applications ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "notifiedMembersWithCount": {
+    "message": "Notified members ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "application": {
+    "message": "Application"
+  },
+  "atRiskPasswords": {
+    "message": "At-risk passwords"
+  },
+  "totalPasswords": {
+    "message": "Total passwords"
+  },
+  "atRiskMembers": {
+    "message": "At-risk members"
+  },
+  "totalMembers": {
+    "message": "Total members"
+  },
+  "atRiskApplications": {
+    "message": "At-risk applications"
+  },
+  "totalApplications": {
+    "message": "Total applications"
+  },
   "whatTypeOfItem": {
     "message": "Vilken typ av objekt är detta?"
   },
@@ -603,6 +663,9 @@
     "message": "Kopiera lösenord",
     "description": "Copy password to clipboard"
   },
+  "passwordCopied": {
+    "message": "Password copied"
+  },
   "copyUsername": {
     "message": "Kopiera användarnamn",
     "description": "Copy username to clipboard"
@@ -1136,6 +1199,9 @@
   "noPermissionToViewAllCollectionItems": {
     "message": "Du har inte behörighet att se alla objekt i denna samling."
   },
+  "youDoNotHavePermissions": {
+    "message": "You do not have permissions to this collection"
+  },
   "noCollectionsInList": {
     "message": "Det finns inga samlingar att visa."
   },
@@ -1440,7 +1506,12 @@
     "description": "Minimum special characters"
   },
   "ambiguous": {
-    "message": "Undvik tvetydiga tecken"
+    "message": "Undvik tvetydiga tecken",
+    "description": "deprecated. Use avoidAmbiguous instead."
+  },
+  "avoidAmbiguous": {
+    "message": "Undvik tvetydiga tecken",
+    "description": "Label for the avoid ambiguous characters checkbox."
   },
   "regeneratePassword": {
     "message": "Återskapa lösenord"
@@ -1453,17 +1524,50 @@
   },
   "uppercase": {
     "message": "Versaler (A-Ö)",
-    "description": "Include uppercase letters in the password generator."
+    "description": "deprecated. Use uppercaseLabel instead."
   },
   "lowercase": {
     "message": "Gemener (a-ö)",
-    "description": "Include lowercase letters in the password generator."
+    "description": "deprecated. Use lowercaseLabel instead."
   },
   "numbers": {
-    "message": "Siffror (0-9)"
+    "message": "Siffror (0-9)",
+    "description": "deprecated. Use numbersLabel instead."
   },
   "specialCharacters": {
     "message": "Specialtecken (!@#$%^&*)"
+  },
+  "uppercaseDescription": {
+    "message": "Include uppercase characters",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Include lowercase characters",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Include numbers",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Inkludera specialtecken",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
   },
   "numWords": {
     "message": "Antal ord"
@@ -2616,8 +2720,11 @@
   "invoices": {
     "message": "Fakturor"
   },
-  "noInvoices": {
-    "message": "Inga fakturor."
+  "noUnpaidInvoices": {
+    "message": "No unpaid invoices."
+  },
+  "noPaidInvoices": {
+    "message": "No paid invoices."
   },
   "paid": {
     "message": "Betald",
@@ -3679,6 +3786,15 @@
   },
   "joinOrganization": {
     "message": "Gå med i organisation"
+  },
+  "joinOrganizationName": {
+    "message": "Join $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
   },
   "joinOrganizationDesc": {
     "message": "Du har bjudits in att gå med i organisationen ovan. För att acceptera inbjudan måste du logga in eller skapa ett nytt Bitwarden-konto."
@@ -6223,7 +6339,8 @@
     "message": "Kontoinställningar"
   },
   "generator": {
-    "message": "Generator"
+    "message": "Generator",
+    "description": "Short for 'credential generator'."
   },
   "whatWouldYouLikeToGenerate": {
     "message": "Vad skulle du vilja generera?"
@@ -7820,6 +7937,15 @@
     "message": "Your organization requires you to set a master password.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
+  "cardMetrics": {
+    "message": "out of $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "notFound": {
     "message": "$RESOURCE$ not found",
     "placeholders": {
@@ -8080,6 +8206,12 @@
   },
   "limitCollectionCreationDeletionDesc": {
     "message": "Limit collection creation and deletion to owners and admins"
+  },
+  "limitCollectionCreationDesc": {
+    "message": "Limit collection creation to owners and admins"
+  },
+  "limitCollectionDeletionDesc": {
+    "message": "Limit collection deletion to owners and admins"
   },
   "allowAdminAccessToAllCollectionItemsDesc": {
     "message": "Ägare och administratörer kan hantera alla samlingar och objekt"
@@ -9265,6 +9397,21 @@
   },
   "editAccess": {
     "message": "Redigera åtkomst"
+  },
+  "textHelpText": {
+    "message": "Use text fields for data like security questions"
+  },
+  "hiddenHelpText": {
+    "message": "Use hidden fields for sensitive data like a password"
+  },
+  "checkBoxHelpText": {
+    "message": "Use checkboxes if you'd like to autofill a form's checkbox, like a remember email"
+  },
+  "linkedHelpText": {
+    "message": "Use a linked field when you are experiencing autofill issues for a specific website."
+  },
+  "linkedLabelHelpText": {
+    "message": "Enter the the field's html id, name, aria-label, or placeholder."
   },
   "addAttachment": {
     "message": "Lägg till bilaga"
