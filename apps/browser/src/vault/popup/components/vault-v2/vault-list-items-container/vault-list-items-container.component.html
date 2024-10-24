@@ -28,6 +28,7 @@
           bit-item-content
           type="button"
           (click)="onViewCipher(cipher)"
+          (dblclick)="launchCipher(cipher)"
           [appA11yTitle]="'viewItemTitle' | i18n: cipher.name"
           class="{{ ItemHeightClass }}"
         >

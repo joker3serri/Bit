@@ -53,6 +53,12 @@ export class VaultListItemsContainerComponent {
   protected ItemHeight = BitItemHeight;
 
   /**
+   * Timeout used to add a small delay when selecting a cipher to allow for double click to launch
+   * @private
+   */
+  private viewCipherTimeout: number | null;
+
+  /**
    * The list of ciphers to display.
    */
   @Input()
@@ -124,6 +130,12 @@ export class VaultListItemsContainerComponent {
       return;
     }
 
+    // If there is a view action pending, clear it
+    if (this.viewCipherTimeout != null) {
+      window.clearTimeout(this.viewCipherTimeout);
+      this.viewCipherTimeout = null;
+    }
+
     await this.cipherService.updateLastLaunchedDate(cipher.id);
 
     await BrowserApi.createNewTab(cipher.login.launchUri);
@@ -138,13 +150,28 @@ export class VaultListItemsContainerComponent {
   }
 
   async onViewCipher(cipher: PopupCipherView) {
-    const repromptPassed = await this.passwordRepromptService.passwordRepromptCheck(cipher);
-    if (!repromptPassed) {
+    // We already have a view action in progress, don't start another
+    if (this.viewCipherTimeout != null) {
       return;
     }
 
-    await this.router.navigate(["/view-cipher"], {
-      queryParams: { cipherId: cipher.id, type: cipher.type },
-    });
+    // Wrap in a timeout to allow for double click to launch
+    this.viewCipherTimeout = window.setTimeout(
+      async () => {
+        try {
+          const repromptPassed = await this.passwordRepromptService.passwordRepromptCheck(cipher);
+          if (!repromptPassed) {
+            return;
+          }
+          await this.router.navigate(["/view-cipher"], {
+            queryParams: { cipherId: cipher.id, type: cipher.type },
+          });
+        } finally {
+          // Ensure the timeout is always cleared
+          this.viewCipherTimeout = null;
+        }
+      },
+      cipher.canLaunch ? 200 : 0,
+    );
   }
 }
