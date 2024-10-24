@@ -8,7 +8,6 @@ export enum EncryptionType {
   Rsa2048_OaepSha1_HmacSha256_B64 = 6,
 }
 
-
 export function encryptionTypeToString(encryptionType: EncryptionType): string {
   if (encryptionType in EncryptionType) {
     return EncryptionType[encryptionType];
