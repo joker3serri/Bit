@@ -72,6 +72,7 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService 
 
   supportStatus$(userId: UserId): Observable<SupportStatus<WebPushConnector>> {
     // Check the server config to see if it supports sending WebPush notifications
+    // FIXME: get config of server for the specified userId, once ConfigService supports it
     return this.configService.serverConfig$.pipe<SupportStatus<WebPushConnector>>(
       map((config) => {
         if (config.push?.pushTechnology === PushTechnology.WebPush) {
