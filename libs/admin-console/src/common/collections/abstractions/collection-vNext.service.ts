@@ -9,7 +9,19 @@ import { CollectionData, Collection, CollectionView } from "../models";
 export abstract class CollectionvNextService {
   encryptedCollections$: (userId$: Observable<UserId>) => Observable<Collection[]>;
   decryptedCollections$: (userId$: Observable<UserId>) => Observable<CollectionView[]>;
-
+  upsert: (collection: CollectionData | CollectionData[]) => Promise<any>;
+  replace: (collections: { [id: string]: CollectionData }, userId: UserId) => Promise<any>;
+  /**
+   * Clear decrypted state without affecting encrypted state.
+   * Used for locking the vault.
+   */
+  clearDecryptedState: (userId: UserId) => Promise<void>;
+  /**
+   * Clear decrypted and encrypted state.
+   * Used for logging out.
+   */
+  clear: (userId?: string) => Promise<void>;
+  delete: (id: string | string[]) => Promise<any>;
   encrypt: (model: CollectionView) => Promise<Collection>;
   /**
    * @deprecated This method will soon be made private, use `decryptedCollections$` instead.
@@ -26,17 +38,4 @@ export abstract class CollectionvNextService {
    * Transforms the input CollectionViews into TreeNodes and then returns the Treenode with the specified id
    */
   getNested: (collections: CollectionView[], id: string) => TreeNode<CollectionView>;
-  upsert: (collection: CollectionData | CollectionData[]) => Promise<any>;
-  replace: (collections: { [id: string]: CollectionData }, userId: UserId) => Promise<any>;
-  /**
-   * Clear decrypted state without affecting encrypted state.
-   * Used for locking the vault.
-   */
-  clearDecryptedState: (userId: UserId) => Promise<void>;
-  /**
-   * Clear decrypted and encrypted state.
-   * Used for logging out.
-   */
-  clear: (userId?: string) => Promise<void>;
-  delete: (id: string | string[]) => Promise<any>;
 }

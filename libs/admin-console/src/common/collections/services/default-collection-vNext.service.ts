@@ -73,6 +73,64 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
     return userId$.pipe(switchMap((userId) => this.decryptedCollectionState(userId).state$));
   }
 
+  async upsert(toUpdate: CollectionData | CollectionData[]): Promise<void> {
+    if (toUpdate == null) {
+      return;
+    }
+    await this.activeUserEncryptedCollectionDataState.update((collections) => {
+      if (collections == null) {
+        collections = {};
+      }
+      if (Array.isArray(toUpdate)) {
+        toUpdate.forEach((c) => {
+          collections[c.id] = c;
+        });
+      } else {
+        collections[toUpdate.id] = toUpdate;
+      }
+      return collections;
+    });
+  }
+
+  async replace(collections: Record<CollectionId, CollectionData>, userId: UserId): Promise<void> {
+    await this.stateProvider
+      .getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY)
+      .update(() => collections);
+  }
+
+  async clearDecryptedState(userId: UserId): Promise<void> {
+    if (userId == null) {
+      throw new Error("User ID is required.");
+    }
+
+    await this.decryptedCollectionState(userId).forceValue(null);
+  }
+
+  async clear(userId?: UserId): Promise<void> {
+    if (userId == null) {
+      await this.activeUserEncryptedCollectionDataState.update(() => null);
+      await this.activeUserDecryptedCollectionDataState.forceValue(null);
+    } else {
+      await this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY).update(() => null);
+    }
+  }
+
+  async delete(id: CollectionId | CollectionId[]): Promise<any> {
+    await this.activeUserEncryptedCollectionDataState.update((collections) => {
+      if (collections == null) {
+        collections = {};
+      }
+      if (typeof id === "string") {
+        delete collections[id];
+      } else {
+        (id as CollectionId[]).forEach((i) => {
+          delete collections[i];
+        });
+      }
+      return collections;
+    });
+  }
+
   async encrypt(model: CollectionView): Promise<Collection> {
     if (model.organizationId == null) {
       throw new Error("Collection has no organization id.");
@@ -137,64 +195,6 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
       nestedCollections,
       id,
     ) as TreeNode<CollectionView>;
-  }
-
-  async upsert(toUpdate: CollectionData | CollectionData[]): Promise<void> {
-    if (toUpdate == null) {
-      return;
-    }
-    await this.activeUserEncryptedCollectionDataState.update((collections) => {
-      if (collections == null) {
-        collections = {};
-      }
-      if (Array.isArray(toUpdate)) {
-        toUpdate.forEach((c) => {
-          collections[c.id] = c;
-        });
-      } else {
-        collections[toUpdate.id] = toUpdate;
-      }
-      return collections;
-    });
-  }
-
-  async replace(collections: Record<CollectionId, CollectionData>, userId: UserId): Promise<void> {
-    await this.stateProvider
-      .getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY)
-      .update(() => collections);
-  }
-
-  async clearDecryptedState(userId: UserId): Promise<void> {
-    if (userId == null) {
-      throw new Error("User ID is required.");
-    }
-
-    await this.decryptedCollectionState(userId).forceValue(null);
-  }
-
-  async clear(userId?: UserId): Promise<void> {
-    if (userId == null) {
-      await this.activeUserEncryptedCollectionDataState.update(() => null);
-      await this.activeUserDecryptedCollectionDataState.forceValue(null);
-    } else {
-      await this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY).update(() => null);
-    }
-  }
-
-  async delete(id: CollectionId | CollectionId[]): Promise<any> {
-    await this.activeUserEncryptedCollectionDataState.update((collections) => {
-      if (collections == null) {
-        collections = {};
-      }
-      if (typeof id === "string") {
-        delete collections[id];
-      } else {
-        (id as CollectionId[]).forEach((i) => {
-          delete collections[i];
-        });
-      }
-      return collections;
-    });
   }
 
   /**
