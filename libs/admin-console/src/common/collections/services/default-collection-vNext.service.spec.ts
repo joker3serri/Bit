@@ -17,7 +17,7 @@ import {
 import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { OrgKey } from "@bitwarden/common/types/key";
 
-import { CollectionData, CollectionView } from "../models";
+import { CollectionData } from "../models";
 
 import { ENCRYPTED_COLLECTION_DATA_KEY } from "./collection-vNext.state";
 import { DefaultCollectionvNextService } from "./default-collection-vNext.service";
@@ -99,8 +99,16 @@ describe("DefaultCollectionService", () => {
 
       // Assert emitted values
       expect(result.length).toBe(2);
-      expect(result).toContainEqual(collectionViewFactory(collection1));
-      expect(result).toContainEqual(collectionViewFactory(collection2));
+      expect(result).toIncludeAllPartialMembers([
+        {
+          id: collection1.id,
+          name: "DEC_NAME_" + collection1.id,
+        },
+        {
+          id: collection2.id,
+          name: "DEC_NAME_" + collection2.id,
+        },
+      ]);
 
       // Assert that the correct org keys were used for each encrypted string
       expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
@@ -155,14 +163,16 @@ describe("DefaultCollectionService", () => {
       const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
 
       expect(result.length).toBe(2);
-      expect(result[0]).toMatchObject({
-        id: collection1.id,
-        name: makeEncString("ENC_NAME_" + collection1.id),
-      });
-      expect(result[1]).toMatchObject({
-        id: collection2.id,
-        name: makeEncString("ENC_NAME_" + collection2.id),
-      });
+      expect(result).toIncludeAllPartialMembers([
+        {
+          id: collection1.id,
+          name: makeEncString("ENC_NAME_" + collection1.id),
+        },
+        {
+          id: collection2.id,
+          name: makeEncString("ENC_NAME_" + collection2.id),
+        },
+      ]);
     });
 
     it("handles null collection state", async () => {
@@ -245,12 +255,3 @@ const collectionDataFactory = (orgId: OrganizationId) => {
 
   return collection;
 };
-
-const collectionViewFactory = (data: CollectionData) =>
-  Object.assign(new CollectionView(), {
-    id: data.id,
-    name: "DEC_NAME_" + data.id,
-    assigned: true,
-    externalId: null,
-    organizationId: data.organizationId,
-  });
