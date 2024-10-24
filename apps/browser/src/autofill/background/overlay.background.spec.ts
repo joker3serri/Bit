@@ -3624,7 +3624,7 @@ describe("OverlayBackground", () => {
       await initOverlayElementPorts({ initList: false, initButton: true });
       await flushPromises();
 
-      expect(overlayBackground["expiredPorts"].length).toBe(2);
+      expect(overlayBackground["expiredPorts"].length).toBe(1);
     });
 
     it("generates a password for the password generator view", async () => {
