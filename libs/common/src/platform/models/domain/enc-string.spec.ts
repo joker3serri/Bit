@@ -360,7 +360,11 @@ describe("EncString", () => {
       await encString.decrypt(null, key);
 
       expect(cryptoService.getUserKeyWithLegacySupport).not.toHaveBeenCalled();
-      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(encString, key);
+      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
+        encString,
+        key,
+        "userkey/cipherkey/masterkey",
+      );
     });
 
     it("gets an organization key if required", async () => {
@@ -371,7 +375,7 @@ describe("EncString", () => {
       await encString.decrypt("orgId", null);
 
       expect(cryptoService.getOrgKey).toHaveBeenCalledWith("orgId");
-      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(encString, orgKey);
+      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(encString, orgKey, "orgkey-orgId");
     });
 
     it("gets the user's decryption key if required", async () => {
@@ -382,7 +386,11 @@ describe("EncString", () => {
       await encString.decrypt(null, null);
 
       expect(cryptoService.getUserKeyWithLegacySupport).toHaveBeenCalledWith();
-      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(encString, userKey);
+      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
+        encString,
+        userKey,
+        "userkey/cipherkey/masterkey",
+      );
     });
   });
 

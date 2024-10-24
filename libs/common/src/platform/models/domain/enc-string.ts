@@ -168,7 +168,11 @@ export class EncString implements Encrypted {
       }
 
       const encryptService = Utils.getContainerService().getEncryptService();
-      this.decryptedValue = await encryptService.decryptToUtf8(this, key);
+      this.decryptedValue = await encryptService.decryptToUtf8(
+        this,
+        key,
+        orgId != null ? `orgkey-${orgId}` : "userkey/cipherkey/masterkey",
+      );
     } catch (e) {
       this.decryptedValue = DECRYPT_ERROR;
     }
