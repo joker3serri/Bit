@@ -68,7 +68,7 @@ export class SingleOrgPolicyComponent extends BasePolicyComponent implements OnI
       }
 
       if (
-        (await this.configService.getFeatureFlag(FeatureFlag.AccountDeprovisioning)) &&
+        (await firstValueFrom(this.accountDeprovisioningEnabled$)) &&
         !this.policyResponse.canToggleState
       ) {
         throw new Error(
