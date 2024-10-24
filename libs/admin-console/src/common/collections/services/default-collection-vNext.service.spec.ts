@@ -1,5 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { firstValueFrom, of } from "rxjs";
+import { firstValueFrom, of, Subject } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -25,110 +25,65 @@ import {
 } from "./default-collection-vNext.service";
 
 describe("DefaultCollectionService", () => {
+  let cryptoService: MockProxy<CryptoService>;
+  let encryptService: MockProxy<EncryptService>;
+  let i18nService: MockProxy<I18nService>;
+  let stateProvider: FakeStateProvider;
+
+  let userId: UserId;
+
+  let cryptoKeys: Subject<Record<OrganizationId, OrgKey> | null>;
+
+  let collectionService: DefaultCollectionvNextService;
+
+  beforeEach(() => {
+    userId = Utils.newGuid() as UserId;
+
+    cryptoService = mock();
+    encryptService = mock();
+    i18nService = mock();
+    stateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
+
+    cryptoKeys = new Subject();
+    cryptoService.orgKeys$.calledWith(userId).mockReturnValue(cryptoKeys);
+
+    // Set up mock decryption
+    encryptService.decryptToUtf8
+      .calledWith(expect.any(EncString), expect.any(SymmetricCryptoKey))
+      .mockImplementation((encString, key) =>
+        Promise.resolve(encString.data.replace("ENC_", "DEC_")),
+      );
+
+    (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
+
+    // Arrange i18nService so that sorting algorithm doesn't throw
+    i18nService.collator = null;
+
+    collectionService = new DefaultCollectionvNextService(
+      cryptoService,
+      encryptService,
+      i18nService,
+      stateProvider,
+    );
+  });
+
   afterEach(() => {
     delete (window as any).bitwardenContainerService;
   });
 
   describe("decryptedCollections$", () => {
     it("emits decrypted collections from state", async () => {
-      // Arrange test collections
+      // Arrange test data
       const org1 = Utils.newGuid() as OrganizationId;
-      const org2 = Utils.newGuid() as OrganizationId;
-
-      const collection1 = collectionDataFactory(org1);
-      const collection2 = collectionDataFactory(org2);
-
-      // Arrange state provider
-      const userId = Utils.newGuid() as UserId;
-      const fakeStateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
-      await fakeStateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, {
-        [collection1.id]: collection1,
-        [collection2.id]: collection2,
-      });
-
-      // Arrange cryptoService - orgKeys and mock decryption
-      const [cryptoService, encryptService] = mockCryptoService();
       const orgKey1 = makeSymmetricCryptoKey<OrgKey>(64, 1);
-      const orgKey2 = makeSymmetricCryptoKey<OrgKey>(64, 2);
-      cryptoService.orgKeys$.mockReturnValue(
-        of({
-          [org1]: orgKey1,
-          [org2]: orgKey2,
-        }),
-      );
-
-      const collectionService = new DefaultCollectionvNextService(
-        cryptoService,
-        encryptService,
-        mockI18nService(),
-        fakeStateProvider,
-      );
-
-      // Assert emitted values
-      const result = await firstValueFrom(collectionService.decryptedCollections$(of(userId)));
-      // expect(result.length).toBe(2);
-      expect(result).toContainEqual(collectionViewFactory(collection1));
-      expect(result).toContainEqual(collectionViewFactory(collection2));
-
-      // Assert that the correct org keys were used for each encrypted string
-      const collection1NameData = new EncString(collection1.name).data;
-      const collection2NameData = new EncString(collection2.name).data;
-      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
-        expect.objectContaining({ data: collection1NameData }),
-        orgKey1,
-      );
-      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
-        expect.objectContaining({ data: collection2NameData }),
-        orgKey2,
-      );
-    });
-
-    it("handles null collection state", async () => {
-      // Arrange test collections
-      const org1 = Utils.newGuid() as OrganizationId;
-      const org2 = Utils.newGuid() as OrganizationId;
-
-      // Arrange state provider
-      const userId = Utils.newGuid() as UserId;
-      const fakeStateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
-      await fakeStateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
-
-      // Arrange cryptoService - orgKeys and mock decryption
-      const [cryptoService, encryptService] = mockCryptoService();
-      cryptoService.orgKeys$.mockReturnValue(
-        of({
-          [org1]: makeSymmetricCryptoKey<OrgKey>(),
-          [org2]: makeSymmetricCryptoKey<OrgKey>(),
-        }),
-      );
-
-      const collectionService = new DefaultCollectionvNextService(
-        cryptoService,
-        encryptService,
-        mockI18nService(),
-        fakeStateProvider,
-      );
-
-      const encryptedCollections = await firstValueFrom(
-        collectionService.encryptedCollections$(of(userId)),
-      );
-      expect(encryptedCollections.length).toBe(0);
-    });
-  });
-
-  describe("encryptedCollections$", () => {
-    it("emits encrypted collections from state", async () => {
-      // Arrange test collections
-      const org1 = Utils.newGuid() as OrganizationId;
-      const org2 = Utils.newGuid() as OrganizationId;
-
       const collection1 = collectionDataFactory(org1);
+
+      const org2 = Utils.newGuid() as OrganizationId;
+      const orgKey2 = makeSymmetricCryptoKey<OrgKey>(64, 2);
       const collection2 = collectionDataFactory(org2);
 
-      // Arrange state provider
-      const userId = Utils.newGuid() as UserId;
-      const fakeStateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
-      await fakeStateProvider.setUserState(
+      // Arrange dependencies
+      await stateProvider.setUserState(
         ENCRYPTED_COLLECTION_DATA_KEY,
         {
           [collection1.id]: collection1,
@@ -137,18 +92,70 @@ describe("DefaultCollectionService", () => {
         userId,
       );
 
-      // Arrange cryptoService - just so we don't get errors
-      const [cryptoService, encryptService] = mockCryptoService();
-      cryptoService.orgKeys$.mockReturnValue(of({}));
+      cryptoKeys.next({
+        [org1]: orgKey1,
+        [org2]: orgKey2,
+      });
 
-      const collectionService = new DefaultCollectionvNextService(
-        cryptoService,
-        encryptService,
-        mockI18nService(),
-        fakeStateProvider,
+      const result = await firstValueFrom(collectionService.decryptedCollections$(of(userId)));
+
+      // Assert emitted values
+      expect(result.length).toBe(2);
+      expect(result).toContainEqual(collectionViewFactory(collection1));
+      expect(result).toContainEqual(collectionViewFactory(collection2));
+
+      // Assert that the correct org keys were used for each encrypted string
+      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
+        expect.objectContaining(new EncString(collection1.name)),
+        orgKey1,
+      );
+      expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
+        expect.objectContaining(new EncString(collection2.name)),
+        orgKey2,
+      );
+    });
+
+    it("handles null collection state", async () => {
+      // Arrange test data
+      const org1 = Utils.newGuid() as OrganizationId;
+      const org2 = Utils.newGuid() as OrganizationId;
+
+      // Arrange dependencies
+      await stateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
+      cryptoKeys.next({
+        [org1]: makeSymmetricCryptoKey<OrgKey>(),
+        [org2]: makeSymmetricCryptoKey<OrgKey>(),
+      });
+
+      const encryptedCollections = await firstValueFrom(
+        collectionService.encryptedCollections$(of(userId)),
+      );
+
+      expect(encryptedCollections.length).toBe(0);
+    });
+  });
+
+  describe("encryptedCollections$", () => {
+    it("emits encrypted collections from state", async () => {
+      // Arrange test data
+      const org1 = Utils.newGuid() as OrganizationId;
+      const collection1 = collectionDataFactory(org1);
+
+      const org2 = Utils.newGuid() as OrganizationId;
+      const collection2 = collectionDataFactory(org2);
+
+      // Arrange dependencies
+      await stateProvider.setUserState(
+        ENCRYPTED_COLLECTION_DATA_KEY,
+        {
+          [collection1.id]: collection1,
+          [collection2.id]: collection2,
+        },
+        userId,
       );
 
       const result = await firstValueFrom(collectionService.encryptedCollections$(of(userId)));
+
       expect(result.length).toBe(2);
       expect(result[0]).toMatchObject({
         id: collection1.id,
@@ -161,21 +168,8 @@ describe("DefaultCollectionService", () => {
     });
 
     it("handles null collection state", async () => {
-      // Arrange state provider
-      const userId = Utils.newGuid() as UserId;
-      const fakeStateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
-      await fakeStateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null);
-
-      // Arrange cryptoService - orgKeys and mock decryption
-      const [cryptoService, encryptService] = mockCryptoService();
-      cryptoService.orgKeys$.mockReturnValue(of({}));
-
-      const collectionService = new DefaultCollectionvNextService(
-        cryptoService,
-        encryptService,
-        mockI18nService(),
-        fakeStateProvider,
-      );
+      await stateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null, userId);
+      cryptoKeys.next({});
 
       const decryptedCollections = await firstValueFrom(
         collectionService.decryptedCollections$(of(userId)),
@@ -184,26 +178,6 @@ describe("DefaultCollectionService", () => {
     });
   });
 });
-
-const mockI18nService = () => {
-  const i18nService = mock<I18nService>();
-  i18nService.collator = null; // this is a mock only, avoid use of this object
-  return i18nService;
-};
-
-const mockCryptoService: () => [MockProxy<CryptoService>, MockProxy<EncryptService>] = () => {
-  const cryptoService = mock<CryptoService>();
-  const encryptService = mock<EncryptService>();
-  encryptService.decryptToUtf8
-    .calledWith(expect.any(EncString), expect.any(SymmetricCryptoKey))
-    .mockImplementation((encString, key) =>
-      Promise.resolve(encString.data.replace("ENC_", "DEC_")),
-    );
-
-  (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
-
-  return [cryptoService, encryptService];
-};
 
 const collectionDataFactory = (orgId: OrganizationId) => {
   const collection = new CollectionData({} as any);
