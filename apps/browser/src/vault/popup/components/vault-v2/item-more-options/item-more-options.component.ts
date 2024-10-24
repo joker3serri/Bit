@@ -4,6 +4,7 @@ import { Router, RouterModule } from "@angular/router";
 import { firstValueFrom, map, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
@@ -46,6 +47,9 @@ export class ItemMoreOptionsComponent implements OnInit {
   protected autofillAllowed$ = this.vaultPopupAutofillService.autofillAllowed$;
   protected canClone$: Observable<boolean>;
 
+  /** Boolean dependent on the current user having access to an organization */
+  protected hasOrganizations = false;
+
   constructor(
     private cipherService: CipherService,
     private passwordRepromptService: PasswordRepromptService,
@@ -55,10 +59,12 @@ export class ItemMoreOptionsComponent implements OnInit {
     private i18nService: I18nService,
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private accountService: AccountService,
+    private organizationService: OrganizationService,
     private cipherAuthorizationService: CipherAuthorizationService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
+    this.hasOrganizations = await this.organizationService.hasOrganizations();
     this.canClone$ = this.cipherAuthorizationService.canCloneCipher$(this.cipher);
   }
 
