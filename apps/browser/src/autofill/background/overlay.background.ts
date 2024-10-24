@@ -133,6 +133,12 @@ export class OverlayBackground implements OverlayBackgroundInterface {
   private showPasskeysLabelsWithinInlineMenu: boolean = false;
   private iconsServerUrl: string;
   private generatedPassword: string;
+  private readonly validPortConnections: Set<string> = new Set([
+    AutofillOverlayPort.Button,
+    AutofillOverlayPort.ButtonMessageConnector,
+    AutofillOverlayPort.List,
+    AutofillOverlayPort.ListMessageConnector,
+  ]);
   private readonly extensionMessageHandlers: OverlayBackgroundExtensionMessageHandlers = {
     autofillOverlayElementClosed: ({ message, sender }) =>
       this.overlayElementClosed(message, sender),
@@ -2702,14 +2708,12 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param port - The port that connected to the extension background
    */
   private handlePortOnConnect = async (port: chrome.runtime.Port) => {
-    const isInlineMenuListMessageConnector = port.name === AutofillOverlayPort.ListMessageConnector;
-    const isInlineMenuButtonMessageConnector =
-      port.name === AutofillOverlayPort.ButtonMessageConnector;
-    if (isInlineMenuListMessageConnector || isInlineMenuButtonMessageConnector) {
-      this.storeOverlayPort(port);
-      port.onMessage.addListener(this.handleOverlayElementPortMessage);
+    if (!this.validPortConnections.has(port.name)) {
       return;
     }
+
+    this.storeOverlayPort(port);
+    port.onMessage.addListener(this.handleOverlayElementPortMessage);
 
     const isInlineMenuListPort = port.name === AutofillOverlayPort.List;
     const isInlineMenuButtonPort = port.name === AutofillOverlayPort.Button;
@@ -2720,6 +2724,8 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     if (!this.portKeyForTab[port.sender.tab.id]) {
       this.portKeyForTab[port.sender.tab.id] = generateRandomChars(12);
     }
+
+    port.onDisconnect.addListener(this.handlePortOnDisconnect);
 
     const authStatus = await this.getAuthStatus();
     const showInlineMenuAccountCreation = this.shouldShowInlineMenuAccountCreation();
@@ -2732,9 +2738,6 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       (await this.checkFocusedFieldHasValue(port.sender.tab)) &&
       (await this.shouldShowSaveLoginInlineMenuList(port.sender.tab));
 
-    this.storeOverlayPort(port);
-    port.onDisconnect.addListener(this.handlePortOnDisconnect);
-    port.onMessage.addListener(this.handleOverlayElementPortMessage);
     this.postMessageToPort(port, {
       command: `initAutofillInlineMenu${isInlineMenuListPort ? "List" : "Button"}`,
       iframeUrl: chrome.runtime.getURL(
@@ -2803,13 +2806,13 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     if (port.name === AutofillOverlayPort.ButtonMessageConnector) {
-      this.storeExpiredOverlayPort(port);
+      this.storeExpiredOverlayPort(this.inlineMenuButtonMessageConnectorPort);
       this.inlineMenuButtonMessageConnectorPort = port;
       return;
     }
 
     if (port.name === AutofillOverlayPort.ListMessageConnector) {
-      this.storeExpiredOverlayPort(port);
+      this.storeExpiredOverlayPort(this.inlineMenuListMessageConnectorPort);
       this.inlineMenuListMessageConnectorPort = port;
       return;
     }
