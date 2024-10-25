@@ -2598,12 +2598,12 @@ export class OverlayBackground implements OverlayBackgroundInterface {
 
   /**
    * Triggers on scroll of a frame within the tab. Will reposition the inline menu
-   * if the focused field is within a sub-frame.
+   * if the focused field is within a sub-frame and the inline menu is visible.
    *
    * @param sender - The sender of the message
    */
   private shouldRepositionSubFrameInlineMenuOnScroll(sender: chrome.runtime.MessageSender) {
-    if (!this.isFieldCurrentlyFocused || sender.tab.id !== this.focusedFieldData?.tabId) {
+    if (!this.isInlineMenuButtonVisible || sender.tab.id !== this.focusedFieldData?.tabId) {
       return false;
     }
 
