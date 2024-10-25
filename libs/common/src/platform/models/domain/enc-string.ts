@@ -167,7 +167,7 @@ export class EncString implements Encrypted {
         if (orgId != null) {
           keyContext = `domain-orgkey-${orgId}`;
         } else {
-          const cryptoService = Utils.getContainerService().getCryptoService();
+          const cryptoService = Utils.getContainerService().getKeyService();
           keyContext =
             (await cryptoService.getUserKey()) == null ? "domain-masterkey" : "domain-userkey";
         }
@@ -198,10 +198,10 @@ export class EncString implements Encrypted {
     return this.decryptedValue;
   }
   private async getKeyForDecryption(orgId: string) {
-    const cryptoService = Utils.getContainerService().getCryptoService();
+    const keyService = Utils.getContainerService().getKeyService();
     return orgId != null
-      ? await cryptoService.getOrgKey(orgId)
-      : await cryptoService.getUserKeyWithLegacySupport();
+      ? await keyService.getOrgKey(orgId)
+      : await keyService.getUserKeyWithLegacySupport();
   }
 }
 
