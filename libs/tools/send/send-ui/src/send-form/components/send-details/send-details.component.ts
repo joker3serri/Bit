@@ -18,6 +18,7 @@ import {
   IconButtonModule,
   CheckboxModule,
   SelectModule,
+  ButtonModule,
 } from "@bitwarden/components";
 
 import { SendFormConfig } from "../../abstractions/send-form-config.service";
@@ -49,6 +50,7 @@ export interface DatePresetSelectOption {
   standalone: true,
   imports: [
     SectionComponent,
+    ButtonModule,
     SectionHeaderComponent,
     TypographyModule,
     JslibModule,
