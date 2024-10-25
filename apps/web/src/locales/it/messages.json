@@ -405,6 +405,9 @@
   "generatePassword": {
     "message": "Genera password"
   },
+  "generatePassphrase": {
+    "message": "Generate passphrase"
+  },
   "checkPassword": {
     "message": "Verifica se la password è stata esposta."
   },
@@ -662,6 +665,13 @@
   "copyPassword": {
     "message": "Copia password",
     "description": "Copy password to clipboard"
+  },
+  "copyPassphrase": {
+    "message": "Copy passphrase",
+    "description": "Copy passphrase to clipboard"
+  },
+  "passwordCopied": {
+    "message": "Password copied"
   },
   "copyUsername": {
     "message": "Copia nome utente",
@@ -929,8 +939,14 @@
   "useADifferentLogInMethod": {
     "message": "Usa un altro metodo di accesso"
   },
-  "loginWithPasskey": {
-    "message": "Accedi con passkey"
+  "logInWithPasskey": {
+    "message": "Log in with passkey"
+  },
+  "useSingleSignOn": {
+    "message": "Use single sign-on"
+  },
+  "welcomeBack": {
+    "message": "Welcome back"
   },
   "invalidPasskeyPleaseTryAgain": {
     "message": "Passkey non valida. Riprova."
@@ -1013,6 +1029,9 @@
   "createAccount": {
     "message": "Crea account"
   },
+  "newToBitwarden": {
+    "message": "New to Bitwarden?"
+  },
   "setAStrongPassword": {
     "message": "Imposta una password robusta"
   },
@@ -1027,6 +1046,9 @@
   },
   "logIn": {
     "message": "Accedi"
+  },
+  "logInToBitwarden": {
+    "message": "Log in to Bitwarden"
   },
   "verifyIdentity": {
     "message": "Verifica la tua identità"
@@ -1195,6 +1217,9 @@
   },
   "noPermissionToViewAllCollectionItems": {
     "message": "Non hai i permessi necessari per visualizzare tutti gli elementi in questa raccolta."
+  },
+  "youDoNotHavePermissions": {
+    "message": "You do not have permissions to this collection"
   },
   "noCollectionsInList": {
     "message": "Nessuna raccolta da mostrare."
@@ -3781,6 +3806,15 @@
   "joinOrganization": {
     "message": "Unisciti all'organizzazione"
   },
+  "joinOrganizationName": {
+    "message": "Join $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "joinOrganizationDesc": {
     "message": "Sei stato invitato a far parte dell'organizzazione qui sopra. Per accettare l'invito, accedi o crea un nuovo account Bitwarden."
   },
@@ -6339,6 +6373,9 @@
   "generateUsername": {
     "message": "Genera nome utente"
   },
+  "generateEmail": {
+    "message": "Generate email"
+  },
   "usernameType": {
     "message": "Tipo di nome utente"
   },
@@ -6443,6 +6480,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Genera un alias email con un servizio di inoltro esterno."
+  },
+  "forwarderDomainName": {
+    "message": "Email domain",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Choose a domain that is supported by the selected service",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "Errore $SERVICENAME$: $ERRORMESSAGE$",
@@ -7922,6 +7967,15 @@
     "message": "La tua organizzazione ti obbliga di impostare di una password principale.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
+  "cardMetrics": {
+    "message": "out of $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "notFound": {
     "message": "$RESOURCE$ non trovato",
     "placeholders": {
@@ -8183,6 +8237,12 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Limita la creazione e l'eliminazione delle raccolte a proprietari e amministratori"
   },
+  "limitCollectionCreationDesc": {
+    "message": "Limit collection creation to owners and admins"
+  },
+  "limitCollectionDeletionDesc": {
+    "message": "Limit collection deletion to owners and admins"
+  },
   "allowAdminAccessToAllCollectionItemsDesc": {
     "message": "Proprietari e amministratori possono gestire tutte le raccolte e gli elementi"
   },
@@ -8227,6 +8287,10 @@
   },
   "baseUrl": {
     "message": "URL del server"
+  },
+  "selfHostBaseUrl": {
+    "message": "Self-host server URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
   },
   "aliasDomain": {
     "message": "Dominio alias"
@@ -9368,6 +9432,21 @@
   "editAccess": {
     "message": "Modifica accesso"
   },
+  "textHelpText": {
+    "message": "Use text fields for data like security questions"
+  },
+  "hiddenHelpText": {
+    "message": "Use hidden fields for sensitive data like a password"
+  },
+  "checkBoxHelpText": {
+    "message": "Usa le caselle di controllo se vuoi riempire automaticamente una casella di controllo, come \"Rimani connesso\""
+  },
+  "linkedHelpText": {
+    "message": "Usa un campo collegato quando si verificano problemi di riempimento automatico per un sito web specifico."
+  },
+  "linkedLabelHelpText": {
+    "message": "Enter the the field's html id, name, aria-label, or placeholder."
+  },
   "addAttachment": {
     "message": "Add attachment"
   },
@@ -9376,5 +9455,15 @@
   },
   "permanentlyDeleteAttachmentConfirmation": {
     "message": "Are you sure you want to permanently delete this attachment?"
+  },
+  "manageSubscriptionFromThe": {
+    "message": "Manage subscription from the",
+    "description": "This represents the beginning of a sentence. The full sentence will be 'Manage subscription from the Provider Portal', but 'Provider Portal' will be a link and thus cannot be included in the translation file."
+  },
+  "toHostBitwardenOnYourOwnServer": {
+    "message": "To host Bitwarden on your own server, you will need to upload your license file. To support Free Families plans and advanced billing capabilities for your self-hosted organization, you will need to set up automatic sync in your self-hosted organization."
+  },
+  "selfHostingTitleProper": {
+    "message": "Self-Hosting"
   }
 }

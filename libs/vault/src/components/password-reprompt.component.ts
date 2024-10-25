@@ -5,7 +5,6 @@ import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
@@ -15,6 +14,7 @@ import {
   FormFieldModule,
   IconButtonModule,
 } from "@bitwarden/components";
+import { KeyService } from "@bitwarden/key-management";
 
 /**
  * Used to verify the user's Master Password for the "Master Password Re-prompt" feature only.
@@ -40,7 +40,7 @@ export class PasswordRepromptComponent {
   });
 
   constructor(
-    protected cryptoService: CryptoService,
+    protected keyService: KeyService,
     protected platformUtilsService: PlatformUtilsService,
     protected i18nService: I18nService,
     protected formBuilder: FormBuilder,
@@ -55,12 +55,12 @@ export class PasswordRepromptComponent {
       throw new Error("An active user is expected while doing password reprompt.");
     }
 
-    const storedMasterKey = await this.cryptoService.getOrDeriveMasterKey(
+    const storedMasterKey = await this.keyService.getOrDeriveMasterKey(
       this.formGroup.value.masterPassword,
       userId,
     );
     if (
-      !(await this.cryptoService.compareKeyHash(
+      !(await this.keyService.compareKeyHash(
         this.formGroup.value.masterPassword,
         storedMasterKey,
         userId,

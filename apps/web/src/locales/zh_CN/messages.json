@@ -405,6 +405,9 @@
   "generatePassword": {
     "message": "生成密码"
   },
+  "generatePassphrase": {
+    "message": "Generate passphrase"
+  },
   "checkPassword": {
     "message": "检查密码是否已暴露。"
   },
@@ -662,6 +665,13 @@
   "copyPassword": {
     "message": "复制密码",
     "description": "Copy password to clipboard"
+  },
+  "copyPassphrase": {
+    "message": "Copy passphrase",
+    "description": "Copy passphrase to clipboard"
+  },
+  "passwordCopied": {
+    "message": "密码已复制"
   },
   "copyUsername": {
     "message": "复制用户名",
@@ -929,8 +939,14 @@
   "useADifferentLogInMethod": {
     "message": "使用不同的登录方式"
   },
-  "loginWithPasskey": {
-    "message": "使用通行密钥登录"
+  "logInWithPasskey": {
+    "message": "Log in with passkey"
+  },
+  "useSingleSignOn": {
+    "message": "Use single sign-on"
+  },
+  "welcomeBack": {
+    "message": "Welcome back"
   },
   "invalidPasskeyPleaseTryAgain": {
     "message": "通行密钥无效。请重试。"
@@ -1013,6 +1029,9 @@
   "createAccount": {
     "message": "创建账户"
   },
+  "newToBitwarden": {
+    "message": "New to Bitwarden?"
+  },
   "setAStrongPassword": {
     "message": "设置强密码"
   },
@@ -1027,6 +1046,9 @@
   },
   "logIn": {
     "message": "登录"
+  },
+  "logInToBitwarden": {
+    "message": "Log in to Bitwarden"
   },
   "verifyIdentity": {
     "message": "验证您的身份"
@@ -1195,6 +1217,9 @@
   },
   "noPermissionToViewAllCollectionItems": {
     "message": "您没有查看此集合中的所有项目的权限。"
+  },
+  "youDoNotHavePermissions": {
+    "message": "您没有此集合的权限"
   },
   "noCollectionsInList": {
     "message": "没有可列出的集合。"
@@ -3781,6 +3806,15 @@
   "joinOrganization": {
     "message": "加入组织"
   },
+  "joinOrganizationName": {
+    "message": "加入 $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "joinOrganizationDesc": {
     "message": "您已被邀请加入上面的组织。要接受邀请，您需要登录或者创建一个 Bitwarden 账户。"
   },
@@ -6339,6 +6373,9 @@
   "generateUsername": {
     "message": "生成用户名"
   },
+  "generateEmail": {
+    "message": "Generate email"
+  },
   "usernameType": {
     "message": "用户名类型"
   },
@@ -6443,6 +6480,14 @@
   },
   "forwardedEmailDesc": {
     "message": "使用外部转发服务生成一个电子邮件别名。"
+  },
+  "forwarderDomainName": {
+    "message": "Email domain",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Choose a domain that is supported by the selected service",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ 错误：$ERRORMESSAGE$",
@@ -7922,6 +7967,15 @@
     "message": "您的组织要求您设置主密码。",
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
+  "cardMetrics": {
+    "message": "$TOTAL$ 不足",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "notFound": {
     "message": "$RESOURCE$ 未找到",
     "placeholders": {
@@ -8183,6 +8237,12 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "限制为仅所有者和管理员可以创建和删除集合"
   },
+  "limitCollectionCreationDesc": {
+    "message": "限制为仅所有者和管理员可以创建集合"
+  },
+  "limitCollectionDeletionDesc": {
+    "message": "限制为仅所有者和管理员可以删除集合"
+  },
   "allowAdminAccessToAllCollectionItemsDesc": {
     "message": "所有者和管理员可以管理所有集合和项目"
   },
@@ -8227,6 +8287,10 @@
   },
   "baseUrl": {
     "message": "服务器 URL"
+  },
+  "selfHostBaseUrl": {
+    "message": "Self-host server URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
   },
   "aliasDomain": {
     "message": "别名域"
@@ -9368,6 +9432,21 @@
   "editAccess": {
     "message": "编辑访问权限"
   },
+  "textHelpText": {
+    "message": "对于如安全问题之类的数据，请使用文本型字段"
+  },
+  "hiddenHelpText": {
+    "message": "对于如密码之类的敏感数据，请使用隐藏型字段"
+  },
+  "checkBoxHelpText": {
+    "message": "如果您想自动勾选表单复选框（例如记住电子邮件地址），请使用复选框"
+  },
+  "linkedHelpText": {
+    "message": "当您处理特定网站的自动填充问题时，请使用链接型字段。"
+  },
+  "linkedLabelHelpText": {
+    "message": "输入字段的 html ID、名称、aria-label 或占位符。"
+  },
   "addAttachment": {
     "message": "添加附件"
   },
@@ -9376,5 +9455,15 @@
   },
   "permanentlyDeleteAttachmentConfirmation": {
     "message": "您确定要永久删除此附件吗？"
+  },
+  "manageSubscriptionFromThe": {
+    "message": "Manage subscription from the",
+    "description": "This represents the beginning of a sentence. The full sentence will be 'Manage subscription from the Provider Portal', but 'Provider Portal' will be a link and thus cannot be included in the translation file."
+  },
+  "toHostBitwardenOnYourOwnServer": {
+    "message": "To host Bitwarden on your own server, you will need to upload your license file. To support Free Families plans and advanced billing capabilities for your self-hosted organization, you will need to set up automatic sync in your self-hosted organization."
+  },
+  "selfHostingTitleProper": {
+    "message": "自托管"
   }
 }
