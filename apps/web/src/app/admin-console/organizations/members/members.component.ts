@@ -66,10 +66,6 @@ import { BulkRemoveDialogComponent } from "./components/bulk/bulk-remove-dialog.
 import { BulkRestoreRevokeComponent } from "./components/bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "./components/bulk/bulk-status.component";
 import {
-  DeleteOrganizationUserDialogResult,
-  openDeleteOrganizationUserDialog,
-} from "./components/delete-organizationuser-dialog.component";
-import {
   MemberDialogResult,
   MemberDialogTab,
   openUserAddEditDialog,
@@ -730,17 +726,37 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   async deleteUser(user: OrganizationUserView) {
-    const dialogRef = openDeleteOrganizationUserDialog(this.dialogService, {
-      data: {
-        organizationId: this.organization.id,
-        user: user,
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: {
+        key: "deleteOrganizationUser",
+        placeholders: [this.userNamePipe.transform(user)],
       },
+      content: { key: "deleteOrganizationUserWarning" },
+      type: "warning",
+      acceptButtonText: { key: "delete" },
+      cancelButtonText: { key: "cancel" },
     });
 
-    const result = await lastValueFrom(dialogRef.closed);
-    if (result === DeleteOrganizationUserDialogResult.Deleted) {
-      await this.load();
+    if (!confirmed) {
+      return false;
     }
+
+    this.actionPromise = this.organizationUserApiService.deleteOrganizationUser(
+      this.organization.id,
+      user.id,
+    );
+    try {
+      await this.actionPromise;
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("organizationUserDeleted", this.userNamePipe.transform(user)),
+      });
+      this.dataSource.removeUser(user);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+    this.actionPromise = null;
   }
 
   private async noMasterPasswordConfirmationDialog(user: OrganizationUserView) {

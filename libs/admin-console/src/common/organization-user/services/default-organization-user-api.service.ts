@@ -1,5 +1,4 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
 import { OrganizationUserApiService } from "../abstractions";
@@ -361,15 +360,11 @@ export class DefaultOrganizationUserApiService implements OrganizationUserApiSer
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
-  deleteOrganizationUser(
-    organizationId: string,
-    id: string,
-    request: SecretVerificationRequest,
-  ): Promise<void> {
+  deleteOrganizationUser(organizationId: string, id: string): Promise<void> {
     return this.apiService.send(
       "DELETE",
       "/organizations/" + organizationId + "/users/" + id + "/delete-account",
-      request,
+      null,
       true,
       false,
     );
