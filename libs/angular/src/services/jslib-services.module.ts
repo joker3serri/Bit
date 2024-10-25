@@ -274,6 +274,10 @@ import {
   DefaultKeyService as KeyService,
   BiometricStateService,
   DefaultBiometricStateService,
+  UserAsymmetricKeysRegenerationService,
+  DefaultUserAsymmetricKeysRegenerationService,
+  UserAsymmetricKeysRegenerationApiService,
+  DefaultUserAsymmetricKeysRegenerationApiService,
 } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 import {
@@ -435,6 +439,8 @@ const safeProviders: SafeProvider[] = [
       VaultTimeoutSettingsServiceAbstraction,
       KdfConfigServiceAbstraction,
       TaskSchedulerService,
+      UserAsymmetricKeysRegenerationService,
+      ConfigService,
     ],
   }),
   safeProvider({
@@ -1364,6 +1370,24 @@ const safeProviders: SafeProvider[] = [
     provide: CipherAuthorizationService,
     useClass: DefaultCipherAuthorizationService,
     deps: [CollectionService, OrganizationServiceAbstraction],
+  }),
+  safeProvider({
+    provide: UserAsymmetricKeysRegenerationApiService,
+    useClass: DefaultUserAsymmetricKeysRegenerationApiService,
+    deps: [ApiServiceAbstraction],
+  }),
+  safeProvider({
+    provide: UserAsymmetricKeysRegenerationService,
+    useClass: DefaultUserAsymmetricKeysRegenerationService,
+    deps: [
+      KeyServiceAbstraction,
+      CipherServiceAbstraction,
+      UserAsymmetricKeysRegenerationApiService,
+      StateProvider,
+      LogService,
+      SdkService,
+      ApiServiceAbstraction,
+    ],
   }),
 ];
 

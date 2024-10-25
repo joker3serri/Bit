@@ -29,6 +29,7 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { PreloginRequest } from "@bitwarden/common/models/request/prelogin.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -42,7 +43,7 @@ import { GlobalState, GlobalStateProvider } from "@bitwarden/common/platform/sta
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/src/auth/abstractions/device-trust.service.abstraction";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { MasterKey } from "@bitwarden/common/types/key";
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService, UserAsymmetricKeysRegenerationService } from "@bitwarden/key-management";
 
 import { AuthRequestServiceAbstraction, LoginStrategyServiceAbstraction } from "../../abstractions";
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../../abstractions/user-decryption-options.service.abstraction";
@@ -114,6 +115,8 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected kdfConfigService: KdfConfigService,
     protected taskSchedulerService: TaskSchedulerService,
+    protected userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
+    protected configService: ConfigService,
   ) {
     this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
@@ -333,6 +336,8 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
       this.billingAccountProfileStateService,
       this.vaultTimeoutSettingsService,
       this.kdfConfigService,
+      this.userAsymmetricKeysRegenerationService,
+      this.configService,
     ];
 
     return source.pipe(
