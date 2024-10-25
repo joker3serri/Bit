@@ -29,13 +29,11 @@ describe("VaultBannersService", () => {
   const userId = Utils.newGuid() as UserId;
   const fakeStateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
   const getEmailVerified = jest.fn().mockResolvedValue(true);
-  const getKdfConfig = jest
-    .fn()
-    .mockResolvedValue({ kdfType: KdfType.PBKDF2_SHA256, iterations: 600000 });
   const lastSync$ = new BehaviorSubject<Date | null>(null);
   const userDecryptionOptions$ = new BehaviorSubject<UserDecryptionOptions>({
     hasMasterPassword: true,
   });
+  const kdfConfig$ = new BehaviorSubject({ kdfType: KdfType.PBKDF2_SHA256, iterations: 600000 });
 
   beforeEach(() => {
     lastSync$.next(new Date("2024-05-14"));
@@ -67,7 +65,7 @@ describe("VaultBannersService", () => {
         },
         {
           provide: KdfConfigService,
-          useValue: { getKdfConfig },
+          useValue: { getKdfConfig$: () => kdfConfig$ },
         },
         {
           provide: SyncService,
@@ -185,7 +183,7 @@ describe("VaultBannersService", () => {
   describe("KDFSettings", () => {
     beforeEach(async () => {
       userDecryptionOptions$.next({ hasMasterPassword: true });
-      getKdfConfig.mockResolvedValue({ kdfType: KdfType.PBKDF2_SHA256, iterations: 599999 });
+      kdfConfig$.next({ kdfType: KdfType.PBKDF2_SHA256, iterations: 599999 });
     });
 
     it("shows low KDF iteration banner", async () => {
@@ -195,7 +193,7 @@ describe("VaultBannersService", () => {
     });
 
     it("does not show low KDF iteration banner if KDF type is not PBKDF2_SHA256", async () => {
-      getKdfConfig.mockResolvedValue({ kdfType: KdfType.Argon2id, iterations: 600001 });
+      kdfConfig$.next({ kdfType: KdfType.Argon2id, iterations: 600001 });
 
       service = TestBed.inject(VaultBannersService);
 
@@ -203,7 +201,7 @@ describe("VaultBannersService", () => {
     });
 
     it("does not show low KDF for iterations about 600,000", async () => {
-      getKdfConfig.mockResolvedValue({ kdfType: KdfType.PBKDF2_SHA256, iterations: 600001 });
+      kdfConfig$.next({ kdfType: KdfType.PBKDF2_SHA256, iterations: 600001 });
 
       service = TestBed.inject(VaultBannersService);
 

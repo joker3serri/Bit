@@ -122,7 +122,7 @@ export class VaultBannersService {
     const hasLowKDF = (
       await firstValueFrom(this.userDecryptionOptionsService.userDecryptionOptionsById$(userId))
     )?.hasMasterPassword
-      ? await this.isLowKdfIteration()
+      ? await this.isLowKdfIteration(userId)
       : false;
 
     const alreadyDismissed = (await this.getBannerDismissedState(userId)).includes(
@@ -206,8 +206,8 @@ export class VaultBannersService {
     });
   }
 
-  private async isLowKdfIteration() {
-    const kdfConfig = await this.kdfConfigService.getKdfConfig();
+  private async isLowKdfIteration(userId: UserId) {
+    const kdfConfig = await firstValueFrom(this.kdfConfigService.getKdfConfig$(userId));
     return (
       kdfConfig.kdfType === KdfType.PBKDF2_SHA256 &&
       kdfConfig.iterations < PBKDF2KdfConfig.ITERATIONS.defaultValue
