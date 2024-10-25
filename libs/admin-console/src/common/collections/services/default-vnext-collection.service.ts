@@ -30,7 +30,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
 
   encryptedCollections$(userId$: Observable<UserId>) {
     return userId$.pipe(
-      switchMap((userId) => this.encryptedCollectionState(userId).state$),
+      switchMap((userId) => this.encryptedState(userId).state$),
       map((collections) => {
         if (collections == null) {
           return [];
@@ -43,7 +43,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
 
   decryptedCollections$(userId$: Observable<UserId>) {
     return userId$.pipe(
-      switchMap((userId) => this.decryptedCollectionState(userId).state$),
+      switchMap((userId) => this.decryptedState(userId).state$),
       map((collections) => collections ?? []),
     );
   }
@@ -52,7 +52,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
     if (toUpdate == null) {
       return;
     }
-    await this.encryptedCollectionState(userId).update((collections) => {
+    await this.encryptedState(userId).update((collections) => {
       if (collections == null) {
         collections = {};
       }
@@ -68,7 +68,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
   }
 
   async replace(collections: Record<CollectionId, CollectionData>, userId: UserId): Promise<void> {
-    await this.encryptedCollectionState(userId).update(() => collections);
+    await this.encryptedState(userId).update(() => collections);
   }
 
   async clearDecryptedState(userId: UserId): Promise<void> {
@@ -76,18 +76,18 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
       throw new Error("User ID is required.");
     }
 
-    await this.decryptedCollectionState(userId).forceValue(null);
+    await this.decryptedState(userId).forceValue(null);
   }
 
   async clear(userId: UserId): Promise<void> {
-    await this.encryptedCollectionState(userId).update(() => null);
+    await this.encryptedState(userId).update(() => null);
     // This will propagate from the encrypted state update, but by doing it explicitly
     // the promise doesn't resolve until the update is complete.
-    await this.decryptedCollectionState(userId).forceValue(null);
+    await this.decryptedState(userId).forceValue(null);
   }
 
   async delete(id: CollectionId | CollectionId[], userId: UserId): Promise<any> {
-    await this.encryptedCollectionState(userId).update((collections) => {
+    await this.encryptedState(userId).update((collections) => {
       if (collections == null) {
         collections = {};
       }
@@ -171,15 +171,15 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
   /**
    * @returns a SingleUserState for encrypted collection data.
    */
-  private encryptedCollectionState(userId: UserId) {
+  private encryptedState(userId: UserId) {
     return this.stateProvider.getUser(userId, ENCRYPTED_COLLECTION_DATA_KEY);
   }
 
   /**
    * @returns a SingleUserState for decrypted collection data.
    */
-  private decryptedCollectionState(userId: UserId): DerivedState<CollectionView[]> {
-    const encryptedCollectionsWithKeys = this.encryptedCollectionState(userId).combinedState$.pipe(
+  private decryptedState(userId: UserId): DerivedState<CollectionView[]> {
+    const encryptedCollectionsWithKeys = this.encryptedState(userId).combinedState$.pipe(
       switchMap(([userId, collectionData]) =>
         combineLatest([of(collectionData), this.keyService.orgKeys$(userId)]),
       ),
