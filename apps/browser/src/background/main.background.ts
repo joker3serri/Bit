@@ -1098,7 +1098,7 @@ export default class MainBackground {
       this.platformUtilsService as BrowserPlatformUtilsService,
       this.notificationsService,
       this.autofillSettingsService,
-      this.systemService,
+      this.processReloadService,
       this.environmentService,
       this.messagingService,
       this.logService,
@@ -1108,7 +1108,7 @@ export default class MainBackground {
       lockService,
     );
     this.nativeMessagingBackground = new NativeMessagingBackground(
-      this.cryptoService,
+      this.keyService,
       this.encryptService,
       this.cryptoFunctionService,
       this.runtimeBackground,
@@ -1122,10 +1122,10 @@ export default class MainBackground {
     );
     this.commandsBackground = new CommandsBackground(
       this,
-      this.passwordGenerationService,
       this.platformUtilsService,
       this.vaultTimeoutService,
       this.authService,
+      () => this.generatePasswordToClipboard(),
     );
     this.notificationBackground = new NotificationBackground(
       this.autofillService,
