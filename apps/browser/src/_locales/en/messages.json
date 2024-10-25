@@ -1794,6 +1794,9 @@
   "passwordHistory": {
     "message": "Password history"
   },
+  "generatorHistory": {
+    "message": "Generator history"
+  },
   "back": {
     "message": "Back"
   },
