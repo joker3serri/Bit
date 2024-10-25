@@ -168,6 +168,8 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     getCurrentTabFrameId: ({ sender }) => this.getSenderFrameId(sender),
     updateSubFrameData: ({ message, sender }) => this.updateSubFrameData(message, sender),
     triggerSubFrameFocusInRebuild: ({ sender }) => this.triggerSubFrameFocusInRebuild(sender),
+    shouldRepositionSubFrameInlineMenuOnScroll: ({ sender }) =>
+      this.shouldRepositionSubFrameInlineMenuOnScroll(sender),
     destroyAutofillInlineMenuListeners: ({ message, sender }) =>
       this.triggerDestroyInlineMenuListeners(sender.tab, message.subFrameData.frameId),
     collectPageDetailsResponse: ({ message, sender }) => this.storePageDetails(message, sender),
@@ -2592,6 +2594,14 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     this.cancelInlineMenuFadeInAndPositionUpdate();
     this.rebuildSubFrameOffsets$.next(sender);
     this.repositionInlineMenu$.next(sender);
+  }
+
+  private shouldRepositionSubFrameInlineMenuOnScroll(sender: chrome.runtime.MessageSender) {
+    if (!this.isFieldCurrentlyFocused || sender.tab.id !== this.focusedFieldData?.tabId) {
+      return false;
+    }
+
+    return this.focusedFieldData.frameId > 0;
   }
 
   /**
