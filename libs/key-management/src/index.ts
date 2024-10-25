@@ -7,3 +7,5 @@ export * from "./biometrics/biometric.state";
 
 export { KeyService } from "./abstractions/key.service";
 export { DefaultKeyService } from "./key.service";
+
+export * from "./user-asymmetric-key-regeneration";
