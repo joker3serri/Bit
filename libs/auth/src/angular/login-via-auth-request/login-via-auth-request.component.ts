@@ -11,7 +11,6 @@ import {
   LoginEmailServiceAbstraction,
   LoginStrategyServiceAbstraction,
 } from "@bitwarden/auth/common";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AnonymousHubService } from "@bitwarden/common/auth/abstractions/anonymous-hub.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -36,6 +35,8 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ButtonModule, LinkModule, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+
+import { AuthRequestApiService } from "../../common/abstractions/auth-request-api.service";
 
 enum State {
   StandardAuthRequest, // used in the basic Login with Device flow
@@ -72,8 +73,8 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   constructor(
     private accountService: AccountService,
     private anonymousHubService: AnonymousHubService,
-    private apiService: ApiService,
     private appIdService: AppIdService,
+    private authRequestApiService: AuthRequestApiService,
     private authRequestService: AuthRequestServiceAbstraction,
     private authService: AuthService,
     private cryptoFunctionService: CryptoFunctionService,
@@ -170,7 +171,9 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
       if (this.state === State.AdminAuthRequest) {
         await this.buildAuthRequest(AuthRequestType.AdminApproval);
-        authRequestResponse = await this.apiService.postAdminAuthRequest(this.authRequest);
+        authRequestResponse = await this.authRequestApiService.postAdminAuthRequest(
+          this.authRequest,
+        );
 
         const adminAuthReqStorable = new AdminAuthRequestStorable({
           id: authRequestResponse.id,
@@ -181,7 +184,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         await this.authRequestService.setAdminAuthRequest(adminAuthReqStorable, userId);
       } else {
         await this.buildAuthRequest(AuthRequestType.AuthenticateAndUnlock);
-        authRequestResponse = await this.apiService.postAuthRequest(this.authRequest);
+        authRequestResponse = await this.authRequestApiService.postAuthRequest(this.authRequest);
       }
 
       if (authRequestResponse.id) {
@@ -236,7 +239,9 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     let adminAuthRequestResponse: AuthRequestResponse;
 
     try {
-      adminAuthRequestResponse = await this.apiService.getAuthRequest(adminAuthRequestStorable.id);
+      adminAuthRequestResponse = await this.authRequestApiService.getAuthRequest(
+        adminAuthRequestStorable.id,
+      );
     } catch (error) {
       if (error instanceof ErrorResponse && error.statusCode === HttpStatusCode.NotFound) {
         return await this.handleExistingAdminAuthReqDeletedOrDenied(userId);
@@ -285,10 +290,10 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
       if (this.state === State.AdminAuthRequest) {
         // User is authenticated, therefore no access code is required.
-        authRequestResponse = await this.apiService.getAuthRequest(requestId);
+        authRequestResponse = await this.authRequestApiService.getAuthRequest(requestId);
       } else {
         // User is not authenticated, therefore an access code is required for user verification.
-        authRequestResponse = await this.apiService.getAuthResponse(
+        authRequestResponse = await this.authRequestApiService.getAuthResponse(
           requestId,
           this.authRequest.accessCode,
         );
