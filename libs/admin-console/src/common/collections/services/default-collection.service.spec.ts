@@ -44,9 +44,9 @@ describe("DefaultCollectionService", () => {
         [collection2.id]: collection2,
       });
 
-      // Arrange KeyService - orgKeys and mock decryption
-      const keyService = mockKeyService();
-      keyService.orgKeys$.mockReturnValue(
+      // Arrange cryptoService - orgKeys and mock decryption
+      const cryptoService = mockCryptoService();
+      cryptoService.orgKeys$.mockReturnValue(
         of({
           [org1]: makeSymmetricCryptoKey<OrgKey>(),
           [org2]: makeSymmetricCryptoKey<OrgKey>(),
@@ -54,7 +54,7 @@ describe("DefaultCollectionService", () => {
       );
 
       const collectionService = new DefaultCollectionService(
-        keyService,
+        cryptoService,
         mock<EncryptService>(),
         mockI18nService(),
         fakeStateProvider,
@@ -81,9 +81,9 @@ describe("DefaultCollectionService", () => {
       const fakeStateProvider = mockStateProvider();
       await fakeStateProvider.setUserState(ENCRYPTED_COLLECTION_DATA_KEY, null);
 
-      // Arrange KeyService - orgKeys and mock decryption
-      const keyService = mockKeyService();
-      keyService.orgKeys$.mockReturnValue(
+      // Arrange cryptoService - orgKeys and mock decryption
+      const cryptoService = mockCryptoService();
+      cryptoService.orgKeys$.mockReturnValue(
         of({
           [org1]: makeSymmetricCryptoKey<OrgKey>(),
           [org2]: makeSymmetricCryptoKey<OrgKey>(),
@@ -91,7 +91,7 @@ describe("DefaultCollectionService", () => {
       );
 
       const collectionService = new DefaultCollectionService(
-        keyService,
+        cryptoService,
         mock<EncryptService>(),
         mockI18nService(),
         fakeStateProvider,
@@ -117,7 +117,7 @@ const mockStateProvider = () => {
   return new FakeStateProvider(mockAccountServiceWith(userId));
 };
 
-const mockKeyService = () => {
+const mockCryptoService = () => {
   const keyService = mock<KeyService>();
   const encryptService = mock<EncryptService>();
   encryptService.decryptToUtf8
