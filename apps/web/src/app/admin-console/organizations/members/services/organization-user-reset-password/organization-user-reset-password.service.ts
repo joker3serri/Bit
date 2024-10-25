@@ -20,7 +20,7 @@ import { EncryptedString, EncString } from "@bitwarden/common/platform/models/do
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
-import { UserKeyRotationDataProvider , KeyService } from "@bitwarden/key-management";
+import { UserKeyRotationDataProvider, KeyService } from "@bitwarden/key-management";
 
 @Injectable({
   providedIn: "root",
