@@ -351,9 +351,16 @@ export class VaultItemsComponent {
    */
   protected sortByGroups = (direction: "asc" | "desc") => {
     return (a: VaultItem, b: VaultItem): number => {
-      const getFirstGroupName = (item: VaultItem): string => {
-        if (item.collection instanceof CollectionAdminView && item.collection.groups.length > 0) {
-          return item.collection.groups.map((group) => this.getGroupName(group.id) || "").sort()[0];
+      if (
+        !(a.collection instanceof CollectionAdminView) &&
+        !(b.collection instanceof CollectionAdminView)
+      ) {
+        return 0;
+      }
+
+      const getFirstGroupName = (collection: CollectionAdminView): string => {
+        if (collection.groups.length > 0) {
+          return collection.groups.map((group) => this.getGroupName(group.id) || "").sort()[0];
         }
         return null;
       };
@@ -364,8 +371,8 @@ export class VaultItemsComponent {
         return collectionCompare;
       }
 
-      const aGroupName = getFirstGroupName(a);
-      const bGroupName = getFirstGroupName(b);
+      const aGroupName = getFirstGroupName(a.collection as CollectionAdminView);
+      const bGroupName = getFirstGroupName(b.collection as CollectionAdminView);
 
       // Collections with groups come before collections without groups.
       // If a collection has no groups, getFirstGroupName returns null.
