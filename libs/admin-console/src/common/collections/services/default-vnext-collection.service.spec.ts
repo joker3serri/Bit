@@ -1,7 +1,6 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom, of, ReplaySubject } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -16,14 +15,15 @@ import {
 } from "@bitwarden/common/spec";
 import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { OrgKey } from "@bitwarden/common/types/key";
+import { KeyService } from "@bitwarden/key-management";
 
 import { CollectionData } from "../models";
 
-import { ENCRYPTED_COLLECTION_DATA_KEY } from "./collection-vNext.state";
-import { DefaultCollectionvNextService } from "./default-collection-vNext.service";
+import { DefaultvNextCollectionService } from "./default-vnext-collection.service";
+import { ENCRYPTED_COLLECTION_DATA_KEY } from "./vnext-collection.state";
 
-describe("DefaultCollectionService", () => {
-  let cryptoService: MockProxy<CryptoService>;
+describe("DefaultvNextCollectionService", () => {
+  let keyService: MockProxy<KeyService>;
   let encryptService: MockProxy<EncryptService>;
   let i18nService: MockProxy<I18nService>;
   let stateProvider: FakeStateProvider;
@@ -32,18 +32,18 @@ describe("DefaultCollectionService", () => {
 
   let cryptoKeys: ReplaySubject<Record<OrganizationId, OrgKey> | null>;
 
-  let collectionService: DefaultCollectionvNextService;
+  let collectionService: DefaultvNextCollectionService;
 
   beforeEach(() => {
     userId = Utils.newGuid() as UserId;
 
-    cryptoService = mock();
+    keyService = mock();
     encryptService = mock();
     i18nService = mock();
     stateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
 
     cryptoKeys = new ReplaySubject(1);
-    cryptoService.orgKeys$.mockReturnValue(cryptoKeys);
+    keyService.orgKeys$.mockReturnValue(cryptoKeys);
 
     // Set up mock decryption
     encryptService.decryptToUtf8
@@ -52,13 +52,13 @@ describe("DefaultCollectionService", () => {
         Promise.resolve(encString.data.replace("ENC_", "DEC_")),
       );
 
-    (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
+    (window as any).bitwardenContainerService = new ContainerService(keyService, encryptService);
 
     // Arrange i18nService so that sorting algorithm doesn't throw
     i18nService.collator = null;
 
-    collectionService = new DefaultCollectionvNextService(
-      cryptoService,
+    collectionService = new DefaultvNextCollectionService(
+      keyService,
       encryptService,
       i18nService,
       stateProvider,

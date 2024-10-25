@@ -1,6 +1,5 @@
 import { combineLatest, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -9,20 +8,21 @@ import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/gu
 import { OrgKey } from "@bitwarden/common/types/key";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
+import { KeyService } from "@bitwarden/key-management";
 
-import { CollectionvNextService } from "../abstractions/collection-vNext.service";
+import { vNextCollectionService } from "../abstractions/vnext-collection.service";
 import { Collection, CollectionData, CollectionView } from "../models";
 
 import {
   DECRYPTED_COLLECTION_DATA_KEY,
   ENCRYPTED_COLLECTION_DATA_KEY,
-} from "./collection-vNext.state";
+} from "./vnext-collection.state";
 
 const NestingDelimiter = "/";
 
-export class DefaultCollectionvNextService implements CollectionvNextService {
+export class DefaultvNextCollectionService implements vNextCollectionService {
   constructor(
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private i18nService: I18nService,
     protected stateProvider: StateProvider,
@@ -106,7 +106,7 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
     if (model.organizationId == null) {
       throw new Error("Collection has no organization id.");
     }
-    const key = await this.cryptoService.getOrgKey(model.organizationId);
+    const key = await this.keyService.getOrgKey(model.organizationId);
     if (key == null) {
       throw new Error("No key for this collection's organization.");
     }
@@ -130,7 +130,7 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
     }
     const decCollections: CollectionView[] = [];
 
-    orgKeys ??= await firstValueFrom(this.cryptoService.activeUserOrgKeys$);
+    orgKeys ??= await firstValueFrom(this.keyService.activeUserOrgKeys$);
 
     const promises: Promise<any>[] = [];
     collections.forEach((collection) => {
@@ -181,7 +181,7 @@ export class DefaultCollectionvNextService implements CollectionvNextService {
   private decryptedCollectionState(userId: UserId): DerivedState<CollectionView[]> {
     const encryptedCollectionsWithKeys = this.encryptedCollectionState(userId).combinedState$.pipe(
       switchMap(([userId, collectionData]) =>
-        combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
+        combineLatest([of(collectionData), this.keyService.orgKeys$(userId)]),
       ),
     );
 
