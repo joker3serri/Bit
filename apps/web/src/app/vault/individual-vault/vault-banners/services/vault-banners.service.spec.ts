@@ -1,9 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject, firstValueFrom, of, take, timeout } from "rxjs";
 
+import {
+  UserDecryptionOptions,
+  UserDecryptionOptionsServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
@@ -26,11 +29,13 @@ describe("VaultBannersService", () => {
   const userId = Utils.newGuid() as UserId;
   const fakeStateProvider = new FakeStateProvider(mockAccountServiceWith(userId));
   const getEmailVerified = jest.fn().mockResolvedValue(true);
-  const hasMasterPassword = jest.fn().mockResolvedValue(true);
   const getKdfConfig = jest
     .fn()
     .mockResolvedValue({ kdfType: KdfType.PBKDF2_SHA256, iterations: 600000 });
   const lastSync$ = new BehaviorSubject<Date | null>(null);
+  const userDecryptionOptions$ = new BehaviorSubject<UserDecryptionOptions>({
+    hasMasterPassword: true,
+  });
 
   beforeEach(() => {
     lastSync$.next(new Date("2024-05-14"));
@@ -61,16 +66,18 @@ describe("VaultBannersService", () => {
           useValue: { getEmailVerified },
         },
         {
-          provide: UserVerificationService,
-          useValue: { hasMasterPassword },
-        },
-        {
           provide: KdfConfigService,
           useValue: { getKdfConfig },
         },
         {
           provide: SyncService,
           useValue: { lastSync$: () => lastSync$ },
+        },
+        {
+          provide: UserDecryptionOptionsServiceAbstraction,
+          useValue: {
+            userDecryptionOptionsById$: () => userDecryptionOptions$,
+          },
         },
       ],
     });
@@ -177,7 +184,7 @@ describe("VaultBannersService", () => {
 
   describe("KDFSettings", () => {
     beforeEach(async () => {
-      hasMasterPassword.mockResolvedValue(true);
+      userDecryptionOptions$.next({ hasMasterPassword: true });
       getKdfConfig.mockResolvedValue({ kdfType: KdfType.PBKDF2_SHA256, iterations: 599999 });
     });
 

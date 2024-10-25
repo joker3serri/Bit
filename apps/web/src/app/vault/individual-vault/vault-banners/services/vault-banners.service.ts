@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
 import { filter, mergeMap, switchMap, take } from "rxjs/operators";
 
+import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { PBKDF2KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -57,12 +57,12 @@ export const BANNERS_DISMISSED_DISK_KEY = new UserKeyDefinition<SessionBanners[]
 export class VaultBannersService {
   constructor(
     private tokenService: TokenService,
-    private userVerificationService: UserVerificationService,
     private stateProvider: StateProvider,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
     private platformUtilsService: PlatformUtilsService,
     private kdfConfigService: KdfConfigService,
     private syncService: SyncService,
+    private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
   ) {}
 
   shouldShowPremiumBanner$(userId$: Observable<UserId>): Observable<boolean> {
@@ -119,7 +119,9 @@ export class VaultBannersService {
 
   /** Returns true when the low KDF iteration banner should be shown */
   async shouldShowLowKDFBanner(userId: UserId): Promise<boolean> {
-    const hasLowKDF = (await this.userVerificationService.hasMasterPassword())
+    const hasLowKDF = (
+      await firstValueFrom(this.userDecryptionOptionsService.userDecryptionOptionsById$(userId))
+    )?.hasMasterPassword
       ? await this.isLowKdfIteration()
       : false;
 
