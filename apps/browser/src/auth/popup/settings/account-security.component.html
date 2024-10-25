@@ -115,11 +115,11 @@
         "
       >
         <button bit-item-content type="button" appStopClick (click)="lock()"></button>
-        <div>{{ "lockNow" | i18n }}</div>
+        {{ "lockNow" | i18n }}
       </bit-item>
       <bit-item *ngIf="!accountSwitcherEnabled">
         <button bit-item-content type="button" appStopClick (click)="logOut()"></button>
-        <div>{{ "logOut" | i18n }}</div>
+        {{ "logOut" | i18n }}
       </bit-item>
     </bit-section>
   </div>
