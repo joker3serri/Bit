@@ -4,15 +4,12 @@ import { Component, EventEmitter, Output, Input, OnInit, OnDestroy } from "@angu
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, map, Subject, takeUntil } from "rxjs";
 
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import {
   EnvironmentService,
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 export const ExtensionDefaultOverlayPosition: ConnectedPosition[] = [
   {
@@ -86,26 +83,8 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     protected environmentService: EnvironmentService,
     protected configService: ConfigService,
     protected router: Router,
-    protected logService: LogService,
-    private i18nService: I18nService,
     private route: ActivatedRoute,
-  ) {
-    this.setAccessingString().catch((e) => {
-      this.logService.error(e);
-    });
-  }
-
-  /**
-   * Set the text in front of the dropdown to either "Accessing" or "Logging In On" based on whether the
-   * UnauthenticatedExtensionUIRefresh feature flag is set.
-   */
-  private async setAccessingString() {
-    const isUnauthenticatedExtensionUIRefreshEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.UnauthenticatedExtensionUIRefresh,
-    );
-    const translationKey = isUnauthenticatedExtensionUIRefreshEnabled ? "accessing" : "loggingInOn";
-    this.accessingString = this.i18nService.t(translationKey);
-  }
+  ) {}
 
   ngOnInit() {
     this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
