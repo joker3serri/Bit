@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Subject, Observable, combineLatest, firstValueFrom, map } from "rxjs";
-import { mergeMap, switchMap, take } from "rxjs/operators";
+import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
+import { filter, mergeMap, switchMap, take } from "rxjs/operators";
 
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -55,15 +55,6 @@ export const BANNERS_DISMISSED_DISK_KEY = new UserKeyDefinition<SessionBanners[]
 
 @Injectable()
 export class VaultBannersService {
-  /**
-   * Emits when the sync service has completed a sync
-   *
-   * This is needed because `hasPremiumFromAnySource$` will emit false until the sync is completed
-   * resulting in the premium banner being shown briefly on startup when the user has access to
-   * premium features.
-   */
-  private syncCompleted$ = new Subject<void>();
-
   constructor(
     private tokenService: TokenService,
     private userVerificationService: UserVerificationService,
@@ -72,9 +63,7 @@ export class VaultBannersService {
     private platformUtilsService: PlatformUtilsService,
     private kdfConfigService: KdfConfigService,
     private syncService: SyncService,
-  ) {
-    this.pollUntilSynced();
-  }
+  ) {}
 
   shouldShowPremiumBanner$(userId$: Observable<UserId>): Observable<boolean> {
     return userId$.pipe(
@@ -85,7 +74,8 @@ export class VaultBannersService {
           premiumBannerState.state$,
         ]);
 
-        return this.syncCompleted$.pipe(
+        return this.syncService.lastSync$(userId).pipe(
+          filter((lastSync) => lastSync !== null),
           take(1), // Wait until the first sync is complete before considering the premium status
           mergeMap(() => premiumSources$),
           map(([canAccessPremium, dismissedState]) => {
@@ -220,16 +210,5 @@ export class VaultBannersService {
       kdfConfig.kdfType === KdfType.PBKDF2_SHA256 &&
       kdfConfig.iterations < PBKDF2KdfConfig.ITERATIONS.defaultValue
     );
-  }
-
-  /** Poll the `syncService` until a sync is completed */
-  private pollUntilSynced() {
-    const interval = setInterval(async () => {
-      const lastSync = await this.syncService.getLastSync();
-      if (lastSync !== null) {
-        clearInterval(interval);
-        this.syncCompleted$.next();
-      }
-    }, 200);
   }
 }
