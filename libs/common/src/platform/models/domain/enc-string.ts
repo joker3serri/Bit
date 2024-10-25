@@ -169,7 +169,9 @@ export class EncString implements Encrypted {
         } else {
           const cryptoService = Utils.getContainerService().getKeyService();
           keyContext =
-            (await cryptoService.getUserKey()) == null ? "domain-masterkey" : "domain-userkey";
+            (await cryptoService.getUserKey()) == null
+              ? "domain-withlegacysupport-masterkey"
+              : "domain-withlegacysupport-userkey";
         }
       }
       if (key == null) {
