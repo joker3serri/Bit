@@ -8,7 +8,6 @@ import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -19,6 +18,7 @@ import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/platfor
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
 import { UserId } from "@bitwarden/common/types/guid";
+import { KeyService as KeyServiceAbstraction } from "@bitwarden/key-management";
 
 import { I18nRendererService } from "../../platform/services/i18n.renderer.service";
 import { VersionService } from "../../platform/services/version.service";
@@ -36,7 +36,7 @@ export class InitService {
     private notificationsService: NotificationsServiceAbstraction,
     private platformUtilsService: PlatformUtilsServiceAbstraction,
     private stateService: StateServiceAbstraction,
-    private cryptoService: CryptoServiceAbstraction,
+    private keyService: KeyServiceAbstraction,
     private nativeMessagingService: NativeMessagingService,
     private themingService: AbstractThemingService,
     private encryptService: EncryptService,
@@ -77,7 +77,7 @@ export class InitService {
 
       this.versionService.init();
 
-      const containerService = new ContainerService(this.cryptoService, this.encryptService);
+      const containerService = new ContainerService(this.keyService, this.encryptService);
       containerService.attachToGlobal(this.win);
     };
   }

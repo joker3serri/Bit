@@ -156,7 +156,7 @@ export class Program extends BaseProgram {
             this.serviceContainer.passwordStrengthService,
             this.serviceContainer.platformUtilsService,
             this.serviceContainer.accountService,
-            this.serviceContainer.cryptoService,
+            this.serviceContainer.keyService,
             this.serviceContainer.policyService,
             this.serviceContainer.twoFactorService,
             this.serviceContainer.syncService,
@@ -264,7 +264,7 @@ export class Program extends BaseProgram {
           const command = new UnlockCommand(
             this.serviceContainer.accountService,
             this.serviceContainer.masterPasswordService,
-            this.serviceContainer.cryptoService,
+            this.serviceContainer.keyService,
             this.serviceContainer.userVerificationService,
             this.serviceContainer.cryptoFunctionService,
             this.serviceContainer.logService,

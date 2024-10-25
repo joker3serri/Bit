@@ -8,7 +8,6 @@ import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
-import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/platform/abstractions/state.service";
@@ -16,6 +15,7 @@ import { ContainerService } from "@bitwarden/common/platform/services/container.
 import { UserAutoUnlockKeyService } from "@bitwarden/common/platform/services/user-auto-unlock-key.service";
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
+import { KeyService as KeyServiceAbstraction } from "@bitwarden/key-management";
 
 import { VersionService } from "../platform/version.service";
 
@@ -29,7 +29,7 @@ export class InitService {
     private eventUploadService: EventUploadServiceAbstraction,
     private twoFactorService: TwoFactorServiceAbstraction,
     private stateService: StateServiceAbstraction,
-    private cryptoService: CryptoServiceAbstraction,
+    private keyService: KeyServiceAbstraction,
     private themingService: AbstractThemingService,
     private encryptService: EncryptService,
     private userAutoUnlockKeyService: UserAutoUnlockKeyService,
@@ -57,10 +57,9 @@ export class InitService {
       const htmlEl = this.win.document.documentElement;
       htmlEl.classList.add("locale_" + this.i18nService.translationLocale);
       this.themingService.applyThemeChangesTo(this.document);
-
       this.versionService.init();
 
-      const containerService = new ContainerService(this.cryptoService, this.encryptService);
+      const containerService = new ContainerService(this.keyService, this.encryptService);
       containerService.attachToGlobal(this.win);
     };
   }
