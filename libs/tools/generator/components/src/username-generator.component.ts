@@ -391,7 +391,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
   );
 
   /**
-   * Emits the generate button aria-label respective of the selected credential type
+   * Emits the copy credential toast respective of the selected credential type
    */
   protected credentialTypeLabel$ = this.algorithm$.pipe(
     filter((algorithm) => !!algorithm),
