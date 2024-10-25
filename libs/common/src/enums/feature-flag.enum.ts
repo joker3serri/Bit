@@ -37,6 +37,7 @@ export enum FeatureFlag {
   AccessIntelligence = "pm-13227-access-intelligence",
   Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
   LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
+  PrivateKeyRegeneration = "pm-12241-private-key-regeneration",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -84,6 +85,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.AccessIntelligence]: FALSE,
   [FeatureFlag.Pm13322AddPolicyDefinitions]: FALSE,
   [FeatureFlag.LimitCollectionCreationDeletionSplit]: FALSE,
+  [FeatureFlag.PrivateKeyRegeneration]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
