@@ -368,6 +368,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     // We determine if it's Authed Flow 1 or 2 based on the presence of masterPasswordHash
 
     if (adminAuthRequestResponse.masterPasswordHash) {
+      console.log("Running Authed Flow 1");
       // Authed Flow 1: masterPasswordHash is not null
       // key is authRequestPublicKey(masterKey) + we have authRequestPublicKey(masterPasswordHash)
       await this.authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash(
@@ -376,6 +377,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         userId,
       );
     } else {
+      console.log("Running Authed Flow 2");
       // Authed Flow 2: masterPasswordHash is null
       // key is authRequestPublicKey(userKey) and we can just decrypt with userKey and proceed to vault
       await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
@@ -417,8 +419,13 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     requestId: string,
     authRequestResponse: AuthRequestResponse,
   ): Promise<AuthRequestLoginCredentials> {
+    // See verifyAndHandleApprovedAuthReq(...) for flow details
+
+    // Unauthed Flow 1: masterPasswordHash is not null
     // If `masterPasswordHash` has a value, we receive the `key` as authRequestPublicKey(masterKey) + we have authRequestPublicKey(masterPasswordHash)
     if (authRequestResponse.masterPasswordHash) {
+      console.log("Running Unauthed Flow 1");
+
       const { masterKey, masterKeyHash } =
         await this.authRequestService.decryptPubKeyEncryptedMasterKeyAndHash(
           authRequestResponse.key,
@@ -435,6 +442,8 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         masterKeyHash,
       );
     } else {
+      console.log("Running Unauthed Flow 2");
+      // Unauthed Flow 2: masterPasswordHash is null
       // Else if `masterPasswordHash` is null, we receive the `key` as authRequestPublicKey(userKey).
       const userKey = await this.authRequestService.decryptPubKeyEncryptedUserKey(
         authRequestResponse.key,
