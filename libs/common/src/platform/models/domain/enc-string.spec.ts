@@ -380,7 +380,7 @@ describe("EncString", () => {
       expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(
         encString,
         userKey,
-        "domain-masterkey",
+        "domain-withlegacysupport-masterkey",
       );
     });
   });
