@@ -73,7 +73,10 @@ export class DefaultCipherFormService implements CipherFormService {
         await this.cipherService.saveCollectionsWithServer(encryptedCipher);
       }
 
-      savedCipher = await this.cipherService.updateWithServer(encryptedCipher, config.admin);
+      savedCipher = await this.cipherService.updateWithServer(
+        encryptedCipher,
+        config.admin || originalCollectionIds.size === 0,
+      );
     }
 
     // Its possible the cipher was made no longer available due to collection assignment changes
