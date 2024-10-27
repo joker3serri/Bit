@@ -1,15 +1,15 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component, EventEmitter, Output, Input, OnInit, OnDestroy } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { Observable, map, Subject, takeUntil } from "rxjs";
 
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import {
   EnvironmentService,
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
+
 import { EnvironmentSelectorService } from "../services/environment-selector.service";
 
 export const ExtensionDefaultOverlayPosition: ConnectedPosition[] = [
@@ -82,8 +82,6 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
 
   constructor(
     protected environmentService: EnvironmentService,
-    protected configService: ConfigService,
-    protected router: Router,
     private route: ActivatedRoute,
     private environmentSelectorService: EnvironmentSelectorService,
   ) {}
