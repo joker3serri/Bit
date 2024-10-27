@@ -17,6 +17,7 @@ import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.co
 import { CurrentAccountComponent } from "../account-switching/current-account.component";
 
 import { ExtensionBitwardenLogo } from "./extension-bitwarden-logo.icon";
+import { EnvironmentSelectorService } from "../../../../../../libs/angular/src/auth/services/environment-selector.service";
 
 export interface ExtensionAnonLayoutWrapperData extends AnonLayoutWrapperData {
   showAcctSwitcher?: boolean;
@@ -59,6 +60,7 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private extensionAnonLayoutWrapperDataService: AnonLayoutWrapperDataService,
+    private environmentSelectorService: EnvironmentSelectorService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -68,6 +70,13 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     // Listen for page changes and update the page data appropriately
     this.listenForPageDataChanges();
     this.listenForServiceDataChanges();
+
+    // Add subscription to environment selector service
+    this.environmentSelectorService.selfHostedSettings$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.router.navigate(["environment"]);
+      });
   }
 
   private listenForPageDataChanges() {

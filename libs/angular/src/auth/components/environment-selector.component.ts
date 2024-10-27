@@ -10,6 +10,7 @@ import {
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
+import { EnvironmentSelectorService } from "../services/environment-selector.service";
 
 export const ExtensionDefaultOverlayPosition: ConnectedPosition[] = [
   {
@@ -57,7 +58,7 @@ export interface EnvironmentSelectorRouteData {
   ],
 })
 export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
-  @Output() onOpenSelfHostedSettings = new EventEmitter();
+  @Output() onOpenSelfHostedSettings = new EventEmitter<void>();
   @Input() overlayPosition: ConnectedPosition[] = [
     {
       originX: "start",
@@ -84,6 +85,7 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     protected configService: ConfigService,
     protected router: Router,
     private route: ActivatedRoute,
+    private environmentSelectorService: EnvironmentSelectorService,
   ) {}
 
   ngOnInit() {
@@ -106,6 +108,7 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     }
 
     if (option === Region.SelfHosted) {
+      this.environmentSelectorService.triggerSelfHostedSettings();
       this.onOpenSelfHostedSettings.emit();
       return;
     }
