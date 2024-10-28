@@ -75,9 +75,14 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
 
         // Check if authenticated
         return this.authService.authStatusFor$(userId).pipe(
+          map(
+            (authStatus) =>
+              authStatus === AuthenticationStatus.Locked ||
+              authStatus === AuthenticationStatus.Unlocked,
+          ),
           distinctUntilChanged(),
-          switchMap((authStatus) => {
-            if (authStatus !== AuthenticationStatus.Unlocked) {
+          switchMap((hasAccessToken) => {
+            if (!hasAccessToken) {
               return EMPTY;
             }
 

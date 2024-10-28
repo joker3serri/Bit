@@ -3,6 +3,7 @@ import { BehaviorSubject, bufferCount, firstValueFrom, ObservedValueOf, Subject 
 
 import { LogoutReason } from "@bitwarden/auth/common";
 
+import { awaitAsync } from "../../../../spec";
 import { Matrix } from "../../../../spec/matrix";
 import { AccountService } from "../../../auth/abstractions/account.service";
 import { AuthService } from "../../../auth/abstractions/auth.service";
@@ -102,11 +103,8 @@ describe("NotificationsService", () => {
     emitNotificationUrl("http://test.example.com");
     authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
     const webPush = mock<WebPushConnector>();
-
-    const webPushGetter = Matrix.autoMockMethod(
-      webPush.connect$,
-      () => new Subject<NotificationResponse>(),
-    );
+    const webPushSubject = new Subject<NotificationResponse>();
+    webPush.connect$.mockImplementation(() => webPushSubject);
 
     // Start listening to notifications
     const notificationsPromise = firstValueFrom(sut.notifications$.pipe(bufferCount(4)));
@@ -115,10 +113,8 @@ describe("NotificationsService", () => {
     webPushSupportGetter(mockUser1).next({ type: "supported", service: webPush });
 
     // Emit a couple notifications through WebPush
-    webPushGetter(mockUser1).next(new NotificationResponse({ type: NotificationType.LogOut }));
-    webPushGetter(mockUser1).next(
-      new NotificationResponse({ type: NotificationType.SyncCipherCreate }),
-    );
+    webPushSubject.next(new NotificationResponse({ type: NotificationType.LogOut }));
+    webPushSubject.next(new NotificationResponse({ type: NotificationType.SyncCipherCreate }));
 
     // Switch to having no active user
     emitActiveUser(null);
@@ -171,5 +167,25 @@ describe("NotificationsService", () => {
     expectNotification(notifications[1], mockUser1, NotificationType.SyncCipherCreate);
     expectNotification(notifications[2], mockUser2, NotificationType.SyncCipherUpdate);
     expectNotification(notifications[3], mockUser2, NotificationType.SyncCipherDelete);
+  });
+
+  test("that a transition from locked to unlocked doesn't reconnect", async () => {
+    emitActiveUser(mockUser1);
+    emitNotificationUrl("http://test.example.com");
+    authStatusGetter(mockUser1).next(AuthenticationStatus.Locked);
+    webPushSupportGetter(mockUser1).next({ type: "not-supported", reason: "test" });
+
+    const notificationsSubscriptions = sut.notifications$.subscribe();
+    await awaitAsync(1);
+
+    authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
+    await awaitAsync(1);
+
+    expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledTimes(1);
+    expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledWith(
+      mockUser1,
+      "http://test.example.com",
+    );
+    notificationsSubscriptions.unsubscribe();
   });
 });
