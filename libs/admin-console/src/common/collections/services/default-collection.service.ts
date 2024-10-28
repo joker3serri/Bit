@@ -1,7 +1,6 @@
 import { combineLatest, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -17,6 +16,7 @@ import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/gu
 import { OrgKey } from "@bitwarden/common/types/key";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
+import { KeyService } from "@bitwarden/key-management";
 
 import { CollectionService } from "../abstractions";
 import { Collection, CollectionData, CollectionView } from "../models";
@@ -61,7 +61,7 @@ export class DefaultCollectionService implements CollectionService {
   private activeUserDecryptedCollectionDataState: DerivedState<CollectionView[]>;
 
   constructor(
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private i18nService: I18nService,
     protected stateProvider: StateProvider,
@@ -114,7 +114,7 @@ export class DefaultCollectionService implements CollectionService {
   private decryptedCollectionState(userId: UserId): DerivedState<CollectionView[]> {
     const encryptedCollectionsWithKeys = this.encryptedCollectionState(userId).combinedState$.pipe(
       switchMap(([userId, collectionData]) =>
-        combineLatest([of(collectionData), this.cryptoService.orgKeys$(userId)]),
+        combineLatest([of(collectionData), this.keyService.orgKeys$(userId)]),
       ),
     );
 
@@ -131,7 +131,7 @@ export class DefaultCollectionService implements CollectionService {
     if (model.organizationId == null) {
       throw new Error("Collection has no organization id.");
     }
-    const key = await this.cryptoService.getOrgKey(model.organizationId);
+    const key = await this.keyService.getOrgKey(model.organizationId);
     if (key == null) {
       throw new Error("No key for this collection's organization.");
     }
@@ -155,7 +155,7 @@ export class DefaultCollectionService implements CollectionService {
     }
     const decCollections: CollectionView[] = [];
 
-    orgKeys ??= await firstValueFrom(this.cryptoService.activeUserOrgKeys$);
+    orgKeys ??= await firstValueFrom(this.keyService.activeUserOrgKeys$);
 
     const promises: Promise<any>[] = [];
     collections.forEach((collection) => {

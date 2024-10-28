@@ -4,7 +4,6 @@ import { of } from "rxjs";
 import { CollectionService, CollectionView } from "@bitwarden/admin-console/common";
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -12,6 +11,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { KeyService } from "@bitwarden/key-management";
 
 import { BitwardenPasswordProtectedImporter } from "../importers/bitwarden/bitwarden-password-protected-importer";
 import { Importer } from "../importers/importer";
@@ -27,7 +27,7 @@ describe("ImportService", () => {
   let importApiService: MockProxy<ImportApiServiceAbstraction>;
   let i18nService: MockProxy<I18nService>;
   let collectionService: MockProxy<CollectionService>;
-  let cryptoService: MockProxy<CryptoService>;
+  let keyService: MockProxy<KeyService>;
   let encryptService: MockProxy<EncryptService>;
   let pinService: MockProxy<PinServiceAbstraction>;
   let accountService: MockProxy<AccountService>;
@@ -38,7 +38,7 @@ describe("ImportService", () => {
     importApiService = mock<ImportApiServiceAbstraction>();
     i18nService = mock<I18nService>();
     collectionService = mock<CollectionService>();
-    cryptoService = mock<CryptoService>();
+    keyService = mock<KeyService>();
     encryptService = mock<EncryptService>();
     pinService = mock<PinServiceAbstraction>();
 
@@ -48,7 +48,7 @@ describe("ImportService", () => {
       importApiService,
       i18nService,
       collectionService,
-      cryptoService,
+      keyService,
       encryptService,
       pinService,
       accountService,
