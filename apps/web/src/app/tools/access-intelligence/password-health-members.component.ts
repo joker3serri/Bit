@@ -100,7 +100,7 @@ export class PasswordHealthMembersComponent implements OnInit {
 
     await passwordHealthService.generateReport();
 
-    this.dataSource.data = passwordHealthService.reportCiphers;
+    this.dataSource.data = []; //passwordHealthService.reportCiphers;
 
     this.exposedPasswordMap = passwordHealthService.exposedPasswordMap;
     this.passwordStrengthMap = passwordHealthService.passwordStrengthMap;
