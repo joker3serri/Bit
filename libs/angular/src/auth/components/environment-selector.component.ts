@@ -12,7 +12,8 @@ import {
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
-import { DialogService } from "@bitwarden/components";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { DialogService, ToastService } from "@bitwarden/components";
 
 export const ExtensionDefaultOverlayPosition: ConnectedPosition[] = [
   {
@@ -86,6 +87,8 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private configService: ConfigService,
+    private toastService: ToastService,
+    private i18nService: I18nService,
   ) {}
 
   ngOnInit() {
@@ -116,7 +119,13 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
      */
     if (option === Region.SelfHosted) {
       if (await this.configService.getFeatureFlag(FeatureFlag.UnauthenticatedExtensionUIRefresh)) {
-        await SelfHostedEnvConfigDialogComponent.open(this.dialogService);
+        if (await SelfHostedEnvConfigDialogComponent.open(this.dialogService)) {
+          this.toastService.showToast({
+            variant: "success",
+            title: null,
+            message: this.i18nService.t("environmentSaved"),
+          });
+        }
       } else {
         this.onOpenSelfHostedSettings.emit();
       }
