@@ -1,20 +1,11 @@
 import { CommonModule } from "@angular/common";
-import {
-  Component,
-  HostBinding,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  OnDestroy,
-} from "@angular/core";
+import { Component, HostBinding, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { firstValueFrom, Subject } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { ClientType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { DialogService } from "@bitwarden/components";
 
 import { IconModule, Icon } from "../../../../components/src/icon";
 import { SharedModule } from "../../../../components/src/shared";
@@ -27,7 +18,7 @@ import { BitwardenLogo, BitwardenShield } from "../icons";
   templateUrl: "./anon-layout.component.html",
   imports: [IconModule, CommonModule, TypographyModule, SharedModule, RouterModule],
 })
-export class AnonLayoutComponent implements OnInit, OnChanges, OnDestroy {
+export class AnonLayoutComponent implements OnInit, OnChanges {
   @HostBinding("class")
   get classList() {
     // AnonLayout should take up full height of parent container for proper footer placement.
@@ -56,12 +47,9 @@ export class AnonLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   protected hideYearAndVersion = false;
 
-  private destroy$ = new Subject<void>();
-
   constructor(
     private environmentService: EnvironmentService,
     private platformUtilsService: PlatformUtilsService,
-    private dialogService: DialogService,
   ) {
     this.year = new Date().getFullYear().toString();
     this.clientType = this.platformUtilsService.getClientType();
@@ -83,10 +71,5 @@ export class AnonLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (changes.maxWidth) {
       this.maxWidth = changes.maxWidth.currentValue ?? "md";
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
