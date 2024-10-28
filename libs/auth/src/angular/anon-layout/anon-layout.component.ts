@@ -1,16 +1,28 @@
 import { CommonModule } from "@angular/common";
-import { Component, HostBinding, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import {
+  Component,
+  HostBinding,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  OnDestroy,
+} from "@angular/core";
+import { RouterModule, Router } from "@angular/router";
+import { firstValueFrom, Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 import { ClientType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { EnvironmentSelectorService } from "../../../../../libs/angular/src/auth/services/environment-selector.service";
 
 import { IconModule, Icon } from "../../../../components/src/icon";
 import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
 import { BitwardenLogo, BitwardenShield } from "../icons";
+import { DialogService } from "@bitwarden/components";
+import { RegistrationSelfHostedEnvConfigDialogComponent } from "../registration/registration-self-hosted-env-config-dialog/registration-self-hosted-env-config-dialog.component";
 
 @Component({
   standalone: true,
@@ -18,7 +30,7 @@ import { BitwardenLogo, BitwardenShield } from "../icons";
   templateUrl: "./anon-layout.component.html",
   imports: [IconModule, CommonModule, TypographyModule, SharedModule, RouterModule],
 })
-export class AnonLayoutComponent implements OnInit, OnChanges {
+export class AnonLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @HostBinding("class")
   get classList() {
     // AnonLayout should take up full height of parent container for proper footer placement.
@@ -47,9 +59,13 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
 
   protected hideYearAndVersion = false;
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private environmentService: EnvironmentService,
     private platformUtilsService: PlatformUtilsService,
+    private environmentSelectorService: EnvironmentSelectorService,
+    private dialogService: DialogService,
   ) {
     this.year = new Date().getFullYear().toString();
     this.clientType = this.platformUtilsService.getClientType();
@@ -65,11 +81,23 @@ export class AnonLayoutComponent implements OnInit, OnChanges {
     if (this.icon == null) {
       this.icon = BitwardenShield;
     }
+
+    // Add subscription to environment selector service
+    this.environmentSelectorService.selfHostedSettings$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async () => {
+        await RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService);
+      });
   }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.maxWidth) {
       this.maxWidth = changes.maxWidth.currentValue ?? "md";
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
