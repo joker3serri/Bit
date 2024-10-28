@@ -1,7 +1,10 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
+import {
+  DesktopDefaultOverlayPosition,
+  EnvironmentSelectorComponent,
+} from "@bitwarden/angular/auth/components/environment-selector.component";
 import { unauthUiRefreshSwap } from "@bitwarden/angular/auth/functions/unauth-ui-refresh-route-swap";
 import {
   authGuard,
@@ -16,6 +19,8 @@ import {
   AnonLayoutWrapperComponent,
   AnonLayoutWrapperData,
   DevicesIcon,
+  LoginComponent,
+  LoginSecondaryContentComponent,
   LockIcon,
   LockV2Component,
   LoginViaAuthRequestComponent,
@@ -28,6 +33,7 @@ import {
   RegistrationUserAddIcon,
   SetPasswordJitComponent,
   UserLockIcon,
+  VaultIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -37,8 +43,8 @@ import { maxAccountsGuardFn } from "../auth/guards/max-accounts.guard";
 import { HintComponent } from "../auth/hint.component";
 import { LockComponent } from "../auth/lock.component";
 import { LoginDecryptionOptionsComponent } from "../auth/login/login-decryption-options/login-decryption-options.component";
+import { LoginComponentV1 } from "../auth/login/login-v1.component";
 import { LoginViaAuthRequestComponentV1 } from "../auth/login/login-via-auth-request-v1.component";
-import { LoginComponent } from "../auth/login/login.component";
 import { RegisterComponent } from "../auth/register.component";
 import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
@@ -70,11 +76,6 @@ const routes: Routes = [
     component: LockComponent,
     canActivate: [lockGuard()],
     canMatch: [extensionRefreshRedirect("/lockV2")],
-  },
-  {
-    path: "login",
-    component: LoginComponent,
-    canActivate: [maxAccountsGuardFn()],
   },
   ...twofactorRefactorSwap(
     TwoFactorComponent,
@@ -207,6 +208,42 @@ const routes: Routes = [
               path: "",
               component: EnvironmentSelectorComponent,
               outlet: "environment-selector",
+            },
+          ],
+        },
+      ],
+    },
+  ),
+  ...unauthUiRefreshSwap(
+    LoginComponentV1,
+    AnonLayoutWrapperComponent,
+    {
+      path: "login",
+      component: LoginComponentV1,
+      canActivate: [maxAccountsGuardFn()],
+    },
+    {
+      path: "",
+      children: [
+        {
+          path: "login",
+          canActivate: [maxAccountsGuardFn()],
+          data: {
+            pageTitle: {
+              key: "logInToBitwarden",
+            },
+            pageIcon: VaultIcon,
+          },
+          children: [
+            { path: "", component: LoginComponent },
+            { path: "", component: LoginSecondaryContentComponent, outlet: "secondary" },
+            {
+              path: "",
+              component: EnvironmentSelectorComponent,
+              outlet: "environment-selector",
+              data: {
+                overlayPosition: DesktopDefaultOverlayPosition,
+              },
             },
           ],
         },

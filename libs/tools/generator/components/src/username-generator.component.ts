@@ -36,6 +36,7 @@ import {
   isUsernameAlgorithm,
   toCredentialGeneratorConfiguration,
 } from "@bitwarden/generator-core";
+import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
 // constants used to identify navigation selections that are not
 // generator algorithms
@@ -57,6 +58,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
    */
   constructor(
     private generatorService: CredentialGeneratorService,
+    private generatorHistoryService: GeneratorHistoryService,
     private toastService: ToastService,
     private logService: LogService,
     private i18nService: I18nService,
@@ -106,7 +108,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
         map((algorithms) => {
           const usernames = algorithms.filter((a) => !isForwarderIntegration(a.id));
           const usernameOptions = this.toOptions(usernames);
-          usernameOptions.push({ value: FORWARDER, label: this.i18nService.t("forwarder") });
+          usernameOptions.push({ value: FORWARDER, label: this.i18nService.t("forwardedEmail") });
 
           const forwarders = algorithms.filter((a) => isForwarderIntegration(a.id));
           const forwarderOptions = this.toOptions(forwarders);
@@ -153,9 +155,16 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
           // continue with origin stream
           return generator;
         }),
+        withLatestFrom(this.userId$),
         takeUntil(this.destroyed),
       )
-      .subscribe((generated) => {
+      .subscribe(([generated, userId]) => {
+        this.generatorHistoryService
+          .track(userId, generated.credential, generated.category, generated.generationDate)
+          .catch((e: unknown) => {
+            this.logService.error(e);
+          });
+
         // update subjects within the angular zone so that the
         // template bindings refresh immediately
         this.zone.run(() => {
@@ -313,7 +322,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
         if (!a || a.onlyOnRequest) {
           this.value$.next("-");
         } else {
-          this.generate$.next();
+          this.generate("autogenerate");
         }
       });
     });
@@ -378,7 +387,15 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
    */
   protected credentialTypeGenerateLabel$ = this.algorithm$.pipe(
     filter((algorithm) => !!algorithm),
-    map(({ copy }) => copy),
+    map(({ generate }) => generate),
+  );
+
+  /**
+   * Emits the copy credential toast respective of the selected credential type
+   */
+  protected credentialTypeLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ generatedValue }) => generatedValue),
   );
 
   /** Emits hint key for the currently selected credential type */
@@ -391,12 +408,20 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
   protected readonly userId$ = new BehaviorSubject<UserId>(null);
 
   /** Emits when a new credential is requested */
-  protected readonly generate$ = new Subject<void>();
+  private readonly generate$ = new Subject<string>();
+
+  /** Request a new value from the generator
+   * @param requestor a label used to trace generation request
+   *  origin in the debugger.
+   */
+  protected generate(requestor: string) {
+    this.generate$.next(requestor);
+  }
 
   private toOptions(algorithms: AlgorithmInfo[]) {
     const options: Option<string>[] = algorithms.map((algorithm) => ({
       value: JSON.stringify(algorithm.id),
-      label: this.i18nService.t(algorithm.name),
+      label: algorithm.name,
     }));
 
     return options;
