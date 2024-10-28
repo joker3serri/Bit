@@ -324,6 +324,10 @@ export class DefaultKeyService implements KeyServiceAbstraction {
     masterKey: MasterKey,
     userId: UserId,
   ): Promise<boolean> {
+    if (masterKey == null) {
+      throw new Error("'masterKey' is required to be non-null.");
+    }
+
     if (masterPassword == null) {
       // If they don't give us a master password, we can't hash it, and therefore
       // it will never match what we have stored.
