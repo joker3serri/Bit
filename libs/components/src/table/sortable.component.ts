@@ -32,14 +32,13 @@ export class SortableComponent implements OnInit {
    *
    * @example
    * fn = (a, b) => a.name.localeCompare(b.name)
+   *
+   * fn = (a, b, direction) => {
+   *  const result = a.name.localeCompare(b.name)
+   *  return direction === 'asc' ? result : -result;
+   * }
    */
   @Input() fn: SortFn;
-
-  /**
-   * Factory function to create a sorting function based on the desired sorting direction
-   */
-  @Input()
-  fnFactory: (direction: "asc" | "desc") => SortFn;
 
   constructor(private table: TableComponent) {}
 
@@ -62,7 +61,7 @@ export class SortableComponent implements OnInit {
       this.table.dataSource.sort = {
         column: this.bitSortable,
         direction: direction,
-        fn: this.fn ? this.fn : this.fnFactory(direction),
+        fn: this.fn,
       };
     }
   }

@@ -21,7 +21,7 @@
           *ngIf="showAdminActions"
           bitCell
           bitSortable="name"
-          [fnFactory]="sortByName"
+          [fn]="sortByName"
           [class]="showExtraColumn ? 'lg:tw-w-3/5' : 'tw-w-full'"
         >
           {{ "name" | i18n }}
@@ -38,20 +38,14 @@
           {{ "owner" | i18n }}
         </th>
         <th bitCell class="tw-w-2/5" *ngIf="showCollections">{{ "collections" | i18n }}</th>
-        <th
-          bitCell
-          bitSortable="groups"
-          [fnFactory]="sortByGroups"
-          class="tw-w-2/5"
-          *ngIf="showGroups"
-        >
+        <th bitCell bitSortable="groups" [fn]="sortByGroups" class="tw-w-2/5" *ngIf="showGroups">
           {{ "groups" | i18n }}
         </th>
         <th
           bitCell
           bitSortable="permissions"
           default
-          [fnFactory]="sortByPermissions"
+          [fn]="sortByPermissions"
           class="tw-w-2/5"
           *ngIf="showPermissionsColumn"
         >
