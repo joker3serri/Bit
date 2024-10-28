@@ -52,6 +52,10 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
       result.ciphers.push(cipher);
     });
 
+    if (this.organization) {
+      this.moveFoldersToCollections(result);
+    }
+
     result.success = true;
     return Promise.resolve(result);
   }

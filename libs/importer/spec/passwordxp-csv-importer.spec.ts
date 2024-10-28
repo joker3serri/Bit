@@ -120,4 +120,30 @@ describe("PasswordXPCsvImporter", () => {
     expect(folderRelationship).toEqual([4, 2]);
     folderRelationship = result.folderRelationships.shift();
   });
+
+  it("should convert folders to collections when importing into an organization", async () => {
+    importer.organizationId = "someOrg";
+    const result: ImportResult = await importer.parse(withFolders);
+    expect(result.success).toBe(true);
+    expect(result.ciphers.length).toBe(5);
+
+    expect(result.collections.length).toBe(3);
+    expect(result.collections[0].name).toEqual("Test Folder");
+    expect(result.collectionRelationships[0]).toEqual([1, 0]);
+    expect(result.collections[1].name).toEqual("Cert folder");
+    expect(result.collectionRelationships[1]).toEqual([2, 1]);
+    expect(result.collectionRelationships[2]).toEqual([3, 1]);
+    expect(result.collections[2].name).toEqual("Cert folder/Nested folder");
+
+    expect(result.collectionRelationships.length).toBe(4);
+    let collectionRelationship = result.collectionRelationships.shift();
+    expect(collectionRelationship).toEqual([1, 0]);
+    collectionRelationship = result.collectionRelationships.shift();
+    expect(collectionRelationship).toEqual([2, 1]);
+    collectionRelationship = result.collectionRelationships.shift();
+    expect(collectionRelationship).toEqual([3, 1]);
+    collectionRelationship = result.collectionRelationships.shift();
+    expect(collectionRelationship).toEqual([4, 2]);
+    collectionRelationship = result.collectionRelationships.shift();
+  });
 });
