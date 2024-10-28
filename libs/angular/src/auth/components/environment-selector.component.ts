@@ -4,13 +4,16 @@ import { Component, EventEmitter, Output, Input, OnInit, OnDestroy } from "@angu
 import { ActivatedRoute } from "@angular/router";
 import { Observable, map, Subject, takeUntil } from "rxjs";
 
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import {
   EnvironmentService,
   Region,
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
+import { DialogService } from "@bitwarden/components";
 
-import { EnvironmentSelectorService } from "../services/environment-selector.service";
+import { SelfHostedEnvConfigDialogComponent } from "../../../../auth/src/angular/self-hosted-env-config-dialog/self-hosted-env-config-dialog.component";
 
 export const ExtensionDefaultOverlayPosition: ConnectedPosition[] = [
   {
@@ -83,7 +86,8 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   constructor(
     protected environmentService: EnvironmentService,
     private route: ActivatedRoute,
-    private environmentSelectorService: EnvironmentSelectorService,
+    private dialogService: DialogService,
+    private configService: ConfigService,
   ) {}
 
   ngOnInit() {
@@ -105,9 +109,19 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
       return;
     }
 
+    /**
+     * Opens the self-hosted settings dialog.
+     *
+     * If the `UnauthenticatedExtensionUIRefresh` feature flag is enabled,
+     * the self-hosted settings dialog is opened directly. Otherwise, the
+     * `onOpenSelfHostedSettings` event is emitted.
+     */
     if (option === Region.SelfHosted) {
-      this.environmentSelectorService.triggerSelfHostedSettings();
-      this.onOpenSelfHostedSettings.emit();
+      if (await this.configService.getFeatureFlag(FeatureFlag.UnauthenticatedExtensionUIRefresh)) {
+        await SelfHostedEnvConfigDialogComponent.open(this.dialogService);
+      } else {
+        this.onOpenSelfHostedSettings.emit();
+      }
       return;
     }
 

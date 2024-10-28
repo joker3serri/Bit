@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
-import { Subject, filter, switchMap, takeUntil, tap, from } from "rxjs";
+import { Subject, filter, switchMap, takeUntil, tap } from "rxjs";
 
 import {
   AnonLayoutComponent,
@@ -11,7 +11,6 @@ import {
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Icon, IconModule, Translation } from "@bitwarden/components";
 
-import { EnvironmentSelectorService } from "../../../../../../libs/angular/src/auth/services/environment-selector.service";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
@@ -60,7 +59,6 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private extensionAnonLayoutWrapperDataService: AnonLayoutWrapperDataService,
-    private environmentSelectorService: EnvironmentSelectorService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -70,14 +68,6 @@ export class ExtensionAnonLayoutWrapperComponent implements OnInit, OnDestroy {
     // Listen for page changes and update the page data appropriately
     this.listenForPageDataChanges();
     this.listenForServiceDataChanges();
-
-    // Add subscription to environment selector service
-    this.environmentSelectorService.selfHostedSettings$
-      .pipe(
-        switchMap(() => from(this.router.navigate(["environment"]))),
-        takeUntil(this.destroy$),
-      )
-      .subscribe();
   }
 
   private listenForPageDataChanges() {

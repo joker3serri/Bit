@@ -9,20 +9,17 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { firstValueFrom, Subject, from, switchMap } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { firstValueFrom, Subject } from "rxjs";
 
 import { ClientType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService } from "@bitwarden/components";
 
-import { EnvironmentSelectorService } from "../../../../../libs/angular/src/auth/services/environment-selector.service";
 import { IconModule, Icon } from "../../../../components/src/icon";
 import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
 import { BitwardenLogo, BitwardenShield } from "../icons";
-import { RegistrationSelfHostedEnvConfigDialogComponent } from "../registration/registration-self-hosted-env-config-dialog/registration-self-hosted-env-config-dialog.component";
 
 @Component({
   standalone: true,
@@ -64,7 +61,6 @@ export class AnonLayoutComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private environmentService: EnvironmentService,
     private platformUtilsService: PlatformUtilsService,
-    private environmentSelectorService: EnvironmentSelectorService,
     private dialogService: DialogService,
   ) {
     this.year = new Date().getFullYear().toString();
@@ -81,16 +77,6 @@ export class AnonLayoutComponent implements OnInit, OnChanges, OnDestroy {
     if (this.icon == null) {
       this.icon = BitwardenShield;
     }
-
-    // Add subscription to environment selector service
-    this.environmentSelectorService.selfHostedSettings$
-      .pipe(
-        switchMap(() =>
-          from(RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService)),
-        ),
-        takeUntil(this.destroy$),
-      )
-      .subscribe();
   }
 
   async ngOnChanges(changes: SimpleChanges) {
