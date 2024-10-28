@@ -3,6 +3,7 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { PasswordXPCsvImporter } from "../src/importers";
 import { ImportResult } from "../src/models/import-result";
 
+import { withFolders } from "./test-data/passwordxp-csv/passwordxp-with-folders.csv";
 import { withoutFolders } from "./test-data/passwordxp-csv/passwordxp-without-folders.csv";
 
 describe("PasswordXPCsvImporter", () => {
@@ -93,5 +94,30 @@ describe("PasswordXPCsvImporter", () => {
     field = cipher.fields.shift();
     expect(field.name).toBe("Modified by");
     expect(field.value).toBe("someone");
+  });
+
+  it("should parse CSV data with folders and assign items to them", async () => {
+    const result: ImportResult = await importer.parse(withFolders);
+    expect(result.success).toBe(true);
+    expect(result.ciphers.length).toBe(5);
+
+    expect(result.folders.length).toBe(3);
+    let folder = result.folders.shift();
+    expect(folder.name).toEqual("Test Folder");
+    folder = result.folders.shift();
+    expect(folder.name).toEqual("Cert folder");
+    folder = result.folders.shift();
+    expect(folder.name).toEqual("Cert folder/Nested folder");
+
+    expect(result.folderRelationships.length).toBe(4);
+    let folderRelationship = result.folderRelationships.shift();
+    expect(folderRelationship).toEqual([1, 0]);
+    folderRelationship = result.folderRelationships.shift();
+    expect(folderRelationship).toEqual([2, 1]);
+    folderRelationship = result.folderRelationships.shift();
+    expect(folderRelationship).toEqual([3, 1]);
+    folderRelationship = result.folderRelationships.shift();
+    expect(folderRelationship).toEqual([4, 2]);
+    folderRelationship = result.folderRelationships.shift();
   });
 });

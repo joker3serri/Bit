@@ -1,3 +1,4 @@
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { ImportResult } from "../models/import-result";
@@ -18,10 +19,23 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
       result.success = false;
       return Promise.resolve(result);
     }
+    let currentFolderName = "";
     results.forEach((row) => {
       // Skip rows starting with '>>>' as they indicate items following have no folder assigned to them
       if (row.Title == ">>>") {
         return;
+      }
+
+      const title = row.Title;
+      if (title.startsWith("[") && title.endsWith("]")) {
+        currentFolderName = title.startsWith("/")
+          ? title.replace("/", "")
+          : title.substring(1, title.length - 1);
+        return;
+      }
+
+      if (!Utils.isNullOrWhitespace(currentFolderName)) {
+        this.processFolder(result, currentFolderName);
       }
 
       const cipher = this.initLoginCipher();
