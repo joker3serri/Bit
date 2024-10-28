@@ -146,7 +146,7 @@ export abstract class CipherService implements UserKeyRotationDataProvider<Ciphe
   delete: (id: string | string[]) => Promise<any>;
   deleteWithServer: (id: string, asAdmin?: boolean) => Promise<any>;
   deleteManyWithServer: (ids: string[], asAdmin?: boolean) => Promise<any>;
-  deleteAttachment: (id: string, attachmentId: string) => Promise<void>;
+  deleteAttachment: (id: string, revisionDate: string, attachmentId: string) => Promise<void>;
   deleteAttachmentWithServer: (id: string, attachmentId: string) => Promise<void>;
   sortCiphersByLastUsed: (a: CipherView, b: CipherView) => number;
   sortCiphersByLastUsedThenName: (a: CipherView, b: CipherView) => number;
