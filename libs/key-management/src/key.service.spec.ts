@@ -782,7 +782,7 @@ describe("keyService", () => {
           .calledWith(masterKey.key, masterPassword, "sha256", 2)
           .mockResolvedValue(Utils.fromB64ToArray(mockReturnedHash));
 
-        const actualDidMatch = await cryptoService.compareKeyHash(
+        const actualDidMatch = await keyService.compareKeyHash(
           masterPassword,
           masterKey,
           mockUserId,
