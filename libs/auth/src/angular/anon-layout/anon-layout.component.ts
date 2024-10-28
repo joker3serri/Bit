@@ -8,20 +8,20 @@ import {
   SimpleChanges,
   OnDestroy,
 } from "@angular/core";
-import { RouterModule, Router } from "@angular/router";
-import { firstValueFrom, Subject } from "rxjs";
+import { RouterModule } from "@angular/router";
+import { firstValueFrom, Subject, from, switchMap } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 import { ClientType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { EnvironmentSelectorService } from "../../../../../libs/angular/src/auth/services/environment-selector.service";
+import { DialogService } from "@bitwarden/components";
 
+import { EnvironmentSelectorService } from "../../../../../libs/angular/src/auth/services/environment-selector.service";
 import { IconModule, Icon } from "../../../../components/src/icon";
 import { SharedModule } from "../../../../components/src/shared";
 import { TypographyModule } from "../../../../components/src/typography";
 import { BitwardenLogo, BitwardenShield } from "../icons";
-import { DialogService } from "@bitwarden/components";
 import { RegistrationSelfHostedEnvConfigDialogComponent } from "../registration/registration-self-hosted-env-config-dialog/registration-self-hosted-env-config-dialog.component";
 
 @Component({
@@ -84,10 +84,13 @@ export class AnonLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
     // Add subscription to environment selector service
     this.environmentSelectorService.selfHostedSettings$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async () => {
-        await RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService);
-      });
+      .pipe(
+        switchMap(() =>
+          from(RegistrationSelfHostedEnvConfigDialogComponent.open(this.dialogService)),
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
   }
 
   async ngOnChanges(changes: SimpleChanges) {
