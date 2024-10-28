@@ -4,6 +4,7 @@ import { Component, EventEmitter, Output, Input, OnInit, OnDestroy } from "@angu
 import { ActivatedRoute } from "@angular/router";
 import { Observable, map, Subject, takeUntil } from "rxjs";
 
+import { SelfHostedEnvConfigDialogComponent } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import {
@@ -12,8 +13,6 @@ import {
   RegionConfig,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { DialogService } from "@bitwarden/components";
-
-import { SelfHostedEnvConfigDialogComponent } from "../../../../auth/src/angular/self-hosted-env-config-dialog/self-hosted-env-config-dialog.component";
 
 export const ExtensionDefaultOverlayPosition: ConnectedPosition[] = [
   {
