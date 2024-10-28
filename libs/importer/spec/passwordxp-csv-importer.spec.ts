@@ -60,4 +60,38 @@ describe("PasswordXPCsvImporter", () => {
     expect(cipher.login.password).toBe("test");
     expect(cipher.login.uris[0].uri).toBe("http://test");
   });
+
+  it("should parse CSV data and import unmapped columns as custom fields", async () => {
+    const result: ImportResult = await importer.parse(withoutFolders);
+    expect(result.success).toBe(true);
+
+    const cipher = result.ciphers.shift();
+    expect(cipher.type).toBe(CipherType.Login);
+    expect(cipher.name).toBe("Title2");
+    expect(cipher.notes).toBe("Test Notes");
+    expect(cipher.login.username).toBe("Username2");
+    expect(cipher.login.password).toBe("12345678");
+    expect(cipher.login.uris[0].uri).toBe("http://URL2.com");
+
+    expect(cipher.fields.length).toBe(5);
+    let field = cipher.fields.shift();
+    expect(field.name).toBe("Account");
+    expect(field.value).toBe("Account2");
+
+    field = cipher.fields.shift();
+    expect(field.name).toBe("Modified");
+    expect(field.value).toBe("27-3-2024 08:11:21");
+
+    field = cipher.fields.shift();
+    expect(field.name).toBe("Created");
+    expect(field.value).toBe("27-3-2024 08:11:21");
+
+    field = cipher.fields.shift();
+    expect(field.name).toBe("Expire on");
+    expect(field.value).toBe("27-5-2024 08:11:21");
+
+    field = cipher.fields.shift();
+    expect(field.name).toBe("Modified by");
+    expect(field.value).toBe("someone");
+  });
 });

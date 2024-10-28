@@ -1,7 +1,11 @@
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+
 import { ImportResult } from "../models/import-result";
 
 import { BaseImporter } from "./base-importer";
 import { Importer } from "./importer";
+
+const _mappedColumns = new Set(["Title", "Username", "URL", "Password", "Description"]);
 
 export class PasswordXPCsvImporter extends BaseImporter implements Importer {
   parse(data: string): Promise<ImportResult> {
@@ -27,6 +31,8 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
       cipher.login.uris = this.makeUriArray(row.URL);
       cipher.login.password = this.getValueOrDefault(row.Password);
 
+      this.importUnmappedFields(cipher, row, _mappedColumns);
+
       this.convertToNoteIfNeeded(cipher);
       this.cleanupCipher(cipher);
       result.ciphers.push(cipher);
@@ -34,5 +40,13 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
 
     result.success = true;
     return Promise.resolve(result);
+  }
+
+  importUnmappedFields(cipher: CipherView, row: any, mappedValues: Set<string>) {
+    const unmappedFields = Object.keys(row).filter((x) => !mappedValues.has(x));
+    unmappedFields.forEach((key) => {
+      const item = row as any;
+      this.processKvp(cipher, key, item[key]);
+    });
   }
 }
