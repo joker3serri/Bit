@@ -72,7 +72,6 @@ export class EnvironmentSelectorComponent implements OnInit, OnDestroy {
   ];
 
   protected isOpen = false;
-  protected accessingString: string;
   protected ServerEnvironmentType = Region;
   protected availableRegions = this.environmentService.availableRegions();
   protected selectedRegion$: Observable<RegionConfig | undefined> =
