@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { OnInit, Input, Output, EventEmitter, Component, OnDestroy } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { BehaviorSubject, skip, takeUntil, Subject } from "rxjs";
@@ -47,6 +48,9 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
   @Input()
   showHeader: boolean = true;
 
+  /** Removes bottom margin from `bit-section` */
+  @Input({ transform: coerceBooleanProperty }) disableMargin = false;
+
   /** Emits settings updates and completes if the settings become unavailable.
    * @remarks this does not emit the initial settings. If you would like
    *   to receive live settings updates including the initial update,
@@ -87,9 +91,8 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
           .get(Controls.wordSeparator)
           .setValidators(toValidators(Controls.wordSeparator, Generators.passphrase, constraints));
 
-        // forward word boundaries to the template (can't do it through the rx form)
-        this.minNumWords = constraints.numWords.min;
-        this.maxNumWords = constraints.numWords.max;
+        this.settings.updateValueAndValidity({ emitEvent: false });
+
         this.policyInEffect = constraints.policyInEffect;
 
         this.toggleEnabled(Controls.capitalize, !constraints.capitalize?.readonly);
@@ -99,12 +102,6 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
     // now that outputs are set up, connect inputs
     this.settings.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(settings);
   }
-
-  /** attribute binding for numWords[min] */
-  protected minNumWords: number;
-
-  /** attribute binding for numWords[max] */
-  protected maxNumWords: number;
 
   /** display binding for enterprise policy notice */
   protected policyInEffect: boolean;
