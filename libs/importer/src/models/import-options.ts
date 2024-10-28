@@ -70,6 +70,7 @@ export const regularImportOptions = [
   { id: "nordpasscsv", name: "Nordpass (csv)" },
   { id: "psonojson", name: "Psono (json)" },
   { id: "passkyjson", name: "Passky (json)" },
+  { id: "passwordxpcsv", name: "Password XP (csv)" },
 ] as const;
 
 export type ImportType =
