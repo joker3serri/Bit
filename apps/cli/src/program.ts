@@ -1,6 +1,6 @@
 import * as chalk from "chalk";
 import { program, Command, OptionValues } from "commander";
-import { catchError, firstValueFrom, map } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
@@ -107,12 +107,7 @@ export class Program extends BaseProgram {
       .command("sdk-version")
       .description("Print the SDK version.")
       .action(async () => {
-        const sdkVersion = await firstValueFrom(
-          this.serviceContainer.sdkService.client$.pipe(
-            map((c) => c.version()),
-            catchError(() => "Unsupported"),
-          ),
-        );
+        const sdkVersion = await firstValueFrom(this.serviceContainer.sdkService.version$);
         writeLn(sdkVersion, true);
       });
 

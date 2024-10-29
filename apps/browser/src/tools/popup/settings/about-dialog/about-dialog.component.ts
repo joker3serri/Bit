@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { Observable, catchError, combineLatest, defer, map } from "rxjs";
+import { Observable, combineLatest, defer, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
@@ -23,10 +23,7 @@ export class AboutDialogComponent {
     this.environmentService.environment$.pipe(map((env) => env.isCloud())),
   ]).pipe(map(([serverConfig, isCloud]) => ({ serverConfig, isCloud })));
 
-  protected sdkVersion$ = this.sdkService.client$.pipe(
-    map((c) => c.version()),
-    catchError(() => "Unsupported"),
-  );
+  protected sdkVersion$ = this.sdkService.version$;
 
   constructor(
     private configService: ConfigService,

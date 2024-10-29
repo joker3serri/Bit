@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { catchError, firstValueFrom, map } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
 
@@ -11,12 +11,7 @@ export class VersionService {
 
   init() {
     ipc.platform.versions.registerSdkVersionProvider(async (resolve) => {
-      const version = await firstValueFrom(
-        this.sdkService.client$.pipe(
-          map((c) => c.version()),
-          catchError(() => "Unsupported"),
-        ),
-      );
+      const version = await firstValueFrom(this.sdkService.version$);
       resolve(version);
     });
   }
