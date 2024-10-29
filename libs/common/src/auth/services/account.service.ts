@@ -50,8 +50,8 @@ const LOGGED_OUT_INFO: AccountInfo = {
  * An rxjs map operator that extracts the UserId from an account, or throws if the account or UserId are null.
  */
 export const getUserId = map<Account | null, UserId>((account) => {
-  if (account?.id == null) {
-    throw new Error("Null account or account ID");
+  if (account == null) {
+    throw new Error("Null or undefined account");
   }
 
   return account.id;
