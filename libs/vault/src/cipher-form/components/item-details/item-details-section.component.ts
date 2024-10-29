@@ -247,14 +247,20 @@ export class ItemDetailsSectionComponent implements OnInit {
       this.showCollectionsControl = false;
       return;
     }
+    const organization = this.organizations.find((o) => o.id === orgId);
 
     this.collectionOptions = this.collections
       .filter((c) => {
         // Filter criteria:
         // - The collection belongs to the organization
+        // - The user can edit items within the collection
         // - When in partial edit mode, show all org collections because the control is disabled.
         // - When viewing as an admin, all collections should be shown, even readonly. When non-admin, filter out readonly collections
-        return c.organizationId === orgId && (this.partialEdit || !c.readOnly || this.config.admin);
+        return (
+          c.organizationId === orgId &&
+          c.canEditItems(organization) &&
+          (this.partialEdit || !c.readOnly || this.config.admin)
+        );
       })
       .map((c) => ({
         id: c.id,
