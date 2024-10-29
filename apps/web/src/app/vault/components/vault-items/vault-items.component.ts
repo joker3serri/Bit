@@ -479,11 +479,11 @@ export class VaultItemsComponent {
   }
 
   private getCipherPermission(cipher: CipherView): ItemPermission {
-    if (cipher.organizationId == null || cipher.collectionIds.length === 0) {
+    if (!cipher.organizationId || cipher.collectionIds.length === 0) {
       return CollectionPermission.Manage;
     }
 
-    const filteredCollections = this.collections.filter((collection) => {
+    const filteredCollections = this.allCollections?.filter((collection) => {
       if (collection.assigned) {
         return cipher.collectionIds.find((id) => {
           if (collection.id === id) {
