@@ -25,12 +25,6 @@ const writeLn = CliUtils.writeLn;
 export class Program extends BaseProgram {
   async register() {
     const clientVersion = await this.serviceContainer.platformUtilsService.getApplicationVersion();
-    const sdkVersion = await firstValueFrom(
-      this.serviceContainer.sdkService.client$.pipe(
-        map((c) => c.version()),
-        catchError(() => "Unsupported"),
-      ),
-    );
 
     program
       .option("--pretty", "Format output. JSON is tabbed with two spaces.")
@@ -40,7 +34,7 @@ export class Program extends BaseProgram {
       .option("--quiet", "Don't return anything to stdout.")
       .option("--nointeraction", "Do not prompt for interactive user input.")
       .option("--session <session>", "Pass session key instead of reading from env.")
-      .version(`${clientVersion} - SDK: ${sdkVersion}`, "-v, --version");
+      .version(clientVersion, "-v, --version");
 
     program.on("option:pretty", () => {
       process.env.BW_PRETTY = "true";
@@ -107,6 +101,19 @@ export class Program extends BaseProgram {
       );
       writeLn("", true);
     });
+
+    program
+      .command("sdk-version")
+      .description("Print the SDK version.")
+      .action(async () => {
+        const sdkVersion = await firstValueFrom(
+          this.serviceContainer.sdkService.client$.pipe(
+            map((c) => c.version()),
+            catchError(() => "Unsupported"),
+          ),
+        );
+        writeLn(sdkVersion, true);
+      });
 
     program
       .command("login [email] [password]")
