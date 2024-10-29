@@ -33,7 +33,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { DialogService, ToastService } from "@bitwarden/components";
 
 import {
-  GroupService,
+  GroupApiService,
   GroupView,
   OrganizationUserAdminView,
   UserAdminService,
@@ -138,7 +138,7 @@ export class MemberDialogComponent implements OnDestroy {
     private formBuilder: FormBuilder,
     // TODO: We should really look into consolidating naming conventions for these services
     private collectionAdminService: CollectionAdminService,
-    private groupService: GroupService,
+    private groupService: GroupApiService,
     private userService: UserAdminService,
     private organizationUserApiService: OrganizationUserApiService,
     private dialogService: DialogService,

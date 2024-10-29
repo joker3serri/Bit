@@ -15,7 +15,7 @@ import { GroupDetailsResponse, GroupResponse } from "./responses/group.response"
 @Injectable({
   providedIn: "root",
 })
-export class GroupService {
+export class GroupApiService {
   constructor(
     protected apiService: ApiService,
     protected configService: ConfigService,
@@ -49,7 +49,7 @@ export class GroupService {
 }
 
 @Injectable({ providedIn: CoreOrganizationModule })
-export class InternalGroupService extends GroupService {
+export class InternalGroupService extends GroupApiService {
   constructor(
     protected apiService: ApiService,
     protected configService: ConfigService,
