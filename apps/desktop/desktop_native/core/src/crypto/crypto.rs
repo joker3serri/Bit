@@ -48,10 +48,7 @@ pub fn argon2(
     use argon2::*;
 
     let params = Params::new(memory, iterations, parallelism, Some(32)).map_err(|e| {
-        KdfParamError::InvalidParams(format!(
-            "Argon2 parameters are invalid: {}",
-            e.to_string()
-        ))
+        KdfParamError::InvalidParams(format!("Argon2 parameters are invalid: {e}",))
     })?;
     let argon = Argon2::new(Algorithm::Argon2id, Version::V0x13, params);
 
