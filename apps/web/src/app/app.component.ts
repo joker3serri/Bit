@@ -17,6 +17,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/abstractions/process-reload.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -91,6 +92,7 @@ export class AppComponent implements OnDestroy, OnInit {
     private accountService: AccountService,
     private logService: LogService,
     private sdkService: SdkService,
+    private processReloadService: ProcessReloadServiceAbstraction,
   ) {
     if (flagEnabled("sdk")) {
       // Warn if the SDK for some reason can't be initialized
@@ -149,6 +151,7 @@ export class AppComponent implements OnDestroy, OnInit {
             ) {
               await this.notificationsService.updateConnection(false);
             }
+            await this.processReloadService.startProcessReload(this.authService);
             break;
           case "unlocked":
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
@@ -170,9 +173,8 @@ export class AppComponent implements OnDestroy, OnInit {
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             this.notificationsService.updateConnection(false);
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.router.navigate(["lock"]);
+
+            await this.processReloadService.startProcessReload(this.authService);
             break;
           case "lockedUrl":
             break;
