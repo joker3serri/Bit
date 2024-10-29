@@ -42,7 +42,8 @@ export function lockGuard(): CanActivateFn {
 
     const activeUser = await firstValueFrom(accountService.activeAccount$);
 
-    // If no active user, redirect to root: user logged out on lock screen and app reloads lock comp without active user
+    // If no active user, redirect to root:
+    // scenario context: user logs out on lock screen and app will reload lock comp without active user
     if (!activeUser) {
       return router.createUrlTree(["/"]);
     }
