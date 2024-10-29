@@ -40,7 +40,7 @@ import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.compo
 import { maxAccountsGuardFn } from "../auth/guards/max-accounts.guard";
 import { HintComponent } from "../auth/hint.component";
 import { LockComponent } from "../auth/lock.component";
-import { LoginDecryptionOptionsComponent } from "../auth/login/login-decryption-options/login-decryption-options.component";
+import { LoginDecryptionOptionsComponentV1 } from "../auth/login/login-decryption-options/login-decryption-options-v1.component";
 import { LoginComponentV1 } from "../auth/login/login-v1.component";
 import { LoginViaAuthRequestComponent } from "../auth/login/login-via-auth-request.component";
 import { RegisterComponent } from "../auth/register.component";
@@ -103,7 +103,7 @@ const routes: Routes = [
   ),
   {
     path: "login-initiated",
-    component: LoginDecryptionOptionsComponent,
+    component: LoginDecryptionOptionsComponentV1,
     canActivate: [tdeDecryptionRequiredGuard()],
   },
   { path: "register", component: RegisterComponent },

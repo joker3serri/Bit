@@ -49,7 +49,7 @@ import {
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
 import { LockComponent } from "../auth/popup/lock.component";
-import { LoginDecryptionOptionsComponent } from "../auth/popup/login-decryption-options/login-decryption-options.component";
+import { LoginDecryptionOptionsComponentV1 } from "../auth/popup/login-decryption-options/login-decryption-options-v1.component";
 import { LoginComponentV1 } from "../auth/popup/login-v1.component";
 import { LoginViaAuthRequestComponent } from "../auth/popup/login-via-auth-request.component";
 import { RegisterComponent } from "../auth/popup/register.component";
@@ -218,7 +218,7 @@ const routes: Routes = [
   },
   {
     path: "login-initiated",
-    component: LoginDecryptionOptionsComponent,
+    component: LoginDecryptionOptionsComponentV1,
     canActivate: [tdeDecryptionRequiredGuard()],
     data: { state: "login-initiated" } satisfies RouteDataProperties,
   },

@@ -44,7 +44,7 @@ import { CreateOrganizationComponent } from "./admin-console/settings/create-org
 import { deepLinkGuard } from "./auth/guards/deep-link.guard";
 import { HintComponent } from "./auth/hint.component";
 import { LockComponent } from "./auth/lock.component";
-import { LoginDecryptionOptionsComponent } from "./auth/login/login-decryption-options/login-decryption-options.component";
+import { LoginDecryptionOptionsComponentV1 } from "./auth/login/login-decryption-options/login-decryption-options-v1.component";
 import { LoginComponentV1 } from "./auth/login/login-v1.component";
 import { LoginViaAuthRequestComponent } from "./auth/login/login-via-auth-request.component";
 import { LoginViaWebAuthnComponent } from "./auth/login/login-via-webauthn/login-via-webauthn.component";
@@ -113,7 +113,7 @@ const routes: Routes = [
       },
       {
         path: "login-initiated",
-        component: LoginDecryptionOptionsComponent,
+        component: LoginDecryptionOptionsComponentV1,
         canActivate: [tdeDecryptionRequiredGuard()],
       },
       {
