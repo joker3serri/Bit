@@ -35,6 +35,7 @@ import {
   SetPasswordJitComponent,
   UserLockIcon,
   VaultIcon,
+  LoginDecryptionOptionsComponent,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -215,12 +216,6 @@ const routes: Routes = [
     component: TwoFactorOptionsComponent,
     canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "2fa-options" } satisfies RouteDataProperties,
-  },
-  {
-    path: "login-initiated",
-    component: LoginDecryptionOptionsComponentV1,
-    canActivate: [tdeDecryptionRequiredGuard()],
-    data: { state: "login-initiated" } satisfies RouteDataProperties,
   },
   {
     path: "sso",
@@ -487,6 +482,29 @@ const routes: Routes = [
           ],
         },
       ],
+    },
+  ),
+  ...unauthUiRefreshSwap(
+    LoginDecryptionOptionsComponentV1,
+    ExtensionAnonLayoutWrapperComponent,
+    {
+      path: "login-initiated",
+      canActivate: [tdeDecryptionRequiredGuard()],
+      data: { state: "login-initiated" } satisfies RouteDataProperties,
+    },
+    {
+      path: "login-initiated",
+      canActivate: [tdeDecryptionRequiredGuard()],
+      data: {
+        pageTitle: {
+          key: "deviceApprovalRequiredV2",
+        },
+        pageSubtitle: {
+          key: "selectAnApprovalOptionBelow",
+        },
+        titleId: "deviceApprovalRequiredV2",
+      },
+      children: [{ path: "", component: LoginDecryptionOptionsComponent }],
     },
   ),
   {

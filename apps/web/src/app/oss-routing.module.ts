@@ -31,6 +31,7 @@ import {
   RegistrationLockAltIcon,
   RegistrationExpiredLinkIcon,
   VaultIcon,
+  LoginDecryptionOptionsComponent,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -110,11 +111,6 @@ const routes: Routes = [
         path: "admin-approval-requested",
         component: LoginViaAuthRequestComponent,
         data: { titleId: "adminApprovalRequested" } satisfies RouteDataProperties,
-      },
-      {
-        path: "login-initiated",
-        component: LoginDecryptionOptionsComponentV1,
-        canActivate: [tdeDecryptionRequiredGuard()],
       },
       {
         path: "register",
@@ -224,6 +220,28 @@ const routes: Routes = [
           outlet: "environment-selector",
         },
       ],
+    },
+  ),
+  ...unauthUiRefreshSwap(
+    LoginDecryptionOptionsComponentV1,
+    AnonLayoutWrapperComponent,
+    {
+      path: "login-initiated",
+      canActivate: [tdeDecryptionRequiredGuard()],
+    },
+    {
+      path: "login-initiated",
+      canActivate: [tdeDecryptionRequiredGuard()],
+      data: {
+        pageTitle: {
+          key: "deviceApprovalRequiredV2",
+        },
+        pageSubtitle: {
+          key: "selectAnApprovalOptionBelow",
+        },
+        titleId: "deviceApprovalRequiredV2",
+      },
+      children: [{ path: "", component: LoginDecryptionOptionsComponent }],
     },
   ),
   ...unauthUiRefreshSwap(

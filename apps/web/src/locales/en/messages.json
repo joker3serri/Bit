@@ -7928,6 +7928,12 @@
   "deviceApprovalRequired": {
     "message": "Device approval required. Select an approval option below:"
   },
+  "deviceApprovalRequiredV2": {
+    "message": "Device approval required"
+  },
+  "selectAnApprovalOptionBelow": {
+    "message": "Select an approval option below"
+  },
   "rememberThisDevice": {
     "message": "Remember this device"
   },
