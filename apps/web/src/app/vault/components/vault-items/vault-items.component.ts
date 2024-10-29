@@ -21,6 +21,8 @@ export const RowHeightClass = `tw-h-[65px]`;
 
 const MaxSelectionCount = 500;
 
+type ItemPermission = CollectionPermission | "NoAccess";
+
 @Component({
   selector: "app-vault-items",
   templateUrl: "vault-items.component.html",
@@ -390,26 +392,20 @@ export class VaultItemsComponent {
    */
   protected sortByPermissions = (a: VaultItem, b: VaultItem, direction: SortDirection) => {
     const getPermissionPriority = (item: VaultItem): number => {
-      if (item.collection instanceof CollectionAdminView) {
-        const permission = this.getCollectionPermission(item.collection);
+      const permission = item.collection
+        ? this.getCollectionPermission(item.collection)
+        : this.getCipherPermission(item.cipher);
 
-        switch (permission) {
-          case CollectionPermission.Manage:
-            return 5;
-          case CollectionPermission.Edit:
-            return 4;
-          case CollectionPermission.EditExceptPass:
-            return 3;
-          case CollectionPermission.View:
-            return 2;
-          case CollectionPermission.ViewExceptPass:
-            return 1;
-          case "NoAccess":
-            return 0;
-        }
-      }
+      const priorityMap = {
+        [CollectionPermission.Manage]: 5,
+        [CollectionPermission.Edit]: 4,
+        [CollectionPermission.EditExceptPass]: 3,
+        [CollectionPermission.View]: 2,
+        [CollectionPermission.ViewExceptPass]: 1,
+        NoAccess: 0,
+      };
 
-      return -1;
+      return priorityMap[permission] ?? -1;
     };
 
     // Collections before ciphers
@@ -468,9 +464,7 @@ export class VaultItemsComponent {
     return this.allGroups.find((g) => g.id === groupId)?.name;
   }
 
-  private getCollectionPermission(
-    collection: CollectionAdminView,
-  ): CollectionPermission | "NoAccess" {
+  private getCollectionPermission(collection: CollectionView): ItemPermission {
     const organization = this.allOrganizations.find((o) => o.id === collection.organizationId);
 
     if (collection.id == Unassigned && organization?.canEditUnassignedCiphers) {
@@ -479,6 +473,42 @@ export class VaultItemsComponent {
 
     if (collection.assigned) {
       return convertToPermission(collection);
+    }
+
+    return "NoAccess";
+  }
+
+  private getCipherPermission(cipher: CipherView): ItemPermission {
+    if (cipher.organizationId == null || cipher.collectionIds.length === 0) {
+      return CollectionPermission.Manage;
+    }
+
+    const filteredCollections = this.collections.filter((collection) => {
+      if (collection.assigned) {
+        return cipher.collectionIds.find((id) => {
+          if (collection.id === id) {
+            return collection;
+          }
+        });
+      }
+    });
+
+    if (filteredCollections?.length === 1) {
+      return convertToPermission(filteredCollections[0]);
+    }
+
+    if (filteredCollections?.length > 0) {
+      const permissions = filteredCollections.map((collection) => convertToPermission(collection));
+
+      const orderedPermissions = [
+        CollectionPermission.Manage,
+        CollectionPermission.Edit,
+        CollectionPermission.EditExceptPass,
+        CollectionPermission.View,
+        CollectionPermission.ViewExceptPass,
+      ];
+
+      return orderedPermissions.find((perm) => permissions.includes(perm));
     }
 
     return "NoAccess";
