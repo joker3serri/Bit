@@ -166,9 +166,7 @@ export class TableDataSource<T> extends DataSource<T> {
     return data.sort((a, b) => {
       // If a custom sort function is provided, use it instead of the default.
       if (sort.fn) {
-        return sort.fn.length === 3
-          ? sort.fn(a, b, sort.direction)
-          : sort.fn(a, b) * directionModifier;
+        return sort.fn(a, b, sort.direction) * directionModifier;
       }
 
       let valueA = this.sortingDataAccessor(a, column);

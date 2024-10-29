@@ -341,8 +341,7 @@ export class VaultItemsComponent {
       return collectionCompare;
     }
 
-    const nameCompare = this.compareNames(a, b);
-    return direction === "asc" ? nameCompare : -nameCompare;
+    return this.compareNames(a, b);
   };
 
   /**
@@ -375,15 +374,14 @@ export class VaultItemsComponent {
     // Collections with groups come before collections without groups.
     // If a collection has no groups, getFirstGroupName returns null.
     if (aGroupName === null) {
-      return direction === "asc" ? 1 : -1;
+      return 1;
     }
 
     if (bGroupName === null) {
-      return direction === "asc" ? -1 : 1;
+      return -1;
     }
 
-    const groupCompare = aGroupName.localeCompare(bGroupName);
-    return direction === "asc" ? groupCompare : -groupCompare;
+    return aGroupName.localeCompare(bGroupName);
   };
 
   /**
@@ -425,12 +423,10 @@ export class VaultItemsComponent {
 
     // Higher priority first
     if (priorityA !== priorityB) {
-      const priorityCompare = priorityB - priorityA;
-      return direction === "asc" ? priorityCompare : -priorityCompare;
+      return priorityB - priorityA;
     }
 
-    const nameCompare = this.compareNames(a, b);
-    return direction === "asc" ? nameCompare : -nameCompare;
+    return this.compareNames(a, b);
   };
 
   private compareNames(a: VaultItem, b: VaultItem): number {
@@ -442,13 +438,13 @@ export class VaultItemsComponent {
    * Sorts VaultItems by prioritizing collections over ciphers.
    * Collections are always placed before ciphers, regardless of the sorting direction.
    */
-  private prioritizeCollections(a: VaultItem, b: VaultItem, direction: "asc" | "desc"): number {
+  private prioritizeCollections(a: VaultItem, b: VaultItem, direction: SortDirection): number {
     if (a.collection && !b.collection) {
-      return -1;
+      return direction === "asc" ? -1 : 1;
     }
 
     if (!a.collection && b.collection) {
-      return 1;
+      return direction === "asc" ? 1 : -1;
     }
 
     return 0;
