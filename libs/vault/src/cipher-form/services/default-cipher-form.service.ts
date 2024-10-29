@@ -1,8 +1,10 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom, map } from "rxjs";
 
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
@@ -17,6 +19,7 @@ function isSetEqual(a: Set<string>, b: Set<string>) {
 export class DefaultCipherFormService implements CipherFormService {
   private cipherService: CipherService = inject(CipherService);
   private accountService: AccountService = inject(AccountService);
+  private apiService: ApiService = inject(ApiService);
 
   async decryptCipher(cipher: Cipher): Promise<CipherView> {
     const activeUserId = await firstValueFrom(
@@ -64,19 +67,29 @@ export class DefaultCipherFormService implements CipherFormService {
       savedCipher = await this.cipherService.updateWithServer(encryptedCipher, config.admin);
     } else {
       // Updating a cipher with collection changes is not supported with a single request currently
-      // First update collections. Collections need to be updated first to handle the case where a cipher is unassigned
-      // and needs to be assigned to a collection before any other edits are made.
-      if (config.admin || originalCollectionIds.size === 0) {
-        // When using an admin config, update collections as an admin
-        await this.cipherService.saveCollectionsWithServerAdmin(encryptedCipher);
-      } else {
-        await this.cipherService.saveCollectionsWithServer(encryptedCipher);
-      }
-
-      savedCipher = await this.cipherService.updateWithServer(
+      // First update the cipher with the original collectionIds
+      encryptedCipher.collectionIds = config.originalCipher.collectionIds;
+      await this.cipherService.updateWithServer(
         encryptedCipher,
         config.admin || originalCollectionIds.size === 0,
+        config.mode !== "clone",
       );
+
+      // Then save the new collection changes separately
+      encryptedCipher.collectionIds = cipher.collectionIds;
+
+      if (config.admin || originalCollectionIds.size === 0) {
+        // When using an admin config or the cipher was unassigned, update collections as an admin
+        await this.cipherService.saveCollectionsWithServerAdmin(encryptedCipher);
+
+        // Get updated cipher from the admin endpoint as `saveCollectionsWithServerAdmin` doesn't return the updated cipher
+        const cipherResponse = await this.apiService.getCipherAdmin(encryptedCipher.id);
+        const cipherData = new CipherData(cipherResponse);
+
+        savedCipher = new Cipher(cipherData);
+      } else {
+        savedCipher = await this.cipherService.saveCollectionsWithServer(encryptedCipher);
+      }
     }
 
     // Its possible the cipher was made no longer available due to collection assignment changes
