@@ -7,7 +7,11 @@ import { BehaviorSubject, firstValueFrom, Subject, switchMap, take, takeUntil } 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
-import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import {
+  Account,
+  AccountInfo,
+  AccountService,
+} from "@bitwarden/common/auth/abstractions/account.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
@@ -202,10 +206,14 @@ export class LockV2Component implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private async handleActiveAccountChange(activeAccount: { id: UserId | undefined } & AccountInfo) {
+  private async handleActiveAccountChange(activeAccount: Account | null) {
     this.activeAccount = activeAccount;
 
     this.resetDataOnActiveAccountChange();
+
+    if (activeAccount == null) {
+      return;
+    }
 
     this.setEmailAsPageSubtitle(activeAccount.email);
 
