@@ -1,7 +1,19 @@
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { OnInit, Input, Output, EventEmitter, Component, OnDestroy } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, skip, takeUntil, Subject } from "rxjs";
+import {
+  BehaviorSubject,
+  skip,
+  takeUntil,
+  Subject,
+  combineLatest,
+  filter,
+  map,
+  withLatestFrom,
+  Observable,
+  merge,
+  firstValueFrom,
+} from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -69,6 +81,7 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const singleUserId$ = this.singleUserId$();
     const settings = await this.generatorService.settings(Generators.passphrase, { singleUserId$ });
+    settings.pipe(takeUntil(this.destroyed$)).subscribe(this.okSettings$);
 
     // skips reactive event emissions to break a subscription cycle
     settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
@@ -100,11 +113,62 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
       });
 
     // now that outputs are set up, connect inputs
-    this.settings.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(settings);
+    this.settings$().pipe(takeUntil(this.destroyed$)).subscribe(settings);
+  }
+
+  protected settings$(): Observable<Partial<PassphraseGenerationOptions>> {
+    // save valid changes
+    const validChanges$ = combineLatest([
+      this.settings.valueChanges,
+      this.settings.statusChanges,
+    ]).pipe(
+      filter(([, status]) => status === "VALID"),
+      map(([settings]) => settings),
+    );
+
+    // discards changes but keep the override setting that changed
+    const overrides = [Controls.capitalize, Controls.includeNumber];
+    const overrideChanges$ = this.settings.valueChanges.pipe(
+      withLatestFrom(this.okSettings$),
+      filter(([current, ok]) => overrides.some((c) => current[c] !== ok[c])),
+      map(([current, ok]) => {
+        const copy = { ...ok };
+        for (const override of overrides) {
+          copy[override] = current[override];
+        }
+        return copy;
+      }),
+    );
+
+    // save reloaded settings when requested
+    const reloadChanges$ = this.reloadSettings$.pipe(
+      withLatestFrom(this.okSettings$),
+      map(([, settings]) => settings),
+    );
+
+    return merge(validChanges$, overrideChanges$, reloadChanges$);
   }
 
   /** display binding for enterprise policy notice */
   protected policyInEffect: boolean;
+
+  private okSettings$ = new BehaviorSubject<PassphraseGenerationOptions>(null);
+
+  private reloadSettings$ = new Subject<string>();
+
+  /** triggers a reload of the users' settings
+   *  @param site labels the invocation site so that an operation
+   *   can be traced back to its origin. Useful for debugging rxjs.
+   *  @returns a promise that completes once a reload occurs.
+   */
+  async reloadSettings(site: string = "component api call") {
+    const reloadComplete = firstValueFrom(this.okSettings$);
+    if (this.settings.invalid) {
+      this.reloadSettings$.next(site);
+    }
+
+    await reloadComplete;
+  }
 
   private toggleEnabled(setting: keyof typeof Controls, enabled: boolean) {
     if (enabled) {
@@ -129,6 +193,7 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
 
   private readonly destroyed$ = new Subject<void>();
   ngOnDestroy(): void {
+    this.destroyed$.next();
     this.destroyed$.complete();
   }
 }

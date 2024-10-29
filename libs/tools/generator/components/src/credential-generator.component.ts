@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
@@ -39,6 +48,8 @@ import {
 } from "@bitwarden/generator-core";
 import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
+import { PassphraseSettingsComponent } from "./passphrase-settings.component";
+
 // constants used to identify navigation selections that are not
 // generator algorithms
 const IDENTIFIER = "identifier";
@@ -60,6 +71,9 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private formBuilder: FormBuilder,
   ) {}
+
+  /** binds to the settings component at runtime */
+  @ViewChild("passphrase") passphraseSettings: PassphraseSettingsComponent;
 
   /** Binds the component to a specific user's settings. When this input is not provided,
    * the form binds to the active user
@@ -385,7 +399,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         if (!a || a.onlyOnRequest) {
           this.value$.next("-");
         } else {
-          this.generate("autogenerate");
+          this.generate("autogenerate").catch((e: unknown) => this.logService.error(e));
         }
       });
     });
@@ -487,7 +501,11 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
    * @param requestor a label used to trace generation request
    *  origin in the debugger.
    */
-  protected generate(requestor: string) {
+  protected async generate(requestor: string) {
+    if (this.passphraseSettings) {
+      await this.passphraseSettings.reloadSettings("credential generator");
+    }
+
     this.generate$.next(requestor);
   }
 

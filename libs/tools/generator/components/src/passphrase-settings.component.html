@@ -7,7 +7,13 @@
       <bit-card>
         <bit-form-field disableMargin>
           <bit-label>{{ "numWords" | i18n }}</bit-label>
-          <input bitInput formControlName="numWords" id="num-words" type="number" />
+          <input
+            bitInput
+            formControlName="numWords"
+            id="num-words"
+            type="number"
+            (blur)="reloadSettings('numWords')"
+          />
         </bit-form-field>
       </bit-card>
     </div>
@@ -15,7 +21,13 @@
       <bit-card>
         <bit-form-field>
           <bit-label>{{ "wordSeparator" | i18n }}</bit-label>
-          <input bitInput formControlName="wordSeparator" id="word-separator" type="text" />
+          <input
+            bitInput
+            formControlName="wordSeparator"
+            id="word-separator"
+            type="text"
+            (blur)="reloadSettings('wordSeparator')"
+          />
         </bit-form-field>
         <bit-form-control>
           <input bitCheckbox formControlName="capitalize" id="capitalize" type="checkbox" />
