@@ -1,7 +1,11 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, RouteReuseStrategy, RouterModule, Routes } from "@angular/router";
 
-import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
+import {
+  EnvironmentSelectorComponent,
+  EnvironmentSelectorRouteData,
+  ExtensionDefaultOverlayPosition,
+} from "@bitwarden/angular/auth/components/environment-selector.component";
 import { unauthUiRefreshRedirect } from "@bitwarden/angular/auth/functions/unauth-ui-refresh-redirect";
 import { unauthUiRefreshSwap } from "@bitwarden/angular/auth/functions/unauth-ui-refresh-route-swap";
 import {
@@ -438,6 +442,9 @@ const routes: Routes = [
               path: "",
               component: EnvironmentSelectorComponent,
               outlet: "environment-selector",
+              data: {
+                overlayPosition: ExtensionDefaultOverlayPosition,
+              } satisfies EnvironmentSelectorRouteData,
             },
           ],
         },
@@ -460,14 +467,23 @@ const routes: Routes = [
           canActivate: [unauthGuardFn(unauthRouteOverrides)],
           data: {
             pageIcon: VaultIcon,
-            pageTitle: "logInToBitwarden",
+            pageTitle: {
+              key: "logInToBitwarden",
+            },
             state: "login",
             showAcctSwitcher: true,
           } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
           children: [
             { path: "", component: LoginComponent },
             { path: "", component: LoginSecondaryContentComponent, outlet: "secondary" },
-            { path: "", component: EnvironmentSelectorComponent, outlet: "environment-selector" },
+            {
+              path: "",
+              component: EnvironmentSelectorComponent,
+              outlet: "environment-selector",
+              data: {
+                overlayPosition: ExtensionDefaultOverlayPosition,
+              } satisfies EnvironmentSelectorRouteData,
+            },
           ],
         },
       ],

@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { firstValueFrom, of, Subject, switchMap, take, takeUntil } from "rxjs";
+import { firstValueFrom, Subject, take, takeUntil } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -18,7 +18,8 @@ import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstraction
 import { CaptchaIFrame } from "@bitwarden/common/auth/captcha-iframe";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
-import { ClientType } from "@bitwarden/common/enums";
+import { ClientType, HttpStatusCode } from "@bitwarden/common/enums";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -26,6 +27,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
@@ -35,11 +37,12 @@ import {
   CheckboxModule,
   FormFieldModule,
   IconButtonModule,
+  LinkModule,
   ToastService,
 } from "@bitwarden/components";
 
 import { AnonLayoutWrapperDataService } from "../anon-layout/anon-layout-wrapper-data.service";
-import { WaveIcon } from "../icons";
+import { VaultIcon, WaveIcon } from "../icons";
 
 import { LoginComponentService } from "./login-component.service";
 
@@ -60,6 +63,7 @@ export enum LoginUiState {
     CommonModule,
     FormFieldModule,
     IconButtonModule,
+    LinkModule,
     JslibModule,
     ReactiveFormsModule,
     RouterModule,
@@ -71,7 +75,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private enforcedMasterPasswordOptions: MasterPasswordPolicyOptions = undefined;
-  readonly Icons = { WaveIcon };
+  readonly Icons = { WaveIcon, VaultIcon };
 
   captcha: CaptchaIFrame;
   captchaToken: string = null;
@@ -80,7 +84,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   LoginUiState = LoginUiState;
   registerRoute$ = this.registerRouteService.registerRoute$(); // TODO: remove when email verification flag is removed
   isKnownDevice = false;
-  validatedEmail = false;
+  loginUiState: LoginUiState = LoginUiState.EMAIL_ENTRY;
 
   formGroup = this.formBuilder.group(
     {
@@ -98,18 +102,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     return this.formGroup.controls.email;
   }
 
-  get loggedEmail(): string {
-    return this.formGroup.value.email;
-  }
-
-  get uiState(): LoginUiState {
-    return this.validatedEmail ? LoginUiState.MASTER_PASSWORD_ENTRY : LoginUiState.EMAIL_ENTRY;
-  }
+  /**
+   * LoginViaAuthRequestSupported is a boolean that determines if we show the Login with device button.
+   * An AuthRequest is the mechanism that allows users to login to the client via a device that is already logged in.
+   */
+  loginViaAuthRequestSupported = false;
 
   // Web properties
   enforcedPasswordPolicyOptions: MasterPasswordPolicyOptions;
   policies: Policy[];
-  loginViaAuthRequestSupported = false;
   showResetPasswordAutoEnrollWarning = false;
 
   // Desktop properties
@@ -137,6 +138,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private syncService: SyncService,
     private toastService: ToastService,
     private logService: LogService,
+    private validationService: ValidationService,
   ) {
     this.clientType = this.platformUtilsService.getClientType();
     this.loginViaAuthRequestSupported = this.loginComponentService.isLoginViaAuthRequestSupported();
@@ -162,7 +164,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   submit = async (): Promise<void> => {
     if (this.clientType === ClientType.Desktop) {
-      if (!this.validatedEmail) {
+      if (this.loginUiState !== LoginUiState.MASTER_PASSWORD_ENTRY) {
         return;
       }
     }
@@ -183,18 +185,53 @@ export class LoginComponent implements OnInit, OnDestroy {
       null,
     );
 
-    const authResult = await this.loginStrategyService.logIn(credentials);
+    try {
+      const authResult = await this.loginStrategyService.logIn(credentials);
 
-    await this.saveEmailSettings();
-    await this.handleAuthResult(authResult);
+      await this.saveEmailSettings();
+      await this.handleAuthResult(authResult);
 
-    if (this.clientType === ClientType.Desktop) {
-      if (this.captchaSiteKey) {
-        const content = document.getElementById("content") as HTMLDivElement;
-        content.setAttribute("style", "width:335px");
+      if (this.clientType === ClientType.Desktop) {
+        if (this.captchaSiteKey) {
+          const content = document.getElementById("content") as HTMLDivElement;
+          content.setAttribute("style", "width:335px");
+        }
       }
+    } catch (error) {
+      this.logService.error(error);
+      this.handleSubmitError(error);
     }
   };
+
+  /**
+   * Handles the error from the submit function.
+   *
+   * @param error The error object.
+   */
+  private handleSubmitError(error: unknown) {
+    // Handle error responses
+    if (error instanceof ErrorResponse) {
+      switch (error.statusCode) {
+        case HttpStatusCode.BadRequest: {
+          if (error.message.toLowerCase().includes("username or password is incorrect")) {
+            this.formGroup.controls.masterPassword.setErrors({
+              error: {
+                message: this.i18nService.t("invalidMasterPassword"),
+              },
+            });
+          }
+          break;
+        }
+        default: {
+          // Allow all other errors to be handled by toast
+          this.validationService.showError(error);
+        }
+      }
+    } else {
+      // Allow all other errors to be handled by toast
+      this.validationService.showError(error);
+    }
+  }
 
   /**
    * Handles the result of the authentication process.
@@ -252,7 +289,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   protected async launchSsoBrowserWindow(clientId: "browser" | "desktop"): Promise<void> {
-    await this.loginComponentService.launchSsoBrowserWindow(this.loggedEmail, clientId);
+    await this.loginComponentService.launchSsoBrowserWindow(this.emailFormControl.value, clientId);
   }
 
   protected async evaluatePassword(): Promise<void> {
@@ -316,35 +353,38 @@ export class LoginComponent implements OnInit, OnDestroy {
     await this.router.navigate(["/login-with-device"]);
   }
 
-  protected async continue(): Promise<void> {
+  protected async validateEmail(): Promise<boolean> {
     this.formGroup.controls.email.markAsTouched();
-    const emailValid = this.formGroup.controls.email.valid;
-
-    if (!emailValid) {
-      return;
-    }
-
-    this.toggleValidateEmail(true);
-    await this.getLoginWithDevice(this.loggedEmail);
-
-    this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
-      pageTitle: {
-        key: "welcomeBack",
-      },
-      pageSubtitle: this.loggedEmail,
-      pageIcon: this.Icons.WaveIcon,
-    });
-
-    this.focusInput();
+    return this.formGroup.controls.email.valid;
   }
 
-  protected toggleValidateEmail(value: boolean): void {
-    this.validatedEmail = value;
+  protected async toggleLoginUiState(value: LoginUiState): Promise<void> {
+    this.loginUiState = value;
 
-    if (!this.validatedEmail) {
+    if (this.loginUiState === LoginUiState.EMAIL_ENTRY) {
+      this.loginComponentService.showBackButton(false);
+
+      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+        pageTitle: { key: "logInToBitwarden" },
+        pageIcon: this.Icons.VaultIcon,
+        pageSubtitle: null, // remove subtitle when going back to email entry
+      });
+
       // Reset master password only when going from validated to not validated so that autofill can work properly
       this.formGroup.controls.masterPassword.reset();
-    } else {
+
+      if (this.loginViaAuthRequestSupported) {
+        // Reset known device state when going back to email entry if it is supported
+        this.isKnownDevice = false;
+      }
+    } else if (this.loginUiState === LoginUiState.MASTER_PASSWORD_ENTRY) {
+      this.loginComponentService.showBackButton(true);
+      this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+        pageTitle: { key: "welcomeBack" },
+        pageSubtitle: this.emailFormControl.value,
+        pageIcon: this.Icons.WaveIcon,
+      });
+
       // Mark MP as untouched so that, when users enter email and hit enter, the MP field doesn't load with validation errors
       this.formGroup.controls.masterPassword.markAsUntouched();
 
@@ -355,6 +395,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.ngZone.onStable.pipe(take(1), takeUntil(this.destroy$)).subscribe(() => {
           this.masterPasswordInputRef?.nativeElement?.focus();
         });
+      }
+
+      if (this.loginViaAuthRequestSupported) {
+        await this.getKnownDevice(this.emailFormControl.value);
       }
     }
   }
@@ -399,7 +443,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     await this.loginEmailService.saveEmailSettings();
   }
 
-  private async getLoginWithDevice(email: string): Promise<void> {
+  protected async continue(): Promise<void> {
+    if (await this.validateEmail()) {
+      await this.toggleLoginUiState(LoginUiState.MASTER_PASSWORD_ENTRY);
+    }
+  }
+
+  /**
+   * Call to check if the device is known.
+   * Known means that the user has logged in with this device before.
+   * @param email - The user's email
+   */
+  private async getKnownDevice(email: string): Promise<void> {
     try {
       const deviceIdentifier = await this.appIdService.getAppId();
       this.isKnownDevice = await this.devicesApiService.getKnownDevice(email, deviceIdentifier);
@@ -461,44 +516,44 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private focusInput() {
-    const email = this.loggedEmail;
-    document.getElementById(email == null || email === "" ? "email" : "masterPassword")?.focus();
+    document
+      .getElementById(
+        this.emailFormControl.value == null || this.emailFormControl.value === ""
+          ? "email"
+          : "masterPassword",
+      )
+      ?.focus();
   }
 
   private async defaultOnInit(): Promise<void> {
-    await this.getLoginWithDevice(this.loggedEmail);
-
     // If there's an existing org invite, use it to get the password policies
     const orgPolicies = await this.loginComponentService.getOrgPolicies();
 
     this.policies = orgPolicies?.policies;
     this.showResetPasswordAutoEnrollWarning = orgPolicies?.isPolicyAndAutoEnrollEnabled;
-    this.enforcedPasswordPolicyOptions = orgPolicies?.enforcedPasswordPolicyOptions;
 
     let paramEmailIsSet = false;
 
-    this.activatedRoute?.queryParams
-      .pipe(
-        switchMap((params) => {
-          if (!params) {
-            // If no params,loadEmailSettings from state
-            return this.loadEmailSettings();
-          }
+    const params = await firstValueFrom(this.activatedRoute.queryParams);
 
-          const qParamsEmail = params.email;
+    if (params) {
+      const qParamsEmail = params.email;
 
-          // If there is an email in the query params, set that email as the form field value
-          if (qParamsEmail != null && qParamsEmail.indexOf("@") > -1) {
-            this.formGroup.controls.email.setValue(qParamsEmail);
-            paramEmailIsSet = true;
-          }
+      // If there is an email in the query params, set that email as the form field value
+      if (qParamsEmail != null && qParamsEmail.indexOf("@") > -1) {
+        this.formGroup.controls.email.setValue(qParamsEmail);
+        paramEmailIsSet = true;
+      }
+    }
 
-          // If there is no email in the query params, loadEmailSettings from state
-          return paramEmailIsSet ? of(null) : this.loadEmailSettings();
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe();
+    // If there are no params or no email in the query params, loadEmailSettings from state
+    if (!paramEmailIsSet) {
+      await this.loadEmailSettings();
+    }
+
+    if (this.loginViaAuthRequestSupported) {
+      await this.getKnownDevice(this.emailFormControl.value);
+    }
 
     // Backup check to handle unknown case where activatedRoute is not available
     // This shouldn't happen under normal circumstances
@@ -535,7 +590,10 @@ export class LoginComponent implements OnInit, OnDestroy {
    * Helper function to determine if the back button should be shown.
    * @returns true if the back button should be shown.
    */
-  protected showBackButton(): boolean {
-    return this.validatedEmail && this.clientType !== ClientType.Browser;
+  protected shouldShowBackButton(): boolean {
+    return (
+      this.loginUiState === LoginUiState.MASTER_PASSWORD_ENTRY &&
+      this.clientType !== ClientType.Browser
+    );
   }
 }

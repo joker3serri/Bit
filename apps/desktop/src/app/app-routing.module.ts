@@ -1,7 +1,10 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
+import {
+  DesktopDefaultOverlayPosition,
+  EnvironmentSelectorComponent,
+} from "@bitwarden/angular/auth/components/environment-selector.component";
 import { unauthUiRefreshSwap } from "@bitwarden/angular/auth/functions/unauth-ui-refresh-route-swap";
 import {
   authGuard,
@@ -28,6 +31,7 @@ import {
   RegistrationUserAddIcon,
   SetPasswordJitComponent,
   UserLockIcon,
+  VaultIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -73,10 +77,6 @@ const routes: Routes = [
   },
   {
     path: "login-with-device",
-    component: LoginViaAuthRequestComponent,
-  },
-  {
-    path: "login-with-passkey",
     component: LoginViaAuthRequestComponent,
   },
   {
@@ -179,7 +179,10 @@ const routes: Routes = [
           path: "login",
           canActivate: [maxAccountsGuardFn()],
           data: {
-            pageTitle: "logInToBitwarden",
+            pageTitle: {
+              key: "logInToBitwarden",
+            },
+            pageIcon: VaultIcon,
           },
           children: [
             { path: "", component: LoginComponent },
@@ -188,6 +191,9 @@ const routes: Routes = [
               path: "",
               component: EnvironmentSelectorComponent,
               outlet: "environment-selector",
+              data: {
+                overlayPosition: DesktopDefaultOverlayPosition,
+              },
             },
           ],
         },

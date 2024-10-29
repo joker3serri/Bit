@@ -56,38 +56,75 @@ describe("DefaultLoginComponentService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("getOrgPolicies returns null", async () => {
-    const result = await service.getOrgPolicies();
-    expect(result).toBeNull();
+  describe("getOrgPolicies", () => {
+    it("returns null", async () => {
+      const result = await service.getOrgPolicies();
+      expect(result).toBeNull();
+    });
   });
 
-  it("isLoginViaAuthRequestSupported returns false by default", () => {
-    expect(service.isLoginViaAuthRequestSupported()).toBe(false);
+  describe("isLoginViaAuthRequestSupported", () => {
+    it("returns false by default", () => {
+      expect(service.isLoginViaAuthRequestSupported()).toBe(false);
+    });
   });
 
-  it("isLoginWithPasskeySupported returns true when clientType is Web", () => {
-    service["clientType"] = ClientType.Web;
-    expect(service.isLoginWithPasskeySupported()).toBe(true);
+  describe("isLoginWithPasskeySupported", () => {
+    it("returns true when clientType is Web", () => {
+      service["clientType"] = ClientType.Web;
+      expect(service.isLoginWithPasskeySupported()).toBe(true);
+    });
+
+    it("returns false when clientType is not Web", () => {
+      service["clientType"] = ClientType.Desktop;
+      expect(service.isLoginWithPasskeySupported()).toBe(false);
+    });
   });
 
-  it("launches SSO browser window with correct URL", async () => {
+  describe("launchSsoBrowserWindow", () => {
     const email = "test@bitwarden.com";
-    const clientId = "browser";
-    const state = "testState";
+    let state = "testState";
     const codeVerifier = "testCodeVerifier";
     const codeChallenge = "testCodeChallenge";
+    const baseUrl = "https://webvault.bitwarden.com/#/sso";
 
-    passwordGenerationService.generatePassword.mockResolvedValueOnce(state);
-    passwordGenerationService.generatePassword.mockResolvedValueOnce(codeVerifier);
-    jest.spyOn(Utils, "fromBufferToUrlB64").mockReturnValue(codeChallenge);
+    beforeEach(() => {
+      state = "testState";
 
-    await service.launchSsoBrowserWindow(email, clientId);
+      passwordGenerationService.generatePassword.mockResolvedValueOnce(state);
+      passwordGenerationService.generatePassword.mockResolvedValueOnce(codeVerifier);
+      jest.spyOn(Utils, "fromBufferToUrlB64").mockReturnValue(codeChallenge);
+    });
 
-    expect(ssoLoginService.setSsoEmail).toHaveBeenCalledWith(email);
-    expect(ssoLoginService.setSsoState).toHaveBeenCalledWith(state);
-    expect(ssoLoginService.setCodeVerifier).toHaveBeenCalledWith(codeVerifier);
-    expect(platformUtilsService.launchUri).toHaveBeenCalledWith(
-      "https://webvault.bitwarden.com/#/sso?clientId=browser&redirectUri=https%3A%2F%2Fwebvault.bitwarden.com%2Fsso-connector.html&state=testState&codeChallenge=testCodeChallenge&email=test%40bitwarden.com",
+    it.each([
+      {
+        clientType: ClientType.Browser,
+        clientId: "browser",
+        expectedRedirectUri: "https://webvault.bitwarden.com/sso-connector.html",
+      },
+      {
+        clientType: ClientType.Desktop,
+        clientId: "desktop",
+        expectedRedirectUri: "bitwarden://sso-callback",
+      },
+    ])(
+      "launches SSO browser window with correct URL for $clientId client",
+      async ({ clientType, clientId, expectedRedirectUri }) => {
+        service["clientType"] = clientType;
+
+        await service.launchSsoBrowserWindow(email, clientId as "browser" | "desktop");
+
+        if (clientType === ClientType.Browser) {
+          state += ":clientId=browser";
+        }
+
+        const expectedUrl = `${baseUrl}?clientId=${clientId}&redirectUri=${encodeURIComponent(expectedRedirectUri)}&state=${state}&codeChallenge=${codeChallenge}&email=${encodeURIComponent(email)}`;
+
+        expect(ssoLoginService.setSsoEmail).toHaveBeenCalledWith(email);
+        expect(ssoLoginService.setSsoState).toHaveBeenCalledWith(state);
+        expect(ssoLoginService.setCodeVerifier).toHaveBeenCalledWith(codeVerifier);
+        expect(platformUtilsService.launchUri).toHaveBeenCalledWith(expectedUrl);
+      },
     );
   });
 });

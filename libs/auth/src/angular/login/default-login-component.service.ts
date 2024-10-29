@@ -1,4 +1,3 @@
-import { UrlTree } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { LoginComponentService, PasswordPolicies } from "@bitwarden/auth/angular";
@@ -23,10 +22,6 @@ export class DefaultLoginComponentService implements LoginComponentService {
   ) {}
 
   async getOrgPolicies(): Promise<PasswordPolicies | null> {
-    return null;
-  }
-
-  setPreviousUrl(route: UrlTree): void | null {
     return null;
   }
 
@@ -55,7 +50,12 @@ export class DefaultLoginComponentService implements LoginComponentService {
       special: false,
     };
 
-    const state = await this.passwordGenerationService.generatePassword(passwordOptions);
+    let state = await this.passwordGenerationService.generatePassword(passwordOptions);
+
+    if (clientId === "browser") {
+      // Need to persist the clientId in the state for the extension
+      state += ":clientId=browser";
+    }
 
     const codeVerifier = await this.passwordGenerationService.generatePassword(passwordOptions);
     const codeVerifierHash = await this.cryptoFunctionService.hash(codeVerifier, "sha256");
@@ -88,5 +88,12 @@ export class DefaultLoginComponentService implements LoginComponentService {
         "&email=" +
         encodeURIComponent(email),
     );
+  }
+
+  /**
+   * No-op implementation of showBackButton
+   */
+  showBackButton(showBackButton: boolean): void {
+    return;
   }
 }

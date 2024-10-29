@@ -1,5 +1,3 @@
-import { UrlTree } from "@angular/router";
-
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 
@@ -26,12 +24,6 @@ export abstract class LoginComponentService {
   getOrgPolicies: () => Promise<PasswordPolicies | null>;
 
   /**
-   * Sets the previous URL to keep track of in memory.
-   * - Used by: Web
-   */
-  setPreviousUrl: (route: UrlTree) => void | null;
-
-  /**
    * Indicates whether login with device (auth request) is supported on the given client
    */
   isLoginViaAuthRequestSupported: () => boolean;
@@ -46,4 +38,9 @@ export abstract class LoginComponentService {
    * - Used by: Browser, Desktop
    */
   launchSsoBrowserWindow: (email: string, clientId: "browser" | "desktop") => Promise<void>;
+
+  /**
+   * Shows the back button.
+   */
+  showBackButton: (showBackButton: boolean) => void;
 }
