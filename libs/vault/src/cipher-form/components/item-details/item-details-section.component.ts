@@ -100,6 +100,17 @@ export class ItemDetailsSectionComponent implements OnInit {
     return this.config.initialValues;
   }
 
+  /**
+   * Show the personal ownership option in the Owner dropdown when:
+   * - Personal ownership is allowed
+   * - The `organizationId` control is disabled. This avoids the scenario
+   * where a the dropdown is empty because the user personally owns the cipher
+   * but cannot edit the ownership.
+   */
+  get showPersonalOwnerOption() {
+    return this.allowPersonalOwnership || !this.itemDetailsForm.controls.organizationId.enabled;
+  }
+
   constructor(
     private cipherFormContainer: CipherFormContainer,
     private formBuilder: FormBuilder,
