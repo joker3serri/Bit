@@ -1713,11 +1713,11 @@
   "dangerZoneDesc": {
     "message": "Careful, these actions are not reversible!"
   },
+  "dangerZoneDescSingular": {
+    "message": "Careful, this action is not reversible!"
+  },
   "deauthorizeSessions": {
     "message": "Deauthorize sessions"
-  },
-  "deauthorizeSession": {
-    "message": "Deauthorize session"
   },
   "deauthorizeSessionsDesc": {
     "message": "Concerned your account is logged in on another device? Proceed below to deauthorize all computers or devices that you have previously used. This security step is recommended if you previously used a public computer or accidentally saved your password on a device that isn't yours. This step will also clear all previously remembered two-step login sessions."
