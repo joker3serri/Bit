@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Subject, from, map, of, pairwise, startWith, switchMap, take, takeUntil, tap } from "rxjs";
+import { Subject, from, map, of, pairwise, startWith, switchMap, takeUntil, tap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ClientType } from "@bitwarden/common/enums";
@@ -16,6 +16,11 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { DialogService, FormFieldModule, SelectModule, ToastService } from "@bitwarden/components";
 
 import { SelfHostedEnvConfigDialogComponent } from "../../self-hosted-env-config-dialog/self-hosted-env-config-dialog.component";
+
+/**
+ * Type for the selected region in the registration env selector.
+ */
+type RegionSelection = RegionConfig | Region.SelfHosted | null;
 
 /**
  * Component for selecting the environment to register with in the email verification registration flow.
@@ -110,17 +115,6 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens the self-hosted environment settings dialog and handles the result.
-   */
-  private handleSelfHostedSelection(prevSelectedRegion: RegionConfig | Region.SelfHosted | null) {
-    return from(SelfHostedEnvConfigDialogComponent.open(this.dialogService)).pipe(
-      tap((result: boolean | undefined) =>
-        this.handleSelfHostedEnvConfigDialogResult(result, prevSelectedRegion),
-      ),
-    );
-  }
-
-  /**
    * Listens for changes to the selected region and updates the form value and emits the selected region.
    */
   private listenForSelectedRegionChanges() {
@@ -184,11 +178,10 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
    * Handles the event when the select is closed.
    * If the selected region is self-hosted, opens the self-hosted environment settings dialog.
    */
-  async onSelectClosed(value: RegionConfig | Region.SelfHosted | null) {
-    if (value === Region.SelfHosted) {
-      this.handleSelfHostedSelection(this.selectedRegionFromEnv)
-        .pipe(take(1), takeUntil(this.destroy$))
-        .subscribe();
+  protected async onSelectClosed(selection: RegionSelection) {
+    if (selection === Region.SelfHosted) {
+      const result = await SelfHostedEnvConfigDialogComponent.open(this.dialogService);
+      return this.handleSelfHostedEnvConfigDialogResult(result, selection);
     }
   }
 
