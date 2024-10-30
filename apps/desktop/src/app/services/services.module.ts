@@ -119,6 +119,8 @@ import { DesktopThemeStateService } from "./desktop-theme.service";
 import { InitService } from "./init.service";
 import { NativeMessagingManifestService } from "./native-messaging-manifest.service";
 import { RendererCryptoFunctionService } from "./renderer-crypto-function.service";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 
 const RELOAD_CALLBACK = new SafeInjectionToken<() => any>("RELOAD_CALLBACK");
 
@@ -351,6 +353,11 @@ const safeProviders: SafeProvider[] = [
     provide: LoginEmailService,
     useClass: LoginEmailService,
     deps: [AccountService, AuthService, StateProvider],
+  }),
+  safeProvider({
+    provide: ServerSettingsService,
+    useClass: ServerSettingsService,
+    deps: [ConfigService],
   }),
 ];
 

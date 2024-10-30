@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject, firstValueFrom, switchMap, takeUntil } from "rxjs";
+import { Observable, Subject, firstValueFrom, switchMap, takeUntil, map, tap } from "rxjs";
 
 import { EnvironmentSelectorComponent } from "@bitwarden/angular/auth/components/environment-selector.component";
 import { LoginEmailServiceAbstraction, RegisterRouteService } from "@bitwarden/auth/common";
@@ -10,6 +10,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { ToastService } from "@bitwarden/components";
 
 import { AccountSwitcherService } from "./account-switching/services/account-switcher.service";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 
 @Component({
   selector: "app-home",
@@ -18,6 +19,7 @@ import { AccountSwitcherService } from "./account-switching/services/account-swi
 export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild(EnvironmentSelectorComponent, { static: true })
   environmentSelector!: EnvironmentSelectorComponent;
+  isUserRegistrationDisabled$: Observable<boolean>;
   private destroyed$: Subject<void> = new Subject();
 
   loginInitiated = false;
@@ -38,6 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private accountSwitcherService: AccountSwitcherService,
     private registerRouteService: RegisterRouteService,
     private toastService: ToastService,
+    private serverSettingsService: ServerSettingsService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -63,6 +66,12 @@ export class HomeComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$),
       )
       .subscribe();
+
+    this.isUserRegistrationDisabled$ = this.serverSettingsService.isUserRegistrationDisabled$.pipe(
+      map((value: boolean | null) => value ?? false),
+      tap((value: boolean) => console.log("isUserRegistrationDisabled:", value)),
+      takeUntil(this.destroyed$),
+    );
   }
 
   ngOnDestroy(): void {

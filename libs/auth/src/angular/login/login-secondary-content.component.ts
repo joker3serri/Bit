@@ -11,7 +11,7 @@ import { LinkModule } from "@bitwarden/components";
   standalone: true,
   imports: [CommonModule, JslibModule, LinkModule, RouterModule],
   template: `
-    <div class="tw-text-center" *ngIf="!isUserRegistrationDisabled">
+    <div class="tw-text-center" *ngIf="!(isUserRegistrationDisabled$ | async)">
       {{ "newToBitwarden" | i18n }}
       <a bitLink [routerLink]="registerRoute$ | async">{{ "createAccount" | i18n }}</a>
     </div>
@@ -24,5 +24,5 @@ export class LoginSecondaryContentComponent {
   // TODO: remove when email verification flag is removed
   protected registerRoute$ = this.registerRouteService.registerRoute$();
 
-  protected isUserRegistrationDisabled = this.serverSettingsService.isUserRegistrationDisabled$;
+  protected isUserRegistrationDisabled$ = this.serverSettingsService.isUserRegistrationDisabled$;
 }

@@ -1,8 +1,8 @@
 import { Directive, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, NavigationSkipped, Router } from "@angular/router";
-import { Subject, firstValueFrom, of } from "rxjs";
-import { switchMap, take, takeUntil } from "rxjs/operators";
+import { Subject, firstValueFrom, of, Observable } from "rxjs";
+import { switchMap, take, takeUntil, map } from "rxjs/operators";
 
 import {
   LoginStrategyServiceAbstraction,
@@ -26,6 +26,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 
 import {
   AllValidationErrors,
@@ -68,6 +69,7 @@ export class LoginComponentV1 extends CaptchaProtectedComponent implements OnIni
   // TODO: remove when email verification flag is removed
   protected registerRoute$ = this.registerRouteService.registerRoute$();
   protected forcePasswordResetRoute = "update-temp-password";
+  protected isUserRegistrationDisabled$: Observable<boolean>;
 
   protected destroy$ = new Subject<void>();
 
@@ -96,11 +98,17 @@ export class LoginComponentV1 extends CaptchaProtectedComponent implements OnIni
     protected webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     protected registerRouteService: RegisterRouteService,
     protected toastService: ToastService,
+    protected serverSettingsService: ServerSettingsService,
   ) {
     super(environmentService, i18nService, platformUtilsService, toastService);
   }
 
   async ngOnInit() {
+    this.isUserRegistrationDisabled$ = this.serverSettingsService.isUserRegistrationDisabled$.pipe(
+      map((value) => value ?? false),
+      takeUntil(this.destroy$),
+    );
+
     this.route?.queryParams
       .pipe(
         switchMap((params) => {

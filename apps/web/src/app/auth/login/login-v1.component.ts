@@ -31,6 +31,7 @@ import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/pass
 import { UserId } from "@bitwarden/common/types/guid";
 import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 
 import { flagEnabled } from "../../../utils/flags";
 import { RouterService } from "../../core";
@@ -74,6 +75,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
+    serverSettingsService: ServerSettingsService,
   ) {
     super(
       devicesApiService,
@@ -96,6 +98,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
       webAuthnLoginService,
       registerRouteService,
       toastService,
+      serverSettingsService,
     );
     this.onSuccessfulLoginNavigate = this.goAfterLogIn;
     this.showPasswordless = flagEnabled("showPasswordless");

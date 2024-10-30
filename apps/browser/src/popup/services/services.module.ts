@@ -142,6 +142,7 @@ import { VaultFilterService } from "../../vault/services/vault-filter.service";
 import { DebounceNavigationService } from "./debounce-navigation.service";
 import { InitService } from "./init.service";
 import { PopupCloseWarningService } from "./popup-close-warning.service";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 
 const OBSERVABLE_LARGE_OBJECT_MEMORY_STORAGE = new SafeInjectionToken<
   AbstractStorageService & ObservableStorageService
@@ -617,6 +618,11 @@ const safeProviders: SafeProvider[] = [
     provide: ExtensionAnonLayoutWrapperDataService,
     useClass: ExtensionAnonLayoutWrapperDataService,
     deps: [],
+  }),
+  safeProvider({
+    provide: ServerSettingsService,
+    useClass: ServerSettingsService,
+    deps: [ConfigService],
   }),
 ];
 

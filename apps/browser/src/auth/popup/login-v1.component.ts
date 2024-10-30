@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
 
 import { LoginComponentV1 as BaseLoginComponent } from "@bitwarden/angular/auth/components/login-v1.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
@@ -26,6 +26,7 @@ import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { flagEnabled } from "../../platform/flags";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 
 @Component({
   selector: "app-login",
@@ -55,6 +56,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
+    serverSettingsService: ServerSettingsService,
   ) {
     super(
       devicesApiService,
@@ -77,6 +79,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
       webAuthnLoginService,
       registerRouteService,
       toastService,
+      serverSettingsService,
     );
     this.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);
