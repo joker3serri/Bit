@@ -40,7 +40,7 @@ export class PBKDF2KdfConfig {
   validateKdfConfigForPrelogin(): void {
     if (PBKDF2KdfConfig.PRELOGIN_ITERATIONS_MIN > this.iterations) {
       throw new Error(
-        `PBKDF2 iterations must be at least ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS_MIN}`,
+        `PBKDF2 iterations must be at least ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS_MIN}, but was ${this.iterations}; possible pre-login downgrade attack`,
       );
     }
   }
@@ -86,7 +86,7 @@ export class Argon2KdfConfig {
 
     if (!Argon2KdfConfig.MEMORY.inRange(this.memory)) {
       throw new Error(
-        `Argon2 memory must be between ${Argon2KdfConfig.MEMORY.min}mb and ${Argon2KdfConfig.MEMORY.max}mb`,
+        `Argon2 memory must be between ${Argon2KdfConfig.MEMORY.min} MiB and ${Argon2KdfConfig.MEMORY.max} MiB`,
       );
     }
 
@@ -103,19 +103,19 @@ export class Argon2KdfConfig {
   validateKdfConfigForPrelogin(): void {
     if (Argon2KdfConfig.PRELOGIN_ITERATIONS_MIN > this.iterations) {
       throw new Error(
-        `Argon2 iterations must be at least ${Argon2KdfConfig.PRELOGIN_ITERATIONS_MIN}; possible downgrade attack detected.`,
+        `Argon2 iterations must be at least ${Argon2KdfConfig.PRELOGIN_ITERATIONS_MIN}; but was ${this.iterations}; possible downgrade attack detected.`,
       );
     }
 
     if (Argon2KdfConfig.PRELOGIN_MEMORY_MIN > this.memory) {
       throw new Error(
-        `Argon2 memory must be at least ${Argon2KdfConfig.PRELOGIN_MEMORY_MIN}; possible downgrade attack detected.`,
+        `Argon2 memory must be at least ${Argon2KdfConfig.PRELOGIN_MEMORY_MIN} MiB; but was ${this.memory}; possible downgrade attack detected.`,
       );
     }
 
     if (Argon2KdfConfig.PRELOGIN_PARALLELISM_MIN > this.parallelism) {
       throw new Error(
-        `Argon2 parallelism must be at least ${Argon2KdfConfig.PRELOGIN_PARALLELISM_MIN}; possible downgrade attack detected.`,
+        `Argon2 parallelism must be at least ${Argon2KdfConfig.PRELOGIN_PARALLELISM_MIN}; but was ${this.parallelism}; possible downgrade attack detected.`,
       );
     }
   }
