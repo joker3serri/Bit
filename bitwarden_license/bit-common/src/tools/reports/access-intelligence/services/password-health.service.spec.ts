@@ -133,19 +133,4 @@ describe("PasswordHealthService", () => {
       expect(service.exposedPasswordMap.get(exposedCipher.id)).toBe(100);
     });
   });
-
-  describe("GroupCiphersByLoginUri", () => {
-    beforeEach(async () => {
-      await service.generateReport();
-      await service.groupCiphersByLoginUri();
-    });
-
-    it("should calculate total members per cipher", () => {
-      expect(service.totalGroupedMembersMap.size).toBeGreaterThan(0);
-      expect(service.totalGroupedMembersMap.get("google.com")).toBe(15);
-      expect(service.totalGroupedMembersMap.get("accounts.google.com")).toBe(3);
-      expect(service.totalGroupedMembersMap.get("nothing.com")).toBe(5);
-      expect(service.totalGroupedMembersMap.get("example.com")).toBe(6);
-    });
-  });
 });

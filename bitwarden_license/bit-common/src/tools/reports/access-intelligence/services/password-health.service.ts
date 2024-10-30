@@ -25,7 +25,6 @@ export class PasswordHealthService {
   exposedPasswordMap = new Map<string, number>();
 
   totalMembersMap = new Map<string, number>();
-  totalGroupedMembersMap = new Map<string, number>();
 
   constructor(
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
@@ -175,26 +174,11 @@ export class PasswordHealthService {
       const uris = ciph.login?.uris ?? [];
       uris.map((u: { uri: string }) => {
         const uri = Utils.getHostname(u.uri).replace("www.", "");
-        if (!cipherUris.includes(uri)) {
-          cipherUris.push(uri);
-          cipherViews.push({ ...ciph, hostURI: uri } as CipherView & { hostURI: string });
-        }
-        this.groupTotalMembershipMap(uri, ciph);
+        cipherUris.push(uri);
+        cipherViews.push({ ...ciph, hostURI: uri } as CipherView & { hostURI: string });
       });
     });
 
     return cipherViews;
-  }
-
-  groupTotalMembershipMap(uri: string, cipher: CipherView) {
-    const memberCountForCipherId = this.totalMembersMap.get(cipher.id) || 0;
-    if (this.totalGroupedMembersMap.has(uri)) {
-      this.totalGroupedMembersMap.set(
-        uri,
-        (this.totalGroupedMembersMap.get(uri) || 0) + memberCountForCipherId,
-      );
-    } else {
-      this.totalGroupedMembersMap.set(uri, memberCountForCipherId);
-    }
   }
 }
