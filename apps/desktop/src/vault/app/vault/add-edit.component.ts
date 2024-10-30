@@ -164,6 +164,12 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
         message: this.i18nService.t("invalidSshKey"),
       });
       return;
+    } else if (parsedKey.status == sshAgent.SshKeyImportStatus.UnsupportedKeyType) {
+      this.toastService.showToast({
+        variant: "error",
+        title: "",
+        message: this.i18nService.t("sshKeyTypeUnsupported"),
+      });
     } else if (
       parsedKey.status == sshAgent.SshKeyImportStatus.PasswordRequired ||
       parsedKey.status == sshAgent.SshKeyImportStatus.WrongPassword

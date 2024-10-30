@@ -3237,6 +3237,9 @@
   "invalidSshKey": {
     "message": "The SSH key is invalid"
   },
+  "sshKeyTypeUnsupported": {
+    "message": "The SSH key type is not supported"
+  },
   "importSshKeyFromClipboard": {
     "message": "Import key from clipboard"
   },
