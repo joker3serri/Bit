@@ -7,6 +7,8 @@ import {
   QueryList,
   Self,
   ViewChild,
+  Output,
+  EventEmitter,
 } from "@angular/core";
 import { ControlValueAccessor, NgControl, Validators } from "@angular/forms";
 import { NgSelectComponent } from "@ng-select/ng-select";
@@ -31,10 +33,12 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
   /** Optional: Options can be provided using an array input or using `bit-option` */
   @Input() items: Option<T>[] = [];
   @Input() placeholder = this.i18nService.t("selectPlaceholder");
+  @Output() closed = new EventEmitter<T>();
 
   protected selectedValue: T;
   protected selectedOption: Option<T>;
   protected searchInputId = `bit-select-search-input-${nextId++}`;
+  protected lastSelectedValue: T;
 
   private notifyOnChange?: (value: T) => void;
   private notifyOnTouched?: () => void;
@@ -100,6 +104,7 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
       return;
     }
 
+    this.lastSelectedValue = option?.value;
     this.notifyOnChange(option?.value);
   }
 
@@ -155,5 +160,14 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
 
   private findSelectedOption(items: Option<T>[], value: T): Option<T> | undefined {
     return items.find((item) => item.value === value);
+  }
+
+  /**
+   * Emits the last selected value when the select is closed.
+   */
+  protected onClose() {
+    if (this.lastSelectedValue !== undefined) {
+      this.closed.emit(this.lastSelectedValue);
+    }
   }
 }
