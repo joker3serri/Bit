@@ -1,9 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { Observable, combineLatest, map } from "rxjs";
+import { Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { TypographyModule } from "@bitwarden/components";
@@ -18,29 +17,12 @@ import { TypographyModule } from "@bitwarden/components";
   imports: [TypographyModule, JslibModule, CommonModule],
 })
 export class DangerZoneComponent implements OnInit {
-  constructor(
-    private configService: ConfigService,
-    private organizationService: OrganizationService,
-  ) {}
-  managedUser$: Observable<boolean>;
+  constructor(private configService: ConfigService) {}
+  accountDeprovisioningEnabled$: Observable<boolean>;
 
   ngOnInit(): void {
-    const isAccountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
+    this.accountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
       FeatureFlag.AccountDeprovisioning,
-    );
-
-    const userIsManagedByOrganization$ = this.organizationService.organizations$.pipe(
-      map((organizations) => organizations.some((o) => o.userIsManagedByOrganization === true)),
-    );
-
-    this.managedUser$ = combineLatest([
-      isAccountDeprovisioningEnabled$,
-      userIsManagedByOrganization$,
-    ]).pipe(
-      map(
-        ([isAccountDeprovisioningEnabled, userIsManagedByOrganization]) =>
-          isAccountDeprovisioningEnabled && userIsManagedByOrganization,
-      ),
     );
   }
 }
