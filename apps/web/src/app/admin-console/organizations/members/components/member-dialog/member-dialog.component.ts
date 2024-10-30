@@ -34,7 +34,7 @@ import { DialogService, ToastService } from "@bitwarden/components";
 
 import {
   GroupApiService,
-  GroupView,
+  GroupDetailsView,
   OrganizationUserAdminView,
   UserAdminService,
 } from "../../../core";
@@ -164,8 +164,8 @@ export class MemberDialogComponent implements OnDestroy {
     const groups$ = this.organization$.pipe(
       switchMap((organization) =>
         organization.useGroups
-          ? this.groupService.getAll(this.params.organizationId)
-          : of([] as GroupView[]),
+          ? this.groupService.getAllDetails(this.params.organizationId)
+          : of([] as GroupDetailsView[]),
       ),
     );
 
@@ -275,7 +275,7 @@ export class MemberDialogComponent implements OnDestroy {
 
   private loadOrganizationUser(
     userDetails: OrganizationUserAdminView,
-    groups: GroupView[],
+    groups: GroupDetailsView[],
     collections: CollectionAdminView[],
     organization: Organization,
   ) {
@@ -599,7 +599,7 @@ function mapCollectionToAccessItemView(
   collection: CollectionAdminView,
   organization: Organization,
   accessSelection?: CollectionAccessSelectionView,
-  group?: GroupView,
+  group?: GroupDetailsView,
 ): AccessItemView {
   return {
     type: AccessItemType.Collection,
@@ -612,7 +612,7 @@ function mapCollectionToAccessItemView(
   };
 }
 
-function mapGroupToAccessItemView(group: GroupView): AccessItemView {
+function mapGroupToAccessItemView(group: GroupDetailsView): AccessItemView {
   return {
     type: AccessItemType.Group,
     id: group.id,

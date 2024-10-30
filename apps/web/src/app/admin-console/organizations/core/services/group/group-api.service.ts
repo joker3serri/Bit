@@ -6,8 +6,10 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 
 import { CoreOrganizationModule } from "../../core-organization.module";
+import { GroupDetailsView } from "../../views/group-details.view";
 import { GroupView } from "../../views/group.view";
 
+import { AddEditGroupDetail } from "./../../views/add-edit-group-detail";
 import { GroupRequest } from "./requests/group.request";
 import { OrganizationGroupBulkRequest } from "./requests/organization-group-bulk.request";
 import { GroupDetailsResponse, GroupResponse } from "./responses/group.response";
@@ -21,7 +23,7 @@ export class GroupApiService {
     protected configService: ConfigService,
   ) {}
 
-  async get(orgId: string, groupId: string): Promise<GroupView> {
+  async get(orgId: string, groupId: string): Promise<GroupDetailsView> {
     const r = await this.apiService.send(
       "GET",
       "/organizations/" + orgId + "/groups/" + groupId + "/details",
@@ -30,7 +32,7 @@ export class GroupApiService {
       true,
     );
 
-    return GroupView.fromResponse(new GroupDetailsResponse(r));
+    return GroupDetailsView.fromResponse(new GroupDetailsResponse(r));
   }
 
   async getAll(orgId: string): Promise<GroupView[]> {
@@ -44,7 +46,23 @@ export class GroupApiService {
 
     const listResponse = new ListResponse(r, GroupDetailsResponse);
 
-    return Promise.all(listResponse.data?.map((gr) => GroupView.fromResponse(gr))) ?? [];
+    return (await Promise.all(listResponse.data?.map((gr) => GroupView.fromResponse(gr)))) ?? [];
+  }
+
+  async getAllDetails(orgId: string): Promise<GroupDetailsView[]> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + orgId + "/groups",
+      null,
+      true,
+      true,
+    );
+
+    const listResponse = new ListResponse(r, GroupDetailsResponse);
+
+    return (
+      (await Promise.all(listResponse.data?.map((gr) => GroupDetailsView.fromResponse(gr)))) ?? []
+    );
   }
 }
 
@@ -77,7 +95,7 @@ export class InternalGroupService extends GroupApiService {
     );
   }
 
-  async save(group: GroupView): Promise<GroupView> {
+  async save(group: AddEditGroupDetail): Promise<GroupView> {
     const request = new GroupRequest();
     request.name = group.name;
     request.users = group.members;
