@@ -40,7 +40,7 @@ export class PBKDF2KdfConfig {
   validateKdfConfigForPrelogin(): void {
     if (PBKDF2KdfConfig.PRELOGIN_ITERATIONS_MIN > this.iterations) {
       throw new Error(
-        `PBKDF2 iterations must be at least ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS_MIN}, but was ${this.iterations}; possible pre-login downgrade attack`,
+        `PBKDF2 iterations must be at least ${PBKDF2KdfConfig.PRELOGIN_ITERATIONS_MIN}, but was ${this.iterations}; possible pre-login downgrade attack detected.`,
       );
     }
   }
@@ -103,19 +103,19 @@ export class Argon2KdfConfig {
   validateKdfConfigForPrelogin(): void {
     if (Argon2KdfConfig.PRELOGIN_ITERATIONS_MIN > this.iterations) {
       throw new Error(
-        `Argon2 iterations must be at least ${Argon2KdfConfig.PRELOGIN_ITERATIONS_MIN}; but was ${this.iterations}; possible downgrade attack detected.`,
+        `Argon2 iterations must be at least ${Argon2KdfConfig.PRELOGIN_ITERATIONS_MIN}, but was ${this.iterations}; possible pre-login downgrade attack detected.`,
       );
     }
 
     if (Argon2KdfConfig.PRELOGIN_MEMORY_MIN > this.memory) {
       throw new Error(
-        `Argon2 memory must be at least ${Argon2KdfConfig.PRELOGIN_MEMORY_MIN} MiB; but was ${this.memory}; possible downgrade attack detected.`,
+        `Argon2 memory must be at least ${Argon2KdfConfig.PRELOGIN_MEMORY_MIN} MiB, but was ${this.memory} MiB; possible pre-login downgrade attack detected.`,
       );
     }
 
     if (Argon2KdfConfig.PRELOGIN_PARALLELISM_MIN > this.parallelism) {
       throw new Error(
-        `Argon2 parallelism must be at least ${Argon2KdfConfig.PRELOGIN_PARALLELISM_MIN}; but was ${this.parallelism}; possible downgrade attack detected.`,
+        `Argon2 parallelism must be at least ${Argon2KdfConfig.PRELOGIN_PARALLELISM_MIN}, but was ${this.parallelism}; possible pre-login downgrade attack detected.`,
       );
     }
   }
