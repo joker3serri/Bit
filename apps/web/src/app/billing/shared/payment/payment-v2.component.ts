@@ -35,7 +35,7 @@ export class PaymentV2Component implements OnInit, OnDestroy {
   /** The payment method selected by default when the component renders. */
   @Input() private initialPaymentMethod: PaymentMethodType = PaymentMethodType.Card;
   /** If provided, will be invoked with the tokenized payment source during form submission. */
-  @Input() protected onSubmit: (request: TokenizedPaymentSourceRequest) => Promise<void>;
+  @Input() protected onSubmit?: (request: TokenizedPaymentSourceRequest) => Promise<void>;
 
   @Output() submitted = new EventEmitter<PaymentMethodType>();
 
