@@ -6,13 +6,13 @@ import {
   skip,
   takeUntil,
   Subject,
-  combineLatest,
   filter,
   map,
   withLatestFrom,
   Observable,
   merge,
   firstValueFrom,
+  ReplaySubject,
 } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -81,7 +81,12 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const singleUserId$ = this.singleUserId$();
     const settings = await this.generatorService.settings(Generators.passphrase, { singleUserId$ });
-    settings.pipe(takeUntil(this.destroyed$)).subscribe(this.okSettings$);
+    settings
+      .pipe(
+        filter((s) => !!s),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe(this.okSettings$);
 
     // skips reactive event emissions to break a subscription cycle
     settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
@@ -118,19 +123,18 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
 
   protected settings$(): Observable<Partial<PassphraseGenerationOptions>> {
     // save valid changes
-    const validChanges$ = combineLatest([
-      this.settings.valueChanges,
-      this.settings.statusChanges,
-    ]).pipe(
-      filter(([, status]) => status === "VALID"),
-      map(([settings]) => settings),
+    const validChanges$ = this.settings.statusChanges.pipe(
+      filter((status) => status === "VALID"),
+      withLatestFrom(this.settings.valueChanges),
+      map(([, settings]) => settings),
     );
 
     // discards changes but keep the override setting that changed
     const overrides = [Controls.capitalize, Controls.includeNumber];
     const overrideChanges$ = this.settings.valueChanges.pipe(
+      filter((settings) => !!settings),
       withLatestFrom(this.okSettings$),
-      filter(([current, ok]) => overrides.some((c) => current[c] !== ok[c])),
+      filter(([current, ok]) => overrides.some((c) => (current[c] ?? ok[c]) !== ok[c])),
       map(([current, ok]) => {
         const copy = { ...ok };
         for (const override of overrides) {
@@ -152,7 +156,7 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
   /** display binding for enterprise policy notice */
   protected policyInEffect: boolean;
 
-  private okSettings$ = new BehaviorSubject<PassphraseGenerationOptions>(null);
+  private okSettings$ = new ReplaySubject<PassphraseGenerationOptions>(1);
 
   private reloadSettings$ = new Subject<string>();
 
@@ -165,9 +169,8 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
     const reloadComplete = firstValueFrom(this.okSettings$);
     if (this.settings.invalid) {
       this.reloadSettings$.next(site);
+      await reloadComplete;
     }
-
-    await reloadComplete;
   }
 
   private toggleEnabled(setting: keyof typeof Controls, enabled: boolean) {
