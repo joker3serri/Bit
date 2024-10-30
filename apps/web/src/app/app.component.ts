@@ -61,6 +61,8 @@ export class AppComponent implements OnDestroy, OnInit {
   private isIdle = false;
   private destroy$ = new Subject<void>();
 
+  loading = false;
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private broadcasterService: BroadcasterService,
@@ -151,7 +153,6 @@ export class AppComponent implements OnDestroy, OnInit {
             ) {
               await this.notificationsService.updateConnection(false);
             }
-            await this.processReloadService.startProcessReload(this.authService);
             break;
           case "unlocked":
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
@@ -300,6 +301,13 @@ export class AppComponent implements OnDestroy, OnInit {
   }
 
   private async logOut(logoutReason: LogoutReason, redirect = true) {
+    // Ensure the loading state is applied before proceeding to avoid a flash
+    // of the login screen before the process reload fires.
+    this.ngZone.run(() => {
+      this.loading = true;
+      document.body.classList.add("layout_frontend");
+    });
+
     await this.displayLogoutReason(logoutReason);
 
     await this.eventUploadService.uploadEvents();
@@ -338,8 +346,14 @@ export class AppComponent implements OnDestroy, OnInit {
       if (redirect) {
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.router.navigate(["/"]);
+        await this.router.navigate(["/"]);
       }
+
+      await this.processReloadService.startProcessReload(this.authService);
+
+      // Normally we would need to reset the loading state to false or remove the layout_frontend
+      // class from the body here, but the process reload completely reloads the app so
+      // it handles it.
     }, userId);
   }
 
