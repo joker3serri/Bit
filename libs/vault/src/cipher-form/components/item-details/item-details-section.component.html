@@ -29,7 +29,7 @@
           <bit-option
             *ngIf="allowPersonalOwnership"
             [value]="null"
-            [label]="'selfOwnershipLabel' | i18n"
+            [label]="userEmail$ | async"
           ></bit-option>
           <bit-option
             *ngFor="let org of config.organizations"
