@@ -166,8 +166,6 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
    * Emits the last selected value when the select is closed.
    */
   protected onClose() {
-    if (this.lastSelectedValue !== undefined) {
-      this.closed.emit(this.lastSelectedValue);
-    }
+    this.closed.emit(this.lastSelectedValue);
   }
 }
