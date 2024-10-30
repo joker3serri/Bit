@@ -55,6 +55,7 @@ export class PasswordHealthMembersURIComponent implements OnInit {
   exposedPasswordMap = new Map<string, number>();
 
   totalMembersMap = new Map<string, number>();
+  totalGroupedMembersMap = new Map<string, number>();
 
   dataSource = new TableDataSource<CipherView>();
 
@@ -103,6 +104,7 @@ export class PasswordHealthMembersURIComponent implements OnInit {
     this.passwordStrengthMap = passwordHealthService.passwordStrengthMap;
     this.passwordUseMap = passwordHealthService.passwordUseMap;
     this.totalMembersMap = passwordHealthService.totalMembersMap;
+    this.totalGroupedMembersMap = passwordHealthService.totalGroupedMembersMap;
     this.loading = false;
   }
 }
