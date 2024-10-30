@@ -3,8 +3,8 @@ import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
 import { filter, mergeMap, switchMap, take } from "rxjs/operators";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { PBKDF2KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -56,7 +56,7 @@ export const BANNERS_DISMISSED_DISK_KEY = new UserKeyDefinition<SessionBanners[]
 @Injectable()
 export class VaultBannersService {
   constructor(
-    private tokenService: TokenService,
+    private accountService: AccountService,
     private stateProvider: StateProvider,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
     private platformUtilsService: PlatformUtilsService,
@@ -108,7 +108,9 @@ export class VaultBannersService {
 
   /** Returns true when the verify email banner should be shown */
   async shouldShowVerifyEmailBanner(userId: UserId): Promise<boolean> {
-    const needsVerification = !(await this.tokenService.getEmailVerified());
+    const needsVerification = !(
+      await firstValueFrom(this.accountService.accounts$.pipe(map((accounts) => accounts[userId])))
+    )?.emailVerified;
 
     const alreadyDismissed = (await this.getBannerDismissedState(userId)).includes(
       VisibleVaultBanner.VerifyEmail,

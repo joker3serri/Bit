@@ -5,8 +5,8 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
+import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { KdfType } from "@bitwarden/common/platform/enums";
@@ -34,6 +34,9 @@ describe("VaultBannersService", () => {
     hasMasterPassword: true,
   });
   const kdfConfig$ = new BehaviorSubject({ kdfType: KdfType.PBKDF2_SHA256, iterations: 600000 });
+  const accounts$ = new BehaviorSubject<Record<UserId, AccountInfo>>({
+    [userId]: { email: "test@bitwarden.com", emailVerified: true, name: "name" } as AccountInfo,
+  });
 
   beforeEach(() => {
     lastSync$.next(new Date("2024-05-14"));
@@ -60,8 +63,8 @@ describe("VaultBannersService", () => {
           useValue: { isSelfHost },
         },
         {
-          provide: TokenService,
-          useValue: { getEmailVerified },
+          provide: AccountService,
+          useValue: { accounts$ },
         },
         {
           provide: KdfConfigService,
@@ -248,7 +251,12 @@ describe("VaultBannersService", () => {
 
   describe("VerifyEmail", () => {
     beforeEach(async () => {
-      getEmailVerified.mockResolvedValue(false);
+      accounts$.next({
+        [userId]: {
+          ...accounts$.value[userId],
+          emailVerified: false,
+        },
+      });
     });
 
     it("shows verify email banner", async () => {
