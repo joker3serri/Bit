@@ -171,10 +171,10 @@ export class PaymentMethodComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialogRef.closed);
     if (result === AdjustPaymentDialogResult.Adjusted) {
       this.location.replaceState(this.location.path(), "", {});
+      if (this.launchPaymentModalAutomatically && !this.organization.enabled) {
+        await this.syncService.fullSync(true);
+      }
       this.launchPaymentModalAutomatically = false;
-      setTimeout(() => {
-        window.location.reload();
-      }, 20000);
       await this.load();
     }
   };

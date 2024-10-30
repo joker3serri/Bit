@@ -15,6 +15,7 @@ import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/mode
 import { PaymentSourceResponse } from "@bitwarden/common/billing/models/response/payment-source.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { SyncService } from "@bitwarden/common/platform/sync";
 import { DialogService, ToastService } from "@bitwarden/components";
 
 import { FreeTrial } from "../../../core/types/free-trial";
@@ -61,6 +62,7 @@ export class OrganizationPaymentMethodComponent implements OnDestroy {
     private location: Location,
     private trialFlowService: TrialFlowService,
     private organizationService: OrganizationService,
+    protected syncService: SyncService,
   ) {
     this.activatedRoute.params
       .pipe(
@@ -171,10 +173,10 @@ export class OrganizationPaymentMethodComponent implements OnDestroy {
     const result = await lastValueFrom(dialogRef.closed);
     if (result === AdjustPaymentDialogV2ResultType.Submitted) {
       this.location.replaceState(this.location.path(), "", {});
+      if (this.launchPaymentModalAutomatically && !this.organization.enabled) {
+        await this.syncService.fullSync(true);
+      }
       this.launchPaymentModalAutomatically = false;
-      setTimeout(() => {
-        window.location.reload();
-      }, 20000);
       await this.load();
     }
   };
