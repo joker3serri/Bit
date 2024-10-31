@@ -173,7 +173,6 @@ const routes: Routes = [
     AnonLayoutWrapperComponent,
     {
       path: "login-with-device",
-      component: LoginViaAuthRequestComponentV1,
       data: { titleId: "loginWithDevice" } satisfies RouteDataProperties,
     },
     {
@@ -203,7 +202,6 @@ const routes: Routes = [
     AnonLayoutWrapperComponent,
     {
       path: "admin-approval-requested",
-      component: LoginViaAuthRequestComponentV1,
       data: { titleId: "adminApprovalRequested" } satisfies RouteDataProperties,
     },
     {
