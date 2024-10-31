@@ -1008,7 +1008,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     );
 
     if (
-      !this.checkIsInlineMenuListVisible() &&
+      !this.inlineMenuListPort &&
       (await this.getInlineMenuVisibility()) === AutofillOverlayVisibility.OnButtonClick
     ) {
       return;
@@ -1817,7 +1817,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
-    if (this.isInlineMenuListVisible) {
+    if (this.inlineMenuListPort) {
       this.closeInlineMenu(sender, {
         forceCloseInlineMenu: true,
         overlayElement: AutofillOverlayElement.List,
