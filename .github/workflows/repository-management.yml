@@ -1,0 +1,628 @@
+name: Repository management
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_to_cut:
+        default: "rc"
+        description: "Branch to cut"
+        options:
+          - "none"
+          - "rc"
+          - "hotfix-rc"
+        required: true
+        type: choice
+      bump_browser:
+        description: "Bump Browser?"
+        type: boolean
+        default: false
+      bump_cli:
+        description: "Bump CLI?"
+        type: boolean
+        default: false
+      bump_desktop:
+        description: "Bump Desktop?"
+        type: boolean
+        default: false
+      bump_web:
+        description: "Bump Web?"
+        type: boolean
+        default: false
+      target_ref:
+        default: "main"
+        description: "Branch/Tag to target for cut"
+        required: true
+        type: string
+      version_number_override:
+        description: "New version override (leave blank for automatic calculation, example: '2024.1.0')"
+        required: false
+        type: string
+
+jobs:
+  cut_branch:
+    name: Cut branch
+    if: ${{ inputs.branch_to_cut != 'none' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out target ref
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.target_ref }}
+
+      - name: Check if ${{ inputs.branch_to_cut }} branch exists
+        env:
+          BRANCH_NAME: ${{ inputs.branch_to_cut }}
+        run: |
+          if [[ $(git ls-remote --heads origin $BRANCH_NAME) ]]; then
+            echo "$BRANCH_NAME already exists! Please delete $BRANCH_NAME before running again." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+      - name: Cut branch
+        env:
+          BRANCH_NAME: ${{ inputs.branch_to_cut }}
+        run: |
+          git switch --quiet --create $BRANCH_NAME
+          git push --quiet --set-upstream origin $BRANCH_NAME
+
+
+  bump_version:
+    name: Bump Version
+    if: ${{ always() }}
+    runs-on: ubuntu-22.04
+    needs: cut_branch
+    outputs:
+      version: ${{ steps.set-final-version-output.outputs.version }}
+    steps:
+      - name: Validate version input format
+        if: ${{ inputs.version_number_override != '' }}
+        uses: bitwarden/gh-actions/version-check@main
+        with:
+          version: ${{ inputs.version_number_override }}
+
+      - name: Check out branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+
+      - name: Create Version Branch
+        id: create-branch
+        run: |
+          CLIENTS=()
+          if [[ ${{ inputs.bump_browser }} == true ]]; then
+            CLIENTS+=("browser")
+          fi
+          if [[ ${{ inputs.bump_cli }} == true ]]; then
+            CLIENTS+=("cli")
+          fi
+          if [[ ${{ inputs.bump_desktop }} == true ]]; then
+            CLIENTS+=("desktop")
+          fi
+          if [[ ${{ inputs.bump_web }} == true ]]; then
+            CLIENTS+=("web")
+          fi
+          printf -v joined '%s,' "${CLIENTS[@]}"
+          echo "client=${joined%,}" >> $GITHUB_OUTPUT
+
+          NAME=version_bump_${{ github.ref_name }}_$(date +"%Y-%m-%d")
+          git switch -c $NAME
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+
+      ########################
+      # VERSION BUMP SECTION #
+      ########################
+
+      ### Browser
+      - name: Get current Browser version
+        if: ${{ inputs.bump_browser == true }}
+        id: current-browser-version
+        run: |
+          CURRENT_VERSION=$(cat package.json | jq -r '.version')
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        working-directory: apps/browser
+
+      - name: Browser - Verify input version
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override != '' }}
+        env:
+          CURRENT_VERSION: ${{ steps.current-browser-version.outputs.version }}
+          NEW_VERSION: ${{ inputs.version_number_override }}
+        run: |
+          # Error if version has not changed.
+          if [[ "$NEW_VERSION" == "$CURRENT_VERSION" ]]; then
+            echo "Version has not changed."
+            exit 1
+          fi
+
+          # Check if version is newer.
+          printf '%s\n' "${CURRENT_VERSION}" "${NEW_VERSION}" | sort -C -V
+          if [ $? -eq 0 ]; then
+            echo "Version check successful."
+          else
+            echo "Version check failed."
+            exit 1
+          fi
+        working-directory: apps/browser
+
+      - name: Calculate next Browser release version
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
+        id: calculate-next-browser-version
+        uses: bitwarden/gh-actions/version-next@main
+        with:
+          version: ${{ steps.current-browser-version.outputs.version }}
+
+      - name: Bump Browser Version - Version Override
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override != '' }}
+        id: bump-browser-version-override
+        run: npm version --workspace=@bitwarden/browser ${{ inputs.version_number_override }}
+
+      - name: Bump Browser Version - Automatic Calculation
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
+        id: bump-browser-version-automatic
+        env:
+          VERSION: ${{ steps.calculate-next-browser-version.outputs.version }}
+        run: npm version --workspace=@bitwarden/browser $VERSION
+
+      - name: Bump Browser Version - Manifest - Version Override
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override != '' }}
+        uses: bitwarden/gh-actions/version-bump@main
+        with:
+          file_path: "apps/browser/src/manifest.json"
+          version: ${{ inputs.version_number_override }}
+
+      - name: Bump Browser Version - Manifest - Automatic Calculation
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
+        uses: bitwarden/gh-actions/version-bump@main
+        with:
+          file_path: "apps/browser/src/manifest.json"
+          version: ${{ steps.calculate-next-browser-version.outputs.version }}
+
+      - name: Bump Browser Version - Manifest v3 - Version Override
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override != '' }}
+        uses: bitwarden/gh-actions/version-bump@main
+        with:
+          file_path: "apps/browser/src/manifest.v3.json"
+          version: ${{ inputs.version_number_override }}
+
+      - name: Bump Browser Version - Manifest v3 - Automatic Calculation
+        if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
+        uses: bitwarden/gh-actions/version-bump@main
+        with:
+          file_path: "apps/browser/src/manifest.v3.json"
+          version: ${{ steps.calculate-next-browser-version.outputs.version }}
+
+      - name: Run Prettier after Browser Version Bump
+        if: ${{ inputs.bump_browser == true }}
+        run: |
+          npm install -g prettier
+          prettier --write apps/browser/src/manifest.json
+          prettier --write apps/browser/src/manifest.v3.json
+
+      ### CLI
+      - name: Get current CLI version
+        if: ${{ inputs.bump_cli == true }}
+        id: current-cli-version
+        run: |
+          CURRENT_VERSION=$(cat package.json | jq -r '.version')
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        working-directory: apps/cli
+
+      - name: CLI - Verify input version
+        if: ${{ inputs.bump_cli == true && inputs.version_number_override != '' }}
+        env:
+          CURRENT_VERSION: ${{ steps.current-cli-version.outputs.version }}
+          NEW_VERSION: ${{ inputs.version_number_override }}
+        run: |
+          # Error if version has not changed.
+          if [[ "$NEW_VERSION" == "$CURRENT_VERSION" ]]; then
+            echo "Version has not changed."
+            exit 1
+          fi
+
+          # Check if version is newer.
+          printf '%s\n' "${CURRENT_VERSION}" "${NEW_VERSION}" | sort -C -V
+          if [ $? -eq 0 ]; then
+            echo "Version check successful."
+          else
+            echo "Version check failed."
+            exit 1
+          fi
+        working-directory: apps/cli
+
+      - name: Calculate next CLI release version
+        if: ${{ inputs.bump_cli == true && inputs.version_number_override == '' }}
+        id: calculate-next-cli-version
+        uses: bitwarden/gh-actions/version-next@main
+        with:
+          version: ${{ steps.current-cli-version.outputs.version }}
+
+      - name: Bump CLI Version - Version Override
+        if: ${{ inputs.bump_cli == true && inputs.version_number_override != '' }}
+        id: bump-cli-version-override
+        run: npm version --workspace=@bitwarden/cli ${{ inputs.version_number_override }}
+
+      - name: Bump CLI Version - Automatic Calculation
+        if: ${{ inputs.bump_cli == true && inputs.version_number_override == '' }}
+        id: bump-cli-version-automatic
+        env:
+          VERSION: ${{ steps.calculate-next-cli-version.outputs.version }}
+        run: npm version --workspace=@bitwarden/cli $VERSION
+
+      ### Desktop
+      - name: Get current Desktop version
+        if: ${{ inputs.bump_desktop == true }}
+        id: current-desktop-version
+        run: |
+          CURRENT_VERSION=$(cat package.json | jq -r '.version')
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        working-directory: apps/desktop
+
+      - name: Desktop - Verify input version
+        if: ${{ inputs.bump_desktop == true && inputs.version_number_override != '' }}
+        env:
+          CURRENT_VERSION: ${{ steps.current-desktop-version.outputs.version }}
+          NEW_VERSION: ${{ inputs.version_number_override }}
+        run: |
+          # Error if version has not changed.
+          if [[ "$NEW_VERSION" == "$CURRENT_VERSION" ]]; then
+            echo "Version has not changed."
+            exit 1
+          fi
+
+          # Check if version is newer.
+          printf '%s\n' "${CURRENT_VERSION}" "${NEW_VERSION}" | sort -C -V
+          if [ $? -eq 0 ]; then
+            echo "Version check successful."
+          else
+            echo "Version check failed."
+            exit 1
+          fi
+        working-directory: apps/desktop
+
+      - name: Calculate next Desktop release version
+        if: ${{ inputs.bump_desktop == true && inputs.version_number_override == '' }}
+        id: calculate-next-desktop-version
+        uses: bitwarden/gh-actions/version-next@main
+        with:
+          version: ${{ steps.current-desktop-version.outputs.version }}
+
+      - name: Bump Desktop Version - Root - Version Override
+        if: ${{ inputs.bump_desktop == true && inputs.version_number_override != '' }}
+        id: bump-desktop-version-override
+        run: npm version --workspace=@bitwarden/desktop ${{ inputs.version_number_override }}
+
+      - name: Bump Desktop Version - Root - Automatic Calculation
+        if: ${{ inputs.bump_desktop == true && inputs.version_number_override == '' }}
+        id: bump-desktop-version-automatic
+        env:
+          VERSION: ${{ steps.calculate-next-desktop-version.outputs.version }}
+        run: npm version --workspace=@bitwarden/desktop $VERSION
+
+      - name: Bump Desktop Version - App - Version Override
+        if: ${{ inputs.bump_desktop == true && inputs.version_number_override != '' }}
+        run: npm version ${{ inputs.version_number_override }}
+        working-directory: "apps/desktop/src"
+
+      - name: Bump Desktop Version - App - Automatic Calculation
+        if: ${{ inputs.bump_desktop == true && inputs.version_number_override == '' }}
+        env:
+          VERSION: ${{ steps.calculate-next-desktop-version.outputs.version }}
+        run: npm version $VERSION
+        working-directory: "apps/desktop/src"
+
+      ### Web
+      - name: Get current Web version
+        if: ${{ inputs.bump_web == true }}
+        id: current-web-version
+        run: |
+          CURRENT_VERSION=$(cat package.json | jq -r '.version')
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        working-directory: apps/web
+
+      - name: Web - Verify input version
+        if: ${{ inputs.bump_web == true && inputs.version_number_override != '' }}
+        env:
+          CURRENT_VERSION: ${{ steps.current-web-version.outputs.version }}
+          NEW_VERSION: ${{ inputs.version_number_override }}
+        run: |
+          # Error if version has not changed.
+          if [[ "$NEW_VERSION" == "$CURRENT_VERSION" ]]; then
+            echo "Version has not changed."
+            exit 1
+          fi
+
+          # Check if version is newer.
+          printf '%s\n' "${CURRENT_VERSION}" "${NEW_VERSION}" | sort -C -V
+          if [ $? -eq 0 ]; then
+            echo "Version check successful."
+          else
+            echo "Version check failed."
+            exit 1
+          fi
+        working-directory: apps/web
+
+      - name: Calculate next Web release version
+        if: ${{ inputs.bump_web == true && inputs.version_number_override == '' }}
+        id: calculate-next-web-version
+        uses: bitwarden/gh-actions/version-next@main
+        with:
+          version: ${{ steps.current-web-version.outputs.version }}
+
+      - name: Bump Web Version - Version Override
+        if: ${{ inputs.bump_web == true && inputs.version_number_override != '' }}
+        id: bump-web-version-override
+        run: npm version --workspace=@bitwarden/web-vault ${{ inputs.version_number_override }}
+
+      - name: Bump Web Version - Automatic Calculation
+        if: ${{ inputs.bump_web == true && inputs.version_number_override == '' }}
+        id: bump-web-version-automatic
+        env:
+          VERSION: ${{ steps.calculate-next-web-version.outputs.version }}
+        run: npm version --workspace=@bitwarden/web-vault $VERSION
+
+      ########################
+
+      - name: Set final version output
+        id: set-final-version-output
+        run: |
+          if [[ "${{ steps.bump-browser-version-override.outcome }}" = "success" ]]; then
+            echo "version_browser=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ steps.bump-browser-version-automatic.outcome }}" = "success" ]]; then
+            echo "version_browser=${{ steps.calculate-next-browser-version.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+          if [[ "${{ steps.bump-cli-version-override.outcome }}" = "success" ]]; then
+            echo "version_cli=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ steps.bump-cli-version-automatic.outcome }}" = "success" ]]; then
+            echo "version_cli=${{ steps.calculate-next-cli-version.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+          if [[ "${{ steps.bump-desktop-version-override.outcome }}" = "success" ]]; then
+            echo "version_desktop=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ steps.bump-desktop-version-automatic.outcome }}" = "success" ]]; then
+            echo "version_desktop=${{ steps.calculate-next-desktop-version.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+          if [[ "${{ steps.bump-web-version-override.outcome }}" = "success" ]]; then
+            echo "version_web=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ steps.bump-web-version-automatic.outcome }}" = "success" ]]; then
+            echo "version_web=${{ steps.calculate-next-web-version.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if version changed
+        id: version-changed
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes_to_commit=TRUE" >> $GITHUB_OUTPUT
+          else
+            echo "changes_to_commit=FALSE" >> $GITHUB_OUTPUT
+            echo "No changes to commit!";
+          fi
+
+      - name: Commit files
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
+        run: git commit -m "Bumped client version(s)" -a
+
+      - name: Push changes
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
+        env:
+          PR_BRANCH: ${{ steps.create-branch.outputs.name }}
+        run: git push -u origin $PR_BRANCH
+
+      - name: Generate PR message
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
+        id: pr-message
+        run: |
+          MESSAGE=""
+          if [[ "${{ inputs.bump_browser }}" == "true" ]]; then
+            MESSAGE+=$'    Browser version bump to ${{ steps.set-final-version-output.outputs.version_browser }}\n'
+          fi
+
+          if [[ "${{ inputs.bump_cli }}" == "true" ]]; then
+            MESSAGE+=$'    CLI version bump to ${{ steps.set-final-version-output.outputs.version_cli }}\n'
+          fi
+
+          if [[ "${{ inputs.bump_desktop }}" == "true" ]]; then
+            MESSAGE+=$'    Desktop version bump to ${{ steps.set-final-version-output.outputs.version_desktop }}\n'
+          fi
+
+          if [[ "${{ inputs.bump_web }}" == "true" ]]; then
+            MESSAGE+=$'    Web version bump to ${{ steps.set-final-version-output.outputs.version_web }}\n'
+          fi
+
+          echo "MESSAGE<<EOF" >> $GITHUB_ENV
+          echo "$MESSAGE" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Generate GH App token
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        id: app-token
+        with:
+          app-id: ${{ secrets.BW_GHAPP_ID }}
+          private-key: ${{ secrets.BW_GHAPP_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Create Version PR
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
+        id: create-pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_BRANCH: ${{ steps.create-branch.outputs.name }}
+          TITLE: "Bump client(s) version"
+        run: |
+          PR_URL=$(gh pr create --title "$TITLE" \
+            --base "main" \
+            --head "$PR_BRANCH" \
+            --label "version update" \
+            --label "automated pr" \
+            --body "
+              ## Type of change
+              - [ ] Bug fix
+              - [ ] New feature development
+              - [ ] Tech debt (refactoring, code cleanup, dependency upgrades, etc)
+              - [ ] Build/deploy pipeline
+              - [X] Other
+
+              ## Objective
+          $MESSAGE")
+
+          echo "pr_number=${PR_URL##*/}" >> $GITHUB_OUTPUT
+
+      - name: Approve PR
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
+        run: gh pr review $PR_NUMBER --approve
+
+      - name: Merge PR
+        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
+        run: gh pr merge $PR_NUMBER --squash --auto --delete-branch
+
+
+  cherry_pick:
+    name: Cherry-Pick Commit(s)
+    if: ${{ inputs.branch_to_cut != 'none' }}
+    runs-on: ubuntu-22.04
+    needs: bump_version
+    steps:
+      - name: Check out main branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+
+      ##########################
+      # VERSION VERIFY SECTION #
+      ##########################
+
+      ### Browser
+      - name: Browser - Verify version has been updated
+        if: ${{ inputs.bump_browser == true }}
+        env:
+          NEW_VERSION: ${{ needs.bump_version.outputs.version_browser }}
+        run: |
+          # Wait for version to change.
+          while : ; do
+            echo "Waiting for version to be updated..."
+            git pull --force
+            CURRENT_VERSION=$(cat package.json | jq -r '.version')
+
+            # If the versions don't match we continue the loop, otherwise we break out of the loop.
+            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
+            sleep 10
+          done
+        working-directory: apps/browser
+
+      ### CLI
+      - name: CLI - Verify version has been updated
+        if: ${{ inputs.bump_cli == true }}
+        env:
+          NEW_VERSION: ${{ needs.bump_version.outputs.version_cli }}
+        run: |
+          # Wait for version to change.
+          while : ; do
+            echo "Waiting for version to be updated..."
+            git pull --force
+            CURRENT_VERSION=$(cat package.json | jq -r '.version')
+
+            # If the versions don't match we continue the loop, otherwise we break out of the loop.
+            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
+            sleep 10
+          done
+        working-directory: apps/cli
+
+      ### Desktop
+      - name: Desktop - Verify version has been updated
+        if: ${{ inputs.bump_desktop == true }}
+        env:
+          NEW_VERSION: ${{ needs.bump_version.outputs.version_desktop }}
+        run: |
+          # Wait for version to change.
+          while : ; do
+            echo "Waiting for version to be updated..."
+            git pull --force
+            CURRENT_VERSION=$(cat package.json | jq -r '.version')
+
+            # If the versions don't match we continue the loop, otherwise we break out of the loop.
+            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
+            sleep 10
+          done
+        working-directory: apps/desktop
+
+      ### Web
+      - name: Web - Verify version has been updated
+        if: ${{ inputs.bump_web == true }}
+        env:
+          NEW_VERSION: ${{ needs.bump_version.outputs.version_web }}
+        run: |
+          # Wait for version to change.
+          while : ; do
+            echo "Waiting for version to be updated..."
+            git pull --force
+            CURRENT_VERSION=$(cat package.json | jq -r '.version')
+
+            # If the versions don't match we continue the loop, otherwise we break out of the loop.
+            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
+            sleep 10
+          done
+        working-directory: apps/web
+
+      ##########################
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+
+      - name: Perform cherry-pick(s)
+        env:
+          CUT_BRANCH: ${{ inputs.branch_to_cut }}
+          MAIN_COMMIT: ${{ steps.get-commits.outputs.main_commit }}
+          RC_COMMIT: ${{ steps.get-commits.outputs.rc_commit }}
+          RC_VERSION: ${{ steps.get-commits.outputs.rc_version }}
+        run: |
+          # If we are cutting 'hotfix-rc':
+          if [[ "$CUT_BRANCH" == "hotfix-rc" ]]; then
+
+            # If the 'rc' branch exists:
+            if [[ $(git ls-remote --heads origin rc) ]]; then
+
+              # Chery-pick from 'rc' into 'hotfix-rc'
+              git switch hotfix-rc
+              HOTFIX_RC_VERSION=$(xmllint -xpath "/Project/PropertyGroup/Version/text()" Directory.Build.props)
+              if [[ "$HOTFIX_RC_VERSION" != "$RC_VERSION" ]]; then
+                git cherry-pick --strategy-option=theirs -x $RC_COMMIT
+                git push -u origin hotfix-rc
+              fi
+
+              # Cherry-pick from 'main' into 'rc'
+              git switch rc
+              git cherry-pick --strategy-option=theirs -x $MAIN_COMMIT
+              git push -u origin rc
+
+            # If the 'rc' branch does not exist:
+            else
+
+              # Cherry-pick from 'main' into 'hotfix-rc'
+              git switch hotfix-rc
+              git cherry-pick --strategy-option=theirs -x $MAIN_COMMIT
+              git push -u origin hotfix-rc
+
+            fi
+
+          # If we are cutting 'rc':
+          elif [[ "$CUT_BRANCH" == "rc" ]]; then
+
+            # Cherry-pick from 'main' into 'rc'
+            git switch rc
+            git cherry-pick --strategy-option=theirs -x $MAIN_COMMIT
+            git push -u origin rc
+
+          fi
