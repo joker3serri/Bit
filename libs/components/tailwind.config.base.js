@@ -58,9 +58,9 @@ module.exports = {
         600: rgba("--color-info-600"),
         700: rgba("--color-info-700"),
       },
-      code: {
-        100: rgba("--color-code-100"),
-        600: rgba("--color-code-600"),
+      notification: {
+        100: rgba("--color-notification-100"),
+        600: rgba("--color-notification-600"),
       },
       art: {
         primary: rgba("--color-art-primary"),
@@ -71,6 +71,7 @@ module.exports = {
         muted: rgba("--color-text-muted"),
         contrast: rgba("--color-text-contrast"),
         alt2: rgba("--color-text-alt2"),
+        code: rgba("--color-text-code"),
         headers: rgba("--color-text-headers"),
       },
       background: {
@@ -88,10 +89,7 @@ module.exports = {
       contrast: rgba("--color-text-contrast"),
       headers: rgba("--color-text-headers"),
       alt2: rgba("--color-text-alt2"),
-      code: {
-        DEFAULT: rgba("--color-code-600"),
-        600: rgba("--color-code-600"),
-      },
+      code: rgba("--color-text-code"),
       black: colors.black,
       success: {
         DEFAULT: rgba("--color-success-600"),
@@ -121,6 +119,9 @@ module.exports = {
       secondary: {
         300: rgba("--color-secondary-300"),
         700: rgba("--color-secondary-700"),
+      },
+      notification: {
+        600: rgba("--color-notification-600"),
       },
     },
     ringOffsetColor: ({ theme }) => ({

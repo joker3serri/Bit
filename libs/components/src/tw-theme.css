@@ -37,8 +37,8 @@
   --color-success-600: 12 128 24;
   --color-success-700: 11 111 21;
 
-  --color-code-100: 255 245 247;
-  --color-code-600: 192 17 118;
+  --color-notification-100: 255 245 247;
+  --color-notification-600: 192 17 118;
 
   --color-art-primary: 2 15 102;
   --color-art-accent: 44 221 223;
@@ -47,6 +47,7 @@
   --color-text-muted: 96 109 145;
   --color-text-contrast: 255 255 255;
   --color-text-alt2: 255 255 255;
+  --color-text-code: 192 17 118;
 
   --color-marketing-logo: 23 93 220;
 
@@ -94,8 +95,8 @@
   --color-info-600: 121 161 233;
   --color-info-700: 219 229 246;
 
-  --color-code-100: 117 37 83;
-  --color-code-600: 255 143 208;
+  --color-notification-100: 117 37 83;
+  --color-notification-600: 255 143 208;
 
   --color-art-primary: 243 246 249;
   --color-art-accent: 44 221 233;
@@ -104,6 +105,7 @@
   --color-text-muted: 136 152 181;
   --color-text-contrast: 18 26 39;
   --color-text-alt2: 255 255 255;
+  --color-text-code: 255 143 208;
 
   --color-marketing-logo: 255 255 255;
 
@@ -140,12 +142,11 @@
   --color-info-600: 129 161 193;
   --color-info-700: 94 129 172;
 
-  --color-code-600: 219 177 211;
-
   --color-text-main: 229 233 240;
   --color-text-muted: 216 222 233;
   --color-text-contrast: 46 52 64;
   --color-text-alt2: 255 255 255;
+  --color-text-code: 219 177 211;
 
   --color-marketing-logo: 255 255 255;
 
@@ -182,12 +183,11 @@
   --color-info-600: 133 153 0;
   --color-info-700: 192 203 123;
 
-  --color-code-600: 240 141 199;
-
   --color-text-main: 253 246 227;
   --color-text-muted: 147 161 161;
   --color-text-contrast: 0 0 0;
   --color-text-alt2: 255 255 255;
+  --color-text-code: 240 141 199;
 
   --color-marketing-logo: 255 255 255;
 
