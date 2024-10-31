@@ -1,4 +1,6 @@
-// Deprecated; prefer the constants/types below over unsafe enum types
+/**
+ * @deprecated prefer the `ThemeTypes` constants and `Theme` type over unsafe enum types
+ **/
 export enum ThemeType {
   System = "system",
   Light = "light",
