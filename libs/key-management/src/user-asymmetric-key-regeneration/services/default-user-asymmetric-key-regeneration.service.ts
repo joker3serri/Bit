@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -33,11 +33,16 @@ export class DefaultUserAsymmetricKeysRegenerationService
       this.apiService.getUserPublicKey(userId),
     ]);
 
-    const sdk = await firstValueFrom(this.sdkService.userClient$(userId));
-    const verificationResponse = sdk.crypto().verify_asymmetric_keys({
-      userPublicKey: publicKeyResponse.publicKey,
-      userKeyEncryptedPrivateKey: userKeyEncryptedPrivateKey,
-    });
+    const verificationResponse = await firstValueFrom(
+      this.sdkService.userClient$(userId).pipe(
+        map((sdk) =>
+          sdk.crypto().verify_asymmetric_keys({
+            userPublicKey: publicKeyResponse.publicKey,
+            userKeyEncryptedPrivateKey: userKeyEncryptedPrivateKey,
+          }),
+        ),
+      ),
+    );
 
     if (verificationResponse.privateKeyDecryptable && verificationResponse.validPrivateKey) {
       // Private key is decryptable and valid. Should not regenerate.
@@ -67,13 +72,14 @@ export class DefaultUserAsymmetricKeysRegenerationService
   }
 
   async regenerateUserAsymmetricKeys(userId: UserId): Promise<void> {
-    const sdk = await firstValueFrom(this.sdkService.userClient$(userId));
-    const response = sdk.crypto().make_key_pair();
+    const makeKeyPairResponse = await firstValueFrom(
+      this.sdkService.userClient$(userId).pipe(map((sdk) => sdk.crypto().make_key_pair())),
+    );
 
     try {
       await this.regenerateUserAsymmetricKeysApiService.regenerateUserAsymmetricKeys(
-        response.userPublicKey,
-        new EncString(response.userKeyEncryptedPrivateKey),
+        makeKeyPairResponse.userPublicKey,
+        new EncString(makeKeyPairResponse.userKeyEncryptedPrivateKey),
       );
     } catch (error) {
       this.logService.error(
@@ -83,7 +89,7 @@ export class DefaultUserAsymmetricKeysRegenerationService
       return;
     }
 
-    await this.keyService.setPrivateKey(response.userKeyEncryptedPrivateKey, userId);
+    await this.keyService.setPrivateKey(makeKeyPairResponse.userKeyEncryptedPrivateKey, userId);
   }
 
   private async userKeyCanDecrypt(userKey: UserKey): Promise<boolean> {
