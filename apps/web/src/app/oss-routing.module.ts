@@ -218,7 +218,6 @@ const routes: Routes = [
       } satisfies RouteDataProperties & AnonLayoutWrapperData,
       children: [
         { path: "", component: LoginViaAuthRequestComponent },
-        // TODO-rr-bw: Verify if/when each client needs an Environment Selector
         {
           path: "",
           component: EnvironmentSelectorComponent,

@@ -479,7 +479,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
       await this.loginEmailService.saveEmailSettings();
     }
 
-    // TODO-rr-bw: Verify if we want to await a fullSync on all clients now (not just Extension/Desktop as before)
     await this.syncService.fullSync(true);
     await this.router.navigate(["vault"]);
   }
