@@ -2,6 +2,7 @@ import {
   concat,
   concatMap,
   defer,
+  distinctUntilChanged,
   fromEvent,
   map,
   Observable,
@@ -73,23 +74,31 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService 
   supportStatus$(userId: UserId): Observable<SupportStatus<WebPushConnector>> {
     // Check the server config to see if it supports sending WebPush notifications
     // FIXME: get config of server for the specified userId, once ConfigService supports it
-    return this.configService.serverConfig$.pipe<SupportStatus<WebPushConnector>>(
-      map((config) => {
-        if (config.push?.pushTechnology === PushTechnology.WebPush) {
+    return this.configService.serverConfig$.pipe(
+      map((config) =>
+        config.push?.pushTechnology === PushTechnology.WebPush ? config.push.vapidPublicKey : null,
+      ),
+      // No need to re-emit when there is new server config if the vapidPublicKey is still there and the exact same
+      distinctUntilChanged(),
+      map((publicKey) => {
+        if (publicKey == null) {
           return {
-            type: "supported",
-            service: new MyWebPushConnector(
-              config.push.vapidPublicKey,
-              userId,
-              this.webPushApiService,
-              this.serviceWorkerRegistration,
-              this.pushEvent,
-              this.pushChangeEvent,
-            ),
-          };
+            type: "not-supported",
+            reason: "server-not-configured",
+          } satisfies SupportStatus<WebPushConnector>;
         }
 
-        return { type: "not-supported", reason: "server-not-configured" };
+        return {
+          type: "supported",
+          service: new MyWebPushConnector(
+            publicKey,
+            userId,
+            this.webPushApiService,
+            this.serviceWorkerRegistration,
+            this.pushEvent,
+            this.pushChangeEvent,
+          ),
+        } satisfies SupportStatus<WebPushConnector>;
       }),
     );
   }
