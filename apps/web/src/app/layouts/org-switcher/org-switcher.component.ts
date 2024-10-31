@@ -1,16 +1,15 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import type { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { DialogService, NavigationModule } from "@bitwarden/components";
 
-import { TrialFlowService } from "../../billing/services/trial-flow.service";
+import { TrialFlowService } from "./../../billing/services/trial-flow.service";
 
 @Component({
   selector: "org-switcher",
@@ -58,8 +57,6 @@ export class OrgSwitcherComponent {
     private route: ActivatedRoute,
     protected dialogService: DialogService,
     private organizationService: OrganizationService,
-    private i18nService: I18nService,
-    private router: Router,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private trialFlowService: TrialFlowService,
   ) {}
