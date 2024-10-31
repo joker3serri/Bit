@@ -33,7 +33,7 @@ import { CONFIG_DISK, KeyDefinition, StateProvider, UserKeyDefinition } from "..
 
 export const RETRIEVAL_INTERVAL = devFlagEnabled("configRetrievalIntervalMs")
   ? (devFlagValue("configRetrievalIntervalMs") as number)
-  : 60_000; // 1 minute
+  : 3_600_000; // 1 hour
 
 export const SLOW_EMISSION_GUARD = 800;
 
@@ -82,7 +82,7 @@ export class DefaultConfigService implements ConfigService {
       switchMap(([userId, environment, authStatus]) => {
         if (userId == null || authStatus !== AuthenticationStatus.Unlocked) {
           return this.globalConfigFor$(environment.getApiUrl()).pipe(
-            map((config): readonly [ServerConfig, any, Environment] => [config, null, environment]),
+            map((config) => [config, null, environment] as const),
           );
         }
 
