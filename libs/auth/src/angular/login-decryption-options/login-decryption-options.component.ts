@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, DestroyRef, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -48,6 +48,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
+    private destroyRef: DestroyRef,
     private deviceTrustService: DeviceTrustServiceAbstraction,
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
@@ -84,10 +85,10 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   private observeAndPersistRememberDeviceValueChanges(): void {
     this.rememberDeviceControl.valueChanges
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         switchMap((value) =>
           defer(() => this.deviceTrustService.setShouldTrustDevice(this.activeAccountId, value)),
         ),
-        takeUntilDestroyed(),
       )
       .subscribe();
   }
