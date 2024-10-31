@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import { importProvidersFrom } from "@angular/core";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
 
@@ -7,7 +8,6 @@ import { ButtonModule } from "@bitwarden/components";
 import { PreloadedEnglishI18nModule } from "../../../core/tests";
 
 import { DangerZoneComponent } from "./danger-zone.component";
-import { CommonModule } from "@angular/common";
 
 export default {
   title: "Web/Danger Zone",
