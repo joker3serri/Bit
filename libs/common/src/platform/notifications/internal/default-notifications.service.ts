@@ -92,21 +92,24 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
                   return EMPTY;
                 }
 
-                return this.webPushConnectionService.supportStatus$(userId).pipe(
-                  supportSwitch({
-                    supported: (service) =>
-                      service.connect$().pipe(map((n) => [n, userId] as const)),
-                    notSupported: () =>
-                      this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
-                        filter((n) => n.type === "ReceiveMessage"),
-                        map((n) => [(n as ReceiveMessage).message, userId] as const),
-                      ),
-                  }),
-                );
+                return this.choosePushService(userId, notificationsUrl);
               }),
             );
           }),
         );
+      }),
+    );
+  }
+
+  private choosePushService(userId: UserId, notificationsUrl: string) {
+    return this.webPushConnectionService.supportStatus$(userId).pipe(
+      supportSwitch({
+        supported: (service) => service.connect$().pipe(map((n) => [n, userId] as const)),
+        notSupported: () =>
+          this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
+            filter((n) => n.type === "ReceiveMessage"),
+            map((n) => [(n as ReceiveMessage).message, userId] as const),
+          ),
       }),
     );
   }
