@@ -3861,7 +3861,7 @@
       "message": "Your free trial ends today. To maintain your subscription,"
    },
   "routeToPaymentPageTrigger": {
-    "message": "add a payment method"
+    "message": "add a payment method."
   },
   "joinOrganization": {
     "message": "Join organization"
@@ -8469,7 +8469,7 @@
     }
   },
   "addAPaymentMethod": {
-    "message": "add a payment method",
+    "message": "add a payment method.",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To maintain your subscription for $ORG$, add a payment method.'"
   },
   "organizationInformation": {
