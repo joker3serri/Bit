@@ -29,7 +29,7 @@ import { StateEventRunnerService } from "@bitwarden/common/platform/state";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
-import { DialogService, ToastOptions, ToastService } from "@bitwarden/components";
+import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { KeyService, BiometricStateService } from "@bitwarden/key-management";
 
@@ -275,31 +275,6 @@ export class AppComponent implements OnDestroy, OnInit {
     this.destroy$.complete();
   }
 
-  private async displayLogoutReason(logoutReason: LogoutReason) {
-    let toastOptions: ToastOptions;
-    switch (logoutReason) {
-      case "invalidSecurityStamp":
-      case "sessionExpired": {
-        toastOptions = {
-          variant: "warning",
-          title: this.i18nService.t("loggedOut"),
-          message: this.i18nService.t("loginExpired"),
-        };
-        break;
-      }
-      default: {
-        toastOptions = {
-          variant: "info",
-          title: this.i18nService.t("loggedOut"),
-          message: this.i18nService.t("loggedOutDesc"),
-        };
-        break;
-      }
-    }
-
-    this.toastService.showToast(toastOptions);
-  }
-
   private async logOut(logoutReason: LogoutReason, redirect = true) {
     // Ensure the loading state is applied before proceeding to avoid a flash
     // of the login screen before the process reload fires.
@@ -308,7 +283,8 @@ export class AppComponent implements OnDestroy, OnInit {
       document.body.classList.add("layout_frontend");
     });
 
-    await this.displayLogoutReason(logoutReason);
+    // Note: we don't display a toast logout reason anymore as the process reload
+    // will prevent any toasts from being displayed long enough to be read
 
     await this.eventUploadService.uploadEvents();
     const userId = await firstValueFrom(this.accountService.activeAccount$.pipe(map((a) => a?.id)));
