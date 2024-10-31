@@ -1794,6 +1794,15 @@
   "passwordHistory": {
     "message": "Paroļu vēsture"
   },
+  "generatorHistory": {
+    "message": "Veidotāja vēsture"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Iztīrīt veidotāja vēsturi"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "Turpinot visi veidotāja vēstures ieraksti tiks neatgrieziniski izdzēsti. Vai tiešām turpināt?"
+  },
   "back": {
     "message": "Atpakaļ"
   },
@@ -1910,11 +1919,11 @@
   "clearHistory": {
     "message": "Notīrīt vēsturi"
   },
-  "noPasswordsToShow": {
-    "message": "Nav paroļu, ko parādīt"
+  "nothingToShow": {
+    "message": "Nav nekā, ko parādīt"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "Pēdējā laikā nav izveidota neviena parole"
+  "nothingGeneratedRecently": {
+    "message": "Pēdējā laikā nav nekas izveidots"
   },
   "remove": {
     "message": "Noņemt"
@@ -2868,6 +2877,20 @@
   "generateEmail": {
     "message": "Izveidot e-pastu"
   },
+  "generatorBoundariesHint": {
+    "message": "Vērtībai jābūt starp $MIN$ un $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Lietotājvārda veids"
   },
@@ -3210,9 +3233,6 @@
         "example": "CTRL+Shift+L"
       }
     }
-  },
-  "loggingInOn": {
-    "message": "Piesakās"
   },
   "opensInANewWindow": {
     "message": "Atver jaunā logā"

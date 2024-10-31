@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "A fiók véglegesen törlésre kerül. A művelet nem vonható vissza."
   },
+  "cannotDeleteAccount": {
+    "message": "A fiók nem törölhető."
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Ez a művelet nem hajtható végre, mert a fiók egy szervezet tulajdonában van. További részletekért forduljunk a szervezet adminisztrátorához."
+  },
   "accountDeleted": {
     "message": "A fiók törlésre került."
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "Email generálása"
   },
+  "generatorBoundariesHint": {
+    "message": "Az érték legyen $MIN$ és $MAX$ között.",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Felhasználónév típusa"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "EU",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Bejelentkezés:"
   },
   "selfHostedServer": {
     "message": "saját üzemeltetésű"

@@ -1794,6 +1794,15 @@
   "passwordHistory": {
     "message": "Historie hesel"
   },
+  "generatorHistory": {
+    "message": "Historie generátoru"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Vymazat historii generátoru"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "Pokud budete pokračovat, všechny položky budou trvale smazány z historie generátoru. Jste si jisti, že chcete pokračovat?"
+  },
   "back": {
     "message": "Zpět"
   },
@@ -1910,11 +1919,11 @@
   "clearHistory": {
     "message": "Vymazat historii"
   },
-  "noPasswordsToShow": {
-    "message": "Žádná hesla k zobrazení"
+  "nothingToShow": {
+    "message": "Nic k zobrazení"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "Nedávno jste nevygenerovali heslo"
+  "nothingGeneratedRecently": {
+    "message": "Nedávno jste nic nevygenerovali"
   },
   "remove": {
     "message": "Odebrat"
@@ -2868,6 +2877,20 @@
   "generateEmail": {
     "message": "Vygenerovat e-mail"
   },
+  "generatorBoundariesHint": {
+    "message": "Hodnota musí být mezi $MIN$ a $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Typ uživatelského jména"
   },
@@ -3210,9 +3233,6 @@
         "example": "CTRL+Shift+L"
       }
     }
-  },
-  "loggingInOn": {
-    "message": "Přihlašování na"
   },
   "opensInANewWindow": {
     "message": "Otevře se v novém okně"

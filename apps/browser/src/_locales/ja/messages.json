@@ -1794,6 +1794,15 @@
   "passwordHistory": {
     "message": "パスワードの履歴"
   },
+  "generatorHistory": {
+    "message": "Generator history"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Clear generator history"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "If you continue, all entries will be permanently deleted from generator's history. Are you sure you want to continue?"
+  },
   "back": {
     "message": "戻る"
   },
@@ -1910,11 +1919,11 @@
   "clearHistory": {
     "message": "履歴を消去"
   },
-  "noPasswordsToShow": {
-    "message": "パスワードがありません"
+  "nothingToShow": {
+    "message": "Nothing to show"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "最近パスワードを生成していません"
+  "nothingGeneratedRecently": {
+    "message": "You haven't generated anything recently"
   },
   "remove": {
     "message": "削除"
@@ -2868,6 +2877,20 @@
   "generateEmail": {
     "message": "Generate email"
   },
+  "generatorBoundariesHint": {
+    "message": "Value must be between $MIN$ and $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "ユーザー名の種類"
   },
@@ -3210,9 +3233,6 @@
         "example": "CTRL+Shift+L"
       }
     }
-  },
-  "loggingInOn": {
-    "message": "ログイン先"
   },
   "opensInANewWindow": {
     "message": "新しいウィンドウで開く"

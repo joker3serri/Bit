@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "A eliminação da sua conta é permanente. Não pode ser anulada."
   },
+  "cannotDeleteAccount": {
+    "message": "Não é possível eliminar a conta"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Esta ação não pode ser concluída porque a sua conta é propriedade de uma organização. Contacte o administrador da sua organização para obter mais informações."
+  },
   "accountDeleted": {
     "message": "Conta eliminada"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "Gerar e-mail"
   },
+  "generatorBoundariesHint": {
+    "message": "O valor deve estar entre $MIN$ e $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Tipo de nome de utilizador"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "UE",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "A iniciar sessão em"
   },
   "selfHostedServer": {
     "message": "auto-hospedado"

@@ -7,5 +7,6 @@ export * from "./biometrics/biometric.state";
 
 export { KeyService } from "./abstractions/key.service";
 export { DefaultKeyService } from "./key.service";
+export { UserKeyRotationDataProvider } from "./abstractions/user-key-rotation-data-provider.abstraction";
 
 export * from "./user-asymmetric-key-regeneration";

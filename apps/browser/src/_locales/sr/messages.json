@@ -1794,6 +1794,15 @@
   "passwordHistory": {
     "message": "Историја Лозинке"
   },
+  "generatorHistory": {
+    "message": "Generator history"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Clear generator history"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "If you continue, all entries will be permanently deleted from generator's history. Are you sure you want to continue?"
+  },
   "back": {
     "message": "Назад"
   },
@@ -1910,11 +1919,11 @@
   "clearHistory": {
     "message": "Обриши историју"
   },
-  "noPasswordsToShow": {
-    "message": "Нема лозинке за приказ"
+  "nothingToShow": {
+    "message": "Nothing to show"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "Нисте недавно генерисали лозинку"
+  "nothingGeneratedRecently": {
+    "message": "You haven't generated anything recently"
   },
   "remove": {
     "message": "Уклони"
@@ -2868,6 +2877,20 @@
   "generateEmail": {
     "message": "Generate email"
   },
+  "generatorBoundariesHint": {
+    "message": "Value must be between $MIN$ and $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Тип имена"
   },
@@ -3210,9 +3233,6 @@
         "example": "CTRL+Shift+L"
       }
     }
-  },
-  "loggingInOn": {
-    "message": "Пријављено на"
   },
   "opensInANewWindow": {
     "message": "Отвара се у новом прозору"

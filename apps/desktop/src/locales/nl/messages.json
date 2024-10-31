@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "Het verwijderen van je account is definitief. Je kunt dit niet ongedaan maken."
   },
+  "cannotDeleteAccount": {
+    "message": "Kan account niet verwijderen"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Je kunt deze actie niet afronden omdat je account eigendom is van een organisatie. Neem contact op met de beheerder van je organisatie voor details."
+  },
   "accountDeleted": {
     "message": "Account verwijderd"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "E-mailadres genereren"
   },
+  "generatorBoundariesHint": {
+    "message": "Waarde moet tussen $MIN$ en $MAX$ liggen",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Type gebruikersnaam"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "EU",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Inloggen op"
   },
   "selfHostedServer": {
     "message": "zelfgehost"

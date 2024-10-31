@@ -36,7 +36,7 @@
     "message": "Αναζήτηση κρύπτης"
   },
   "addItem": {
-    "message": "Προσθήκη αντικειμένου"
+    "message": "Προσθήκη στοιχείου"
   },
   "shared": {
     "message": "Κοινοποιήθηκε"
@@ -61,7 +61,7 @@
     }
   },
   "welcomeBack": {
-    "message": "Welcome back"
+    "message": "Καλωσορίσατε και πάλι"
   },
   "moveToOrgDesc": {
     "message": "Επιλέξτε έναν οργανισμό στον οποίο θέλετε να μετακινήσετε αυτό το στοιχείο. Η μετακίνηση σε έναν οργανισμό μεταβιβάζει την ιδιοκτησία του στοιχείου σε αυτό τον οργανισμό. Δεν θα είστε πλέον ο άμεσος ιδιοκτήτης αυτού του στοιχείου μόλις το μετακινήσετε."
@@ -70,7 +70,7 @@
     "message": "Συνημμένα"
   },
   "viewItem": {
-    "message": "Προβολή αντικειμένου"
+    "message": "Προβολή στοιχείου"
   },
   "name": {
     "message": "Όνομα"
@@ -101,7 +101,7 @@
     "message": "Συνθηματικό"
   },
   "editItem": {
-    "message": "Επεξεργασία αντικειμένου"
+    "message": "Επεξεργασία στοιχείου"
   },
   "emailAddress": {
     "message": "Διεύθυνση ηλ. ταχυδρομείου"
@@ -263,7 +263,7 @@
     "message": "Γέννηση κωδικού πρόσβασης"
   },
   "generatePassphrase": {
-    "message": "Generate passphrase"
+    "message": "Δημιουργία φράσης πρόσβασης"
   },
   "type": {
     "message": "Τύπος"
@@ -401,7 +401,7 @@
     "message": "Αντιγραφή κωδικού πρόσβασης"
   },
   "copyPassphrase": {
-    "message": "Copy passphrase",
+    "message": "Αντιγραφή φράσης πρόσβασης",
     "description": "Copy passphrase to clipboard"
   },
   "copyUri": {
@@ -558,7 +558,7 @@
     "message": "Δημιουργία λογαριασμού"
   },
   "newToBitwarden": {
-    "message": "New to Bitwarden?"
+    "message": "Νέος/α στο Bitwarden;"
   },
   "setAStrongPassword": {
     "message": "Ορίστε έναν ισχυρό κωδικό πρόσβασης"
@@ -570,16 +570,16 @@
     "message": "Είσοδος"
   },
   "logInToBitwarden": {
-    "message": "Log in to Bitwarden"
+    "message": "Σύνδεση στο Bitwarden"
   },
   "logInWithPasskey": {
-    "message": "Log in with passkey"
+    "message": "Σύνδεση με κλειδί πρόσβασης"
   },
   "loginWithDevice": {
-    "message": "Log in with device"
+    "message": "Σύνδεση με χρήση συσκευής"
   },
   "useSingleSignOn": {
-    "message": "Use single sign-on"
+    "message": "Χρήση ενιαίας σύνδεσης"
   },
   "submit": {
     "message": "Υποβολή"
@@ -643,16 +643,16 @@
     "message": "Ρυθμίσεις"
   },
   "accountEmail": {
-    "message": "Email λογαριασμού"
+    "message": "Διεύθυνση ηλ. ταχυδρομείου λογαριασμού"
   },
   "requestHint": {
     "message": "Αίτηση υπόδειξης"
   },
   "requestPasswordHint": {
-    "message": "Υπόδειξη κωδικού πρόσβασης"
+    "message": "Αίτηση υπόδειξης κωδικού πρόσβασης"
   },
   "enterYourAccountEmailAddressAndYourPasswordHintWillBeSentToYou": {
-    "message": "Εισάγετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου του λογαριασμού σας και θα σας αποσταλεί η υπόδειξη κωδικού πρόσβασης"
+    "message": "Εισάγετε τη διεύθυνση ηλ. ταχυδρομείου του λογαριασμού σας και θα σας αποσταλεί η υπόδειξη κωδικού πρόσβασης"
   },
   "passwordHint": {
     "message": "Υπόδειξη κωδικού πρόσβασης"
@@ -854,7 +854,7 @@
     "message": "URL Διακομιστή"
   },
   "selfHostBaseUrl": {
-    "message": "Self-host server URL",
+    "message": "URL διακομιστή αυτο-φιλοξενίας",
     "description": "Label for field requesting a self-hosted integration service URL"
   },
   "apiUrl": {
@@ -924,7 +924,7 @@
     "message": "Νέα σύνδεση"
   },
   "addNewItem": {
-    "message": "Νέο αντικείμενο"
+    "message": "Νέο στοιχείο"
   },
   "addNewFolder": {
     "message": "Νέος φάκελος"
@@ -951,7 +951,7 @@
     "message": "Βοήθεια και σχόλια"
   },
   "getHelp": {
-    "message": "Ζητήστε βοήθεια"
+    "message": "Λήψη βοήθειας"
   },
   "fileBugReport": {
     "message": "Καταγράψτε μια αναφορά σφάλματος"
@@ -1248,7 +1248,7 @@
     "description": "Copy credit card number"
   },
   "copyEmail": {
-    "message": "Copy email"
+    "message": "Αντιγραφή διεύθυνσης ηλ. ταχυδρομείου"
   },
   "copySecurityCode": {
     "message": "Αντιγραφή κωδικού ασφαλείας",
@@ -1318,7 +1318,7 @@
     "message": "Επιτυχής ανανέωση"
   },
   "passwordHistory": {
-    "message": "Ιστορικό κωδικού"
+    "message": "Ιστορικό κωδικού πρόσβασης"
   },
   "clear": {
     "message": "Εκκαθάριση",
@@ -1494,7 +1494,7 @@
     "description": "ex. Date this item was created"
   },
   "datePasswordUpdated": {
-    "message": "Ο κωδικός ενημερώθηκε",
+    "message": "Ο κωδικός πρόσβασης ενημερώθηκε",
     "description": "ex. Date this password was updated"
   },
   "exportFrom": {
@@ -1682,6 +1682,12 @@
   },
   "deleteAccountWarning": {
     "message": "Η διαγραφή του λογαριασμού σας είναι μόνιμη. Δεν μπορεί να αναιρεθεί."
+  },
+  "cannotDeleteAccount": {
+    "message": "Αδυναμία διαγραφής λογαριασμού"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Αυτή η ενέργεια δεν μπορεί να ολοκληρωθεί επειδή ο λογαριασμός σας ανήκει σε έναν οργανισμό. Επικοινωνήστε με το διαχειριστή του οργανισμού σας για πρόσθετες λεπτομέρειες."
   },
   "accountDeleted": {
     "message": "Ο λογαριασμός διαγράφηκε"
@@ -1987,7 +1993,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "myVault": {
-    "message": "Το θησαυ/κιό μου"
+    "message": "Η κρύπτη μου"
   },
   "text": {
     "message": "Κείμενο"
@@ -2385,7 +2391,21 @@
     "message": "Δημιουργία ονόματος χρήστη"
   },
   "generateEmail": {
-    "message": "Generate email"
+    "message": "Δημιουργία διεύθυνσης ηλ. ταχυδρομείου"
+  },
+  "generatorBoundariesHint": {
+    "message": "Η τιμή πρέπει να είναι μεταξύ $MIN$ και $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
   },
   "usernameType": {
     "message": "Τύπος ονόματος χρήστη"
@@ -2431,11 +2451,11 @@
     "message": "Δημιουργήστε ένα alias email με μια εξωτερική υπηρεσία προώθησης."
   },
   "forwarderDomainName": {
-    "message": "Email domain",
+    "message": "Τομέας ηλ. ταχυδρομείου",
     "description": "Labels the domain name email forwarder service option"
   },
   "forwarderDomainNameHint": {
-    "message": "Choose a domain that is supported by the selected service",
+    "message": "Επιλέξτε ένα τομέα που υποστηρίζεται από την επιλεγμένη υπηρεσία",
     "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
@@ -2563,7 +2583,7 @@
     "message": "Είστε βέβαιοι ότι θέλετε να χρησιμοποιήσετε την επιλογή \"Ποτέ\"; Ο ορισμός των επιλογών κλειδώματος σε \"Ποτέ\" αποθηκεύει το κλειδί κρυπτογράφησης του θησαυ/κίου σας στη συσκευή σας. Εάν χρησιμοποιήσετε αυτήν την επιλογή, θα πρέπει να διασφαλίσετε ότι θα διατηρείτε τη συσκευή σας κατάλληλα προστατευμένη."
   },
   "vault": {
-    "message": "Θησαυ/κιο"
+    "message": "Κρύπτη"
   },
   "loginWithMasterPassword": {
     "message": "Συνδεθείτε με τον κύριο κωδικό πρόσβασης"
@@ -2575,7 +2595,7 @@
     "message": "Απομνημόνευση διεύθυνσης ηλ. ταχυδρομείου"
   },
   "notYou": {
-    "message": "Όχι εσείς;"
+    "message": "Δεν είστε εσείς;"
   },
   "newAroundHere": {
     "message": "Είστε νέος/α εδώ;"
@@ -2706,7 +2726,7 @@
     "message": "Κανένα μήνυμα ηλ. ταχυδρομείου;"
   },
   "goBack": {
-    "message": "Μετάβαση πίσω"
+    "message": "Επιστροφή"
   },
   "toEditYourEmailAddress": {
     "message": "για να επεξεργαστείτε τη διεύθυνση ηλ. ταχυδρομείου σας."
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "ΕΕ",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Σύνδεση σε"
   },
   "selfHostedServer": {
     "message": "αυτο-φιλοξενούμενο"
