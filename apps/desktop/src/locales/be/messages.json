@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "Выдаленне вашага ўліковага запісу з'яўляецца незваротным дзеяннем. Яго нельга будзе адрабіць."
   },
+  "cannotDeleteAccount": {
+    "message": "Cannot delete account"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "This action cannot be completed because your account is owned by an organization. Contact your organization administrator for additional details."
+  },
   "accountDeleted": {
     "message": "Уліковы запіс выдалены"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "Generate email"
   },
+  "generatorBoundariesHint": {
+    "message": "Value must be between $MIN$ and $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Тып імя карыстальніка"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "ЕС",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Увайсці на"
   },
   "selfHostedServer": {
     "message": "self-hosted"

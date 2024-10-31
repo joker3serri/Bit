@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "El borrado de su cuenta es una operación permanente. No se puede deshacer."
   },
+  "cannotDeleteAccount": {
+    "message": "Cannot delete account"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "This action cannot be completed because your account is owned by an organization. Contact your organization administrator for additional details."
+  },
   "accountDeleted": {
     "message": "Cuenta eliminada"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "Generate email"
   },
+  "generatorBoundariesHint": {
+    "message": "Value must be between $MIN$ and $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Tipo de nombre de usuario"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "Unión Europea",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Iniciando sesión en"
   },
   "selfHostedServer": {
     "message": "autoalojado"

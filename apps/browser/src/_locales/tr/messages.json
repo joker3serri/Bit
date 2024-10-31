@@ -1794,6 +1794,15 @@
   "passwordHistory": {
     "message": "Parola geçmişi"
   },
+  "generatorHistory": {
+    "message": "Üreteç geçmişi"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Üreteç geçmişini temizle"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "Devam ederseniz üreteç geçmişindeki tüm kayıtlar kalıcı olarak silinecektir. Devam etmek istediğinizden emin misiniz?"
+  },
   "back": {
     "message": "Geri"
   },
@@ -1910,11 +1919,11 @@
   "clearHistory": {
     "message": "Geçmişi temizle"
   },
-  "noPasswordsToShow": {
-    "message": "Gösterilecek parola yok"
+  "nothingToShow": {
+    "message": "Gösterilecek bir şey yok"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "Yakın zamanda parola üretmediniz"
+  "nothingGeneratedRecently": {
+    "message": "Yakın zamanda herhangi bir şey üretmediniz"
   },
   "remove": {
     "message": "Kaldır"
@@ -2868,6 +2877,20 @@
   "generateEmail": {
     "message": "E-posta oluştur"
   },
+  "generatorBoundariesHint": {
+    "message": "Değer $MIN$ ile $MAX$ arasında olmalıdır",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Kullanıcı adı türü"
   },
@@ -3210,9 +3233,6 @@
         "example": "CTRL+Shift+L"
       }
     }
-  },
-  "loggingInOn": {
-    "message": "Giriş yapılan konum"
   },
   "opensInANewWindow": {
     "message": "Yeni pencerede açılır"

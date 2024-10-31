@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "Hesabınızı silmek kalıcıdır. Geri alınamaz."
   },
+  "cannotDeleteAccount": {
+    "message": "Hesap silinemiyor"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Hesabınızın sahibi bir kuruluş olduğu için bu işlem tamamlanamadı. Bilgi almak için kuruluş yöneticinizle iletişime geçin."
+  },
   "accountDeleted": {
     "message": "Hesap silindi"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "E-posta oluştur"
   },
+  "generatorBoundariesHint": {
+    "message": "Değer $MIN$ ile $MAX$ arasında olmalıdır",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Kullanıcı adı türü"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "AB",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Giriş yapılan konum"
   },
   "selfHostedServer": {
     "message": "şirket içinde barındırılan"
