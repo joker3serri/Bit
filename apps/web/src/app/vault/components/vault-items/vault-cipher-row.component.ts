@@ -200,6 +200,6 @@ export class VaultCipherRowComponent implements OnInit {
       return true; // Always show checkbox in individual vault or for non-org items
     }
 
-    return this.organization.canEditAllCiphers || this.cipher.edit;
+    return this.organization.canEditAllCiphers || (this.cipher.edit && this.cipher.viewPassword);
   }
 }
