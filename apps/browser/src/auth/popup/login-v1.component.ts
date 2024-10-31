@@ -56,7 +56,6 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
-    serverSettingsService: ServerSettingsService,
   ) {
     super(
       devicesApiService,
@@ -79,7 +78,6 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
       webAuthnLoginService,
       registerRouteService,
       toastService,
-      serverSettingsService,
     );
     this.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);

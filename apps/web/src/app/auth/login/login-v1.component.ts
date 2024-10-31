@@ -1,8 +1,8 @@
 import { Component, NgZone, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { firstValueFrom, takeUntil } from "rxjs";
-import { first } from "rxjs/operators";
+import { firstValueFrom, Observable, takeUntil } from "rxjs";
+import { first, map } from "rxjs/operators";
 
 import { LoginComponentV1 as BaseLoginComponent } from "@bitwarden/angular/auth/components/login-v1.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
@@ -27,11 +27,11 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
-import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 
 import { flagEnabled } from "../../../utils/flags";
 import { RouterService } from "../../core";
@@ -48,6 +48,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
   enforcedPasswordPolicyOptions: MasterPasswordPolicyOptions;
   policies: Policy[];
   showPasswordless = false;
+  isUserRegistrationDisabled$: Observable<boolean>;
 
   constructor(
     private acceptOrganizationInviteService: AcceptOrganizationInviteService,
@@ -75,7 +76,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
-    serverSettingsService: ServerSettingsService,
+    protected serverSettingsService: ServerSettingsService,
   ) {
     super(
       devicesApiService,
@@ -98,7 +99,6 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
       webAuthnLoginService,
       registerRouteService,
       toastService,
-      serverSettingsService,
     );
     this.onSuccessfulLoginNavigate = this.goAfterLogIn;
     this.showPasswordless = flagEnabled("showPasswordless");
@@ -143,6 +143,11 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
     if (orgInvite != null) {
       await this.initPasswordPolicies(orgInvite);
     }
+
+    this.isUserRegistrationDisabled$ = this.serverSettingsService.isUserRegistrationDisabled$.pipe(
+      map((value) => value ?? false),
+      takeUntil(this.destroy$),
+    );
   }
 
   async goAfterLogIn(userId: UserId) {

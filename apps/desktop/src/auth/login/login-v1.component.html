@@ -48,7 +48,7 @@
             </button>
           </div>
         </div>
-        <div class="sub-options" *ngIf="!(isUserRegistrationDisabled$ | async)">
+        <div class="sub-options">
           <p class="no-margin">{{ "newAroundHere" | i18n }}</p>
           <button type="button" class="text text-primary" [routerLink]="registerRoute$ | async">
             {{ "createAccount" | i18n }}
