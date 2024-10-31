@@ -44,7 +44,7 @@
       </a>
     </div>
 
-    <hr />
+    <hr *ngIf="!(isUserRegistrationDisabled$ | async)" />
 
     <p class="tw-m-0 tw-text-sm" *ngIf="!(isUserRegistrationDisabled$ | async)">
       {{ "newAroundHere" | i18n }}
