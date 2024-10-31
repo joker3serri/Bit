@@ -184,6 +184,7 @@ import { MigrationBuilderService } from "@bitwarden/common/platform/services/mig
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopNotificationsService } from "@bitwarden/common/platform/services/noop-notifications.service";
 import { DefaultSdkService } from "@bitwarden/common/platform/services/sdk/default-sdk.service";
+import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 import { StateService } from "@bitwarden/common/platform/services/state.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import { UserAutoUnlockKeyService } from "@bitwarden/common/platform/services/user-auto-unlock-key.service";
@@ -1315,6 +1316,11 @@ const safeProviders: SafeProvider[] = [
       OrganizationUserApiService,
       InternalUserDecryptionOptionsServiceAbstraction,
     ],
+  }),
+  safeProvider({
+    provide: ServerSettingsService,
+    useClass: ServerSettingsService,
+    deps: [ConfigService],
   }),
   safeProvider({
     provide: RegisterRouteService,
