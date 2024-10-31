@@ -42,7 +42,7 @@ export class AccessIntelligenceComponent {
   tabIndex: AccessIntelligenceTabType;
   dataLastUpdated = new Date();
 
-  apps: any[] = [];
+  apps: any[] = ["App 1", "App 2", "App 3", "App 4", "App 5"];
   priorityApps: any[] = [];
   notifiedMembers: any[] = [];
 

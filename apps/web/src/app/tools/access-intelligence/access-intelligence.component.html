@@ -16,6 +16,9 @@
   </a>
 </div>
 <bit-tab-group [(selectedIndex)]="tabIndex">
+  <bit-tab label="{{ 'allApplicationsWithCount' | i18n: apps.length }}">
+    <tools-application-table></tools-application-table>
+  </bit-tab>
   <bit-tab label="Raw Data">
     <tools-password-health></tools-password-health>
   </bit-tab>
@@ -25,11 +28,7 @@
   <bit-tab label="Raw Data + uri">
     <tools-password-health-members-uri></tools-password-health-members-uri>
   </bit-tab>
-  <!-- <bit-tab label="{{ 'allApplicationsWithCount' | i18n: apps.length }}">
-    <h2 bitTypography="h2">{{ "allApplications" | i18n }}</h2>
-    <tools-application-table></tools-application-table>
-  </bit-tab>
-  <bit-tab>
+  <!-- <bit-tab>
     <ng-template bitTabLabel>
       <i class="bwi bwi-star"></i>
       {{ "priorityApplicationsWithCount" | i18n: priorityApps.length }}
