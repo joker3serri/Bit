@@ -1069,7 +1069,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       );
       this.updateLastUsedInlineMenuCipher(inlineMenuCipherId, cipher);
 
-      if (cipher.login.totp) {
+      if (cipher.login?.totp) {
         this.platformUtilsService.copyToClipboard(
           await this.totpService.getCode(cipher.login.totp),
         );
