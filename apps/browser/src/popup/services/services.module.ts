@@ -80,7 +80,6 @@ import { TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import { NoopSdkClientFactory } from "@bitwarden/common/platform/services/sdk/noop-sdk-client-factory";
-import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
 import {
@@ -618,11 +617,6 @@ const safeProviders: SafeProvider[] = [
     provide: ExtensionAnonLayoutWrapperDataService,
     useClass: ExtensionAnonLayoutWrapperDataService,
     deps: [],
-  }),
-  safeProvider({
-    provide: ServerSettingsService,
-    useClass: ServerSettingsService,
-    deps: [ConfigService],
   }),
 ];
 

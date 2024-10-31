@@ -288,11 +288,6 @@ const safeProviders: SafeProvider[] = [
     deps: [AccountService, AuthService, StateProvider],
   }),
   safeProvider({
-    provide: CollectionAdminService,
-    useClass: DefaultCollectionAdminService,
-    deps: [ApiService, KeyServiceAbstraction, EncryptService, CollectionService],
-  }),
-  safeProvider({
     provide: ServerSettingsService,
     useClass: ServerSettingsService,
     deps: [ConfigService],
