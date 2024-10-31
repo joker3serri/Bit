@@ -10,48 +10,54 @@
 </ng-container>
 
 <form *ngIf="!loading" [formGroup]="formGroup">
-  <ng-container *ngIf="data.state === State.ExistingUserUntrustedDevice">
-    <bit-form-control>
-      <input type="checkbox" bitCheckbox formControlName="rememberDevice" />
-      <bit-label>{{ "rememberThisDevice" | i18n }}</bit-label>
-      <bit-hint>{{ "uncheckIfPublicDevice" | i18n }}</bit-hint>
-    </bit-form-control>
-
-    <div class="tw-grid tw-gap-3">
-      <button
-        *ngIf="data.showApproveFromOtherDeviceBtn"
-        type="button"
-        bitButton
-        block
-        buttonType="primary"
-        (click)="approveFromOtherDevice()"
-      >
-        {{ "approveFromYourOtherDevice" | i18n }}
-      </button>
-
-      <div class="tw-text-center">{{ "or" | i18n }}</div>
-
-      <button
-        *ngIf="data.showApproveWithMasterPasswordBtn"
-        type="button"
-        bitButton
-        block
-        buttonType="secondary"
-        (click)="approveWithMasterPassword()"
-      >
-        {{ "useMasterPassword" | i18n }}
-      </button>
-
-      <button
-        *ngIf="data.showReqAdminApprovalBtn"
-        type="button"
-        bitButton
-        block
-        buttonType="secondary"
-        (click)="requestAdminApproval()"
-      >
-        {{ "requestAdminApproval" | i18n }}
-      </button>
-    </div>
-  </ng-container>
+  <bit-form-control>
+    <input type="checkbox" bitCheckbox formControlName="rememberDevice" />
+    <bit-label>{{ "rememberThisDevice" | i18n }}</bit-label>
+    <bit-hint bitTypography="body2">{{ "uncheckIfPublicDevice" | i18n }}</bit-hint>
+  </bit-form-control>
 </form>
+
+<ng-container *ngIf="data.state === State.NewUser">
+  <button type="button" bitButton block buttonType="primary" [bitAction]="createUserAction">
+    {{ "continue" | i18n }}
+  </button>
+</ng-container>
+
+<ng-container *ngIf="data.state === State.ExistingUserUntrustedDevice">
+  <div class="tw-grid tw-gap-3">
+    <button
+      *ngIf="data.showApproveFromOtherDeviceBtn"
+      type="button"
+      bitButton
+      block
+      buttonType="primary"
+      (click)="approveFromOtherDevice()"
+    >
+      {{ "approveFromYourOtherDevice" | i18n }}
+    </button>
+
+    <div class="tw-text-center">{{ "or" | i18n }}</div>
+
+    <button
+      *ngIf="data.showApproveWithMasterPasswordBtn"
+      type="button"
+      bitButton
+      block
+      buttonType="secondary"
+      (click)="approveWithMasterPassword()"
+    >
+      {{ "useMasterPassword" | i18n }}
+    </button>
+
+    <button
+      *ngIf="data.showReqAdminApprovalBtn"
+      type="button"
+      bitButton
+      block
+      buttonType="secondary"
+      (click)="requestAdminApproval()"
+    >
+      {{ "requestAdminApproval" | i18n }}
+    </button>
+  </div>
+</ng-container>

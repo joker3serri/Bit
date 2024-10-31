@@ -3,7 +3,7 @@ import { Component, DestroyRef, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { defer, firstValueFrom, map, switchMap } from "rxjs";
+import { catchError, defer, firstValueFrom, from, map, of, switchMap, throwError } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -11,12 +11,21 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { UserId } from "@bitwarden/common/types/guid";
-import { ButtonModule, CheckboxModule, FormFieldModule, ToastService } from "@bitwarden/components";
+import {
+  AsyncActionsModule,
+  ButtonModule,
+  CheckboxModule,
+  FormFieldModule,
+  ToastService,
+  TypographyModule,
+} from "@bitwarden/components";
 
 enum State {
   NewUser,
@@ -43,12 +52,14 @@ type Data = NewUserData | ExistingUserUntrustedDeviceData;
   standalone: true,
   templateUrl: "./login-decryption-options.component.html",
   imports: [
+    AsyncActionsModule,
     ButtonModule,
     CheckboxModule,
     CommonModule,
     FormFieldModule,
     JslibModule,
     ReactiveFormsModule,
+    TypographyModule,
   ],
 })
 export class LoginDecryptionOptionsComponent implements OnInit {
@@ -75,13 +86,15 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
     private loginEmailService: LoginEmailServiceAbstraction,
+    private organizationApiService: OrganizationApiServiceAbstraction,
     private router: Router,
+    private ssoLoginService: SsoLoginServiceAbstraction,
     private toastService: ToastService,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private validationService: ValidationService,
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit() {
     // this.loading = true; // TODO-rr-bw: uncomment after testing
 
     this.activeAccountId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
@@ -115,7 +128,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
         !userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval &&
         !userDecryptionOptions?.hasMasterPassword
       ) {
-        // this.loadNewUserData();
+        await this.loadNewUserData();
       } else {
         this.loadUntrustedDeviceData(userDecryptionOptions);
       }
@@ -124,7 +137,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     }
   }
 
-  private observeAndPersistRememberDeviceValueChanges(): void {
+  private observeAndPersistRememberDeviceValueChanges() {
     this.rememberDeviceControl.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -145,7 +158,37 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.rememberDeviceControl.setValue(rememberDevice);
   }
 
+  private async loadNewUserData() {
+    const autoEnrollStatus$ = defer(() =>
+      this.ssoLoginService.getActiveUserOrganizationSsoIdentifier(),
+    ).pipe(
+      switchMap((organizationIdentifier) => {
+        if (organizationIdentifier == undefined) {
+          return throwError(() => new Error(this.i18nService.t("ssoIdentifierRequired")));
+        }
+
+        return from(this.organizationApiService.getAutoEnrollStatus(organizationIdentifier));
+      }),
+      catchError((err: unknown) => {
+        this.validationService.showError(err);
+        return of(undefined);
+      }),
+    );
+
+    const autoEnrollStatus = await firstValueFrom(autoEnrollStatus$);
+
+    this.data = {
+      state: State.NewUser,
+      organizationId: autoEnrollStatus.id,
+      userEmail: this.email,
+    };
+
+    this.loading = false;
+  }
+
   private loadUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
+    this.loading = true;
+
     const showApproveFromOtherDeviceBtn =
       userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice || false;
 
@@ -161,6 +204,12 @@ export class LoginDecryptionOptionsComponent implements OnInit {
       showApproveWithMasterPasswordBtn,
       userEmail: this.email,
     };
+
+    this.loading = false;
+  }
+
+  protected async createUserAction() {
+    // TODO-rr-bw: implement
   }
 
   protected async approveFromOtherDevice() {
