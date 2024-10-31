@@ -172,6 +172,14 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     await this.router.navigate(["/login-with-device"]);
   }
 
+  protected async approveWithMasterPassword() {
+    await this.router.navigate(["/lock"], {
+      queryParams: {
+        from: "login-initiated",
+      },
+    });
+  }
+
   protected async requestAdminApproval() {
     this.loginEmailService.setLoginEmail(this.data.userEmail);
     await this.router.navigate(["/admin-approval-requested"]);
