@@ -13,6 +13,7 @@ import {
   merge,
   firstValueFrom,
   ReplaySubject,
+  tap,
 } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -87,6 +88,7 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
     settings
       .pipe(
         filter((s) => !!s),
+        tap((value) => console.log(`update ok settings: ${JSON.stringify(value)}`)),
         takeUntil(this.destroyed$),
       )
       .subscribe(this.okSettings$);
@@ -137,6 +139,7 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
       filter((status) => status === "VALID"),
       withLatestFrom(this.settings.valueChanges),
       map(([, settings]) => settings),
+      tap((value) => console.log(`valid change: ${JSON.stringify(value)}`))
     );
 
     // discards changes but keep the override setting that changed
@@ -152,12 +155,14 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
         }
         return copy;
       }),
+      tap((value) => console.log(`override: ${JSON.stringify(value)}`))
     );
 
     // save reloaded settings when requested
     const reloadChanges$ = this.reloadSettings$.pipe(
       withLatestFrom(this.okSettings$),
       map(([, settings]) => settings),
+      tap((value) => console.log(`reload: ${JSON.stringify(value)}`))
     );
 
     return merge(validChanges$, overrideChanges$, reloadChanges$);
