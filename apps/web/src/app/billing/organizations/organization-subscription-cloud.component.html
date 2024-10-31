@@ -308,7 +308,13 @@
       <button bitButton buttonType="secondary" type="button" (click)="downloadLicense()">
         {{ "downloadLicense" | i18n }}
       </button>
-      <button bitButton buttonType="secondary" type="button" (click)="manageBillingSync()">
+      <button
+        *ngIf="canUseBillingSync"
+        bitButton
+        buttonType="secondary"
+        type="button"
+        (click)="manageBillingSync()"
+      >
         {{ (hasBillingSyncToken ? "viewBillingToken" : "setUpBillingSync") | i18n }}
       </button>
     </div>
