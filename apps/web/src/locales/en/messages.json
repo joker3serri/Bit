@@ -86,6 +86,12 @@
   "atRiskApplications": {
     "message": "At-risk applications"
   },
+  "deviceType": {
+    "message": "Device type"
+  },
+  "ipAddress": {
+    "message": "IP address"
+  },
   "totalApplications": {
     "message": "Total applications"
   },

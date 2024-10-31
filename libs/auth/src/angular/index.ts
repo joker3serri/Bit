@@ -58,3 +58,6 @@ export * from "./vault-timeout-input/vault-timeout-input.component";
 
 // self hosted environment configuration dialog
 export * from "./self-hosted-env-config-dialog/self-hosted-env-config-dialog.component";
+
+// login approval
+export * from "./login/login-approval.component";

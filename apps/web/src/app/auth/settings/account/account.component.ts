@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { combineLatest, from, lastValueFrom, map, Observable } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { LoginApprovalComponent } from "@bitwarden/auth/angular";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -78,4 +79,15 @@ export class AccountComponent implements OnInit {
     const dialogRef = DeleteAccountDialogComponent.open(this.dialogService);
     await lastValueFrom(dialogRef.closed);
   };
+
+  // TODO: remove this - for testing only
+  openLoginApproval() {
+    LoginApprovalComponent.open(this.dialogService, {
+      data: {
+        name: "test name",
+        userId: "yourUserId",
+        fingerprint: "test fingerprint",
+      },
+    });
+  }
 }
