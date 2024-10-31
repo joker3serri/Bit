@@ -33,6 +33,8 @@ import { NotificationsService as NotificationsServiceAbstraction } from "../noti
 import { ReceiveMessage, SignalRConnectionService } from "./signalr-connection.service";
 import { WebPushConnectionService } from "./webpush-connection.service";
 
+const DISABLED_NOTIFICATIONS_URL = "http://-";
+
 export class DefaultNotificationsService implements NotificationsServiceAbstraction {
   notifications$: Observable<readonly [NotificationResponse, UserId]>;
 
@@ -69,7 +71,7 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
       map((environment) => environment.getNotificationsUrl()),
       distinctUntilChanged(),
       switchMap((notificationsUrl) => {
-        if (notificationsUrl === "http://-") {
+        if (notificationsUrl === DISABLED_NOTIFICATIONS_URL) {
           return EMPTY;
         }
 
