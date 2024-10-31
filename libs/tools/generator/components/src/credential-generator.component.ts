@@ -511,7 +511,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
    */
   protected async generate(requestor: string) {
     if (this.passphraseSettings) {
-      await this.passphraseSettings.reloadSettings("credential generator");
+      await this.passphraseSettings.save("credential generator");
     }
 
     this.generate$.next(requestor);

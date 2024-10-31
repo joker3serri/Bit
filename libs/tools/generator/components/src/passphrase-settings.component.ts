@@ -9,9 +9,6 @@ import {
   filter,
   map,
   withLatestFrom,
-  Observable,
-  merge,
-  firstValueFrom,
   ReplaySubject,
   tap,
 } from "rxjs";
@@ -25,7 +22,7 @@ import {
   PassphraseGenerationOptions,
 } from "@bitwarden/generator-core";
 
-import { completeOnAccountSwitch, toValidators } from "./util";
+import { completeOnAccountSwitch } from "./util";
 
 const Controls = Object.freeze({
   numWords: "numWords",
@@ -106,16 +103,14 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
       .policy$(Generators.passphrase, { userId$: singleUserId$ })
       .pipe(takeUntil(this.destroyed$))
       .subscribe(({ constraints }) => {
-        this.settings
-          .get(Controls.numWords)
-          .setValidators(toValidators(Controls.numWords, Generators.passphrase, constraints));
-
-        this.settings
-          .get(Controls.wordSeparator)
-          .setValidators(toValidators(Controls.wordSeparator, Generators.passphrase, constraints));
-
-        this.settings.updateValueAndValidity({ emitEvent: false });
-
+        // reactive form validation doesn't work well with the generator's
+        // "auto-fix invalid data" feature. HTML constraints are used to
+        // improve usability. This approach causes `valueChanges` to fire
+        // *every time* this subscription fires. Take care not to leak these
+        // false emissions from the `onUpdated` event.
+        this.minNumWords = constraints.numWords.min;
+        this.maxNumWords = constraints.numWords.max;
+        this.wordSeparatorMaxLength = constraints.wordSeparator.maxLength;
         this.policyInEffect = constraints.policyInEffect;
 
         this.toggleEnabled(Controls.capitalize, !constraints.capitalize?.readonly);
@@ -130,63 +125,32 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
       });
 
     // now that outputs are set up, connect inputs
-    this.settings$().pipe(takeUntil(this.destroyed$)).subscribe(settings);
+    this.saveSettings.pipe(
+      withLatestFrom(this.settings.valueChanges),
+      tap(([requestor, value]) => console.log(`save request from ${requestor}: ${JSON.stringify(value)}`)),
+      map(([, settings]) => settings),
+      takeUntil(this.destroyed$)
+    ).subscribe(settings);
   }
 
-  protected settings$(): Observable<Partial<PassphraseGenerationOptions>> {
-    // save valid changes
-    const validChanges$ = this.settings.statusChanges.pipe(
-      filter((status) => status === "VALID"),
-      withLatestFrom(this.settings.valueChanges),
-      map(([, settings]) => settings),
-      tap((value) => console.log(`valid change: ${JSON.stringify(value)}`))
-    );
+  /** attribute binding for numWords[min] */
+  protected minNumWords: number;
 
-    // discards changes but keep the override setting that changed
-    const overrides = [Controls.capitalize, Controls.includeNumber];
-    const overrideChanges$ = this.settings.valueChanges.pipe(
-      filter((settings) => !!settings),
-      withLatestFrom(this.okSettings$),
-      filter(([current, ok]) => overrides.some((c) => (current[c] ?? ok[c]) !== ok[c])),
-      map(([current, ok]) => {
-        const copy = { ...ok };
-        for (const override of overrides) {
-          copy[override] = current[override];
-        }
-        return copy;
-      }),
-      tap((value) => console.log(`override: ${JSON.stringify(value)}`))
-    );
+  /** attribute binding for numWords[max] */
+  protected maxNumWords: number;
 
-    // save reloaded settings when requested
-    const reloadChanges$ = this.reloadSettings$.pipe(
-      withLatestFrom(this.okSettings$),
-      map(([, settings]) => settings),
-      tap((value) => console.log(`reload: ${JSON.stringify(value)}`))
-    );
+  /** attribute binding for wordSeparator[maxlength] */
+  protected wordSeparatorMaxLength: number;
 
-    return merge(validChanges$, overrideChanges$, reloadChanges$);
+  private saveSettings = new Subject<string>();
+  save(site: string = "component api call") {
+    this.saveSettings.next(site);
   }
 
   /** display binding for enterprise policy notice */
   protected policyInEffect: boolean;
 
   private okSettings$ = new ReplaySubject<PassphraseGenerationOptions>(1);
-
-  private reloadSettings$ = new Subject<string>();
-
-  /** triggers a reload of the users' settings
-   *  @param site labels the invocation site so that an operation
-   *   can be traced back to its origin. Useful for debugging rxjs.
-   *  @returns a promise that completes once a reload occurs.
-   */
-  async reloadSettings(site: string = "component api call") {
-    const reloadComplete = firstValueFrom(this.okSettings$);
-    if (this.settings.invalid) {
-      this.reloadSettings$.next(site);
-      await reloadComplete;
-    }
-  }
 
   private numWordsBoundariesHint = new ReplaySubject<string>(1);
 
