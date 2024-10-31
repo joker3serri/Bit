@@ -58,6 +58,10 @@ module.exports = {
         600: rgba("--color-info-600"),
         700: rgba("--color-info-700"),
       },
+      code: {
+        100: rgba("--color-code-100"),
+        600: rgba("--color-code-600"),
+      },
       art: {
         primary: rgba("--color-art-primary"),
         accent: rgba("--color-art-accent"),
@@ -67,7 +71,6 @@ module.exports = {
         muted: rgba("--color-text-muted"),
         contrast: rgba("--color-text-contrast"),
         alt2: rgba("--color-text-alt2"),
-        code: rgba("--color-text-code"),
         headers: rgba("--color-text-headers"),
       },
       background: {
@@ -85,7 +88,10 @@ module.exports = {
       contrast: rgba("--color-text-contrast"),
       headers: rgba("--color-text-headers"),
       alt2: rgba("--color-text-alt2"),
-      code: rgba("--color-text-code"),
+      code: {
+        DEFAULT: rgba("--color-code-600"),
+        600: rgba("--color-code-600"),
+      },
       black: colors.black,
       success: {
         DEFAULT: rgba("--color-success-600"),
