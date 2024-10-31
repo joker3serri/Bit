@@ -12,6 +12,8 @@ import { HeaderModule } from "../../layouts/header/header.module";
 import { SharedModule } from "../../shared";
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 
+import { applicationTableMockData } from "./application-table.mock";
+
 @Component({
   standalone: true,
   selector: "tools-critical-applications",
@@ -47,7 +49,7 @@ export class CriticalApplicationsComponent implements OnInit {
     protected i18nService: I18nService,
     protected activatedRoute: ActivatedRoute,
   ) {
-    this.dataSource.data = [];
+    this.dataSource.data = applicationTableMockData;
     this.searchControl.valueChanges
       .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((v) => (this.dataSource.filter = v));

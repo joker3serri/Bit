@@ -27,7 +27,7 @@
   </bit-no-items>
 </div>
 <div class="tw-mt-4 tw-flex tw-flex-col" *ngIf="!loading && dataSource.data.length">
-  <h2 bitTypography="h2">{{ "allApplications" | i18n }}</h2>
+  <h2 class="tw-mb-6" bitTypography="h2">{{ "allApplications" | i18n }}</h2>
   <div class="tw-flex tw-gap-6">
     <tools-card
       class="tw-flex-1"
@@ -45,7 +45,11 @@
     </tools-card>
   </div>
   <div class="tw-flex tw-mt-8 tw-mb-4 tw-gap-4">
-    <bit-search class="tw-grow" [formControl]="searchControl"></bit-search>
+    <bit-search
+      [placeholder]="'searchApps' | i18n"
+      class="tw-grow"
+      [formControl]="searchControl"
+    ></bit-search>
     <button class="tw-rounded-lg" type="button" buttonType="secondary" bitButton>
       <i class="bwi bwi-star-f tw-mr-2"></i>
       {{ "markAppAsCritical" | i18n }}
@@ -54,6 +58,7 @@
   <bit-table [dataSource]="dataSource">
     <ng-container header>
       <tr>
+        <th></th>
         <th bitSortable="name" bitCell>{{ "application" | i18n }}</th>
         <th bitSortable="atRiskPasswords" bitCell>{{ "atRiskPasswords" | i18n }}</th>
         <th bitSortable="totalPasswords" bitCell>{{ "totalPasswords" | i18n }}</th>
@@ -63,13 +68,15 @@
     </ng-container>
     <ng-template body let-rows$>
       <tr bitRow *ngFor="let r of rows$ | async; trackBy: trackByFunction">
-        <td bitCell>
+        <td>
           <input
             bitCheckbox
             type="checkbox"
             [checked]="selectedIds.has(r.id)"
             (change)="onCheckboxChange(r.id, $event)"
           />
+        </td>
+        <td bitCell>
           <span>{{ r.name }}</span>
         </td>
         <td bitCell>

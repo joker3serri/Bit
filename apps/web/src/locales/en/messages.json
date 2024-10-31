@@ -89,8 +89,14 @@
   "atRiskPasswords": {
     "message": "At-risk passwords"
   },
+  "requestPasswordChange": {
+    "message": "Request password change"
+  },
   "totalPasswords": {
     "message": "Total passwords"
+  },
+  "searchApps": {
+    "message": "Search applications"
   },
   "atRiskMembers": {
     "message": "At-risk members"
