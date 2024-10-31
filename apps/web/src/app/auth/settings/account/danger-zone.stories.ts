@@ -7,13 +7,14 @@ import { ButtonModule } from "@bitwarden/components";
 import { PreloadedEnglishI18nModule } from "../../../core/tests";
 
 import { DangerZoneComponent } from "./danger-zone.component";
+import { CommonModule } from "@angular/common";
 
 export default {
   title: "Web/Danger Zone",
   component: DangerZoneComponent,
   decorators: [
     moduleMetadata({
-      imports: [ButtonModule, JslibModule],
+      imports: [ButtonModule, JslibModule, CommonModule],
     }),
     applicationConfig({
       providers: [importProvidersFrom(PreloadedEnglishI18nModule)],
