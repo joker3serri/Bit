@@ -1569,6 +1569,7 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
    */
   private setOverlayRepositionEventListeners() {
     let currentScrollY = globalThis.scrollY;
+    let currentScrollX = globalThis.scrollX;
     let mostRecentTargetScrollY = 0;
     const repositionHandler = this.useEventHandlersMemo(
       throttle(this.handleOverlayRepositionEvent, 250),
@@ -1599,12 +1600,14 @@ export class AutofillOverlayContentService implements AutofillOverlayContentServ
       throttle(async (event) => {
         if (
           currentScrollY !== globalThis.scrollY ||
+          currentScrollX !== globalThis.scrollX ||
           eventTargetContainsFocusedField(event.target)
         ) {
           repositionHandler(event);
         }
 
         currentScrollY = globalThis.scrollY;
+        currentScrollX = globalThis.scrollX;
       }, 50),
       AUTOFILL_OVERLAY_HANDLE_SCROLL,
     );
