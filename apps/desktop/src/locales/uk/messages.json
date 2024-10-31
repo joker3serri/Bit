@@ -61,7 +61,7 @@
     }
   },
   "welcomeBack": {
-    "message": "Welcome back"
+    "message": "З поверненням"
   },
   "moveToOrgDesc": {
     "message": "Виберіть організацію, до якої ви бажаєте перемістити цей запис. Переміщуючи до організації, власність запису передається тій організації. Ви більше не будете єдиним власником цього запису після переміщення."
@@ -558,7 +558,7 @@
     "message": "Створити обліковий запис"
   },
   "newToBitwarden": {
-    "message": "New to Bitwarden?"
+    "message": "Вперше у Bitwarden?"
   },
   "setAStrongPassword": {
     "message": "Встановіть надійний пароль"
@@ -570,16 +570,16 @@
     "message": "Увійти"
   },
   "logInToBitwarden": {
-    "message": "Log in to Bitwarden"
+    "message": "Увійти в Bitwarden"
   },
   "logInWithPasskey": {
-    "message": "Log in with passkey"
+    "message": "Увійти з ключем доступу"
   },
   "loginWithDevice": {
-    "message": "Log in with device"
+    "message": "Увійти з пристроєм"
   },
   "useSingleSignOn": {
-    "message": "Use single sign-on"
+    "message": "Використовувати єдиний вхід"
   },
   "submit": {
     "message": "Відправити"
@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "Видалення облікового запису є незворотною дією. Це не можна буде скасувати."
   },
+  "cannotDeleteAccount": {
+    "message": "Не вдається видалити обліковий запис"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Цю дію не можна виконати, тому що ваш обліковий запис належить організації. Зверніться до адміністратора організації для отримання додаткової інформації."
+  },
   "accountDeleted": {
     "message": "Обліковий запис видалено"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "Генерувати е-пошту"
   },
+  "generatorBoundariesHint": {
+    "message": "Значення має бути між $MIN$ та $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Тип імені користувача"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "ЄС",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Увійти на"
   },
   "selfHostedServer": {
     "message": "власне розміщення"

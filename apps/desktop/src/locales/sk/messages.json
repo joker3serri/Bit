@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "Odstránenie účtu je trvalé. Operáciu nie je možné vrátiť späť."
   },
+  "cannotDeleteAccount": {
+    "message": "Účet nie je možné odstrániť"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Túto akciu nie je možné dokončiť, pretože váš účet vlastní organizácia. Ďalšie informácie vám poskytne správca vašej organizácie."
+  },
   "accountDeleted": {
     "message": "Účet bol odstránený"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "Generovať e-mail"
   },
+  "generatorBoundariesHint": {
+    "message": "Hodnota musí byť medzi $MIN$ a $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Typ používateľského mena"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "EÚ",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Prihlásenie na"
   },
   "selfHostedServer": {
     "message": "vlastný hosting"

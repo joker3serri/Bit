@@ -1683,6 +1683,12 @@
   "deleteAccountWarning": {
     "message": "Изтриването на регистрацията е окончателно и необратимо."
   },
+  "cannotDeleteAccount": {
+    "message": "Регистрацията не може да бъде изтрита"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Това действие не може да бъде завършено, тъй като регистрацията Ви се управлява от организация. Свържете се с администратора на организацията си за повече подробности."
+  },
   "accountDeleted": {
     "message": "Регистрацията е изтрита"
   },
@@ -2387,6 +2393,20 @@
   "generateEmail": {
     "message": "Генериране на електронна поща"
   },
+  "generatorBoundariesHint": {
+    "message": "Стойността трябва да бъде между $MIN$ и $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Тип потребителско име"
   },
@@ -2783,9 +2803,6 @@
   "eu": {
     "message": "ЕС",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Вписване в"
   },
   "selfHostedServer": {
     "message": "собствен хостинг"
