@@ -7,7 +7,24 @@
   <span class="tw-sr-only">{{ "loading" | i18n }}</span>
 </div>
 <div class="tw-mt-4" *ngIf="!dataSource.data.length">
-  <tools-no-priority-apps></tools-no-priority-apps>
+  <bit-no-items [icon]="noItemsIcon" class="tw-text-main">
+    <ng-container slot="title">
+      <h2 class="tw-font-semibold mt-4">
+        {{ "noAppsInOrgTitle" | i18n: organization.name }}
+      </h2>
+    </ng-container>
+    <ng-container slot="description">
+      <p class="tw-text-muted">
+        {{ "noAppsInOrgDescription" | i18n }}
+        <a class="text-primary" routerLink="/login">{{ "learnMore" | i18n }}</a>
+      </p>
+    </ng-container>
+    <ng-container slot="button">
+      <button bitButton buttonType="primary" type="button">
+        {{ "createNewLoginItem" | i18n }}
+      </button>
+    </ng-container>
+  </bit-no-items>
 </div>
 <div class="tw-mt-4 tw-flex tw-flex-col" *ngIf="!loading && dataSource.data.length">
   <h2 bitTypography="h2">{{ "allApplications" | i18n }}</h2>

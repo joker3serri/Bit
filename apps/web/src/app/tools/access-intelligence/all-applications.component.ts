@@ -2,14 +2,22 @@ import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { debounceTime, map } from "rxjs";
+import { debounceTime, firstValueFrom, map } from "rxjs";
 
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { SearchModule, TableDataSource, ToastService } from "@bitwarden/components";
+import {
+  Icons,
+  NoItemsModule,
+  SearchModule,
+  TableDataSource,
+  ToastService,
+} from "@bitwarden/components";
 import { CardComponent } from "@bitwarden/tools-card";
 
 import { HeaderModule } from "../../layouts/header/header.module";
@@ -17,27 +25,21 @@ import { SharedModule } from "../../shared";
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 
 import { applicationTableMockData } from "./application-table.mock";
-import { NoPriorityAppsComponent } from "./no-priority-apps.component";
 
 @Component({
   standalone: true,
-  selector: "tools-application-table",
-  templateUrl: "./application-table.component.html",
-  imports: [
-    HeaderModule,
-    CardComponent,
-    SearchModule,
-    NoPriorityAppsComponent,
-    PipesModule,
-    SharedModule,
-  ],
+  selector: "tools-all-applications",
+  templateUrl: "./all-applications.component.html",
+  imports: [HeaderModule, CardComponent, SearchModule, PipesModule, NoItemsModule, SharedModule],
 })
-export class ApplicationTableComponent implements OnInit {
+export class AllApplicationsComponent implements OnInit {
   protected dataSource = new TableDataSource<any>();
   protected selectedIds: Set<number> = new Set<number>();
   protected searchControl = new FormControl("", { nonNullable: true });
   private destroyRef = inject(DestroyRef);
   protected loading = false;
+  protected organization: Organization;
+  noItemsIcon = Icons.Security;
 
   // MOCK DATA
   protected mockData = applicationTableMockData;
@@ -51,7 +53,8 @@ export class ApplicationTableComponent implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         map(async (params) => {
-          // const organizationId = params.get("organizationId");
+          const organizationId = params.get("organizationId");
+          this.organization = await firstValueFrom(this.organizationService.get$(organizationId));
           // TODO: use organizationId to fetch data
         }),
       )
@@ -65,6 +68,7 @@ export class ApplicationTableComponent implements OnInit {
     protected i18nService: I18nService,
     protected activatedRoute: ActivatedRoute,
     protected toastService: ToastService,
+    protected organizationService: OrganizationService,
   ) {
     this.dataSource.data = applicationTableMockData;
     this.searchControl.valueChanges
