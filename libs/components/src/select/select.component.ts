@@ -38,6 +38,11 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
   protected selectedValue: T;
   protected selectedOption: Option<T>;
   protected searchInputId = `bit-select-search-input-${nextId++}`;
+
+  /**
+   * The value that the user selected. This may be different from `selectedValue` if the user
+   * closed the select without making a selection. I.e. a user selects the same value twice.
+   */
   protected userSelectedValue: T;
 
   private notifyOnChange?: (value: T) => void;
