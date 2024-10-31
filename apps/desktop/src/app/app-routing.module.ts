@@ -168,14 +168,7 @@ const routes: Routes = [
           key: "adminApprovalRequestSentToAdmins",
         },
       } satisfies AnonLayoutWrapperData,
-      children: [
-        { path: "", component: LoginViaAuthRequestComponent },
-        {
-          path: "",
-          component: EnvironmentSelectorComponent,
-          outlet: "environment-selector",
-        },
-      ],
+      children: [{ path: "", component: LoginViaAuthRequestComponent }],
     },
   ),
   ...unauthUiRefreshSwap(

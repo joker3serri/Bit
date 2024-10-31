@@ -216,14 +216,7 @@ const routes: Routes = [
         },
         titleId: "adminApprovalRequested",
       } satisfies RouteDataProperties & AnonLayoutWrapperData,
-      children: [
-        { path: "", component: LoginViaAuthRequestComponent },
-        {
-          path: "",
-          component: EnvironmentSelectorComponent,
-          outlet: "environment-selector",
-        },
-      ],
+      children: [{ path: "", component: LoginViaAuthRequestComponent }],
     },
   ),
   ...unauthUiRefreshSwap(

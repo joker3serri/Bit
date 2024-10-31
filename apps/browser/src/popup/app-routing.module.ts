@@ -451,14 +451,7 @@ const routes: Routes = [
         showBackButton: true,
         state: "admin-approval-requested",
       } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
-      children: [
-        { path: "", component: LoginViaAuthRequestComponent },
-        {
-          path: "",
-          component: EnvironmentSelectorComponent,
-          outlet: "environment-selector",
-        },
-      ],
+      children: [{ path: "", component: LoginViaAuthRequestComponent }],
     },
   ),
   ...unauthUiRefreshSwap(
