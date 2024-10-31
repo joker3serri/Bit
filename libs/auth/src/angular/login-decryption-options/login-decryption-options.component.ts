@@ -163,6 +163,15 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     };
   }
 
+  protected async approveFromOtherDevice() {
+    if (this.data.state !== State.ExistingUserUntrustedDevice) {
+      return;
+    }
+
+    this.loginEmailService.setLoginEmail(this.data.userEmail);
+    await this.router.navigate(["/login-with-device"]);
+  }
+
   protected async requestAdminApproval() {
     this.loginEmailService.setLoginEmail(this.data.userEmail);
     await this.router.navigate(["/admin-approval-requested"]);
