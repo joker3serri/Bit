@@ -1,13 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from "@angular/core";
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import {
   BehaviorSubject,
@@ -48,13 +39,6 @@ import {
 } from "@bitwarden/generator-core";
 import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
-import { CatchallSettingsComponent } from "./catchall-settings.component";
-import { ForwarderSettingsComponent } from "./forwarder-settings.component";
-import { PassphraseSettingsComponent } from "./passphrase-settings.component";
-import { PasswordSettingsComponent } from "./password-settings.component";
-import { SubaddressSettingsComponent } from "./subaddress-settings.component";
-import { UsernameSettingsComponent } from "./username-settings.component";
-
 // constants used to identify navigation selections that are not
 // generator algorithms
 const IDENTIFIER = "identifier";
@@ -76,24 +60,6 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private formBuilder: FormBuilder,
   ) {}
-
-  /** binds to the settings component at runtime */
-  @ViewChild("passphraseSettings") passphraseComponent: PassphraseSettingsComponent;
-
-  /** binds to the settings component at runtime */
-  @ViewChild("passwordSettings") passwordComponent: PasswordSettingsComponent;
-
-  /** binds to the settings component at runtime */
-  @ViewChild("catchallSettings") catchallComponent: CatchallSettingsComponent;
-
-  /** binds to the settings component at runtime */
-  @ViewChild("forwarderSettings") forwarderComponent: ForwarderSettingsComponent;
-
-  /** binds to the settings component at runtime */
-  @ViewChild("subaddressSettings") subaddressComponent: SubaddressSettingsComponent;
-
-  /** binds to the settings component at runtime */
-  @ViewChild("usernameSettings") usernameComponent: UsernameSettingsComponent;
 
   /** Binds the component to a specific user's settings. When this input is not provided,
    * the form binds to the active user
@@ -530,30 +496,6 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
    *  origin in the debugger.
    */
   protected async generate(requestor: string) {
-    if (this.passphraseComponent) {
-      await this.passphraseComponent.save("credential generator");
-    }
-
-    if (this.passwordComponent) {
-      await this.passwordComponent.save("credential generator");
-    }
-
-    if (this.catchallComponent) {
-      await this.catchallComponent.save("credential generator");
-    }
-
-    if (this.forwarderComponent) {
-      await this.forwarderComponent.save("credential generator");
-    }
-
-    if (this.subaddressComponent) {
-      await this.subaddressComponent.save("credential generator");
-    }
-
-    if (this.usernameComponent) {
-      await this.usernameComponent.save("credential generator");
-    }
-
     this.generate$.next(requestor);
   }
 
