@@ -546,6 +546,10 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       await this.forwarderComponent.save("credential generator");
     }
 
+    if (this.subaddressComponent) {
+      await this.subaddressComponent.save("credential generator");
+    }
+
     this.generate$.next(requestor);
   }
 
@@ -560,6 +564,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
   private readonly destroyed = new Subject<void>();
   ngOnDestroy() {
+    this.destroyed.next();
     this.destroyed.complete();
 
     // finalize subjects
