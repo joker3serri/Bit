@@ -53,7 +53,9 @@ pub fn argon2(
     let argon = Argon2::new(Algorithm::Argon2id, Version::V0x13, params);
 
     let mut hash = [0u8; 32];
-    let _ = argon.hash_password_into(secret, &salt, &mut hash);
+    argon
+        .hash_password_into(secret, &salt, &mut hash)
+        .map_err(|e| KdfParamError::InvalidParams(format!("Argon2 hashing failed: {e}",)))?;
 
     // Argon2 is using some stack memory that is not zeroed. Eventually some function will
     // overwrite the stack, but we use this trick to force the used stack to be zeroed.
@@ -63,4 +65,26 @@ pub fn argon2(
     }
     clear_stack();
     Ok(hash)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_argon2() {
+        let test_hash: [u8; 32] = [
+            112, 200, 85, 209, 100, 4, 246, 146, 117, 180, 152, 44, 103, 198, 75, 14, 166, 77, 201,
+            22, 62, 178, 87, 224, 95, 209, 253, 68, 166, 209, 47, 218,
+        ];
+        let secret = b"supersecurepassword";
+        let salt = b"mail@example.com";
+        let iterations = 3;
+        let memory = 1024 * 64;
+        let parallelism = 4;
+
+        let hash = argon2(secret, salt, iterations, memory, parallelism).unwrap();
+        println!("{:?}", hash);
+        assert_eq!(hash, test_hash,);
+    }
 }
