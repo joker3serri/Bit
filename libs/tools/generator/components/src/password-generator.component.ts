@@ -90,7 +90,15 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
    * @param requestor a label used to trace generation request
    *  origin in the debugger.
    */
-  protected generate(requestor: string) {
+  protected async generate(requestor: string) {
+    if (this.passphraseComponent) {
+      await this.passphraseComponent.save("credential generator");
+    }
+
+    if (this.passwordComponent) {
+      await this.passwordComponent.save("credential generator");
+    }
+
     this.generate$.next(requestor);
   }
 
