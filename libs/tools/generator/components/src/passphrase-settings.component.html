@@ -12,8 +12,6 @@
             formControlName="numWords"
             id="num-words"
             type="number"
-            [min]="minNumWords"
-            [max]="maxNumWords"
             (change)="save('numWords')"
           />
           <bit-hint>{{ numWordsBoundariesHint$ | async }}</bit-hint>
@@ -34,13 +32,23 @@
           />
         </bit-form-field>
         <bit-form-control>
-          <input bitCheckbox formControlName="capitalize" id="capitalize" type="checkbox"
-            (change)="save('capitalize')" />
+          <input
+            bitCheckbox
+            formControlName="capitalize"
+            id="capitalize"
+            type="checkbox"
+            (change)="save('capitalize')"
+          />
           <bit-label>{{ "capitalize" | i18n }}</bit-label>
         </bit-form-control>
         <bit-form-control [disableMargin]="!policyInEffect">
-          <input bitCheckbox formControlName="includeNumber" id="include-number" type="checkbox"
-          (change)="save('includeNumber')" />
+          <input
+            bitCheckbox
+            formControlName="includeNumber"
+            id="include-number"
+            type="checkbox"
+            (change)="save('includeNumber')"
+          />
           <bit-label>{{ "includeNumber" | i18n }}</bit-label>
         </bit-form-control>
         <p *ngIf="policyInEffect" bitTypography="helper">{{ "generatorPolicyInEffect" | i18n }}</p>

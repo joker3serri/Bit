@@ -10,7 +10,6 @@ import {
   map,
   withLatestFrom,
   ReplaySubject,
-  tap,
 } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -85,7 +84,6 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
     settings
       .pipe(
         filter((s) => !!s),
-        tap((value) => console.log(`update ok settings: ${JSON.stringify(value)}`)),
         takeUntil(this.destroyed$),
       )
       .subscribe(this.okSettings$);
@@ -98,18 +96,11 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
     // the first emission is the current value; subsequent emissions are updates
     settings.pipe(skip(1), takeUntil(this.destroyed$)).subscribe(this.onUpdated);
 
-    // dynamic policy enforcement
+    // explain policy & disable policy-overridden fields
     this.generatorService
       .policy$(Generators.passphrase, { userId$: singleUserId$ })
       .pipe(takeUntil(this.destroyed$))
       .subscribe(({ constraints }) => {
-        // reactive form validation doesn't work well with the generator's
-        // "auto-fix invalid data" feature. HTML constraints are used to
-        // improve usability. This approach causes `valueChanges` to fire
-        // *every time* this subscription fires. Take care not to leak these
-        // false emissions from the `onUpdated` event.
-        this.minNumWords = constraints.numWords.min;
-        this.maxNumWords = constraints.numWords.max;
         this.wordSeparatorMaxLength = constraints.wordSeparator.maxLength;
         this.policyInEffect = constraints.policyInEffect;
 
@@ -125,19 +116,14 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
       });
 
     // now that outputs are set up, connect inputs
-    this.saveSettings.pipe(
-      withLatestFrom(this.settings.valueChanges),
-      tap(([requestor, value]) => console.log(`save request from ${requestor}: ${JSON.stringify(value)}`)),
-      map(([, settings]) => settings),
-      takeUntil(this.destroyed$)
-    ).subscribe(settings);
+    this.saveSettings
+      .pipe(
+        withLatestFrom(this.settings.valueChanges),
+        map(([, settings]) => settings),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe(settings);
   }
-
-  /** attribute binding for numWords[min] */
-  protected minNumWords: number;
-
-  /** attribute binding for numWords[max] */
-  protected maxNumWords: number;
 
   /** attribute binding for wordSeparator[maxlength] */
   protected wordSeparatorMaxLength: number;
