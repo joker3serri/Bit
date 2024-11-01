@@ -264,11 +264,11 @@
         <button
           *ngIf="editMode"
           type="button"
-          bitIconButton="bwi-trash"
+          bitIconButton="bwi-close"
           buttonType="danger"
           bitFormButton
-          [appA11yTitle]="'delete' | i18n"
-          [bitAction]="delete"
+          [appA11yTitle]="'remove' | i18n"
+          [bitAction]="remove"
           [disabled]="loading"
         ></button>
       </div>

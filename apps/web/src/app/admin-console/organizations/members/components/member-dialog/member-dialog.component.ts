@@ -464,7 +464,7 @@ export class MemberDialogComponent implements OnDestroy {
     this.close(MemberDialogResult.Saved);
   };
 
-  delete = async () => {
+  remove = async () => {
     if (!this.editMode) {
       return;
     }
