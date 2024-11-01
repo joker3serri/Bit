@@ -1600,16 +1600,6 @@ export default class AutofillService implements AutofillServiceInterface {
           fillFields.email = f;
           break;
         } else if (
-          !fillFields.address &&
-          AutofillService.isFieldMatch(
-            f[attr],
-            IdentityAutoFillConstants.AddressFieldNames,
-            IdentityAutoFillConstants.AddressFieldNameValues,
-          )
-        ) {
-          fillFields.address = f;
-          break;
-        } else if (
           !fillFields.address1 &&
           AutofillService.isFieldMatch(f[attr], IdentityAutoFillConstants.Address1FieldNames)
         ) {
@@ -1626,6 +1616,16 @@ export default class AutofillService implements AutofillServiceInterface {
           AutofillService.isFieldMatch(f[attr], IdentityAutoFillConstants.Address3FieldNames)
         ) {
           fillFields.address3 = f;
+          break;
+        } else if (
+          !fillFields.address &&
+          AutofillService.isFieldMatch(
+            f[attr],
+            IdentityAutoFillConstants.AddressFieldNames,
+            IdentityAutoFillConstants.AddressFieldNameValues,
+          )
+        ) {
+          fillFields.address = f;
           break;
         } else if (
           !fillFields.postalCode &&
@@ -1820,11 +1820,6 @@ export default class AutofillService implements AutofillServiceInterface {
         continue;
       }
 
-      if (this.shouldMakeIdentityAddressFillScript(filledFields, keywordsList)) {
-        this.makeIdentityAddressFillScript(fillScript, filledFields, field, identity);
-        continue;
-      }
-
       if (this.shouldMakeIdentityAddress1FillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.address1, field, filledFields);
         continue;
@@ -1837,6 +1832,11 @@ export default class AutofillService implements AutofillServiceInterface {
 
       if (this.shouldMakeIdentityAddress3FillScript(filledFields, keywordsCombined)) {
         this.makeScriptActionWithValue(fillScript, identity.address3, field, filledFields);
+        continue;
+      }
+
+      if (this.shouldMakeIdentityAddressFillScript(filledFields, keywordsList)) {
+        this.makeIdentityAddressFillScript(fillScript, filledFields, field, identity);
         continue;
       }
 
