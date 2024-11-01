@@ -28,7 +28,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { DialogService, TableDataSource, ToastService } from "@bitwarden/components";
 
-import { GroupDetailsView, InternalGroupService as GroupService } from "../core";
+import { GroupDetailsView, InternalGroupApiService as GroupService } from "../core";
 
 import {
   GroupAddEditDialogResultType,

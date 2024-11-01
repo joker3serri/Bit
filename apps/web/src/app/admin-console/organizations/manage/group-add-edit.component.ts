@@ -30,7 +30,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { UserId } from "@bitwarden/common/types/guid";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { InternalGroupService as GroupService } from "../core";
+import { InternalGroupApiService as GroupService } from "../core";
 import {
   AccessItemType,
   AccessItemValue,
@@ -307,7 +307,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
       name: formValue.name,
       members: formValue.members?.map((m) => m.id) ?? [],
       collections: formValue.collections.map((c) => convertToSelectionView(c)),
-      externalId: "", //TODO Is this needed?
+      externalId: this.group.externalId,
     };
 
     await this.groupService.save(groupView);

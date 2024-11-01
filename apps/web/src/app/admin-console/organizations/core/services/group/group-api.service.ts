@@ -46,13 +46,13 @@ export class GroupApiService {
 
     const listResponse = new ListResponse(r, GroupDetailsResponse);
 
-    return (await Promise.all(listResponse.data?.map((gr) => GroupView.fromResponse(gr)))) ?? [];
+    return listResponse.data?.map((gr) => GroupView.fromResponse(gr));
   }
 
   async getAllDetails(orgId: string): Promise<GroupDetailsView[]> {
     const r = await this.apiService.send(
       "GET",
-      "/organizations/" + orgId + "/groups",
+      "/organizations/" + orgId + "/groups/details",
       null,
       true,
       true,
@@ -60,9 +60,7 @@ export class GroupApiService {
 
     const listResponse = new ListResponse(r, GroupDetailsResponse);
 
-    return (
-      (await Promise.all(listResponse.data?.map((gr) => GroupDetailsView.fromResponse(gr)))) ?? []
-    );
+    return listResponse.data?.map((gr) => GroupDetailsView.fromResponse(gr));
   }
 }
 
