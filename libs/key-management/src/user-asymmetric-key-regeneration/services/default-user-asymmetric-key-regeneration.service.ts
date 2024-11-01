@@ -30,15 +30,23 @@ export class DefaultUserAsymmetricKeysRegenerationService
   ) {}
 
   async handleUserAsymmetricKeysRegeneration(userId: UserId): Promise<void> {
-    const privateKeyRegenerationFlag = await this.configService.getFeatureFlag(
-      FeatureFlag.PrivateKeyRegeneration,
-    );
+    try {
+      const privateKeyRegenerationFlag = await this.configService.getFeatureFlag(
+        FeatureFlag.PrivateKeyRegeneration,
+      );
 
-    if (privateKeyRegenerationFlag) {
-      const shouldRegenerate = await this.shouldRegenerate(userId);
-      if (shouldRegenerate) {
-        await this.regenerateUserAsymmetricKeys(userId);
+      if (privateKeyRegenerationFlag) {
+        const shouldRegenerate = await this.shouldRegenerate(userId);
+        if (shouldRegenerate) {
+          await this.regenerateUserAsymmetricKeys(userId);
+        }
       }
+    } catch (error) {
+      this.logService.error(
+        "[UserAsymmetricKeyRegeneration] User Key regeneration error: " +
+          error +
+          " Skipping regeneration for the user.",
+      );
     }
   }
 
