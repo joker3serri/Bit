@@ -75,7 +75,7 @@ export class BrowserApi {
         if (mainWindow == null || !mainWindow.id) {
           return resolve(newWindow);
         }
-        
+
         // Focus the main window to close the extension popup
         chrome.windows.update(mainWindow.id, { focused: true }, () => {
           // Refocus the newly created window
@@ -88,7 +88,6 @@ export class BrowserApi {
             resolve(mainWindow);
           }
         });
-        
       });
     });
   }
