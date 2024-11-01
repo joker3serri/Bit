@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
-import { AccountInfo } from "@bitwarden/common/auth/abstractions/account.service";
+import { Account } from "@bitwarden/common/auth/abstractions/account.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
@@ -18,8 +18,8 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { KeyService } from "@bitwarden/key-management";
 
 import { OrganizationUserResetPasswordService } from "../../admin-console/organizations/members/services/organization-user-reset-password/organization-user-reset-password.service";
-import { WebauthnLoginAdminService } from "../core";
-import { EmergencyAccessService } from "../emergency-access";
+import { WebauthnLoginAdminService } from "../../auth/core";
+import { EmergencyAccessService } from "../../auth/emergency-access";
 
 import { UpdateKeyRequest } from "./request/update-key.request";
 import { UserKeyRotationApiService } from "./user-key-rotation-api.service";
@@ -46,10 +46,7 @@ export class UserKeyRotationService {
    * Creates a new user key and re-encrypts all required data with the it.
    * @param masterPassword current master password (used for validation)
    */
-  async rotateUserKeyAndEncryptedData(
-    masterPassword: string,
-    user: { id: UserId } & AccountInfo,
-  ): Promise<void> {
+  async rotateUserKeyAndEncryptedData(masterPassword: string, user: Account): Promise<void> {
     this.logService.info("[Userkey rotation] Starting user key rotation...");
     if (!masterPassword) {
       this.logService.info("[Userkey rotation] Invalid master password provided. Aborting!");
