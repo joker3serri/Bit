@@ -246,7 +246,11 @@ export class ItemDetailsSectionComponent implements OnInit {
       collectionsControl.disable();
       this.showCollectionsControl = false;
       return;
+    } else {
+      collectionsControl.enable();
+      this.showCollectionsControl = true;
     }
+
     const organization = this.organizations.find((o) => o.id === orgId);
 
     this.collectionOptions = this.collections
