@@ -72,20 +72,23 @@ export class BrowserApi {
         const mainWindow = allWindows.find((window) => window.id !== newWindow.id);
 
         // No main window found, resolve the new window
-        if (!mainWindow) {
+        if (mainWindow == null || !mainWindow.id) {
           return resolve(newWindow);
         }
+        
         // Focus the main window to close the extension popup
-        if (mainWindow && mainWindow.id) {
-          chrome.windows.update(mainWindow.id, { focused: true }, () => {
-            // Refocus the newly created window
-            if (newWindow.id) {
-              chrome.windows.update(newWindow.id, { focused: true }, () => {
-                resolve(newWindow);
-              });
-            }
-          });
-        }
+        chrome.windows.update(mainWindow.id, { focused: true }, () => {
+          // Refocus the newly created window
+          if (newWindow.id) {
+            chrome.windows.update(newWindow.id, { focused: true }, () => {
+              resolve(newWindow);
+            });
+          } else {
+            // Is this what you'd want in this situation?
+            resolve(mainWindow);
+          }
+        });
+        
       });
     });
   }
