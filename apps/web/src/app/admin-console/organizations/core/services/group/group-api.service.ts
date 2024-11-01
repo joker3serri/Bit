@@ -67,7 +67,7 @@ export class GroupApiService {
 }
 
 @Injectable({ providedIn: CoreOrganizationModule })
-export class InternalGroupService extends GroupApiService {
+export class InternalGroupApiService extends GroupApiService {
   constructor(
     protected apiService: ApiService,
     protected configService: ConfigService,
