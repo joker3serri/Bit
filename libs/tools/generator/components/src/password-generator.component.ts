@@ -1,5 +1,14 @@
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import {
   BehaviorSubject,
   catchError,
@@ -30,6 +39,9 @@ import {
 } from "@bitwarden/generator-core";
 import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
+import { PassphraseSettingsComponent } from "./passphrase-settings.component";
+import { PasswordSettingsComponent } from "./password-settings.component";
+
 /** Options group for passwords */
 @Component({
   selector: "tools-password-generator",
@@ -45,6 +57,12 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private zone: NgZone,
   ) {}
+
+  /** binds to the settings component at runtime */
+  @ViewChild("passphraseSettings") passphraseComponent: PassphraseSettingsComponent;
+
+  /** binds to the settings component at runtime */
+  @ViewChild("passwordSettings") passwordComponent: PasswordSettingsComponent;
 
   /** Binds the component to a specific user's settings.
    *  When this input is not provided, the form binds to the active

@@ -48,7 +48,12 @@ import {
 } from "@bitwarden/generator-core";
 import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
+import { CatchallSettingsComponent } from "./catchall-settings.component";
+import { ForwarderSettingsComponent } from "./forwarder-settings.component";
 import { PassphraseSettingsComponent } from "./passphrase-settings.component";
+import { PasswordSettingsComponent } from "./password-settings.component";
+import { SubaddressSettingsComponent } from "./subaddress-settings.component";
+import { UsernameSettingsComponent } from "./username-settings.component";
 
 // constants used to identify navigation selections that are not
 // generator algorithms
@@ -73,7 +78,22 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   ) {}
 
   /** binds to the settings component at runtime */
-  @ViewChild("passphrase") passphraseSettings: PassphraseSettingsComponent;
+  @ViewChild("passphraseSettings") passphraseComponent: PassphraseSettingsComponent;
+
+  /** binds to the settings component at runtime */
+  @ViewChild("passwordSettings") passwordComponent: PasswordSettingsComponent;
+
+  /** binds to the settings component at runtime */
+  @ViewChild("catchallSettings") catchallComponent: CatchallSettingsComponent;
+
+  /** binds to the settings component at runtime */
+  @ViewChild("forwarderSettings") forwarderComponent: ForwarderSettingsComponent;
+
+  /** binds to the settings component at runtime */
+  @ViewChild("subaddressSettings") subaddressComponent: SubaddressSettingsComponent;
+
+  /** binds to the settings component at runtime */
+  @ViewChild("usernameSettings") usernameComponent: UsernameSettingsComponent;
 
   /** Binds the component to a specific user's settings. When this input is not provided,
    * the form binds to the active user
@@ -510,8 +530,8 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
    *  origin in the debugger.
    */
   protected async generate(requestor: string) {
-    if (this.passphraseSettings) {
-      await this.passphraseSettings.save("credential generator");
+    if (this.passphraseComponent) {
+      await this.passphraseComponent.save("credential generator");
     }
 
     this.generate$.next(requestor);
