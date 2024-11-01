@@ -4,9 +4,9 @@ import { ActivatedRoute } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import type { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { DialogService, NavigationModule } from "@bitwarden/components";
 
 import { TrialFlowService } from "./../../billing/services/trial-flow.service";
@@ -57,8 +57,8 @@ export class OrgSwitcherComponent {
     private route: ActivatedRoute,
     protected dialogService: DialogService,
     private organizationService: OrganizationService,
-    private organizationApiService: OrganizationApiServiceAbstraction,
     private trialFlowService: TrialFlowService,
+    protected billingApiService: BillingApiServiceAbstraction,
   ) {}
 
   protected toggle(event?: MouseEvent) {
@@ -68,7 +68,7 @@ export class OrgSwitcherComponent {
   }
 
   async handleUnpaidSubscription(org: Organization) {
-    const sub = await this.organizationApiService.getSubscription(org.id);
-    await this.trialFlowService.handleUnpaidSubscriptionDialog(org, sub);
+    const metaData = await this.billingApiService.getOrganizationBillingMetadata(org.id);
+    await this.trialFlowService.handleUnpaidSubscriptionDialog(org, metaData);
   }
 }

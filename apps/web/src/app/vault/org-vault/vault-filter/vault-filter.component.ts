@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
 import { firstValueFrom, Subject } from "rxjs";
 
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
@@ -40,7 +40,7 @@ export class VaultFilterComponent
     protected policyService: PolicyService,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
-    protected organizationApiService: OrganizationApiServiceAbstraction,
+    protected billingApiService: BillingApiServiceAbstraction,
     protected dialogService: DialogService,
   ) {
     super(
@@ -48,7 +48,7 @@ export class VaultFilterComponent
       policyService,
       i18nService,
       platformUtilsService,
-      organizationApiService,
+      billingApiService,
       dialogService,
     );
   }

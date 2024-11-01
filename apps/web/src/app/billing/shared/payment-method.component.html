@@ -14,7 +14,7 @@
     class="tw-cursor-pointer"
     rel="noreferrer noopener"
   >
-    {{ "routeToPaymentPageTrigger" | i18n }}
+    {{ "routeToPaymentMethodTrigger" | i18n }}
   </a>
 </bit-banner>
 
@@ -104,7 +104,7 @@
         class="payment_trigger_button"
         [bitAction]="changePayment"
       >
-        {{ (paymentSource ? "changePaymentMethod" : "addPaymentMethod") | i18n }}
+        {{ (paymentSource ? "changePaymentMethod" : "addPaymentMethod2") | i18n }}
       </button>
       <p *ngIf="isUnpaid" bitTypography="body1">
         {{ "paymentChargedWithUnpaidSubscription" | i18n }}

@@ -44,7 +44,9 @@ export class AdjustPaymentDialogV2Component {
     private i18nService: I18nService,
     private toastService: ToastService,
   ) {
-    const key = this.dialogParams.initialPaymentMethod ? "changePaymentMethod" : "addPaymentMethod";
+    const key = this.dialogParams.initialPaymentMethod
+      ? "changePaymentMethod"
+      : "addPaymentMethod2";
     this.dialogHeader = this.i18nService.t(key);
     this.initialPaymentMethod = this.dialogParams.initialPaymentMethod ?? PaymentMethodType.Card;
     this.organizationId = this.dialogParams.organizationId;

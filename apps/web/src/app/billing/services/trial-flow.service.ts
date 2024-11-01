@@ -2,7 +2,9 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { BillingSourceResponse } from "@bitwarden/common/billing/models/response/billing.response";
+import { OrganizationBillingMetadataResponse } from "@bitwarden/common/billing/models/response/organization-billing-metadata.response";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { PaymentSourceResponse } from "@bitwarden/common/billing/models/response/payment-source.response";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -16,6 +18,7 @@ export class TrialFlowService {
     private i18nService: I18nService,
     protected dialogService: DialogService,
     private router: Router,
+    protected billingApiService: BillingApiServiceAbstraction,
   ) {}
   checkForOrgsWithUpcomingPaymentIssues(
     organization: Organization,
@@ -59,9 +62,9 @@ export class TrialFlowService {
 
   async handleUnpaidSubscriptionDialog(
     org: Organization,
-    organizationSubscription: OrganizationSubscriptionResponse,
+    organizationBillingMetadata: OrganizationBillingMetadataResponse,
   ): Promise<void> {
-    if (organizationSubscription?.subscription?.status === "unpaid") {
+    if (organizationBillingMetadata.isSubscriptionUnpaid) {
       const confirmed = await this.promptForPaymentNavigation(org);
       if (confirmed) {
         await this.navigateToPaymentMethod(org?.id);
@@ -70,11 +73,19 @@ export class TrialFlowService {
   }
 
   private async promptForPaymentNavigation(org: Organization): Promise<boolean> {
+    if (!org?.isOwner) {
+      await this.dialogService.openSimpleDialog({
+        title: this.i18nService.t("suspendedOrganizationTitle", org?.name),
+        content: { key: "suspendedUserOrgMessage" },
+        type: "danger",
+        acceptButtonText: this.i18nService.t("close"),
+        cancelButtonText: null,
+      });
+      return false;
+    }
     return await this.dialogService.openSimpleDialog({
       title: this.i18nService.t("suspendedOrganizationTitle", org?.name),
-      content: org?.isOwner
-        ? { key: "suspendedOwnerOrgMessage" }
-        : { key: "suspendedUserOrgMessage" },
+      content: { key: "suspendedOwnerOrgMessage" },
       type: "danger",
       acceptButtonText: this.i18nService.t("continue"),
       cancelButtonText: this.i18nService.t("close"),

@@ -47,6 +47,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
@@ -188,9 +189,14 @@ export class VaultComponent implements OnInit, OnDestroy {
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
     filter((organizations) => organizations.length === 1),
     switchMap(([organization]) =>
-      from(this.organizationApiService.getSubscription(organization.id)).pipe(
-        switchMap((subscription) =>
-          from(this.trialFlowService.handleUnpaidSubscriptionDialog(organization, subscription)),
+      from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
+        switchMap((organizationMetaData) =>
+          from(
+            this.trialFlowService.handleUnpaidSubscriptionDialog(
+              organization,
+              organizationMetaData,
+            ),
+          ),
         ),
       ),
     ),
@@ -227,6 +233,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private cipherFormConfigService: DefaultCipherFormConfigService,
     private organizationApiService: OrganizationApiServiceAbstraction,
+    protected billingApiService: BillingApiServiceAbstraction,
     private trialFlowService: TrialFlowService,
   ) {}
 
@@ -413,20 +420,22 @@ export class VaultComponent implements OnInit, OnDestroy {
     const organizationsPaymentStatus$ = this.organizationService.organizations$.pipe(
       switchMap((allOrganizations) => {
         return combineLatest(
-          allOrganizations.map((org) =>
-            combineLatest([
-              this.organizationApiService.getSubscription(org.id),
-              this.organizationApiService.getBilling(org.id),
-            ]).pipe(
-              map(([subscription, billing]) => {
-                return this.trialFlowService.checkForOrgsWithUpcomingPaymentIssues(
-                  org,
-                  subscription,
-                  billing?.paymentSource,
-                );
-              }),
+          allOrganizations
+            .filter((org) => org.isOwner)
+            .map((org) =>
+              combineLatest([
+                this.organizationApiService.getSubscription(org.id),
+                this.organizationApiService.getBilling(org.id),
+              ]).pipe(
+                map(([subscription, billing]) => {
+                  return this.trialFlowService.checkForOrgsWithUpcomingPaymentIssues(
+                    org,
+                    subscription,
+                    billing?.paymentSource,
+                  );
+                }),
+              ),
             ),
-          ),
         );
       }),
       map((results) => results.filter((result) => result.shownBanner)),

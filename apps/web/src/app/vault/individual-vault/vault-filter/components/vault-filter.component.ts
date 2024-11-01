@@ -2,10 +2,10 @@ import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } fro
 import { Router } from "@angular/router";
 import { firstValueFrom, Subject } from "rxjs";
 
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -89,7 +89,7 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
     protected policyService: PolicyService,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
-    protected organizationApiService: OrganizationApiServiceAbstraction,
+    protected billingApiService: BillingApiServiceAbstraction,
     protected dialogService: DialogService,
   ) {}
 
@@ -117,8 +117,8 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
         null,
         this.i18nService.t("disabledOrganizationFilterError"),
       );
-      const sub = await this.organizationApiService.getSubscription(orgNode.node.id);
-      if (sub?.subscription?.status === "unpaid") {
+      const metadata = await this.billingApiService.getOrganizationBillingMetadata(orgNode.node.id);
+      if (metadata.isSubscriptionUnpaid) {
         const confirmed = await this.promptForPaymentNavigation(orgNode.node);
         if (confirmed) {
           await this.navigateToPaymentMethod(orgNode.node.id);
@@ -137,11 +137,19 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
   };
 
   private async promptForPaymentNavigation(org: Organization): Promise<boolean> {
+    if (!org?.isOwner) {
+      await this.dialogService.openSimpleDialog({
+        title: this.i18nService.t("suspendedOrganizationTitle", org?.name),
+        content: { key: "suspendedUserOrgMessage" },
+        type: "danger",
+        acceptButtonText: this.i18nService.t("close"),
+        cancelButtonText: null,
+      });
+      return false;
+    }
     return await this.dialogService.openSimpleDialog({
-      title: this.i18nService.t("suspendedOrganizationTitle", org.name),
-      content: org.isOwner
-        ? { key: "suspendedOwnerOrgMessage" }
-        : { key: "suspendedUserOrgMessage" },
+      title: this.i18nService.t("suspendedOrganizationTitle", org?.name),
+      content: { key: "suspendedOwnerOrgMessage" },
       type: "danger",
       acceptButtonText: this.i18nService.t("continue"),
       cancelButtonText: this.i18nService.t("close"),
