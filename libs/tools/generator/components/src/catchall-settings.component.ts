@@ -58,26 +58,9 @@ export class CatchallSettingsComponent implements OnInit, OnDestroy {
     const singleUserId$ = this.singleUserId$();
     const settings = await this.generatorService.settings(Generators.catchall, { singleUserId$ });
 
-    settings
-      .pipe(
-        withLatestFrom(this.accountService.activeAccount$),
-        map(([settings, activeAccount]) => {
-          // if the subaddress isn't specified, copy it from
-          // the user's settings
-          if ((settings.catchallDomain ?? "").trim().length < 1) {
-            const parsed = DOMAIN_PARSER.exec(activeAccount.email);
-            if (parsed) {
-              settings.catchallDomain = parsed.groups.domain;
-            }
-          }
-
-          return settings;
-        }),
-        takeUntil(this.destroyed$),
-      )
-      .subscribe((s) => {
-        this.settings.patchValue(s, { emitEvent: false });
-      });
+    settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
+      this.settings.patchValue(s, { emitEvent: false });
+    });
 
     // the first emission is the current value; subsequent emissions are updates
     settings.pipe(skip(1), takeUntil(this.destroyed$)).subscribe(this.onUpdated);
