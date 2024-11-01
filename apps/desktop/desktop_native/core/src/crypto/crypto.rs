@@ -84,7 +84,6 @@ mod tests {
         let parallelism = 4;
 
         let hash = argon2(secret, salt, iterations, memory, parallelism).unwrap();
-        println!("{:?}", hash);
         assert_eq!(hash, test_hash,);
     }
 }
