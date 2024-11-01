@@ -1,13 +1,14 @@
-import { map, Observable } from "rxjs";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 import { ConfigService } from "../abstractions/config/config.service";
-import { ServerSettings, Settings } from "../models/domain/server-settings";
+import { Settings } from "../models/domain/server-settings";
 
 export class DefaultServerSettingsService {
   constructor(private configService: ConfigService) {}
 
   getSettings$(): Observable<Settings> {
-    return this.configService.serverSettings$.pipe(map((settings: ServerSettings) => settings));
+    return this.configService.serverSettings$;
   }
 
   get isUserRegistrationDisabled$(): Observable<boolean> {
