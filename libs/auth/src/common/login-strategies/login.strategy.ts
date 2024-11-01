@@ -22,11 +22,9 @@ import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/id
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ClientType } from "@bitwarden/common/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -82,8 +80,7 @@ export abstract class LoginStrategy {
     protected billingAccountProfileStateService: BillingAccountProfileStateService,
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected KdfConfigService: KdfConfigService,
-    protected UserAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
-    protected configService: ConfigService,
+    protected userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {}
 
   abstract exportCache(): CacheData;
@@ -270,17 +267,7 @@ export abstract class LoginStrategy {
     await this.setUserKey(response, userId);
     await this.setPrivateKey(response, userId);
 
-    const privateKeyRegenerationFlag = await this.configService.getFeatureFlag(
-      FeatureFlag.PrivateKeyRegeneration,
-    );
-
-    if (privateKeyRegenerationFlag) {
-      const shouldRegenerate =
-        await this.UserAsymmetricKeysRegenerationService.shouldRegenerate(userId);
-      if (shouldRegenerate) {
-        await this.UserAsymmetricKeysRegenerationService.regenerateUserAsymmetricKeys(userId);
-      }
-    }
+    await this.userAsymmetricKeysRegenerationService.handleUserAsymmetricKeysRegeneration(userId);
 
     this.messagingService.send("loggedIn");
 
