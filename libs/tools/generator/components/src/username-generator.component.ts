@@ -449,6 +449,14 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
       await this.forwarderComponent.save("credential generator");
     }
 
+    if (this.subaddressComponent) {
+      await this.subaddressComponent.save("credential generator");
+    }
+
+    if (this.usernameComponent) {
+      await this.usernameComponent.save("credential generator");
+    }
+
     this.generate$.next(requestor);
   }
 
