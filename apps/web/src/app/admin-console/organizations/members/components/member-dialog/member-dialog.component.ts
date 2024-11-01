@@ -65,6 +65,7 @@ export interface MemberDialogParams {
   isOnSecretsManagerStandalone: boolean;
   initialTab?: MemberDialogTab;
   numConfirmedMembers: number;
+  managedByOrganization?: boolean;
 }
 
 export enum MemberDialogResult {
@@ -559,6 +560,39 @@ export class MemberDialogComponent implements OnDestroy {
     });
     this.isRevoked = false;
     this.close(MemberDialogResult.Restored);
+  };
+
+  delete = async () => {
+    if (!this.editMode) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: {
+        key: "deleteOrganizationUser",
+        placeholders: [this.params.name],
+      },
+      content: { key: "deleteOrganizationUserWarning" },
+      type: "warning",
+      acceptButtonText: { key: "delete" },
+      cancelButtonText: { key: "cancel" },
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    await this.organizationUserApiService.deleteOrganizationUser(
+      this.params.organizationId,
+      this.params.organizationUserId,
+    );
+
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("organizationUserDeleted", this.params.name),
+    });
+    this.close(MemberDialogResult.Deleted);
   };
 
   ngOnDestroy() {

@@ -271,6 +271,16 @@
           [bitAction]="remove"
           [disabled]="loading"
         ></button>
+        <button
+          *ngIf="editMode && params.managedByOrganization === true"
+          type="button"
+          bitIconButton="bwi-trash"
+          buttonType="danger"
+          bitFormButton
+          [appA11yTitle]="'delete' | i18n"
+          [bitAction]="delete"
+          [disabled]="loading"
+        ></button>
       </div>
     </ng-container>
   </bit-dialog>

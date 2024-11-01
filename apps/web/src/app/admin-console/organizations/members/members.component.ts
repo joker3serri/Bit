@@ -518,6 +518,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
         isOnSecretsManagerStandalone: this.orgIsOnSecretsManagerStandalone,
         initialTab: initialTab,
         numConfirmedMembers: this.dataSource.confirmedUserCount,
+        managedByOrganization: user?.managedByOrganization,
       },
     });
 
