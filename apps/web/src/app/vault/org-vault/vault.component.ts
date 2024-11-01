@@ -93,7 +93,6 @@ import {
   BulkDeleteDialogResult,
   openBulkDeleteDialog,
 } from "../individual-vault/bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
-import { CollectionsDialogResult } from "../individual-vault/collections.component";
 import { RoutedVaultFilterBridgeService } from "../individual-vault/vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "../individual-vault/vault-filter/services/routed-vault-filter.service";
 import { createFilterFunction } from "../individual-vault/vault-filter/shared/models/filter-function";
@@ -111,7 +110,6 @@ import {
   BulkCollectionsDialogResult,
 } from "./bulk-collections-dialog";
 import { CollectionAccessRestrictedComponent } from "./collection-access-restricted.component";
-import { openOrgVaultCollectionsDialog } from "./collections.component";
 import { AdminConsoleCipherFormConfigService } from "./services/admin-console-cipher-form-config.service";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 const BroadcasterSubscriptionId = "OrgVaultComponent";
@@ -347,6 +345,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         // If the user can edit all ciphers for the organization then fetch them ALL.
         if (organization.canEditAllCiphers) {
           ciphers = await this.cipherService.getAllFromApiForOrganization(organization.id);
+          ciphers?.forEach((c) => (c.edit = true));
         } else {
           // Otherwise, only fetch ciphers they have access to (includes unassigned for admins).
           ciphers = await this.cipherService.getManyFromApiForOrganization(organization.id);
@@ -717,39 +716,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     });
   }
 
-  async editCipherCollections(cipher: CipherView) {
-    let collections: CollectionAdminView[] = [];
-
-    // Admins limited to only adding items to collections they have access to.
-    collections = await firstValueFrom(
-      this.allCollectionsWithoutUnassigned$.pipe(
-        map((c) => {
-          return c.sort((a, b) => {
-            if (a.canEditItems(this.organization) && !b.canEditItems(this.organization)) {
-              return -1;
-            } else if (!a.canEditItems(this.organization) && b.canEditItems(this.organization)) {
-              return 1;
-            } else {
-              return a.name.localeCompare(b.name);
-            }
-          });
-        }),
-      ),
-    );
-    const dialog = openOrgVaultCollectionsDialog(this.dialogService, {
-      data: {
-        collectionIds: cipher.collectionIds,
-        collections: collections,
-        organization: this.organization,
-        cipherId: cipher.id,
-      },
-    });
-
-    if ((await lastValueFrom(dialog.closed)) == CollectionsDialogResult.Saved) {
-      this.refresh();
-    }
-  }
-
   async addCipher(cipherType?: CipherType) {
     if (this.extensionRefreshEnabled) {
       return this.addCipherV2(cipherType);
@@ -788,8 +754,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Edit the given cipher
-   * @param cipherView - The cipher to be edited
+   * Edit the given cipher or add a new cipher
+   * @param cipherView - When set, the cipher to be edited
    * @param cloneCipher - `true` when the cipher should be cloned.
    * Used in place of the `additionalComponentParameters`, as
    * the `editCipherIdV2` method has a differing implementation.
@@ -797,7 +763,7 @@ export class VaultComponent implements OnInit, OnDestroy {
    * the `AddEditComponent` to edit methods directly.
    */
   async editCipher(
-    cipher: CipherView,
+    cipher: CipherView | null,
     cloneCipher: boolean,
     additionalComponentParameters?: (comp: AddEditComponent) => void,
   ) {
@@ -805,7 +771,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async editCipherId(
-    cipher: CipherView,
+    cipher: CipherView | null,
     cloneCipher: boolean,
     additionalComponentParameters?: (comp: AddEditComponent) => void,
   ) {
@@ -827,7 +793,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     const defaultComponentParameters = (comp: AddEditComponent) => {
       comp.organization = this.organization;
       comp.organizationId = this.organization.id;
-      comp.cipherId = cipher.id;
+      comp.cipherId = cipher?.id;
+      comp.collectionId = this.activeFilter.collectionId;
       comp.onSavedCipher.pipe(takeUntil(this.destroy$)).subscribe(() => {
         modal.close();
         this.refresh();
@@ -866,10 +833,10 @@ export class VaultComponent implements OnInit, OnDestroy {
    * Edit a cipher using the new AddEditCipherDialogV2 component.
    * Only to be used behind the ExtensionRefresh feature flag.
    */
-  private async editCipherIdV2(cipher: CipherView, cloneCipher: boolean) {
+  private async editCipherIdV2(cipher: CipherView | null, cloneCipher: boolean) {
     const cipherFormConfig = await this.cipherFormConfigService.buildConfig(
       cloneCipher ? "clone" : "edit",
-      cipher.id as CipherId,
+      cipher?.id as CipherId | null,
     );
 
     await this.openVaultItemDialog("form", cipherFormConfig, cipher);
@@ -897,7 +864,12 @@ export class VaultComponent implements OnInit, OnDestroy {
       cipher.type,
     );
 
-    await this.openVaultItemDialog("view", cipherFormConfig, cipher);
+    await this.openVaultItemDialog(
+      "view",
+      cipherFormConfig,
+      cipher,
+      this.activeFilter.collectionId as CollectionId,
+    );
   }
 
   /**
@@ -907,6 +879,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     mode: VaultItemDialogMode,
     formConfig: CipherFormConfig,
     cipher?: CipherView,
+    activeCollectionId?: CollectionId,
   ) {
     const disableForm = cipher ? !cipher.edit && !this.organization.canEditAllCiphers : false;
     // If the form is disabled, force the mode into `view`
@@ -915,6 +888,8 @@ export class VaultComponent implements OnInit, OnDestroy {
       mode: dialogMode,
       formConfig,
       disableForm,
+      activeCollectionId,
+      isAdminConsoleAction: true,
     });
 
     const result = await lastValueFrom(this.vaultItemDialogRef.closed);
