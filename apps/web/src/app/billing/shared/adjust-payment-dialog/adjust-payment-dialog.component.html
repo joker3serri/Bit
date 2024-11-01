@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit">
   <bit-dialog
     dialogSize="large"
-    [title]="(currentType != null ? 'changePaymentMethod' : 'addPaymentMethod2') | i18n"
+    [title]="(currentType != null ? 'changePaymentMethod' : 'addPaymentMethod') | i18n"
   >
     <ng-container bitDialogContent>
       <app-payment [hideBank]="!organizationId" [hideCredit]="true"></app-payment>

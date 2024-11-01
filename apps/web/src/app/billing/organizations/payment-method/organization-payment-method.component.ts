@@ -244,7 +244,7 @@ export class OrganizationPaymentMethodComponent implements OnDestroy {
   }
 
   protected get updatePaymentSourceButtonText(): string {
-    const key = this.paymentSource == null ? "addPaymentMethod2" : "changePaymentMethod";
+    const key = this.paymentSource == null ? "addPaymentMethod" : "changePaymentMethod";
     return this.i18nService.t(key);
   }
 }
