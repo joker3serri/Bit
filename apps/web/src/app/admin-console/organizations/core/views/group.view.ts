@@ -9,6 +9,6 @@ export class GroupView implements View {
   externalId: string;
 
   static fromResponse(response: GroupResponse): GroupView {
-    return Object.assign(new GroupView(), response) as GroupView;
+    return Object.assign(new GroupView(), response);
   }
 }
