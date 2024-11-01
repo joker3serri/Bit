@@ -80,7 +80,12 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.allowPersonalOwnership = true;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
+        {
+          id: "col1",
+          name: "Collection 1",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
       ];
       component.originalCipherView = {
         name: "cipher1",
@@ -109,8 +114,18 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.allowPersonalOwnership = true;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
+        {
+          id: "col1",
+          name: "Collection 1",
+          organizationId: "org1",
+          canEditItems: (_org) => false,
+        } as CollectionView,
+        {
+          id: "col2",
+          name: "Collection 2",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
       ];
       component.originalCipherView = {
         name: "cipher1",
@@ -331,9 +346,24 @@ describe("ItemDetailsSectionComponent", () => {
       } as CipherView;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
-        { id: "col3", name: "Collection 3", organizationId: "org1" } as CollectionView,
+        {
+          id: "col1",
+          name: "Collection 1",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
+        {
+          id: "col2",
+          name: "Collection 2",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
+        {
+          id: "col3",
+          name: "Collection 3",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
       ];
 
       fixture.detectChanges();
@@ -351,7 +381,12 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.allowPersonalOwnership = true;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
+        {
+          id: "col1",
+          name: "Collection 1",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
       ];
 
       fixture.detectChanges();
@@ -378,13 +413,24 @@ describe("ItemDetailsSectionComponent", () => {
       } as CipherView;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
+        {
+          id: "col1",
+          name: "Collection 1",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
+        {
+          id: "col2",
+          name: "Collection 2",
+          organizationId: "org1",
+          canEditItems: (_org) => true,
+        } as CollectionView,
         {
           id: "col3",
           name: "Collection 3",
           organizationId: "org1",
           readOnly: true,
+          canEditItems: (_org) => true,
         } as CollectionView,
       ];
 
@@ -408,18 +454,21 @@ describe("ItemDetailsSectionComponent", () => {
           name: "Collection 1",
           organizationId: "org1",
           readOnly: true,
+          canEditItems: (_org) => false,
         } as CollectionView,
         {
           id: "col2",
           name: "Collection 2",
           organizationId: "org1",
           readOnly: true,
+          canEditItems: (_org) => false,
         } as CollectionView,
         {
           id: "col3",
           name: "Collection 3",
           organizationId: "org1",
           readOnly: false,
+          canEditItems: (_org) => false,
         } as CollectionView,
       ];
 
@@ -435,6 +484,29 @@ describe("ItemDetailsSectionComponent", () => {
   describe("readonlyCollections", () => {
     beforeEach(() => {
       component.config.mode = "edit";
+      component.config.admin = true;
+      component.config.collections = [
+        {
+          id: "col1",
+          name: "Collection 1",
+          organizationId: "org1",
+          readOnly: true,
+          canEditItems: (_org) => false,
+        } as CollectionView,
+        {
+          id: "col2",
+          name: "Collection 2",
+          organizationId: "org1",
+          canEditItems: (_org) => false,
+        } as CollectionView,
+        {
+          id: "col3",
+          name: "Collection 3",
+          organizationId: "org1",
+          readOnly: true,
+          canEditItems: (_org) => false,
+        } as CollectionView,
+      ];
       component.originalCipherView = {
         name: "cipher1",
         organizationId: "org1",
@@ -446,23 +518,6 @@ describe("ItemDetailsSectionComponent", () => {
     });
 
     it("should not show collections as readonly when `config.admin` is true", async () => {
-      component.config.admin = true;
-      component.config.collections = [
-        {
-          id: "col1",
-          name: "Collection 1",
-          organizationId: "org1",
-          readOnly: true,
-        } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
-        {
-          id: "col3",
-          name: "Collection 3",
-          organizationId: "org1",
-          readOnly: true,
-        } as CollectionView,
-      ];
-
       await component.ngOnInit();
       fixture.detectChanges();
 
