@@ -211,13 +211,15 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy {
     });
 
     // generate on load unless the generator prohibits it
-    this.algorithm$
-      .pipe(
-        distinctUntilChanged((prev, next) => prev.id === next.id),
-        filter((a) => !a.onlyOnRequest),
-        takeUntil(this.destroyed),
-      )
-      .subscribe(() => this.generate("autogenerate"));
+    this.algorithm$.pipe(takeUntil(this.destroyed)).subscribe((a) => {
+      this.zone.run(() => {
+        if (!a || a.onlyOnRequest) {
+          this.value$.next("-");
+        } else {
+          this.generate("autogenerate").catch((e: unknown) => this.logService.error(e));
+        }
+      });
+    });
   }
 
   private typeToGenerator$(type: CredentialAlgorithm) {

@@ -59,7 +59,7 @@ export class SubaddressSettingsComponent implements OnInit, OnDestroy {
         map(([settings, activeAccount]) => {
           // if the subaddress isn't specified, copy it from
           // the user's settings
-          if ((settings.subaddressEmail ?? "").length < 1) {
+          if ((settings.subaddressEmail ?? "").trim().length < 1) {
             settings.subaddressEmail = activeAccount.email;
           }
 

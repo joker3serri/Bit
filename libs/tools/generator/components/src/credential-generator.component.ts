@@ -538,6 +538,10 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
       await this.passwordComponent.save("credential generator");
     }
 
+    if (this.catchallComponent) {
+      await this.catchallComponent.save("credential generator");
+    }
+
     this.generate$.next(requestor);
   }
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, skip, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, map, skip, Subject, takeUntil, withLatestFrom } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -11,6 +11,11 @@ import {
 } from "@bitwarden/generator-core";
 
 import { completeOnAccountSwitch } from "./util";
+
+/** Splits an email into a username, subaddress, and domain named group.
+ * Subaddress is optional.
+ */
+export const DOMAIN_PARSER = new RegExp("[^@]+@(?<domain>.+)");
 
 /** Options group for catchall emails */
 @Component({
@@ -53,14 +58,43 @@ export class CatchallSettingsComponent implements OnInit, OnDestroy {
     const singleUserId$ = this.singleUserId$();
     const settings = await this.generatorService.settings(Generators.catchall, { singleUserId$ });
 
-    settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
-      this.settings.patchValue(s, { emitEvent: false });
-    });
+    settings
+      .pipe(
+        withLatestFrom(this.accountService.activeAccount$),
+        map(([settings, activeAccount]) => {
+          // if the subaddress isn't specified, copy it from
+          // the user's settings
+          if ((settings.catchallDomain ?? "").trim().length < 1) {
+            const parsed = DOMAIN_PARSER.exec(activeAccount.email);
+            if (parsed) {
+              settings.catchallDomain = parsed.groups.domain;
+            }
+          }
+
+          return settings;
+        }),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe((s) => {
+        this.settings.patchValue(s, { emitEvent: false });
+      });
 
     // the first emission is the current value; subsequent emissions are updates
     settings.pipe(skip(1), takeUntil(this.destroyed$)).subscribe(this.onUpdated);
 
-    this.settings.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(settings);
+    // now that outputs are set up, connect inputs
+    this.saveSettings
+      .pipe(
+        withLatestFrom(this.settings.valueChanges),
+        map(([, settings]) => settings),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe(settings);
+  }
+
+  private saveSettings = new Subject<string>();
+  save(site: string = "component api call") {
+    this.saveSettings.next(site);
   }
 
   private singleUserId$() {
@@ -78,6 +112,7 @@ export class CatchallSettingsComponent implements OnInit, OnDestroy {
 
   private readonly destroyed$ = new Subject<void>();
   ngOnDestroy(): void {
+    this.destroyed$.next();
     this.destroyed$.complete();
   }
 }

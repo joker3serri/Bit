@@ -348,7 +348,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
         if (!a || a.onlyOnRequest) {
           this.value$.next("-");
         } else {
-          this.generate("autogenerate");
+          this.generate("autogenerate").catch((e: unknown) => this.logService.error(e));
         }
       });
     });
@@ -440,7 +440,11 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
    * @param requestor a label used to trace generation request
    *  origin in the debugger.
    */
-  protected generate(requestor: string) {
+  protected async generate(requestor: string) {
+    if (this.catchallComponent) {
+      await this.catchallComponent.save("credential generator");
+    }
+
     this.generate$.next(requestor);
   }
 
@@ -455,6 +459,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
 
   private readonly destroyed = new Subject<void>();
   ngOnDestroy() {
+    this.destroyed.next();
     this.destroyed.complete();
 
     // finalize subjects
