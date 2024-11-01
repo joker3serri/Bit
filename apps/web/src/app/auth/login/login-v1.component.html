@@ -44,9 +44,7 @@
       </a>
     </div>
 
-    <hr *ngIf="!(isUserRegistrationDisabled$ | async)" />
-
-    <p class="tw-m-0 tw-text-sm" *ngIf="!(isUserRegistrationDisabled$ | async)">
+    <p class="tw-m-0 tw-text-sm">
       {{ "newAroundHere" | i18n }}
       <!-- Two notes:
            (1) We check the value and validity of email so we don't send an invalid email to autofill
