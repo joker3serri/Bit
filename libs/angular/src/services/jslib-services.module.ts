@@ -440,7 +440,6 @@ const safeProviders: SafeProvider[] = [
       KdfConfigServiceAbstraction,
       TaskSchedulerService,
       UserAsymmetricKeysRegenerationService,
-      ConfigService,
     ],
   }),
   safeProvider({
@@ -1387,6 +1386,7 @@ const safeProviders: SafeProvider[] = [
       LogService,
       SdkService,
       ApiServiceAbstraction,
+      ConfigService,
     ],
   }),
 ];

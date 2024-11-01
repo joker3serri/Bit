@@ -1,6 +1,8 @@
 import { firstValueFrom, map } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { SdkService } from "@bitwarden/common/platform/abstractions/sdk/sdk.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -24,9 +26,23 @@ export class DefaultUserAsymmetricKeysRegenerationService
     protected logService: LogService,
     protected sdkService: SdkService,
     protected apiService: ApiService,
+    protected configService: ConfigService,
   ) {}
 
-  async shouldRegenerate(userId: UserId): Promise<boolean> {
+  async handleUserAsymmetricKeysRegeneration(userId: UserId): Promise<void> {
+    const privateKeyRegenerationFlag = await this.configService.getFeatureFlag(
+      FeatureFlag.PrivateKeyRegeneration,
+    );
+
+    if (privateKeyRegenerationFlag) {
+      const shouldRegenerate = await this.shouldRegenerate(userId);
+      if (shouldRegenerate) {
+        await this.regenerateUserAsymmetricKeys(userId);
+      }
+    }
+  }
+
+  private async shouldRegenerate(userId: UserId): Promise<boolean> {
     const [userKey, userKeyEncryptedPrivateKey, publicKeyResponse] = await Promise.all([
       firstValueFrom(this.keyService.userKey$(userId)),
       firstValueFrom(this.keyService.userEncryptedPrivateKey$(userId)),
@@ -71,7 +87,7 @@ export class DefaultUserAsymmetricKeysRegenerationService
     return false;
   }
 
-  async regenerateUserAsymmetricKeys(userId: UserId): Promise<void> {
+  private async regenerateUserAsymmetricKeys(userId: UserId): Promise<void> {
     const makeKeyPairResponse = await firstValueFrom(
       this.sdkService.userClient$(userId).pipe(map((sdk) => sdk.crypto().make_key_pair())),
     );

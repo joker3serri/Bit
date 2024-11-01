@@ -29,7 +29,6 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { PreloginRequest } from "@bitwarden/common/models/request/prelogin.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -116,7 +115,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected kdfConfigService: KdfConfigService,
     protected taskSchedulerService: TaskSchedulerService,
     protected userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
-    protected configService: ConfigService,
   ) {
     this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
@@ -337,7 +335,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
       this.vaultTimeoutSettingsService,
       this.kdfConfigService,
       this.userAsymmetricKeysRegenerationService,
-      this.configService,
     ];
 
     return source.pipe(
