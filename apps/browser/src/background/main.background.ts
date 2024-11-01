@@ -632,6 +632,7 @@ export default class MainBackground {
       this.stateService,
       this.keyGenerationService,
       this.encryptService,
+      this.logService,
     );
 
     this.i18nService = new I18nService(BrowserApi.getUILanguage(), this.globalStateProvider);
@@ -1347,14 +1348,17 @@ export default class MainBackground {
     if (flagEnabled("sdk")) {
       // Warn if the SDK for some reason can't be initialized
       let supported = false;
+      let error: Error;
       try {
         supported = await firstValueFrom(this.sdkService.supported$);
       } catch (e) {
-        // Do nothing.
+        error = e;
       }
 
       if (!supported) {
-        this.sdkService.failedToInitialize().catch((e) => this.logService.error(e));
+        this.sdkService
+          .failedToInitialize("background", error)
+          .catch((e) => this.logService.error(e));
       }
     }
 
