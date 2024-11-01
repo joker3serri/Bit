@@ -307,7 +307,7 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
       name: formValue.name,
       members: formValue.members?.map((m) => m.id) ?? [],
       collections: formValue.collections.map((c) => convertToSelectionView(c)),
-      externalId: this.group.externalId,
+      externalId: formValue.externalId,
     };
 
     await this.groupService.save(groupView);
