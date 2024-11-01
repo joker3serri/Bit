@@ -3,15 +3,15 @@ import { of } from "rxjs";
 import { ConfigService } from "../abstractions/config/config.service";
 import { ServerSettings } from "../models/domain/server-settings";
 
-import { ServerSettingsService } from "./server-settings.service";
+import { DefaultServerSettingsService } from "./default-server-settings.service";
 
-describe("ServerSettingsService", () => {
-  let service: ServerSettingsService;
+describe("DefaultServerSettingsService", () => {
+  let service: DefaultServerSettingsService;
   let configServiceMock: { serverSettings$: any };
 
   beforeEach(() => {
     configServiceMock = { serverSettings$: of() };
-    service = new ServerSettingsService(configServiceMock as ConfigService);
+    service = new DefaultServerSettingsService(configServiceMock as ConfigService);
   });
 
   describe("getSettings$", () => {

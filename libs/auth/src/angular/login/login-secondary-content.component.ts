@@ -4,7 +4,7 @@ import { RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { RegisterRouteService } from "@bitwarden/auth/common";
-import { ServerSettingsService } from "@bitwarden/common/platform/services/server-settings.service";
+import { DefaultServerSettingsService } from "@bitwarden/common/platform/services/default-server-settings.service";
 import { LinkModule } from "@bitwarden/components";
 
 @Component({
@@ -19,7 +19,7 @@ import { LinkModule } from "@bitwarden/components";
 })
 export class LoginSecondaryContentComponent {
   registerRouteService = inject(RegisterRouteService);
-  serverSettingsService = inject(ServerSettingsService);
+  serverSettingsService = inject(DefaultServerSettingsService);
 
   // TODO: remove when email verification flag is removed
   protected registerRoute$ = this.registerRouteService.registerRoute$();

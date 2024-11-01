@@ -3,7 +3,7 @@ import { map, Observable } from "rxjs";
 import { ConfigService } from "../abstractions/config/config.service";
 import { ServerSettings, Settings } from "../models/domain/server-settings";
 
-export class ServerSettingsService {
+export class DefaultServerSettingsService {
   constructor(private configService: ConfigService) {}
 
   getSettings$(): Observable<Settings> {
