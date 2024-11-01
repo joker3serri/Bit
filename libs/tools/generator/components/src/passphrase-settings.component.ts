@@ -6,7 +6,6 @@ import {
   skip,
   takeUntil,
   Subject,
-  filter,
   map,
   withLatestFrom,
   ReplaySubject,
@@ -81,12 +80,6 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const singleUserId$ = this.singleUserId$();
     const settings = await this.generatorService.settings(Generators.passphrase, { singleUserId$ });
-    settings
-      .pipe(
-        filter((s) => !!s),
-        takeUntil(this.destroyed$),
-      )
-      .subscribe(this.okSettings$);
 
     // skips reactive event emissions to break a subscription cycle
     settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
@@ -135,8 +128,6 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
 
   /** display binding for enterprise policy notice */
   protected policyInEffect: boolean;
-
-  private okSettings$ = new ReplaySubject<PassphraseGenerationOptions>(1);
 
   private numWordsBoundariesHint = new ReplaySubject<string>(1);
 
