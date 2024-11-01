@@ -202,9 +202,8 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         });
       });
 
-    // normalize cascade selections; introduce subjects to allow changes
-    // from user selections and changes from preference updates to
-    // update the template
+    // these subjects normalize cascade selections to ensure the current
+    // cascade is always well-known.
     type CascadeValue = { nav: string; algorithm?: CredentialAlgorithm };
     const activeRoot$ = new Subject<CascadeValue>();
     const activeIdentifier$ = new Subject<CascadeValue>();
