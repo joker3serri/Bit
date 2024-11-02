@@ -127,6 +127,8 @@ export class DefaultConfigService implements ConfigService {
       return DefaultFeatureFlagValue[flag];
     }
 
+    serverConfig.featureStates[FeatureFlag.AccessIntelligence] = true;
+
     return serverConfig.featureStates[flag] as FeatureFlagValueType<Flag>;
   }
 
