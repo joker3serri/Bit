@@ -205,7 +205,7 @@
     "message": "A new SSH key was generated"
   },
   "sshAgentUnlockRequired": {
-    "message": "Please unlock your vault to approve the Ssh key request."
+    "message": "Please unlock your vault to approve the SSH key request."
   },
   "sshAgentUnlockTimeout": {
     "message": "SSH key request timed out."
@@ -214,10 +214,10 @@
     "message": "Enable SSH agent"
   },
   "enableSshAgentDesc": {
-    "message": "Enable the SSH agent to sign Ssh requests right from your Bitwarden vault."
+    "message": "Enable the SSH agent to sign SSH requests right from your Bitwarden vault."
   },
   "enableSshAgentHelp": {
-    "message": "The Ssh agent is a service targeted at developers that allows you to sign Ssh requests directly from your Bitwarden vault."
+    "message": "The SSH agent is a service targeted at developers that allows you to sign SSH requests directly from your Bitwarden vault."
   },
   "premiumRequired": {
     "message": "Premium required"
@@ -440,10 +440,10 @@
     "message": "Copy password"
   },
   "regenerateSshKey": {
-    "message": "Regenerate Ssh key"
+    "message": "Regenerate SSH key"
   },
   "copySshPrivateKey": {
-    "message": "Copy Ssh private key"
+    "message": "Copy SSH private key"
   },
   "copyUri": {
     "message": "Copy URI"
