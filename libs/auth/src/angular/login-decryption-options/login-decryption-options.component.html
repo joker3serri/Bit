@@ -17,16 +17,16 @@
   </bit-form-control>
 </form>
 
-<ng-container *ngIf="data.state === State.NewUser">
+<ng-container *ngIf="state === State.NewUser">
   <button type="button" bitButton block buttonType="primary" [bitAction]="createUser">
     {{ "continue" | i18n }}
   </button>
 </ng-container>
 
-<ng-container *ngIf="data.state === State.ExistingUserUntrustedDevice">
+<ng-container *ngIf="state === State.ExistingUserUntrustedDevice">
   <div class="tw-grid tw-gap-3">
     <button
-      *ngIf="data.showApproveFromOtherDeviceBtn"
+      *ngIf="showApproveFromOtherDeviceBtn"
       type="button"
       bitButton
       block
@@ -39,7 +39,7 @@
     <div class="tw-text-center">{{ "or" | i18n }}</div>
 
     <button
-      *ngIf="data.showApproveWithMasterPasswordBtn"
+      *ngIf="showApproveWithMasterPasswordBtn"
       type="button"
       bitButton
       block
@@ -50,7 +50,7 @@
     </button>
 
     <button
-      *ngIf="data.showRequestAdminApprovalBtn"
+      *ngIf="showRequestAdminApprovalBtn"
       type="button"
       bitButton
       block

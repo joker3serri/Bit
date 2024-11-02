@@ -41,20 +41,6 @@ enum State {
   ExistingUserUntrustedDevice,
 }
 
-type NewUserData = {
-  readonly state: State.NewUser;
-  readonly organizationId: string;
-};
-
-type ExistingUserUntrustedDeviceData = {
-  readonly state: State.ExistingUserUntrustedDevice;
-  readonly showApproveFromOtherDeviceBtn: boolean;
-  readonly showRequestAdminApprovalBtn: boolean;
-  readonly showApproveWithMasterPasswordBtn: boolean;
-};
-
-type Data = NewUserData | ExistingUserUntrustedDeviceData;
-
 @Component({
   standalone: true,
   templateUrl: "./login-decryption-options.component.html",
@@ -73,17 +59,21 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   private activeAccountId: UserId;
   private clientType: ClientType;
   private email: string;
+  private newUserOrgId: string;
 
-  protected data?: Data;
   protected loading = false;
+  protected showApproveFromOtherDeviceBtn: boolean;
+  protected showRequestAdminApprovalBtn: boolean;
+  protected showApproveWithMasterPasswordBtn: boolean;
   protected State = State;
+  protected state = State.NewUser;
 
   protected formGroup = this.formBuilder.group({
     // TODO-rr-bw: change to true by default after testing
     rememberDevice: [false], // Remember device means for the user to trust the device
   });
 
-  get rememberDeviceControl(): FormControl<boolean> {
+  private get rememberDeviceControl(): FormControl<boolean> {
     return this.formGroup.controls.rememberDevice;
   }
 
@@ -149,6 +139,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
          */
         await this.loadNewUserData();
       } else {
+        this.state = State.ExistingUserUntrustedDevice;
         this.loadUntrustedDeviceData(userDecryptionOptions);
       }
     } catch (err) {
@@ -198,31 +189,21 @@ export class LoginDecryptionOptionsComponent implements OnInit {
 
     const autoEnrollStatus = await firstValueFrom(autoEnrollStatus$);
 
-    this.data = {
-      state: State.NewUser,
-      organizationId: autoEnrollStatus.id,
-    };
+    this.newUserOrgId = autoEnrollStatus.id;
   }
 
   private loadUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
-    const showApproveFromOtherDeviceBtn =
+    this.showApproveFromOtherDeviceBtn =
       userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice || false;
 
-    const showRequestAdminApprovalBtn =
+    this.showRequestAdminApprovalBtn =
       !!userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval || false;
 
-    const showApproveWithMasterPasswordBtn = userDecryptionOptions?.hasMasterPassword || false;
-
-    this.data = {
-      state: State.ExistingUserUntrustedDevice,
-      showApproveFromOtherDeviceBtn,
-      showRequestAdminApprovalBtn,
-      showApproveWithMasterPasswordBtn,
-    };
+    this.showApproveWithMasterPasswordBtn = userDecryptionOptions?.hasMasterPassword || false;
   }
 
   async createUser() {
-    if (this.data.state !== State.NewUser) {
+    if (this.state !== State.NewUser) {
       return;
     }
 
@@ -240,7 +221,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
         message: this.i18nService.t("accountSuccessfullyCreated"),
       });
 
-      await this.passwordResetEnrollmentService.enroll(this.data.organizationId);
+      await this.passwordResetEnrollmentService.enroll(this.newUserOrgId);
 
       if (this.formGroup.value.rememberDevice) {
         await this.deviceTrustService.trustDevice(this.activeAccountId);
@@ -265,7 +246,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   }
 
   protected async approveFromOtherDevice() {
-    if (this.data.state !== State.ExistingUserUntrustedDevice) {
+    if (this.state !== State.ExistingUserUntrustedDevice) {
       return;
     }
 
