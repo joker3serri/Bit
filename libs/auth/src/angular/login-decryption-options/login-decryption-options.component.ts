@@ -59,14 +59,10 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   private activeAccountId: UserId;
   private clientType: ClientType;
   private email: string;
-  private newUserOrgId: string;
 
   protected loading = false;
-  protected showApproveFromOtherDeviceBtn: boolean;
-  protected showRequestAdminApprovalBtn: boolean;
-  protected showApproveWithMasterPasswordBtn: boolean;
-  protected State = State;
   protected state = State.NewUser;
+  protected State = State;
 
   protected formGroup = this.formBuilder.group({
     // TODO-rr-bw: change to true by default after testing
@@ -76,6 +72,14 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   private get rememberDeviceControl(): FormControl<boolean> {
     return this.formGroup.controls.rememberDevice;
   }
+
+  // New User Properties
+  private newUserOrgId: string;
+
+  // Existing User Untrusted Device Properties
+  protected canApproveFromOtherDevice = false;
+  protected canRequestAdminApproval = false;
+  protected canApproveWithMasterPassword = false;
 
   constructor(
     private accountService: AccountService,
@@ -193,13 +197,10 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   }
 
   private loadUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
-    this.showApproveFromOtherDeviceBtn =
-      userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice || false;
-
-    this.showRequestAdminApprovalBtn =
-      !!userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval || false;
-
-    this.showApproveWithMasterPasswordBtn = userDecryptionOptions?.hasMasterPassword || false;
+    this.canApproveFromOtherDevice =
+      !!userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice;
+    this.canRequestAdminApproval = !!userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval;
+    this.canApproveWithMasterPassword = !!userDecryptionOptions?.hasMasterPassword;
   }
 
   async createUser() {
