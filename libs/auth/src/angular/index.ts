@@ -26,6 +26,8 @@ export * from "./login/default-login-component.service";
 
 // login-decryption-options
 export * from "./login-decryption-options/login-decryption-options.component";
+export * from "./login-decryption-options/login-decryption-options.service";
+export * from "./login-decryption-options/default-login-decryption-options.service";
 
 // password callout
 export * from "./password-callout/password-callout.component";

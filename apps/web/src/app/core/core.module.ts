@@ -30,6 +30,7 @@ import {
   LoginComponentService,
   LockComponentService,
   SetPasswordJitService,
+  LoginDecryptionOptionsService,
 } from "@bitwarden/auth/angular";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
@@ -91,6 +92,7 @@ import {
   WebRegistrationFinishService,
   WebLoginComponentService,
   WebLockComponentService,
+  WebLoginDecryptionOptionsService,
 } from "../auth";
 import { AcceptOrganizationInviteService } from "../auth/organization-invite/accept-organization.service";
 import { HtmlStorageService } from "../core/html-storage.service";
@@ -285,6 +287,11 @@ const safeProviders: SafeProvider[] = [
     provide: LoginEmailService,
     useClass: LoginEmailService,
     deps: [AccountService, AuthService, StateProvider],
+  }),
+  safeProvider({
+    provide: LoginDecryptionOptionsService,
+    useClass: WebLoginDecryptionOptionsService,
+    deps: [],
   }),
 ];
 
