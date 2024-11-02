@@ -25,7 +25,7 @@ export class WebLoginDecryptionOptionsService
       await this.routerService.getAndClearLoginRedirectUrl();
       await this.acceptOrganizationInviteService.clearOrganizationInvitation();
     } catch (error) {
-      this.validationService.showError(error);
+      this.validationService.showError(error); // TODO-rr-bw: rethrow error?
     }
   }
 }

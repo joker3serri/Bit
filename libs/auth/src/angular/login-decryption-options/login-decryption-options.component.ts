@@ -44,15 +44,13 @@ enum State {
 type NewUserData = {
   readonly state: State.NewUser;
   readonly organizationId: string;
-  readonly userEmail: string;
 };
 
 type ExistingUserUntrustedDeviceData = {
   readonly state: State.ExistingUserUntrustedDevice;
   readonly showApproveFromOtherDeviceBtn: boolean;
-  readonly showReqAdminApprovalBtn: boolean;
+  readonly showRequestAdminApprovalBtn: boolean;
   readonly showApproveWithMasterPasswordBtn: boolean;
-  readonly userEmail: string;
 };
 
 type Data = NewUserData | ExistingUserUntrustedDeviceData;
@@ -113,7 +111,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    // this.loading = true; // TODO-rr-bw: uncomment after testing
+    this.loading = true;
 
     this.activeAccountId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
 
@@ -133,9 +131,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     }
 
     this.observeAndPersistRememberDeviceValueChanges();
-
-    // Persist user choice from state if it exists
-    await this.setRememberDeviceDefaultValue();
+    await this.setRememberDeviceDefaultValueFromState();
 
     try {
       const userDecryptionOptions = await firstValueFrom(
@@ -146,12 +142,19 @@ export class LoginDecryptionOptionsComponent implements OnInit {
         !userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval &&
         !userDecryptionOptions?.hasMasterPassword
       ) {
+        /**
+         * We are dealing with a new account if both are true:
+         * - User does NOT have admin approval (i.e. has not enrolled in admin reset)
+         * - User does NOT have a master password
+         */
         await this.loadNewUserData();
       } else {
         this.loadUntrustedDeviceData(userDecryptionOptions);
       }
     } catch (err) {
       this.validationService.showError(err);
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -166,7 +169,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
       .subscribe();
   }
 
-  private async setRememberDeviceDefaultValue() {
+  private async setRememberDeviceDefaultValueFromState() {
     const rememberDeviceFromState = await this.deviceTrustService.getShouldTrustDevice(
       this.activeAccountId,
     );
@@ -198,19 +201,14 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.data = {
       state: State.NewUser,
       organizationId: autoEnrollStatus.id,
-      userEmail: this.email,
     };
-
-    this.loading = false;
   }
 
   private loadUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
-    this.loading = true;
-
     const showApproveFromOtherDeviceBtn =
       userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice || false;
 
-    const showReqAdminApprovalBtn =
+    const showRequestAdminApprovalBtn =
       !!userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval || false;
 
     const showApproveWithMasterPasswordBtn = userDecryptionOptions?.hasMasterPassword || false;
@@ -218,12 +216,9 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.data = {
       state: State.ExistingUserUntrustedDevice,
       showApproveFromOtherDeviceBtn,
-      showReqAdminApprovalBtn,
+      showRequestAdminApprovalBtn,
       showApproveWithMasterPasswordBtn,
-      userEmail: this.email,
     };
-
-    this.loading = false;
   }
 
   async createUser() {
@@ -274,7 +269,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
       return;
     }
 
-    this.loginEmailService.setLoginEmail(this.data.userEmail);
+    this.loginEmailService.setLoginEmail(this.email);
     await this.router.navigate(["/login-with-device"]);
   }
 
@@ -287,7 +282,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   }
 
   protected async requestAdminApproval() {
-    this.loginEmailService.setLoginEmail(this.data.userEmail);
+    this.loginEmailService.setLoginEmail(this.email);
     await this.router.navigate(["/admin-approval-requested"]);
   }
 }
