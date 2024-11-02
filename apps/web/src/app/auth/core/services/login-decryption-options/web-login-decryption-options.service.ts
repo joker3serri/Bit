@@ -24,8 +24,6 @@ export class WebLoginDecryptionOptionsService
       // the redirect and stored org invite.
       await this.routerService.getAndClearLoginRedirectUrl();
       await this.acceptOrganizationInviteService.clearOrganizationInvitation();
-
-      // await this.router.navigate(["/vault"]); // TODO-rr-bw: move routing to component?
     } catch (error) {
       this.validationService.showError(error);
     }
