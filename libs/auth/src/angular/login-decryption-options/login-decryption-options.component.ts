@@ -11,11 +11,17 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
+import { PasswordResetEnrollmentServiceAbstraction } from "@bitwarden/common/auth/abstractions/password-reset-enrollment.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
+import { ClientType } from "@bitwarden/common/enums";
+import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import {
@@ -26,6 +32,9 @@ import {
   ToastService,
   TypographyModule,
 } from "@bitwarden/components";
+import { KeyService } from "@bitwarden/key-management";
+
+import { LoginDecryptionOptionsService } from "./login-decryption-options.service";
 
 enum State {
   NewUser,
@@ -64,6 +73,7 @@ type Data = NewUserData | ExistingUserUntrustedDeviceData;
 })
 export class LoginDecryptionOptionsComponent implements OnInit {
   private activeAccountId: UserId;
+  private clientType: ClientType;
   private email: string;
 
   protected data?: Data;
@@ -81,18 +91,26 @@ export class LoginDecryptionOptionsComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
+    private apiService: ApiService,
     private destroyRef: DestroyRef,
     private deviceTrustService: DeviceTrustServiceAbstraction,
     private formBuilder: FormBuilder,
     private i18nService: I18nService,
+    private keyService: KeyService,
+    private loginDecryptionOptionsService: LoginDecryptionOptionsService,
     private loginEmailService: LoginEmailServiceAbstraction,
+    private messagingService: MessagingService,
     private organizationApiService: OrganizationApiServiceAbstraction,
+    private passwordResetEnrollmentService: PasswordResetEnrollmentServiceAbstraction,
+    private platformUtilsService: PlatformUtilsService,
     private router: Router,
     private ssoLoginService: SsoLoginServiceAbstraction,
     private toastService: ToastService,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private validationService: ValidationService,
-  ) {}
+  ) {
+    this.clientType === this.platformUtilsService.getClientType();
+  }
 
   async ngOnInit() {
     // this.loading = true; // TODO-rr-bw: uncomment after testing
@@ -208,8 +226,47 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.loading = false;
   }
 
-  protected async createUserAction() {
-    // TODO-rr-bw: implement
+  async createUser() {
+    if (this.data.state !== State.NewUser) {
+      return;
+    }
+
+    // this.loading to support clients without async-actions-support
+    this.loading = true;
+    // errors must be caught in child components to prevent navigation
+    try {
+      const { publicKey, privateKey } = await this.keyService.initAccount();
+      const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
+      await this.apiService.postAccountKeys(keysRequest);
+
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("accountSuccessfullyCreated"),
+      });
+
+      await this.passwordResetEnrollmentService.enroll(this.data.organizationId);
+
+      if (this.formGroup.value.rememberDevice) {
+        await this.deviceTrustService.trustDevice(this.activeAccountId);
+      }
+
+      await this.loginDecryptionOptionsService.handleCreateUserSuccess();
+    } catch (err) {
+      this.validationService.showError(err);
+    } finally {
+      this.loading = false;
+    }
+
+    if (this.clientType === ClientType.Desktop) {
+      this.messagingService.send("redrawMenu");
+    }
+
+    if (this.clientType === ClientType.Browser) {
+      await this.router.navigate(["/tabs/vault"]);
+    } else {
+      await this.router.navigate(["/vault"]);
+    }
   }
 
   protected async approveFromOtherDevice() {

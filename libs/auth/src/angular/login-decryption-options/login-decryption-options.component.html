@@ -18,7 +18,7 @@
 </form>
 
 <ng-container *ngIf="data.state === State.NewUser">
-  <button type="button" bitButton block buttonType="primary" [bitAction]="createUserAction">
+  <button type="button" bitButton block buttonType="primary" [bitAction]="createUser">
     {{ "continue" | i18n }}
   </button>
 </ng-container>
