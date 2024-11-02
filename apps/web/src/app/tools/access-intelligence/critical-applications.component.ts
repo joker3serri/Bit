@@ -13,7 +13,7 @@ import { SharedModule } from "../../shared";
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 
 import { AccessIntelligenceTabType } from "./access-intelligence.component";
-// import { applicationTableMockData } from "./application-table.mock";
+import { applicationTableMockData } from "./application-table.mock";
 
 @Component({
   standalone: true,
@@ -30,6 +30,7 @@ export class CriticalApplicationsComponent implements OnInit {
   protected organizationId: string;
   noItemsIcon = Icons.Security;
   // MOCK DATA
+  protected mockData = applicationTableMockData;
   protected mockAtRiskMembersCount = 0;
   protected mockAtRiskAppsCount = 0;
   protected mockTotalMembersCount = 0;

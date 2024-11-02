@@ -71,7 +71,7 @@ export class AllApplicationsComponent implements OnInit {
     protected toastService: ToastService,
     protected organizationService: OrganizationService,
   ) {
-    this.dataSource.data = []; //applicationTableMockData;
+    this.dataSource.data = applicationTableMockData;
     this.searchControl.valueChanges
       .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((v) => (this.dataSource.filter = v));
@@ -79,6 +79,11 @@ export class AllApplicationsComponent implements OnInit {
 
   goToCreateNewLoginItem = async () => {
     // TODO: implement
+    this.toastService.showToast({
+      variant: "warning",
+      title: null,
+      message: "Not yet implemented",
+    });
   };
 
   markAppsAsCritical = async () => {
