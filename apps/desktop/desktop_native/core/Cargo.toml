@@ -35,7 +35,7 @@ homedir = "0.3.3"
 libc = "=0.2.159"
 pin-project = "1.1.5"
 dirs = "=5.0.1"
-futures = "=0.3.30"
+futures = "=0.3.31"
 interprocess = { version = "=2.2.1", features = ["tokio"] }
 log = "=0.4.22"
 rand = "=0.8.5"

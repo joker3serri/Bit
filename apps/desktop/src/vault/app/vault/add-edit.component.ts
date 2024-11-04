@@ -20,6 +20,7 @@ import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.s
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -54,6 +55,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     datePipe: DatePipe,
     configService: ConfigService,
     private toastService: ToastService,
+    cipherAuthorizationService: CipherAuthorizationService,
   ) {
     super(
       cipherService,
@@ -74,6 +76,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       window,
       datePipe,
       configService,
+      cipherAuthorizationService,
     );
   }
 

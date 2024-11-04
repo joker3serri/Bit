@@ -2,14 +2,29 @@
   "allApplications": {
     "message": "Kaikki sovellukset"
   },
-  "priorityApplications": {
-    "message": "Ensisijaiset sovellukset"
+  "criticalApplications": {
+    "message": "Kriittiset sovellukset"
   },
   "accessIntelligence": {
     "message": "Access Intelligence"
   },
+  "passwordRisk": {
+    "message": "Salasanariski"
+  },
+  "discoverAtRiskPasswords": {
+    "message": "Havaitse vaarantuneet salasanat ja ilmoita käyttäjille niiden vaihdosta."
+  },
+  "dataLastUpdated": {
+    "message": "Tiedot päivitetty viimeksi: $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2021-01-01"
+      }
+    }
+  },
   "notifiedMembers": {
-    "message": "Notified members"
+    "message": "Ilmoitetut jäsenet"
   },
   "allApplicationsWithCount": {
     "message": "Kaikki sovellukset ($COUNT$)",
@@ -20,8 +35,11 @@
       }
     }
   },
-  "priorityApplicationsWithCount": {
-    "message": "Ensisijaiset sovellukset ($COUNT$)",
+  "createNewLoginItem": {
+    "message": "Luo uusi kirjautumiskohde"
+  },
+  "criticalApplicationsWithCount": {
+    "message": "Kriittiset sovellukset ($COUNT$)",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -30,7 +48,7 @@
     }
   },
   "notifiedMembersWithCount": {
-    "message": "Notified members ($COUNT$)",
+    "message": "Ilmoitetut jäsenet ($COUNT$)",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -38,14 +56,47 @@
       }
     }
   },
+  "noAppsInOrgTitle": {
+    "message": "Sovelluksia ei löytynyt organisaatiosta $ORG NAME$",
+    "placeholders": {
+      "org name": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "noAppsInOrgDescription": {
+    "message": "Kun käyttäjät tallentavat kirjautumistietoja, näytetään sovellukset ja vaarantuneet salasanat täällä. Merkitse kriittiset sovellukset ja ilmoita käyttäjille salasanojen vaihdosta."
+  },
+  "noCriticalAppsTitle": {
+    "message": "Sovelluksia ei ole merkitty kriittisiksi"
+  },
+  "noCriticalAppsDescription": {
+    "message": "Valitse kriittisimmät sovelluksesi havaitaksesi vaarantuneet salasanat ja ilmoita käyttäjille niiden vaihdosta."
+  },
+  "markCriticalApps": {
+    "message": "Merkitse kriittiset sovellukset"
+  },
+  "markAppAsCritical": {
+    "message": "Merkitse sovellus kriittiseksi"
+  },
+  "appsMarkedAsCritical": {
+    "message": "Kriittisiksi merkityt sovellukset"
+  },
   "application": {
     "message": "Sovellus"
   },
   "atRiskPasswords": {
     "message": "Riskialttiit salasanat"
   },
+  "requestPasswordChange": {
+    "message": "Pyydä salasanan vaihtoa"
+  },
   "totalPasswords": {
     "message": "Salasanoja yhteensä"
+  },
+  "searchApps": {
+    "message": "Etsi sovelluksia"
   },
   "atRiskMembers": {
     "message": "Riskialttiit jäsenet"
@@ -198,7 +249,7 @@
     "message": "Merkki"
   },
   "expiration": {
-    "message": "Erääntymisaika"
+    "message": "Voimassaolo päättyy"
   },
   "securityCode": {
     "message": "Turvakoodi (CVC/CVV)"
@@ -404,6 +455,9 @@
   },
   "generatePassword": {
     "message": "Luo salasana"
+  },
+  "generatePassphrase": {
+    "message": "Luo salalause"
   },
   "checkPassword": {
     "message": "Tarkasta, onko salasana paljastunut."
@@ -662,6 +716,13 @@
   "copyPassword": {
     "message": "Kopioi salasana",
     "description": "Copy password to clipboard"
+  },
+  "copyPassphrase": {
+    "message": "Kopioi salalause",
+    "description": "Copy passphrase to clipboard"
+  },
+  "passwordCopied": {
+    "message": "Salasana kopioitu"
   },
   "copyUsername": {
     "message": "Kopioi käyttäjätunnus",
@@ -929,8 +990,14 @@
   "useADifferentLogInMethod": {
     "message": "Käytä vaihtoehtoista kirjautumistapaa"
   },
-  "loginWithPasskey": {
+  "logInWithPasskey": {
     "message": "Kirjaudu pääsyavaimella"
+  },
+  "useSingleSignOn": {
+    "message": "Käytä kertakirjautumista"
+  },
+  "welcomeBack": {
+    "message": "Tervetuloa takaisin"
   },
   "invalidPasskeyPleaseTryAgain": {
     "message": "Pääsyavain ei kelpaa. Yritä uudelleen."
@@ -1013,6 +1080,9 @@
   "createAccount": {
     "message": "Luo uusi tili"
   },
+  "newToBitwarden": {
+    "message": "Oletko uusi Bitwarden-käyttäjä?"
+  },
   "setAStrongPassword": {
     "message": "Aseta vahva salasana"
   },
@@ -1027,6 +1097,9 @@
   },
   "logIn": {
     "message": "Kirjaudu sisään"
+  },
+  "logInToBitwarden": {
+    "message": "Kirjaudu Bitwardeniin"
   },
   "verifyIdentity": {
     "message": "Vahvista henkilöllisyytesi"
@@ -1197,7 +1270,7 @@
     "message": "Sinulla ei ole kokoelman kaikkien kohteiden tarkastelun sallivia käyttöoikeuksia."
   },
   "youDoNotHavePermissions": {
-    "message": "You do not have permissions to this collection"
+    "message": "Sinulla ei ole kokoelman käyttöoikeutta"
   },
   "noCollectionsInList": {
     "message": "Näytettäviä kokoelmia ei ole."
@@ -1534,38 +1607,6 @@
   "specialCharacters": {
     "message": "Erikoismerkit (!@#$%^&*)"
   },
-  "uppercaseDescription": {
-    "message": "Sisällytä isoja kirjaimia",
-    "description": "Tooltip for the password generator uppercase character checkbox"
-  },
-  "uppercaseLabel": {
-    "message": "A-Ö",
-    "description": "Label for the password generator uppercase character checkbox"
-  },
-  "lowercaseDescription": {
-    "message": "Sisällytä pieniä kirjaimia",
-    "description": "Full description for the password generator lowercase character checkbox"
-  },
-  "lowercaseLabel": {
-    "message": "a-ö",
-    "description": "Label for the password generator lowercase character checkbox"
-  },
-  "numbersDescription": {
-    "message": "Sisällytä numeroita",
-    "description": "Full description for the password generator numbers checkbox"
-  },
-  "numbersLabel": {
-    "message": "0-9",
-    "description": "Label for the password generator numbers checkbox"
-  },
-  "specialCharactersDescription": {
-    "message": "Sisällytä erikoismerkkejä",
-    "description": "Full description for the password generator special characters checkbox"
-  },
-  "specialCharactersLabel": {
-    "message": "!@#$%^&*",
-    "description": "Label for the password generator special characters checkbox"
-  },
   "numWords": {
     "message": "Sanojen määrä"
   },
@@ -1696,6 +1737,9 @@
   "dangerZoneDesc": {
     "message": "Ole varovainen! Näitä toimintoja ei ole mahdollista kumota!"
   },
+  "dangerZoneDescSingular": {
+    "message": "Ole varoivainen. Tätä ei ole mahdollista perua!"
+  },
   "deauthorizeSessions": {
     "message": "Mitätöi kaikki istunnot"
   },
@@ -1707,6 +1751,15 @@
   },
   "sessionsDeauthorized": {
     "message": "Kaikki istunnot mitätöitiin"
+  },
+  "accountIsManagedMessage": {
+    "message": "Tiliä hallinnoi $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "Organization"
+      }
+    }
   },
   "purgeVault": {
     "message": "Tyhjennä holvi"
@@ -2669,7 +2722,7 @@
     "message": "Lataa lisenssi"
   },
   "viewBillingToken": {
-    "message": "View Billing Token"
+    "message": "Näytä laskutustunniste"
   },
   "updateLicense": {
     "message": "Päivitä lisenssi"
@@ -3164,6 +3217,9 @@
         "example": "20"
       }
     }
+  },
+  "inviteSingleEmailDesc": {
+    "message": "Sinulla on yksi kutsu jäljellä."
   },
   "userUsingTwoStep": {
     "message": "Käyttäjä on suojannut tilinsä kaksivaiheisella kirjautumisella."
@@ -3785,7 +3841,7 @@
     "message": "Liity organisaatioon"
   },
   "joinOrganizationName": {
-    "message": "Join $ORGANIZATIONNAME$",
+    "message": "Liity organisaatioon $ORGANIZATIONNAME$",
     "placeholders": {
       "organizationName": {
         "content": "$1",
@@ -4632,11 +4688,17 @@
   "singleOrgDesc": {
     "message": "Estä jäseniä liittymästä muihin organisaatioihin."
   },
+  "singleOrgPolicyDesc": {
+    "message": "Estä jäseniä liittymästä muihin organisaatioihin. Tätä käytäntöä tarvitaan organisaatioille, jotka käyttävät verkkotunnustodennusta."
+  },
   "singleOrgBlockCreateMessage": {
     "message": "Nykyisen organisaatiosi käytäntö ei salli liittymistä yhtä useampaan organisaatioon. Ole yhteydessä organisaatiosi ylläpitoon tai liity eri Bitwarden-tilin kautta."
   },
   "singleOrgPolicyWarning": {
     "message": "Organisaation jäsenet, jotka eivät ole omistajia tai ylläpitäjiä ja jotka ovat jo toisen organisaation jäseniä, poistetaan organisaatiostasi."
+  },
+  "singleOrgPolicyMemberWarning": {
+    "message": "Käytännöstä poikkeavat jäsenet asetetaan mitätöityyn tilaan, kunnes he poistuvat kaikista muista organisaatioista. Poikkeuksena ylläpitäjät, jotka voivat palauttaa jäsenten tilan vaatimusten täytyttyä."
   },
   "requireSso": {
     "message": "Vaadi todennus kertakirjautumisella"
@@ -6118,7 +6180,7 @@
     "message": "Näytä laskutuksen synkronointitunniste"
   },
   "generateBillingToken": {
-    "message": "Generate billing token"
+    "message": "Luo laskutustunniste"
   },
   "copyPasteBillingSync": {
     "message": "Kopioi ja liitä tämä tunniste itse ylläpitämäsi organisaation laskutuksen synkronoinnin asetuksiin."
@@ -6127,7 +6189,7 @@
     "message": "Laskutuksen synkronointitunniste mahdollistaa organisaation tilausasetusten tarkastelun ja muokkauksen."
   },
   "manageBillingTokenSync": {
-    "message": "Manage Billing Token"
+    "message": "Hallitse laskutustunnistetta"
   },
   "setUpBillingSync": {
     "message": "Määritä laskutuksen synkronointi"
@@ -6193,7 +6255,7 @@
     "message": "Laskutuksen synkronointitunniste"
   },
   "automaticBillingSyncDesc": {
-    "message": "Automatic sync unlocks Families sponsorships and allows you to sync your license without uploading a file. After making updates in the Bitwarden cloud server, select Sync License to apply changes."
+    "message": "Automaattinen synkronointi avaa Families-sponsoroinnin ja mahdollistaa lisenssisi automaattisen synkronoinnin ilman tiedostolatausta. Tehtyäsi muutokset Bitwardenin pilvipalvelimelle, ota ne käyttöön valitsemalla \"Synkronoi lisenssi\"."
   },
   "active": {
     "message": "Aktiivinen"
@@ -6351,6 +6413,23 @@
   "generateUsername": {
     "message": "Luo käyttäjätunnus"
   },
+  "generateEmail": {
+    "message": "Luo sähköpostiosoite"
+  },
+  "generatorBoundariesHint": {
+    "message": "Arvon tulee olla väliltä $MIN$ - $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Käyttäjätunnuksen tyyppi"
   },
@@ -6455,6 +6534,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Luo sähköpostialias ulkoisella ohjauspalvelulla."
+  },
+  "forwarderDomainName": {
+    "message": "Sähköpostin verkkotunnus",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Valitse verkkotunnus, jota valittu palvelu tukee",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ -virhe: $ERRORMESSAGE$",
@@ -7606,7 +7693,7 @@
     "message": "Manuaalinen tallennus"
   },
   "manualBillingTokenUploadDesc": {
-    "message": "If you do not want to opt into billing sync, manually upload your license here. This will not automatically unlock Families sponsorships."
+    "message": "Jos et halua käyttää laskutuksen synkronointia, lisää lisenssisi manuaalisesti tästä. Tämä ei avaa Families-sponsorointia automaattisesti."
   },
   "syncLicense": {
     "message": "Synkronoi lisenssi"
@@ -7935,7 +8022,7 @@
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
   "cardMetrics": {
-    "message": "out of $TOTAL$",
+    "message": "/$TOTAL$",
     "placeholders": {
       "total": {
         "content": "$1",
@@ -8205,10 +8292,10 @@
     "message": "Rajoita kokoelmien luonti ja poisto omistajille ja ylläpitäjille"
   },
   "limitCollectionCreationDesc": {
-    "message": "Limit collection creation to owners and admins"
+    "message": "Rajoita kokoelmien luonti omistajille ja ylläpitäjille"
   },
   "limitCollectionDeletionDesc": {
-    "message": "Limit collection deletion to owners and admins"
+    "message": "Rajoita kokoelmien poisto omistajille ja ylläpitäjille"
   },
   "allowAdminAccessToAllCollectionItemsDesc": {
     "message": "Omistajat ja ylläpitäjät voivat hallita kaikkia kokoelmia ja kohteita"
@@ -8254,6 +8341,10 @@
   },
   "baseUrl": {
     "message": "Palvelimen URL"
+  },
+  "selfHostBaseUrl": {
+    "message": "Itse ylläpidetyn palvelimen URL-osoite",
+    "description": "Label for field requesting a self-hosted integration service URL"
   },
   "aliasDomain": {
     "message": "Aliaksen verkkotunnus"
@@ -9396,19 +9487,51 @@
     "message": "Muokkaa käyttöoikeuksia"
   },
   "textHelpText": {
-    "message": "Use text fields for data like security questions"
+    "message": "Käytä tekstikenttiä esimerkiksi turvakysymysten kaltaisille tiedoille."
   },
   "hiddenHelpText": {
-    "message": "Use hidden fields for sensitive data like a password"
+    "message": "Käytä piilotettuja kenttiä esimerkiksi salasanojen kaltaisille arkaluontoisille tiedoille."
   },
   "checkBoxHelpText": {
-    "message": "Use checkboxes if you'd like to autofill a form's checkbox, like a remember email"
+    "message": "Käytä valintaruutuja esimerkiksi sähköpostiosoitteen muistamisen kaltaisten valintaruutujen automaattiseen merkintään."
   },
   "linkedHelpText": {
-    "message": "Use a linked field when you are experiencing autofill issues for a specific website."
+    "message": "Käytä linkitettyjä kenttiä kohdatessasi sivustokohtaisia automaattitäytön ongelmia."
   },
   "linkedLabelHelpText": {
-    "message": "Enter the the field's html id, name, aria-label, or placeholder."
+    "message": "Syötä kentän HTML-koodista löytyvä id-, name-, aria-label- tai placeholder-arvo."
+  },
+  "uppercaseDescription": {
+    "message": "Sisällytä isoja kirjaimia",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Ö",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Sisällytä pieniä kirjaimia",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-ö",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Sisällytä numeroita",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Sisällytä erikoismerkkejä",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
   },
   "addAttachment": {
     "message": "Lisää liite"
@@ -9418,5 +9541,21 @@
   },
   "permanentlyDeleteAttachmentConfirmation": {
     "message": "Haluatko varmasti poistaa liitteen pysyvästi?"
+  },
+  "manageSubscriptionFromThe": {
+    "message": "Hallitse tilausta sivulta",
+    "description": "This represents the beginning of a sentence. The full sentence will be 'Manage subscription from the Provider Portal', but 'Provider Portal' will be a link and thus cannot be included in the translation file."
+  },
+  "toHostBitwardenOnYourOwnServer": {
+    "message": "To host Bitwarden on your own server, you will need to upload your license file. To support Free Families plans and advanced billing capabilities for your self-hosted organization, you will need to set up automatic sync in your self-hosted organization."
+  },
+  "selfHostingTitleProper": {
+    "message": "Itse ylläpidetty"
+  },
+  "verified-domain-single-org-warning": {
+    "message": "Verifying a domain will turn on the single organization policy."
+  },
+  "single-org-revoked-user-warning": {
+    "message": "Non-compliant members will be revoked. Administrators can restore members once they leave all other organizations."
   }
 }

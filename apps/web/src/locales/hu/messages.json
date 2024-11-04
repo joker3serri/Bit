@@ -2,11 +2,26 @@
   "allApplications": {
     "message": "Összes alkalmazás"
   },
-  "priorityApplications": {
-    "message": "Prioritás alkalmazások"
+  "criticalApplications": {
+    "message": "Kritikus alkalmazások"
   },
   "accessIntelligence": {
     "message": "Elérés intelligencia"
+  },
+  "passwordRisk": {
+    "message": "Jelszó kockázat"
+  },
+  "discoverAtRiskPasswords": {
+    "message": "Fedezzük fel a veszélyeztetett jelszavakat és értesítsük a felhasználókat, hogy módosítsák ezeket a jelszavakat."
+  },
+  "dataLastUpdated": {
+    "message": "Az adatok utolsó frissítése: $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2021-01-01"
+      }
+    }
   },
   "notifiedMembers": {
     "message": "Értesített tagok"
@@ -20,8 +35,11 @@
       }
     }
   },
-  "priorityApplicationsWithCount": {
-    "message": "Prioriitás alkalmazások ($COUNT$)",
+  "createNewLoginItem": {
+    "message": "Új bejelentkezési elem létrehozása"
+  },
+  "criticalApplicationsWithCount": {
+    "message": "Kritikus alkalmazások ($COUNT$)",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -38,14 +56,47 @@
       }
     }
   },
+  "noAppsInOrgTitle": {
+    "message": "Nem találhatók alkalmazások: $ORG NAME$",
+    "placeholders": {
+      "org name": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "noAppsInOrgDescription": {
+    "message": "Amint a felhasználók elmentik a bejelentkezéseket, itt megjelennek az alkalmazások és megjelenítik a veszélyeztetett jelszavakat. Jelöljük meg a kritikus alkalmazásokat és értesítsük a felhasználókat a jelszavak frissítéséről."
+  },
+  "noCriticalAppsTitle": {
+    "message": "Egyetlen alkalmazás sem lett megjelölve kritikusként."
+  },
+  "noCriticalAppsDescription": {
+    "message": "Válasszuk ki a legkritikusabb alkalmazásokat a veszélyeztetett jelszavak felfedezéséhez és értesítsük a felhasználókat a jelszavak megváltoztatásáról."
+  },
+  "markCriticalApps": {
+    "message": "Kritikus alkalmazások megjelölése"
+  },
+  "markAppAsCritical": {
+    "message": "Alkalmazások megjelölése kritikusként"
+  },
+  "appsMarkedAsCritical": {
+    "message": "Kritikusként megjelölt alkalmazások"
+  },
   "application": {
     "message": "Alkalmazás"
   },
   "atRiskPasswords": {
     "message": "Veszélyes jelszavak"
   },
+  "requestPasswordChange": {
+    "message": "Jelszó változtatás kérése"
+  },
   "totalPasswords": {
     "message": "Összes jelszavak száma"
+  },
+  "searchApps": {
+    "message": "Alkalmazások keresése"
   },
   "atRiskMembers": {
     "message": "Veszélyes tagok"
@@ -405,6 +456,9 @@
   "generatePassword": {
     "message": "Jelszó generálása"
   },
+  "generatePassphrase": {
+    "message": "Jelmondat generálás"
+  },
   "checkPassword": {
     "message": "A jelszóvédelmi állapot ellenőrzése."
   },
@@ -662,6 +716,13 @@
   "copyPassword": {
     "message": "Jelszó másolása",
     "description": "Copy password to clipboard"
+  },
+  "copyPassphrase": {
+    "message": "Jelmondat másolása",
+    "description": "Copy passphrase to clipboard"
+  },
+  "passwordCopied": {
+    "message": "A jelszó másolásra került."
   },
   "copyUsername": {
     "message": "Felhasználónév másolása",
@@ -929,8 +990,14 @@
   "useADifferentLogInMethod": {
     "message": "Más bejelentkezési mód használata"
   },
-  "loginWithPasskey": {
-    "message": "Bejelentkezés jelszóval"
+  "logInWithPasskey": {
+    "message": "Bejelentkezés hozzáférési kulccsal"
+  },
+  "useSingleSignOn": {
+    "message": "Egyszeri bejelentkezés használata"
+  },
+  "welcomeBack": {
+    "message": "Üdvözlet újra"
   },
   "invalidPasskeyPleaseTryAgain": {
     "message": "Érvénytelen jelszó. Próbálja újra."
@@ -984,7 +1051,7 @@
     "message": "Használat titkosításhoz"
   },
   "loginWithPasskeyEnabled": {
-    "message": "Jelentkezzünk be bekapcsolt jelszóval"
+    "message": "Az azonosító kulcssal bejelentkezés bekapcsolásra került."
   },
   "passkeySaved": {
     "message": "$NAME$ mentésre került.",
@@ -1013,6 +1080,9 @@
   "createAccount": {
     "message": "Fiók létrehozása"
   },
+  "newToBitwarden": {
+    "message": "Új vagyunk a Bitwardenben?"
+  },
   "setAStrongPassword": {
     "message": "Erős jelszó beállítása"
   },
@@ -1027,6 +1097,9 @@
   },
   "logIn": {
     "message": "Bejelentkezés"
+  },
+  "logInToBitwarden": {
+    "message": "Bejelentkezés a Bitwardenbe"
   },
   "verifyIdentity": {
     "message": "Személyazonosság ellenőrzése"
@@ -1197,7 +1270,7 @@
     "message": "Nincs jogosultság a gyűjtemény összes elemének megtekintésére."
   },
   "youDoNotHavePermissions": {
-    "message": "You do not have permissions to this collection"
+    "message": "Nincs engedély ehhez a gyűjteményhez"
   },
   "noCollectionsInList": {
     "message": "Nincsenek megjeleníthető gyűjtemények."
@@ -1314,7 +1387,7 @@
     "message": "FIDO U2F Biztonsági kulcs"
   },
   "webAuthnTitle": {
-    "message": "FIDO2 WebAuthn"
+    "message": "Biztonsági kulcs"
   },
   "webAuthnDesc": {
     "message": "Használjunk bármilyen WebAuthn engedélyezett biztonsági kulcsot a saját fiók eléréséhez."
@@ -1534,38 +1607,6 @@
   "specialCharacters": {
     "message": "Speciális karakterek (!@#$%^&*)"
   },
-  "uppercaseDescription": {
-    "message": "Nagybetűs karakterek bevonása",
-    "description": "Tooltip for the password generator uppercase character checkbox"
-  },
-  "uppercaseLabel": {
-    "message": "A-Z",
-    "description": "Label for the password generator uppercase character checkbox"
-  },
-  "lowercaseDescription": {
-    "message": "Kisbetűs karakterek bevonása",
-    "description": "Full description for the password generator lowercase character checkbox"
-  },
-  "lowercaseLabel": {
-    "message": "a-z",
-    "description": "Label for the password generator lowercase character checkbox"
-  },
-  "numbersDescription": {
-    "message": "Számok bevonása",
-    "description": "Full description for the password generator numbers checkbox"
-  },
-  "numbersLabel": {
-    "message": "0-9",
-    "description": "Label for the password generator numbers checkbox"
-  },
-  "specialCharactersDescription": {
-    "message": "Speciális karakterek bevonása",
-    "description": "Full description for the password generator special characters checkbox"
-  },
-  "specialCharactersLabel": {
-    "message": "!@#$%^&*",
-    "description": "Label for the password generator special characters checkbox"
-  },
   "numWords": {
     "message": "Szavak száma"
   },
@@ -1696,6 +1737,9 @@
   "dangerZoneDesc": {
     "message": "Óvatosan! Ezeket a műveleteket nem lehet visszaállítani."
   },
+  "dangerZoneDescSingular": {
+    "message": "Óvatosan! Ezeket a műveleteket nem lehet visszaállítani."
+  },
   "deauthorizeSessions": {
     "message": "Munkamenetek hitelesítésének eldobása"
   },
@@ -1707,6 +1751,15 @@
   },
   "sessionsDeauthorized": {
     "message": "Az összes munkamenet hitelesítése eldobásra került."
+  },
+  "accountIsManagedMessage": {
+    "message": "Ezt a fiókot $ORGANIZATIONNAME$ kezeli.",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "Organization"
+      }
+    }
   },
   "purgeVault": {
     "message": "Széf kitakarítása"
@@ -3164,6 +3217,9 @@
         "example": "20"
       }
     }
+  },
+  "inviteSingleEmailDesc": {
+    "message": "1 meghívó maradt."
   },
   "userUsingTwoStep": {
     "message": "Ez a felhasználó kétlépcsős bejelentkezést használ fiókja védelmére."
@@ -4632,11 +4688,17 @@
   "singleOrgDesc": {
     "message": "Korlátozza a felhasználókat más szervezetekhez csatlakozásban."
   },
+  "singleOrgPolicyDesc": {
+    "message": "A tagok más szervezetekhez csatlakozásának korlátozása. Ez a házirend olyan szervezetek számára szükséges, amelyek engedélyezték a tartományellenőrzést."
+  },
   "singleOrgBlockCreateMessage": {
     "message": "Jelenlegi szervezetének van olyan irányelve, amely nem engedélyezi, hogy több szervezethez csatlakozzunk. Lépjünk kapcsolatba szervezetünk adminisztrátorával vagy regisztráljunk egy másik Bitwarden fiókból."
   },
   "singleOrgPolicyWarning": {
     "message": "A szervezet azon tagjait, akik nem tulajdonosok vagy rendszergazdák, és már egy másik szervezet tagjai, eltávolítjáara kerülnek a szervezetből."
+  },
+  "singleOrgPolicyMemberWarning": {
+    "message": "A nem megfelelő tagok visszavont státuszba kerülnek mindaddig, amíg ki nem lépnek az összes többi szervezetből. Az adminisztrátorok mentesülnek és visszaállíthatják a tagokat, ha megfelelnek a megfelelőségnek."
   },
   "requireSso": {
     "message": "Egyszeri bejelentkezés hitelesítése"
@@ -6351,6 +6413,23 @@
   "generateUsername": {
     "message": "Felhasználónév generálása"
   },
+  "generateEmail": {
+    "message": "Email generálása"
+  },
+  "generatorBoundariesHint": {
+    "message": "Az érték legyen $MIN$ és $MAX$ között.",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Felhasználónév típusa"
   },
@@ -6455,6 +6534,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Email álnév generálása külső továbbító szolgáltatással."
+  },
+  "forwarderDomainName": {
+    "message": "Email tartomány",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Válasszunk a kiválasztott szolgáltatás által támogatott tartományt.",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ hiba: $ERRORMESSAGE$",
@@ -8255,6 +8342,10 @@
   "baseUrl": {
     "message": "Szerver webcím"
   },
+  "selfHostBaseUrl": {
+    "message": "Saját üzemeltetésű szerver webcím",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "aliasDomain": {
     "message": "Áldomain"
   },
@@ -9410,6 +9501,38 @@
   "linkedLabelHelpText": {
     "message": "Adjuk meg a mező html azonosítóját, nevét, aria címkéjét vagy helyőrét."
   },
+  "uppercaseDescription": {
+    "message": "Nagybetűs karakterek bevonása",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Kisbetűs karakterek bevonása",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Számok bevonása",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Speciális karakterek bevonása",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
+  },
   "addAttachment": {
     "message": "Melléklet hozzáadása"
   },
@@ -9418,5 +9541,21 @@
   },
   "permanentlyDeleteAttachmentConfirmation": {
     "message": "Biztosan véglegesen törlésre kerüljön ez a melléklet?"
+  },
+  "manageSubscriptionFromThe": {
+    "message": "Előfizetés kezelése:",
+    "description": "This represents the beginning of a sentence. The full sentence will be 'Manage subscription from the Provider Portal', but 'Provider Portal' will be a link and thus cannot be included in the translation file."
+  },
+  "toHostBitwardenOnYourOwnServer": {
+    "message": "Ha a Bitwarden szolgáltatást saját szerveren szeretnénk tárolni, fel kell tölteni a licenszfájlt. A Free Families csomagok és a speciális számlázási lehetőségek támogatásához a saját üzemeltetésű szervezet számára be kell állítani az automatikus szinkronizálást a saját üzemeltetésű szervezetben."
+  },
+  "selfHostingTitleProper": {
+    "message": "Sahát üzemeltetés"
+  },
+  "verified-domain-single-org-warning": {
+    "message": "A tartomány ellenőrzése bekapcsolja az önálló szervezet házirendjét."
+  },
+  "single-org-revoked-user-warning": {
+    "message": "A nem megfelelő tagok visszavonásra kerülnek. Az adminisztrátorok visszaállíthatják a tagokat, miután elhagyják az összes többi szervezetet."
   }
 }
