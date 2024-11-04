@@ -3,29 +3,29 @@ name: Repository management
 on:
   workflow_dispatch:
     inputs:
-      branch_to_cut:
-        default: "rc"
-        description: "Branch to cut"
+      task:
+        default: "Version Bump"
+        description: "Task to execute"
         options:
-          - "none"
-          - "rc"
-          - "hotfix-rc"
+          - "Version Bump"
+          - "Version Bump and Cut rc"
+          - "Version Bump and Cut hotfix-rc"
         required: true
         type: choice
       bump_browser:
-        description: "Bump Browser?"
+        description: "Bump Browser version?"
         type: boolean
         default: false
       bump_cli:
-        description: "Bump CLI?"
+        description: "Bump CLI version?"
         type: boolean
         default: false
       bump_desktop:
-        description: "Bump Desktop?"
+        description: "Bump Desktop version?"
         type: boolean
         default: false
       bump_web:
-        description: "Bump Web?"
+        description: "Bump Web version?"
         type: boolean
         default: false
       target_ref:
@@ -39,19 +39,51 @@ on:
         type: string
 
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-24.04
+    outputs:
+      branch: ${{ steps.set-branch.outputs.branch }}
+      token: ${{ steps.app-token.outputs.token }}
+    steps:
+      - name: Set branch
+        id: set-branch
+        env:
+          TASK: ${{ inputs.task }}
+        run: |
+          if [[ "$TASK" = "Version Bump" ]]; then
+            BRANCH="none"
+          elif [[ "$TASK" = "Version Bump and Cut rc" ]]; then
+            BRANCH="rc"
+          elif [[ "$TASK" = "Version Bump and Cut hotfix-rc" ]]; then
+            BRANCH="hotfix-rc"
+          fi
+
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+      
+      - name: Generate GH App token
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        id: app-token
+        with:
+          app-id: ${{ secrets.BW_GHAPP_ID }}
+          private-key: ${{ secrets.BW_GHAPP_KEY }}
+    
+
   cut_branch:
     name: Cut branch
-    if: ${{ inputs.branch_to_cut != 'none' }}
-    runs-on: ubuntu-22.04
+    if: ${{ needs.setup.outputs.branch != 'none' }}
+    needs: setup
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out target ref
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ inputs.target_ref }}
+          token: ${{ needs.setup.outputs.token }}
 
-      - name: Check if ${{ inputs.branch_to_cut }} branch exists
+      - name: Check if ${{ needs.setup.outputs.branch }} branch exists
         env:
-          BRANCH_NAME: ${{ inputs.branch_to_cut }}
+          BRANCH_NAME: ${{ needs.setup.outputs.branch }}
         run: |
           if [[ $(git ls-remote --heads origin $BRANCH_NAME) ]]; then
             echo "$BRANCH_NAME already exists! Please delete $BRANCH_NAME before running again." >> $GITHUB_STEP_SUMMARY
@@ -60,7 +92,7 @@ jobs:
 
       - name: Cut branch
         env:
-          BRANCH_NAME: ${{ inputs.branch_to_cut }}
+          BRANCH_NAME: ${{ needs.setup.outputs.branch }}
         run: |
           git switch --quiet --create $BRANCH_NAME
           git push --quiet --set-upstream origin $BRANCH_NAME
@@ -69,10 +101,15 @@ jobs:
   bump_version:
     name: Bump Version
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
-    needs: cut_branch
+    runs-on: ubuntu-24.04
+    needs:
+      - cut_branch
+      - setup
     outputs:
-      version: ${{ steps.set-final-version-output.outputs.version }}
+      version_browser: ${{ steps.set-final-version-output.outputs.version_browser }}
+      version_cli: ${{ steps.set-final-version-output.outputs.version_cli }}
+      version_desktop: ${{ steps.set-final-version-output.outputs.version_desktop }}
+      version_web: ${{ steps.set-final-version-output.outputs.version_web }}
     steps:
       - name: Validate version input format
         if: ${{ inputs.version_number_override != '' }}
@@ -84,34 +121,12 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: main
+          token: ${{ needs.setup.outputs.token }}
 
       - name: Configure Git
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-
-      - name: Create Version Branch
-        id: create-branch
-        run: |
-          CLIENTS=()
-          if [[ ${{ inputs.bump_browser }} == true ]]; then
-            CLIENTS+=("browser")
-          fi
-          if [[ ${{ inputs.bump_cli }} == true ]]; then
-            CLIENTS+=("cli")
-          fi
-          if [[ ${{ inputs.bump_desktop }} == true ]]; then
-            CLIENTS+=("desktop")
-          fi
-          if [[ ${{ inputs.bump_web }} == true ]]; then
-            CLIENTS+=("web")
-          fi
-          printf -v joined '%s,' "${CLIENTS[@]}"
-          echo "client=${joined%,}" >> $GITHUB_OUTPUT
-
-          NAME=version_bump_${{ github.ref_name }}_$(date +"%Y-%m-%d")
-          git switch -c $NAME
-          echo "name=$NAME" >> $GITHUB_OUTPUT
 
       ########################
       # VERSION BUMP SECTION #
@@ -158,7 +173,9 @@ jobs:
       - name: Bump Browser Version - Version Override
         if: ${{ inputs.bump_browser == true && inputs.version_number_override != '' }}
         id: bump-browser-version-override
-        run: npm version --workspace=@bitwarden/browser ${{ inputs.version_number_override }}
+        env:
+          VERSION: ${{ inputs.version_number_override }}
+        run: npm version --workspace=@bitwarden/browser $VERSION
 
       - name: Bump Browser Version - Automatic Calculation
         if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
@@ -243,7 +260,9 @@ jobs:
       - name: Bump CLI Version - Version Override
         if: ${{ inputs.bump_cli == true && inputs.version_number_override != '' }}
         id: bump-cli-version-override
-        run: npm version --workspace=@bitwarden/cli ${{ inputs.version_number_override }}
+        env:
+          VERSION: ${{ inputs.version_number_override }}
+        run: npm version --workspace=@bitwarden/cli $VERSION
 
       - name: Bump CLI Version - Automatic Calculation
         if: ${{ inputs.bump_cli == true && inputs.version_number_override == '' }}
@@ -293,7 +312,9 @@ jobs:
       - name: Bump Desktop Version - Root - Version Override
         if: ${{ inputs.bump_desktop == true && inputs.version_number_override != '' }}
         id: bump-desktop-version-override
-        run: npm version --workspace=@bitwarden/desktop ${{ inputs.version_number_override }}
+        env:
+          VERSION: ${{ inputs.version_number_override }}
+        run: npm version --workspace=@bitwarden/desktop $VERSION
 
       - name: Bump Desktop Version - Root - Automatic Calculation
         if: ${{ inputs.bump_desktop == true && inputs.version_number_override == '' }}
@@ -304,7 +325,9 @@ jobs:
 
       - name: Bump Desktop Version - App - Version Override
         if: ${{ inputs.bump_desktop == true && inputs.version_number_override != '' }}
-        run: npm version ${{ inputs.version_number_override }}
+        env:
+          VERSION: ${{ inputs.version_number_override }}
+        run: npm version $VERSION
         working-directory: "apps/desktop/src"
 
       - name: Bump Desktop Version - App - Automatic Calculation
@@ -355,7 +378,9 @@ jobs:
       - name: Bump Web Version - Version Override
         if: ${{ inputs.bump_web == true && inputs.version_number_override != '' }}
         id: bump-web-version-override
-        run: npm version --workspace=@bitwarden/web-vault ${{ inputs.version_number_override }}
+        env:
+          VERSION: ${{ inputs.version_number_override }}
+        run: npm version --workspace=@bitwarden/web-vault $VERSION
 
       - name: Bump Web Version - Automatic Calculation
         if: ${{ inputs.bump_web == true && inputs.version_number_override == '' }}
@@ -368,27 +393,29 @@ jobs:
 
       - name: Set final version output
         id: set-final-version-output
+        env:
+          VERSION: ${{ inputs.version_number_override }}
         run: |
           if [[ "${{ steps.bump-browser-version-override.outcome }}" = "success" ]]; then
-            echo "version_browser=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+            echo "version_browser=$VERSION" >> $GITHUB_OUTPUT
           elif [[ "${{ steps.bump-browser-version-automatic.outcome }}" = "success" ]]; then
             echo "version_browser=${{ steps.calculate-next-browser-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [[ "${{ steps.bump-cli-version-override.outcome }}" = "success" ]]; then
-            echo "version_cli=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+            echo "version_cli=$VERSION" >> $GITHUB_OUTPUT
           elif [[ "${{ steps.bump-cli-version-automatic.outcome }}" = "success" ]]; then
             echo "version_cli=${{ steps.calculate-next-cli-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [[ "${{ steps.bump-desktop-version-override.outcome }}" = "success" ]]; then
-            echo "version_desktop=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+            echo "version_desktop=$VERSION" >> $GITHUB_OUTPUT
           elif [[ "${{ steps.bump-desktop-version-automatic.outcome }}" = "success" ]]; then
             echo "version_desktop=${{ steps.calculate-next-desktop-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [[ "${{ steps.bump-web-version-override.outcome }}" = "success" ]]; then
-            echo "version_web=${{ inputs.version_number_override }}" >> $GITHUB_OUTPUT
+            echo "version_web=$VERSION" >> $GITHUB_OUTPUT
           elif [[ "${{ steps.bump-web-version-automatic.outcome }}" = "success" ]]; then
             echo "version_web=${{ steps.calculate-next-web-version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
@@ -409,172 +436,22 @@ jobs:
 
       - name: Push changes
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
-        env:
-          PR_BRANCH: ${{ steps.create-branch.outputs.name }}
-        run: git push -u origin $PR_BRANCH
-
-      - name: Generate PR message
-        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
-        id: pr-message
-        run: |
-          MESSAGE=""
-          if [[ "${{ inputs.bump_browser }}" == "true" ]]; then
-            MESSAGE+=$'    Browser version bump to ${{ steps.set-final-version-output.outputs.version_browser }}\n'
-          fi
-
-          if [[ "${{ inputs.bump_cli }}" == "true" ]]; then
-            MESSAGE+=$'    CLI version bump to ${{ steps.set-final-version-output.outputs.version_cli }}\n'
-          fi
-
-          if [[ "${{ inputs.bump_desktop }}" == "true" ]]; then
-            MESSAGE+=$'    Desktop version bump to ${{ steps.set-final-version-output.outputs.version_desktop }}\n'
-          fi
-
-          if [[ "${{ inputs.bump_web }}" == "true" ]]; then
-            MESSAGE+=$'    Web version bump to ${{ steps.set-final-version-output.outputs.version_web }}\n'
-          fi
-
-          echo "MESSAGE<<EOF" >> $GITHUB_ENV
-          echo "$MESSAGE" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Generate GH App token
-        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
-        id: app-token
-        with:
-          app-id: ${{ secrets.BW_GHAPP_ID }}
-          private-key: ${{ secrets.BW_GHAPP_KEY }}
-          owner: ${{ github.repository_owner }}
-
-      - name: Create Version PR
-        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
-        id: create-pr
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          PR_BRANCH: ${{ steps.create-branch.outputs.name }}
-          TITLE: "Bump client(s) version"
-        run: |
-          PR_URL=$(gh pr create --title "$TITLE" \
-            --base "main" \
-            --head "$PR_BRANCH" \
-            --label "version update" \
-            --label "automated pr" \
-            --body "
-              ## Type of change
-              - [ ] Bug fix
-              - [ ] New feature development
-              - [ ] Tech debt (refactoring, code cleanup, dependency upgrades, etc)
-              - [ ] Build/deploy pipeline
-              - [X] Other
-
-              ## Objective
-          $MESSAGE")
-
-          echo "pr_number=${PR_URL##*/}" >> $GITHUB_OUTPUT
-
-      - name: Approve PR
-        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
-        run: gh pr review $PR_NUMBER --approve
-
-      - name: Merge PR
-        if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
-        run: gh pr merge $PR_NUMBER --squash --auto --delete-branch
+        run: git push
 
 
   cherry_pick:
     name: Cherry-Pick Commit(s)
-    if: ${{ inputs.branch_to_cut != 'none' }}
-    runs-on: ubuntu-22.04
-    needs: bump_version
+    if: ${{ needs.setup.outputs.branch != 'none' }}
+    runs-on: ubuntu-24.04
+    needs:
+      - bump_version
+      - setup
     steps:
       - name: Check out main branch
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: main
-
-      ##########################
-      # VERSION VERIFY SECTION #
-      ##########################
-
-      ### Browser
-      - name: Browser - Verify version has been updated
-        if: ${{ inputs.bump_browser == true }}
-        env:
-          NEW_VERSION: ${{ needs.bump_version.outputs.version_browser }}
-        run: |
-          # Wait for version to change.
-          while : ; do
-            echo "Waiting for version to be updated..."
-            git pull --force
-            CURRENT_VERSION=$(cat package.json | jq -r '.version')
-
-            # If the versions don't match we continue the loop, otherwise we break out of the loop.
-            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
-            sleep 10
-          done
-        working-directory: apps/browser
-
-      ### CLI
-      - name: CLI - Verify version has been updated
-        if: ${{ inputs.bump_cli == true }}
-        env:
-          NEW_VERSION: ${{ needs.bump_version.outputs.version_cli }}
-        run: |
-          # Wait for version to change.
-          while : ; do
-            echo "Waiting for version to be updated..."
-            git pull --force
-            CURRENT_VERSION=$(cat package.json | jq -r '.version')
-
-            # If the versions don't match we continue the loop, otherwise we break out of the loop.
-            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
-            sleep 10
-          done
-        working-directory: apps/cli
-
-      ### Desktop
-      - name: Desktop - Verify version has been updated
-        if: ${{ inputs.bump_desktop == true }}
-        env:
-          NEW_VERSION: ${{ needs.bump_version.outputs.version_desktop }}
-        run: |
-          # Wait for version to change.
-          while : ; do
-            echo "Waiting for version to be updated..."
-            git pull --force
-            CURRENT_VERSION=$(cat package.json | jq -r '.version')
-
-            # If the versions don't match we continue the loop, otherwise we break out of the loop.
-            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
-            sleep 10
-          done
-        working-directory: apps/desktop
-
-      ### Web
-      - name: Web - Verify version has been updated
-        if: ${{ inputs.bump_web == true }}
-        env:
-          NEW_VERSION: ${{ needs.bump_version.outputs.version_web }}
-        run: |
-          # Wait for version to change.
-          while : ; do
-            echo "Waiting for version to be updated..."
-            git pull --force
-            CURRENT_VERSION=$(cat package.json | jq -r '.version')
-
-            # If the versions don't match we continue the loop, otherwise we break out of the loop.
-            [[ "$NEW_VERSION" != "$CURRENT_VERSION" ]] || break
-            sleep 10
-          done
-        working-directory: apps/web
-
-      ##########################
+          token: ${{ needs.setup.outputs.token }}
 
       - name: Configure Git
         run: |
@@ -583,11 +460,28 @@ jobs:
 
       - name: Perform cherry-pick(s)
         env:
-          CUT_BRANCH: ${{ inputs.branch_to_cut }}
-          MAIN_COMMIT: ${{ steps.get-commits.outputs.main_commit }}
-          RC_COMMIT: ${{ steps.get-commits.outputs.rc_commit }}
-          RC_VERSION: ${{ steps.get-commits.outputs.rc_version }}
+          CUT_BRANCH: ${{ needs.setup.outputs.branch }}
         run: |
+          # Function for cherry-picking
+          cherry_pick () {
+            local package_path="apps/$1/package.json"
+            local source_branch=$2
+            local destination_branch=$3
+
+            # Get project commit/version from source branch
+            git switch $source_branch
+            SOURCE_COMMIT=$(git log --reverse --pretty=format:"%H" --max-count=1 $package_path)
+            SOURCE_VERSION=$(cat $package_path | jq -r '.version')
+
+            # Get project commit/version from destination branch
+            git switch $destination_branch
+            DESTINATION_VERSION=$(cat $package_path | jq -r '.version')
+
+            if [[ "$DESTINATION_VERSION" != "$SOURCE_VERSION" ]]; then
+              git cherry-pick --strategy-option=theirs -x $SOURCE_COMMIT
+              git push -u origin $destination_branch
+            fi
+
           # If we are cutting 'hotfix-rc':
           if [[ "$CUT_BRANCH" == "hotfix-rc" ]]; then
 
@@ -595,25 +489,25 @@ jobs:
             if [[ $(git ls-remote --heads origin rc) ]]; then
 
               # Chery-pick from 'rc' into 'hotfix-rc'
-              git switch hotfix-rc
-              HOTFIX_RC_VERSION=$(xmllint -xpath "/Project/PropertyGroup/Version/text()" Directory.Build.props)
-              if [[ "$HOTFIX_RC_VERSION" != "$RC_VERSION" ]]; then
-                git cherry-pick --strategy-option=theirs -x $RC_COMMIT
-                git push -u origin hotfix-rc
-              fi
+              cherry_pick browser rc hotfix-rc
+              cherry_pick cli rc hotfix-rc
+              cherry_pick desktop rc hotfix-rc
+              cherry_pick web rc hotfix-rc
 
               # Cherry-pick from 'main' into 'rc'
-              git switch rc
-              git cherry-pick --strategy-option=theirs -x $MAIN_COMMIT
-              git push -u origin rc
+              cherry_pick browser main rc
+              cherry_pick cli main rc
+              cherry_pick desktop main rc
+              cherry_pick web main rc
 
             # If the 'rc' branch does not exist:
             else
 
               # Cherry-pick from 'main' into 'hotfix-rc'
-              git switch hotfix-rc
-              git cherry-pick --strategy-option=theirs -x $MAIN_COMMIT
-              git push -u origin hotfix-rc
+              cherry_pick browser main hotfix-rc
+              cherry_pick cli main hotfix-rc
+              cherry_pick desktop main hotfix-rc
+              cherry_pick web main hotfix-rc
 
             fi
 
@@ -621,8 +515,9 @@ jobs:
           elif [[ "$CUT_BRANCH" == "rc" ]]; then
 
             # Cherry-pick from 'main' into 'rc'
-            git switch rc
-            git cherry-pick --strategy-option=theirs -x $MAIN_COMMIT
-            git push -u origin rc
+              cherry_pick browser main rc
+              cherry_pick cli main rc
+              cherry_pick desktop main rc
+              cherry_pick web main rc
 
           fi
