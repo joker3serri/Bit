@@ -160,7 +160,7 @@ jobs:
         working-directory: browser-source/
 
       - name: Download SDK Artifacts
-        if: ${{ inputs.sdk_branch != '' || inputs.sdk_commit != '' }}
+        if: ${{ inputs.sdk_branch != '' }}
         uses: bitwarden/gh-actions/download-artifacts@main
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -173,7 +173,7 @@ jobs:
           if_no_artifact_found: fail
 
       - name: Override SDK
-        if: ${{ inputs.sdk_branch != '' || inputs.sdk_commit != '' }}
+        if: ${{ inputs.sdk_branch != '' }}
         working-directory: browser-source/
         run: |
           npm link ../sdk-internal
