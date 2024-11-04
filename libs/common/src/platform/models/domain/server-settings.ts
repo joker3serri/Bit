@@ -1,11 +1,7 @@
-export interface Settings {
-  disableUserRegistration: boolean;
-}
-
-export class ServerSettings implements Settings {
+export class ServerSettings {
   disableUserRegistration: boolean;
 
-  constructor(data?: Settings) {
+  constructor(data?: ServerSettings) {
     this.disableUserRegistration = data?.disableUserRegistration ?? false;
   }
 }
