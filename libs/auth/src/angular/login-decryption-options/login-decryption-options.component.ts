@@ -143,8 +143,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
          */
         await this.loadNewUserData();
       } else {
-        this.state = State.ExistingUserUntrustedDevice;
-        this.loadUntrustedDeviceData(userDecryptionOptions);
+        this.handleExistingUserUntrustedDeviceData(userDecryptionOptions);
       }
     } catch (err) {
       this.validationService.showError(err);
@@ -196,11 +195,14 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.newUserOrgId = autoEnrollStatus.id;
   }
 
-  private loadUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
+  private handleExistingUserUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
+    this.state = State.ExistingUserUntrustedDevice;
+
     this.canApproveFromOtherDevice =
-      !!userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice;
-    this.canRequestAdminApproval = !!userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval;
-    this.canApproveWithMasterPassword = !!userDecryptionOptions?.hasMasterPassword;
+      userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice || false;
+    this.canRequestAdminApproval =
+      userDecryptionOptions?.trustedDeviceOption?.hasAdminApproval || false;
+    this.canApproveWithMasterPassword = userDecryptionOptions?.hasMasterPassword || false;
   }
 
   async createUser() {
@@ -208,9 +210,6 @@ export class LoginDecryptionOptionsComponent implements OnInit {
       return;
     }
 
-    // this.loading to support clients without async-actions-support
-    this.loading = true;
-    // errors must be caught in child components to prevent navigation
     try {
       const { publicKey, privateKey } = await this.keyService.initAccount();
       const keysRequest = new KeysRequest(publicKey, privateKey.encryptedString);
@@ -229,28 +228,22 @@ export class LoginDecryptionOptionsComponent implements OnInit {
       }
 
       await this.loginDecryptionOptionsService.handleCreateUserSuccess();
+
+      if (this.clientType === ClientType.Desktop) {
+        this.messagingService.send("redrawMenu");
+      }
+
+      if (this.clientType === ClientType.Browser) {
+        await this.router.navigate(["/tabs/vault"]);
+      } else {
+        await this.router.navigate(["/vault"]);
+      }
     } catch (err) {
       this.validationService.showError(err);
-    } finally {
-      this.loading = false;
-    }
-
-    if (this.clientType === ClientType.Desktop) {
-      this.messagingService.send("redrawMenu");
-    }
-
-    if (this.clientType === ClientType.Browser) {
-      await this.router.navigate(["/tabs/vault"]);
-    } else {
-      await this.router.navigate(["/vault"]);
     }
   }
 
   protected async approveFromOtherDevice() {
-    if (this.state !== State.ExistingUserUntrustedDevice) {
-      return;
-    }
-
     this.loginEmailService.setLoginEmail(this.email);
     await this.router.navigate(["/login-with-device"]);
   }
