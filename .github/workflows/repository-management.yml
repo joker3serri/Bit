@@ -9,7 +9,6 @@ on:
         options:
           - "Version Bump"
           - "Version Bump and Cut rc"
-          - "Version Bump and Cut hotfix-rc"
         required: true
         type: choice
       bump_browser:
@@ -38,6 +37,7 @@ on:
         required: false
         type: string
 
+
 jobs:
   setup:
     name: Setup
@@ -55,8 +55,6 @@ jobs:
             BRANCH="none"
           elif [[ "$TASK" = "Version Bump and Cut rc" ]]; then
             BRANCH="rc"
-          elif [[ "$TASK" = "Version Bump and Cut hotfix-rc" ]]; then
-            BRANCH="hotfix-rc"
           fi
 
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
@@ -71,7 +69,7 @@ jobs:
 
   cut_branch:
     name: Cut branch
-    if: ${{ needs.setup.outputs.branch != 'none' }}
+    if: ${{ needs.setup.outputs.branch == 'rc' }}
     needs: setup
     runs-on: ubuntu-24.04
     steps:
@@ -441,7 +439,7 @@ jobs:
 
   cherry_pick:
     name: Cherry-Pick Commit(s)
-    if: ${{ needs.setup.outputs.branch != 'none' }}
+    if: ${{ needs.setup.outputs.branch == 'rc' }}
     runs-on: ubuntu-24.04
     needs:
       - bump_version
@@ -459,8 +457,6 @@ jobs:
           git config --local user.name "Github Actions"
 
       - name: Perform cherry-pick(s)
-        env:
-          CUT_BRANCH: ${{ needs.setup.outputs.branch }}
         run: |
           # Function for cherry-picking
           cherry_pick () {
@@ -482,42 +478,8 @@ jobs:
               git push -u origin $destination_branch
             fi
 
-          # If we are cutting 'hotfix-rc':
-          if [[ "$CUT_BRANCH" == "hotfix-rc" ]]; then
-
-            # If the 'rc' branch exists:
-            if [[ $(git ls-remote --heads origin rc) ]]; then
-
-              # Chery-pick from 'rc' into 'hotfix-rc'
-              cherry_pick browser rc hotfix-rc
-              cherry_pick cli rc hotfix-rc
-              cherry_pick desktop rc hotfix-rc
-              cherry_pick web rc hotfix-rc
-
-              # Cherry-pick from 'main' into 'rc'
-              cherry_pick browser main rc
-              cherry_pick cli main rc
-              cherry_pick desktop main rc
-              cherry_pick web main rc
-
-            # If the 'rc' branch does not exist:
-            else
-
-              # Cherry-pick from 'main' into 'hotfix-rc'
-              cherry_pick browser main hotfix-rc
-              cherry_pick cli main hotfix-rc
-              cherry_pick desktop main hotfix-rc
-              cherry_pick web main hotfix-rc
-
-            fi
-
-          # If we are cutting 'rc':
-          elif [[ "$CUT_BRANCH" == "rc" ]]; then
-
-            # Cherry-pick from 'main' into 'rc'
-              cherry_pick browser main rc
-              cherry_pick cli main rc
-              cherry_pick desktop main rc
-              cherry_pick web main rc
-
-          fi
+          # Cherry-pick from 'main' into 'rc'
+          cherry_pick browser main rc
+          cherry_pick cli main rc
+          cherry_pick desktop main rc
+          cherry_pick web main rc
