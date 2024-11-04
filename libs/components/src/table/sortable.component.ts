@@ -1,7 +1,7 @@
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { Component, HostBinding, Input, OnInit } from "@angular/core";
 
-import type { SortFn } from "./table-data-source";
+import type { SortDirection, SortFn } from "./table-data-source";
 import { TableComponent } from "./table.component";
 
 @Component({
@@ -19,12 +19,16 @@ export class SortableComponent implements OnInit {
    */
   @Input() bitSortable: string;
 
-  private _default: boolean;
+  private _default: SortDirection | boolean = false;
   /**
    * Mark the column as the default sort column
    */
-  @Input() set default(value: boolean | "") {
-    this._default = coerceBooleanProperty(value);
+  @Input() set default(value: SortDirection | boolean | "") {
+    if (value === "desc" || value === "asc") {
+      this._default = value;
+    } else {
+      this._default = coerceBooleanProperty(value) ? "asc" : false;
+    }
   }
 
   /**
@@ -44,7 +48,7 @@ export class SortableComponent implements OnInit {
 
   ngOnInit(): void {
     if (this._default && !this.isActive) {
-      this.setActive();
+      this.setActive(this._default as SortDirection);
     }
   }
 
@@ -55,9 +59,9 @@ export class SortableComponent implements OnInit {
     return this.sort.direction === "asc" ? "ascending" : "descending";
   }
 
-  protected setActive() {
+  protected setActive(defaultDirection: SortDirection = "asc") {
     if (this.table.dataSource) {
-      const direction = this.isActive && this.direction === "asc" ? "desc" : "asc";
+      const direction = this.isActive && this.direction === "asc" ? "desc" : defaultDirection;
       this.table.dataSource.sort = {
         column: this.bitSortable,
         direction: direction,
