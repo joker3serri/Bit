@@ -256,16 +256,24 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
     if (cipherIds.length > 0) {
       const isSingleOrgCipher = cipherIds.length === 1 && this.personalItemsCount === 0;
 
-      // Update assigned collections for single org cipher or bulk update collections for multiple org ciphers
-      await (isSingleOrgCipher
-        ? this.updateAssignedCollections(this.editableItems[0])
-        : this.bulkUpdateCollections(cipherIds));
+      try {
+        // Update assigned collections for single org cipher or bulk update collections for multiple org ciphers
+        await (isSingleOrgCipher
+          ? this.updateAssignedCollections(this.editableItems[0])
+          : this.bulkUpdateCollections(cipherIds));
 
-      this.toastService.showToast({
-        variant: "success",
-        title: null,
-        message: this.i18nService.t("successfullyAssignedCollections"),
-      });
+        this.toastService.showToast({
+          variant: "success",
+          title: null,
+          message: this.i18nService.t("successfullyAssignedCollections"),
+        });
+      } catch (e) {
+        this.toastService.showToast({
+          variant: "error",
+          title: null,
+          message: this.i18nService.t("noEditPermissions"),
+        });
+      }
     }
 
     this.onCollectionAssign.emit(CollectionAssignmentResult.Saved);
