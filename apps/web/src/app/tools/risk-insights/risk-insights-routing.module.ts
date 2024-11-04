@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: "",
     component: RiskInsightsComponent,
-    canActivate: [canAccessFeature(FeatureFlag.RiskInsights)],
+    canActivate: [canAccessFeature(FeatureFlag.AccessIntelligence)],
     data: {
       titleId: "RiskInsights",
     },

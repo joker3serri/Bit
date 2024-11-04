@@ -72,7 +72,7 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
     document.body.classList.remove("layout_frontend");
 
     this.isRiskInsightsFeatureEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.RiskInsights,
+      FeatureFlag.AccessIntelligence,
     );
 
     this.organization$ = this.route.params

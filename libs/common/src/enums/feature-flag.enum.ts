@@ -33,7 +33,7 @@ export enum FeatureFlag {
   CipherKeyEncryption = "cipher-key-encryption",
   VerifiedSsoDomainEndpoint = "pm-12337-refactor-sso-details-endpoint",
   PM11901_RefactorSelfHostingLicenseUploader = "PM-11901-refactor-self-hosting-license-uploader",
-  RiskInsights = "pm-13227-access-intelligence",
+  AccessIntelligence = "pm-13227-access-intelligence",
   Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
   LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
 }
@@ -79,7 +79,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.CipherKeyEncryption]: FALSE,
   [FeatureFlag.VerifiedSsoDomainEndpoint]: FALSE,
   [FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader]: FALSE,
-  [FeatureFlag.RiskInsights]: FALSE,
+  [FeatureFlag.AccessIntelligence]: FALSE,
   [FeatureFlag.Pm13322AddPolicyDefinitions]: FALSE,
   [FeatureFlag.LimitCollectionCreationDeletionSplit]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
