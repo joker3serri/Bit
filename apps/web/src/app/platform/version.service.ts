@@ -18,7 +18,7 @@ export class VersionService {
     private sdkService: SdkService,
   ) {}
 
-  init() {
+  applyVersionToWindow() {
     (window as any).__version = async (): Promise<Version> => {
       return {
         client: await this.platformUtilsService.getApplicationVersion(),
