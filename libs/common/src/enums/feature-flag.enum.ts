@@ -33,7 +33,7 @@ export enum FeatureFlag {
   CipherKeyEncryption = "cipher-key-encryption",
   VerifiedSsoDomainEndpoint = "pm-12337-refactor-sso-details-endpoint",
   PM11901_RefactorSelfHostingLicenseUploader = "PM-11901-refactor-self-hosting-license-uploader",
-  RiskInsights = "pm-13227-risk-insights",
+  RiskInsights = "pm-13227-access-intelligence",
   Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
   LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
 }
