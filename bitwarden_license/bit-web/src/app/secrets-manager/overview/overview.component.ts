@@ -13,6 +13,7 @@ import {
   share,
   firstValueFrom,
   of,
+  filter,
 } from "rxjs";
 
 import { I18nPipe } from "@bitwarden/angular/platform/pipes/i18n.pipe";
@@ -138,6 +139,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     });
 
     this.freeTrial$ = org$.pipe(
+      filter((org) => org.isOwner),
       switchMap((org) =>
         combineLatest([
           of(org),
