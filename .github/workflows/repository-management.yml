@@ -51,9 +51,9 @@ jobs:
         env:
           TASK: ${{ inputs.task }}
         run: |
-          if [[ "$TASK" = "Version Bump" ]]; then
+          if [[ "$TASK" == "Version Bump" ]]; then
             BRANCH="none"
-          elif [[ "$TASK" = "Version Bump and Cut rc" ]]; then
+          elif [[ "$TASK" == "Version Bump and Cut rc" ]]; then
             BRANCH="rc"
           fi
 
