@@ -2,11 +2,26 @@
   "allApplications": {
     "message": "Все приложения"
   },
-  "priorityApplications": {
-    "message": "Приоритетные приложения"
+  "criticalApplications": {
+    "message": "Критичные приложения"
   },
   "accessIntelligence": {
     "message": "Access Intelligence"
+  },
+  "passwordRisk": {
+    "message": "Риск пароля"
+  },
+  "discoverAtRiskPasswords": {
+    "message": "Обнаружение паролей, подверженных риску, и уведомление пользователей о необходимости сменить эти пароли."
+  },
+  "dataLastUpdated": {
+    "message": "Последнее обновление: $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2021-01-01"
+      }
+    }
   },
   "notifiedMembers": {
     "message": "Уведомленные участники"
@@ -20,8 +35,11 @@
       }
     }
   },
-  "priorityApplicationsWithCount": {
-    "message": "Приоритетные приложения ($COUNT$)",
+  "createNewLoginItem": {
+    "message": "Создать новый логин"
+  },
+  "criticalApplicationsWithCount": {
+    "message": "Критичные приложения ($COUNT$)",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -38,14 +56,47 @@
       }
     }
   },
+  "noAppsInOrgTitle": {
+    "message": "Не найдено приложений в $ORG NAME$",
+    "placeholders": {
+      "org name": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "noAppsInOrgDescription": {
+    "message": "По мере сохранения пользователями логинов, здесь отображаются приложения, с подверженными риску паролями. Отметьте критичные приложения и уведомите пользователей об необходимости обновления пароля."
+  },
+  "noCriticalAppsTitle": {
+    "message": "Вы не отметили ни одного приложения в качестве критичного"
+  },
+  "noCriticalAppsDescription": {
+    "message": "Выберите наиболее важные приложения, чтобы обнаружить пароли, подверженные риску, и уведомить пользователей о необходимости сменить эти пароли."
+  },
+  "markCriticalApps": {
+    "message": "Отметить критичные приложения"
+  },
+  "markAppAsCritical": {
+    "message": "Пометить приложение как критическое"
+  },
+  "appsMarkedAsCritical": {
+    "message": "Приложения помечены как критические"
+  },
   "application": {
     "message": "Приложение"
   },
   "atRiskPasswords": {
     "message": "Пароли, подверженные риску"
   },
+  "requestPasswordChange": {
+    "message": "Запросить смену пароля"
+  },
   "totalPasswords": {
     "message": "Всего паролей"
+  },
+  "searchApps": {
+    "message": "Поиск приложений"
   },
   "atRiskMembers": {
     "message": "Участники группы риска"
@@ -405,6 +456,9 @@
   "generatePassword": {
     "message": "Сгенерировать пароль"
   },
+  "generatePassphrase": {
+    "message": "Создать парольную фразу"
+  },
   "checkPassword": {
     "message": "Проверьте, не скомпрометирован ли пароль."
   },
@@ -662,6 +716,10 @@
   "copyPassword": {
     "message": "Скопировать пароль",
     "description": "Copy password to clipboard"
+  },
+  "copyPassphrase": {
+    "message": "Скопировать парольную фразу",
+    "description": "Copy passphrase to clipboard"
   },
   "passwordCopied": {
     "message": "Пароль скопирован"
@@ -932,8 +990,14 @@
   "useADifferentLogInMethod": {
     "message": "Использовать другой способ авторизации"
   },
-  "loginWithPasskey": {
+  "logInWithPasskey": {
     "message": "Войти с passkey"
+  },
+  "useSingleSignOn": {
+    "message": "Использовать единый вход"
+  },
+  "welcomeBack": {
+    "message": "С возвращением"
   },
   "invalidPasskeyPleaseTryAgain": {
     "message": "Неверный passkey. Попробуйте снова."
@@ -1016,6 +1080,9 @@
   "createAccount": {
     "message": "Создать аккаунт"
   },
+  "newToBitwarden": {
+    "message": "Впервые на Bitwarden?"
+  },
   "setAStrongPassword": {
     "message": "Задайте надежный пароль"
   },
@@ -1030,6 +1097,9 @@
   },
   "logIn": {
     "message": "Войти"
+  },
+  "logInToBitwarden": {
+    "message": "Войти в Bitwarden"
   },
   "verifyIdentity": {
     "message": "Подтвердите вашу личность"
@@ -1537,38 +1607,6 @@
   "specialCharacters": {
     "message": "Специальные символы (!@#$%^&*)"
   },
-  "uppercaseDescription": {
-    "message": "Включить заглавные символы",
-    "description": "Tooltip for the password generator uppercase character checkbox"
-  },
-  "uppercaseLabel": {
-    "message": "A-Z",
-    "description": "Label for the password generator uppercase character checkbox"
-  },
-  "lowercaseDescription": {
-    "message": "Включить строчные символы",
-    "description": "Full description for the password generator lowercase character checkbox"
-  },
-  "lowercaseLabel": {
-    "message": "a-z",
-    "description": "Label for the password generator lowercase character checkbox"
-  },
-  "numbersDescription": {
-    "message": "Включить цифры",
-    "description": "Full description for the password generator numbers checkbox"
-  },
-  "numbersLabel": {
-    "message": "0-9",
-    "description": "Label for the password generator numbers checkbox"
-  },
-  "specialCharactersDescription": {
-    "message": "Включить специальные символы",
-    "description": "Full description for the password generator special characters checkbox"
-  },
-  "specialCharactersLabel": {
-    "message": "!@#$%^&*",
-    "description": "Label for the password generator special characters checkbox"
-  },
   "numWords": {
     "message": "Количество слов"
   },
@@ -1699,6 +1737,9 @@
   "dangerZoneDesc": {
     "message": "Осторожно, эти действия необратимы!"
   },
+  "dangerZoneDescSingular": {
+    "message": "Будьте внимательны - это действие не обратимо!"
+  },
   "deauthorizeSessions": {
     "message": "Деавторизовать сессии"
   },
@@ -1710,6 +1751,15 @@
   },
   "sessionsDeauthorized": {
     "message": "Все сессии деавторизованы"
+  },
+  "accountIsManagedMessage": {
+    "message": "Управление этим аккаунтом осуществляет $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "Organization"
+      }
+    }
   },
   "purgeVault": {
     "message": "Очистить хранилище"
@@ -3167,6 +3217,9 @@
         "example": "20"
       }
     }
+  },
+  "inviteSingleEmailDesc": {
+    "message": "У вас осталось 1 приглашение."
   },
   "userUsingTwoStep": {
     "message": "Этот пользователь использует двухэтапную аутентификацию для защиты своего аккаунта."
@@ -4635,11 +4688,17 @@
   "singleOrgDesc": {
     "message": "Запретить пользователям присоединяться к другим организациям."
   },
+  "singleOrgPolicyDesc": {
+    "message": "Запретить членам организации присоединяться к другим организациям. Эта политика необходима для организаций, в которых включена проверка домена."
+  },
   "singleOrgBlockCreateMessage": {
     "message": "Политика вашей текущей организации не позволяет вам присоединиться к более чем одной организации. Пожалуйста, свяжитесь с администраторами вашей организации или авторизуйтесь под другим аккаунтом Bitwarden."
   },
   "singleOrgPolicyWarning": {
     "message": "Пользователи организации, которые не являются владельцами или администраторами и уже входят в другую организацию, будут удалены из вашей организации."
+  },
+  "singleOrgPolicyMemberWarning": {
+    "message": "Члены, не соблюдающие требования, будут аннулированы до тех пор, пока не покинут все остальные организации. Администраторы имеют этих ограничений и могут восстанавливать членов, если они соответствуют требованиям."
   },
   "requireSso": {
     "message": "Требовать авторизацию через единый вход (SSO)"
@@ -6354,6 +6413,23 @@
   "generateUsername": {
     "message": "Создать имя пользователя"
   },
+  "generateEmail": {
+    "message": "Сгенерировать email"
+  },
+  "generatorBoundariesHint": {
+    "message": "Значение должно быть между $MIN$ и $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Тип имени пользователя"
   },
@@ -6458,6 +6534,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Создать псевдоним электронной почты для внешней службы пересылки."
+  },
+  "forwarderDomainName": {
+    "message": "Домен электронной почты",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Выберите домен, который поддерживается выбранным сервисом",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "Ошибка $SERVICENAME$: $ERRORMESSAGE$",
@@ -8258,6 +8342,10 @@
   "baseUrl": {
     "message": "URL сервера"
   },
+  "selfHostBaseUrl": {
+    "message": "URL собственного сервера",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "aliasDomain": {
     "message": "Псевдоним домена"
   },
@@ -9413,6 +9501,38 @@
   "linkedLabelHelpText": {
     "message": "Введите HTML-идентификатор поля, имя, aria-label, или плейсхолдер."
   },
+  "uppercaseDescription": {
+    "message": "Включить заглавные символы",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Включить строчные символы",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Включить цифры",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Включить специальные символы",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
+  },
   "addAttachment": {
     "message": "Добавить вложение"
   },
@@ -9421,5 +9541,21 @@
   },
   "permanentlyDeleteAttachmentConfirmation": {
     "message": "Вы уверены, что хотите навсегда удалить это вложение?"
+  },
+  "manageSubscriptionFromThe": {
+    "message": "Управление подпиской с",
+    "description": "This represents the beginning of a sentence. The full sentence will be 'Manage subscription from the Provider Portal', but 'Provider Portal' will be a link and thus cannot be included in the translation file."
+  },
+  "toHostBitwardenOnYourOwnServer": {
+    "message": "Чтобы разместить Bitwarden на собственном сервере, вам нужно загрузить файл лицензии. Для поддержки тарифных планов Free Families и расширенных возможностей выставления счетов для вашей организации, размещенной на собственном сервере вам необходимо настроить автоматическую синхронизацию в вашей организации."
+  },
+  "selfHostingTitleProper": {
+    "message": "Собственное размещение"
+  },
+  "verified-domain-single-org-warning": {
+    "message": "Проверка домена включит политику единой организации."
+  },
+  "single-org-revoked-user-warning": {
+    "message": "Участники, не соблюдающие требования, будут аннулированы. Администраторы могут восстановить участников, как только они покинут все другие организации."
   }
 }

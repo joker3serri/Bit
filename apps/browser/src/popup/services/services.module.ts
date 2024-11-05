@@ -6,29 +6,37 @@ import { ViewCacheService } from "@bitwarden/angular/platform/abstractions/view-
 import { AngularThemingService } from "@bitwarden/angular/platform/services/theming/angular-theming.service";
 import { SafeProvider, safeProvider } from "@bitwarden/angular/platform/utils/safe-provider";
 import {
-  MEMORY_STORAGE,
-  SECURE_STORAGE,
-  OBSERVABLE_DISK_STORAGE,
-  OBSERVABLE_MEMORY_STORAGE,
-  SYSTEM_THEME_OBSERVABLE,
-  SafeInjectionToken,
+  CLIENT_TYPE,
   DEFAULT_VAULT_TIMEOUT,
   INTRAPROCESS_MESSAGING_SUBJECT,
-  CLIENT_TYPE,
+  MEMORY_STORAGE,
+  OBSERVABLE_DISK_STORAGE,
+  OBSERVABLE_MEMORY_STORAGE,
+  SECURE_STORAGE,
+  SYSTEM_THEME_OBSERVABLE,
+  SafeInjectionToken,
   ENV_ADDITIONAL_REGIONS,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { AnonLayoutWrapperDataService, LockComponentService } from "@bitwarden/auth/angular";
-import { LockService, PinServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  AnonLayoutWrapperDataService,
+  LoginComponentService,
+  LockComponentService,
+} from "@bitwarden/auth/angular";
+import { LockService, LoginEmailService, PinServiceAbstraction } from "@bitwarden/auth/common";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/auth/abstractions/account.service";
+import {
+  AccountService,
+  AccountService as AccountServiceAbstraction,
+} from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import {
   AutofillSettingsService,
@@ -50,7 +58,6 @@ import {
 } from "@bitwarden/common/platform/abstractions/animation-control.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
@@ -72,7 +79,6 @@ import { flagEnabled } from "@bitwarden/common/platform/misc/flags";
 import { TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { CryptoService } from "@bitwarden/common/platform/services/crypto.service";
 import { NoopSdkClientFactory } from "@bitwarden/common/platform/services/sdk/noop-sdk-client-factory";
 import { StorageServiceProvider } from "@bitwarden/common/platform/services/storage-service.provider";
 import { WebCryptoFunctionService } from "@bitwarden/common/platform/services/web-crypto-function.service";
@@ -92,14 +98,16 @@ import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/vau
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/vault/abstractions/totp.service";
 import { TotpService } from "@bitwarden/common/vault/services/totp.service";
 import { DialogService, ToastService } from "@bitwarden/components";
-import { BiometricsService } from "@bitwarden/key-management";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
+import { BiometricsService, KeyService, DefaultKeyService } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { ForegroundLockService } from "../../auth/popup/accounts/foreground-lock.service";
 import { ExtensionAnonLayoutWrapperDataService } from "../../auth/popup/extension-anon-layout-wrapper/extension-anon-layout-wrapper-data.service";
+import { ExtensionLoginComponentService } from "../../auth/popup/login/extension-login-component.service";
 import { AutofillService as AutofillServiceAbstraction } from "../../autofill/services/abstractions/autofill.service";
 import AutofillService from "../../autofill/services/autofill.service";
-import MainBackground from "../../background/main.background";
+import MainBackground from "../../background/main-background";
 import { ForegroundBrowserBiometricsService } from "../../key-management/biometrics/foreground-browser-biometrics";
 import { BrowserApi } from "../../platform/browser/browser-api";
 import { runInsideAngular } from "../../platform/browser/run-inside-angular.operator";
@@ -212,7 +220,7 @@ const safeProviders: SafeProvider[] = [
     deps: [GlobalStateProvider],
   }),
   safeProvider({
-    provide: CryptoServiceAbstraction,
+    provide: KeyService,
     useFactory: (
       pinService: PinServiceAbstraction,
       masterPasswordService: InternalMasterPasswordServiceAbstraction,
@@ -226,7 +234,7 @@ const safeProviders: SafeProvider[] = [
       stateProvider: StateProvider,
       kdfConfigService: KdfConfigService,
     ) => {
-      const cryptoService = new CryptoService(
+      const keyService = new DefaultKeyService(
         pinService,
         masterPasswordService,
         keyGenerationService,
@@ -239,8 +247,8 @@ const safeProviders: SafeProvider[] = [
         stateProvider,
         kdfConfigService,
       );
-      new ContainerService(cryptoService, encryptService).attachToGlobal(self);
-      return cryptoService;
+      new ContainerService(keyService, encryptService).attachToGlobal(self);
+      return keyService;
     },
     deps: [
       PinServiceAbstraction,
@@ -568,8 +576,20 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: AnonLayoutWrapperDataService,
-    useClass: ExtensionAnonLayoutWrapperDataService,
+    useExisting: ExtensionAnonLayoutWrapperDataService,
     deps: [],
+  }),
+  safeProvider({
+    provide: LoginComponentService,
+    useClass: ExtensionLoginComponentService,
+    deps: [
+      CryptoFunctionService,
+      EnvironmentService,
+      PasswordGenerationServiceAbstraction,
+      PlatformUtilsService,
+      SsoLoginServiceAbstraction,
+      ExtensionAnonLayoutWrapperDataService,
+    ],
   }),
   safeProvider({
     provide: LockService,
@@ -579,6 +599,16 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: SdkClientFactory,
     useClass: flagEnabled("sdk") ? BrowserSdkClientFactory : NoopSdkClientFactory,
+    deps: [],
+  }),
+  safeProvider({
+    provide: LoginEmailService,
+    useClass: LoginEmailService,
+    deps: [AccountService, AuthService, StateProvider],
+  }),
+  safeProvider({
+    provide: ExtensionAnonLayoutWrapperDataService,
+    useClass: ExtensionAnonLayoutWrapperDataService,
     deps: [],
   }),
 ];
