@@ -296,8 +296,12 @@ describe("ExtensionLockComponentService", () => {
       );
 
       // Biometrics
-      biometricsService.supportsBiometric.mockResolvedValue(mockInputs.osSupportsBiometric);
-      vaultTimeoutSettingsService.isBiometricLockSet.mockResolvedValue(mockInputs.biometricLockSet);
+      biometricsService.getBiometricsStatusForUser.mockResolvedValue(
+        mockInputs.biometricsStatusForUser,
+      );
+      vaultTimeoutSettingsService.isBiometricLockSet.mockResolvedValue(
+        mockInputs.hasBiometricEncryptedUserKeyStored,
+      );
       keyService.hasUserKeyStored.mockResolvedValue(mockInputs.hasBiometricEncryptedUserKeyStored);
       platformUtilsService.supportsSecureStorage.mockReturnValue(
         mockInputs.platformSupportsSecureStorage,
