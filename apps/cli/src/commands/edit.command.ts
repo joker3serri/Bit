@@ -129,6 +129,11 @@ export class EditCommand {
       const res = new CipherResponse(decCipher);
       return Response.success(res);
     } catch (e) {
+      // If a Resource not found error is returned here, the user did not have ViewPassword permissions
+      // Show No Edit Permission message
+      if (e.message === "Resource not found.") {
+        return Response.noEditPermission();
+      }
       return Response.error(e);
     }
   }
