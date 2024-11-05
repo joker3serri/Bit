@@ -48,7 +48,7 @@ export class SortableComponent implements OnInit {
 
   ngOnInit(): void {
     if (this._default && !this.isActive) {
-      this.setActive(this._default as SortDirection);
+      this.setActive();
     }
   }
 
@@ -59,9 +59,15 @@ export class SortableComponent implements OnInit {
     return this.sort.direction === "asc" ? "ascending" : "descending";
   }
 
-  protected setActive(defaultDirection: SortDirection = "asc") {
+  protected setActive() {
     if (this.table.dataSource) {
-      const direction = this.isActive && this.direction === "asc" ? "desc" : defaultDirection;
+      const defaultDirection = this._default === "desc" ? "desc" : "asc";
+      const direction = this.isActive
+        ? this.direction === "asc"
+          ? "desc"
+          : "asc"
+        : defaultDirection;
+
       this.table.dataSource.sort = {
         column: this.bitSortable,
         direction: direction,
