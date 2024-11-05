@@ -37,20 +37,21 @@
   >
     <div class="box-content">
       <div
-        class="environment-selector-dialog bit-menu-panel"
+        class="environment-selector-dialog"
+        data-testid="environment-selector-dialog"
         [@transformPanel]="'open'"
         cdkTrapFocus
         cdkTrapFocusAutoCapture
         role="dialog"
         aria-modal="true"
       >
-        <ng-container *ngFor="let region of availableRegions">
+        <ng-container *ngFor="let region of availableRegions; let i = index">
           <button
             type="button"
             class="environment-selector-dialog-item"
             (click)="toggle(region.key)"
             [attr.aria-pressed]="data.selectedRegion === region ? 'true' : 'false'"
-            bitmenuitem
+            [attr.data-testid]="'environment-selector-dialog-item-' + i"
           >
             <i
               class="bwi bwi-fw bwi-sm bwi-check"
@@ -67,7 +68,7 @@
           class="environment-selector-dialog-item"
           (click)="toggle(ServerEnvironmentType.SelfHosted)"
           [attr.aria-pressed]="data.selectedRegion ? 'false' : 'true'"
-          bitmenuitem
+          data-testid="environment-selector-dialog-item-self-hosted"
         >
           <i
             class="bwi bwi-fw bwi-sm bwi-check"
