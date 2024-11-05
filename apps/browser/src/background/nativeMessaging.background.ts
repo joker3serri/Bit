@@ -277,7 +277,7 @@ export class NativeMessagingBackground {
         await this.encryptService.decryptToUtf8(
           rawMessage as EncString,
           this.sharedSecret,
-          "ipc-channelkey",
+          "ipc-desktop-ipc-channel-key",
         ),
       );
     }
