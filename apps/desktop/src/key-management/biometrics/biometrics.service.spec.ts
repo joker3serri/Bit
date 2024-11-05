@@ -1,9 +1,14 @@
-import { mock } from "jest-mock-extended";
+import { mock, MockProxy } from "jest-mock-extended";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { BiometricStateService } from "@bitwarden/key-management";
+import { UserId } from "@bitwarden/common/types/guid";
+import {
+  BiometricsService,
+  BiometricsStatus,
+  BiometricStateService,
+} from "@bitwarden/key-management";
 
 import { WindowMain } from "../../main/window.main";
 
@@ -89,6 +94,96 @@ describe("biometrics tests", function () {
       const internalService = (sut as any).osBiometricsService;
       expect(internalService).not.toBeNull();
       expect(internalService).toBeInstanceOf(OsBiometricsServiceLinux);
+    });
+  });
+
+  describe("can auth biometric", () => {
+    let sut: BiometricsService;
+    let innerService: MockProxy<OsBiometricService>;
+
+    beforeEach(() => {
+      sut = new MainBiometricsService(
+        i18nService,
+        windowMain,
+        logService,
+        messagingService,
+        process.platform,
+        biometricStateService,
+      );
+
+      innerService = mock();
+      (sut as any).osBiometricsService = innerService;
+    });
+
+    it("should return the correct biometric status for system status", async () => {
+      const testCases = [
+        // happy path
+        [true, false, false, BiometricsStatus.Available],
+        [false, true, true, BiometricsStatus.AutoSetupNeeded],
+        [false, true, false, BiometricsStatus.ManualSetupNeeded],
+        [false, false, false, BiometricsStatus.HardwareUnavailable],
+
+        // should not happen
+        [false, false, true, BiometricsStatus.HardwareUnavailable],
+        [true, true, true, BiometricsStatus.Available],
+        [true, true, false, BiometricsStatus.Available],
+        [true, false, true, BiometricsStatus.Available],
+      ];
+
+      for (const [supportsBiometric, needsSetup, canAutoSetup, expected] of testCases) {
+        innerService.osSupportsBiometric.mockResolvedValue(supportsBiometric as boolean);
+        innerService.osBiometricsNeedsSetup.mockResolvedValue(needsSetup as boolean);
+        innerService.osBiometricsCanAutoSetup.mockResolvedValue(canAutoSetup as boolean);
+
+        const actual = await sut.getBiometricsStatus();
+        expect(actual).toBe(expected);
+      }
+    });
+
+    it("should return the correct biometric status for user status", async () => {
+      const testCases = [
+        // system status, biometric unlock enabled, require password on start, has key half, result
+        [BiometricsStatus.Available, false, false, false, BiometricsStatus.NotEnabledLocally],
+        [BiometricsStatus.Available, false, true, false, BiometricsStatus.NotEnabledLocally],
+        [BiometricsStatus.Available, false, false, true, BiometricsStatus.NotEnabledLocally],
+        [BiometricsStatus.Available, false, true, true, BiometricsStatus.NotEnabledLocally],
+
+        [
+          BiometricsStatus.PlatformUnsupported,
+          true,
+          true,
+          true,
+          BiometricsStatus.PlatformUnsupported,
+        ],
+        [BiometricsStatus.ManualSetupNeeded, true, true, true, BiometricsStatus.ManualSetupNeeded],
+        [BiometricsStatus.AutoSetupNeeded, true, true, true, BiometricsStatus.AutoSetupNeeded],
+
+        [BiometricsStatus.Available, true, false, true, BiometricsStatus.Available],
+        [BiometricsStatus.Available, true, true, false, BiometricsStatus.UnlockNeeded],
+        [BiometricsStatus.Available, true, false, true, BiometricsStatus.Available],
+      ];
+
+      for (const [
+        systemStatus,
+        unlockEnabled,
+        requirePasswordOnStart,
+        hasKeyHalf,
+        expected,
+      ] of testCases) {
+        sut.getBiometricsStatus = jest.fn().mockResolvedValue(systemStatus as BiometricsStatus);
+        biometricStateService.getBiometricUnlockEnabled.mockResolvedValue(unlockEnabled as boolean);
+        biometricStateService.getRequirePasswordOnStart.mockResolvedValue(
+          requirePasswordOnStart as boolean,
+        );
+        (sut as any).clientKeyHalves = new Map();
+        const userId = "test" as UserId;
+        if (hasKeyHalf) {
+          (sut as any).clientKeyHalves.set(userId, "test");
+        }
+
+        const actual = await sut.getBiometricsStatusForUser(userId);
+        expect(actual).toBe(expected);
+      }
     });
   });
 });
