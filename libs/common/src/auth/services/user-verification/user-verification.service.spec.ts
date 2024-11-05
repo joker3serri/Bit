@@ -201,7 +201,7 @@ describe("UserVerificationService", () => {
       });
 
       it("returns if verification is successful", async () => {
-        keyService.compareAndUpdateKeyHash.mockResolvedValueOnce(true);
+        keyService.compareKeyHash.mockResolvedValueOnce(true);
 
         const result = await sut.verifyUserByMasterPassword(
           {
@@ -212,7 +212,7 @@ describe("UserVerificationService", () => {
           "email",
         );
 
-        expect(keyService.compareAndUpdateKeyHash).toHaveBeenCalled();
+        expect(keyService.compareKeyHash).toHaveBeenCalled();
         expect(masterPasswordService.setMasterKeyHash).toHaveBeenCalledWith(
           "localHash",
           mockUserId,
@@ -225,7 +225,7 @@ describe("UserVerificationService", () => {
       });
 
       it("throws if verification fails", async () => {
-        keyService.compareAndUpdateKeyHash.mockResolvedValueOnce(false);
+        keyService.compareKeyHash.mockResolvedValueOnce(false);
 
         await expect(
           sut.verifyUserByMasterPassword(
@@ -238,7 +238,7 @@ describe("UserVerificationService", () => {
           ),
         ).rejects.toThrow("Invalid master password");
 
-        expect(keyService.compareAndUpdateKeyHash).toHaveBeenCalled();
+        expect(keyService.compareKeyHash).toHaveBeenCalled();
         expect(masterPasswordService.setMasterKeyHash).not.toHaveBeenCalledWith();
         expect(masterPasswordService.setMasterKey).not.toHaveBeenCalledWith();
       });
@@ -270,7 +270,7 @@ describe("UserVerificationService", () => {
           "email",
         );
 
-        expect(keyService.compareAndUpdateKeyHash).not.toHaveBeenCalled();
+        expect(keyService.compareKeyHash).not.toHaveBeenCalled();
         expect(masterPasswordService.setMasterKeyHash).toHaveBeenCalledWith(
           "localHash",
           mockUserId,
@@ -303,7 +303,7 @@ describe("UserVerificationService", () => {
           ),
         ).rejects.toThrow("Invalid master password");
 
-        expect(keyService.compareAndUpdateKeyHash).not.toHaveBeenCalled();
+        expect(keyService.compareKeyHash).not.toHaveBeenCalled();
         expect(masterPasswordService.setMasterKeyHash).not.toHaveBeenCalledWith();
         expect(masterPasswordService.setMasterKey).not.toHaveBeenCalledWith();
       });
