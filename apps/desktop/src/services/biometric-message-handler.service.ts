@@ -136,11 +136,13 @@ export class BiometricMessageHandlerService {
 
     switch (message.command) {
       case BiometricsCommands.UnlockWithBiometricsForUser: {
-        const userId = message.userId as UserId;
+        const messageUserId = message.userId as UserId;
         try {
-          const userKey = await this.biometricsService.unlockWithBiometricsForUser(userId);
+          const userKey = await this.biometricsService.unlockWithBiometricsForUser(messageUserId);
           if (userKey != null) {
-            this.logService.info("[Native Messaging IPC] Biometric unlock for user: " + userId);
+            this.logService.info(
+              "[Native Messaging IPC] Biometric unlock for user: " + messageUserId,
+            );
             await this.send(
               {
                 command: BiometricsCommands.UnlockWithBiometricsForUser,
@@ -150,20 +152,7 @@ export class BiometricMessageHandlerService {
               },
               appId,
             );
-
-            const currentlyActiveAccountId = (
-              await firstValueFrom(this.accountService.activeAccount$)
-            ).id;
-            const isCurrentlyActiveAccountUnlocked =
-              (await firstValueFrom(this.authService.authStatusFor$(userId))) ==
-              AuthenticationStatus.Unlocked;
-
-            // prevent proc reloading an active account, when it is the same as the browser
-            if (currentlyActiveAccountId != message.userId || !isCurrentlyActiveAccountUnlocked) {
-              if (!ipc.platform.isDev) {
-                ipc.platform.reloadProcess();
-              }
-            }
+            await this.processReloadWhenRequired(messageUserId);
           } else {
             await this.send(
               {
@@ -351,5 +340,21 @@ export class BiometricMessageHandlerService {
       messageId: -1, // to indicate to the other side that this is a new desktop client. refactor later to use proper versioning
       sharedSecret: Utils.fromBufferToB64(encryptedSecret),
     });
+  }
+
+  /** A process reload after a biometric unlock should happen if the userkey that was used for biometric unlock is for a different user than the
+   * currently active account. The userkey for the active account was in memory anyways. Further, if the desktop app is locked, a reload should occur (since the userkey was not already in memory).
+   */
+  private async processReloadWhenRequired(messageUserId: UserId) {
+    const currentlyActiveAccountId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+    const isCurrentlyActiveAccountUnlocked =
+      (await firstValueFrom(this.authService.authStatusFor$(currentlyActiveAccountId))) ==
+      AuthenticationStatus.Unlocked;
+
+    if (currentlyActiveAccountId !== messageUserId || !isCurrentlyActiveAccountUnlocked) {
+      if (!ipc.platform.isDev) {
+        ipc.platform.reloadProcess();
+      }
+    }
   }
 }
