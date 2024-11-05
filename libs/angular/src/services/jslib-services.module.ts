@@ -274,6 +274,7 @@ import {
   DefaultKeyService as KeyService,
   BiometricStateService,
   DefaultBiometricStateService,
+  BiometricsService,
 } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 import {

@@ -1,7 +1,7 @@
 import { firstValueFrom, map } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
+import { BiometricsService, BiometricsStatus, KeyService } from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../../../../auth/src/common/abstractions/pin.service.abstraction";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
