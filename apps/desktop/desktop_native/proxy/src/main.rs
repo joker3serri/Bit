@@ -57,7 +57,12 @@ async fn main() {
         path
     };
 
-    init_logging(&log_path, LevelFilter::Info);
+    let level = std::env::var("PROXY_LOG_LEVEL")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(LevelFilter::Info);
+
+    init_logging(&log_path, level);
 
     info!("Starting Bitwarden IPC Proxy.");
 
