@@ -37,7 +37,7 @@
   >
     <div class="box-content">
       <div
-        class="environment-selector-dialog"
+        class="environment-selector-dialog bit-menu-panel"
         [@transformPanel]="'open'"
         cdkTrapFocus
         cdkTrapFocusAutoCapture
@@ -50,6 +50,7 @@
             class="environment-selector-dialog-item"
             (click)="toggle(region.key)"
             [attr.aria-pressed]="data.selectedRegion === region ? 'true' : 'false'"
+            bitmenuitem
           >
             <i
               class="bwi bwi-fw bwi-sm bwi-check"
@@ -66,6 +67,7 @@
           class="environment-selector-dialog-item"
           (click)="toggle(ServerEnvironmentType.SelfHosted)"
           [attr.aria-pressed]="data.selectedRegion ? 'false' : 'true'"
+          bitmenuitem
         >
           <i
             class="bwi bwi-fw bwi-sm bwi-check"
