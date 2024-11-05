@@ -471,23 +471,20 @@ export class SettingsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const needsSetup = false;
-      const supportsBiometricAutoSetup = false;
+      const status = await this.biometricsService.getBiometricsStatus();
 
-      if (needsSetup) {
-        if (supportsBiometricAutoSetup) {
-          await this.biometricsService.setupBiometrics();
-        } else {
-          const confirmed = await this.dialogService.openSimpleDialog({
-            title: { key: "biometricsManualSetupTitle" },
-            content: { key: "biometricsManualSetupDesc" },
-            type: "warning",
-          });
-          if (confirmed) {
-            this.platformUtilsService.launchUri("https://bitwarden.com/help/biometrics/");
-          }
-          return;
+      if (status === BiometricsStatus.AutoSetupNeeded) {
+        await this.biometricsService.setupBiometrics();
+      } else if (status === BiometricsStatus.ManualSetupNeeded) {
+        const confirmed = await this.dialogService.openSimpleDialog({
+          title: { key: "biometricsManualSetupTitle" },
+          content: { key: "biometricsManualSetupDesc" },
+          type: "warning",
+        });
+        if (confirmed) {
+          this.platformUtilsService.launchUri("https://bitwarden.com/help/biometrics/");
         }
+        return;
       }
 
       await this.biometricStateService.setBiometricUnlockEnabled(true);
