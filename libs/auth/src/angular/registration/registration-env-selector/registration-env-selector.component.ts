@@ -179,7 +179,7 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
    * If the selected region is self-hosted, opens the self-hosted environment settings dialog.
    */
   protected async onSelectClosed(selection: RegionSelection) {
-    if (selection === Region.SelfHosted) {
+    if (this.selectedRegion.value === Region.SelfHosted) {
       const result = await SelfHostedEnvConfigDialogComponent.open(this.dialogService);
       return this.handleSelfHostedEnvConfigDialogResult(result, selection);
     }

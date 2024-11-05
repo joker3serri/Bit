@@ -39,12 +39,6 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
   protected selectedOption: Option<T>;
   protected searchInputId = `bit-select-search-input-${nextId++}`;
 
-  /**
-   * The value that the user selected. This may be different from `selectedValue` if the user
-   * closed the select without making a selection. I.e. a user selects the same value twice.
-   */
-  protected userSelectedValue: T;
-
   private notifyOnChange?: (value: T) => void;
   private notifyOnTouched?: () => void;
 
@@ -109,7 +103,6 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
       return;
     }
 
-    this.userSelectedValue = option?.value;
     this.notifyOnChange(option?.value);
   }
 
@@ -167,10 +160,8 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
     return items.find((item) => item.value === value);
   }
 
-  /**
-   * Emits the last selected value when the select is closed.
-   */
+  /**Emits the closed event. */
   protected onClose() {
-    this.closed.emit(this.userSelectedValue);
+    this.closed.emit();
   }
 }
