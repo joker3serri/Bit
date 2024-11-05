@@ -1,3 +1,6 @@
 export abstract class LoginDecryptionOptionsService {
-  abstract handleCreateUserSuccess(): Promise<void>;
+  /**
+   * Handles client-specific logic that runs after a user was successfully created
+   */
+  abstract handleCreateUserSuccess(): Promise<void | null>;
 }

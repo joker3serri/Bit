@@ -1,5 +1,3 @@
-import { inject } from "@angular/core";
-
 import {
   LoginDecryptionOptionsService,
   DefaultLoginDecryptionOptionsService,
@@ -13,9 +11,13 @@ export class WebLoginDecryptionOptionsService
   extends DefaultLoginDecryptionOptionsService
   implements LoginDecryptionOptionsService
 {
-  protected routerService = inject(RouterService);
-  protected acceptOrganizationInviteService = inject(AcceptOrganizationInviteService);
-  protected validationService = inject(ValidationService);
+  constructor(
+    private routerService: RouterService,
+    private acceptOrganizationInviteService: AcceptOrganizationInviteService,
+    private validationService: ValidationService,
+  ) {
+    super();
+  }
 
   override async handleCreateUserSuccess(): Promise<void> {
     try {
