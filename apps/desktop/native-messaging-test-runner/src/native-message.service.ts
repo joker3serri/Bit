@@ -222,7 +222,7 @@ export default class NativeMessageService {
     const decrypted = await this.encryptService.decryptToUtf8(
       payload,
       sharedKey,
-      `native-messaging-session`,
+      "native-messaging-session",
     );
 
     return JSON.parse(decrypted);
