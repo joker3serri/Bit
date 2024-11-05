@@ -5,7 +5,6 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -15,7 +14,7 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserId } from "@bitwarden/common/types/guid";
 import { DialogService } from "@bitwarden/components";
-import { BiometricStateService, BiometricsService } from "@bitwarden/key-management";
+import { BiometricStateService, BiometricsService, KeyService } from "@bitwarden/key-management";
 
 import { BrowserSyncVerificationDialogComponent } from "../app/components/browser-sync-verification-dialog.component";
 import { LegacyMessage } from "../models/native-messaging/legacy-message";
@@ -29,7 +28,7 @@ const HashAlgorithmForAsymmetricEncryption = "sha1";
 export class BiometricMessageHandlerService {
   constructor(
     private cryptoFunctionService: CryptoFunctionService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private logService: LogService,
     private messagingService: MessagingService,
@@ -66,7 +65,7 @@ export class BiometricMessageHandlerService {
           appId: appId,
         });
 
-        const fingerprint = await this.cryptoService.getFingerprint(
+        const fingerprint = await this.keyService.getFingerprint(
           rawMessage.userId,
           remotePublicKey,
         );
@@ -157,7 +156,7 @@ export class BiometricMessageHandlerService {
         }
 
         try {
-          const userKey = await this.cryptoService.getUserKeyFromStorage(
+          const userKey = await this.keyService.getUserKeyFromStorage(
             KeySuffixOptions.Biometric,
             message.userId,
           );
