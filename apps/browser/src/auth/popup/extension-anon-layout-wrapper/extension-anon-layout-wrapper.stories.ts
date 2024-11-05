@@ -27,6 +27,7 @@ import { ButtonModule, I18nMockService } from "@bitwarden/components";
 
 import { RegistrationCheckEmailIcon } from "../../../../../../libs/auth/src/angular/icons/registration-check-email.icon";
 import { PopupRouterCacheService } from "../../../platform/popup/view-cache/popup-router-cache.service";
+import { AccountSwitcherService } from "../account-switching/services/account-switcher.service";
 
 import { ExtensionAnonLayoutWrapperDataService } from "./extension-anon-layout-wrapper-data.service";
 import {
@@ -82,6 +83,13 @@ const decorators = (options: {
               emailVerified: true,
             }),
           },
+        },
+        {
+          provide: AccountSwitcherService,
+          useValue: {
+            availableAccounts$: of([]),
+            SPECIAL_ADD_ACCOUNT_ID: "addAccount",
+          } as Partial<AccountSwitcherService>,
         },
         {
           provide: AuthService,
