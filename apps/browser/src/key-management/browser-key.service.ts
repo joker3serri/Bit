@@ -14,7 +14,8 @@ import { USER_KEY } from "@bitwarden/common/platform/services/key-state/user-key
 import { StateProvider } from "@bitwarden/common/platform/state";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
-import { KdfConfigService ,
+import {
+  KdfConfigService,
   DefaultKeyService,
   BiometricsService,
   BiometricStateService,
