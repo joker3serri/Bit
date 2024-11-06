@@ -3,8 +3,9 @@ import {
   FakeStateProvider,
   mockAccountServiceWith,
 } from "@bitwarden/common/spec";
-import { Utils } from "@bitwarden/common/src/platform/misc/utils";
 import { UserId } from "@bitwarden/common/src/types/guid";
+
+import { Utils } from "../../common/src/platform/misc/utils";
 
 import { DefaultKdfConfigService } from "./kdf-config.service";
 import { Argon2KdfConfig, PBKDF2KdfConfig } from "./models/kdf-config";
