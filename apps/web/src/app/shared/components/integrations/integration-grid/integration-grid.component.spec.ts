@@ -5,8 +5,10 @@ import { of } from "rxjs";
 
 import { SYSTEM_THEME_OBSERVABLE } from "@bitwarden/angular/services/injection-tokens";
 import { IntegrationType } from "@bitwarden/common/enums";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ThemeTypes } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { I18nPipe } from "@bitwarden/components/src/shared/i18n.pipe";
 
 import { IntegrationCardComponent } from "../integration-card/integration-card.component";
 import { Integration } from "../models";
@@ -35,7 +37,7 @@ describe("IntegrationGridComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [IntegrationGridComponent, IntegrationCardComponent],
+      declarations: [IntegrationGridComponent, IntegrationCardComponent, I18nPipe],
       providers: [
         {
           provide: ThemeStateService,
@@ -44,6 +46,14 @@ describe("IntegrationGridComponent", () => {
         {
           provide: SYSTEM_THEME_OBSERVABLE,
           useValue: of(ThemeTypes.Light),
+        },
+        {
+          provide: I18nPipe,
+          useValue: mock<I18nPipe>(),
+        },
+        {
+          provide: I18nService,
+          useValue: mock<I18nService>(),
         },
       ],
     });

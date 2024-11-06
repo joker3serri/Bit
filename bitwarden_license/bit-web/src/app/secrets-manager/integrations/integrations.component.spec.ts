@@ -4,14 +4,14 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
+import { IntegrationCardComponent } from "../../../../../../apps/web/src/app/shared/components/integrations/integration-card/integration-card.component";
+import { IntegrationGridComponent } from "../../../../../../apps/web/src/app/shared/components/integrations/integration-grid/integration-grid.component";
 import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../libs/angular/src/services/injection-tokens";
 import { I18nService } from "../../../../../../libs/common/src/platform/abstractions/i18n.service";
 import { ThemeType } from "../../../../../../libs/common/src/platform/enums";
 import { ThemeStateService } from "../../../../../../libs/common/src/platform/theming/theme-state.service";
 import { I18nPipe } from "../../../../../../libs/components/src/shared/i18n.pipe";
 
-import { IntegrationCardComponent } from "./integration-card/integration-card.component";
-import { IntegrationGridComponent } from "./integration-grid/integration-grid.component";
 import { IntegrationsComponent } from "./integrations.component";
 
 @Component({
