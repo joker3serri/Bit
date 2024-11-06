@@ -8881,10 +8881,10 @@
   "userProvisioning":{
     "message": "User provisioning"
   },
-  "scim": {
+  "scimIntegration": {
     "message": "SCIM"
   },
-  "scimDesc": {
+  "scimIntegrationDesc": {
     "message": "Configure SCIM (System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider."
   },
   "bwdc":{
