@@ -1,6 +1,7 @@
 import { firstValueFrom } from "rxjs";
 
 import { LogoutReason } from "@bitwarden/auth/common";
+import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig } from "@bitwarden/key-management";
 
 import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { ApiService } from "../../abstractions/api.service";
@@ -25,7 +26,6 @@ import { AccountService } from "../abstractions/account.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "../abstractions/key-connector.service";
 import { InternalMasterPasswordServiceAbstraction } from "../abstractions/master-password.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
-import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig } from "../models/domain/kdf-config";
 import { KeyConnectorUserKeyRequest } from "../models/request/key-connector-user-key.request";
 import { SetKeyConnectorKeyRequest } from "../models/request/set-key-connector-key.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";

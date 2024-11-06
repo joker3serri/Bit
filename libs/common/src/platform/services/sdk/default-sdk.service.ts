@@ -10,7 +10,7 @@ import {
   switchMap,
 } from "rxjs";
 
-import { KeyService } from "@bitwarden/key-management";
+import { KeyService, KdfConfigService, KdfConfig } from "@bitwarden/key-management";
 import {
   BitwardenClient,
   ClientSettings,
@@ -21,8 +21,6 @@ import {
 import { ApiService } from "../../../abstractions/api.service";
 import { EncryptedOrganizationKeyData } from "../../../admin-console/models/data/encrypted-organization-key.data";
 import { AccountInfo, AccountService } from "../../../auth/abstractions/account.service";
-import { KdfConfigService } from "../../../auth/abstractions/kdf-config.service";
-import { KdfConfig } from "../../../auth/models/domain/kdf-config";
 import { DeviceType } from "../../../enums/device-type.enum";
 import { OrganizationId, UserId } from "../../../types/guid";
 import { UserKey } from "../../../types/key";

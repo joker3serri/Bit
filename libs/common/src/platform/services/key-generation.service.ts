@@ -1,4 +1,5 @@
-import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig } from "../../auth/models/domain/kdf-config";
+import { KdfConfig, PBKDF2KdfConfig, Argon2KdfConfig } from "@bitwarden/key-management";
+
 import { CsprngArray } from "../../types/csprng";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { KeyGenerationService as KeyGenerationServiceAbstraction } from "../abstractions/key-generation.service";

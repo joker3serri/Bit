@@ -1,12 +1,16 @@
-import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../spec";
-import { Utils } from "../../platform/misc/utils";
-import { UserId } from "../../types/guid";
-import { Argon2KdfConfig, PBKDF2KdfConfig } from "../models/domain/kdf-config";
+import {
+  FakeAccountService,
+  FakeStateProvider,
+  mockAccountServiceWith,
+} from "@bitwarden/common/spec";
+import { Utils } from "@bitwarden/common/src/platform/misc/utils";
+import { UserId } from "@bitwarden/common/src/types/guid";
 
-import { KdfConfigService } from "./kdf-config.service";
+import { DefaultKdfConfigService } from "./kdf-config.service";
+import { Argon2KdfConfig, PBKDF2KdfConfig } from "./models/kdf-config";
 
 describe("KdfConfigService", () => {
-  let sutKdfConfigService: KdfConfigService;
+  let sutKdfConfigService: DefaultKdfConfigService;
 
   let fakeStateProvider: FakeStateProvider;
   let fakeAccountService: FakeAccountService;
@@ -17,7 +21,7 @@ describe("KdfConfigService", () => {
 
     fakeAccountService = mockAccountServiceWith(mockUserId);
     fakeStateProvider = new FakeStateProvider(fakeAccountService);
-    sutKdfConfigService = new KdfConfigService(fakeStateProvider);
+    sutKdfConfigService = new DefaultKdfConfigService(fakeStateProvider);
   });
 
   it("setKdfConfig(): should set the KDF config", async () => {

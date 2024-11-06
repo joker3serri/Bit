@@ -17,7 +17,8 @@ import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
+import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";

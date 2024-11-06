@@ -1,6 +1,7 @@
 import { firstValueFrom, map } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+import { KdfConfigService } from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../../../../auth/src/common/abstractions/pin.service.abstraction";
 import { KeyService } from "../../../../../key-management/src/abstractions/key.service";
@@ -13,7 +14,6 @@ import { KeySuffixOptions } from "../../../platform/enums/key-suffix-options.enu
 import { UserId } from "../../../types/guid";
 import { UserKey } from "../../../types/key";
 import { AccountService } from "../../abstractions/account.service";
-import { KdfConfigService } from "../../abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "../../abstractions/user-verification/user-verification.service.abstraction";

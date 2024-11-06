@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
@@ -11,6 +10,7 @@ import { StateProvider } from "@bitwarden/common/platform/state";
 import { FakeStateProvider, mockAccountServiceWith } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { KdfConfigService } from "@bitwarden/key-management";
 
 import {
   PREMIUM_BANNER_REPROMPT_KEY,

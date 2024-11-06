@@ -1,6 +1,7 @@
+import { KdfConfig } from "@bitwarden/key-management";
+
 import { KeysRequest } from "../../../models/request/keys.request";
 import { KdfType } from "../../../platform/enums";
-import { KdfConfig } from "../domain/kdf-config";
 
 export class SetKeyConnectorKeyRequest {
   key: string;

@@ -3,11 +3,6 @@ import { Injectable } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyData } from "@bitwarden/common/admin-console/models/data/policy.data";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
-import {
-  Argon2KdfConfig,
-  KdfConfig,
-  PBKDF2KdfConfig,
-} from "@bitwarden/common/auth/models/domain/kdf-config";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
@@ -22,7 +17,13 @@ import { UserKey } from "@bitwarden/common/types/key";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { UserKeyRotationDataProvider, KeyService } from "@bitwarden/key-management";
+import {
+  Argon2KdfConfig,
+  KdfConfig,
+  PBKDF2KdfConfig,
+  UserKeyRotationDataProvider,
+  KeyService,
+} from "@bitwarden/key-management";
 
 import { EmergencyAccessStatusType } from "../enums/emergency-access-status-type";
 import { EmergencyAccessType } from "../enums/emergency-access-type";
