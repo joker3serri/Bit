@@ -69,17 +69,14 @@ export class ReportsHomeComponent implements OnInit {
         ...reports[ReportType.Inactive2fa],
         variant: reportRequiresUpgrade,
       },
-    ];
-
-    if (this.isMemberAccessReportEnabled) {
-      reportsArray.push({
+      {
         ...reports[ReportType.MemberAccessReport],
         variant:
           productType == ProductTierType.Enterprise
             ? ReportVariant.Enabled
             : ReportVariant.RequiresEnterprise,
-      });
-    }
+      },
+    ];
 
     return reportsArray;
   }
