@@ -1027,7 +1027,11 @@ export class CipherService implements CipherServiceAbstraction {
     await this.delete(ids);
   }
 
-  async deleteAttachment(id: string, revisionDate: string, attachmentId: string): Promise<void> {
+  async deleteAttachment(
+    id: string,
+    revisionDate: string,
+    attachmentId: string,
+  ): Promise<CipherData> {
     let ciphers = await firstValueFrom(this.ciphers$);
     const cipherId = id as CipherId;
     // eslint-disable-next-line
@@ -1052,9 +1056,11 @@ export class CipherService implements CipherServiceAbstraction {
       }
       return ciphers;
     });
+
+    return ciphers[cipherId];
   }
 
-  async deleteAttachmentWithServer(id: string, attachmentId: string): Promise<void> {
+  async deleteAttachmentWithServer(id: string, attachmentId: string): Promise<CipherData> {
     let cipherResponse = null;
     try {
       cipherResponse = await this.apiService.deleteCipherAttachment(id, attachmentId);
@@ -1063,7 +1069,7 @@ export class CipherService implements CipherServiceAbstraction {
     }
     const cipherData = CipherData.fromJSON(cipherResponse?.cipher);
 
-    await this.deleteAttachment(id, cipherData.revisionDate, attachmentId);
+    return await this.deleteAttachment(id, cipherData.revisionDate, attachmentId);
   }
 
   sortCiphersByLastUsed(a: CipherView, b: CipherView): number {
