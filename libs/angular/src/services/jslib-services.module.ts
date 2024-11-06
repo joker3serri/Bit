@@ -1382,7 +1382,6 @@ const safeProviders: SafeProvider[] = [
       KeyServiceAbstraction,
       CipherServiceAbstraction,
       UserAsymmetricKeysRegenerationApiService,
-      StateProvider,
       LogService,
       SdkService,
       ApiServiceAbstraction,
