@@ -136,40 +136,7 @@ export class BiometricMessageHandlerService {
 
     switch (message.command) {
       case BiometricsCommands.UnlockWithBiometricsForUser: {
-        const messageUserId = message.userId as UserId;
-        try {
-          const userKey = await this.biometricsService.unlockWithBiometricsForUser(messageUserId);
-          if (userKey != null) {
-            this.logService.info(
-              "[Native Messaging IPC] Biometric unlock for user: " + messageUserId,
-            );
-            await this.send(
-              {
-                command: BiometricsCommands.UnlockWithBiometricsForUser,
-                response: true,
-                messageId,
-                userKeyB64: userKey.keyB64,
-              },
-              appId,
-            );
-            await this.processReloadWhenRequired(messageUserId);
-          } else {
-            await this.send(
-              {
-                command: BiometricsCommands.UnlockWithBiometricsForUser,
-                messageId,
-                response: false,
-              },
-              appId,
-            );
-          }
-        } catch (e) {
-          await this.send(
-            { command: BiometricsCommands.UnlockWithBiometricsForUser, messageId, response: false },
-            appId,
-          );
-        }
-
+        await this.handleUnlockWithBiometricsForUser(message, messageId, appId);
         break;
       }
       case BiometricsCommands.AuthenticateWithBiometrics: {
@@ -342,10 +309,48 @@ export class BiometricMessageHandlerService {
     });
   }
 
+  private async handleUnlockWithBiometricsForUser(
+    message: LegacyMessage,
+    messageId: number,
+    appId: string,
+  ) {
+    const messageUserId = message.userId as UserId;
+    try {
+      const userKey = await this.biometricsService.unlockWithBiometricsForUser(messageUserId);
+      if (userKey != null) {
+        this.logService.info("[Native Messaging IPC] Biometric unlock for user: " + messageUserId);
+        await this.send(
+          {
+            command: BiometricsCommands.UnlockWithBiometricsForUser,
+            response: true,
+            messageId,
+            userKeyB64: userKey.keyB64,
+          },
+          appId,
+        );
+        await this.processReloadWhenRequired(messageUserId);
+      } else {
+        await this.send(
+          {
+            command: BiometricsCommands.UnlockWithBiometricsForUser,
+            messageId,
+            response: false,
+          },
+          appId,
+        );
+      }
+    } catch (e) {
+      await this.send(
+        { command: BiometricsCommands.UnlockWithBiometricsForUser, messageId, response: false },
+        appId,
+      );
+    }
+  }
+
   /** A process reload after a biometric unlock should happen if the userkey that was used for biometric unlock is for a different user than the
    * currently active account. The userkey for the active account was in memory anyways. Further, if the desktop app is locked, a reload should occur (since the userkey was not already in memory).
    */
-  private async processReloadWhenRequired(messageUserId: UserId) {
+  async processReloadWhenRequired(messageUserId: UserId) {
     const currentlyActiveAccountId = (await firstValueFrom(this.accountService.activeAccount$)).id;
     const isCurrentlyActiveAccountUnlocked =
       (await firstValueFrom(this.authService.authStatusFor$(currentlyActiveAccountId))) ==
