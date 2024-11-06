@@ -262,7 +262,7 @@
           {{ "revokeAccess" | i18n }}
         </button>
         <button
-          *ngIf="editMode"
+          *ngIf="editMode && params.managedByOrganization === false"
           type="button"
           bitIconButton="bwi-close"
           buttonType="danger"
