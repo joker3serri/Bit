@@ -64,10 +64,6 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     FeatureFlag.EnableConsolidatedBilling,
   );
 
-  protected enableTimeThreshold$ = this.configService.getFeatureFlag$(
-    FeatureFlag.EnableTimeThreshold,
-  );
-
   protected enableUpgradePasswordManagerSub$ = this.configService.getFeatureFlag$(
     FeatureFlag.EnableUpgradePasswordManagerSub,
   );
