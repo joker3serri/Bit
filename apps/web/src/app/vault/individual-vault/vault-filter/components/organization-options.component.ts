@@ -41,8 +41,6 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  userIsManaged$: Observable<boolean>;
-
   constructor(
     @Inject(OptionsInput) protected organization$: Observable<OrganizationFilter>,
     private platformUtilsService: PlatformUtilsService,
