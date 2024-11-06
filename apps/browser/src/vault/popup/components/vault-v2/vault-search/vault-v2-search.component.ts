@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { Subject, Subscription, debounceTime, filter } from "rxjs";
@@ -17,7 +17,8 @@ const SearchTextDebounceInterval = 200;
   selector: "app-vault-v2-search",
   templateUrl: "vault-v2-search.component.html",
 })
-export class VaultV2SearchComponent {
+export class VaultV2SearchComponent implements AfterViewInit {
+  @ViewChild("search") searchElement: { input: ElementRef };
   searchText: string;
 
   private searchText$ = new Subject<string>();
@@ -25,6 +26,12 @@ export class VaultV2SearchComponent {
   constructor(private vaultPopupItemsService: VaultPopupItemsService) {
     this.subscribeToLatestSearchText();
     this.subscribeToApplyFilter();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.searchElement.input.nativeElement.focus();
+    }, 500);
   }
 
   onSearchTextChanged() {
