@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 
 import { IntegrationType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { Integration } from "../../../shared/components/integrations/models";
 
@@ -14,91 +13,170 @@ export class IntegrationsComponent {
 
   tabIndex: number;
 
-  constructor(i18nService: I18nService) {
+  constructor() {
     // temporary integrations
     this.integrationsList = [
       {
         name: "AD FS",
-        linkURL: "https://github.com/bitwarden/sdk",
-        image: "../../../../../../../images/secrets-manager/sdks/rust.svg",
-        imageDarkMode: "../../../../../../../images/secrets-manager/sdks/rust-white.svg",
+        linkURL: "https://bitwarden.com/help/saml-adfs/",
+        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "Auth0",
-        linkURL: "https://bitwarden.com/help/github-actions-integration/",
-        image: "../../../../../../../images/secrets-manager/integrations/github.svg",
-        imageDarkMode: "../../../../../../../images/secrets-manager/integrations/github-white.svg",
+        linkURL: "https://bitwarden.com/help/saml-auth0/",
+        image: "../../../../../../../images/integrations/logo-auth0-badge-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "AWS",
-        linkURL: "https://bitwarden.com/help/gitlab-integration/",
-        image: "../../../../../../../images/secrets-manager/integrations/gitlab.svg",
-        imageDarkMode: "../../../../../../../images/secrets-manager/integrations/gitlab-white.svg",
+        linkURL: "https://bitwarden.com/help/saml-aws/",
+        image: "../../../../../../../images/integrations/aws-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "Microsoft Entra ID",
-        linkURL: "https://bitwarden.com/help/ansible-integration/",
-        image: "../../../../../../../images/secrets-manager/integrations/ansible.svg",
+        linkURL: "https://bitwarden.com/help/saml-azure/",
+        image: "../../../../../../../images/integrations/logo-microsoft-entra-id-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "Duo",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/csharp",
-        image: "../../../../../../../images/secrets-manager/sdks/c-sharp.svg",
+        linkURL: "https://bitwarden.com/help/saml-duo/",
+        image: "../../../../../../../images/integrations/logo-duo-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "Google",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/cpp",
-        image: "../../../../../../../images/secrets-manager/sdks/c-plus-plus.png",
+        linkURL: "https://bitwarden.com/help/saml-google/",
+        image: "../../../../../../../images/integrations/logo-google-badge-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "JumpCloud",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/go",
-        image: "../../../../../../../images/secrets-manager/sdks/go.svg",
+        linkURL: "https://bitwarden.com/help/saml-jumpcloud/",
+        image: "../../../../../../../images/integrations/logo-jumpcloud-badge-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "KeyCloak",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/java",
-        image: "../../../../../../../images/secrets-manager/sdks/java.svg",
-        imageDarkMode: "../../../../../../../images/secrets-manager/sdks/java-white.svg",
+        linkURL: "https://bitwarden.com/help/saml-keycloak/",
+        image: "../../../../../../../images/integrations/logo-keycloak-icon.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "Okta",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/js",
-        image: "../../../../../../../images/secrets-manager/sdks/wasm.svg",
+        linkURL: "https://bitwarden.com/help/saml-okta/",
+        image: "../../../../../../../images/integrations/logo-okta-symbol-black.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "OneLogin",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/php",
-        image: "../../../../../../../images/secrets-manager/sdks/php.svg",
+        linkURL: "https://bitwarden.com/help/saml-onelogin/",
+        image: "../../../../../../../images/integrations/logo-onelogin-badge-color.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "PingFederate",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/python",
-        image: "../../../../../../../images/secrets-manager/sdks/python.svg",
+        linkURL: "https://bitwarden.com/help/saml-pingfederate/",
+        image: "../../../../../../../images/integrations/logo-ping-identity-badge-color.svg",
         type: IntegrationType.SSO,
       },
       {
-        name: "Ruby",
-        linkURL: "https://github.com/bitwarden/sdk/tree/main/languages/ruby",
-        image: "../../../../../../../images/secrets-manager/sdks/ruby.png",
-        type: IntegrationType.SSO,
+        name: "Microsoft Entra ID",
+        linkURL: "https://bitwarden.com/help/microsoft-entra-id-scim-integration/",
+        image: "../../../../../../../images/integrations/logo-microsoft-entra-id-color.svg",
+        type: IntegrationType.SCIM,
       },
       {
-        name: "Kubernetes Operator",
-        linkURL: "https://bitwarden.com/help/secrets-manager-kubernetes-operator/",
-        image: "../../../../../../../images/secrets-manager/integrations/kubernetes.svg",
-        type: IntegrationType.SSO,
-        newBadgeExpiration: "2024-8-12",
+        name: "Okta",
+        linkURL: "https://bitwarden.com/help/okta-scim-integration/",
+        image: "../../../../../../../images/integrations/logo-okta-symbol-black.svg",
+        type: IntegrationType.SCIM,
+      },
+      {
+        name: "OneLogin",
+        linkURL: "https://bitwarden.com/help/onelogin-scim-integration/",
+        image: "../../../../../../../images/integrations/logo-onelogin-badge-color.svg",
+        type: IntegrationType.SCIM,
+      },
+      {
+        name: "JumpCloud",
+        linkURL: "https://bitwarden.com/help/jumpcloud-scim-integration/",
+        image: "../../../../../../../images/integrations/logo-jumpcloud-badge-color.svg",
+        type: IntegrationType.SCIM,
+      },
+      {
+        name: "Ping Identity",
+        linkURL: "https://bitwarden.com/help/ping-identity-scim-integration/",
+        image: "../../../../../../../images/integrations/logo-ping-identity-badge-color.svg",
+        type: IntegrationType.SCIM,
+      },
+      {
+        name: "Active Directory",
+        linkURL: "https://bitwarden.com/help/ldap-directory/",
+        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
+        type: IntegrationType.BWDC,
+      },
+      {
+        name: "Microsoft Entra ID",
+        linkURL: "https://bitwarden.com/help/microsoft-entra-id/",
+        image: "../../../../../../../images/integrations/logo-microsoft-entra-id-color.svg",
+        type: IntegrationType.BWDC,
+      },
+      {
+        name: "Google Workspace",
+        linkURL: "https://bitwarden.com/help/workspace-directory/",
+        image: "../../../../../../../images/integrations/logo-google-badge-color.svg",
+        type: IntegrationType.BWDC,
+      },
+      {
+        name: "Okta",
+        linkURL: "https://bitwarden.com/help/okta-directory/",
+        image: "../../../../../../../images/integrations/logo-okta-symbol-black.svg",
+        type: IntegrationType.BWDC,
+      },
+      {
+        name: "OneLogin",
+        linkURL: "https://bitwarden.com/help/onelogin-directory/",
+        image: "../../../../../../../images/integrations/logo-onelogin-badge-color.svg",
+        type: IntegrationType.BWDC,
+      },
+      {
+        name: "Splunk",
+        linkURL: "https://bitwarden.com/help/splunk-siem/",
+        image: "../../../../../../../images/integrations/logo-splunk-black.svg",
+        type: IntegrationType.EVENT,
+      },
+      {
+        name: "Microsoft Sentinel",
+        linkURL: "https://bitwarden.com/help/microsoft-sentinel-siem/",
+        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
+        type: IntegrationType.EVENT,
+      },
+      {
+        name: "Rapid7",
+        linkURL: "https://bitwarden.com/help/rapid7-siem/",
+        image: "../../../../../../../images/integrations/logo-rapid7-black.svg",
+        type: IntegrationType.EVENT,
+      },
+      {
+        name: "Elastic",
+        linkURL: "https://bitwarden.com/help/elastic-siem/",
+        image: "../../../../../../../images/integrations/logo-elastic-badge-color.svg",
+        type: IntegrationType.EVENT,
+      },
+      {
+        name: "Panther",
+        linkURL: "https://bitwarden.com/help/panther-siem/",
+        image: "../../../../../../../images/integrations/logo-panther-round-color.svg",
+        type: IntegrationType.EVENT,
+      },
+      {
+        name: "Microsoft Intune",
+        linkURL: "https://bitwarden.com/help/deploy-browser-extensions-with-intune/",
+        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
+        type: IntegrationType.DEVICE,
       },
     ];
   }
@@ -108,8 +186,23 @@ export class IntegrationsComponent {
     return this.integrationsList.filter((integration) => integration.type === IntegrationType.SSO);
   }
 
-  /** Filter out content for the SDKs section */
-  get sdks(): Integration[] {
-    return this.integrationsList.filter((integration) => integration.type === IntegrationType.SSO);
+  get scim(): Integration[] {
+    return this.integrationsList.filter((integration) => integration.type === IntegrationType.SCIM);
+  }
+
+  get bwdc(): Integration[] {
+    return this.integrationsList.filter((integration) => integration.type === IntegrationType.BWDC);
+  }
+
+  get event(): Integration[] {
+    return this.integrationsList.filter(
+      (integration) => integration.type === IntegrationType.EVENT,
+    );
+  }
+
+  get device(): Integration[] {
+    return this.integrationsList.filter(
+      (integration) => integration.type === IntegrationType.DEVICE,
+    );
   }
 }
