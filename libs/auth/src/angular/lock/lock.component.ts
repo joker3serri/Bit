@@ -23,7 +23,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { UserKey } from "@bitwarden/common/types/key";
@@ -35,7 +34,7 @@ import {
   IconButtonModule,
   ToastService,
 } from "@bitwarden/components";
-import { KeyService, BiometricStateService } from "@bitwarden/key-management";
+import { KeyService, BiometricStateService, BiometricsService } from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../common/abstractions";
 import { AnonLayoutWrapperDataService } from "../anon-layout/anon-layout-wrapper-data.service";
@@ -137,6 +136,8 @@ export class LockV2Component implements OnInit, OnDestroy {
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private formBuilder: FormBuilder,
     private toastService: ToastService,
+
+    private biometricService: BiometricsService,
 
     private lockComponentService: LockComponentService,
     private anonLayoutWrapperDataService: AnonLayoutWrapperDataService,
@@ -309,8 +310,7 @@ export class LockV2Component implements OnInit, OnDestroy {
 
     try {
       await this.biometricStateService.setUserPromptCancelled();
-      const userKey = await this.keyService.getUserKeyFromStorage(
-        KeySuffixOptions.Biometric,
+      const userKey = await this.biometricService.unlockWithBiometricsForUser(
         this.activeAccount.id,
       );
 
