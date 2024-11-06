@@ -142,11 +142,6 @@ export class VaultComponent implements OnInit, OnDestroy {
             await this.vaultFilterComponent.reloadCollectionsAndFolders(this.activeFilter);
             await this.vaultFilterComponent.reloadOrganizations();
             break;
-          case "refreshCiphers":
-            // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            this.vaultItemsComponent.refresh();
-            break;
           case "modalShown":
             this.showingModal = true;
             break;
