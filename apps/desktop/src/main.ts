@@ -1,6 +1,6 @@
 import * as path from "path";
 
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import { Subject, firstValueFrom } from "rxjs";
 
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
@@ -72,6 +72,7 @@ export class Main {
   nativeMessagingMain: NativeMessagingMain;
   clipboardMain: ClipboardMain;
   desktopAutofillSettingsService: DesktopAutofillSettingsService;
+  sshAgentService: MainSshAgentService;
 
   constructor() {
     // Set paths for portable builds
@@ -241,8 +242,12 @@ export class Main {
     this.clipboardMain = new ClipboardMain();
     this.clipboardMain.init();
 
-    const sshAgent = new MainSshAgentService(this.logService, this.messagingService);
-    sshAgent.init();
+    ipcMain.handle("sshagent.init", async (event: any, message: any) => {
+      if (this.sshAgentService == null) {
+        this.sshAgentService = new MainSshAgentService(this.logService, this.messagingService);
+        this.sshAgentService.init();
+      }
+    });
 
     new EphemeralValueStorageService();
     new SSOLocalhostCallbackService(this.environmentService, this.messagingService);
