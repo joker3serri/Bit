@@ -22,7 +22,6 @@ export const DisclosureWithIconButton: Story = {
     props: args,
     template: /*html*/ `
       <button type="button" bitIconButton="bwi-sliders" [buttonType]="'muted'" [bitDisclosureTriggerFor]="disclosureRef">
-        Toggle Filters
       </button>
       <bit-disclosure #disclosureRef class="tw-text-main tw-block" open>click button to hide this content</bit-disclosure>
     `,
