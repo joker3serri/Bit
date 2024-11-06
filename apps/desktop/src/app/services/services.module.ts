@@ -41,10 +41,6 @@ import {
   AuthService,
   AuthService as AuthServiceAbstraction,
 } from "@bitwarden/common/auth/abstractions/auth.service";
-import {
-  KdfConfigService,
-  KdfConfigService as KdfConfigServiceAbstraction,
-} from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
@@ -84,6 +80,8 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import {
+  KdfConfigService,
+  KdfConfigService as KdfConfigServiceAbstraction,
   KeyService,
   KeyService as KeyServiceAbstraction,
   BiometricStateService,
