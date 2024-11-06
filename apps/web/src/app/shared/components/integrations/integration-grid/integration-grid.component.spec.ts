@@ -3,12 +3,13 @@ import { By } from "@angular/platform-browser";
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../../libs/angular/src/services/injection-tokens";
-import { IntegrationType } from "../../../../../../../libs/common/src/enums";
-import { ThemeType } from "../../../../../../../libs/common/src/platform/enums";
-import { ThemeStateService } from "../../../../../../../libs/common/src/platform/theming/theme-state.service";
+import { SYSTEM_THEME_OBSERVABLE } from "@bitwarden/angular/services/injection-tokens";
+import { IntegrationType } from "@bitwarden/common/enums";
+import { ThemeTypes } from "@bitwarden/common/platform/enums";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+
 import { IntegrationCardComponent } from "../integration-card/integration-card.component";
-import { Integration } from "../models/integration";
+import { Integration } from "../models";
 
 import { IntegrationGridComponent } from "./integration-grid.component";
 
@@ -42,7 +43,7 @@ describe("IntegrationGridComponent", () => {
         },
         {
           provide: SYSTEM_THEME_OBSERVABLE,
-          useValue: of(ThemeType.Light),
+          useValue: of(ThemeTypes.Light),
         },
       ],
     });

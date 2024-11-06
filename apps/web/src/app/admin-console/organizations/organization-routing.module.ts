@@ -14,6 +14,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 
 import { organizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { organizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
+import { integrationPageEnabled } from "../../admin-console/organizations/guards/integrations.guard";
 import { OrganizationLayoutComponent } from "../../admin-console/organizations/layouts/organization-layout.component";
 import { deepLinkGuard } from "../../auth/guards/deep-link.guard";
 import { VaultModule } from "../../vault/org-vault/vault.module";
@@ -35,6 +36,12 @@ const routes: Routes = [
       {
         path: "vault",
         loadChildren: () => VaultModule,
+      },
+      {
+        path: "integrations",
+        canActivate: [integrationPageEnabled],
+        loadChildren: () =>
+          import("./integrations/integrations.module").then((m) => m.IntegrationsModule),
       },
       {
         path: "settings",

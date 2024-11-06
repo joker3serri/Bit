@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BehaviorSubject } from "rxjs";
 
-import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../../libs/angular/src/services/injection-tokens";
-import { ThemeType } from "../../../../../../../libs/common/src/platform/enums";
-import { ThemeStateService } from "../../../../../../../libs/common/src/platform/theming/theme-state.service";
+import { SYSTEM_THEME_OBSERVABLE } from "@bitwarden/angular/services/injection-tokens";
+import { ThemeType } from "@bitwarden/common/platform/enums";
+import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 
 import { IntegrationCardComponent } from "./integration-card.component";
 

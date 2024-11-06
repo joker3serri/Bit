@@ -47,6 +47,10 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
 
   protected orgFilter = (org: Organization) => canAccessOrgAdmin(org);
 
+  protected integrations$ = this.configService.getFeatureFlag$(
+    FeatureFlag.PM14505AdminConsoleIntegrationPage,
+  );
+
   organization$: Observable<Organization>;
   showPaymentAndHistory$: Observable<boolean>;
   hideNewOrgButton$: Observable<boolean>;
