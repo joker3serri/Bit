@@ -18,11 +18,6 @@ import { DialogService, FormFieldModule, SelectModule, ToastService } from "@bit
 import { SelfHostedEnvConfigDialogComponent } from "../../self-hosted-env-config-dialog/self-hosted-env-config-dialog.component";
 
 /**
- * Type for the selected region in the registration env selector.
- */
-type RegionSelection = RegionConfig | Region.SelfHosted | null;
-
-/**
  * Component for selecting the environment to register with in the email verification registration flow.
  * Outputs the selected region to the parent component so it can respond as necessary.
  */
@@ -178,10 +173,10 @@ export class RegistrationEnvSelectorComponent implements OnInit, OnDestroy {
    * Handles the event when the select is closed.
    * If the selected region is self-hosted, opens the self-hosted environment settings dialog.
    */
-  protected async onSelectClosed(selection: RegionSelection) {
+  protected async onSelectClosed() {
     if (this.selectedRegion.value === Region.SelfHosted) {
       const result = await SelfHostedEnvConfigDialogComponent.open(this.dialogService);
-      return this.handleSelfHostedEnvConfigDialogResult(result, selection);
+      return this.handleSelfHostedEnvConfigDialogResult(result, this.selectedRegion.value);
     }
   }
 

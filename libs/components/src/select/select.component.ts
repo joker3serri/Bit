@@ -33,7 +33,7 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
   /** Optional: Options can be provided using an array input or using `bit-option` */
   @Input() items: Option<T>[] = [];
   @Input() placeholder = this.i18nService.t("selectPlaceholder");
-  @Output() closed = new EventEmitter<T>();
+  @Output() closed = new EventEmitter();
 
   protected selectedValue: T;
   protected selectedOption: Option<T>;
