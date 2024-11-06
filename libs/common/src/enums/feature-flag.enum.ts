@@ -35,7 +35,7 @@ export enum FeatureFlag {
   AccessIntelligence = "pm-13227-access-intelligence",
   Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
   LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
-  CriticalApps = "critical-apps",
+  CriticalApps = "pm-14466-risk-insights-critical-application",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
