@@ -1,12 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { mock } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { SYSTEM_THEME_OBSERVABLE } from "@bitwarden/angular/services/injection-tokens";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { I18nPipe } from "@bitwarden/components/src/shared/i18n.pipe";
 
 import { IntegrationCardComponent } from "./integration-card.component";
-
 describe("IntegrationCardComponent", () => {
   let component: IntegrationCardComponent;
   let fixture: ComponentFixture<IntegrationCardComponent>;
@@ -19,7 +21,7 @@ describe("IntegrationCardComponent", () => {
     systemTheme$.next(ThemeType.Light);
 
     await TestBed.configureTestingModule({
-      declarations: [IntegrationCardComponent],
+      declarations: [IntegrationCardComponent, I18nPipe],
       providers: [
         {
           provide: ThemeStateService,
@@ -28,6 +30,14 @@ describe("IntegrationCardComponent", () => {
         {
           provide: SYSTEM_THEME_OBSERVABLE,
           useValue: systemTheme$,
+        },
+        {
+          provide: I18nPipe,
+          useValue: mock<I18nPipe>(),
+        },
+        {
+          provide: I18nService,
+          useValue: mock<I18nService>(),
         },
       ],
     }).compileComponents();
