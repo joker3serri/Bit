@@ -488,9 +488,19 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     let madeAttachmentChanges = false;
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    childComponent.onUploadedAttachment.subscribe(() => (madeAttachmentChanges = true));
+    childComponent.onUploadedAttachment.subscribe((cipher) => {
+      madeAttachmentChanges = true;
+      // Update the edit component cipher with the updated cipher,
+      // which is needed because the revision date is updated when an attachment is altered
+      this.addEditComponent.patchCipherAttachments(cipher);
+    });
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    childComponent.onDeletedAttachment.subscribe(() => (madeAttachmentChanges = true));
+    childComponent.onDeletedAttachment.subscribe((cipher) => {
+      madeAttachmentChanges = true;
+      // Update the edit component cipher with the updated cipher,
+      // which is needed because the revision date is updated when an attachment is altered
+      this.addEditComponent.patchCipherAttachments(cipher);
+    });
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.modal.onClosed.subscribe(async () => {

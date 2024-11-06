@@ -18,6 +18,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
@@ -139,5 +140,15 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     this.platformUtilsService.launchUri(
       "https://bitwarden.com/help/managing-items/#protect-individual-items",
     );
+  }
+
+  /**
+   * Updates the cipher when an attachment is altered.
+   * Note: This only updates the `attachments` and `revisionDate`
+   * properties to ensure any in-progress edits are not lost.
+   */
+  patchCipherAttachments(cipher: CipherView) {
+    this.cipher.attachments = cipher.attachments;
+    this.cipher.revisionDate = cipher.revisionDate;
   }
 }
