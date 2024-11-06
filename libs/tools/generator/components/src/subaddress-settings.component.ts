@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, skip, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, map, skip, Subject, takeUntil, withLatestFrom } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -10,15 +10,12 @@ import {
   SubaddressGenerationOptions,
 } from "@bitwarden/generator-core";
 
-import { DependenciesModule } from "./dependencies";
 import { completeOnAccountSwitch } from "./util";
 
 /** Options group for plus-addressed emails */
 @Component({
-  standalone: true,
   selector: "tools-subaddress-settings",
   templateUrl: "subaddress-settings.component.html",
-  imports: [DependenciesModule],
 })
 export class SubaddressSettingsComponent implements OnInit, OnDestroy {
   /** Instantiates the component
@@ -56,9 +53,23 @@ export class SubaddressSettingsComponent implements OnInit, OnDestroy {
     const singleUserId$ = this.singleUserId$();
     const settings = await this.generatorService.settings(Generators.subaddress, { singleUserId$ });
 
-    settings.pipe(takeUntil(this.destroyed$)).subscribe((s) => {
-      this.settings.patchValue(s, { emitEvent: false });
-    });
+    settings
+      .pipe(
+        withLatestFrom(this.accountService.activeAccount$),
+        map(([settings, activeAccount]) => {
+          // if the subaddress isn't specified, copy it from
+          // the user's settings
+          if ((settings.subaddressEmail ?? "").length < 1) {
+            settings.subaddressEmail = activeAccount.email;
+          }
+
+          return settings;
+        }),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe((s) => {
+        this.settings.patchValue(s, { emitEvent: false });
+      });
 
     // the first emission is the current value; subsequent emissions are updates
     settings.pipe(skip(1), takeUntil(this.destroyed$)).subscribe(this.onUpdated);

@@ -19,7 +19,7 @@ export enum FeatureFlag {
   TwoFactorComponentRefactor = "two-factor-component-refactor",
   InlineMenuPositioningImprovements = "inline-menu-positioning-improvements",
   ProviderClientVaultPrivacyBanner = "ac-2833-provider-client-vault-privacy-banner",
-  AC2828_ProviderPortalMembersPage = "AC-2828_provider-portal-members-page",
+  VaultBulkManagementAction = "vault-bulk-management-action",
   IdpAutoSubmitLogin = "idp-auto-submit-login",
   UnauthenticatedExtensionUIRefresh = "unauth-ui-refresh",
   EnableUpgradePasswordManagerSub = "AC-2708-upgrade-password-manager-sub",
@@ -30,8 +30,11 @@ export enum FeatureFlag {
   NotificationBarAddLoginImprovements = "notification-bar-add-login-improvements",
   AC2476_DeprecateStripeSourcesAPI = "AC-2476-deprecate-stripe-sources-api",
   CipherKeyEncryption = "cipher-key-encryption",
+  VerifiedSsoDomainEndpoint = "pm-12337-refactor-sso-details-endpoint",
   PM11901_RefactorSelfHostingLicenseUploader = "PM-11901-refactor-self-hosting-license-uploader",
-  Pm3478RefactorOrganizationUserApi = "pm-3478-refactor-organizationuser-api",
+  AccessIntelligence = "pm-13227-access-intelligence",
+  Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
+  LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -61,7 +64,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.TwoFactorComponentRefactor]: FALSE,
   [FeatureFlag.InlineMenuPositioningImprovements]: FALSE,
   [FeatureFlag.ProviderClientVaultPrivacyBanner]: FALSE,
-  [FeatureFlag.AC2828_ProviderPortalMembersPage]: FALSE,
+  [FeatureFlag.VaultBulkManagementAction]: FALSE,
   [FeatureFlag.IdpAutoSubmitLogin]: FALSE,
   [FeatureFlag.UnauthenticatedExtensionUIRefresh]: FALSE,
   [FeatureFlag.EnableUpgradePasswordManagerSub]: FALSE,
@@ -72,8 +75,11 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.NotificationBarAddLoginImprovements]: FALSE,
   [FeatureFlag.AC2476_DeprecateStripeSourcesAPI]: FALSE,
   [FeatureFlag.CipherKeyEncryption]: FALSE,
+  [FeatureFlag.VerifiedSsoDomainEndpoint]: FALSE,
   [FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader]: FALSE,
-  [FeatureFlag.Pm3478RefactorOrganizationUserApi]: FALSE,
+  [FeatureFlag.AccessIntelligence]: FALSE,
+  [FeatureFlag.Pm13322AddPolicyDefinitions]: FALSE,
+  [FeatureFlag.LimitCollectionCreationDeletionSplit]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
