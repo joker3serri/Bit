@@ -79,14 +79,9 @@ export class BrowserApi {
         // Focus the main window to close the extension popup
         chrome.windows.update(mainWindow.id, { focused: true }, () => {
           // Refocus the newly created window
-          if (newWindow.id) {
-            chrome.windows.update(newWindow.id, { focused: true }, () => {
-              resolve(newWindow);
-            });
-          } else {
-            // Is this what you'd want in this situation?
-            resolve(mainWindow);
-          }
+          chrome.windows.update(newWindow.id, { focused: true }, () => {
+            resolve(newWindow);
+          });
         });
       });
     });
