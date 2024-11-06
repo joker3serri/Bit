@@ -42,6 +42,7 @@ import {
   KeyService,
   BiometricsService as AbstractBiometricService,
   BiometricStateService,
+  BiometricsStatus,
 } from "@bitwarden/key-management";
 
 import { MainBiometricsService } from "../key-management/biometrics/main-biometrics.service";
@@ -451,6 +452,21 @@ describe("LockComponent", () => {
     expect(component["delayedAskForBiometric"]).toHaveBeenCalledWith(0);
     discardPeriodicTasks();
   }));
+
+  it("should show biometric if biometric status is available", async () => {
+    component["biometricStatus"] = BiometricsStatus.Available;
+    expect(component.canUseBiometric).toBe(true);
+  });
+
+  it("should not show biometric if biometric status is hardware unavailable", async () => {
+    component["biometricStatus"] = BiometricsStatus.HardwareUnavailable;
+    expect(component.canUseBiometric).toBe(false);
+  });
+
+  it("should show biometric if biometric status is needs unlock", async () => {
+    component["biometricStatus"] = BiometricsStatus.UnlockNeeded;
+    expect(component.canUseBiometric).toBe(false);
+  });
 
   it('onWindowHidden() should set "showPassword" to false', () => {
     component["showPassword"] = true;
