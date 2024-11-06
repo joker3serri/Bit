@@ -1,0 +1,43 @@
+import { Meta, Story, Primary, Controls } from "@storybook/addon-docs";
+
+import * as stories from "./disclosure.stories";
+
+<Meta of={stories} />
+
+```ts
+import { DisclosureComponent, DisclosureTriggerForDirective } from "@bitwarden/components";
+```
+
+# Disclosure
+
+The `bit-disclosure` component is used in tandem with the `bitDisclosureTriggerFor` directive to
+create a content area whose visibility is controlled by a trigger button.
+
+## Using Icon Button as the Disclosure Trigger
+
+The icon button can be used as the trigger for displaying the disclosure area. To do so:
+
+1. Create a `buttonType="muted"` icon button. (This is currently the only supported icon button type
+   for use as a disclosure trigger button)
+2. Create a `bit-disclosure`
+3. Set a template reference on the `bit-disclosure`
+4. Use the `bitDisclosureTriggerFor` directive on the icon button, and pass it the `bit-disclosure`
+   template reference
+5. Set the `open` property on the `bit-disclosure` to init the disclosure as either currently
+   expanded or currently collapsed. The disclosure will default to `false`, meaning it defaults to
+   being hidden.
+
+```
+<button type="button" bitIconButton="bwi-sliders" [buttonType]="'muted'" [bitDisclosureTriggerFor]="disclosureRef">
+  Toggle Filters
+</button>
+<bit-disclosure #disclosureRef open>click button to hide this content</bit-disclosure>
+```
+
+<Story of={stories.DisclosureWithIconButton} />
+
+## Accessibility
+
+The disclosure and trigger directive functionality follow the Disclosure (Show/Hide) pattern for
+accessibility, automatically handling the `aria-controls` and `aria-expanded` properties. A `button`
+element must be used as the trigger for the disclosure.

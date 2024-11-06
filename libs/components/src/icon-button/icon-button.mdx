@@ -99,29 +99,6 @@ with less padding around the icon, such as in the navigation component.
 
 <Story of={stories.Default} />
 
-## Icon Button as a Toggle
-
-The icon button can be used to toggle the visibility of another content area. To do so:
-
-1. Create a `buttonType="muted"` icon button. (This is currently the only supported button type for
-   use as a toggle button)
-2. Set a template reference on the icon button
-3. Use the `bitToggledBy` directive on the content area, and pass it the icon button template
-   reference
-4. Set the `expanded` property on the icon button to init the toggle as either currently expanded or
-   currently collapsed
-
-The toggle functionality follows the Disclosure (Show/Hide) pattern for accessibility.
-
-```
-<button type="button" bitIconButton="bwi-sliders" [buttonType]="'muted'" #toggleButton [expanded]="true">
-  Toggle Filters
-</button>
-<div class="tw-text-main" [bitToggledBy]="toggleButton">click button to hide this content</div>
-```
-
-<Story of={stories.ToggleIconButton} />
-
 ## Accessibility
 
 Follow guidelines outlined in the [Button docs](?path=/docs/component-library-button--doc)

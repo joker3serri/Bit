@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, HostListener, Input } from "@angular/core";
+import { Component, ElementRef, HostBinding, Input } from "@angular/core";
 
 import { ButtonLikeAbstraction, ButtonType } from "../shared/button-like.abstraction";
 import { FocusableElement } from "../shared/focusable-element";
@@ -170,30 +170,6 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction, FocusableE
   setButtonType(value: "primary" | "secondary" | "danger" | "unstyled") {
     this.buttonType = value;
   }
-
-  /**
-   * when using the `bitToggledBy` directive, pass `expanded` to indicate whether the
-   * icon button inits as expanded or not
-   */
-  @Input() expanded: boolean | null = null;
-  @HostBinding("attr.aria-expanded")
-  get expandedAttr() {
-    return this.expanded !== null ? this.expanded : null;
-  }
-
-  /**
-   * used by the `bitToggledBy` directive to populate `aria-controls`
-   */
-  @Input() controls: string | null = null;
-  @HostBinding("attr.aria-controls")
-  get controlsAttr() {
-    return this.controls !== null ? this.controls : null;
-  }
-
-  /**
-   * used by the `bitToggledBy` directive
-   */
-  @HostListener("click") click: () => void;
 
   getFocusTarget() {
     return this.elementRef.nativeElement;

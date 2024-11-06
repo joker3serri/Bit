@@ -1,16 +1,10 @@
-import { Meta, moduleMetadata, StoryObj } from "@storybook/angular";
+import { Meta, StoryObj } from "@storybook/angular";
 
 import { BitIconButtonComponent } from "./icon-button.component";
-import { IconButtonToggledByDirective } from "./toggled-by.directive";
 
 export default {
   title: "Component Library/Icon Button",
   component: BitIconButtonComponent,
-  decorators: [
-    moduleMetadata({
-      imports: [IconButtonToggledByDirective],
-    }),
-  ],
   args: {
     bitIconButton: "bwi-plus",
     size: "default",
@@ -141,16 +135,4 @@ export const Disabled: Story = {
     disabled: true,
     loading: true,
   },
-};
-
-export const ToggleIconButton: Story = {
-  render: (args) => ({
-    props: args,
-    template: /*html*/ `
-      <button type="button" bitIconButton="bwi-sliders" [buttonType]="'muted'" #toggleButton [expanded]="true">
-        Toggle Filters
-      </button>
-      <div class="tw-text-main" [bitToggledBy]="toggleButton">click button to hide this content</div>
-    `,
-  }),
 };
