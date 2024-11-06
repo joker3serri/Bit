@@ -55,9 +55,7 @@ export class SshAgentService implements OnDestroy {
   ) {}
 
   async init() {
-    const isSshAgentFeatureEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.SSHKeyVaultItem,
-    );
+    const isSshAgentFeatureEnabled = await this.configService.getFeatureFlag(FeatureFlag.SSHAgent);
     if (isSshAgentFeatureEnabled) {
       await ipc.platform.sshAgent.init();
 

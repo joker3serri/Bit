@@ -206,7 +206,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.showSshAgentOption = await this.configService.getFeatureFlag(FeatureFlag.SSHKeyVaultItem);
+    this.showSshAgentOption = await this.configService.getFeatureFlag(FeatureFlag.SSHAgent);
     this.userHasMasterPassword = await this.userVerificationService.hasMasterPassword();
 
     this.isWindows = this.platformUtilsService.getDevice() === DeviceType.WindowsDesktop;
