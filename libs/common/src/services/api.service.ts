@@ -259,6 +259,7 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // TODO: PM-3519: Create and move to AuthRequest Api service
+  // TODO: PM-9724: Remove legacy auth request methods when we remove legacy LoginViaAuthRequestV1Components
   async postAuthRequest(request: AuthRequest): Promise<AuthRequestResponse> {
     const r = await this.send("POST", "/auth-requests/", request, false, true);
     return new AuthRequestResponse(r);
