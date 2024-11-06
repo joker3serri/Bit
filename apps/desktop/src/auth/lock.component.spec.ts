@@ -1,5 +1,11 @@
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
+import {
+  ComponentFixture,
+  TestBed,
+  discardPeriodicTasks,
+  fakeAsync,
+  tick,
+} from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { MockProxy, mock } from "jest-mock-extended";
 import { of } from "rxjs";
@@ -67,6 +73,7 @@ describe("LockComponent", () => {
   let activatedRouteMock: MockProxy<ActivatedRoute>;
   let mockMasterPasswordService: FakeMasterPasswordService;
   let mockToastService: MockProxy<ToastService>;
+  let mockEnvironmentService: MockProxy<EnvironmentService>;
 
   const mockUserId = Utils.newGuid() as UserId;
   const accountService: FakeAccountService = mockAccountServiceWith(mockUserId);
@@ -88,6 +95,10 @@ describe("LockComponent", () => {
     biometricStateService.dismissedRequirePasswordOnStartCallout$ = of(false);
     biometricStateService.promptAutomatically$ = of(false);
     biometricStateService.promptCancelled$ = of(false);
+
+    biometricsService = mock<MainBiometricsService>();
+    mockEnvironmentService = mock<EnvironmentService>();
+    mockEnvironmentService.getEnvironment.mockResolvedValue({ getHostname: () => "test" } as any);
 
     await TestBed.configureTestingModule({
       declarations: [LockComponent, I18nPipe],
@@ -119,7 +130,7 @@ describe("LockComponent", () => {
         },
         {
           provide: EnvironmentService,
-          useValue: mock<EnvironmentService>(),
+          useValue: mockEnvironmentService,
         },
         {
           provide: StateService,
@@ -419,6 +430,27 @@ describe("LockComponent", () => {
       expect(component["unlockBiometric"]).toHaveBeenCalledTimes(0);
     }));
   });
+
+  it("should call delayedAskForBiometric", fakeAsync(async () => {
+    component["delayedAskForBiometric"] = jest.fn();
+    biometricsService.getShouldAutopromptNow.mockResolvedValue(true);
+    await component.ngOnInit();
+    tick(1000);
+    expect(component["delayedAskForBiometric"]).toHaveBeenCalledTimes(1);
+    expect(component["delayedAskForBiometric"]).toHaveBeenCalledWith(0);
+    discardPeriodicTasks();
+  }));
+
+  it("should call delayedAskForBiometric when queryParams change", fakeAsync(async () => {
+    activatedRouteMock.queryParams = of({ promptBiometric: true });
+    biometricsService.getShouldAutopromptNow.mockResolvedValue(true);
+    component["delayedAskForBiometric"] = jest.fn();
+    await component.ngOnInit();
+    tick(1000);
+    expect(component["delayedAskForBiometric"]).toHaveBeenCalledTimes(1);
+    expect(component["delayedAskForBiometric"]).toHaveBeenCalledWith(0);
+    discardPeriodicTasks();
+  }));
 
   it('onWindowHidden() should set "showPassword" to false', () => {
     component["showPassword"] = true;
