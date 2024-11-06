@@ -70,7 +70,7 @@ export class RiskInsightsComponent implements OnInit {
 
   async ngOnInit() {
     this.isCritialAppsFeatureEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.CipherKeyEncryption,
+      FeatureFlag.CriticalApps,
     );
   }
 

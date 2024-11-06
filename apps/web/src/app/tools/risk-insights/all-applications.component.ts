@@ -65,7 +65,7 @@ export class AllApplicationsComponent implements OnInit {
       .subscribe();
 
     this.isCritialAppsFeatureEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.CipherKeyEncryption,
+      FeatureFlag.CriticalApps,
     );
   }
 
