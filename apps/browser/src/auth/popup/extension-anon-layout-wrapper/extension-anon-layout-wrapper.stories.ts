@@ -1,7 +1,6 @@
 import { importProvidersFrom, Component } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import {
-  AngularRenderer,
   Meta,
   StoryObj,
   applicationConfig,
@@ -35,7 +34,6 @@ import {
   ExtensionAnonLayoutWrapperComponent,
   ExtensionAnonLayoutWrapperData,
 } from "./extension-anon-layout-wrapper.component";
-import { DecoratorFunction } from "storybook/internal/types";
 
 export default {
   title: "Auth/Extension Anon Layout Wrapper",
