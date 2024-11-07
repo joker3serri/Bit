@@ -60,7 +60,7 @@ export class GroupApiService {
 
     const listResponse = new ListResponse(r, GroupDetailsResponse);
 
-    return listResponse.data?.map((gr) => GroupDetailsView.fromResponse(gr));
+    return listResponse.data.map((gr) => GroupDetailsView.fromResponse(gr));
   }
 }
 
