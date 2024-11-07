@@ -1,4 +1,115 @@
 {
+  "allApplications": {
+    "message": "Todas as aplicações"
+  },
+  "criticalApplications": {
+    "message": "Aplicações críticas"
+  },
+  "accessIntelligence": {
+    "message": "Acesso à informação"
+  },
+  "passwordRisk": {
+    "message": "Risco da palavra-passe"
+  },
+  "discoverAtRiskPasswords": {
+    "message": "Descubra as palavras-passe em risco e notifique os utilizadores para alterarem essas palavras-passe."
+  },
+  "dataLastUpdated": {
+    "message": "Última atualização dos dados: $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2021-01-01"
+      }
+    }
+  },
+  "notifiedMembers": {
+    "message": "Membros notificados"
+  },
+  "allApplicationsWithCount": {
+    "message": "Todas as aplicações ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "createNewLoginItem": {
+    "message": "Criar novo item de credencial"
+  },
+  "criticalApplicationsWithCount": {
+    "message": "Aplicações críticas ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "notifiedMembersWithCount": {
+    "message": "Membros notificados ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "noAppsInOrgTitle": {
+    "message": "Não foram encontradas aplicações em $ORG NAME$",
+    "placeholders": {
+      "org name": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "noAppsInOrgDescription": {
+    "message": "À medida que os utilizadores guardam as credenciais, as aplicações aparecem aqui, mostrando quaisquer palavras-passe em risco. Marque as aplicações críticas e notifique os utilizadores para atualizarem as palavras-passe."
+  },
+  "noCriticalAppsTitle": {
+    "message": "Não marcou nenhuma aplicação como crítica"
+  },
+  "noCriticalAppsDescription": {
+    "message": "Selecione as suas aplicações mais críticas para descobrir palavras-passe em risco e notifique os utilizadores para alterarem essas palavras-passe."
+  },
+  "markCriticalApps": {
+    "message": "Marcar aplicações críticas"
+  },
+  "markAppAsCritical": {
+    "message": "Marcar a aplicação como crítica"
+  },
+  "appsMarkedAsCritical": {
+    "message": "Apps marcadas como críticas"
+  },
+  "application": {
+    "message": "Aplicação"
+  },
+  "atRiskPasswords": {
+    "message": "Palavras-passe em risco"
+  },
+  "requestPasswordChange": {
+    "message": "Pedir alteração da palavra-passe"
+  },
+  "totalPasswords": {
+    "message": "Total de palavras-passe"
+  },
+  "searchApps": {
+    "message": "Procurar aplicações"
+  },
+  "atRiskMembers": {
+    "message": "Membros em risco"
+  },
+  "totalMembers": {
+    "message": "Total de membros"
+  },
+  "atRiskApplications": {
+    "message": "Aplicações em risco"
+  },
+  "totalApplications": {
+    "message": "Todas de aplicações"
+  },
   "whatTypeOfItem": {
     "message": "Que tipo de item é este?"
   },
@@ -345,6 +456,9 @@
   "generatePassword": {
     "message": "Gerar palavra-passe"
   },
+  "generatePassphrase": {
+    "message": "Gerar frase de acesso"
+  },
   "checkPassword": {
     "message": "Verificar se a palavra-passe foi exposta."
   },
@@ -602,6 +716,13 @@
   "copyPassword": {
     "message": "Copiar palavra-passe",
     "description": "Copy password to clipboard"
+  },
+  "copyPassphrase": {
+    "message": "Copiar frase de acesso",
+    "description": "Copy passphrase to clipboard"
+  },
+  "passwordCopied": {
+    "message": "Palavra-passe copiada"
   },
   "copyUsername": {
     "message": "Copiar nome de utilizador",
@@ -869,8 +990,14 @@
   "useADifferentLogInMethod": {
     "message": "Utilizar um método de início de sessão diferente"
   },
-  "loginWithPasskey": {
+  "logInWithPasskey": {
     "message": "Iniciar sessão com a chave de acesso"
+  },
+  "useSingleSignOn": {
+    "message": "Utilizar início de sessão único"
+  },
+  "welcomeBack": {
+    "message": "Bem-vindo de volta"
   },
   "invalidPasskeyPleaseTryAgain": {
     "message": "Chave de acesso inválida. Por favor, tente novamente."
@@ -953,6 +1080,9 @@
   "createAccount": {
     "message": "Criar conta"
   },
+  "newToBitwarden": {
+    "message": "Novo no Bitwarden?"
+  },
   "setAStrongPassword": {
     "message": "Defina uma palavra-passe forte"
   },
@@ -967,6 +1097,9 @@
   },
   "logIn": {
     "message": "Iniciar sessão"
+  },
+  "logInToBitwarden": {
+    "message": "Iniciar sessão no Bitwarden"
   },
   "verifyIdentity": {
     "message": "Verifique a sua identidade"
@@ -1099,6 +1232,9 @@
   "yourVaultIsLockedV2": {
     "message": "O seu cofre está bloqueado"
   },
+  "yourAccountIsLocked": {
+    "message": "A sua conta está bloqueada"
+  },
   "uuid": {
     "message": "UUID"
   },
@@ -1132,6 +1268,9 @@
   },
   "noPermissionToViewAllCollectionItems": {
     "message": "Não tem permissão para ver todos os itens desta coleção."
+  },
+  "youDoNotHavePermissions": {
+    "message": "Não tem permissões para esta coleção"
   },
   "noCollectionsInList": {
     "message": "Não existem coleções para listar."
@@ -1437,7 +1576,12 @@
     "description": "Minimum special characters"
   },
   "ambiguous": {
-    "message": "Evitar caracteres ambíguos"
+    "message": "Evitar caracteres ambíguos",
+    "description": "deprecated. Use avoidAmbiguous instead."
+  },
+  "avoidAmbiguous": {
+    "message": "Evitar caracteres ambíguos",
+    "description": "Label for the avoid ambiguous characters checkbox."
   },
   "regeneratePassword": {
     "message": "Regenerar palavra-passe"
@@ -1450,14 +1594,15 @@
   },
   "uppercase": {
     "message": "Maiúsculas (A-Z)",
-    "description": "Include uppercase letters in the password generator."
+    "description": "deprecated. Use uppercaseLabel instead."
   },
   "lowercase": {
     "message": "Minúsculas (a-z)",
-    "description": "Include lowercase letters in the password generator."
+    "description": "deprecated. Use lowercaseLabel instead."
   },
   "numbers": {
-    "message": "Números (0-9)"
+    "message": "Números (0-9)",
+    "description": "deprecated. Use numbersLabel instead."
   },
   "specialCharacters": {
     "message": "Caracteres especiais (!@#$%^&*)"
@@ -1592,6 +1737,9 @@
   "dangerZoneDesc": {
     "message": "Cuidado, estas ações são irreversíveis!"
   },
+  "dangerZoneDescSingular": {
+    "message": "Cuidado, esta ação não é reversível!"
+  },
   "deauthorizeSessions": {
     "message": "Desautorizar sessões"
   },
@@ -1603,6 +1751,15 @@
   },
   "sessionsDeauthorized": {
     "message": "Todas as sessões desautorizadas"
+  },
+  "accountIsManagedMessage": {
+    "message": "Esta conta é gerida por $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "Organization"
+      }
+    }
   },
   "purgeVault": {
     "message": "Purgar cofre"
@@ -2199,6 +2356,9 @@
   "checkExposedPasswords": {
     "message": "Verificar palavras-passe expostas"
   },
+  "timesExposed": {
+    "message": "Vezes expostas"
+  },
   "exposedXTimes": {
     "message": "Exposta $COUNT$ vez(es)",
     "placeholders": {
@@ -2233,6 +2393,9 @@
   "noWeakPasswords": {
     "message": "Nenhum item do seu cofre tem palavras-passe fracas."
   },
+  "weakness": {
+    "message": "Fraqueza"
+  },
   "reusedPasswordsReport": {
     "message": "Palavras-passe reutilizadas"
   },
@@ -2257,6 +2420,9 @@
   },
   "noReusedPasswords": {
     "message": "Nenhuma credencial no seu cofre tem palavras-passe que estejam a ser reutilizadas."
+  },
+  "timesReused": {
+    "message": "Vezes reutilizadas"
   },
   "reusedXTimes": {
     "message": "Reutilizada $COUNT$ vezes",
@@ -2555,6 +2721,9 @@
   "downloadLicense": {
     "message": "Transferir licença"
   },
+  "viewBillingToken": {
+    "message": "Ver token de faturação"
+  },
   "updateLicense": {
     "message": "Atualizar licença"
   },
@@ -2601,8 +2770,11 @@
   "invoices": {
     "message": "Faturas"
   },
-  "noInvoices": {
-    "message": "Sem faturas."
+  "noUnpaidInvoices": {
+    "message": "Não há faturas por pagar."
+  },
+  "noPaidInvoices": {
+    "message": "Não há faturas pagas."
   },
   "paid": {
     "message": "Paga",
@@ -3046,6 +3218,9 @@
       }
     }
   },
+  "inviteSingleEmailDesc": {
+    "message": "Ainda tem 1 convite."
+  },
   "userUsingTwoStep": {
     "message": "Este utilizador está a utilizar a verificação de dois passos para proteger a sua conta."
   },
@@ -3159,6 +3334,10 @@
   },
   "incorrectPin": {
     "message": "PIN incorreto"
+  },
+  "pin": {
+    "message": "PIN",
+    "description": "PIN code. Ex. The short code (often numeric) that you use to unlock a device."
   },
   "exportedVault": {
     "message": "Cofre exportado"
@@ -3660,6 +3839,15 @@
   },
   "joinOrganization": {
     "message": "Aderir à organização"
+  },
+  "joinOrganizationName": {
+    "message": "Aderir a $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
   },
   "joinOrganizationDesc": {
     "message": "Foi convidado a juntar-se à organização listada acima. Para aceitar o convite, é necessário iniciar sessão ou criar uma nova conta Bitwarden."
@@ -4500,11 +4688,17 @@
   "singleOrgDesc": {
     "message": "Impedir os membros de aderirem a outras organizações."
   },
+  "singleOrgPolicyDesc": {
+    "message": "Restringir a adesão de membros a outras organizações. Esta política é necessária para organizações que tenham ativado a verificação de domínio."
+  },
   "singleOrgBlockCreateMessage": {
     "message": "A sua organização atual tem uma política que não lhe permite aderir a mais do que uma organização. Por favor, contacte os administradores da sua organização ou registe-se a partir de uma conta Bitwarden diferente."
   },
   "singleOrgPolicyWarning": {
     "message": "Os membros da organização que não sejam proprietários ou administradores e que já sejam membros de outra organização serão removidos da sua organização."
+  },
+  "singleOrgPolicyMemberWarning": {
+    "message": "Os membros não conformes serão colocados no estado revogado até deixarem todas as outras organizações. Os administradores estão isentos e podem restaurar os membros assim que a conformidade for cumprida."
   },
   "requireSso": {
     "message": "Exigir autenticação de início de sessão único"
@@ -5985,8 +6179,8 @@
   "viewBillingSyncToken": {
     "message": "Ver token de sincronização de faturação"
   },
-  "generateBillingSyncToken": {
-    "message": "Gerar token de sincronização de faturação"
+  "generateBillingToken": {
+    "message": "Gerar token de faturação"
   },
   "copyPasteBillingSync": {
     "message": "Copie e cole este token nas definições de sincronização de faturação da sua organização auto-hospedada."
@@ -5994,8 +6188,8 @@
   "billingSyncCanAccess": {
     "message": "O seu token de sincronização de faturação pode aceder e editar as definições de subscrição desta organização."
   },
-  "manageBillingSync": {
-    "message": "Gerir a sincronização da faturação"
+  "manageBillingTokenSync": {
+    "message": "Gerir token de faturação"
   },
   "setUpBillingSync": {
     "message": "Configurar a sincronização da faturação"
@@ -6054,14 +6248,14 @@
   "billingSyncApiKeyRotated": {
     "message": "Token regenerado"
   },
-  "billingSyncDesc": {
-    "message": "A sincronização da faturação desbloqueia os patrocínios de planos Familiar e a sincronização automática de licenças no seu servidor. Depois de fazer atualizações no servidor da nuvem Bitwarden, selecione Sincronizar licença para aplicar as alterações."
-  },
   "billingSyncKeyDesc": {
     "message": "É necessário um token de sincronização de faturação das definições de subscrição da sua organização na nuvem para preencher este formulário."
   },
   "billingSyncKey": {
     "message": "Token de sincronização de faturação"
+  },
+  "automaticBillingSyncDesc": {
+    "message": "A sincronização automática desbloqueia os patrocínios do plano Familiar e permite-lhe sincronizar a sua licença sem carregar um ficheiro. Depois de fazer atualizações no servidor de nuvem Bitwarden, selecione Sincronizar licença para aplicar as alterações."
   },
   "active": {
     "message": "Ativo"
@@ -6204,7 +6398,8 @@
     "message": "Definições da conta"
   },
   "generator": {
-    "message": "Gerador"
+    "message": "Gerador",
+    "description": "Short for 'credential generator'."
   },
   "whatWouldYouLikeToGenerate": {
     "message": "O que é que gostaria de gerar?"
@@ -6217,6 +6412,23 @@
   },
   "generateUsername": {
     "message": "Gerar nome de utilizador"
+  },
+  "generateEmail": {
+    "message": "Gerar e-mail"
+  },
+  "generatorBoundariesHint": {
+    "message": "O valor deve estar entre $MIN$ e $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
   },
   "usernameType": {
     "message": "Tipo de nome de utilizador"
@@ -6322,6 +6534,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Gerar um alias de e-mail com um serviço de reencaminhamento externo."
+  },
+  "forwarderDomainName": {
+    "message": "Domínio de e-mail",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Escolha um domínio que seja suportado pelo serviço selecionado",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "Erro no $SERVICENAME$: $ERRORMESSAGE$",
@@ -6579,6 +6799,18 @@
       "count": {
         "content": "$1",
         "example": "4"
+      }
+    }
+  },
+  "singleFieldNeedsAttention": {
+    "message": "1 campo precisa da sua atenção."
+  },
+  "multipleFieldsNeedAttention": {
+    "message": "$COUNT$ campos precisam da sua atenção.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
       }
     }
   },
@@ -7442,6 +7674,15 @@
   "or": {
     "message": "ou"
   },
+  "unlockWithBiometrics": {
+    "message": "Desbloquear com biometria"
+  },
+  "unlockWithPin": {
+    "message": "Desbloquear com PIN"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Desbloquear com a palavra-passe mestra"
+  },
   "licenseAndBillingManagement": {
     "message": "Gestão de licenças e faturação"
   },
@@ -7451,8 +7692,8 @@
   "manualUpload": {
     "message": "Carregamento manual"
   },
-  "manualUploadDesc": {
-    "message": "Se não pretender optar pela sincronização da faturação, carregue manualmente a sua licença aqui."
+  "manualBillingTokenUploadDesc": {
+    "message": "Se não pretender optar pela sincronização da faturação, carregue manualmente a sua licença aqui. Isto não desbloqueará automaticamente os patrocínios do plano Familiar."
   },
   "syncLicense": {
     "message": "Sincronizar licença"
@@ -7780,6 +8021,15 @@
     "message": "A sua organização exige a definição de uma palavra-passe mestra.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
+  "cardMetrics": {
+    "message": "de $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
   "notFound": {
     "message": "$RESOURCE$ não encontrado(a)",
     "placeholders": {
@@ -8041,6 +8291,12 @@
   "limitCollectionCreationDeletionDesc": {
     "message": "Limitar a criação e eliminação de coleções aos proprietários e administradores"
   },
+  "limitCollectionCreationDesc": {
+    "message": "Limitar a criação de coleções aos proprietários e administradores"
+  },
+  "limitCollectionDeletionDesc": {
+    "message": "Limitar a eliminação de coleções aos proprietários e administradores"
+  },
   "allowAdminAccessToAllCollectionItemsDesc": {
     "message": "Os proprietários e administradores podem gerir todas as coleções e itens"
   },
@@ -8085,6 +8341,10 @@
   },
   "baseUrl": {
     "message": "URL do servidor"
+  },
+  "selfHostBaseUrl": {
+    "message": "URL do servidor auto-hospedado",
+    "description": "Label for field requesting a self-hosted integration service URL"
   },
   "aliasDomain": {
     "message": "Alias de domínio"
@@ -9225,5 +9485,77 @@
   },
   "editAccess": {
     "message": "Editar acesso"
+  },
+  "textHelpText": {
+    "message": "Utilize campos de texto para dados como perguntas de segurança"
+  },
+  "hiddenHelpText": {
+    "message": "Utilize campos ocultos para dados sensíveis como uma palavra-passe"
+  },
+  "checkBoxHelpText": {
+    "message": "Utilize caixas de verificação se pretender preencher automaticamente uma caixa de verificação de um formulário, como um e-mail de memorização"
+  },
+  "linkedHelpText": {
+    "message": "Utilize um campo ligado quando tiver problemas de preenchimento automático para um site específico."
+  },
+  "linkedLabelHelpText": {
+    "message": "Introduza o ID do HTML, o nome, a aria-label ou o placeholder do campo."
+  },
+  "uppercaseDescription": {
+    "message": "Incluir caracteres em maiúsculas",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Incluir caracteres em minúsculas",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Incluir números",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Incluir caracteres especiais",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
+  },
+  "addAttachment": {
+    "message": "Adicionar anexo"
+  },
+  "maxFileSizeSansPunctuation": {
+    "message": "O tamanho máximo do ficheiro é de 500 MB"
+  },
+  "permanentlyDeleteAttachmentConfirmation": {
+    "message": "Tem a certeza de que pretende eliminar permanentemente este anexo?"
+  },
+  "manageSubscriptionFromThe": {
+    "message": "Gerir a subscrição a partir do",
+    "description": "This represents the beginning of a sentence. The full sentence will be 'Manage subscription from the Provider Portal', but 'Provider Portal' will be a link and thus cannot be included in the translation file."
+  },
+  "toHostBitwardenOnYourOwnServer": {
+    "message": "Para hospedar o Bitwarden no seu próprio servidor, precisará de carregar o seu ficheiro de licença. Para suportar planos Familiar gratuitos e recursos avançados de faturamento para a sua organização auto-hospedada, precisará de configurar a sincronização automática na sua organização auto-hospedada."
+  },
+  "selfHostingTitleProper": {
+    "message": "Auto-hospedagem"
+  },
+  "verified-domain-single-org-warning": {
+    "message": "A verificação de um domínio ativará a política de organização única."
+  },
+  "single-org-revoked-user-warning": {
+    "message": "Os membros não conformes serão revogados. Os administradores podem restaurar os membros quando estes saírem de todas as outras organizações."
   }
 }

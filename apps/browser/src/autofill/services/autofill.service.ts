@@ -130,10 +130,23 @@ export default class AutofillService implements AutofillServiceInterface {
   async loadAutofillScriptsOnInstall() {
     BrowserApi.addListener(chrome.runtime.onConnect, this.handleInjectedScriptPortConnection);
     void this.injectAutofillScriptsInAllTabs();
+
     this.autofillSettingsService.inlineMenuVisibility$
       .pipe(startWith(undefined), pairwise())
       .subscribe(([previousSetting, currentSetting]) =>
-        this.handleInlineMenuVisibilityChange(previousSetting, currentSetting),
+        this.handleInlineMenuVisibilitySettingsChange(previousSetting, currentSetting),
+      );
+
+    this.autofillSettingsService.showInlineMenuCards$
+      .pipe(startWith(undefined), pairwise())
+      .subscribe(([previousSetting, currentSetting]) =>
+        this.handleInlineMenuVisibilitySettingsChange(previousSetting, currentSetting),
+      );
+
+    this.autofillSettingsService.showInlineMenuIdentities$
+      .pipe(startWith(undefined), pairwise())
+      .subscribe(([previousSetting, currentSetting]) =>
+        this.handleInlineMenuVisibilitySettingsChange(previousSetting, currentSetting),
       );
   }
 
@@ -887,7 +900,10 @@ export default class AutofillService implements AutofillServiceInterface {
           options.allowTotpAutofill &&
           f.viewable &&
           (f.type === "text" || f.type === "number") &&
-          (AutofillService.fieldIsFuzzyMatch(f, AutoFillConstants.TotpFieldNames) ||
+          (AutofillService.fieldIsFuzzyMatch(f, [
+            ...AutoFillConstants.TotpFieldNames,
+            ...AutoFillConstants.AmbiguousTotpFieldNames,
+          ]) ||
             f.autoCompleteType === "one-time-code")
         ) {
           totps.push(f);
@@ -924,13 +940,16 @@ export default class AutofillService implements AutofillServiceInterface {
 
     if (options.allowTotpAutofill) {
       await Promise.all(
-        totps.map(async (t) => {
+        totps.map(async (t, i) => {
           if (Object.prototype.hasOwnProperty.call(filledFields, t.opid)) {
             return;
           }
 
           filledFields[t.opid] = t;
-          const totpValue = await this.totpService.getCode(login.totp);
+          let totpValue = await this.totpService.getCode(login.totp);
+          if (totpValue.length == totps.length) {
+            totpValue = totpValue.charAt(i);
+          }
           AutofillService.fillByOpid(fillScript, t, totpValue);
         }),
       );
@@ -1866,7 +1885,10 @@ export default class AutofillService implements AutofillServiceInterface {
    */
   private excludeFieldFromIdentityFill(field: AutofillField): boolean {
     return (
-      AutofillService.isExcludedFieldType(field, AutoFillConstants.ExcludedAutofillTypes) ||
+      AutofillService.isExcludedFieldType(field, [
+        "password",
+        ...AutoFillConstants.ExcludedAutofillTypes,
+      ]) ||
       AutoFillConstants.ExcludedIdentityAutocompleteTypes.has(field.autoCompleteType) ||
       !field.viewable
     );
@@ -2558,6 +2580,11 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
+      // We want to avoid treating TOTP fields as password fields
+      if (AutofillService.fieldIsFuzzyMatch(f, AutoFillConstants.TotpFieldNames)) {
+        return;
+      }
+
       const isLikePassword = () => {
         if (f.type !== "text") {
           return false;
@@ -2670,12 +2697,18 @@ export default class AutofillService implements AutofillServiceInterface {
         (withoutForm || f.form === passwordField.form) &&
         (canBeHidden || f.viewable) &&
         (f.type === "text" || f.type === "number") &&
-        AutofillService.fieldIsFuzzyMatch(f, AutoFillConstants.TotpFieldNames)
+        AutofillService.fieldIsFuzzyMatch(f, [
+          ...AutoFillConstants.TotpFieldNames,
+          ...AutoFillConstants.AmbiguousTotpFieldNames,
+        ])
       ) {
         totpField = f;
 
         if (
-          this.findMatchingFieldIndex(f, AutoFillConstants.TotpFieldNames) > -1 ||
+          this.findMatchingFieldIndex(f, [
+            ...AutoFillConstants.TotpFieldNames,
+            ...AutoFillConstants.AmbiguousTotpFieldNames,
+          ]) > -1 ||
           f.autoCompleteType === "one-time-code"
         ) {
           // We found an exact match. No need to keep looking.
@@ -2860,6 +2893,12 @@ export default class AutofillService implements AutofillServiceInterface {
     ) {
       return true;
     }
+    if (
+      AutofillService.hasValue(field.dataSetValues) &&
+      this.fuzzyMatch(names, field.dataSetValues)
+    ) {
+      return true;
+    }
 
     return false;
   }
@@ -3029,29 +3068,30 @@ export default class AutofillService implements AutofillServiceInterface {
   }
 
   /**
-   * Updates the autofill inline menu visibility setting in all active tabs
-   * when the InlineMenuVisibilitySetting observable is updated.
+   * Updates the autofill inline menu visibility settings in all active tabs
+   * when the inlineMenuVisibility, showInlineMenuCards, or showInlineMenuIdentities
+   * observables are updated.
    *
-   * @param previousSetting - The previous setting value
-   * @param currentSetting - The current setting value
+   * @param oldSettingValue - The previous setting value
+   * @param newSettingValue - The current setting value
    */
-  private async handleInlineMenuVisibilityChange(
-    previousSetting: InlineMenuVisibilitySetting,
-    currentSetting: InlineMenuVisibilitySetting,
+  private async handleInlineMenuVisibilitySettingsChange(
+    oldSettingValue: InlineMenuVisibilitySetting | boolean,
+    newSettingValue: InlineMenuVisibilitySetting | boolean,
   ) {
-    if (previousSetting === undefined || previousSetting === currentSetting) {
+    if (oldSettingValue == null || oldSettingValue === newSettingValue) {
       return;
     }
 
-    const inlineMenuPreviouslyDisabled = previousSetting === AutofillOverlayVisibility.Off;
-    const inlineMenuCurrentlyDisabled = currentSetting === AutofillOverlayVisibility.Off;
-    if (!inlineMenuPreviouslyDisabled && !inlineMenuCurrentlyDisabled) {
-      const tabs = await BrowserApi.tabsQuery({});
-      tabs.forEach((tab) =>
-        BrowserApi.tabSendMessageData(tab, "updateAutofillInlineMenuVisibility", {
-          inlineMenuVisibility: currentSetting,
-        }),
-      );
+    const isInlineMenuVisibilitySubSetting =
+      typeof oldSettingValue === "boolean" || typeof newSettingValue === "boolean";
+    const inlineMenuPreviouslyDisabled = oldSettingValue === AutofillOverlayVisibility.Off;
+    const inlineMenuCurrentlyDisabled = newSettingValue === AutofillOverlayVisibility.Off;
+    if (
+      !isInlineMenuVisibilitySubSetting &&
+      !inlineMenuPreviouslyDisabled &&
+      !inlineMenuCurrentlyDisabled
+    ) {
       return;
     }
 

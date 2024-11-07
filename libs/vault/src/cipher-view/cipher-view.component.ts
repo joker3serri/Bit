@@ -1,16 +1,15 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnDestroy } from "@angular/core";
 import { firstValueFrom, Observable, Subject, takeUntil } from "rxjs";
 
+import { CollectionService, CollectionView } from "@bitwarden/admin-console/common";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { isCardExpired } from "@bitwarden/common/autofill/utils";
 import { CollectionId } from "@bitwarden/common/types/guid";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { CalloutModule, SearchModule } from "@bitwarden/components";
 
@@ -44,7 +43,7 @@ import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-ide
     AutofillOptionsViewComponent,
   ],
 })
-export class CipherViewComponent implements OnInit, OnDestroy {
+export class CipherViewComponent implements OnChanges, OnDestroy {
   @Input({ required: true }) cipher: CipherView;
 
   /**
@@ -52,6 +51,10 @@ export class CipherViewComponent implements OnInit, OnDestroy {
    * `CipherService` and the `collectionIds` property of the cipher.
    */
   @Input() collections: CollectionView[];
+
+  /** Should be set to true when the component is used within the Admin Console */
+  @Input() isAdminConsole?: boolean = false;
+
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
   private destroyed$: Subject<void> = new Subject();
@@ -63,7 +66,11 @@ export class CipherViewComponent implements OnInit, OnDestroy {
     private folderService: FolderService,
   ) {}
 
-  async ngOnInit() {
+  async ngOnChanges() {
+    if (this.cipher == null) {
+      return;
+    }
+
     await this.loadCipherData();
 
     this.cardIsExpired = isCardExpired(this.cipher.card);

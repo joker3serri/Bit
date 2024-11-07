@@ -1,8 +1,20 @@
+import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { OnInit, Input, Output, EventEmitter, Component, OnDestroy } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, takeUntil, Subject, map, filter, tap, debounceTime, skip } from "rxjs";
+import {
+  BehaviorSubject,
+  takeUntil,
+  Subject,
+  map,
+  filter,
+  tap,
+  skip,
+  ReplaySubject,
+  withLatestFrom,
+} from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import {
   Generators,
@@ -10,8 +22,7 @@ import {
   PasswordGenerationOptions,
 } from "@bitwarden/generator-core";
 
-import { DependenciesModule } from "./dependencies";
-import { completeOnAccountSwitch, toValidators } from "./util";
+import { completeOnAccountSwitch } from "./util";
 
 const Controls = Object.freeze({
   length: "length",
@@ -26,20 +37,20 @@ const Controls = Object.freeze({
 
 /** Options group for passwords */
 @Component({
-  standalone: true,
   selector: "tools-password-settings",
   templateUrl: "password-settings.component.html",
-  imports: [DependenciesModule],
 })
 export class PasswordSettingsComponent implements OnInit, OnDestroy {
   /** Instantiates the component
    *  @param accountService queries user availability
    *  @param generatorService settings and policy logic
+   *  @param i18nService localize hints
    *  @param formBuilder reactive form controls
    */
   constructor(
     private formBuilder: FormBuilder,
     private generatorService: CredentialGeneratorService,
+    private i18nService: I18nService,
     private accountService: AccountService,
   ) {}
 
@@ -57,6 +68,9 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
   /** Number of milliseconds to wait before accepting user input. */
   @Input()
   waitMs: number = 100;
+
+  /** Removes bottom margin from `bit-section` */
+  @Input({ transform: coerceBooleanProperty }) disableMargin = false;
 
   /** Emits settings updates and completes if the settings become unavailable.
    * @remarks this does not emit the initial settings. If you would like
@@ -114,31 +128,11 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
         this.settings.patchValue(s, { emitEvent: false });
       });
 
-    // bind policy to the template
+    // explain policy & disable policy-overridden fields
     this.generatorService
       .policy$(Generators.password, { userId$: singleUserId$ })
       .pipe(takeUntil(this.destroyed$))
       .subscribe(({ constraints }) => {
-        this.settings
-          .get(Controls.length)
-          .setValidators(toValidators(Controls.length, Generators.password, constraints));
-
-        this.minNumber.setValidators(
-          toValidators(Controls.minNumber, Generators.password, constraints),
-        );
-
-        this.minSpecial.setValidators(
-          toValidators(Controls.minSpecial, Generators.password, constraints),
-        );
-
-        // forward word boundaries to the template (can't do it through the rx form)
-        this.minLength = constraints.length.min;
-        this.maxLength = constraints.length.max;
-        this.minMinNumber = constraints.minNumber.min;
-        this.maxMinNumber = constraints.minNumber.max;
-        this.minMinSpecial = constraints.minSpecial.min;
-        this.maxMinSpecial = constraints.minSpecial.max;
-
         this.policyInEffect = constraints.policyInEffect;
 
         const toggles = [
@@ -154,6 +148,13 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
         for (const [control, enabled] of toggles) {
           this.toggleEnabled(control, enabled);
         }
+
+        const boundariesHint = this.i18nService.t(
+          "generatorBoundariesHint",
+          constraints.length.min?.toString(),
+          constraints.length.max?.toString(),
+        );
+        this.lengthBoundariesHint.next(boundariesHint);
       });
 
     // cascade selections between checkboxes and spinboxes
@@ -198,12 +199,10 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
     settings.pipe(skip(1), takeUntil(this.destroyed$)).subscribe(this.onUpdated);
 
     // now that outputs are set up, connect inputs
-    this.settings.valueChanges
+    this.saveSettings
       .pipe(
-        // debounce ensures rapid edits to a field, such as partial edits to a
-        // spinbox or rapid button clicks don't emit spurious generator updates
-        debounceTime(this.waitMs),
-        map((settings) => {
+        withLatestFrom(this.settings.valueChanges),
+        map(([, settings]) => {
           // interface is "avoid" while storage is "include"
           const s: any = { ...settings };
           s.ambiguous = s.avoidAmbiguous;
@@ -215,26 +214,18 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
       .subscribe(settings);
   }
 
-  /** attribute binding for length[min] */
-  protected minLength: number;
-
-  /** attribute binding for length[max] */
-  protected maxLength: number;
-
-  /** attribute binding for minNumber[min] */
-  protected minMinNumber: number;
-
-  /** attribute binding for minNumber[max] */
-  protected maxMinNumber: number;
-
-  /** attribute binding for minSpecial[min] */
-  protected minMinSpecial: number;
-
-  /** attribute binding for minSpecial[max] */
-  protected maxMinSpecial: number;
+  private saveSettings = new Subject<string>();
+  save(site: string = "component api call") {
+    this.saveSettings.next(site);
+  }
 
   /** display binding for enterprise policy notice */
   protected policyInEffect: boolean;
+
+  private lengthBoundariesHint = new ReplaySubject<string>(1);
+
+  /** display binding for min/max constraints of `length` */
+  protected lengthBoundariesHint$ = this.lengthBoundariesHint.asObservable();
 
   private toggleEnabled(setting: keyof typeof Controls, enabled: boolean) {
     if (enabled) {
@@ -259,6 +250,7 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
 
   private readonly destroyed$ = new Subject<void>();
   ngOnDestroy(): void {
+    this.destroyed$.next();
     this.destroyed$.complete();
   }
 }
