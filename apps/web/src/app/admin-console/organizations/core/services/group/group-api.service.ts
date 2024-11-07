@@ -46,7 +46,7 @@ export class GroupApiService {
 
     const listResponse = new ListResponse(r, GroupDetailsResponse);
 
-    return listResponse.data?.map((gr) => GroupView.fromResponse(gr));
+    return listResponse.data.map((gr) => GroupView.fromResponse(gr));
   }
 
   async getAllDetails(orgId: string): Promise<GroupDetailsView[]> {
