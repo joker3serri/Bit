@@ -94,7 +94,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
 
         // A user can leave an organization if they are NOT a managed user and they are NOT using TDE and Key Connector, or they have a master password.
         this.showLeaveOrgOption =
-          managingOrg.id !== organization.id &&
+          managingOrg?.id !== organization.id &&
           ((decryptionOptions.trustedDeviceOption == undefined &&
             decryptionOptions.keyConnectorOption == undefined) ||
             decryptionOptions.hasMasterPassword);
