@@ -23,8 +23,8 @@ import {
   NewItemDropdownV2Component,
   NewItemInitialValues,
 } from "../vault-v2/new-item-dropdown/new-item-dropdown-v2.component";
-import { VaultListFiltersComponent } from "../vault-v2/vault-list-filters/vault-list-filters.component";
-import { VaultV2SearchComponent } from "../vault-v2/vault-search/vault-v2-search.component";
+
+import { VaultHeaderV2Component } from "./vault-header-v2.component";
 
 enum VaultState {
   Empty,
@@ -46,12 +46,11 @@ enum VaultState {
     CommonModule,
     AutofillVaultListItemsComponent,
     VaultListItemsContainerComponent,
-    VaultListFiltersComponent,
     ButtonModule,
     RouterLink,
-    VaultV2SearchComponent,
     NewItemDropdownV2Component,
     ScrollingModule,
+    VaultHeaderV2Component,
   ],
   providers: [VaultUiOnboardingService],
 })
