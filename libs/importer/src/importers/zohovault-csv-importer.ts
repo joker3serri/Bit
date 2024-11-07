@@ -13,7 +13,6 @@ export class ZohoVaultCsvImporter extends BaseImporter implements Importer {
       result.success = false;
       return Promise.resolve(result);
     }
-
     results.forEach((value) => {
       if (
         this.isNullOrWhitespace(value["Password Name"]) &&
@@ -32,6 +31,11 @@ export class ZohoVaultCsvImporter extends BaseImporter implements Importer {
       cipher.login.uris = this.makeUriArray(
         this.getValueOrDefault(value["Password URL"], this.getValueOrDefault(value["Secret URL"])),
       );
+      const totpUrl = value["login_totp"];
+      const urlParams = new URLSearchParams(totpUrl.split("?")[1]);
+      const secret = urlParams.get("secret");
+
+      cipher.login.totp = this.getValueOrDefault(secret);
       this.parseData(cipher, value.SecretData);
       this.parseData(cipher, value.CustomData);
       this.convertToNoteIfNeeded(cipher);
@@ -67,7 +71,12 @@ export class ZohoVaultCsvImporter extends BaseImporter implements Importer {
         return;
       }
       const fieldLower = field.toLowerCase();
-      if (cipher.login.username == null && this.usernameFieldNames.indexOf(fieldLower) > -1) {
+      if (this.isTotpField(fieldLower)) {
+        cipher.login.totp = value;
+      } else if (
+        cipher.login.username == null &&
+        this.usernameFieldNames.indexOf(fieldLower) > -1
+      ) {
         cipher.login.username = value;
       } else if (
         cipher.login.password == null &&
@@ -78,5 +87,9 @@ export class ZohoVaultCsvImporter extends BaseImporter implements Importer {
         this.processKvp(cipher, field, value);
       }
     });
+  }
+  private isTotpField(field: string): boolean {
+    const totpFields = ["otp", "totp", "twofactorauth"];
+    return totpFields.includes(field);
   }
 }
