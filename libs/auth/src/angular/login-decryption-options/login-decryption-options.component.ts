@@ -67,8 +67,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   protected State = State;
 
   protected formGroup = this.formBuilder.group({
-    // TODO-rr-bw: change to true by default after testing
-    rememberDevice: [false], // Remember device means for the user to trust the device
+    rememberDevice: [true], // Remember device means for the user to trust the device
   });
 
   private get rememberDeviceControl(): FormControl<boolean> {
