@@ -34,6 +34,8 @@ import {
 } from "@bitwarden/components";
 import { KeyService } from "@bitwarden/key-management";
 
+import { AnonLayoutWrapperDataService } from "../anon-layout/anon-layout-wrapper-data.service";
+
 import { LoginDecryptionOptionsService } from "./login-decryption-options.service";
 
 enum State {
@@ -61,7 +63,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   private email: string;
 
   protected loading = false;
-  protected state = State.NewUser;
+  protected state: State;
   protected State = State;
 
   protected formGroup = this.formBuilder.group({
@@ -83,6 +85,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
+    private anonLayoutWrapperDataService: AnonLayoutWrapperDataService,
     private apiService: ApiService,
     private destroyRef: DestroyRef,
     private deviceTrustService: DeviceTrustServiceAbstraction,
@@ -180,6 +183,15 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   private async loadNewUserData() {
     this.state = State.NewUser;
 
+    this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+      pageTitle: {
+        key: "loggedInExclamation",
+      },
+      pageSubtitle: {
+        key: "rememberThisDeviceToMakeFutureLoginsSeamless",
+      },
+    });
+
     const autoEnrollStatus$ = defer(() =>
       this.ssoLoginService.getActiveUserOrganizationSsoIdentifier(),
     ).pipe(
@@ -203,6 +215,15 @@ export class LoginDecryptionOptionsComponent implements OnInit {
 
   private loadExistingUserUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
     this.state = State.ExistingUserUntrustedDevice;
+
+    this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
+      pageTitle: {
+        key: "deviceApprovalRequiredV2",
+      },
+      pageSubtitle: {
+        key: "selectAnApprovalOptionBelow",
+      },
+    });
 
     this.canApproveFromOtherDevice =
       userDecryptionOptions?.trustedDeviceOption?.hasLoginApprovingDevice || false;

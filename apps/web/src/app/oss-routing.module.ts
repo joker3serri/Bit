@@ -232,15 +232,7 @@ const routes: Routes = [
     {
       path: "login-initiated",
       canActivate: [tdeDecryptionRequiredGuard()],
-      data: {
-        pageTitle: {
-          key: "deviceApprovalRequiredV2",
-        },
-        pageSubtitle: {
-          key: "selectAnApprovalOptionBelow",
-        },
-        titleId: "deviceApprovalRequiredV2",
-      },
+      data: {},
       children: [{ path: "", component: LoginDecryptionOptionsComponent }],
     },
   ),

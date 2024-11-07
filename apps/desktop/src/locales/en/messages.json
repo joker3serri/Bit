@@ -2746,6 +2746,9 @@
   "checkForBreaches": {
     "message": "Check known data breaches for this password"
   },
+  "loggedInExclamation": {
+    "message": "Logged in!"
+  },
   "important": {
     "message": "Important:"
   },
@@ -2775,6 +2778,9 @@
   },
   "windowsBiometricUpdateWarningTitle": {
     "message": "Recommended Settings Update"
+  },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "Remember this device to make future logins seamless"
   },
   "deviceApprovalRequired": {
     "message": "Device approval required. Select an approval option below:"

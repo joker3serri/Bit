@@ -3237,6 +3237,9 @@
   "opensInANewWindow": {
     "message": "Opens in a new window"
   },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "Remember this device to make future logins seamless"
+  },
   "deviceApprovalRequired": {
     "message": "Device approval required. Select an approval option below:"
   },
@@ -3754,6 +3757,9 @@
   },
   "accessing": {
     "message": "Accessing"
+  },
+  "loggedInExclamation": {
+    "message": "Logged in!"
   },
   "passkeyNotCopied": {
     "message": "Passkey will not be copied"
