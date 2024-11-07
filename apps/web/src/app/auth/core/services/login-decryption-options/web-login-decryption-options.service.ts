@@ -2,7 +2,6 @@ import {
   LoginDecryptionOptionsService,
   DefaultLoginDecryptionOptionsService,
 } from "@bitwarden/auth/angular";
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 
 import { RouterService } from "../../../../core/router.service";
 import { AcceptOrganizationInviteService } from "../../../organization-invite/accept-organization.service";
@@ -14,7 +13,6 @@ export class WebLoginDecryptionOptionsService
   constructor(
     private routerService: RouterService,
     private acceptOrganizationInviteService: AcceptOrganizationInviteService,
-    private validationService: ValidationService,
   ) {
     super();
   }
@@ -27,7 +25,7 @@ export class WebLoginDecryptionOptionsService
       await this.routerService.getAndClearLoginRedirectUrl();
       await this.acceptOrganizationInviteService.clearOrganizationInvitation();
     } catch (error) {
-      this.validationService.showError(error); // TODO-rr-bw: rethrow error?
+      throw new Error(error); // TODO-rr-bw: rethrow error instead of validation service?
     }
   }
 }

@@ -114,13 +114,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     );
 
     if (!this.email) {
-      this.toastService.showToast({
-        variant: "error",
-        title: null,
-        message: this.i18nService.t("userEmailMissing"),
-      });
-
-      await this.router.navigate(["/login"]);
+      await this.handleMissingEmail();
       return;
     }
 
@@ -143,13 +137,23 @@ export class LoginDecryptionOptionsComponent implements OnInit {
          */
         await this.loadNewUserData();
       } else {
-        this.handleExistingUserUntrustedDeviceData(userDecryptionOptions);
+        this.loadExistingUserUntrustedDeviceData(userDecryptionOptions);
       }
     } catch (err) {
       this.validationService.showError(err);
     } finally {
       this.loading = false;
     }
+  }
+
+  private async handleMissingEmail() {
+    this.toastService.showToast({
+      variant: "error",
+      title: null,
+      message: this.i18nService.t("userEmailMissing"),
+    });
+
+    await this.router.navigate(["/login"]);
   }
 
   private observeAndPersistRememberDeviceValueChanges() {
@@ -174,6 +178,8 @@ export class LoginDecryptionOptionsComponent implements OnInit {
   }
 
   private async loadNewUserData() {
+    this.state = State.NewUser;
+
     const autoEnrollStatus$ = defer(() =>
       this.ssoLoginService.getActiveUserOrganizationSsoIdentifier(),
     ).pipe(
@@ -195,7 +201,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.newUserOrgId = autoEnrollStatus.id;
   }
 
-  private handleExistingUserUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
+  private loadExistingUserUntrustedDeviceData(userDecryptionOptions: UserDecryptionOptions) {
     this.state = State.ExistingUserUntrustedDevice;
 
     this.canApproveFromOtherDevice =
@@ -205,7 +211,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.canApproveWithMasterPassword = userDecryptionOptions?.hasMasterPassword || false;
   }
 
-  async createUser() {
+  protected async createUser() {
     if (this.state !== State.NewUser) {
       return;
     }
@@ -233,13 +239,17 @@ export class LoginDecryptionOptionsComponent implements OnInit {
         this.messagingService.send("redrawMenu");
       }
 
-      if (this.clientType === ClientType.Browser) {
-        await this.router.navigate(["/tabs/vault"]);
-      } else {
-        await this.router.navigate(["/vault"]);
-      }
+      await this.handleCreateUserSuccessNavigation();
     } catch (err) {
       this.validationService.showError(err);
+    }
+  }
+
+  private async handleCreateUserSuccessNavigation() {
+    if (this.clientType === ClientType.Browser) {
+      await this.router.navigate(["/tabs/vault"]);
+    } else {
+      await this.router.navigate(["/vault"]);
     }
   }
 
