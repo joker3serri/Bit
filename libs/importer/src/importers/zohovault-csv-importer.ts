@@ -71,12 +71,7 @@ export class ZohoVaultCsvImporter extends BaseImporter implements Importer {
         return;
       }
       const fieldLower = field.toLowerCase();
-      if (this.isTotpField(fieldLower)) {
-        cipher.login.totp = value;
-      } else if (
-        cipher.login.username == null &&
-        this.usernameFieldNames.indexOf(fieldLower) > -1
-      ) {
+      if (cipher.login.username == null && this.usernameFieldNames.indexOf(fieldLower) > -1) {
         cipher.login.username = value;
       } else if (
         cipher.login.password == null &&
@@ -87,9 +82,5 @@ export class ZohoVaultCsvImporter extends BaseImporter implements Importer {
         this.processKvp(cipher, field, value);
       }
     });
-  }
-  private isTotpField(field: string): boolean {
-    const totpFields = ["otp", "totp", "twofactorauth"];
-    return totpFields.includes(field);
   }
 }
