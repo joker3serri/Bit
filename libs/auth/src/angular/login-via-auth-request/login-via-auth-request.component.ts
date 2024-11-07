@@ -110,82 +110,108 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    // Check if we are in an admin auth request flow
+    // Get the authStatus early because we use it in both flows
+    this.authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
+
+    /**
+     * The LoginViaAuthRequestComponent handles both the `login-with-device` and
+     * the `admin-approval-requested` routes. Therefore we check the route to determine
+     * which flow to initialize.
+     */
     if (this.router.isActive("admin-approval-requested", matchOptions)) {
-      this.state = State.AdminAuthRequest;
-      this.backToRoute = "/login-initiated";
-    }
-
-    // Get email based on auth request flow
-    if (this.state === State.AdminAuthRequest) {
-      // Get email from state for admin auth requests because it is available and also
-      // prevents it from being lost on refresh as the loginEmailService email does not persist.
-      this.email = await firstValueFrom(
-        this.accountService.activeAccount$.pipe(map((a) => a?.email)),
-      );
+      await this.initAdminAuthRequestFlow();
     } else {
-      this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
+      await this.initStandardAuthRequestFlow();
     }
+  }
 
-    // If email is missing, show error toast and redirect
+  private async initAdminAuthRequestFlow(): Promise<void> {
+    this.state = State.AdminAuthRequest;
+    this.backToRoute = "/login-initiated";
+
+    // Get email from state for admin auth requests because it is available and also
+    // prevents it from being lost on refresh as the loginEmailService email does not persist.
+    this.email = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.email)),
+    );
+
     if (!this.email) {
-      this.toastService.showToast({
-        variant: "error",
-        title: null,
-        message: this.i18nService.t("userEmailMissing"),
-      });
-
-      await this.router.navigate([this.backToRoute]);
-
+      await this.handleMissingEmail();
       return;
     }
 
-    this.authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
+    // We only allow a single admin approval request to be active at a time
+    // so we must check state to see if we have an existing one or not
+    const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+    const existingAdminAuthRequest = await this.authRequestService.getAdminAuthRequest(userId);
 
-    if (this.state === State.AdminAuthRequest) {
-      // We only allow a single admin approval request to be active at a time
-      // so we must check state to see if we have an existing one or not
-      const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
-      const existingAdminAuthRequest = await this.authRequestService.getAdminAuthRequest(userId);
-
-      if (existingAdminAuthRequest) {
-        await this.handleExistingAdminAuthRequest(existingAdminAuthRequest, userId);
-      } else {
-        await this.startAuthRequestLogin();
-      }
+    if (existingAdminAuthRequest) {
+      await this.handleExistingAdminAuthRequest(existingAdminAuthRequest, userId);
     } else {
-      // Standard auth request flow
-      await this.startAuthRequestLogin();
+      await this.startAdminAuthRequestLogin();
     }
+  }
+
+  private async initStandardAuthRequestFlow(): Promise<void> {
+    this.state = State.StandardAuthRequest;
+    this.backToRoute = "/login";
+
+    this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
+
+    if (!this.email) {
+      await this.handleMissingEmail();
+      return;
+    }
+
+    await this.startStandardAuthRequestLogin();
+  }
+
+  private async handleMissingEmail(): Promise<void> {
+    this.toastService.showToast({
+      variant: "error",
+      title: null,
+      message: this.i18nService.t("userEmailMissing"),
+    });
+
+    await this.router.navigate([this.backToRoute]);
   }
 
   async ngOnDestroy(): Promise<void> {
     await this.anonymousHubService.stopHubConnection();
   }
 
-  protected async startAuthRequestLogin(): Promise<void> {
+  private async startAdminAuthRequestLogin(): Promise<void> {
+    try {
+      await this.buildAuthRequest(AuthRequestType.AdminApproval);
+
+      const authRequestResponse = await this.authRequestApiService.postAdminAuthRequest(
+        this.authRequest,
+      );
+      const adminAuthReqStorable = new AdminAuthRequestStorable({
+        id: authRequestResponse.id,
+        privateKey: this.authRequestKeyPair.privateKey,
+      });
+
+      const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+      await this.authRequestService.setAdminAuthRequest(adminAuthReqStorable, userId);
+
+      if (authRequestResponse.id) {
+        await this.anonymousHubService.createHubConnection(authRequestResponse.id);
+      }
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  protected async startStandardAuthRequestLogin(): Promise<void> {
     this.showResendNotification = false;
 
     try {
-      let authRequestResponse: AuthRequestResponse;
+      await this.buildAuthRequest(AuthRequestType.AuthenticateAndUnlock);
 
-      if (this.state === State.AdminAuthRequest) {
-        await this.buildAuthRequest(AuthRequestType.AdminApproval);
-        authRequestResponse = await this.authRequestApiService.postAdminAuthRequest(
-          this.authRequest,
-        );
-
-        const adminAuthReqStorable = new AdminAuthRequestStorable({
-          id: authRequestResponse.id,
-          privateKey: this.authRequestKeyPair.privateKey,
-        });
-
-        const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
-        await this.authRequestService.setAdminAuthRequest(adminAuthReqStorable, userId);
-      } else {
-        await this.buildAuthRequest(AuthRequestType.AuthenticateAndUnlock);
-        authRequestResponse = await this.authRequestApiService.postAuthRequest(this.authRequest);
-      }
+      const authRequestResponse = await this.authRequestApiService.postAuthRequest(
+        this.authRequest,
+      );
 
       if (authRequestResponse.id) {
         await this.anonymousHubService.createHubConnection(authRequestResponse.id);
@@ -460,7 +486,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     await this.authRequestService.clearAdminAuthRequest(userId);
 
     // start new auth request
-    await this.startAuthRequestLogin();
+    await this.startAdminAuthRequestLogin();
   }
 
   private async handlePostLoginNavigation(loginResponse: AuthResult) {
