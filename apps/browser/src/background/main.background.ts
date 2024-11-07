@@ -376,6 +376,7 @@ export default class MainBackground {
   autoSubmitLoginBackground: AutoSubmitLoginBackground;
   sdkService: SdkService;
   cipherAuthorizationService: CipherAuthorizationService;
+  inlineMenuFieldQualificationService: InlineMenuFieldQualificationService;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -703,6 +704,8 @@ export default class MainBackground {
       this.i18nService,
       this.stateProvider,
     );
+
+    this.inlineMenuFieldQualificationService = new InlineMenuFieldQualificationService();
 
     this.autofillSettingsService = new AutofillSettingsService(
       this.stateProvider,
@@ -1630,7 +1633,6 @@ export default class MainBackground {
         this.themeStateService,
       );
     } else {
-      const inlineMenuFieldQualificationService = new InlineMenuFieldQualificationService();
       this.overlayBackground = new OverlayBackground(
         this.logService,
         this.cipherService,
@@ -1643,7 +1645,7 @@ export default class MainBackground {
         this.platformUtilsService,
         this.vaultSettingsService,
         this.fido2ActiveRequestManager,
-        inlineMenuFieldQualificationService,
+        this.inlineMenuFieldQualificationService,
         this.themeStateService,
         this.totpService,
         () => this.generatePassword(),
