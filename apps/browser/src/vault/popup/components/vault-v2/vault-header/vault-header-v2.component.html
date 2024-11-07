@@ -1,2 +1,14 @@
-<app-vault-v2-search></app-vault-v2-search>
-<app-vault-list-filters></app-vault-list-filters>
+<div class="tw-flex tw-gap-1" [ngClass]="{ 'tw-mb-2': disclosureRef.open }">
+  <div class="tw-flex-1">
+    <app-vault-v2-search></app-vault-v2-search>
+  </div>
+  <button
+    type="button"
+    bitIconButton="bwi-sliders"
+    [buttonType]="'muted'"
+    [bitDisclosureTriggerFor]="disclosureRef"
+  ></button>
+</div>
+<bit-disclosure #disclosureRef open>
+  <app-vault-list-filters></app-vault-list-filters>
+</bit-disclosure>
