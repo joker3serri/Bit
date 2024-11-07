@@ -23,8 +23,7 @@ import {
   NewItemDropdownV2Component,
   NewItemInitialValues,
 } from "../vault-v2/new-item-dropdown/new-item-dropdown-v2.component";
-
-import { VaultHeaderV2Component } from "./vault-header-v2.component";
+import { VaultHeaderV2Component } from "../vault-v2/vault-header/vault-header-v2.component";
 
 enum VaultState {
   Empty,

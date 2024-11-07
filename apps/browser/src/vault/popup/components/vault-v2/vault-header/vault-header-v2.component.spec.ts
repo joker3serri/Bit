@@ -18,7 +18,7 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
-import { AutofillService } from "../../../../autofill/services/abstractions/autofill.service";
+import { AutofillService } from "../../../../../autofill/services/abstractions/autofill.service";
 
 import { VaultHeaderV2Component } from "./vault-header-v2.component";
 
