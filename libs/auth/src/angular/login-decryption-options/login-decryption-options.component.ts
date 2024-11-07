@@ -231,7 +231,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.canApproveWithMasterPassword = userDecryptionOptions?.hasMasterPassword || false;
   }
 
-  protected async createUser() {
+  protected createUser = async () => {
     if (this.state !== State.NewUser) {
       return;
     }
@@ -263,7 +263,7 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     } catch (err) {
       this.validationService.showError(err);
     }
-  }
+  };
 
   private async handleCreateUserSuccessNavigation() {
     if (this.clientType === ClientType.Browser) {

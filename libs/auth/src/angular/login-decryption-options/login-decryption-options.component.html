@@ -25,18 +25,15 @@
 
 <ng-container *ngIf="state === State.ExistingUserUntrustedDevice">
   <div class="tw-grid tw-gap-3">
-    <button
-      *ngIf="canApproveFromOtherDevice"
-      type="button"
-      bitButton
-      block
-      buttonType="primary"
-      (click)="approveFromOtherDevice()"
-    >
-      {{ "approveFromYourOtherDevice" | i18n }}
-    </button>
+    <ng-container *ngIf="canApproveFromOtherDevice">
+      <button type="button" bitButton block buttonType="primary" (click)="approveFromOtherDevice()">
+        {{ "approveFromYourOtherDevice" | i18n }}
+      </button>
 
-    <div class="tw-text-center">{{ "or" | i18n }}</div>
+      <div *ngIf="canApproveWithMasterPassword || canRequestAdminApproval" class="tw-text-center">
+        {{ "or" | i18n }}
+      </div>
+    </ng-container>
 
     <button
       *ngIf="canApproveWithMasterPassword"
