@@ -348,7 +348,7 @@ export class VaultItemsComponent {
   private allCiphersHaveEditAccess(): boolean {
     return this.selection.selected
       .filter(({ cipher }) => cipher)
-      .every(({ cipher }) => cipher?.edit);
+      .every(({ cipher }) => cipher?.edit && cipher?.viewPassword);
   }
 
   private getUniqueOrganizationIds(): Set<string> {
