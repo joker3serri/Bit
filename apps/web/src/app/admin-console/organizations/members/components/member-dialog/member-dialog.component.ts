@@ -13,7 +13,13 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
+import {
+  CollectionAccessSelectionView,
+  CollectionAdminService,
+  CollectionAdminView,
+  OrganizationUserApiService,
+  CollectionView,
+} from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import {
   OrganizationUserStatusType,
@@ -24,14 +30,9 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { CollectionAdminService } from "../../../../../vault/core/collection-admin.service";
-import { CollectionAdminView } from "../../../../../vault/core/views/collection-admin.view";
 import {
-  CollectionAccessSelectionView,
   GroupService,
   GroupView,
   OrganizationUserAdminView,
@@ -64,6 +65,7 @@ export interface MemberDialogParams {
   isOnSecretsManagerStandalone: boolean;
   initialTab?: MemberDialogTab;
   numConfirmedMembers: number;
+  managedByOrganization?: boolean;
 }
 
 export enum MemberDialogResult {
@@ -133,7 +135,6 @@ export class MemberDialogComponent implements OnDestroy {
     @Inject(DIALOG_DATA) protected params: MemberDialogParams,
     private dialogRef: DialogRef<MemberDialogResult>,
     private i18nService: I18nService,
-    private platformUtilsService: PlatformUtilsService,
     private formBuilder: FormBuilder,
     // TODO: We should really look into consolidating naming conventions for these services
     private collectionAdminService: CollectionAdminService,
@@ -464,7 +465,7 @@ export class MemberDialogComponent implements OnDestroy {
     this.close(MemberDialogResult.Saved);
   };
 
-  delete = async () => {
+  remove = async () => {
     if (!this.editMode) {
       return;
     }
@@ -559,6 +560,39 @@ export class MemberDialogComponent implements OnDestroy {
     });
     this.isRevoked = false;
     this.close(MemberDialogResult.Restored);
+  };
+
+  delete = async () => {
+    if (!this.editMode) {
+      return;
+    }
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: {
+        key: "deleteOrganizationUser",
+        placeholders: [this.params.name],
+      },
+      content: { key: "deleteOrganizationUserWarning" },
+      type: "warning",
+      acceptButtonText: { key: "delete" },
+      cancelButtonText: { key: "cancel" },
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    await this.organizationUserApiService.deleteOrganizationUser(
+      this.params.organizationId,
+      this.params.organizationUserId,
+    );
+
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("organizationUserDeleted", this.params.name),
+    });
+    this.close(MemberDialogResult.Deleted);
   };
 
   ngOnDestroy() {

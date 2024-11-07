@@ -5,7 +5,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -18,6 +18,7 @@ import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService, ToastService } from "@bitwarden/components";
+import { KeyService } from "@bitwarden/key-management";
 
 @Directive()
 export class AttachmentsComponent implements OnInit {
@@ -39,7 +40,8 @@ export class AttachmentsComponent implements OnInit {
   constructor(
     protected cipherService: CipherService,
     protected i18nService: I18nService,
-    protected cryptoService: CryptoService,
+    protected keyService: KeyService,
+    protected encryptService: EncryptService,
     protected platformUtilsService: PlatformUtilsService,
     protected apiService: ApiService,
     protected win: Window,
@@ -177,8 +179,8 @@ export class AttachmentsComponent implements OnInit {
       const key =
         attachment.key != null
           ? attachment.key
-          : await this.cryptoService.getOrgKey(this.cipher.organizationId);
-      const decBuf = await this.cryptoService.decryptFromBytes(encBuf, key);
+          : await this.keyService.getOrgKey(this.cipher.organizationId);
+      const decBuf = await this.encryptService.decryptToBytes(encBuf, key);
       this.fileDownloadService.download({
         fileName: attachment.fileName,
         blobData: decBuf,
@@ -248,8 +250,8 @@ export class AttachmentsComponent implements OnInit {
           const key =
             attachment.key != null
               ? attachment.key
-              : await this.cryptoService.getOrgKey(this.cipher.organizationId);
-          const decBuf = await this.cryptoService.decryptFromBytes(encBuf, key);
+              : await this.keyService.getOrgKey(this.cipher.organizationId);
+          const decBuf = await this.encryptService.decryptToBytes(encBuf, key);
           const activeUserId = await firstValueFrom(
             this.accountService.activeAccount$.pipe(map((a) => a?.id)),
           );
