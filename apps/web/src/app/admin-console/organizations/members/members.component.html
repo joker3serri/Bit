@@ -107,7 +107,7 @@
                   type="button"
                   bitMenuItem
                   (click)="bulkReinvite()"
-                  *ngIf="showBulkReinviteUsers"
+                  *ngIf="allSelectedHaveStatus(userStatusType.Invited)"
                 >
                   <i class="bwi bwi-fw bwi-envelope" aria-hidden="true"></i>
                   {{ "reinviteSelected" | i18n }}
@@ -116,28 +116,52 @@
                   type="button"
                   bitMenuItem
                   (click)="bulkConfirm()"
-                  *ngIf="showBulkConfirmUsers"
+                  *ngIf="allSelectedHaveStatus(userStatusType.Accepted)"
                 >
                   <span class="tw-text-success">
                     <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
                     {{ "confirmSelected" | i18n }}
                   </span>
                 </button>
-                <button type="button" bitMenuItem (click)="bulkRestore()">
+                <button
+                  type="button"
+                  bitMenuItem
+                  (click)="bulkRestore()"
+                  *ngIf="allSelectedHaveStatus(userStatusType.Revoked)"
+                >
                   <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
                   {{ "restoreAccess" | i18n }}
                 </button>
-                <button type="button" bitMenuItem (click)="bulkRevoke()">
+                <button
+                  type="button"
+                  bitMenuItem
+                  (click)="bulkRevoke()"
+                  *ngIf="allSelectedDoNotHaveStatus(userStatusType.Revoked)"
+                >
                   <i class="bwi bwi-fw bwi-minus-circle" aria-hidden="true"></i>
                   {{ "revokeAccess" | i18n }}
                 </button>
-                <button type="button" bitMenuItem (click)="bulkRemove()">
+                <button
+                  type="button"
+                  bitMenuItem
+                  (click)="bulkRemove()"
+                  *ngIf="allSelectedMembersAreNotManagedByOrganization()"
+                >
                   <span class="tw-text-danger">
                     <i aria-hidden="true" class="bwi bwi-close"></i>
                     {{ "remove" | i18n }}
                   </span>
                 </button>
-                <button type="button" bitMenuItem (click)="bulkDelete()">
+                <button
+                  type="button"
+                  bitMenuItem
+                  (click)="bulkDelete()"
+                  *ngIf="
+                    allSelectedMembersAreManagedByOrganization() &&
+                    (allSelectedHaveStatus(userStatusType.Confirmed) ||
+                      allSelectedHaveStatus(userStatusType.Revoked))
+                  "
+                >
                   <span class="tw-text-danger">
                     <i aria-hidden="true" class="bwi bwi-trash"></i>
                     {{ "delete" | i18n }}

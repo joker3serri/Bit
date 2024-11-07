@@ -788,4 +788,24 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
       type: "warning",
     });
   }
+
+  allSelectedHaveStatus(status: OrganizationUserStatusType): boolean {
+    return this.dataSource.getCheckedUsers().every((member) => member.status === status);
+  }
+
+  allSelectedDoNotHaveStatus(status: OrganizationUserStatusType): boolean {
+    return this.dataSource.getCheckedUsers().every((member) => member.status !== status);
+  }
+
+  allSelectedMembersAreManagedByOrganization(): boolean {
+    return this.dataSource
+      .getCheckedUsers()
+      .every((member) => member.managedByOrganization === true);
+  }
+
+  allSelectedMembersAreNotManagedByOrganization(): boolean {
+    return this.dataSource
+      .getCheckedUsers()
+      .every((member) => member.managedByOrganization === false);
+  }
 }
