@@ -32,6 +32,13 @@ const CipherData = [
 ];
 
 describe("Zoho Vault CSV Importer", () => {
+  it("should not succeed given no data", async () => {
+    const importer = new ZohoVaultCsvImporter();
+    const result = await importer.parse("");
+    expect(result != null).toBe(true);
+    expect(result.success).toBe(false);
+  });
+
   CipherData.forEach((data) => {
     it(data.title, async () => {
       const importer = new ZohoVaultCsvImporter();
