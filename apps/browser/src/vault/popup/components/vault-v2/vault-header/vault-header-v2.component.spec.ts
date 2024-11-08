@@ -15,6 +15,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { MessageSender } from "@bitwarden/common/platform/messaging";
+import { StateProvider } from "@bitwarden/common/platform/state";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -43,6 +44,13 @@ describe("VaultHeaderV2Component", () => {
   };
 
   const filters$ = new BehaviorSubject<PopupListFilter>(emptyForm);
+  const state$ = new BehaviorSubject<boolean | undefined>(undefined);
+
+  // Mock state provider update
+  const update = (callback: () => boolean) => {
+    state$.next(callback());
+    return Promise.resolve();
+  };
 
   /** When it exists, returns the notification badge debug element */
   const getBadge = () => fixture.debugElement.query(By.css('[data-testid="filter-badge"]'));
@@ -75,6 +83,10 @@ describe("VaultHeaderV2Component", () => {
         {
           provide: VaultPopupListFiltersService,
           useValue: { filters$, filterForm: new FormBuilder().group(emptyForm) },
+        },
+        {
+          provide: StateProvider,
+          useValue: { getGlobal: () => ({ state$, update }) },
         },
       ],
     }).compileComponents();
@@ -140,5 +152,7 @@ describe("VaultHeaderV2Component", () => {
       collection: { id: "col1" } as Collection,
     });
     fixture.detectChanges();
+
+    expect(getBadge().nativeElement.textContent.trim()).toBe("4");
   });
 });
