@@ -157,6 +157,7 @@
                   bitMenuItem
                   (click)="bulkDelete()"
                   *ngIf="
+                    (accountDeprovisioningEnabled$ | async) &&
                     allSelectedMembersAreManagedByOrganization() &&
                     (allSelectedHaveStatus(userStatusType.Confirmed) ||
                       allSelectedHaveStatus(userStatusType.Revoked))
