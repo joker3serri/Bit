@@ -1,14 +1,24 @@
-<div class="tw-flex tw-gap-1" [ngClass]="{ 'tw-mb-2': disclosureRef.open }">
+<div class="tw-flex tw-gap-1 tw-items-center" [ngClass]="{ 'tw-mb-2': disclosureRef.open }">
   <div class="tw-flex-1">
     <app-vault-v2-search></app-vault-v2-search>
   </div>
-  <button
-    type="button"
-    bitIconButton="bwi-sliders"
-    [buttonType]="'muted'"
-    [bitDisclosureTriggerFor]="disclosureRef"
-  ></button>
+  <div class="tw-relative">
+    <button
+      type="button"
+      bitIconButton="bwi-sliders"
+      [buttonType]="'muted'"
+      [bitDisclosureTriggerFor]="disclosureRef"
+    ></button>
+    <!-- FIXME: associated colors are defined in the ps/extension branch and can be updated once merged -->
+    <div
+      *ngIf="showBadge$ | async"
+      class="tw-flex tw-items-center tw-justify-center tw-z-10 tw-absolute tw-rounded-full tw-h-[15px] tw-w-[15px] tw-top-[1px] tw-right-[1px] tw-text-[#c01176] tw-text-[8px] tw-border-[#c01176] tw-border-[0.5px] tw-bg-[#FFEAFA] tw-leading-normal"
+      data-testid="filter-badge"
+    >
+      {{ numberOfFilters$ | async }}
+    </div>
+  </div>
 </div>
-<bit-disclosure #disclosureRef open>
+<bit-disclosure #disclosureRef open (onVisibilityChange)="disclosureVisibilityChange($event)">
   <app-vault-list-filters></app-vault-list-filters>
 </bit-disclosure>
