@@ -1,9 +1,11 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { AsyncActionsModule, ButtonModule, TabsModule } from "@bitwarden/components";
 
 import { HeaderModule } from "../../layouts/header/header.module";
@@ -15,7 +17,7 @@ import { PasswordHealthMembersURIComponent } from "./password-health-members-uri
 import { PasswordHealthMembersComponent } from "./password-health-members.component";
 import { PasswordHealthComponent } from "./password-health.component";
 
-export enum AccessIntelligenceTabType {
+export enum RiskInsightsTabType {
   AllApps = 0,
   CriticalApps = 1,
   NotifiedMembers = 2,
@@ -23,7 +25,7 @@ export enum AccessIntelligenceTabType {
 
 @Component({
   standalone: true,
-  templateUrl: "./access-intelligence.component.html",
+  templateUrl: "./risk-insights.component.html",
   imports: [
     AllApplicationsComponent,
     AsyncActionsModule,
@@ -39,9 +41,10 @@ export enum AccessIntelligenceTabType {
     TabsModule,
   ],
 })
-export class AccessIntelligenceComponent {
-  tabIndex: AccessIntelligenceTabType;
+export class RiskInsightsComponent implements OnInit {
+  tabIndex: RiskInsightsTabType;
   dataLastUpdated = new Date();
+  isCritialAppsFeatureEnabled = false;
 
   apps: any[] = [];
   criticalApps: any[] = [];
@@ -65,12 +68,19 @@ export class AccessIntelligenceComponent {
     });
   };
 
+  async ngOnInit() {
+    this.isCritialAppsFeatureEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.CriticalApps,
+    );
+  }
+
   constructor(
     protected route: ActivatedRoute,
     private router: Router,
+    private configService: ConfigService,
   ) {
     route.queryParams.pipe(takeUntilDestroyed()).subscribe(({ tabIndex }) => {
-      this.tabIndex = !isNaN(tabIndex) ? tabIndex : AccessIntelligenceTabType.AllApps;
+      this.tabIndex = !isNaN(tabIndex) ? tabIndex : RiskInsightsTabType.AllApps;
     });
   }
 }

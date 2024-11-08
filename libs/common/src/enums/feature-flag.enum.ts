@@ -17,7 +17,6 @@ export enum FeatureFlag {
   InlineMenuFieldQualification = "inline-menu-field-qualification",
   MemberAccessReport = "ac-2059-member-access-report",
   TwoFactorComponentRefactor = "two-factor-component-refactor",
-  EnableTimeThreshold = "PM-5864-dollar-threshold",
   InlineMenuPositioningImprovements = "inline-menu-positioning-improvements",
   ProviderClientVaultPrivacyBanner = "ac-2833-provider-client-vault-privacy-banner",
   VaultBulkManagementAction = "vault-bulk-management-action",
@@ -36,6 +35,7 @@ export enum FeatureFlag {
   AccessIntelligence = "pm-13227-access-intelligence",
   Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
   LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
+  CriticalApps = "pm-14466-risk-insights-critical-application",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
 }
 
@@ -64,7 +64,6 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.InlineMenuFieldQualification]: FALSE,
   [FeatureFlag.MemberAccessReport]: FALSE,
   [FeatureFlag.TwoFactorComponentRefactor]: FALSE,
-  [FeatureFlag.EnableTimeThreshold]: FALSE,
   [FeatureFlag.InlineMenuPositioningImprovements]: FALSE,
   [FeatureFlag.ProviderClientVaultPrivacyBanner]: FALSE,
   [FeatureFlag.VaultBulkManagementAction]: FALSE,
@@ -83,6 +82,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.AccessIntelligence]: FALSE,
   [FeatureFlag.Pm13322AddPolicyDefinitions]: FALSE,
   [FeatureFlag.LimitCollectionCreationDeletionSplit]: FALSE,
+  [FeatureFlag.CriticalApps]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
