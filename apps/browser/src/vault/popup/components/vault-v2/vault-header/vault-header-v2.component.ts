@@ -2,6 +2,8 @@ import { CommonModule } from "@angular/common";
 import { AfterViewInit, Component, ViewChild } from "@angular/core";
 import { combineLatest, distinctUntilChanged, firstValueFrom, map, shareReplay } from "rxjs";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import {
   KeyDefinition,
   StateProvider,
@@ -29,6 +31,7 @@ const FILTER_VISIBILITY_KEY = new KeyDefinition<boolean>(VAULT_SETTINGS_DISK, "f
     IconButtonModule,
     DisclosureTriggerForDirective,
     CommonModule,
+    JslibModule,
   ],
 })
 export class VaultHeaderV2Component implements AfterViewInit {
@@ -54,9 +57,23 @@ export class VaultHeaderV2Component implements AfterViewInit {
     map(([numberOfFilters, disclosureShown]) => numberOfFilters !== 0 && !disclosureShown),
   );
 
+  protected buttonSupportingText$ = this.numberOfFilters$.pipe(
+    map((numberOfFilters) => {
+      if (numberOfFilters === 0) {
+        return null;
+      }
+      if (numberOfFilters === 1) {
+        return this.i18nService.t("filterApplied");
+      }
+
+      return this.i18nService.t("filterAppliedPlural", numberOfFilters);
+    }),
+  );
+
   constructor(
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
     private stateProvider: StateProvider,
+    private i18nService: I18nService,
   ) {}
 
   async ngAfterViewInit(): Promise<void> {
