@@ -16,3 +16,4 @@ export {
 } from "./models/kdf-config";
 export { KdfConfigService } from "./abstractions/kdf-config.service";
 export { DefaultKdfConfigService } from "./kdf-config.service";
+export { KdfType } from "./enums/kdf-type.enum";

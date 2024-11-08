@@ -1,7 +1,13 @@
 import { firstValueFrom } from "rxjs";
 
 import { LogoutReason } from "@bitwarden/auth/common";
-import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig, KeyService } from "@bitwarden/key-management";
+import {
+  Argon2KdfConfig,
+  KdfConfig,
+  PBKDF2KdfConfig,
+  KeyService,
+  KdfType,
+} from "@bitwarden/key-management";
 
 import { ApiService } from "../../abstractions/api.service";
 import { OrganizationService } from "../../admin-console/abstractions/organization/organization.service.abstraction";
@@ -10,7 +16,6 @@ import { Organization } from "../../admin-console/models/domain/organization";
 import { KeysRequest } from "../../models/request/keys.request";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
 import { LogService } from "../../platform/abstractions/log.service";
-import { KdfType } from "../../platform/enums/kdf-type.enum";
 import { Utils } from "../../platform/misc/utils";
 import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import {

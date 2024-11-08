@@ -8,7 +8,6 @@ import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -23,6 +22,7 @@ import {
   PBKDF2KdfConfig,
   UserKeyRotationDataProvider,
   KeyService,
+  KdfType,
 } from "@bitwarden/key-management";
 
 import { EmergencyAccessStatusType } from "../enums/emergency-access-status-type";

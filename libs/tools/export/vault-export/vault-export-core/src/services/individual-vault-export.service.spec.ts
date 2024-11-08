@@ -6,7 +6,6 @@ import { AccountInfo, AccountService } from "@bitwarden/common/auth/abstractions
 import { CipherWithIdExport } from "@bitwarden/common/models/export/cipher-with-ids.export";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { KdfType } from "@bitwarden/common/platform/enums";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -24,6 +23,7 @@ import {
   PBKDF2KdfConfig,
   KdfConfigService,
   KeyService,
+  KdfType,
 } from "@bitwarden/key-management";
 
 import { BuildTestObject, GetUniqueString } from "../../../../../../common/spec";

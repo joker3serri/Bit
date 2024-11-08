@@ -81,7 +81,6 @@ import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import {
   KdfConfigService,
-  KdfConfigService as KdfConfigServiceAbstraction,
   KeyService,
   KeyService as KeyServiceAbstraction,
   BiometricStateService,
@@ -287,7 +286,7 @@ const safeProviders: SafeProvider[] = [
       AccountServiceAbstraction,
       StateProvider,
       BiometricStateService,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
     ],
   }),
   safeProvider({

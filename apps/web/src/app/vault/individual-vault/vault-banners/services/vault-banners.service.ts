@@ -6,7 +6,6 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
-import { KdfType } from "@bitwarden/common/platform/enums";
 import {
   StateProvider,
   ActiveUserState,
@@ -15,7 +14,7 @@ import {
   UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { PBKDF2KdfConfig, KdfConfigService } from "@bitwarden/key-management";
+import { PBKDF2KdfConfig, KdfConfigService, KdfType } from "@bitwarden/key-management";
 
 export enum VisibleVaultBanner {
   KDFSettings = "kdf-settings",

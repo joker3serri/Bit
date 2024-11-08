@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, ValidatorFn, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
-import { KdfType } from "@bitwarden/common/platform/enums";
 import { DialogService } from "@bitwarden/components";
 import {
   KdfConfigService,
@@ -10,6 +9,7 @@ import {
   DEFAULT_KDF_CONFIG,
   KdfConfig,
   PBKDF2KdfConfig,
+  KdfType,
 } from "@bitwarden/key-management";
 
 import { ChangeKdfConfirmationComponent } from "./change-kdf-confirmation.component";

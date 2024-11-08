@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
-import { KdfType } from "../../../common/src/platform/enums/kdf-type.enum";
 import { RangeWithDefault } from "../../../common/src/platform/misc/range-with-default";
+import { KdfType } from "../enums/kdf-type.enum";
 
 /**
  * Represents a type safe KDF configuration.
