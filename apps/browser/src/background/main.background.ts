@@ -705,8 +705,6 @@ export default class MainBackground {
       this.stateProvider,
     );
 
-    this.inlineMenuFieldQualificationService = new InlineMenuFieldQualificationService();
-
     this.autofillSettingsService = new AutofillSettingsService(
       this.stateProvider,
       this.policyService,
@@ -1252,6 +1250,8 @@ export default class MainBackground {
       this.collectionService,
       this.organizationService,
     );
+
+    this.inlineMenuFieldQualificationService = new InlineMenuFieldQualificationService();
   }
 
   async bootstrap() {

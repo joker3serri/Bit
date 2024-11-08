@@ -10,6 +10,7 @@ import {
   startWith,
   Subject,
   switchMap,
+  timeout,
 } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -74,7 +75,9 @@ export class VaultPopupAutofillService {
       if (!tab) {
         return of([]);
       }
-      return this.autofillService.collectPageDetailsFromTab$(tab);
+      return this.autofillService
+        .collectPageDetailsFromTab$(tab)
+        .pipe(timeout({ first: 1500, with: () => of([]) }));
     }),
     shareReplay({ refCount: false, bufferSize: 1 }),
   );
@@ -88,13 +91,20 @@ export class VaultPopupAutofillService {
       let pageHasIdentityFields = false;
 
       try {
+        if (!pageDetails) {
+          throw Error("No page details were provided");
+        }
+
         for (const details of pageDetails) {
           for (const field of details.details.fields) {
-            if (!pageHasCardFields && !pageHasIdentityFields) {
+            if (!pageHasCardFields) {
               pageHasCardFields = this.inlineMenuFieldQualificationService.isFieldForCreditCardForm(
                 field,
                 details.details,
               );
+            }
+
+            if (!pageHasIdentityFields) {
               pageHasIdentityFields =
                 this.inlineMenuFieldQualificationService.isFieldForIdentityForm(
                   field,

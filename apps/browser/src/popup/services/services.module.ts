@@ -168,6 +168,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider(DebounceNavigationService),
   safeProvider(DialogService),
   safeProvider(PopupCloseWarningService),
+  safeProvider(InlineMenuFieldQualificationService),
   safeProvider({
     provide: DEFAULT_VAULT_TIMEOUT,
     useValue: VaultTimeoutStringType.OnRestart,
@@ -349,10 +350,6 @@ const safeProviders: SafeProvider[] = [
       UserNotificationSettingsServiceAbstraction,
       MessageListener,
     ],
-  }),
-  safeProvider({
-    provide: InlineMenuFieldQualificationService,
-    deps: [],
   }),
   safeProvider({
     provide: ScriptInjectorService,
