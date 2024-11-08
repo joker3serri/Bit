@@ -107,7 +107,10 @@
                   type="button"
                   bitMenuItem
                   (click)="bulkReinvite()"
-                  *ngIf="allSelectedHaveStatus(userStatusType.Invited)"
+                  *ngIf="
+                    (accountDeprovisioningEnabled$ | async) === false ||
+                    allSelectedHaveStatus(userStatusType.Invited)
+                  "
                 >
                   <i class="bwi bwi-fw bwi-envelope" aria-hidden="true"></i>
                   {{ "reinviteSelected" | i18n }}
@@ -116,7 +119,10 @@
                   type="button"
                   bitMenuItem
                   (click)="bulkConfirm()"
-                  *ngIf="allSelectedHaveStatus(userStatusType.Accepted)"
+                  *ngIf="
+                    (accountDeprovisioningEnabled$ | async) === false ||
+                    allSelectedHaveStatus(userStatusType.Accepted)
+                  "
                 >
                   <span class="tw-text-success">
                     <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
@@ -127,7 +133,10 @@
                   type="button"
                   bitMenuItem
                   (click)="bulkRestore()"
-                  *ngIf="allSelectedHaveStatus(userStatusType.Revoked)"
+                  *ngIf="
+                    (accountDeprovisioningEnabled$ | async) === false ||
+                    allSelectedHaveStatus(userStatusType.Revoked)
+                  "
                 >
                   <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
                   {{ "restoreAccess" | i18n }}
@@ -136,7 +145,10 @@
                   type="button"
                   bitMenuItem
                   (click)="bulkRevoke()"
-                  *ngIf="allSelectedDoNotHaveStatus(userStatusType.Revoked)"
+                  *ngIf="
+                    (accountDeprovisioningEnabled$ | async) === false ||
+                    allSelectedDoNotHaveStatus(userStatusType.Revoked)
+                  "
                 >
                   <i class="bwi bwi-fw bwi-minus-circle" aria-hidden="true"></i>
                   {{ "revokeAccess" | i18n }}
@@ -145,7 +157,10 @@
                   type="button"
                   bitMenuItem
                   (click)="bulkRemove()"
-                  *ngIf="allSelectedMembersAreNotManagedByOrganization()"
+                  *ngIf="
+                    (accountDeprovisioningEnabled$ | async) === false ||
+                    allSelectedMembersAreNotManagedByOrganization()
+                  "
                 >
                   <span class="tw-text-danger">
                     <i aria-hidden="true" class="bwi bwi-close"></i>
@@ -157,9 +172,10 @@
                   bitMenuItem
                   (click)="bulkDelete()"
                   *ngIf="
-                    (accountDeprovisioningEnabled$ | async) &&
+                    (accountDeprovisioningEnabled$ | async) === true &&
                     allSelectedMembersAreManagedByOrganization() &&
-                    (allSelectedHaveStatus(userStatusType.Confirmed) ||
+                    (allSelectedHaveStatus(userStatusType.Accepted) ||
+                      allSelectedHaveStatus(userStatusType.Confirmed) ||
                       allSelectedHaveStatus(userStatusType.Revoked))
                   "
                 >
