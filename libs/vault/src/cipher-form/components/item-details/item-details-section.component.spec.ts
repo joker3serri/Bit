@@ -23,6 +23,7 @@ const createMockCollection = (
   name: string,
   organizationId: string,
   readOnly = false,
+  canEdit = true,
 ) => {
   return {
     id,
@@ -33,7 +34,7 @@ const createMockCollection = (
     hidePasswords: false,
     manage: true,
     assigned: true,
-    canEditItems: jest.fn().mockReturnValue(true),
+    canEditItems: jest.fn().mockReturnValue(canEdit),
     canEdit: jest.fn(),
     canDelete: jest.fn(),
     canViewCollectionInfo: jest.fn(),
@@ -449,6 +450,81 @@ describe("ItemDetailsSectionComponent", () => {
       );
 
       expect(collectionHint).not.toBeNull();
+    });
+
+    it("should allow all collections to be altered when `config.admin` is true", async () => {
+      component.config.admin = true;
+      component.config.allowPersonalOwnership = true;
+      component.config.organizations = [{ id: "org1" } as Organization];
+      component.config.collections = [
+        createMockCollection("col1", "Collection 1", "org1", true, false) as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1", true, false) as CollectionView,
+        createMockCollection("col3", "Collection 3", "org1", false, false) as CollectionView,
+        // {
+        //   id: "col1",
+        //   name: "Collection 1",
+        //   organizationId: "org1",
+        //   readOnly: true,
+        //   canEditItems: (_org) => false,
+        // } as CollectionView,
+        // {
+        //   id: "col2",
+        //   name: "Collection 2",
+        //   organizationId: "org1",
+        //   readOnly: true,
+        //   canEditItems: (_org) => false,
+        // } as CollectionView,
+        // {
+        //   id: "col3",
+        //   name: "Collection 3",
+        //   organizationId: "org1",
+        //   readOnly: false,
+        //   canEditItems: (_org) => false,
+        // } as CollectionView,
+      ];
+
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      component.itemDetailsForm.controls.organizationId.setValue("org1");
+
+      expect(component["collectionOptions"].map((c) => c.id)).toEqual(["col1", "col2", "col3"]);
+    });
+  });
+
+  describe("readonlyCollections", () => {
+    beforeEach(() => {
+      component.config.mode = "edit";
+      component.config.admin = true;
+      component.config.collections = [
+        createMockCollection("col1", "Collection 1", "org1", true, false) as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1", false, false) as CollectionView,
+        createMockCollection("col3", "Collection 3", "org1", true, false) as CollectionView,
+      ];
+      component.originalCipherView = {
+        name: "cipher1",
+        organizationId: "org1",
+        folderId: "folder1",
+        collectionIds: ["col1", "col2", "col3"],
+        favorite: true,
+      } as CipherView;
+      component.config.organizations = [{ id: "org1" } as Organization];
+    });
+
+    it("should not show collections as readonly when `config.admin` is true", async () => {
+      await component.ngOnInit();
+      fixture.detectChanges();
+
+      // Filters out all collections
+      expect(component["readOnlyCollections"]).toEqual([]);
+
+      // Non-admin, keep readonly collections
+      component.config.admin = false;
+
+      await component.ngOnInit();
+      fixture.detectChanges();
+
+      expect(component["readOnlyCollections"]).toEqual(["Collection 1", "Collection 3"]);
     });
   });
 });
