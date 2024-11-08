@@ -18,6 +18,28 @@ import { CipherFormContainer } from "../../cipher-form-container";
 
 import { ItemDetailsSectionComponent } from "./item-details-section.component";
 
+const createMockCollection = (
+  id: string,
+  name: string,
+  organizationId: string,
+  readOnly = false,
+) => {
+  return {
+    id,
+    name,
+    organizationId,
+    externalId: "",
+    readOnly,
+    hidePasswords: false,
+    manage: true,
+    assigned: true,
+    canEditItems: jest.fn().mockReturnValue(true),
+    canEdit: jest.fn(),
+    canDelete: jest.fn(),
+    canViewCollectionInfo: jest.fn(),
+  };
+};
+
 describe("ItemDetailsSectionComponent", () => {
   let component: ItemDetailsSectionComponent;
   let fixture: ComponentFixture<ItemDetailsSectionComponent>;
@@ -87,7 +109,7 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.allowPersonalOwnership = true;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
+        createMockCollection("col1", "Collection 1", "org1") as CollectionView,
       ];
       component.originalCipherView = {
         name: "cipher1",
@@ -116,8 +138,8 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.allowPersonalOwnership = true;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
+        createMockCollection("col1", "Collection 1", "org1") as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1") as CollectionView,
       ];
       component.originalCipherView = {
         name: "cipher1",
@@ -336,8 +358,8 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.allowPersonalOwnership = true;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
+        createMockCollection("col1", "Collection 1", "org1") as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1") as CollectionView,
       ];
 
       fixture.detectChanges();
@@ -367,9 +389,9 @@ describe("ItemDetailsSectionComponent", () => {
       } as CipherView;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
-        { id: "col3", name: "Collection 3", organizationId: "org1" } as CollectionView,
+        createMockCollection("col1", "Collection 1", "org1") as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1") as CollectionView,
+        createMockCollection("col3", "Collection 3", "org1") as CollectionView,
       ];
 
       fixture.detectChanges();
@@ -387,7 +409,7 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.allowPersonalOwnership = true;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
+        createMockCollection("col1", "Collection 1", "org1") as CollectionView,
       ];
 
       fixture.detectChanges();
@@ -414,14 +436,9 @@ describe("ItemDetailsSectionComponent", () => {
       } as CipherView;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        { id: "col1", name: "Collection 1", organizationId: "org1" } as CollectionView,
-        { id: "col2", name: "Collection 2", organizationId: "org1" } as CollectionView,
-        {
-          id: "col3",
-          name: "Collection 3",
-          organizationId: "org1",
-          readOnly: true,
-        } as CollectionView,
+        createMockCollection("col1", "Collection 1", "org1") as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1") as CollectionView,
+        createMockCollection("col3", "Collection 3", "org1", true) as CollectionView,
       ];
 
       await component.ngOnInit();

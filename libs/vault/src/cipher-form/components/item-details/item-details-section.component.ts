@@ -268,10 +268,16 @@ export class ItemDetailsSectionComponent implements OnInit {
       return;
     }
 
+    const org = this.config.organizations[0];
+
     this.collectionOptions = this.collections
       .filter((c) => {
         // If partial edit mode, show all org collections because the control is disabled.
-        return c.organizationId === orgId && (this.partialEdit || !c.readOnly);
+        return (
+          c.organizationId === orgId &&
+          (this.partialEdit || !c.readOnly) &&
+          c.canEditItems(org, false)
+        );
       })
       .map((c) => ({
         id: c.id,
