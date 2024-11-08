@@ -713,7 +713,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected deleteCipher() {
-    // ciphier.collectionIds may be null or an empty array. Either is a valid indication that the item is unassigned.
+    // cipher.collectionIds may be null or an empty array. Either is a valid indication that the item is unassigned.
     const asAdmin =
       this.organization?.canEditAllCiphers ||
       !this.cipher.collectionIds ||
