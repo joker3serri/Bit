@@ -58,4 +58,31 @@ describe("Zoho Vault CSV Importer", () => {
       }
     });
   });
+
+  it("should create folder and assign ciphers", async () => {
+    const importer = new ZohoVaultCsvImporter();
+    const result = await importer.parse(samplezohovaultcsvdata);
+    expect(result != null).toBe(true);
+    expect(result.success).toBe(true);
+    expect(result.ciphers.length).toBeGreaterThan(0);
+
+    const folder = result.folders.shift();
+    expect(folder.name).toBe("folderName");
+
+    expect(result.folderRelationships[0]).toEqual([0, 0]);
+  });
+
+  it("should create collection and assign ciphers when importing into an organization", async () => {
+    const importer = new ZohoVaultCsvImporter();
+    importer.organizationId = "someOrgId";
+    const result = await importer.parse(samplezohovaultcsvdata);
+    expect(result != null).toBe(true);
+    expect(result.success).toBe(true);
+    expect(result.ciphers.length).toBeGreaterThan(0);
+
+    const collection = result.collections.shift();
+    expect(collection.name).toBe("folderName");
+
+    expect(result.collectionRelationships[0]).toEqual([0, 0]);
+  });
 });

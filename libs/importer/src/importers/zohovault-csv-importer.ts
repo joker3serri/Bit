@@ -20,7 +20,7 @@ export class ZohoVaultCsvImporter extends BaseImporter implements Importer {
       ) {
         return;
       }
-      this.processFolder(result, this.getValueOrDefault(value.ChamberName));
+      this.processFolder(result, this.getValueOrDefault(value["Folder Name"]));
       const cipher = this.initLoginCipher();
       cipher.favorite = this.getValueOrDefault(value.Favorite, "0") === "1";
       cipher.notes = this.getValueOrDefault(value.Notes);
