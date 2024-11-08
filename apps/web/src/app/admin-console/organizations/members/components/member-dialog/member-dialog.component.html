@@ -263,9 +263,7 @@
         </button>
         <button
           *ngIf="
-            editMode &&
-            ((accountDeprovisioningEnabled$ | async) === false ||
-              params.managedByOrganization === false)
+            editMode && (!(accountDeprovisioningEnabled$ | async) || !params.managedByOrganization)
           "
           type="button"
           bitIconButton="bwi-close"
@@ -277,9 +275,7 @@
         ></button>
         <button
           *ngIf="
-            editMode &&
-            (accountDeprovisioningEnabled$ | async) === true &&
-            params.managedByOrganization === true
+            editMode && (accountDeprovisioningEnabled$ | async) && params.managedByOrganization
           "
           type="button"
           bitIconButton="bwi-trash"
