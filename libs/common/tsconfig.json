@@ -1,15 +1,5 @@
 {
   "extends": "../shared/tsconfig.libs",
-  "include": [
-    "src",
-    "spec",
-    "./custom-matchers.d.ts",
-    "../key-management/src/key.service.spec.ts",
-    "../key-management/src/key.service.ts",
-    "../key-management/src/abstractions/key.service.ts",
-    "../key-management/src/abstractions/kdf-config.service.ts",
-    "../key-management/src/kdf-config.service.spec.ts",
-    "../key-management/src/kdf-config.service.ts"
-  ],
+  "include": ["src", "spec", "./custom-matchers.d.ts", "../key-management/src/index.ts"],
   "exclude": ["node_modules", "dist"]
 }

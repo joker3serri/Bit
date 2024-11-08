@@ -1,8 +1,7 @@
 import { Observable, concatMap, distinctUntilChanged, firstValueFrom, map } from "rxjs";
 
-import { PBKDF2KdfConfig } from "@bitwarden/key-management";
+import { PBKDF2KdfConfig, KeyService } from "@bitwarden/key-management";
 
-import { KeyService } from "../../../../../key-management/src/abstractions/key.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../../platform/abstractions/key-generation.service";

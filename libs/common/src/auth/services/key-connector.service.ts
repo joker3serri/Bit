@@ -1,9 +1,8 @@
 import { firstValueFrom } from "rxjs";
 
 import { LogoutReason } from "@bitwarden/auth/common";
-import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig } from "@bitwarden/key-management";
+import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig, KeyService } from "@bitwarden/key-management";
 
-import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { ApiService } from "../../abstractions/api.service";
 import { OrganizationService } from "../../admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserType } from "../../admin-console/enums";
