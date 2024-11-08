@@ -262,7 +262,11 @@
           {{ "revokeAccess" | i18n }}
         </button>
         <button
-          *ngIf="editMode && params.managedByOrganization === false"
+          *ngIf="
+            editMode &&
+            ((accountDeprovisioningEnabled$ | async) === false ||
+              params.managedByOrganization === false)
+          "
           type="button"
           bitIconButton="bwi-close"
           buttonType="danger"
@@ -272,7 +276,11 @@
           [disabled]="loading"
         ></button>
         <button
-          *ngIf="editMode && params.managedByOrganization === true"
+          *ngIf="
+            editMode &&
+            (accountDeprovisioningEnabled$ | async) === true &&
+            params.managedByOrganization === true
+          "
           type="button"
           bitIconButton="bwi-trash"
           buttonType="danger"
