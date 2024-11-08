@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { AfterViewInit, Component, ViewChild } from "@angular/core";
-import { combineLatest, distinctUntilChanged, firstValueFrom, map, shareReplay } from "rxjs";
+import { BehaviorSubject, combineLatest, firstValueFrom, map, shareReplay } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -41,10 +41,7 @@ export class VaultHeaderV2Component implements AfterViewInit {
   private filterVisibilityState = this.stateProvider.getGlobal(FILTER_VISIBILITY_KEY);
 
   /** Emits the visibility status of the disclosure component. */
-  protected isDisclosureShown$ = this.filterVisibilityState.state$.pipe(
-    distinctUntilChanged(),
-    map((visibility) => visibility ?? true),
-  );
+  protected isDisclosureShown$ = new BehaviorSubject<boolean | undefined>(undefined);
 
   /** Emits the number of applied filters. */
   protected numberOfFilters$ = this.vaultPopupListFiltersService.filters$.pipe(
@@ -77,12 +74,17 @@ export class VaultHeaderV2Component implements AfterViewInit {
   ) {}
 
   async ngAfterViewInit(): Promise<void> {
-    const isDisclosureShown = await firstValueFrom(this.isDisclosureShown$);
+    const isDisclosureShown = await firstValueFrom(
+      this.filterVisibilityState.state$.pipe(map((visibility) => visibility ?? true)),
+    );
     this.disclosure.open = isDisclosureShown;
+    this.isDisclosureShown$.next(isDisclosureShown);
   }
 
-  /** Updates the local status of the disclosure */
-  protected async disclosureVisibilityChange(isVisible: boolean) {
-    await this.filterVisibilityState.update(() => isVisible);
+  /** Updates the local and stored status of the disclosure */
+  protected disclosureVisibilityChange(isVisible: boolean) {
+    this.isDisclosureShown$.next(isVisible);
+    // update stored status
+    void this.filterVisibilityState.update(() => isVisible);
   }
 }

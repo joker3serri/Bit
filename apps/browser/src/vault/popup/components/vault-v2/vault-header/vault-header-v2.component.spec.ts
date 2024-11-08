@@ -47,15 +47,14 @@ describe("VaultHeaderV2Component", () => {
   const state$ = new BehaviorSubject<boolean | undefined>(undefined);
 
   // Mock state provider update
-  const update = (callback: () => boolean) => {
-    state$.next(callback());
-    return Promise.resolve();
-  };
+  const update = jest.fn().mockResolvedValue(undefined);
 
   /** When it exists, returns the notification badge debug element */
   const getBadge = () => fixture.debugElement.query(By.css('[data-testid="filter-badge"]'));
 
   beforeEach(async () => {
+    update.mockClear();
+
     await TestBed.configureTestingModule({
       imports: [VaultHeaderV2Component, CommonModule],
       providers: [
@@ -154,5 +153,19 @@ describe("VaultHeaderV2Component", () => {
     fixture.detectChanges();
 
     expect(getBadge().nativeElement.textContent.trim()).toBe("4");
+  });
+
+  it("reads initial state of the filter visibility from state", async () => {
+    state$.next(false);
+
+    await component.ngAfterViewInit();
+
+    expect(component.disclosure.open).toBeFalse();
+
+    state$.next(true);
+
+    await component.ngAfterViewInit();
+
+    expect(component.disclosure.open).toBeTrue();
   });
 });
