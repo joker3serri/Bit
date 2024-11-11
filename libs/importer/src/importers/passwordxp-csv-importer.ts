@@ -8,7 +8,14 @@ import { Importer } from "./importer";
 
 const _mappedColumns = new Set(["Title", "Username", "URL", "Password", "Description"]);
 
+/**
+ * PasswordXP CSV importer
+ */
 export class PasswordXPCsvImporter extends BaseImporter implements Importer {
+  /**
+   * Parses the PasswordXP CSV data.
+   * @param data
+   */
   parse(data: string): Promise<ImportResult> {
     // The header column 'User name' is parsed by the parser, but cannot be used as a variable. This converts it to a valid variable name, prior to parsing.
     data = data.replace(";User name;", ";Username;");
