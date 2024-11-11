@@ -1,4 +1,4 @@
-<bit-dialog>
+<bit-dialog dialogSize="large">
   <ng-container bitDialogTitle>
     <h1>{{ bulkTitle }}</h1>
   </ng-container>
@@ -12,28 +12,49 @@
     </bit-callout>
 
     <ng-container *ngIf="!done">
-      <bit-callout type="warning" *ngIf="users.length > 0 && !error && isRevoking">
-        <p>{{ "revokeUsersWarning" | i18n }}</p>
+      <div *ngIf="users.length > 0 && !error && isRevoking">
+        <p>{{ "revokeMembersWarning" | i18n }}</p>
+        <ul>
+          <li>
+            {{ "claimedAccountRevoke" | i18n }}
+          </li>
+          <li>
+            {{ "unclaimedAccountRevoke" | i18n }}
+          </li>
+        </ul>
+        <p>
+          {{ "restoreMembersInstructions" | i18n }}
+        </p>
         <p *ngIf="this.showNoMasterPasswordWarning">
           {{ "removeMembersWithoutMasterPasswordWarning" | i18n }}
         </p>
-      </bit-callout>
+      </div>
 
       <bit-table>
         <ng-container header>
           <tr>
-            <th bitCell colspan="2">{{ "user" | i18n }}</th>
+            <th bitCell class="tw-w-1/2">{{ "member" | i18n }}</th>
+            <th bitCell>{{ "details" | i18n }}</th>
             <th bitCell *ngIf="this.showNoMasterPasswordWarning">{{ "details" | i18n }}</th>
           </tr>
         </ng-container>
         <ng-template body>
           <tr bitRow *ngFor="let user of users">
             <td bitCell width="30">
-              <bit-avatar [text]="user | userName" [id]="user.id" size="small"></bit-avatar>
+              <div class="tw-flex tw-items-center">
+                <div class="tw-flex tw-items-center tw-mr-6">
+                  <bit-avatar [text]="user | userName" [id]="user.id" size="small"></bit-avatar>
+                </div>
+                <div>
+                  {{ user.email }}
+                  <small class="tw-block tw-text-muted" *ngIf="user.name">{{ user.name }}</small>
+                </div>
+              </div>
             </td>
-            <td bitCell>
-              {{ user.email }}
-              <small class="tw-block tw-text-muted" *ngIf="user.name">{{ user.name }}</small>
+            <td bitCell width="30">
+              {{
+                user.managedByOrganization ? ("claimedAccount" | i18n) : ("unclaimedAccount" | i18n)
+              }}
             </td>
             <td bitCell *ngIf="this.showNoMasterPasswordWarning">
               <span class="tw-block tw-lowercase tw-text-muted">
@@ -53,18 +74,22 @@
       <bit-table>
         <ng-container header>
           <tr>
-            <th bitCell colspan="2">{{ "user" | i18n }}</th>
-            <th>{{ "status" | i18n }}</th>
+            <th bitCell class="tw-w-1/2">{{ "member" | i18n }}</th>
+            <th bitCell>{{ "status" | i18n }}</th>
           </tr>
         </ng-container>
         <ng-template body>
           <tr bitRow *ngFor="let user of users">
             <td bitCell width="30">
-              <bit-avatar [text]="user | userName" [id]="user.id" size="small"></bit-avatar>
-            </td>
-            <td bitCell>
-              {{ user.email }}
-              <small class="tw-block tw-text-muted" *ngIf="user.name">{{ user.name }}</small>
+              <div class="tw-flex tw-items-center">
+                <div class="tw-flex tw-items-center tw-mr-6">
+                  <bit-avatar [text]="user | userName" [id]="user.id" size="small"></bit-avatar>
+                </div>
+                <div>
+                  {{ user.email }}
+                  <small class="tw-block tw-text-muted" *ngIf="user.name">{{ user.name }}</small>
+                </div>
+              </div>
             </td>
             <td bitCell *ngIf="statuses.has(user.id)">
               {{ statuses.get(user.id) }}
