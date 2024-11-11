@@ -286,7 +286,7 @@ export class ItemDetailsSectionComponent implements OnInit {
         // - When viewing as an admin, all collections should be shown, even readonly. When non-admin, filter out readonly collections
         return (
           c.organizationId === orgId &&
-          (this.partialEdit || c.canEditItems(organization, false) || this.config.admin)
+          (this.partialEdit || c.canEditItems(organization) || this.config.admin)
         );
       })
       .map((c) => ({

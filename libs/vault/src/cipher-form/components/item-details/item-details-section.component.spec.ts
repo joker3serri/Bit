@@ -460,27 +460,6 @@ describe("ItemDetailsSectionComponent", () => {
         createMockCollection("col1", "Collection 1", "org1", true, false) as CollectionView,
         createMockCollection("col2", "Collection 2", "org1", true, false) as CollectionView,
         createMockCollection("col3", "Collection 3", "org1", false, false) as CollectionView,
-        // {
-        //   id: "col1",
-        //   name: "Collection 1",
-        //   organizationId: "org1",
-        //   readOnly: true,
-        //   canEditItems: (_org) => false,
-        // } as CollectionView,
-        // {
-        //   id: "col2",
-        //   name: "Collection 2",
-        //   organizationId: "org1",
-        //   readOnly: true,
-        //   canEditItems: (_org) => false,
-        // } as CollectionView,
-        // {
-        //   id: "col3",
-        //   name: "Collection 3",
-        //   organizationId: "org1",
-        //   readOnly: false,
-        //   canEditItems: (_org) => false,
-        // } as CollectionView,
       ];
 
       fixture.detectChanges();

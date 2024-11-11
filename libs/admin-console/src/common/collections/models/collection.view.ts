@@ -40,7 +40,7 @@ export class CollectionView implements View, ITreeNodeObject {
   }
 
   // Applying excludeHidePassword false will remove collections with Can Edit Except Password Permissions
-  canEditItems(org: Organization, excludeHidePassword = true): boolean {
+  canEditItems(org: Organization, editPassword = true): boolean {
     if (org != null && org.id !== this.organizationId) {
       throw new Error(
         "Id of the organization provided does not match the org id of the collection.",
@@ -50,9 +50,7 @@ export class CollectionView implements View, ITreeNodeObject {
     return (
       org?.canEditAllCiphers ||
       this.manage ||
-      (this.assigned &&
-        !this.readOnly &&
-        (excludeHidePassword ? true : this.hidePasswords === false))
+      (this.assigned && !this.readOnly && (!editPassword || !this.hidePasswords))
     );
   }
 

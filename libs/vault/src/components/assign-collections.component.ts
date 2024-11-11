@@ -291,7 +291,7 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
 
     this.availableCollections = this.params.availableCollections
       .filter((collection) => {
-        return collection.canEditItems(org, false);
+        return collection.canEditItems(org);
       })
       .map((c) => ({
         icon: "bwi-collection",
