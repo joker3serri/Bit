@@ -42,13 +42,13 @@ import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstract
 import { isNotSelfUpgradable, ProductTierType } from "@bitwarden/common/billing/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService, SimpleDialogOptions, ToastService } from "@bitwarden/components";
+import { KeyService } from "@bitwarden/key-management";
 
 import {
   ChangePlanDialogResultType,
@@ -60,9 +60,9 @@ import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 import { openEntityEventsDialog } from "../manage/entity-events.component";
 
-import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
+import { BulkConfirmDialogComponent } from "./components/bulk/bulk-confirm-dialog.component";
 import { BulkEnableSecretsManagerDialogComponent } from "./components/bulk/bulk-enable-sm-dialog.component";
-import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
+import { BulkRemoveDialogComponent } from "./components/bulk/bulk-remove-dialog.component";
 import { BulkRestoreRevokeComponent } from "./components/bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "./components/bulk/bulk-status.component";
 import {
@@ -102,6 +102,10 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     FeatureFlag.EnableUpgradePasswordManagerSub,
   );
 
+  protected accountDeprovisioningEnabled$: Observable<boolean> = this.configService.getFeatureFlag$(
+    FeatureFlag.AccountDeprovisioning,
+  );
+
   // Fixed sizes used for cdkVirtualScroll
   protected rowHeight = 62;
   protected rowHeightClass = `tw-h-[62px]`;
@@ -110,7 +114,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     apiService: ApiService,
     i18nService: I18nService,
     organizationManagementPreferencesService: OrganizationManagementPreferencesService,
-    cryptoService: CryptoService,
+    keyService: KeyService,
     private encryptService: EncryptService,
     validationService: ValidationService,
     logService: LogService,
@@ -134,7 +138,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     super(
       apiService,
       i18nService,
-      cryptoService,
+      keyService,
       validationService,
       logService,
       userNamePipe,
@@ -172,8 +176,8 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
             this.organization.canManageUsersPassword &&
             !this.organization.hasPublicAndPrivateKeys
           ) {
-            const orgShareKey = await this.cryptoService.getOrgKey(this.organization.id);
-            const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
+            const orgShareKey = await this.keyService.getOrgKey(this.organization.id);
+            const orgKeys = await this.keyService.makeKeyPair(orgShareKey);
             const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
             const response = await this.organizationApiService.updateKeys(
               this.organization.id,
@@ -293,7 +297,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   async confirmUser(user: OrganizationUserView, publicKey: Uint8Array): Promise<void> {
-    const orgKey = await this.cryptoService.getOrgKey(this.organization.id);
+    const orgKey = await this.keyService.getOrgKey(this.organization.id);
     const key = await this.encryptService.rsaEncrypt(orgKey.key, publicKey);
     const request = new OrganizationUserConfirmRequest();
     request.key = key.encryptedString;
@@ -486,7 +490,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
       const enableUpgradePasswordManagerSub = await firstValueFrom(
         this.enableUpgradePasswordManagerSub$,
       );
-      if (enableUpgradePasswordManagerSub) {
+      if (enableUpgradePasswordManagerSub && this.organization.canEditSubscription) {
         const reference = openChangePlanDialog(this.dialogService, {
           data: {
             organizationId: this.organization.id,
@@ -518,6 +522,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
         isOnSecretsManagerStandalone: this.orgIsOnSecretsManagerStandalone,
         initialTab: initialTab,
         numConfirmedMembers: this.dataSource.confirmedUserCount,
+        managedByOrganization: user?.managedByOrganization,
       },
     });
 
@@ -541,7 +546,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
       return;
     }
 
-    const dialogRef = BulkRemoveComponent.open(this.dialogService, {
+    const dialogRef = BulkRemoveDialogComponent.open(this.dialogService, {
       data: {
         organizationId: this.organization.id,
         users: this.dataSource.getCheckedUsers(),
@@ -620,7 +625,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
       return;
     }
 
-    const dialogRef = BulkConfirmComponent.open(this.dialogService, {
+    const dialogRef = BulkConfirmDialogComponent.open(this.dialogService, {
       data: {
         organizationId: this.organization.id,
         users: this.dataSource.getCheckedUsers(),
@@ -723,6 +728,40 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     }
 
     return true;
+  }
+
+  async deleteUser(user: OrganizationUserView) {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: {
+        key: "deleteOrganizationUser",
+        placeholders: [this.userNamePipe.transform(user)],
+      },
+      content: { key: "deleteOrganizationUserWarning" },
+      type: "warning",
+      acceptButtonText: { key: "delete" },
+      cancelButtonText: { key: "cancel" },
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    this.actionPromise = this.organizationUserApiService.deleteOrganizationUser(
+      this.organization.id,
+      user.id,
+    );
+    try {
+      await this.actionPromise;
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("organizationUserDeleted", this.userNamePipe.transform(user)),
+      });
+      this.dataSource.removeUser(user);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+    this.actionPromise = null;
   }
 
   private async noMasterPasswordConfirmationDialog(user: OrganizationUserView) {
