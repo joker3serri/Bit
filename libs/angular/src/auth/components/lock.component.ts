@@ -318,6 +318,7 @@ export class LockComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Vault can be de-synced since notifications get ignored while locked. Need to check whether sync is required using the sync service.
     const clientType = this.platformUtilsService.getClientType();
     if (clientType === ClientType.Browser || clientType === ClientType.Desktop) {
       // Desktop and Browser have better offline support and to facilitate this we don't make the user wait for what
@@ -336,8 +337,6 @@ export class LockComponent implements OnInit, OnDestroy {
     } else {
       await this.syncService.fullSync(false);
     }
-
-    // Vault can be de-synced since notifications get ignored while locked. Need to check whether sync is required using the sync service.
 
     if (this.onSuccessfulSubmit != null) {
       await this.onSuccessfulSubmit();
