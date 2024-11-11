@@ -62,18 +62,6 @@ export function canAccessAdmin(i18nService: I18nService) {
   );
 }
 
-/**
- * @deprecated
- * To be removed after Flexible Collections.
- **/
-export function canAccessImportExport(i18nService: I18nService) {
-  return map<Organization[], Organization[]>((orgs) =>
-    orgs
-      .filter((org) => org.canAccessImportExport)
-      .sort(Utils.getSortFunction(i18nService, "name")),
-  );
-}
-
 export function canAccessImport(i18nService: I18nService) {
   return map<Organization[], Organization[]>((orgs) =>
     orgs
@@ -88,12 +76,12 @@ export function canAccessImport(i18nService: I18nService) {
  * Risky operations like updates are isolated to the
  * internal extension `InternalOrganizationServiceAbstraction`.
  */
-export abstract class vNextOrganizationService {
+export abstract class DefaultvNextOrganizationService {
   /**
-   * Publishes state for all organizations under the active user.
+   * Publishes state for all organizations under the specified user.
    * @returns An observable list of organizations
    */
-  organizations$: (userId: UserId) => Observable<Organization[]>;
+  organizations$: (userId: Observable<UserId>) => Observable<Organization[]>;
 
   // @todo Clean these up. Continuing to expand them is not recommended.
   // @see https://bitwarden.atlassian.net/browse/AC-2252
@@ -106,7 +94,7 @@ export abstract class vNextOrganizationService {
    * Emits true if any of the user's organizations have a Free Bitwarden Families sponsorship available.
    */
   familySponsorshipAvailable$: (userId: Observable<UserId>) => Observable<boolean>;
-  hasOrganizations: (userId: UserId) => Promise<boolean>;
+  hasOrganizations: (userId: Observable<UserId>) => Observable<boolean>;
 }
 
 /**
@@ -115,24 +103,24 @@ export abstract class vNextOrganizationService {
  * `OrganizationService` for easy access to `get` calls.
  * @internal
  */
-export abstract class vNextInternalOrganizationServiceAbstraction extends vNextOrganizationService {
+export abstract class DefaultvNextInternalOrganizationServiceAbstraction extends DefaultvNextOrganizationService {
   /**
    * Replaces state for the provided organization, or creates it if not found.
    * @param organization The organization state being saved.
-   * @param userId The userId to replace state for. Defaults to the active
+   * @param userId The userId to replace state for. Defaults to the provided
    * user.
    */
   upsert: (OrganizationData: OrganizationData, userId: UserId) => Promise<void>;
 
   /**
-   * Replaces state for the entire registered organization list for the active user.
+   * Replaces state for the entire registered organization list for the specified user.
    * You probably don't want this unless you're calling from a full sync
    * operation or a logout. See `upsert` for creating & updating a single
    * organization in the state.
-   * @param organizations A complete list of all organization state for the active
+   * @param organizations A complete list of all organization state for the provided
    * user.
-   * @param userId The userId to replace state for. Defaults to the active
+   * @param userId The userId to replace state for. Defaults to the provided
    * user.
    */
-  replace: (organizations: { [id: string]: OrganizationData }, userId?: UserId) => Promise<void>;
+  replace: (organizations: { [id: string]: OrganizationData }, userId: UserId) => Promise<void>;
 }

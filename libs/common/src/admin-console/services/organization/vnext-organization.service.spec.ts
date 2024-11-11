@@ -1,7 +1,6 @@
 import { firstValueFrom, of } from "rxjs";
 
-import { FakeAccountService, FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
-import { FakeActiveUserState } from "../../../../spec/fake-state";
+import { FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { Utils } from "../../../platform/misc/utils";
 import { OrganizationId, UserId } from "../../../types/guid";
 import { OrganizationData } from "../../models/data/organization.data";
@@ -14,9 +13,7 @@ describe("OrganizationService", () => {
   let organizationService: DefaultvNextOrganizationService;
 
   const fakeUserId = Utils.newGuid() as UserId;
-  let fakeAccountService: FakeAccountService;
   let fakeStateProvider: FakeStateProvider;
-  let fakeActiveUserState: FakeActiveUserState<Record<string, OrganizationData>>;
 
   /**
    * It is easier to read arrays than records in code, but we store a record
@@ -82,23 +79,22 @@ describe("OrganizationService", () => {
 
   /**
    * `OrganizationService` deals with multiple accounts at times. This helper
-   * function can be used to add a new non-active account to the test data.
+   * function can be used to add an other account to the test data.
    * This function is **not** needed to handle creation of the first account,
-   * as that is handled by the `FakeAccountService` in `mockAccountServiceWith()`
    * @returns The `UserId` of the newly created state account and the mock data
    * created for them as an `Organization[]`.
    */
-  async function addNonActiveAccountToStateProvider(): Promise<[UserId, OrganizationData[]]> {
-    const nonActiveUserId = Utils.newGuid() as UserId;
+  async function addOtherUserToStateProvide(): Promise<[UserId, OrganizationData[]]> {
+    const otherUserId = Utils.newGuid() as UserId;
 
     const mockOrganizations = buildMockOrganizations(10);
 
     await fakeStateProvider.setUserState(
       ORGANIZATIONS,
       arrayToRecord(mockOrganizations),
-      nonActiveUserId,
+      otherUserId,
     );
-    return [nonActiveUserId, mockOrganizations];
+    return [otherUserId, mockOrganizations];
   }
 
   const setOrganizationsState = (organizationData: OrganizationData[] | null) =>
@@ -109,9 +105,7 @@ describe("OrganizationService", () => {
     );
 
   beforeEach(async () => {
-    fakeAccountService = mockAccountServiceWith(fakeUserId);
-    fakeStateProvider = new FakeStateProvider(fakeAccountService);
-    fakeActiveUserState = fakeStateProvider.activeUser.getFake(ORGANIZATIONS);
+    fakeStateProvider = new FakeStateProvider(mockAccountServiceWith(fakeUserId));
     organizationService = new DefaultvNextOrganizationService(fakeStateProvider);
   });
 
@@ -152,44 +146,43 @@ describe("OrganizationService", () => {
       it("publishes an empty array if organizations in state = undefined", async () => {
         const mockData: OrganizationData[] = undefined;
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
         expect(result).toEqual([]);
       });
 
       it("publishes an empty array if organizations in state = null", async () => {
         const mockData: OrganizationData[] = null;
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
         expect(result).toEqual([]);
       });
 
       it("publishes an empty array if organizations in state = []", async () => {
         const mockData: OrganizationData[] = [];
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
         expect(result).toEqual([]);
       });
     });
 
     describe("parameter handling & returns", () => {
-      it("publishes all organizations for the active user by default", async () => {
+      it("publishes all organizations for the provided user by default", async () => {
         const mockData = buildMockOrganizations(10);
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
         expect(result).toEqual(mockData);
       });
 
-      it("can be used to publish the organizations of a non active user if requested", async () => {
-        const activeUserMockData = buildMockOrganizations(10, "activeUserState");
-        fakeActiveUserState.nextState(arrayToRecord(activeUserMockData));
+      it("can be used to publish the organizations of a different user if requested", async () => {
+        const mockData = buildMockOrganizations(10, fakeUserId.toString());
+        await setOrganizationsState(mockData);
 
-        const [nonActiveUserId, nonActiveUserMockOrganizations] =
-          await addNonActiveAccountToStateProvider();
-        const result = await firstValueFrom(organizationService.organizations$(nonActiveUserId));
+        const [otherUserId, otherUserIdMockOrganizations] = await addOtherUserToStateProvide();
+        const result = await firstValueFrom(organizationService.organizations$(of(otherUserId)));
 
-        expect(result).toEqual(nonActiveUserMockOrganizations);
+        expect(result).toEqual(otherUserIdMockOrganizations);
         expect(result).not.toEqual(
-          await firstValueFrom(organizationService.organizations$(fakeUserId)),
+          await firstValueFrom(organizationService.organizations$(of(fakeUserId))),
         );
       });
     });
@@ -201,11 +194,11 @@ describe("OrganizationService", () => {
       // `stateProvider` will be null when the `upsert` method is called.
       const mockData = buildMockOrganizations();
       await organizationService.upsert(mockData[0], fakeUserId);
-      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
       expect(result).toEqual(mockData.map((x) => new Organization(x)));
     });
 
-    it("updates an organization that already exists in state, defaulting to the active user", async () => {
+    it("updates an organization that already exists in state, defaulting to the provided user", async () => {
       const mockData = buildMockOrganizations(10);
       await setOrganizationsState(mockData);
       const indexToUpdate = 5;
@@ -214,7 +207,7 @@ describe("OrganizationService", () => {
         id: mockData[indexToUpdate].id,
       };
       await organizationService.upsert(anUpdatedOrganization, fakeUserId);
-      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
       expect(result[indexToUpdate]).not.toEqual(new Organization(mockData[indexToUpdate]));
       expect(result[indexToUpdate].id).toEqual(new Organization(mockData[indexToUpdate]).id);
       expectIsEqualExceptForIndex(
@@ -224,50 +217,49 @@ describe("OrganizationService", () => {
       );
     });
 
-    it("can also update an organization in state for a non-active user, if requested", async () => {
-      const activeUserMockData = buildMockOrganizations(10, "activeUserOrganizations");
-      await setOrganizationsState(activeUserMockData);
+    it("can also update an organization in state for an other user, if requested", async () => {
+      const userMockData = buildMockOrganizations(10, fakeUserId.toString());
+      await setOrganizationsState(userMockData);
 
-      const [nonActiveUserId, nonActiveUserMockOrganizations] =
-        await addNonActiveAccountToStateProvider();
+      const [otherUserId, otherUserMockOrganizationData] = await addOtherUserToStateProvide();
       const indexToUpdate = 5;
       const anUpdatedOrganization = {
         ...buildMockOrganizations(1, "UPDATED").pop(),
-        id: nonActiveUserMockOrganizations[indexToUpdate].id,
+        id: otherUserMockOrganizationData[indexToUpdate].id,
       };
 
-      await organizationService.upsert(anUpdatedOrganization, nonActiveUserId);
-      const result = await firstValueFrom(organizationService.organizations$(nonActiveUserId));
+      await organizationService.upsert(anUpdatedOrganization, otherUserId);
+      const result = await firstValueFrom(organizationService.organizations$(of(otherUserId)));
 
       expect(result[indexToUpdate]).not.toEqual(
-        new Organization(nonActiveUserMockOrganizations[indexToUpdate]),
+        new Organization(otherUserMockOrganizationData[indexToUpdate]),
       );
       expect(result[indexToUpdate].id).toEqual(
-        new Organization(nonActiveUserMockOrganizations[indexToUpdate]).id,
+        new Organization(otherUserMockOrganizationData[indexToUpdate]).id,
       );
       expectIsEqualExceptForIndex(
         result,
-        nonActiveUserMockOrganizations.map((x) => new Organization(x)),
+        otherUserMockOrganizationData.map((x) => new Organization(x)),
         indexToUpdate,
       );
 
-      // Just to be safe, lets make sure the active user didn't get updated
+      // Just to be safe, lets make sure the provided user didn't get updated
       // at all
-      const activeUserState = await firstValueFrom(organizationService.organizations$(fakeUserId));
-      expect(activeUserState).toEqual(activeUserMockData.map((x) => new Organization(x)));
-      expect(activeUserState).not.toEqual(result);
+      const userState = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+      expect(userState).toEqual(userMockData.map((x) => new Organization(x)));
+      expect(userState).not.toEqual(result);
     });
   });
 
   describe("replace()", () => {
-    it("replaces the entire organization list in state, defaulting to the active user", async () => {
+    it("replaces the entire organization list in state, defaulting to the provided user", async () => {
       const originalData = buildMockOrganizations(10);
       await setOrganizationsState(originalData);
 
       const newData = buildMockOrganizations(10, "newData");
       await organizationService.replace(arrayToRecord(newData), fakeUserId);
 
-      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
 
       expect(result).toEqual(newData);
       expect(result).not.toEqual(originalData);
@@ -278,28 +270,28 @@ describe("OrganizationService", () => {
       const originalData = buildMockOrganizations(2);
       await setOrganizationsState(originalData);
       await organizationService.replace(null, fakeUserId);
-      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
+      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
       expect(result).toEqual([]);
       expect(result).not.toEqual(originalData);
     });
 
-    it("can also replace state for a non-active user, if requested", async () => {
-      const activeUserMockData = buildMockOrganizations(10, "activeUserOrganizations");
-      await setOrganizationsState(activeUserMockData);
+    it("can also replace state for an other user, if requested", async () => {
+      const userMockData = buildMockOrganizations(10, fakeUserId.toString());
+      await setOrganizationsState(userMockData);
 
-      const [nonActiveUserId, originalOrganizations] = await addNonActiveAccountToStateProvider();
+      const [otherUserId, otherUserMockOrganizationData] = await addOtherUserToStateProvide();
       const newData = buildMockOrganizations(10, "newData");
 
-      await organizationService.replace(arrayToRecord(newData), nonActiveUserId);
-      const result = await firstValueFrom(organizationService.organizations$(nonActiveUserId));
+      await organizationService.replace(arrayToRecord(newData), otherUserId);
+      const result = await firstValueFrom(organizationService.organizations$(of(otherUserId)));
       expect(result).toEqual(newData);
-      expect(result).not.toEqual(originalOrganizations);
+      expect(result).not.toEqual(otherUserMockOrganizationData);
 
-      // Just to be safe, lets make sure the active user didn't get updated
+      // Just to be safe, lets make sure the provided user didn't get updated
       // at all
-      const activeUserState = await firstValueFrom(organizationService.organizations$(fakeUserId));
-      expect(activeUserState).toEqual(activeUserMockData.map((x) => new Organization(x)));
-      expect(activeUserState).not.toEqual(result);
+      const userState = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+      expect(userState).toEqual(userMockData.map((x) => new Organization(x)));
+      expect(userState).not.toEqual(result);
     });
   });
 });

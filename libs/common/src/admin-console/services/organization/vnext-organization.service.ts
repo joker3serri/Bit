@@ -1,8 +1,8 @@
-import { map, Observable, firstValueFrom, switchMap } from "rxjs";
+import { map, Observable, switchMap } from "rxjs";
 
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
-import { vNextInternalOrganizationServiceAbstraction } from "../../abstractions/organization/vnext-organization.service.abstraction";
+import { DefaultvNextInternalOrganizationServiceAbstraction } from "../../abstractions/organization/deafult-vnext.organization.service.abstraction";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
@@ -40,36 +40,29 @@ function mapToBooleanHasAnyOrganizations() {
 }
 
 export class DefaultvNextOrganizationService
-  implements vNextInternalOrganizationServiceAbstraction
+  implements DefaultvNextInternalOrganizationServiceAbstraction
 {
   memberOrganizations$(userId$: Observable<UserId>): Observable<Organization[]> {
-    return userId$.pipe(
-      switchMap((userId: UserId) => this.organizations$(userId)),
-      mapToExcludeProviderOrganizations(),
-    );
+    return this.organizations$(userId$).pipe(mapToExcludeProviderOrganizations());
   }
 
   constructor(private stateProvider: StateProvider) {}
 
   canManageSponsorships$(userId$: Observable<UserId>) {
-    return userId$.pipe(
-      switchMap((userId: UserId) => this.organizations$(userId)),
+    return this.organizations$(userId$).pipe(
       mapToExcludeOrganizationsWithoutFamilySponsorshipSupport(),
       mapToBooleanHasAnyOrganizations(),
     );
   }
 
   familySponsorshipAvailable$(userId$: Observable<UserId>) {
-    return userId$.pipe(
-      switchMap((userId: UserId) => this.organizations$(userId)),
+    return this.organizations$(userId$).pipe(
       map((orgs) => orgs.some((o) => o.familySponsorshipAvailable)),
     );
   }
 
-  async hasOrganizations(userId: UserId): Promise<boolean> {
-    return await firstValueFrom(
-      this.organizations$(userId).pipe(mapToBooleanHasAnyOrganizations()),
-    );
+  hasOrganizations(userId$: Observable<UserId>): Observable<boolean> {
+    return this.organizations$(userId$).pipe(mapToBooleanHasAnyOrganizations());
   }
 
   async upsert(organization: OrganizationData, userId: UserId): Promise<void> {
@@ -84,8 +77,12 @@ export class DefaultvNextOrganizationService
     await this.organizationState(userId).update(() => organizations);
   }
 
-  organizations$(userId: UserId): Observable<Organization[] | undefined> {
-    return this.organizationState(userId).state$.pipe(this.mapOrganizationRecordToArray());
+  organizations$(userId$: Observable<UserId>): Observable<Organization[] | undefined> {
+    return userId$.pipe(
+      switchMap((userId) =>
+        this.organizationState(userId).state$.pipe(this.mapOrganizationRecordToArray()),
+      ),
+    );
   }
 
   private organizationState(userId: UserId) {
