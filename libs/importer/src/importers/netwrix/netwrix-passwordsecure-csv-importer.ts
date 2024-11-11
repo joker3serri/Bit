@@ -16,6 +16,10 @@ const _mappedColumns = new Set([
   "One-Time Passwort",
 ]);
 
+/**
+ * Importer for Netwrix Password Secure CSV files.
+ * @see https://www.netwrix.com/enterprise_password_management_software.html
+ */
 export class NetwrixPasswordSecureCsvImporter extends BaseImporter implements Importer {
   parse(data: string): Promise<ImportResult> {
     const result = new ImportResult();
