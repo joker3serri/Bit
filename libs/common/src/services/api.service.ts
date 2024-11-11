@@ -585,7 +585,7 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   putCipherCollectionsAdmin(id: string, request: CipherCollectionsRequest): Promise<any> {
-    return this.send("PUT", "/ciphers/" + id + "/collections-admin", request, true, false);
+    return this.send("PUT", "/ciphers/" + id + "/collections-admin", request, true, true);
   }
 
   postPurgeCiphers(
@@ -1887,7 +1887,7 @@ export class ApiService implements ApiServiceAbstraction {
     });
 
     if (flagEnabled("prereleaseBuild")) {
-      headers.set("Is-Prerelease", "true");
+      headers.set("Is-Prerelease", "1");
     }
     if (this.customUserAgent != null) {
       headers.set("User-Agent", this.customUserAgent);
