@@ -60,7 +60,7 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
     return Promise.resolve(result);
   }
 
-  importUnmappedFields(cipher: CipherView, row: any, mappedValues: Set<string>) {
+  private importUnmappedFields(cipher: CipherView, row: any, mappedValues: Set<string>) {
     const unmappedFields = Object.keys(row).filter((x) => !mappedValues.has(x));
     unmappedFields.forEach((key) => {
       const item = row as any;
