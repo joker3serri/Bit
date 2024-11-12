@@ -108,7 +108,7 @@
                   bitMenuItem
                   (click)="bulkReinvite()"
                   *ngIf="
-                    (accountDeprovisioningEnabled$ | async) === false ||
+                    !(accountDeprovisioningEnabled$ | async) ||
                     allSelectedHaveStatus(userStatusType.Invited)
                   "
                 >
@@ -120,7 +120,7 @@
                   bitMenuItem
                   (click)="bulkConfirm()"
                   *ngIf="
-                    (accountDeprovisioningEnabled$ | async) === false ||
+                    !(accountDeprovisioningEnabled$ | async) ||
                     allSelectedHaveStatus(userStatusType.Accepted)
                   "
                 >
@@ -134,7 +134,7 @@
                   bitMenuItem
                   (click)="bulkRestore()"
                   *ngIf="
-                    (accountDeprovisioningEnabled$ | async) === false ||
+                    !(accountDeprovisioningEnabled$ | async) ||
                     allSelectedHaveStatus(userStatusType.Revoked)
                   "
                 >
@@ -146,7 +146,7 @@
                   bitMenuItem
                   (click)="bulkRevoke()"
                   *ngIf="
-                    (accountDeprovisioningEnabled$ | async) === false ||
+                    !(accountDeprovisioningEnabled$ | async) ||
                     allSelectedDoNotHaveStatus(userStatusType.Revoked)
                   "
                 >
@@ -158,7 +158,7 @@
                   bitMenuItem
                   (click)="bulkRemove()"
                   *ngIf="
-                    (accountDeprovisioningEnabled$ | async) === false ||
+                    !(accountDeprovisioningEnabled$ | async) ||
                     allSelectedMembersAreNotManagedByOrganization()
                   "
                 >
@@ -172,7 +172,7 @@
                   bitMenuItem
                   (click)="bulkDelete()"
                   *ngIf="
-                    (accountDeprovisioningEnabled$ | async) === true &&
+                    (accountDeprovisioningEnabled$ | async) &&
                     allSelectedMembersAreManagedByOrganization() &&
                     (allSelectedHaveStatus(userStatusType.Accepted) ||
                       allSelectedHaveStatus(userStatusType.Confirmed) ||
