@@ -58,7 +58,6 @@ export class OrganizationData {
   limitCollectionCreationDeletion: boolean;
   allowAdminAccessToAllCollectionItems: boolean;
   userIsManagedByOrganization: boolean;
-  hasSubscription: boolean;
 
   constructor(
     response?: ProfileOrganizationResponse,
@@ -124,7 +123,6 @@ export class OrganizationData {
 
     this.isMember = options.isMember;
     this.isProviderUser = options.isProviderUser;
-    this.hasSubscription = response.hasSubscription;
   }
 
   static fromJSON(obj: Jsonify<OrganizationData>) {
