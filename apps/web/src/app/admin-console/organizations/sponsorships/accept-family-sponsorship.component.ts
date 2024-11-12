@@ -4,7 +4,6 @@ import { firstValueFrom } from "rxjs";
 
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { OrganizationSponsorshipResponse } from "@bitwarden/common/admin-console/models/response/organization-sponsorship.response";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { ToastService } from "@bitwarden/components";
 
@@ -37,21 +36,6 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
   }
 
   async unauthedHandler(qParams: Params) {
-    const featureFlagEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.DisableFreeFamiliesSponsorship,
-    );
-
-    if (featureFlagEnabled) {
-      const policyResponse = await this.getPolicyStatus(qParams.email);
-      if (policyResponse?.isPolicyEnabled) {
-        this.toastService.showToast({
-          variant: "error",
-          title: this.i18nService.t("errorOccured"),
-          message: this.i18nService.t("offerNoLongerValid"),
-        });
-      }
-    }
-
     if (!qParams.register) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -84,9 +68,5 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
         queryParams: queryParams,
       });
     }
-  }
-
-  async getPolicyStatus(offerToEmail: string): Promise<OrganizationSponsorshipResponse> {
-    return await this.policyApiService.getSponsoringSponsoredEmailAsync(offerToEmail);
   }
 }
