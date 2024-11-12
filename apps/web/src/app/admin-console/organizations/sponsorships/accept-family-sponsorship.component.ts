@@ -1,6 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { Params } from "@angular/router";
 import { firstValueFrom } from "rxjs";
+
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
+import { OrganizationSponsorshipResponse } from "@bitwarden/common/admin-console/models/response/organization-sponsorship.response";
+import { ToastService } from "@bitwarden/components";
 
 import { BaseAcceptComponent } from "../../../common/base.accept.component";
 
@@ -19,6 +23,10 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
 
   requiredParameters = ["email", "token"];
 
+  policyResponse!: OrganizationSponsorshipResponse;
+  policyApiService = inject(PolicyApiServiceAbstraction);
+  toastService = inject(ToastService);
+
   async authedHandler(qParams: Params) {
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -26,10 +34,19 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
   }
 
   async unauthedHandler(qParams: Params) {
+    const policyResponse = await this.getPolicyStatus(qParams.email);
+    if (policyResponse?.isPolicyEnabled) {
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("errorOccured"),
+        message: this.i18nService.t("offerNoLongerValid"),
+      });
+    }
+
     if (!qParams.register) {
       // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["/login"], { queryParams: { email: qParams.email } });
+      await this.router.navigate(["/login"], { queryParams: { email: qParams.email } });
     } else {
       // TODO: update logic when email verification flag is removed
       let queryParams: Params;
@@ -58,5 +75,9 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
         queryParams: queryParams,
       });
     }
+  }
+
+  async getPolicyStatus(offerToEmail: string): Promise<OrganizationSponsorshipResponse> {
+    return await this.policyApiService.getSponsoringSponsoredEmailAsync(offerToEmail);
   }
 }

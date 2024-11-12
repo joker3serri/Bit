@@ -12,6 +12,7 @@ import { PolicyData } from "../../models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { Policy } from "../../models/domain/policy";
 import { PolicyRequest } from "../../models/request/policy.request";
+import { OrganizationSponsorshipResponse } from "../../models/response/organization-sponsorship.response";
 import { PolicyResponse } from "../../models/response/policy.response";
 
 export class PolicyApiService implements PolicyApiServiceAbstraction {
@@ -117,5 +118,18 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
     const response = new PolicyResponse(r);
     const data = new PolicyData(response);
     await this.policyService.upsert(data);
+  }
+
+  async getSponsoringSponsoredEmailAsync(
+    sponsoredEmail: string,
+  ): Promise<OrganizationSponsorshipResponse> {
+    const response = await this.apiService.send(
+      "GET",
+      "/organization/sponsorship/" + Utils.encodeRFC3986URIComponent(sponsoredEmail),
+      null,
+      false,
+      true,
+    );
+    return new OrganizationSponsorshipResponse(response);
   }
 }

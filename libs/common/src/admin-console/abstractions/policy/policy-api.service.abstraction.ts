@@ -3,6 +3,7 @@ import { PolicyType } from "../../enums";
 import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { Policy } from "../../models/domain/policy";
 import { PolicyRequest } from "../../models/request/policy.request";
+import { OrganizationSponsorshipResponse } from "../../models/response/organization-sponsorship.response";
 import { PolicyResponse } from "../../models/response/policy.response";
 
 export class PolicyApiServiceAbstraction {
@@ -20,4 +21,7 @@ export class PolicyApiServiceAbstraction {
     orgId: string,
   ) => Promise<MasterPasswordPolicyOptions | null>;
   putPolicy: (organizationId: string, type: PolicyType, request: PolicyRequest) => Promise<any>;
+  getSponsoringSponsoredEmailAsync: (
+    sponsoredEmail: string,
+  ) => Promise<OrganizationSponsorshipResponse>;
 }
