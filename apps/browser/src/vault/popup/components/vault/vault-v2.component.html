@@ -23,7 +23,11 @@
   </div>
 
   <!-- Show search & filters outside of the scroll area of the page -->
-  <div slot="above-scroll-area" class="tw-p-4" *ngIf="vaultState !== VaultStateEnum.Empty">
+  <div
+    slot="above-scroll-area"
+    class="tw-p-4"
+    *ngIf="vaultState !== VaultStateEnum.Empty && !(loading$ | async)"
+  >
     <app-vault-header-v2></app-vault-header-v2>
   </div>
 
