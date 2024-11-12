@@ -33,6 +33,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { buildCipherIcon } from "@bitwarden/common/vault/icon/build-cipher-icon";
@@ -217,6 +218,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     private fido2ActiveRequestManager: Fido2ActiveRequestManager,
     private inlineMenuFieldQualificationService: InlineMenuFieldQualificationService,
     private themeStateService: ThemeStateService,
+    private totpService: TotpService,
     private generatePasswordCallback: () => Promise<string>,
     private addPasswordCallback: (password: string) => Promise<void>,
   ) {
@@ -1007,7 +1009,10 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       this.logService.error(error),
     );
 
-    if ((await this.getInlineMenuVisibility()) === AutofillOverlayVisibility.OnButtonClick) {
+    if (
+      !this.inlineMenuListPort &&
+      (await this.getInlineMenuVisibility()) === AutofillOverlayVisibility.OnButtonClick
+    ) {
       return;
     }
 
@@ -1055,7 +1060,6 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
 
     const cipher = this.inlineMenuCiphers.get(inlineMenuCipherId);
-
     if (usePasskey && cipher.login?.hasFido2Credentials) {
       await this.authenticatePasskeyCredential(
         sender,
@@ -1063,6 +1067,11 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       );
       this.updateLastUsedInlineMenuCipher(inlineMenuCipherId, cipher);
 
+      if (cipher.login?.totp) {
+        this.platformUtilsService.copyToClipboard(
+          await this.totpService.getCode(cipher.login.totp),
+        );
+      }
       return;
     }
 
@@ -1814,7 +1823,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       return;
     }
 
-    if (this.isInlineMenuListVisible) {
+    if (this.inlineMenuListPort) {
       this.closeInlineMenu(sender, {
         forceCloseInlineMenu: true,
         overlayElement: AutofillOverlayElement.List,
@@ -2577,7 +2586,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    * @param sender
    */
   private resetFocusedFieldSubFrameOffsets(sender: chrome.runtime.MessageSender) {
-    if (this.focusedFieldData.frameId > 0 && this.subFrameOffsetsForTab[sender.tab.id]) {
+    if (this.focusedFieldData?.frameId > 0 && this.subFrameOffsetsForTab[sender.tab.id]) {
       this.subFrameOffsetsForTab[sender.tab.id].set(this.focusedFieldData.frameId, null);
     }
   }
@@ -2590,6 +2599,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
    */
   private async triggerSubFrameFocusInRebuild(sender: chrome.runtime.MessageSender) {
     this.cancelInlineMenuFadeInAndPositionUpdate();
+    this.resetFocusedFieldSubFrameOffsets(sender);
     this.rebuildSubFrameOffsets$.next(sender);
     this.repositionInlineMenu$.next(sender);
   }

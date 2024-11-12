@@ -202,9 +202,8 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         });
       });
 
-    // normalize cascade selections; introduce subjects to allow changes
-    // from user selections and changes from preference updates to
-    // update the template
+    // these subjects normalize cascade selections to ensure the current
+    // cascade is always well-known.
     type CascadeValue = { nav: string; algorithm?: CredentialAlgorithm };
     const activeRoot$ = new Subject<CascadeValue>();
     const activeIdentifier$ = new Subject<CascadeValue>();
@@ -385,7 +384,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         if (!a || a.onlyOnRequest) {
           this.value$.next("-");
         } else {
-          this.generate("autogenerate");
+          this.generate("autogenerate").catch((e: unknown) => this.logService.error(e));
         }
       });
     });
@@ -468,6 +467,14 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     map(({ generate }) => generate),
   );
 
+  /**
+   * Emits the copy credential toast respective of the selected credential type
+   */
+  protected credentialTypeLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ generatedValue }) => generatedValue),
+  );
+
   /** Emits hint key for the currently selected credential type */
   protected credentialTypeHint$ = new ReplaySubject<string>(1);
 
@@ -487,7 +494,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
    * @param requestor a label used to trace generation request
    *  origin in the debugger.
    */
-  protected generate(requestor: string) {
+  protected async generate(requestor: string) {
     this.generate$.next(requestor);
   }
 
@@ -502,6 +509,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
   private readonly destroyed = new Subject<void>();
   ngOnDestroy() {
+    this.destroyed.next();
     this.destroyed.complete();
 
     // finalize subjects
