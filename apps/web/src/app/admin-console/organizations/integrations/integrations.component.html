@@ -18,7 +18,11 @@
       <h2 bitTypography="h2">
         {{ "scimIntegration" | i18n }}
       </h2>
-      <p bitTypography="body1">{{ "scimIntegrationDesc" | i18n }}</p>
+      <p bitTypography="body1">
+        {{ "scimIntegrationDescStart" | i18n }}
+        <a bitLink routerLink="../settings/scim">{{ "scimIntegration" | i18n }}</a>
+        {{ "scimIntegrationDescEnd" | i18n }}
+      </p>
       <integration-grid [integrations]="scim"></integration-grid>
     </section>
     <section class="tw-mb-9">
