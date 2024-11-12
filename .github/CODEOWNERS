@@ -106,7 +106,7 @@ apps/desktop/desktop_native @bitwarden/team-platform-dev
 
 ## Key management team files ##
 apps/desktop/src/key-management @bitwarden/team-key-management-dev
-apps/web/src/key-management @bitwarden/team-key-management-dev
+apps/web/src/app/key-management @bitwarden/team-key-management-dev
 apps/browser/src/key-management @bitwarden/team-key-management-dev
 apps/cli/src/key-management @bitwarden/team-key-management-dev
 libs/key-management @bitwarden/team-key-management-dev
@@ -121,6 +121,9 @@ apps/browser/store/locales/en
 apps/cli/src/locales/en/messages.json
 apps/desktop/src/locales/en/messages.json
 apps/web/src/locales/en/messages.json
+
+## Ssh agent temporary co-codeowner
+apps/desktop/desktop_native/core/src/ssh_agent @bitwarden/team-platform-dev @bitwarden/wg-ssh-keys
 
 ## BRE team owns these workflows ##
 .github/workflows/brew-bump-desktop.yml @bitwarden/dept-bre

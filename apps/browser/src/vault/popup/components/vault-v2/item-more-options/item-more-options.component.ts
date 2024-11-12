@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { booleanAttribute, Component, Input, OnInit } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
-import { firstValueFrom, map } from "rxjs";
+import { BehaviorSubject, firstValueFrom, map, switchMap } from "rxjs";
+import { filter } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -10,6 +11,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType, CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import {
   DialogService,
   IconButtonModule,
@@ -29,10 +31,18 @@ import { AddEditQueryParams } from "../add-edit/add-edit-v2.component";
   imports: [ItemModule, IconButtonModule, MenuModule, CommonModule, JslibModule, RouterModule],
 })
 export class ItemMoreOptionsComponent implements OnInit {
+  private _cipher$ = new BehaviorSubject<CipherView>(undefined);
+
   @Input({
     required: true,
   })
-  cipher: CipherView;
+  set cipher(c: CipherView) {
+    this._cipher$.next(c);
+  }
+
+  get cipher() {
+    return this._cipher$.value;
+  }
 
   /**
    * Flag to hide the autofill menu options. Used for items that are
@@ -42,6 +52,15 @@ export class ItemMoreOptionsComponent implements OnInit {
   hideAutofillOptions: boolean;
 
   protected autofillAllowed$ = this.vaultPopupAutofillService.autofillAllowed$;
+
+  /**
+   * Observable that emits a boolean value indicating if the user is authorized to clone the cipher.
+   * @protected
+   */
+  protected canClone$ = this._cipher$.pipe(
+    filter((c) => c != null),
+    switchMap((c) => this.cipherAuthorizationService.canCloneCipher$(c)),
+  );
 
   /** Boolean dependent on the current user having access to an organization */
   protected hasOrganizations = false;
@@ -56,6 +75,7 @@ export class ItemMoreOptionsComponent implements OnInit {
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private accountService: AccountService,
     private organizationService: OrganizationService,
+    private cipherAuthorizationService: CipherAuthorizationService,
   ) {}
 
   async ngOnInit(): Promise<void> {
