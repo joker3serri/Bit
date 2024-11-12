@@ -39,7 +39,7 @@ export class CollectionView implements View, ITreeNodeObject {
     }
   }
 
-  // Applying excludeHidePassword false will remove collections with Can Edit Except Password Permissions
+  // Applying editPassword=false will include items with Can Edit Except Password Permissions
   canEditItems(org: Organization, editPassword = true): boolean {
     if (org != null && org.id !== this.organizationId) {
       throw new Error(
