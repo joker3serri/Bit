@@ -185,14 +185,17 @@ export class VaultComponent implements OnInit, OnDestroy {
   private refresh$ = new BehaviorSubject<void>(null);
   private destroy$ = new Subject<void>();
   private extensionRefreshEnabled: boolean;
+  private hasSubscription: boolean;
 
   private vaultItemDialogRef?: DialogRef<VaultItemDialogResult> | undefined;
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
     filter((organizations) => organizations.length === 1),
     map(([organization]) => organization),
-    filter((organization) => organization.hasSubscription),
     switchMap((organization) =>
       from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
+        tap((organizationMetaData) => {
+          this.hasSubscription = organizationMetaData.hasSubscription;
+        }),
         switchMap((organizationMetaData) =>
           from(
             this.trialFlowService.handleUnpaidSubscriptionDialog(
@@ -427,7 +430,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         }
         return combineLatest(
           allOrganizations
-            .filter((org) => org.isOwner && org.hasSubscription)
+            .filter((org) => org.isOwner && this.hasSubscription)
             .map((org) =>
               combineLatest([
                 this.organizationApiService.getSubscription(org.id),

@@ -178,6 +178,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected selectedCollection: TreeNode<CollectionAdminView> | undefined;
   protected isEmpty: boolean;
   protected showCollectionAccessRestricted: boolean;
+  private hasSubscription: boolean;
   protected currentSearchText$: Observable<string>;
   protected freeTrial$: Observable<FreeTrial>;
   /**
@@ -201,9 +202,11 @@ export class VaultComponent implements OnInit, OnDestroy {
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
     filter((organizations) => organizations.length === 1),
     map(([organization]) => organization),
-    filter((organization) => organization.hasSubscription),
     switchMap((organization) =>
       from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
+        tap((organizationMetaData) => {
+          this.hasSubscription = organizationMetaData.hasSubscription;
+        }),
         switchMap((organizationMetaData) =>
           from(
             this.trialFlowService.handleUnpaidSubscriptionDialog(
@@ -584,7 +587,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.unpaidSubscriptionDialog$.pipe(takeUntil(this.destroy$)).subscribe();
 
     this.freeTrial$ = organization$.pipe(
-      filter((org) => org.isOwner && org.hasSubscription),
+      filter((org) => org.isOwner && this.hasSubscription),
       switchMap((org) =>
         combineLatest([
           of(org),
