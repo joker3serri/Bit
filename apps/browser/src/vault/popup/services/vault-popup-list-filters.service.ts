@@ -6,6 +6,7 @@ import {
   distinctUntilChanged,
   map,
   Observable,
+  shareReplay,
   startWith,
   switchMap,
   tap,
@@ -65,6 +66,12 @@ export class VaultPopupListFiltersService {
   filters$ = this.filterForm.valueChanges.pipe(
     startWith(INITIAL_FILTERS),
   ) as Observable<PopupListFilter>;
+
+  /** Emits the number of applied filters. */
+  numberOfAppliedFilters$ = this.filters$.pipe(
+    map((filters) => Object.values(filters).filter((filter) => Boolean(filter)).length),
+    shareReplay({ refCount: true, bufferSize: 1 }),
+  );
 
   /**
    * Static list of ciphers views used in synchronous context

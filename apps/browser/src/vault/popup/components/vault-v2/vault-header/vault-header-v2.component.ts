@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { BehaviorSubject, combineLatest, first, map, shareReplay } from "rxjs";
+import { BehaviorSubject, combineLatest, first, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -44,18 +44,15 @@ export class VaultHeaderV2Component implements OnInit {
   /** Emits the visibility status of the disclosure component. */
   protected isDisclosureShown$ = new BehaviorSubject<boolean | null>(null);
 
-  /** Emits the number of applied filters. */
-  protected numberOfFilters$ = this.vaultPopupListFiltersService.filters$.pipe(
-    map((filters) => Object.values(filters).filter((filter) => Boolean(filter)).length),
-    shareReplay({ refCount: true, bufferSize: 1 }),
-  );
+  protected numberOfAppliedFilters$ = this.vaultPopupListFiltersService.numberOfAppliedFilters$;
 
   /** Emits true when the number of filters badge should be applied. */
-  protected showBadge$ = combineLatest([this.numberOfFilters$, this.isDisclosureShown$]).pipe(
-    map(([numberOfFilters, disclosureShown]) => numberOfFilters !== 0 && !disclosureShown),
-  );
+  protected showBadge$ = combineLatest([
+    this.numberOfAppliedFilters$,
+    this.isDisclosureShown$,
+  ]).pipe(map(([numberOfFilters, disclosureShown]) => numberOfFilters !== 0 && !disclosureShown));
 
-  protected buttonSupportingText$ = this.numberOfFilters$.pipe(
+  protected buttonSupportingText$ = this.numberOfAppliedFilters$.pipe(
     map((numberOfFilters) => {
       if (numberOfFilters === 0) {
         return null;

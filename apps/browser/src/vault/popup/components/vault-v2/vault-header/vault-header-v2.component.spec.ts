@@ -6,11 +6,10 @@ import { ActivatedRoute } from "@angular/router";
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, Subject } from "rxjs";
 
-import { Collection, CollectionService } from "@bitwarden/admin-console/common";
+import { CollectionService } from "@bitwarden/admin-console/common";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -20,8 +19,6 @@ import { SyncService } from "@bitwarden/common/platform/sync";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault-settings/vault-settings.service";
-import { CipherType } from "@bitwarden/common/vault/enums";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { AutofillService } from "../../../../../autofill/services/abstractions/autofill.service";
@@ -43,7 +40,7 @@ describe("VaultHeaderV2Component", () => {
     cipherType: null,
   };
 
-  const filters$ = new BehaviorSubject<PopupListFilter>(emptyForm);
+  const numberOfAppliedFilters$ = new BehaviorSubject<number>(0);
   const state$ = new BehaviorSubject<boolean | null>(null);
 
   // Mock state provider update
@@ -81,7 +78,11 @@ describe("VaultHeaderV2Component", () => {
         { provide: I18nService, useValue: { t: (key: string) => key } },
         {
           provide: VaultPopupListFiltersService,
-          useValue: { filters$, filterForm: new FormBuilder().group(emptyForm) },
+          useValue: {
+            numberOfAppliedFilters$,
+            filters$: new BehaviorSubject(emptyForm),
+            filterForm: new FormBuilder().group(emptyForm),
+          },
         },
         {
           provide: StateProvider,
@@ -97,7 +98,7 @@ describe("VaultHeaderV2Component", () => {
 
   it("does not show filter badge when no filters are selected", () => {
     component["disclosureVisibility"](false);
-    filters$.next(emptyForm);
+    numberOfAppliedFilters$.next(0);
     fixture.detectChanges();
 
     expect(getBadge()).toBeNull();
@@ -105,10 +106,7 @@ describe("VaultHeaderV2Component", () => {
 
   it("does not show filter badge when disclosure is open", () => {
     component["disclosureVisibility"](true);
-    filters$.next({
-      ...emptyForm,
-      collection: { id: "col1" } as Collection,
-    });
+    numberOfAppliedFilters$.next(1);
     fixture.detectChanges();
 
     expect(getBadge()).toBeNull();
@@ -116,40 +114,27 @@ describe("VaultHeaderV2Component", () => {
 
   it("shows the notification badge when there are populated filters and the disclosure is closed", async () => {
     component["disclosureVisibility"](false);
-    filters$.next({
-      ...emptyForm,
-      collection: { id: "col1" } as Collection,
-    });
+    numberOfAppliedFilters$.next(1);
     fixture.detectChanges();
 
     expect(getBadge()).not.toBeNull();
   });
 
   it("displays the number of filters populated", () => {
-    filters$.next({
-      ...emptyForm,
-      organization: { id: "org1" } as Organization,
-    });
+    numberOfAppliedFilters$.next(1);
     component["disclosureVisibility"](false);
     fixture.detectChanges();
 
     expect(getBadge().nativeElement.textContent.trim()).toBe("1");
 
-    filters$.next({
-      ...emptyForm,
-      organization: { id: "org1" } as Organization,
-      collection: { id: "col1" } as Collection,
-    });
+    numberOfAppliedFilters$.next(2);
+
     fixture.detectChanges();
 
     expect(getBadge().nativeElement.textContent.trim()).toBe("2");
 
-    filters$.next({
-      folder: { id: "folder1" } as FolderView,
-      cipherType: CipherType.Login,
-      organization: { id: "org1" } as Organization,
-      collection: { id: "col1" } as Collection,
-    });
+    numberOfAppliedFilters$.next(4);
+
     fixture.detectChanges();
 
     expect(getBadge().nativeElement.textContent.trim()).toBe("4");

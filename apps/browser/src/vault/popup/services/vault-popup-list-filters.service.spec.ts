@@ -102,6 +102,20 @@ describe("VaultPopupListFiltersService", () => {
     });
   });
 
+  describe("numberOfAppliedFilters$", () => {
+    it("updates as the form value changes", (done) => {
+      service.numberOfAppliedFilters$.subscribe((number) => {
+        expect(number).toBe(2);
+        done();
+      });
+
+      service.filterForm.patchValue({
+        organization: { id: "1234" } as Organization,
+        folder: { id: "folder11" } as FolderView,
+      });
+    });
+  });
+
   describe("organizations$", () => {
     it('does not add "myVault" to the list of organizations when there are no organizations', (done) => {
       memberOrganizations$.next([]);
