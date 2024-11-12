@@ -76,7 +76,7 @@ export function canAccessImport(i18nService: I18nService) {
  * Risky operations like updates are isolated to the
  * internal extension `InternalOrganizationServiceAbstraction`.
  */
-export abstract class DefaultvNextOrganizationService {
+export abstract class vNextOrganizationService {
   /**
    * Publishes state for all organizations under the specified user.
    * @returns An observable list of organizations
@@ -103,12 +103,11 @@ export abstract class DefaultvNextOrganizationService {
  * `OrganizationService` for easy access to `get` calls.
  * @internal
  */
-export abstract class DefaultvNextInternalOrganizationServiceAbstraction extends DefaultvNextOrganizationService {
+export abstract class vNextInternalOrganizationServiceAbstraction extends vNextOrganizationService {
   /**
    * Replaces state for the provided organization, or creates it if not found.
    * @param organization The organization state being saved.
-   * @param userId The userId to replace state for. Defaults to the provided
-   * user.
+   * @param userId The userId to replace state for.
    */
   upsert: (OrganizationData: OrganizationData, userId: UserId) => Promise<void>;
 
@@ -119,8 +118,7 @@ export abstract class DefaultvNextInternalOrganizationServiceAbstraction extends
    * organization in the state.
    * @param organizations A complete list of all organization state for the provided
    * user.
-   * @param userId The userId to replace state for. Defaults to the provided
-   * user.
+   * @param userId The userId to replace state for.
    */
   replace: (organizations: { [id: string]: OrganizationData }, userId: UserId) => Promise<void>;
 }

@@ -2,7 +2,7 @@ import { map, Observable, switchMap } from "rxjs";
 
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
-import { DefaultvNextInternalOrganizationServiceAbstraction } from "../../abstractions/organization/deafult-vnext.organization.service.abstraction";
+import { vNextInternalOrganizationServiceAbstraction } from "../../abstractions/organization/vnext.organization.service";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
@@ -40,7 +40,7 @@ function mapToBooleanHasAnyOrganizations() {
 }
 
 export class DefaultvNextOrganizationService
-  implements DefaultvNextInternalOrganizationServiceAbstraction
+  implements vNextInternalOrganizationServiceAbstraction
 {
   memberOrganizations$(userId$: Observable<UserId>): Observable<Organization[]> {
     return this.organizations$(userId$).pipe(mapToExcludeProviderOrganizations());
