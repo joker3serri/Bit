@@ -794,22 +794,18 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   allSelectedHaveStatus(status: OrganizationUserStatusType): boolean {
-    return this.dataSource.getCheckedUsers().every((member) => member.status === status);
+    return this.dataSource.getCheckedUsers().every((member) => member.status == status);
   }
 
   allSelectedDoNotHaveStatus(status: OrganizationUserStatusType): boolean {
-    return this.dataSource.getCheckedUsers().every((member) => member.status !== status);
+    return this.dataSource.getCheckedUsers().every((member) => member.status != status);
   }
 
   allSelectedMembersAreManagedByOrganization(): boolean {
-    return this.dataSource
-      .getCheckedUsers()
-      .every((member) => member.managedByOrganization === true);
+    return this.dataSource.getCheckedUsers().every((member) => member.managedByOrganization);
   }
 
   allSelectedMembersAreNotManagedByOrganization(): boolean {
-    return this.dataSource
-      .getCheckedUsers()
-      .every((member) => member.managedByOrganization === false);
+    return this.dataSource.getCheckedUsers().every((member) => !member.managedByOrganization);
   }
 }
