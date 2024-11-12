@@ -44,7 +44,7 @@ describe("VaultHeaderV2Component", () => {
   };
 
   const filters$ = new BehaviorSubject<PopupListFilter>(emptyForm);
-  const state$ = new BehaviorSubject<boolean | undefined>(undefined);
+  const state$ = new BehaviorSubject<boolean | null>(null);
 
   // Mock state provider update
   const update = jest.fn().mockResolvedValue(undefined);
@@ -96,7 +96,7 @@ describe("VaultHeaderV2Component", () => {
   });
 
   it("does not show filter badge when no filters are selected", () => {
-    component.disclosure.open = false;
+    component["disclosureVisibility"](false);
     filters$.next(emptyForm);
     fixture.detectChanges();
 
@@ -104,7 +104,7 @@ describe("VaultHeaderV2Component", () => {
   });
 
   it("does not show filter badge when disclosure is open", () => {
-    component.disclosure.open = true;
+    component["disclosureVisibility"](true);
     filters$.next({
       ...emptyForm,
       collection: { id: "col1" } as Collection,
@@ -114,8 +114,8 @@ describe("VaultHeaderV2Component", () => {
     expect(getBadge()).toBeNull();
   });
 
-  it("shows the notification badge when there are populated filters and the disclosure is closed", () => {
-    component.disclosure.open = false;
+  it("shows the notification badge when there are populated filters and the disclosure is closed", async () => {
+    component["disclosureVisibility"](false);
     filters$.next({
       ...emptyForm,
       collection: { id: "col1" } as Collection,
@@ -126,11 +126,11 @@ describe("VaultHeaderV2Component", () => {
   });
 
   it("displays the number of filters populated", () => {
-    component.disclosure.open = false;
     filters$.next({
       ...emptyForm,
       organization: { id: "org1" } as Organization,
     });
+    component["disclosureVisibility"](false);
     fixture.detectChanges();
 
     expect(getBadge().nativeElement.textContent.trim()).toBe("1");
@@ -158,14 +158,14 @@ describe("VaultHeaderV2Component", () => {
   it("reads initial state of the filter visibility from state", async () => {
     state$.next(false);
 
-    await component.ngAfterViewInit();
+    await component.ngOnInit();
 
-    expect(component.disclosure.open).toBeFalse();
+    expect(component["isDisclosureShown$"].value).toBeFalse();
 
     state$.next(true);
 
-    await component.ngAfterViewInit();
+    await component.ngOnInit();
 
-    expect(component.disclosure.open).toBeTrue();
+    expect(component["isDisclosureShown$"].value).toBeTrue();
   });
 });

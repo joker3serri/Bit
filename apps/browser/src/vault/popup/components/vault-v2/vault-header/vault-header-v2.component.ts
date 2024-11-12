@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, ViewChild } from "@angular/core";
-import { BehaviorSubject, combineLatest, firstValueFrom, map, shareReplay } from "rxjs";
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, ViewChild } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { BehaviorSubject, combineLatest, first, map, shareReplay } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -34,14 +35,14 @@ const FILTER_VISIBILITY_KEY = new KeyDefinition<boolean>(VAULT_SETTINGS_DISK, "f
     JslibModule,
   ],
 })
-export class VaultHeaderV2Component implements AfterViewInit {
+export class VaultHeaderV2Component implements OnInit {
   @ViewChild(DisclosureComponent) disclosure: DisclosureComponent;
 
   /** Stored state for the visibility of the filters. */
   private filterVisibilityState = this.stateProvider.getGlobal(FILTER_VISIBILITY_KEY);
 
   /** Emits the visibility status of the disclosure component. */
-  protected isDisclosureShown$ = new BehaviorSubject<boolean | undefined>(undefined);
+  protected isDisclosureShown$ = new BehaviorSubject<boolean | null>(null);
 
   /** Emits the number of applied filters. */
   protected numberOfFilters$ = this.vaultPopupListFiltersService.filters$.pipe(
@@ -67,24 +68,39 @@ export class VaultHeaderV2Component implements AfterViewInit {
     }),
   );
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
     private stateProvider: StateProvider,
     private i18nService: I18nService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
-  async ngAfterViewInit(): Promise<void> {
-    const isDisclosureShown = await firstValueFrom(
-      this.filterVisibilityState.state$.pipe(map((visibility) => visibility ?? true)),
-    );
-    this.disclosure.open = isDisclosureShown;
-    this.isDisclosureShown$.next(isDisclosureShown);
+  ngOnInit(): void {
+    // Get the initial visibility from stored state
+    this.filterVisibilityState.state$
+      .pipe(
+        first(),
+        takeUntilDestroyed(this.destroyRef),
+        map((visibility) => visibility ?? true),
+      )
+      .subscribe((showFilters) => {
+        this.disclosure.open = showFilters;
+        this.disclosureVisibility(showFilters);
+        // Force change detection after updating from state,
+        // avoids `ExpressionChangedAfterItHasBeenCheckedError`.
+        this.changeDetectorRef.detectChanges();
+      });
   }
 
-  /** Updates the local and stored status of the disclosure */
-  protected disclosureVisibilityChange(isVisible: boolean) {
-    this.isDisclosureShown$.next(isVisible);
-    // update stored status
-    void this.filterVisibilityState.update(() => isVisible);
+  protected disclosureVisibility(isShown: boolean) {
+    // If local state is already up to date with the disclosure, exit early.
+    if (this.isDisclosureShown$.value === isShown) {
+      return;
+    }
+
+    this.isDisclosureShown$.next(isShown);
+    void this.filterVisibilityState.update(() => isShown);
   }
 }
