@@ -4,6 +4,8 @@ import { firstValueFrom } from "rxjs";
 
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { OrganizationSponsorshipResponse } from "@bitwarden/common/admin-console/models/response/organization-sponsorship.response";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { ToastService } from "@bitwarden/components";
 
 import { BaseAcceptComponent } from "../../../common/base.accept.component";
@@ -25,6 +27,7 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
 
   policyResponse!: OrganizationSponsorshipResponse;
   policyApiService = inject(PolicyApiServiceAbstraction);
+  configService = inject(ConfigService);
   toastService = inject(ToastService);
 
   async authedHandler(qParams: Params) {
@@ -34,13 +37,19 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
   }
 
   async unauthedHandler(qParams: Params) {
-    const policyResponse = await this.getPolicyStatus(qParams.email);
-    if (policyResponse?.isPolicyEnabled) {
-      this.toastService.showToast({
-        variant: "error",
-        title: this.i18nService.t("errorOccured"),
-        message: this.i18nService.t("offerNoLongerValid"),
-      });
+    const featureFlagEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.DisableFreeFamiliesSponsorship,
+    );
+
+    if (featureFlagEnabled) {
+      const policyResponse = await this.getPolicyStatus(qParams.email);
+      if (policyResponse?.isPolicyEnabled) {
+        this.toastService.showToast({
+          variant: "error",
+          title: this.i18nService.t("errorOccured"),
+          message: this.i18nService.t("offerNoLongerValid"),
+        });
+      }
     }
 
     if (!qParams.register) {
