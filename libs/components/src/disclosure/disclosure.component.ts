@@ -18,14 +18,14 @@ export class DisclosureComponent {
   private _open: boolean;
 
   /** Emits the visibility of the disclosure content */
-  @Output() onVisibilityChange = new EventEmitter<boolean>();
+  @Output() openChange = new EventEmitter<boolean>();
 
   /**
    * Optionally init the disclosure in its opened state
    */
   @Input({ transform: booleanAttribute }) set open(isOpen: boolean) {
     this._open = isOpen;
-    this.onVisibilityChange.emit(isOpen);
+    this.openChange.emit(isOpen);
   }
 
   @HostBinding("class") get classList() {
