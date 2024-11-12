@@ -29,10 +29,7 @@ async fn get_password_new(service: &str, account: &str) -> Result<String> {
 async fn get_password_legacy(service: &str, account: &str) -> Result<String> {
     println!("falling back to get legacy {} {}", service, account);
     let svc = dbus::Service::new().await?;
-    let collection = match svc.default_collection().await {
-        Ok(c) => Ok(c),
-        Err(e) => Err(e),
-    }?;
+    let collection = svc.default_collection().await?;
     let keyring = oo7::Keyring::DBus(collection);
     let attributes = HashMap::from([("service", service), ("account", account)]);
     let results = keyring.search_items(&attributes).await?;
