@@ -9,6 +9,7 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -82,6 +83,10 @@ describe("VaultPopupListFiltersService", () => {
         {
           provide: PolicyService,
           useValue: policyService,
+        },
+        {
+          provide: StateProvider,
+          useValue: { getGlobal: () => ({}) },
         },
         { provide: FormBuilder, useClass: FormBuilder },
       ],

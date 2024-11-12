@@ -5,21 +5,12 @@ import { BehaviorSubject, combineLatest, first, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import {
-  KeyDefinition,
-  StateProvider,
-  VAULT_SETTINGS_DISK,
-} from "@bitwarden/common/platform/state";
 import { DisclosureTriggerForDirective, IconButtonModule } from "@bitwarden/components";
 
 import { DisclosureComponent } from "../../../../../../../../libs/components/src/disclosure/disclosure.component";
 import { VaultPopupListFiltersService } from "../../../../../vault/popup/services/vault-popup-list-filters.service";
 import { VaultListFiltersComponent } from "../vault-list-filters/vault-list-filters.component";
 import { VaultV2SearchComponent } from "../vault-search/vault-v2-search.component";
-
-const FILTER_VISIBILITY_KEY = new KeyDefinition<boolean>(VAULT_SETTINGS_DISK, "filterVisibility", {
-  deserializer: (obj) => obj,
-});
 
 @Component({
   selector: "app-vault-header-v2",
@@ -37,9 +28,6 @@ const FILTER_VISIBILITY_KEY = new KeyDefinition<boolean>(VAULT_SETTINGS_DISK, "f
 })
 export class VaultHeaderV2Component implements OnInit {
   @ViewChild(DisclosureComponent) disclosure: DisclosureComponent;
-
-  /** Stored state for the visibility of the filters. */
-  private filterVisibilityState = this.stateProvider.getGlobal(FILTER_VISIBILITY_KEY);
 
   /** Emits the visibility status of the disclosure component. */
   protected isDisclosureShown$ = new BehaviorSubject<boolean | null>(null);
@@ -69,14 +57,13 @@ export class VaultHeaderV2Component implements OnInit {
 
   constructor(
     private vaultPopupListFiltersService: VaultPopupListFiltersService,
-    private stateProvider: StateProvider,
     private i18nService: I18nService,
     private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     // Get the initial visibility from stored state
-    this.filterVisibilityState.state$
+    this.vaultPopupListFiltersService.filterVisibilityState.state$
       .pipe(
         first(),
         takeUntilDestroyed(this.destroyRef),
@@ -98,6 +85,6 @@ export class VaultHeaderV2Component implements OnInit {
     }
 
     this.isDisclosureShown$.next(isShown);
-    void this.filterVisibilityState.update(() => isShown);
+    void this.vaultPopupListFiltersService.filterVisibilityState.update(() => isShown);
   }
 }

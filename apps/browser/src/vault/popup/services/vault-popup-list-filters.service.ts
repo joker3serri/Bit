@@ -21,6 +21,11 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import {
+  KeyDefinition,
+  StateProvider,
+  VAULT_SETTINGS_DISK,
+} from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -29,6 +34,10 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { ChipSelectOption } from "@bitwarden/components";
+
+const FILTER_VISIBILITY_KEY = new KeyDefinition<boolean>(VAULT_SETTINGS_DISK, "filterVisibility", {
+  deserializer: (obj) => obj,
+});
 
 /** All available cipher filters */
 export type PopupListFilter = {
@@ -73,6 +82,9 @@ export class VaultPopupListFiltersService {
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
+  /** Stored state for the visibility of the filters. */
+  filterVisibilityState = this.stateProvider.getGlobal(FILTER_VISIBILITY_KEY);
+
   /**
    * Static list of ciphers views used in synchronous context
    */
@@ -96,6 +108,7 @@ export class VaultPopupListFiltersService {
     private collectionService: CollectionService,
     private formBuilder: FormBuilder,
     private policyService: PolicyService,
+    private stateProvider: StateProvider,
   ) {
     this.filterForm.controls.organization.valueChanges
       .pipe(takeUntilDestroyed())
