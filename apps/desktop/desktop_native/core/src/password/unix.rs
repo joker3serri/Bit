@@ -25,7 +25,7 @@ async fn get_password_new(service: &str, account: &str) -> Result<String> {
     }
 }
 
-// forces to read via secret service; remvove after 2024.03
+// forces to read via secret service; remvove after 2025.03
 async fn get_password_legacy(service: &str, account: &str) -> Result<String> {
     println!("falling back to get legacy {} {}", service, account);
     let svc = dbus::Service::new().await?;
