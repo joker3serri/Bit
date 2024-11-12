@@ -185,7 +185,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   private refresh$ = new BehaviorSubject<void>(null);
   private destroy$ = new Subject<void>();
   private extensionRefreshEnabled: boolean;
-  private hasSubscription: boolean;
+  private hasSubscription$ = new BehaviorSubject<boolean>(false);
 
   private vaultItemDialogRef?: DialogRef<VaultItemDialogResult> | undefined;
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
@@ -194,7 +194,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     switchMap((organization) =>
       from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
         tap((organizationMetaData) => {
-          this.hasSubscription = organizationMetaData.hasSubscription;
+          this.hasSubscription$.next(organizationMetaData.hasSubscription);
         }),
         switchMap((organizationMetaData) =>
           from(
@@ -423,14 +423,17 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.unpaidSubscriptionDialog$.pipe(takeUntil(this.destroy$)).subscribe();
 
-    const organizationsPaymentStatus$ = this.organizationService.organizations$.pipe(
-      switchMap((allOrganizations) => {
-        if (!allOrganizations || allOrganizations.length === 0) {
+    const organizationsPaymentStatus$ = combineLatest([
+      this.organizationService.organizations$,
+      this.hasSubscription$,
+    ]).pipe(
+      switchMap(([allOrganizations, hasSubscription]) => {
+        if (!allOrganizations || allOrganizations.length === 0 || !hasSubscription) {
           return of([]);
         }
         return combineLatest(
           allOrganizations
-            .filter((org) => org.isOwner && this.hasSubscription)
+            .filter((org) => org.isOwner && hasSubscription)
             .map((org) =>
               combineLatest([
                 this.organizationApiService.getSubscription(org.id),

@@ -13,6 +13,6 @@ export class OrganizationBillingMetadataResponse extends BaseResponse {
     this.isManaged = this.getResponseProperty("IsManaged");
     this.isOnSecretsManagerStandalone = this.getResponseProperty("IsOnSecretsManagerStandalone");
     this.isSubscriptionUnpaid = this.getResponseProperty("IsSubscriptionUnpaid");
-    this.hasSubscription = this.getResponseProperty("IsSubscriptionUnpaid");
+    this.hasSubscription = this.getResponseProperty("HasSubscription");
   }
 }
