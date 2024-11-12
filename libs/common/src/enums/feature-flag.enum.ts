@@ -38,6 +38,8 @@ export enum FeatureFlag {
   Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
   LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
   CriticalApps = "pm-14466-risk-insights-critical-application",
+  TrialPaymentOptional = "PM-8163-trial-payment",
+  SecurityTasks = "security-tasks",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
 }
 
@@ -87,6 +89,8 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.Pm13322AddPolicyDefinitions]: FALSE,
   [FeatureFlag.LimitCollectionCreationDeletionSplit]: FALSE,
   [FeatureFlag.CriticalApps]: FALSE,
+  [FeatureFlag.TrialPaymentOptional]: FALSE,
+  [FeatureFlag.SecurityTasks]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
