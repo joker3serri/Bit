@@ -14,12 +14,11 @@ export class IntegrationsComponent {
   tabIndex: number;
 
   constructor() {
-    // temporary integrations
     this.integrationsList = [
       {
         name: "AD FS",
         linkURL: "https://bitwarden.com/help/saml-adfs/",
-        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
+        image: "../../../../../../../images/integrations/azure-active-directory.svg",
         type: IntegrationType.SSO,
       },
       {
@@ -32,6 +31,7 @@ export class IntegrationsComponent {
         name: "AWS",
         linkURL: "https://bitwarden.com/help/saml-aws/",
         image: "../../../../../../../images/integrations/aws-color.svg",
+        imageDarkMode: "../../../../../../../images/integrations/aws-darkmode.svg",
         type: IntegrationType.SSO,
       },
       {
@@ -115,7 +115,7 @@ export class IntegrationsComponent {
       {
         name: "Active Directory",
         linkURL: "https://bitwarden.com/help/ldap-directory/",
-        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
+        image: "../../../../../../../images/integrations/azure-active-directory.svg",
         type: IntegrationType.BWDC,
       },
       {
@@ -151,7 +151,7 @@ export class IntegrationsComponent {
       {
         name: "Microsoft Sentinel",
         linkURL: "https://bitwarden.com/help/microsoft-sentinel-siem/",
-        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
+        image: "../../../../../../../images/integrations/logo-microsoft-sentinel-color.svg",
         type: IntegrationType.EVENT,
       },
       {
@@ -175,7 +175,7 @@ export class IntegrationsComponent {
       {
         name: "Microsoft Intune",
         linkURL: "https://bitwarden.com/help/deploy-browser-extensions-with-intune/",
-        image: "../../../../../../../images/integrations/logo-microsoft-color.svg",
+        image: "../../../../../../../images/integrations/logo-microsoft-intune-color.svg",
         type: IntegrationType.DEVICE,
       },
     ];
