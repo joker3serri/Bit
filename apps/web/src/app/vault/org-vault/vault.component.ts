@@ -197,9 +197,12 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected addAccessStatus$ = new BehaviorSubject<AddAccessStatusType>(0);
   private extensionRefreshEnabled: boolean;
   private vaultItemDialogRef?: DialogRef<VaultItemDialogResult> | undefined;
+
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
     filter((organizations) => organizations.length === 1),
-    switchMap(([organization]) =>
+    map(([organization]) => organization),
+    filter((organization) => organization.hasSubscription),
+    switchMap((organization) =>
       from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
         switchMap((organizationMetaData) =>
           from(
@@ -581,7 +584,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.unpaidSubscriptionDialog$.pipe(takeUntil(this.destroy$)).subscribe();
 
     this.freeTrial$ = organization$.pipe(
-      filter((org) => org.isOwner),
+      filter((org) => org.isOwner && org.hasSubscription),
       switchMap((org) =>
         combineLatest([
           of(org),

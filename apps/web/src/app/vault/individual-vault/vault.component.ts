@@ -16,6 +16,7 @@ import {
   from,
   lastValueFrom,
   Observable,
+  of,
   Subject,
 } from "rxjs";
 import {
@@ -188,7 +189,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   private vaultItemDialogRef?: DialogRef<VaultItemDialogResult> | undefined;
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
     filter((organizations) => organizations.length === 1),
-    switchMap(([organization]) =>
+    map(([organization]) => organization),
+    filter((organization) => organization.hasSubscription),
+    switchMap((organization) =>
       from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
         switchMap((organizationMetaData) =>
           from(
@@ -419,9 +422,12 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const organizationsPaymentStatus$ = this.organizationService.organizations$.pipe(
       switchMap((allOrganizations) => {
+        if (!allOrganizations || allOrganizations.length === 0) {
+          return of([]);
+        }
         return combineLatest(
           allOrganizations
-            .filter((org) => org.isOwner)
+            .filter((org) => org.isOwner && org.hasSubscription)
             .map((org) =>
               combineLatest([
                 this.organizationApiService.getSubscription(org.id),
