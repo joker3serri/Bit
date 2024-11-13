@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
-import { filter, mergeMap, switchMap, take } from "rxjs/operators";
+import { filter, mergeMap, switchMap, take, takeWhile } from "rxjs/operators";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -67,6 +67,7 @@ export class VaultBannersService {
 
   shouldShowPremiumBanner$(userId$: Observable<UserId>): Observable<boolean> {
     return userId$.pipe(
+      takeWhile((userId) => userId != null),
       switchMap((userId) => {
         const premiumBannerState = this.premiumBannerState(userId);
         const premiumSources$ = combineLatest([
