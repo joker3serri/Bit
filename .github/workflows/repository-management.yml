@@ -65,6 +65,7 @@ jobs:
         with:
           app-id: ${{ secrets.BW_GHAPP_ID }}
           private-key: ${{ secrets.BW_GHAPP_KEY }}
+          skip-token-revoke: true
 
 
   cut_branch:
