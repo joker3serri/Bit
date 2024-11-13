@@ -25,7 +25,7 @@ import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import { KeyService } from "@bitwarden/key-management";
 
-import { UserKeyRotationService } from "../key-rotation/user-key-rotation.service";
+import { UserKeyRotationService } from "../../key-management/key-rotation/user-key-rotation.service";
 
 @Component({
   selector: "app-change-password",
@@ -194,7 +194,7 @@ export class ChangePasswordComponent
       HashPurpose.LocalAuthorization,
     );
 
-    const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(masterKey);
+    const userKey = await this.masterPasswordService.decryptUserKeyWithMasterKey(masterKey, userId);
     if (userKey == null) {
       this.toastService.showToast({
         variant: "error",

@@ -108,7 +108,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
         map((algorithms) => {
           const usernames = algorithms.filter((a) => !isForwarderIntegration(a.id));
           const usernameOptions = this.toOptions(usernames);
-          usernameOptions.push({ value: FORWARDER, label: this.i18nService.t("forwarder") });
+          usernameOptions.push({ value: FORWARDER, label: this.i18nService.t("forwardedEmail") });
 
           const forwarders = algorithms.filter((a) => isForwarderIntegration(a.id));
           const forwarderOptions = this.toOptions(forwarders);
@@ -322,7 +322,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
         if (!a || a.onlyOnRequest) {
           this.value$.next("-");
         } else {
-          this.generate("autogenerate");
+          this.generate("autogenerate").catch((e: unknown) => this.logService.error(e));
         }
       });
     });
@@ -390,6 +390,14 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
     map(({ generate }) => generate),
   );
 
+  /**
+   * Emits the copy credential toast respective of the selected credential type
+   */
+  protected credentialTypeLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ generatedValue }) => generatedValue),
+  );
+
   /** Emits hint key for the currently selected credential type */
   protected credentialTypeHint$ = new ReplaySubject<string>(1);
 
@@ -406,14 +414,14 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
    * @param requestor a label used to trace generation request
    *  origin in the debugger.
    */
-  protected generate(requestor: string) {
+  protected async generate(requestor: string) {
     this.generate$.next(requestor);
   }
 
   private toOptions(algorithms: AlgorithmInfo[]) {
     const options: Option<string>[] = algorithms.map((algorithm) => ({
       value: JSON.stringify(algorithm.id),
-      label: this.i18nService.t(algorithm.name),
+      label: algorithm.name,
     }));
 
     return options;
@@ -421,6 +429,7 @@ export class UsernameGeneratorComponent implements OnInit, OnDestroy {
 
   private readonly destroyed = new Subject<void>();
   ngOnDestroy() {
+    this.destroyed.next();
     this.destroyed.complete();
 
     // finalize subjects
