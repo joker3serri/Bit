@@ -25,7 +25,7 @@ import {
 import { CollectionService } from "@bitwarden/admin-console/common";
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { FingerprintDialogComponent , LoginApprovalComponent } from "@bitwarden/auth/angular";
+import { FingerprintDialogComponent, LoginApprovalComponent } from "@bitwarden/auth/angular";
 import { LogoutReason } from "@bitwarden/auth/common";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";

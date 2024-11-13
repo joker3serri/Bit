@@ -3,7 +3,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { of } from "rxjs";
 
-import { AuthRequestServiceAbstraction , LoginApprovalServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  AuthRequestServiceAbstraction,
+  LoginApprovalServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";

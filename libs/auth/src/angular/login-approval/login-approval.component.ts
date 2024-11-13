@@ -4,7 +4,10 @@ import { Component, OnInit, OnDestroy, Inject } from "@angular/core";
 import { Subject, firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AuthRequestServiceAbstraction , LoginApprovalServiceAbstraction as LoginApprovalService } from "@bitwarden/auth/common";
+import {
+  AuthRequestServiceAbstraction,
+  LoginApprovalServiceAbstraction as LoginApprovalService,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
