@@ -49,7 +49,7 @@ void runSync(void* context, NSDictionary *params) {
   }
 
   [ASCredentialIdentityStore.sharedStore replaceCredentialIdentityEntries:mappedCredentials
-    completion:^(BOOL success, NSError * _Nullable error) {
+    completion:^(__attribute__((unused)) BOOL success, NSError * _Nullable error) {
       if (error) {
         return _return(context, _error_er(error));
       }

@@ -4,7 +4,7 @@
 #import "../interop.h"
 #import "status.h"
 
-BOOL storeState(void (^callback)(ASCredentialIdentityStoreState*)) {
+void storeState(void (^callback)(ASCredentialIdentityStoreState*)) {
   if (@available(macos 11, *)) {
     ASCredentialIdentityStore *store = [ASCredentialIdentityStore sharedStore];
     [store getCredentialIdentityStoreStateWithCompletion:^(ASCredentialIdentityStoreState * _Nonnull state) {
@@ -31,7 +31,7 @@ BOOL passwordSupported() {
   }
 }
 
-void status(void* context, NSDictionary *params) {
+void status(void* context, __attribute__((unused)) NSDictionary *params) {
   storeState(^(ASCredentialIdentityStoreState *state) {
     BOOL enabled = NO;
     BOOL supportsIncremental = NO;
