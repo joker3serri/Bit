@@ -1,16 +1,29 @@
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 
 import { IntegrationType } from "@bitwarden/common/enums";
 
+import { HeaderModule } from "../../../layouts/header/header.module";
+import { IntegrationGridComponent } from "../../../shared/components/integrations/integration-grid/integration-grid.component";
 import { Integration } from "../../../shared/components/integrations/models";
+import { SharedOrganizationModule } from "../shared";
+
+import { FilterIntegrationsPipe } from "./integrations.pipe";
 
 @Component({
   selector: "ac-integrations",
   templateUrl: "./integrations.component.html",
+  standalone: true,
+  imports: [
+    CommonModule,
+    SharedOrganizationModule,
+    IntegrationGridComponent,
+    HeaderModule,
+    FilterIntegrationsPipe,
+  ],
 })
-export class IntegrationsComponent {
-  private integrationsList: Integration[] = [];
-
+export class AdminConsoleIntegrationsComponent {
+  integrationsList: Integration[] = [];
   tabIndex: number;
 
   constructor() {
@@ -181,28 +194,7 @@ export class IntegrationsComponent {
     ];
   }
 
-  /** Filter out content for the integrations sections */
-  get sso(): Integration[] {
-    return this.integrationsList.filter((integration) => integration.type === IntegrationType.SSO);
-  }
-
-  get scim(): Integration[] {
-    return this.integrationsList.filter((integration) => integration.type === IntegrationType.SCIM);
-  }
-
-  get bwdc(): Integration[] {
-    return this.integrationsList.filter((integration) => integration.type === IntegrationType.BWDC);
-  }
-
-  get event(): Integration[] {
-    return this.integrationsList.filter(
-      (integration) => integration.type === IntegrationType.EVENT,
-    );
-  }
-
-  get device(): Integration[] {
-    return this.integrationsList.filter(
-      (integration) => integration.type === IntegrationType.DEVICE,
-    );
+  get IntegrationType(): typeof IntegrationType {
+    return IntegrationType;
   }
 }

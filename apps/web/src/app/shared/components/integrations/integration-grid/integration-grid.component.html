@@ -6,7 +6,7 @@
     [title]="'integrationCardTooltip' | i18n: integration.name"
     attr.aria-label="open the {{ integration.name }} implementation guide in a new tab"
   >
-    <integration-card
+    <app-integration-card
       [name]="integration.name"
       [linkText]="integration.linkText"
       [linkURL]="integration.linkURL"
@@ -14,6 +14,6 @@
       [imageDarkMode]="integration.imageDarkMode"
       [externalURL]="integration.type === IntegrationType.SDK"
       [newBadgeExpiration]="integration.newBadgeExpiration"
-    ></integration-card>
+    ></app-integration-card>
   </li>
 </ul>

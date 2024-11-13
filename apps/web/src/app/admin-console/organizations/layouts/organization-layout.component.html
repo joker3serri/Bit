@@ -64,7 +64,7 @@
       icon="bwi-providers"
       [text]="'integrations' | i18n"
       route="integrations"
-      *ngIf="integrations$ | async"
+      *ngIf="integrationPageEnabled$ | async"
     ></bit-nav-item>
     <bit-nav-group
       icon="bwi-cog"

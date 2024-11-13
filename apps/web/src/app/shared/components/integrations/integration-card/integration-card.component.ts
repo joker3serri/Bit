@@ -12,10 +12,14 @@ import { Observable, Subject, combineLatest, takeUntil } from "rxjs";
 import { SYSTEM_THEME_OBSERVABLE } from "@bitwarden/angular/services/injection-tokens";
 import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
+import { SharedModule } from "../../../shared.module";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: "integration-card",
+  selector: "app-integration-card",
   templateUrl: "./integration-card.component.html",
+  standalone: true,
+  imports: [SharedModule, CommonModule],
 })
 export class IntegrationCardComponent implements AfterViewInit, OnDestroy {
   private destroyed$: Subject<void> = new Subject();

@@ -9,7 +9,9 @@
         <a bitLink routerLink="../settings/sso">{{ "ssoDescAnchor" | i18n }}</a>
         {{ "ssoDescEnd" | i18n }}
       </p>
-      <integration-grid [integrations]="sso"></integration-grid>
+      <app-integration-grid
+        [integrations]="integrationsList | filterIntegrations: IntegrationType.SSO"
+      ></app-integration-grid>
     </section>
   </bit-tab>
 
@@ -23,14 +25,18 @@
         <a bitLink routerLink="../settings/scim">{{ "scimIntegration" | i18n }}</a>
         {{ "scimIntegrationDescEnd" | i18n }}
       </p>
-      <integration-grid [integrations]="scim"></integration-grid>
+      <app-integration-grid
+        [integrations]="integrationsList | filterIntegrations: IntegrationType.SCIM"
+      ></app-integration-grid>
     </section>
     <section class="tw-mb-9">
       <h2 bitTypography="h2">
         {{ "bwdc" | i18n }}
       </h2>
       <p bitTypography="body1">{{ "bwdcDesc" | i18n }}</p>
-      <integration-grid [integrations]="bwdc"></integration-grid>
+      <app-integration-grid
+        [integrations]="integrationsList | filterIntegrations: IntegrationType.BWDC"
+      ></app-integration-grid>
     </section>
   </bit-tab>
 
@@ -40,7 +46,9 @@
         {{ "eventManagement" | i18n }}
       </h2>
       <p bitTypography="body1">{{ "eventManagementDesc" | i18n }}</p>
-      <integration-grid [integrations]="event"></integration-grid>
+      <app-integration-grid
+        [integrations]="integrationsList | filterIntegrations: IntegrationType.EVENT"
+      ></app-integration-grid>
     </section>
   </bit-tab>
 
@@ -50,7 +58,9 @@
         {{ "deviceManagement" | i18n }}
       </h2>
       <p bitTypography="body1">{{ "deviceManagementDesc" | i18n }}</p>
-      <integration-grid [integrations]="device"></integration-grid>
+      <app-integration-grid
+        [integrations]="integrationsList | filterIntegrations: IntegrationType.DEVICE"
+      ></app-integration-grid>
     </section>
   </bit-tab>
 </bit-tab-group>

@@ -4,7 +4,7 @@
 
 <section class="tw-mb-9">
   <p bitTypography="body1">{{ "integrationsDesc" | i18n }}</p>
-  <integration-grid [integrations]="integrations"></integration-grid>
+  <app-integration-grid [integrations]="integrations"></app-integration-grid>
 </section>
 
 <section class="tw-mb-9">
@@ -12,5 +12,5 @@
     {{ "sdks" | i18n }}
   </h2>
   <p bitTypography="body1">{{ "sdksDesc" | i18n }}</p>
-  <integration-grid [integrations]="sdks"></integration-grid>
+  <app-integration-grid [integrations]="sdks"></app-integration-grid>
 </section>
