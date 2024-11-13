@@ -10,9 +10,11 @@ import { DesktopLoginApprovalService } from "./desktop-login-approval.service";
 describe("DesktopLoginApprovalService", () => {
   let service: DesktopLoginApprovalService;
   let i18nService: MockProxy<I18nServiceAbstraction>;
+  let originalIpc: any;
 
   beforeEach(() => {
-    (global as any).desktopApi = {
+    originalIpc = (global as any).ipc;
+    (global as any).ipc = {
       auth: {
         loginRequest: jest.fn(),
       },
@@ -38,7 +40,7 @@ describe("DesktopLoginApprovalService", () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    delete (global as any).desktopApi;
+    (global as any).ipc = originalIpc;
   });
 
   it("is created successfully", () => {
