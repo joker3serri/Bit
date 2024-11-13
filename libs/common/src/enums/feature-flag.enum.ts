@@ -40,6 +40,8 @@ export enum FeatureFlag {
   CriticalApps = "pm-14466-risk-insights-critical-application",
   TrialPaymentOptional = "PM-8163-trial-payment",
   SecurityTasks = "security-tasks",
+  NewDeviceVerificationTemporaryDismiss = "new-device-temporary-dismiss",
+  NewDeviceVerificationPermanentDismiss = "new-device-permanent-dismiss",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
 }
 
@@ -91,6 +93,8 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.CriticalApps]: FALSE,
   [FeatureFlag.TrialPaymentOptional]: FALSE,
   [FeatureFlag.SecurityTasks]: FALSE,
+  [FeatureFlag.NewDeviceVerificationTemporaryDismiss]: FALSE,
+  [FeatureFlag.NewDeviceVerificationPermanentDismiss]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
