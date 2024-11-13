@@ -9,7 +9,7 @@ export class DesktopLoginApprovalService
   extends DefaultLoginApprovalService
   implements LoginApprovalServiceAbstraction
 {
-  constructor(private readonly i18nService: I18nServiceAbstraction) {
+  constructor(private i18nService: I18nServiceAbstraction) {
     super();
   }
 
