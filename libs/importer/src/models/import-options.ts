@@ -71,6 +71,7 @@ export const regularImportOptions = [
   { id: "psonojson", name: "Psono (json)" },
   { id: "passkyjson", name: "Passky (json)" },
   { id: "passwordxpcsv", name: "Password XP (csv)" },
+  { id: "netwrixpasswordsecure", name: "Netwrix Password Secure (csv)" },
 ] as const;
 
 export type ImportType =
