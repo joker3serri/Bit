@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy, Inject } from "@angular/core";
 import { Subject, firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AuthRequestServiceAbstraction } from "@bitwarden/auth/common";
+import { AuthRequestServiceAbstraction , LoginApprovalServiceAbstraction as LoginApprovalService } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
@@ -56,6 +56,7 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
     protected keyService: KeyService,
     private dialogRef: DialogRef,
     private toastService: ToastService,
+    private loginApprovalService: LoginApprovalService,
   ) {
     this.notificationId = params.notificationId;
   }
@@ -89,14 +90,7 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
         this.updateTimeText();
       }, RequestTimeUpdate);
 
-      const isVisible = await ipc.platform.isWindowVisible();
-      if (!isVisible) {
-        await ipc.auth.loginRequest(
-          this.i18nService.t("logInRequested"),
-          this.i18nService.t("confirmLoginAtemptForMail", this.email),
-          this.i18nService.t("close"),
-        );
-      }
+      this.loginApprovalService.onInit(this);
     }
   }
 
