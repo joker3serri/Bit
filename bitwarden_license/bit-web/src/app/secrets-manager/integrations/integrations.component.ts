@@ -17,7 +17,7 @@ import { SecretsManagerSharedModule } from "../shared/sm-shared.module";
 export class IntegrationsComponent {
   private integrationsAndSdks: Integration[] = [];
 
-  constructor(i18nService: I18nService) {
+  constructor(private i18nService: I18nService) {
     this.integrationsAndSdks = [
       {
         name: "Rust",

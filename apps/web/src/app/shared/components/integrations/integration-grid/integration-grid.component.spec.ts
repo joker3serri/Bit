@@ -22,14 +22,12 @@ describe("IntegrationGridComponent", () => {
     {
       name: "Integration 1",
       image: "test-image1.png",
-      linkText: "Get started with integration 1",
       linkURL: "https://example.com/1",
       type: IntegrationType.Integration,
     },
     {
       name: "SDK 2",
       image: "test-image2.png",
-      linkText: "View SDK 2",
       linkURL: "https://example.com/2",
       type: IntegrationType.SDK,
     },
@@ -79,7 +77,6 @@ describe("IntegrationGridComponent", () => {
 
     expect(card.componentInstance.name).toBe("SDK 2");
     expect(card.componentInstance.image).toBe("test-image2.png");
-    expect(card.componentInstance.linkText).toBe("View SDK 2");
     expect(card.componentInstance.linkURL).toBe("https://example.com/2");
   });
 

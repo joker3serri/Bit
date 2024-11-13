@@ -3,8 +3,8 @@
 >
   <li
     *ngFor="let integration of integrations"
-    [title]="'integrationCardTooltip' | i18n: integration.name"
-    attr.aria-label="open the {{ integration.name }} implementation guide in a new tab"
+    [title]="tooltipI18nKey | i18n: integration.name"
+    [attr.aria-label]="ariaI18nKey | i18n: integration.name"
   >
     <app-integration-card
       [name]="integration.name"

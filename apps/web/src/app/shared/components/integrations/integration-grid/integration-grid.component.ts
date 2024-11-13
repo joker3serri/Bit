@@ -15,5 +15,8 @@ import { Integration } from "../models";
 export class IntegrationGridComponent {
   @Input() integrations: Integration[];
 
+  @Input() ariaI18nKey: string = "integrationCardAriaLabel";
+  @Input() tooltipI18nKey: string = "integrationCardTooltip";
+
   protected IntegrationType = IntegrationType;
 }
