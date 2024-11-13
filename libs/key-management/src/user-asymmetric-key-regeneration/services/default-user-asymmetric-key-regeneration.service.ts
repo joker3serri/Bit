@@ -56,9 +56,10 @@ export class DefaultUserAsymmetricKeysRegenerationService
     ]);
 
     const verificationResponse = await firstValueFrom(
-      this.sdkService.userClient$(userId).pipe(
+      this.sdkService.client$.pipe(
         map((sdk) =>
           sdk.crypto().verify_asymmetric_keys({
+            userKey: userKey.keyB64,
             userPublicKey: publicKeyResponse.publicKey,
             userKeyEncryptedPrivateKey: userKeyEncryptedPrivateKey,
           }),
@@ -89,8 +90,9 @@ export class DefaultUserAsymmetricKeysRegenerationService
   }
 
   private async regenerateUserAsymmetricKeys(userId: UserId): Promise<void> {
+    const userKey = await firstValueFrom(this.keyService.userKey$(userId));
     const makeKeyPairResponse = await firstValueFrom(
-      this.sdkService.userClient$(userId).pipe(map((sdk) => sdk.crypto().make_key_pair())),
+      this.sdkService.client$.pipe(map((sdk) => sdk.crypto().make_key_pair(userKey.keyB64))),
     );
 
     try {

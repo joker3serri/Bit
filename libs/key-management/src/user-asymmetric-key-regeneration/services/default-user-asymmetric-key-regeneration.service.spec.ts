@@ -31,19 +31,17 @@ function setupVerificationResponse(
     userKeyEncryptedPrivateKey: "userKeyEncryptedPrivateKey",
   };
 
-  sdkService.userClient$.mockReturnValue(
-    of({
-      crypto: () => ({
-        verify_asymmetric_keys: jest.fn().mockReturnValue(mockVerificationResponse),
-        make_key_pair: jest.fn().mockReturnValue(mockKeyPairResponse),
-      }),
-      free: jest.fn(),
-      echo: jest.fn(),
-      version: jest.fn(),
-      throw: jest.fn(),
-      catch: jest.fn(),
-    } as unknown as BitwardenClient),
-  );
+  sdkService.client$ = of({
+    crypto: () => ({
+      verify_asymmetric_keys: jest.fn().mockReturnValue(mockVerificationResponse),
+      make_key_pair: jest.fn().mockReturnValue(mockKeyPairResponse),
+    }),
+    free: jest.fn(),
+    echo: jest.fn(),
+    version: jest.fn(),
+    throw: jest.fn(),
+    catch: jest.fn(),
+  } as unknown as BitwardenClient);
 }
 
 function setupUserKeyValidation(
