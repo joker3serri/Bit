@@ -528,6 +528,7 @@ pub mod ipc {
     }
 }
 
+#[napi]
 pub mod autofill {
     #[napi]
     pub async fn run_command(value: String) -> napi::Result<String> {
