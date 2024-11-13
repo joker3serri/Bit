@@ -18,8 +18,6 @@ describe("DesktopLoginApprovalService", () => {
       auth: {
         loginRequest: jest.fn(),
       },
-      on: jest.fn(),
-      removeListener: jest.fn(),
     };
 
     i18nService = mock<I18nServiceAbstraction>({
