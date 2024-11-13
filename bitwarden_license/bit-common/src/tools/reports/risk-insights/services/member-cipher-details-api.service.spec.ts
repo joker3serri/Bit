@@ -4,7 +4,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 
 import { MemberCipherDetailsApiService } from "./member-cipher-details-api.service";
 
-const mockMemberCipherDetails: any = [
+export const mockMemberCipherDetails: any = [
   {
     userName: "David Brent",
     email: "david.brent@wernhamhogg.uk",
