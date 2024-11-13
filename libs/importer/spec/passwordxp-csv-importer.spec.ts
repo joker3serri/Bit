@@ -3,6 +3,7 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { PasswordXPCsvImporter } from "../src/importers";
 import { ImportResult } from "../src/models/import-result";
 
+import { noFolder } from "./test-data/passwordxp-csv/no-folder.csv";
 import { withFolders } from "./test-data/passwordxp-csv/passwordxp-with-folders.csv";
 import { withoutFolders } from "./test-data/passwordxp-csv/passwordxp-without-folders.csv";
 
@@ -20,9 +21,7 @@ describe("PasswordXPCsvImporter", () => {
   });
 
   it("should skip rows starting with >>>", async () => {
-    const data = `Title;User name;Account;URL;Password;Modified;Created;Expire on;Description;Modified by
->>>`;
-    const result: ImportResult = await importer.parse(data);
+    const result: ImportResult = await importer.parse(noFolder);
     expect(result.success).toBe(true);
     expect(result.ciphers.length).toBe(0);
   });
