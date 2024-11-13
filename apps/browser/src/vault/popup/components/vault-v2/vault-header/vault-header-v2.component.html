@@ -1,4 +1,4 @@
-<div class="tw-flex tw-gap-1 tw-items-center" [ngClass]="{ 'tw-mb-2': disclosureRef.open }">
+<div class="tw-flex tw-gap-1 tw-items-center">
   <div class="tw-flex-1">
     <app-vault-v2-search></app-vault-v2-search>
   </div>
@@ -28,6 +28,12 @@
     </div>
   </div>
 </div>
-<bit-disclosure #disclosureRef (openChange)="disclosureVisibility($event)">
-  <app-vault-list-filters></app-vault-list-filters>
+<bit-disclosure
+  #disclosureRef
+  [open]="initialDisclosureVisibility$ | async"
+  (openChange)="toggleFilters($event)"
+>
+  <div class="tw-pt-2">
+    <app-vault-list-filters></app-vault-list-filters>
+  </div>
 </bit-disclosure>

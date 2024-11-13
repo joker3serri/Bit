@@ -41,7 +41,7 @@ describe("VaultHeaderV2Component", () => {
   };
 
   const numberOfAppliedFilters$ = new BehaviorSubject<number>(0);
-  const state$ = new BehaviorSubject<boolean | null>(null);
+  const state$ = new Subject<boolean | null>();
 
   // Mock state provider update
   const update = jest.fn().mockResolvedValue(undefined);
@@ -99,7 +99,7 @@ describe("VaultHeaderV2Component", () => {
   });
 
   it("does not show filter badge when no filters are selected", () => {
-    component["disclosureVisibility"](false);
+    state$.next(false);
     numberOfAppliedFilters$.next(0);
     fixture.detectChanges();
 
@@ -107,7 +107,7 @@ describe("VaultHeaderV2Component", () => {
   });
 
   it("does not show filter badge when disclosure is open", () => {
-    component["disclosureVisibility"](true);
+    state$.next(true);
     numberOfAppliedFilters$.next(1);
     fixture.detectChanges();
 
@@ -115,7 +115,7 @@ describe("VaultHeaderV2Component", () => {
   });
 
   it("shows the notification badge when there are populated filters and the disclosure is closed", async () => {
-    component["disclosureVisibility"](false);
+    state$.next(false);
     numberOfAppliedFilters$.next(1);
     fixture.detectChanges();
 
@@ -124,7 +124,7 @@ describe("VaultHeaderV2Component", () => {
 
   it("displays the number of filters populated", () => {
     numberOfAppliedFilters$.next(1);
-    component["disclosureVisibility"](false);
+    state$.next(false);
     fixture.detectChanges();
 
     expect(getBadge().nativeElement.textContent.trim()).toBe("1");
@@ -142,17 +142,14 @@ describe("VaultHeaderV2Component", () => {
     expect(getBadge().nativeElement.textContent.trim()).toBe("4");
   });
 
-  it("reads initial state of the filter visibility from state", async () => {
-    state$.next(false);
+  it("defaults the initial state to true", (done) => {
+    // The initial value of the `state$` variable above is undefined
+    component["initialDisclosureVisibility$"].subscribe((initialVisibility) => {
+      expect(initialVisibility).toBeTrue();
+      done();
+    });
 
-    await component.ngOnInit();
-
-    expect(component["isDisclosureShown$"].value).toBeFalse();
-
-    state$.next(true);
-
-    await component.ngOnInit();
-
-    expect(component["isDisclosureShown$"].value).toBeTrue();
+    // Update the state to null
+    state$.next(null);
   });
 });
