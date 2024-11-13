@@ -82,7 +82,8 @@ describe("VaultHeaderV2Component", () => {
             numberOfAppliedFilters$,
             filters$: new BehaviorSubject(emptyForm),
             filterForm: new FormBuilder().group(emptyForm),
-            filterVisibilityState: { state$, update },
+            filterVisibilityState$: state$,
+            updateFilterVisibility: update,
           },
         },
         {

@@ -51,6 +51,9 @@ describe("VaultPopupListFiltersService", () => {
     policyAppliesToActiveUser$: jest.fn(() => policyAppliesToActiveUser$),
   };
 
+  const state$ = new BehaviorSubject<boolean>(false);
+  const update = jest.fn().mockResolvedValue(undefined);
+
   beforeEach(() => {
     memberOrganizations$.next([]);
     decryptedCollections$.next([]);
@@ -86,7 +89,7 @@ describe("VaultPopupListFiltersService", () => {
         },
         {
           provide: StateProvider,
-          useValue: { getGlobal: () => ({}) },
+          useValue: { getGlobal: () => ({ state$, update }) },
         },
         { provide: FormBuilder, useClass: FormBuilder },
       ],
@@ -468,6 +471,26 @@ describe("VaultPopupListFiltersService", () => {
 
         service.filterForm.patchValue({ organization });
       });
+    });
+  });
+
+  describe("filterVisibilityState", () => {
+    it("exposes stored state through filterVisibilityState$", (done) => {
+      state$.next(true);
+
+      service.filterVisibilityState$.subscribe((filterVisibility) => {
+        expect(filterVisibility).toBeTrue();
+        done();
+      });
+    });
+
+    it("updates stored filter state", async () => {
+      await service.updateFilterVisibility(false);
+
+      expect(update).toHaveBeenCalledOnce();
+      // Get callback passed to `update`
+      const updateCallback = update.mock.calls[0][0];
+      expect(updateCallback()).toBe(false);
     });
   });
 });

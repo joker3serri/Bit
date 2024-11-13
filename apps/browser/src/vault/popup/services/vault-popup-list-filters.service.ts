@@ -83,7 +83,7 @@ export class VaultPopupListFiltersService {
   );
 
   /** Stored state for the visibility of the filters. */
-  filterVisibilityState = this.stateProvider.getGlobal(FILTER_VISIBILITY_KEY);
+  private filterVisibilityState = this.stateProvider.getGlobal(FILTER_VISIBILITY_KEY);
 
   /**
    * Static list of ciphers views used in synchronous context
@@ -114,6 +114,9 @@ export class VaultPopupListFiltersService {
       .pipe(takeUntilDestroyed())
       .subscribe(this.validateOrganizationChange.bind(this));
   }
+
+  /** Stored state for the visibility of the filters. */
+  filterVisibilityState$ = this.filterVisibilityState.state$;
 
   /**
    * Observable whose value is a function that filters an array of `CipherView` objects based on the current filters
@@ -351,6 +354,11 @@ export class VaultPopupListFiltersService {
       collections.nestedList.map((c) => this.convertToChipSelectOption(c, "bwi-collection")),
     ),
   );
+
+  /** Updates the stored state for filter visibility. */
+  async updateFilterVisibility(isVisible: boolean): Promise<void> {
+    await this.filterVisibilityState.update(() => isVisible);
+  }
 
   /**
    * Converts the given item into the `ChipSelectOption` structure

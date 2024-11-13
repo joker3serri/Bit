@@ -63,7 +63,7 @@ export class VaultHeaderV2Component implements OnInit {
 
   ngOnInit(): void {
     // Get the initial visibility from stored state
-    this.vaultPopupListFiltersService.filterVisibilityState.state$
+    this.vaultPopupListFiltersService.filterVisibilityState$
       .pipe(
         first(),
         takeUntilDestroyed(this.destroyRef),
@@ -85,6 +85,6 @@ export class VaultHeaderV2Component implements OnInit {
     }
 
     this.isDisclosureShown$.next(isShown);
-    void this.vaultPopupListFiltersService.filterVisibilityState.update(() => isShown);
+    void this.vaultPopupListFiltersService.updateFilterVisibility(isShown);
   }
 }
