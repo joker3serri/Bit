@@ -24,7 +24,7 @@ import {
 } from "../admin-console/models/response/organization-connection.response";
 import { OrganizationExportResponse } from "../admin-console/models/response/organization-export.response";
 import { OrganizationSponsorshipSyncStatusResponse } from "../admin-console/models/response/organization-sponsorship-sync-status.response";
-import { PreValidateSponsorshipResponse } from "../admin-console/models/response/preValidate-sponsorship.response";
+import { PreValidateSponsorshipResponse } from "../admin-console/models/response/prevalidate-sponsorship.response";
 import {
   ProviderOrganizationOrganizationDetailsResponse,
   ProviderOrganizationResponse,
