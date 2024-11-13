@@ -34,6 +34,7 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
       }
 
       const title = row.Title;
+      // If the title is in the format [title], then it is a folder name
       if (title.startsWith("[") && title.endsWith("]")) {
         currentFolderName = title.startsWith("/")
           ? title.replace("/", "")
