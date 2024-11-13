@@ -8874,13 +8874,12 @@
     "message": "Single sign-on"
   },
   "ssoDescStart": {
-    "message": "Configure"
-  },
-  "ssoDescAnchor": {
-    "message": "single sign-on"
+    "message": "Configure",
+    "description": "This represents the beggining of a sentence. The full sentence will be 'Configure single sign-on for Bitwarden using the implementation guide for your Identity Provider."
   },
   "ssoDescEnd": {
-    "message": "for Bitwarden using the implementation guide for your Identity Provider."
+    "message": "for Bitwarden using the implementation guide for your Identity Provider.",
+    "description": "This represents the end of a sentence. The full sentence will be 'Configure single sign-on for Bitwarden using the implementation guide for your Identity Provider."
   },
   "userProvisioning":{
     "message": "User provisioning"
@@ -8889,10 +8888,12 @@
     "message": "SCIM"
   },
   "scimIntegrationDescStart": {
-    "message": "Configure "
+    "message": "Configure ",
+    "description": "This represents the beggining of a sentence. The full sentence will be 'Configure SCIM (System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider"
   },
   "scimIntegrationDescEnd": {
-    "message": "(System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider."
+    "message": "(System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider.",
+    "description": "This represents the end of a sentence. The full sentence will be 'Configure SCIM (System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider"
   },
   "bwdc":{
     "message": "Bitwarden Directory Connector"

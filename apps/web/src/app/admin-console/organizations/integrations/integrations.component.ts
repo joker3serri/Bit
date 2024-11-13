@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 
 import { IntegrationType } from "@bitwarden/common/enums";
@@ -6,6 +5,7 @@ import { IntegrationType } from "@bitwarden/common/enums";
 import { HeaderModule } from "../../../layouts/header/header.module";
 import { IntegrationGridComponent } from "../../../shared/components/integrations/integration-grid/integration-grid.component";
 import { Integration } from "../../../shared/components/integrations/models";
+import { SharedModule } from "../../../shared/shared.module";
 import { SharedOrganizationModule } from "../shared";
 
 import { FilterIntegrationsPipe } from "./integrations.pipe";
@@ -15,7 +15,7 @@ import { FilterIntegrationsPipe } from "./integrations.pipe";
   templateUrl: "./integrations.component.html",
   standalone: true,
   imports: [
-    CommonModule,
+    SharedModule,
     SharedOrganizationModule,
     IntegrationGridComponent,
     HeaderModule,
