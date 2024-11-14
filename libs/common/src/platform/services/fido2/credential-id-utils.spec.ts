@@ -1,4 +1,4 @@
-import { parseCredentialId } from "./credential-id-utils";
+import { compareCredentialIds, parseCredentialId } from "./credential-id-utils";
 
 describe("credential-id-utils", () => {
   describe("parseCredentialId", () => {
@@ -34,6 +34,35 @@ describe("credential-id-utils", () => {
       const result = parseCredentialId("invalid");
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe("compareCredentialIds", () => {
+    it("returns true when the two credential IDs are equal", () => {
+      const a = new Uint8Array([0x01, 0x02, 0x03]);
+      const b = new Uint8Array([0x01, 0x02, 0x03]);
+
+      const result = compareCredentialIds(a, b);
+
+      expect(result).toBe(true);
+    });
+
+    it("returns false when the two credential IDs are not equal", () => {
+      const a = new Uint8Array([0x01, 0x02, 0x03]);
+      const b = new Uint8Array([0x01, 0x02, 0x04]);
+
+      const result = compareCredentialIds(a, b);
+
+      expect(result).toBe(false);
+    });
+
+    it("returns false when the two credential IDs have different lengths", () => {
+      const a = new Uint8Array([0x01, 0x02, 0x03]);
+      const b = new Uint8Array([0x01, 0x02, 0x03, 0x04]);
+
+      const result = compareCredentialIds(a, b);
+
+      expect(result).toBe(false);
     });
   });
 });
