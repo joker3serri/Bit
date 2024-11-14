@@ -1,41 +1,67 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, switchMap, takeWhile } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import {
-  ActiveUserState,
   StateProvider,
   UserKeyDefinition,
   NEW_DEVICE_VERIFICATION_NOTICE,
+  SingleUserState,
 } from "@bitwarden/common/platform/state";
+import { UserId } from "@bitwarden/common/types/guid";
 
-export type NewDeviceVerificationNotice = {
-  last_dismissal: string;
+// This service checks when to show New Device Verification Notice to Users
+// It will be a two phase approach and the values below will work with two different feature flags
+// If a user dismisses the notice, use "last_dismissal" to wait 7 days before re-prompting
+// permanent_dismissal will be checked if the user should never see the notice again
+export class NewDeviceVerificationNotice {
+  last_dismissal: Date;
   permanent_dismissal: boolean;
-};
 
-const NEW_DEVICE_VERIFICATION_NOTICE_KEY = new UserKeyDefinition<NewDeviceVerificationNotice>(
-  NEW_DEVICE_VERIFICATION_NOTICE,
-  "noticeState",
-  {
-    deserializer: (jsonData) => jsonData,
-    clearOn: [],
-  },
-);
+  constructor(obj: Partial<NewDeviceVerificationNotice>) {
+    if (obj == null) {
+      return;
+    }
+    this.last_dismissal = obj.last_dismissal || null;
+    this.permanent_dismissal = obj.permanent_dismissal || null;
+  }
+
+  static fromJSON(obj: Jsonify<NewDeviceVerificationNotice>) {
+    return Object.assign(new NewDeviceVerificationNotice({}), obj);
+  }
+}
+
+export const NEW_DEVICE_VERIFICATION_NOTICE_KEY =
+  new UserKeyDefinition<NewDeviceVerificationNotice>(
+    NEW_DEVICE_VERIFICATION_NOTICE,
+    "noticeState",
+    {
+      deserializer: (obj: Jsonify<NewDeviceVerificationNotice>) =>
+        NewDeviceVerificationNotice.fromJSON(obj),
+      clearOn: [],
+    },
+  );
 
 @Injectable()
 export class NewDeviceVerificationNoticeService {
-  private noticeState: ActiveUserState<NewDeviceVerificationNotice>;
-  noticeState$: Observable<NewDeviceVerificationNotice>;
+  constructor(private stateProvider: StateProvider) {}
 
-  constructor(private stateProvider: StateProvider) {
-    this.noticeState = this.stateProvider.getActive(NEW_DEVICE_VERIFICATION_NOTICE_KEY);
-    this.noticeState$ = this.noticeState.state$;
+  private noticeState(userId: UserId): SingleUserState<NewDeviceVerificationNotice> {
+    return this.stateProvider.getUser(userId, NEW_DEVICE_VERIFICATION_NOTICE_KEY);
+  }
+
+  noticeState$(userId$: Observable<UserId>): Observable<NewDeviceVerificationNotice> {
+    return userId$.pipe(
+      takeWhile((userId) => userId != null),
+      switchMap((userId) => this.noticeState(userId).state$),
+    );
   }
 
   async updateNewDeviceVerificationNoticeState(
+    userId: UserId,
     newState: NewDeviceVerificationNotice,
   ): Promise<void> {
-    await this.noticeState.update(() => {
+    await this.noticeState(userId).update(() => {
       return { ...newState };
     });
   }
