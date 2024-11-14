@@ -466,10 +466,7 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
    * Helper method to delete cipher.
    */
   private async deleteCipher(): Promise<void> {
-    const { isAdminConsole } = this.formConfig;
-
-    const cipherIsUnassigned =
-      isAdminConsole && (!this.cipher.collectionIds || this.cipher.collectionIds?.length === 0);
+    const cipherIsUnassigned = this.cipher.isUnassigned;
 
     // Delete the cipher as an admin when:
     // - The organization allows for owners/admins to manage all collections/items
