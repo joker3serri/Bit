@@ -14,10 +14,13 @@ export class DesktopLoginApprovalService
   }
 
   async onInit(loginApprovalComponent: LoginApprovalComponent): Promise<void> {
-    await ipc.auth.loginRequest(
-      this.i18nService.t("logInRequested"),
-      this.i18nService.t("confirmLoginAtemptForMail", loginApprovalComponent.email),
-      this.i18nService.t("close"),
-    );
+    const isVisible = await ipc.platform.isWindowVisible();
+    if (!isVisible) {
+      await ipc.auth.loginRequest(
+        this.i18nService.t("logInRequested"),
+        this.i18nService.t("confirmLoginAtemptForMail", loginApprovalComponent.email),
+        this.i18nService.t("close"),
+      );
+    }
   }
 }

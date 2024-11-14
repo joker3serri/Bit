@@ -18,6 +18,9 @@ describe("DesktopLoginApprovalService", () => {
       auth: {
         loginRequest: jest.fn(),
       },
+      platform: {
+        isWindowVisible: jest.fn(),
+      },
     };
 
     i18nService = mock<I18nServiceAbstraction>({
@@ -45,7 +48,7 @@ describe("DesktopLoginApprovalService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("calls ipc.auth.loginRequest with correct parameters on onInit", async () => {
+  it("calls ipc.auth.loginRequest with correct parameters when window is not visible", async () => {
     const title = "Log in requested";
     const email = "test@bitwarden.com";
     const message = `Confirm login attempt for ${email}`;
@@ -65,10 +68,22 @@ describe("DesktopLoginApprovalService", () => {
       }
     });
 
+    jest.spyOn(ipc.platform, "isWindowVisible").mockResolvedValue(false);
     jest.spyOn(ipc.auth, "loginRequest").mockResolvedValue();
 
     await service.onInit(loginApprovalComponent);
 
     expect(ipc.auth.loginRequest).toHaveBeenCalledWith(title, message, closeText);
+  });
+
+  it("does not call ipc.auth.loginRequest when window is visible", async () => {
+    const loginApprovalComponent = { email: "test@bitwarden.com" } as LoginApprovalComponent;
+
+    jest.spyOn(ipc.platform, "isWindowVisible").mockResolvedValue(true);
+    jest.spyOn(ipc.auth, "loginRequest");
+
+    await service.onInit(loginApprovalComponent);
+
+    expect(ipc.auth.loginRequest).not.toHaveBeenCalled();
   });
 });
