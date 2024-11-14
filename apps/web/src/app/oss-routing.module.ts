@@ -1,5 +1,5 @@
-import { NgModule } from "@angular/core";
-import { Route, RouterModule, Routes } from "@angular/router";
+import { inject, NgModule } from "@angular/core";
+import { Route, Router, RouterModule, Routes } from "@angular/router";
 
 import { unauthUiRefreshSwap } from "@bitwarden/angular/auth/functions/unauth-ui-refresh-route-swap";
 import {
@@ -33,6 +33,7 @@ import {
   VaultIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 
 import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-factor-component-refactor-route-swap";
 import { flagEnabled, Flags } from "../utils/flags";
@@ -120,7 +121,17 @@ const routes: Routes = [
         path: "register",
         component: TrialInitiationComponent,
         canActivate: [
-          canAccessFeature(FeatureFlag.EmailVerification, false, "/signup"),
+          async () => {
+            const configService = inject(ConfigService);
+            const router = inject(Router);
+
+            return configService.getFeatureFlag(FeatureFlag.EmailVerification).then((flagValue) => {
+              if (flagValue === true) {
+                return router.createUrlTree(["/signup"]);
+              }
+              return true;
+            });
+          },
           unauthGuardFn(),
         ],
         data: { titleId: "createAccount" } satisfies RouteDataProperties,
