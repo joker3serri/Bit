@@ -2,6 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { concatMap, firstValueFrom, map, Observable, Subject, takeUntil } from "rxjs";
 
+import { CollectionService, CollectionView } from "@bitwarden/admin-console/common";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import {
@@ -13,7 +14,8 @@ import { OrganizationUserStatusType, PolicyType } from "@bitwarden/common/admin-
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { normalizeExpiryYearFormat } from "@bitwarden/common/autofill/utils";
-import { EventType } from "@bitwarden/common/enums";
+import { ClientType, EventType } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -22,21 +24,21 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
-import { UserId } from "@bitwarden/common/types/guid";
+import { CollectionId, UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType, SecureNoteType } from "@bitwarden/common/vault/enums";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService } from "@bitwarden/components";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
@@ -48,6 +50,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   @Input() type: CipherType;
   @Input() collectionIds: string[];
   @Input() organizationId: string = null;
+  @Input() collectionId: string = null;
   @Output() onSavedCipher = new EventEmitter<CipherView>();
   @Output() onDeletedCipher = new EventEmitter<CipherView>();
   @Output() onRestoredCipher = new EventEmitter<CipherView>();
@@ -57,6 +60,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
   @Output() onEditCollections = new EventEmitter<CipherView>();
   @Output() onGeneratePassword = new EventEmitter();
   @Output() onGenerateUsername = new EventEmitter();
+
+  canDeleteCipher$: Observable<boolean>;
 
   editMode = false;
   cipher: CipherView;
@@ -68,6 +73,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
   restorePromise: Promise<any>;
   checkPasswordPromise: Promise<number>;
   showPassword = false;
+  showPrivateKey = false;
   showTotpSeed = false;
   showCardNumber = false;
   showCardCode = false;
@@ -84,6 +90,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
   reprompt = false;
   canUseReprompt = true;
   organization: Organization;
+  /**
+   * Flag to determine if the action is being performed from the admin console.
+   */
+  isAdminConsoleAction: boolean = false;
 
   protected componentName = "";
   protected destroy$ = new Subject<void>();
@@ -119,6 +129,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected win: Window,
     protected datePipe: DatePipe,
     protected configService: ConfigService,
+    protected cipherAuthorizationService: CipherAuthorizationService,
   ) {
     this.typeOptions = [
       { name: i18nService.t("typeLogin"), value: CipherType.Login },
@@ -126,6 +137,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
       { name: i18nService.t("typeIdentity"), value: CipherType.Identity },
       { name: i18nService.t("typeSecureNote"), value: CipherType.SecureNote },
     ];
+
     this.cardBrandOptions = [
       { name: "-- " + i18nService.t("select") + " --", value: null },
       { name: "Visa", value: "Visa" },
@@ -192,6 +204,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
     this.writeableCollections = await this.loadCollections();
     this.canUseReprompt = await this.passwordRepromptService.enabled();
+
+    const sshKeysEnabled = await this.configService.getFeatureFlag(FeatureFlag.SSHKeyVaultItem);
+    if (this.platformUtilsService.getClientType() == ClientType.Desktop && sshKeysEnabled) {
+      this.typeOptions.push({ name: this.i18nService.t("typeSshKey"), value: CipherType.SshKey });
+    }
   }
 
   ngOnDestroy() {
@@ -271,6 +288,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.cipher.identity = new IdentityView();
         this.cipher.secureNote = new SecureNoteView();
         this.cipher.secureNote.type = SecureNoteType.Generic;
+        this.cipher.sshKey = new SshKeyView();
         this.cipher.reprompt = CipherRepromptType.None;
       }
     }
@@ -308,15 +326,19 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.folders$ = this.folderService.folderViews$;
 
     if (this.editMode && this.previousCipherId !== this.cipherId) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(EventType.Cipher_ClientViewed, this.cipherId);
+      void this.eventCollectionService.collectMany(EventType.Cipher_ClientViewed, [this.cipher]);
     }
     this.previousCipherId = this.cipherId;
     this.reprompt = this.cipher.reprompt !== CipherRepromptType.None;
     if (this.reprompt) {
       this.cipher.login.autofillOnPageLoad = this.autofillOnPageLoadOptions[2].value;
     }
+
+    this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(
+      this.cipher,
+      [this.collectionId as CollectionId],
+      this.isAdminConsoleAction,
+    );
   }
 
   async submit(): Promise<boolean> {
@@ -551,12 +573,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (this.editMode && this.showPassword) {
       document.getElementById("loginPassword")?.focus();
 
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledPasswordVisible,
-        this.cipherId,
-      );
+      void this.eventCollectionService.collectMany(EventType.Cipher_ClientToggledPasswordVisible, [
+        this.cipher,
+      ]);
     }
   }
 
@@ -566,23 +585,18 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (this.editMode && this.showTotpSeed) {
       document.getElementById("loginTotp")?.focus();
 
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledTOTPSeedVisible,
-        this.cipherId,
-      );
+      void this.eventCollectionService.collectMany(EventType.Cipher_ClientToggledTOTPSeedVisible, [
+        this.cipher,
+      ]);
     }
   }
 
   async toggleCardNumber() {
     this.showCardNumber = !this.showCardNumber;
     if (this.showCardNumber) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(
+      void this.eventCollectionService.collectMany(
         EventType.Cipher_ClientToggledCardNumberVisible,
-        this.cipherId,
+        [this.cipher],
       );
     }
   }
@@ -591,13 +605,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.showCardCode = !this.showCardCode;
     document.getElementById("cardCode").focus();
     if (this.editMode && this.showCardCode) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(
-        EventType.Cipher_ClientToggledCardCodeVisible,
-        this.cipherId,
-      );
+      void this.eventCollectionService.collectMany(EventType.Cipher_ClientToggledCardCodeVisible, [
+        this.cipher,
+      ]);
     }
+  }
+
+  togglePrivateKey() {
+    this.showPrivateKey = !this.showPrivateKey;
   }
 
   toggleUriOptions(uri: LoginUriView) {
@@ -618,6 +633,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.collections = this.writeableCollections?.filter(
         (c) => c.organizationId === this.cipher.organizationId,
       );
+      // If there's only one collection, check it by default
+      if (this.collections.length === 1) {
+        (this.collections[0] as any).checked = true;
+      }
       const org = await this.organizationService.get(this.cipher.organizationId);
       if (org != null) {
         this.cipher.organizationUseTotp = org.useTotp;
@@ -694,7 +713,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected deleteCipher() {
-    const asAdmin = this.organization?.canEditAllCiphers;
+    // cipher.collectionIds may be null or an empty array. Either is a valid indication that the item is unassigned.
+    const asAdmin =
+      this.organization?.canEditAllCiphers ||
+      !this.cipher.collectionIds ||
+      this.cipher.collectionIds.length === 0;
     return this.cipher.isDeleted
       ? this.cipherService.deleteWithServer(this.cipher.id, asAdmin)
       : this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
@@ -742,17 +765,17 @@ export class AddEditComponent implements OnInit, OnDestroy {
     );
 
     if (typeI18nKey === "password") {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, this.cipherId);
+      void this.eventCollectionService.collectMany(EventType.Cipher_ClientCopiedPassword, [
+        this.cipher,
+      ]);
     } else if (typeI18nKey === "securityCode") {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
+      void this.eventCollectionService.collectMany(EventType.Cipher_ClientCopiedCardCode, [
+        this.cipher,
+      ]);
     } else if (aType === "H_Field") {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedHiddenField, this.cipherId);
+      void this.eventCollectionService.collectMany(EventType.Cipher_ClientCopiedHiddenField, [
+        this.cipher,
+      ]);
     }
 
     return true;

@@ -5,6 +5,7 @@ import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom, map, Observable, switchMap } from "rxjs";
 
+import { CollectionView } from "@bitwarden/admin-console/common";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
@@ -17,8 +18,8 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -68,6 +69,7 @@ export class ViewV2Component {
   cipher: CipherView;
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
+  canDeleteCipher$: Observable<boolean>;
   collections$: Observable<CollectionView[]>;
   loadAction: typeof AUTOFILL_ID | typeof SHOW_AUTOFILL_BUTTON;
 
@@ -83,6 +85,7 @@ export class ViewV2Component {
     private accountService: AccountService,
     private eventCollectionService: EventCollectionService,
     private popupRouterCacheService: PopupRouterCacheService,
+    protected cipherAuthorizationService: CipherAuthorizationService,
   ) {
     this.subscribeToParams();
   }
@@ -97,9 +100,11 @@ export class ViewV2Component {
         switchMap(async (cipher) => {
           this.cipher = cipher;
           this.headerText = this.setHeader(cipher.type);
-          if (this.loadAction === AUTOFILL_ID || this.loadAction === SHOW_AUTOFILL_BUTTON) {
+          if (this.loadAction === AUTOFILL_ID) {
             await this.vaultPopupAutofillService.doAutofill(this.cipher);
           }
+
+          this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(cipher);
 
           await this.eventCollectionService.collect(
             EventType.Cipher_ClientViewed,
@@ -126,6 +131,8 @@ export class ViewV2Component {
         );
       case CipherType.SecureNote:
         return this.i18nService.t("viewItemHeader", this.i18nService.t("note").toLowerCase());
+      case CipherType.SshKey:
+        return this.i18nService.t("viewItemHeader", this.i18nService.t("typeSshkey").toLowerCase());
     }
   }
 
