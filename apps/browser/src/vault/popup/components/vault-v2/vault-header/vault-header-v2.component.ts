@@ -30,7 +30,6 @@ export class VaultHeaderV2Component {
   @ViewChild(DisclosureComponent) disclosure: DisclosureComponent;
 
   /** Emits the visibility status of the disclosure component. */
-  // protected isDisclosureShown$ = new BehaviorSubject<boolean | null>(null);
   protected isDisclosureShown$ = this.vaultPopupListFiltersService.filterVisibilityState$.pipe(
     runInsideAngular(inject(NgZone)), // Browser state updates can happen outside of `ngZone`
     map((v) => v ?? true),
