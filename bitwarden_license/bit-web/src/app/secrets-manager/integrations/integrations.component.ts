@@ -1,23 +1,16 @@
 import { Component } from "@angular/core";
 
 import { IntegrationType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { HeaderModule } from "@bitwarden/web-vault/app/layouts/header/header.module";
-import { IntegrationGridComponent } from "@bitwarden/web-vault/app/shared/components/integrations/integration-grid/integration-grid.component";
 import { Integration } from "@bitwarden/web-vault/app/shared/components/integrations/models";
-
-import { SecretsManagerSharedModule } from "../shared/sm-shared.module";
 
 @Component({
   selector: "sm-integrations",
   templateUrl: "./integrations.component.html",
-  standalone: true,
-  imports: [SecretsManagerSharedModule, IntegrationGridComponent, HeaderModule],
 })
 export class IntegrationsComponent {
   private integrationsAndSdks: Integration[] = [];
 
-  constructor(private i18nService: I18nService) {
+  constructor() {
     this.integrationsAndSdks = [
       {
         name: "Rust",

@@ -5,7 +5,7 @@ import { authGuard } from "@bitwarden/angular/auth/guards";
 
 import { organizationEnabledGuard } from "./guards/sm-org-enabled.guard";
 import { canActivateSM } from "./guards/sm.guard";
-import { IntegrationsComponent } from "./integrations/integrations.component";
+import { IntegrationsModule } from "./integrations/integrations.module";
 import { LayoutComponent } from "./layout/layout.component";
 import { NavigationComponent } from "./layout/navigation.component";
 import { OverviewModule } from "./overview/overview.module";
@@ -63,7 +63,7 @@ const routes: Routes = [
               },
               {
                 path: "integrations",
-                component: IntegrationsComponent,
+                loadChildren: () => IntegrationsModule,
                 data: {
                   titleId: "integrations",
                 },
