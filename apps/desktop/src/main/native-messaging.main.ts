@@ -98,7 +98,7 @@ export class NativeMessagingMain {
             this.logService.debug("Native messaging message:", msgJson);
             this.windowMain.win.webContents.send("nativeMessaging", msgJson);
           } catch (e) {
-            this.logService.warning("Invalid native messaging message format:", msg.message);
+            this.logService.warning("Error processing message:", e, msg.message);
           }
           break;
 
