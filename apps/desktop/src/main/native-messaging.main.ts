@@ -96,7 +96,7 @@ export class NativeMessagingMain {
           try {
             const msgJson = JSON.parse(msg.message);
             this.logService.debug("Native messaging message:", msgJson);
-            this.windowMain.win.webContents.send("nativeMessaging", msgJson);
+            this.windowMain.win?.webContents.send("nativeMessaging", msgJson);
           } catch (e) {
             this.logService.warning("Error processing message:", e, msg.message);
           }
