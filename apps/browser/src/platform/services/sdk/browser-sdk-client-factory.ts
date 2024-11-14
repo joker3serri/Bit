@@ -65,8 +65,30 @@ export class BrowserSdkClientFactory implements SdkClientFactory {
   async createSdkClient(
     ...args: ConstructorParameters<typeof BitwardenClient>
   ): Promise<BitwardenClient> {
-    await load();
+    try {
+      await loadWithTimeout();
+    } catch (error) {
+      throw new Error(`Failed to load: ${error.message}`);
+    }
 
     return Promise.resolve((globalThis as any).init_sdk(...args));
   }
 }
+
+const loadWithTimeout = async () => {
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("Operation timed out after 1 second"));
+    }, 1000);
+
+    load()
+      .then(() => {
+        clearTimeout(timer);
+        resolve();
+      })
+      .catch((error) => {
+        clearTimeout(timer);
+        reject(error);
+      });
+  });
+};
