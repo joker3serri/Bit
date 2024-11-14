@@ -5,7 +5,7 @@ import { of } from "rxjs";
 
 import {
   AuthRequestServiceAbstraction,
-  LoginApprovalServiceAbstraction,
+  LoginApprovalComponentServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -63,8 +63,8 @@ describe("LoginApprovalComponent", () => {
         { provide: DialogRef, useValue: dialogRef },
         { provide: ToastService, useValue: toastService },
         {
-          provide: LoginApprovalServiceAbstraction,
-          useValue: mock<LoginApprovalServiceAbstraction>(),
+          provide: LoginApprovalComponentServiceAbstraction,
+          useValue: mock<LoginApprovalComponentServiceAbstraction>(),
         },
       ],
     }).compileComponents();

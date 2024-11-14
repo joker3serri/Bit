@@ -1,8 +1,8 @@
-import { LoginApprovalServiceAbstraction } from "../../common/abstractions/login-approval.service.abstraction";
+import { LoginApprovalComponentServiceAbstraction } from "../../common/abstractions/login-approval-component.service.abstraction";
 
 import { LoginApprovalComponent } from "./login-approval.component";
 
-export class DefaultLoginApprovalService implements LoginApprovalServiceAbstraction {
+export class DefaultLoginApprovalService implements LoginApprovalComponentServiceAbstraction {
   /**
    * No-op implementation of the onInit method.
    * @returns

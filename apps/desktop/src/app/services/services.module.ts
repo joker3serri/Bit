@@ -26,7 +26,7 @@ import {
 } from "@bitwarden/auth/angular";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
-  LoginApprovalServiceAbstraction,
+  LoginApprovalComponentServiceAbstraction,
   LoginEmailService,
   PinServiceAbstraction,
 } from "@bitwarden/auth/common";
@@ -355,7 +355,7 @@ const safeProviders: SafeProvider[] = [
     deps: [AccountService, AuthService, StateProvider],
   }),
   safeProvider({
-    provide: LoginApprovalServiceAbstraction,
+    provide: LoginApprovalComponentServiceAbstraction,
     useClass: DesktopLoginApprovalService,
     deps: [I18nServiceAbstraction],
   }),
