@@ -426,8 +426,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     const activeAccount = await firstValueFrom(this.accountService.activeAccount$);
     await this.deviceTrustService.trustDeviceIfRequired(activeAccount.id);
 
-    // TODO: don't forget to use auto enrollment service everywhere we trust device
-
     await this.handleSuccessfulLoginNavigation();
   }
 
