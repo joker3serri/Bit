@@ -722,8 +722,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
     return this.cipherService.restoreWithServer(this.cipher.id, this.asAdmin);
   }
 
+  /**
+   * Determines if a cipher must be deleted as an admin by belonging to an organization and being unassigned to a collection.
+   */
   get asAdmin(): boolean {
-    // cipher.collectionIds may be null or an empty array. Either is a valid indication that the item is unassigned.
     return (
       this.cipher.organizationId !== null &&
       this.cipher.organizationId.length > 0 &&
