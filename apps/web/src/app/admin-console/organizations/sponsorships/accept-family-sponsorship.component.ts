@@ -37,7 +37,6 @@ export class AcceptFamilySponsorshipComponent extends BaseAcceptComponent {
 
   async unauthedHandler(qParams: Params) {
     if (!qParams.register) {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       await this.router.navigate(["/login"], { queryParams: { email: qParams.email } });
     } else {
