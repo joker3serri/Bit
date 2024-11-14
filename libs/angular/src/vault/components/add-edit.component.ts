@@ -713,19 +713,24 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected deleteCipher() {
-    // cipher.collectionIds may be null or an empty array. Either is a valid indication that the item is unassigned.
-    const asAdmin =
-      this.organization?.canEditAllCiphers ||
-      !this.cipher.collectionIds ||
-      this.cipher.collectionIds.length === 0;
     return this.cipher.isDeleted
-      ? this.cipherService.deleteWithServer(this.cipher.id, asAdmin)
-      : this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
+      ? this.cipherService.deleteWithServer(this.cipher.id, this.asAdmin)
+      : this.cipherService.softDeleteWithServer(this.cipher.id, this.asAdmin);
   }
 
   protected restoreCipher() {
-    const asAdmin = this.organization?.canEditAllCiphers;
-    return this.cipherService.restoreWithServer(this.cipher.id, asAdmin);
+    return this.cipherService.restoreWithServer(this.cipher.id, this.asAdmin);
+  }
+
+  get asAdmin(): boolean {
+    // cipher.collectionIds may be null or an empty array. Either is a valid indication that the item is unassigned.
+    return (
+      this.cipher.organizationId !== null &&
+      this.cipher.organizationId.length > 0 &&
+      (this.organization?.canEditAllCiphers ||
+        !this.cipher.collectionIds ||
+        this.cipher.collectionIds.length === 0)
+    );
   }
 
   get defaultOwnerId(): string | null {
