@@ -1,8 +1,9 @@
-import { LoginApprovalComponent } from "@bitwarden/auth/angular";
-
+/**
+ * Abstraction for the LoginApprovalComponent service.
+ */
 export abstract class LoginApprovalComponentServiceAbstraction {
   /**
-   * Runs initialization logic for the LoginApprovalComponent.
+   * Shows a login requested alert if the window is not visible.
    */
-  abstract onInit: (loginApprovalComponent: LoginApprovalComponent) => Promise<void>;
+  abstract showLoginRequestedAlertIfWindowNotVisible: (email?: string) => Promise<void>;
 }

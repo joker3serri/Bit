@@ -5,10 +5,10 @@ import { Subject } from "rxjs";
 import { LoginApprovalComponent } from "@bitwarden/auth/angular";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { DesktopLoginApprovalService } from "./desktop-login-approval.service";
+import { DesktopLoginApprovalComponentService } from "./desktop-login-approval-component.service";
 
-describe("DesktopLoginApprovalService", () => {
-  let service: DesktopLoginApprovalService;
+describe("DesktopLoginApprovalComponentService", () => {
+  let service: DesktopLoginApprovalComponentService;
   let i18nService: MockProxy<I18nServiceAbstraction>;
   let originalIpc: any;
 
@@ -31,12 +31,12 @@ describe("DesktopLoginApprovalService", () => {
 
     TestBed.configureTestingModule({
       providers: [
-        DesktopLoginApprovalService,
+        DesktopLoginApprovalComponentService,
         { provide: I18nServiceAbstraction, useValue: i18nService },
       ],
     });
 
-    service = TestBed.inject(DesktopLoginApprovalService);
+    service = TestBed.inject(DesktopLoginApprovalComponentService);
   });
 
   afterEach(() => {
@@ -71,7 +71,7 @@ describe("DesktopLoginApprovalService", () => {
     jest.spyOn(ipc.platform, "isWindowVisible").mockResolvedValue(false);
     jest.spyOn(ipc.auth, "loginRequest").mockResolvedValue();
 
-    await service.onInit(loginApprovalComponent);
+    await service.showLoginRequestedAlertIfWindowNotVisible(loginApprovalComponent.email);
 
     expect(ipc.auth.loginRequest).toHaveBeenCalledWith(title, message, closeText);
   });
@@ -82,7 +82,7 @@ describe("DesktopLoginApprovalService", () => {
     jest.spyOn(ipc.platform, "isWindowVisible").mockResolvedValue(true);
     jest.spyOn(ipc.auth, "loginRequest");
 
-    await service.onInit(loginApprovalComponent);
+    await service.showLoginRequestedAlertIfWindowNotVisible(loginApprovalComponent.email);
 
     expect(ipc.auth.loginRequest).not.toHaveBeenCalled();
   });

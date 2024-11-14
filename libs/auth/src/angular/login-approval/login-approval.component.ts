@@ -6,7 +6,7 @@ import { Subject, firstValueFrom, map } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
   AuthRequestServiceAbstraction,
-  LoginApprovalComponentServiceAbstraction as LoginApprovalService,
+  LoginApprovalComponentServiceAbstraction as LoginApprovalComponentService,
 } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -59,7 +59,7 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
     protected keyService: KeyService,
     private dialogRef: DialogRef,
     private toastService: ToastService,
-    private loginApprovalService: LoginApprovalService,
+    private loginApprovalComponentService: LoginApprovalComponentService,
   ) {
     this.notificationId = params.notificationId;
   }
@@ -93,7 +93,7 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
         this.updateTimeText();
       }, RequestTimeUpdate);
 
-      this.loginApprovalService.onInit(this);
+      this.loginApprovalComponentService.showLoginRequestedAlertIfWindowNotVisible(this.email);
     }
   }
 
