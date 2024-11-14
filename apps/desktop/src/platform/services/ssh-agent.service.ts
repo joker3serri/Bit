@@ -8,6 +8,7 @@ import {
   from,
   map,
   of,
+  skip,
   Subject,
   switchMap,
   takeUntil,
@@ -17,6 +18,7 @@ import {
   withLatestFrom,
 } from "rxjs";
 
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -52,6 +54,7 @@ export class SshAgentService implements OnDestroy {
     private i18nService: I18nService,
     private desktopSettingsService: DesktopSettingsService,
     private configService: ConfigService,
+    private accountService: AccountService,
   ) {}
 
   async init() {
@@ -110,11 +113,31 @@ export class SshAgentService implements OnDestroy {
             ),
           ),
           // This concatMap handles showing the dialog to approve the request.
-          concatMap(([message, decryptedCiphers]) => {
+          concatMap(([message, ciphers]) => {
             const cipherId = message.cipherId as string;
             const requestId = message.requestId as number;
 
-            if (decryptedCiphers === undefined) {
+            // cipherid is empty has the special meaning of "unlock in order to list public keys"
+            if (cipherId == "") {
+              return of(true).pipe(
+                switchMap(async (result) => {
+                  const sshCiphers = ciphers.filter(
+                    (cipher) => cipher.type === CipherType.SshKey && !cipher.isDeleted,
+                  );
+                  const keys = sshCiphers.map((cipher) => {
+                    return {
+                      name: cipher.name,
+                      privateKey: cipher.sshKey.privateKey,
+                      cipherId: cipher.id,
+                    };
+                  });
+                  await ipc.platform.sshAgent.setKeys(keys);
+                  await ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result));
+                }),
+              );
+            }
+
+            if (ciphers === undefined) {
               return of(false).pipe(
                 switchMap((result) =>
                   ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result)),
@@ -122,7 +145,7 @@ export class SshAgentService implements OnDestroy {
               );
             }
 
-            const cipher = decryptedCiphers.find((cipher) => cipher.id == cipherId);
+            const cipher = ciphers.find((cipher) => cipher.id == cipherId);
 
             ipc.platform.focusWindow();
             const dialogRef = ApproveSshRequestComponent.open(
@@ -141,6 +164,15 @@ export class SshAgentService implements OnDestroy {
         )
         .subscribe();
 
+      this.accountService.activeAccount$
+        .pipe(skip(1), takeUntil(this.destroy$))
+        .subscribe((account) => {
+          this.logService.info("Active account changed, clearing SSH keys");
+          ipc.platform.sshAgent
+            .clearKeys()
+            .catch((e) => this.logService.error("Failed to clear SSH keys", e));
+        });
+
       combineLatest([
         timer(0, this.SSH_REFRESH_INTERVAL),
         this.desktopSettingsService.sshAgentEnabled$,
@@ -148,7 +180,7 @@ export class SshAgentService implements OnDestroy {
         .pipe(
           concatMap(async ([, enabled]) => {
             if (!enabled) {
-              await ipc.platform.sshAgent.setKeys([]);
+              await ipc.platform.sshAgent.clearKeys();
               return;
             }
 

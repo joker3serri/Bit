@@ -23,6 +23,7 @@ impl BitwardenDesktopAgent {
             show_ui_request_tx: auth_request_tx,
             get_ui_response_rx: auth_response_rx,
             request_id: Arc::new(tokio::sync::Mutex::new(0)),
+            needs_unlock: Arc::new(tokio::sync::Mutex::new(true)),
         };
         let cloned_agent_state = agent.clone();
         tokio::spawn(async move {

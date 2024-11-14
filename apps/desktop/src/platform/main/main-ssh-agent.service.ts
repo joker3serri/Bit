@@ -111,5 +111,11 @@ export class MainSshAgentService {
         sshagent.lock(this.agentState);
       }
     });
+
+    ipcMain.handle("sshagent.clearkeys", async (event: any) => {
+      if (this.agentState != null) {
+        sshagent.clearKeys(this.agentState);
+      }
+    });
   }
 }

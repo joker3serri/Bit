@@ -313,7 +313,7 @@ checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
 [[package]]
 name = "bitwarden-russh"
 version = "0.1.0"
-source = "git+https://github.com/bitwarden/bitwarden-russh.git?branch=km/pm-10098/clean-russh-implementation#86ff1bf2f4620a3ae5684adee31abdbee33c6f07"
+source = "git+https://github.com/bitwarden/bitwarden-russh.git?branch=km/PM-14863/allow-unlock-on-list#275771a3a764dcf3e7c9ec75c396499af5925190"
 dependencies = [
  "anyhow",
  "byteorder",
