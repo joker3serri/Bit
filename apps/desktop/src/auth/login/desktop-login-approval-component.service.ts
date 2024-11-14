@@ -13,7 +13,7 @@ export class DesktopLoginApprovalComponentService
     super();
   }
 
-  async showLoginRequestedAlertIfWindowNotVisible(email?: string): Promise<void> {
+  async showLoginRequestedAlertIfWindowNotVisible(email: string): Promise<void> {
     const isVisible = await ipc.platform.isWindowVisible();
     if (!isVisible) {
       await ipc.auth.loginRequest(
