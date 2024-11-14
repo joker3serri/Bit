@@ -12,6 +12,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { MessageSender } from "@bitwarden/common/platform/messaging";
 import { StateProvider } from "@bitwarden/common/platform/state";
@@ -22,6 +23,7 @@ import { VaultSettingsService } from "@bitwarden/common/vault/abstractions/vault
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { AutofillService } from "../../../../../autofill/services/abstractions/autofill.service";
+import { VaultPopupItemsService } from "../../../../../vault/popup/services/vault-popup-items.service";
 import {
   PopupListFilter,
   VaultPopupListFiltersService,
@@ -70,6 +72,11 @@ describe("VaultHeaderV2Component", () => {
         { provide: PasswordRepromptService, useValue: mock<PasswordRepromptService>() },
         { provide: MessageSender, useValue: mock<MessageSender>() },
         { provide: AccountService, useValue: mock<AccountService>() },
+        { provide: LogService, useValue: mock<LogService>() },
+        {
+          provide: VaultPopupItemsService,
+          useValue: mock<VaultPopupItemsService>({ latestSearchText$: new BehaviorSubject("") }),
+        },
         {
           provide: SyncService,
           useValue: mock<SyncService>({ activeUserLastSync$: () => new Subject() }),
