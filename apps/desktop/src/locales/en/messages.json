@@ -2445,7 +2445,7 @@
     "message": "Generate email"
   },
   "generatorBoundariesHint": {
-    "message": "Value must be between $MIN$ and $MAX$",
+    "message": "Value must be between $MIN$ and $MAX$.",
     "description": "Explains spin box minimum and maximum values to the user",
     "placeholders": {
       "min": {
@@ -2457,6 +2457,9 @@
         "example": "128"
       }
     }
+  },
+  "passphraseNumWordsHint": {
+    "message": "We recommend at least 6 words for strong security."
   },
   "usernameType": {
     "message": "Username type"

@@ -2903,6 +2903,9 @@
       }
     }
   },
+  "passphraseNumWordsHint": {
+    "message": "We recommend at least 6 words for strong security."
+  },
   "usernameType": {
     "message": "Username type"
   },
