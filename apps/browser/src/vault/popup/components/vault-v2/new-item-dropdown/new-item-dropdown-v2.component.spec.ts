@@ -37,7 +37,6 @@ describe("NewItemDropdownV2Component", () => {
     } as any;
 
     await TestBed.configureTestingModule({
-      declarations: [NewItemDropdownV2Component],
       providers: [
         { provide: Router, useValue: routerMock },
         { provide: DialogService, useValue: dialogServiceMock },
