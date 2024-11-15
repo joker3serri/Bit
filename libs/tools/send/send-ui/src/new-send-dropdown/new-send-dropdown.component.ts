@@ -32,9 +32,17 @@ export class NewSendDropdownComponent implements OnInit {
     ));
   }
 
-  buildQueryParams(type: SendType) {
+  buildRouterLink(type: SendType) {
     if (this.hasNoPremium && type === SendType.File) {
       return "/premium";
+    } else {
+      return "/add-send";
+    }
+  }
+
+  buildQueryParams(type: SendType) {
+    if (this.hasNoPremium && type === SendType.File) {
+      return null;
     }
     return { type: type, isNew: true };
   }
