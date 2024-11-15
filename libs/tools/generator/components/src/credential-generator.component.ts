@@ -37,6 +37,7 @@ import {
   isUsernameAlgorithm,
   toCredentialGeneratorConfiguration,
 } from "@bitwarden/generator-core";
+import { GeneratorHistoryService } from "@bitwarden/generator-history";
 
 // constants used to identify navigation selections that are not
 // generator algorithms
@@ -51,6 +52,7 @@ const NONE_SELECTED = "none";
 export class CredentialGeneratorComponent implements OnInit, OnDestroy {
   constructor(
     private generatorService: CredentialGeneratorService,
+    private generatorHistoryService: GeneratorHistoryService,
     private toastService: ToastService,
     private logService: LogService,
     private i18nService: I18nService,
@@ -182,9 +184,16 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
           // continue with origin stream
           return generator;
         }),
+        withLatestFrom(this.userId$),
         takeUntil(this.destroyed),
       )
-      .subscribe((generated) => {
+      .subscribe(([generated, userId]) => {
+        this.generatorHistoryService
+          .track(userId, generated.credential, generated.category, generated.generationDate)
+          .catch((e: unknown) => {
+            this.logService.error(e);
+          });
+
         // update subjects within the angular zone so that the
         // template bindings refresh immediately
         this.zone.run(() => {
@@ -193,9 +202,8 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         });
       });
 
-    // normalize cascade selections; introduce subjects to allow changes
-    // from user selections and changes from preference updates to
-    // update the template
+    // these subjects normalize cascade selections to ensure the current
+    // cascade is always well-known.
     type CascadeValue = { nav: string; algorithm?: CredentialAlgorithm };
     const activeRoot$ = new Subject<CascadeValue>();
     const activeIdentifier$ = new Subject<CascadeValue>();
@@ -376,7 +384,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
         if (!a || a.onlyOnRequest) {
           this.value$.next("-");
         } else {
-          this.generate("autogenerate");
+          this.generate("autogenerate").catch((e: unknown) => this.logService.error(e));
         }
       });
     });
@@ -459,6 +467,14 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
     map(({ generate }) => generate),
   );
 
+  /**
+   * Emits the copy credential toast respective of the selected credential type
+   */
+  protected credentialTypeLabel$ = this.algorithm$.pipe(
+    filter((algorithm) => !!algorithm),
+    map(({ generatedValue }) => generatedValue),
+  );
+
   /** Emits hint key for the currently selected credential type */
   protected credentialTypeHint$ = new ReplaySubject<string>(1);
 
@@ -478,7 +494,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
    * @param requestor a label used to trace generation request
    *  origin in the debugger.
    */
-  protected generate(requestor: string) {
+  protected async generate(requestor: string) {
     this.generate$.next(requestor);
   }
 
@@ -493,6 +509,7 @@ export class CredentialGeneratorComponent implements OnInit, OnDestroy {
 
   private readonly destroyed = new Subject<void>();
   ngOnDestroy() {
+    this.destroyed.next();
     this.destroyed.complete();
 
     // finalize subjects

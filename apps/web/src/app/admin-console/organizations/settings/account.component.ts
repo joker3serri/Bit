@@ -12,11 +12,11 @@ import { OrganizationUpdateRequest } from "@bitwarden/common/admin-console/model
 import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService, ToastService } from "@bitwarden/components";
+import { KeyService } from "@bitwarden/key-management";
 
 import { ApiKeyComponent } from "../../../auth/settings/security/api-key.component";
 import { PurgeVaultComponent } from "../../../vault/settings/purge-vault.component";
@@ -85,7 +85,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private router: Router,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
@@ -123,20 +123,22 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.canEditSubscription = organization.canEditSubscription;
         this.canUseApi = organization.useApi;
 
-        // Update disabled states - reactive forms prefers not using disabled attribute
         // Disabling these fields for self hosted orgs is deprecated
         // This block can be completely removed as part of
         // https://bitwarden.atlassian.net/browse/PM-10863
         if (!this.limitCollectionCreationDeletionSplitFeatureFlagIsEnabled) {
           if (!this.selfHosted) {
-            this.formGroup.get("orgName").enable();
             this.collectionManagementFormGroup.get("limitCollectionCreationDeletion").enable();
             this.collectionManagementFormGroup.get("allowAdminAccessToAllCollectionItems").enable();
           }
         }
 
-        if (!this.selfHosted && this.canEditSubscription) {
-          this.formGroup.get("billingEmail").enable();
+        // Update disabled states - reactive forms prefers not using disabled attribute
+        if (!this.selfHosted) {
+          this.formGroup.get("orgName").enable();
+          if (this.canEditSubscription) {
+            this.formGroup.get("billingEmail").enable();
+          }
         }
 
         // Org Response
@@ -194,8 +196,8 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     // Backfill pub/priv key if necessary
     if (!this.org.hasPublicAndPrivateKeys) {
-      const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
-      const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
+      const orgShareKey = await this.keyService.getOrgKey(this.organizationId);
+      const orgKeys = await this.keyService.makeKeyPair(orgShareKey);
       request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
     }
 

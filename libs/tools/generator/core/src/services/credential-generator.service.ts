@@ -23,7 +23,7 @@ import { Simplify } from "type-fest";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
@@ -41,6 +41,7 @@ import { UserEncryptor } from "@bitwarden/common/tools/state/user-encryptor.abst
 import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
 import { UserId } from "@bitwarden/common/types/guid";
+import { KeyService } from "@bitwarden/key-management";
 
 import { Randomizer } from "../abstractions";
 import {
@@ -97,7 +98,8 @@ export class CredentialGeneratorService {
     private readonly apiService: ApiService,
     private readonly i18nService: I18nService,
     private readonly encryptService: EncryptService,
-    private readonly cryptoService: CryptoService,
+    private readonly keyService: KeyService,
+    private readonly accountService: AccountService,
   ) {}
 
   private getDependencyProvider(): GeneratorDependencyProvider {
@@ -258,6 +260,7 @@ export class CredentialGeneratorService {
       category: generator.category,
       name: integration ? integration.name : this.i18nService.t(generator.nameKey),
       generate: this.i18nService.t(generator.generateKey),
+      generatedValue: this.i18nService.t(generator.generatedValueKey),
       copy: this.i18nService.t(generator.copyKey),
       onlyOnRequest: generator.onlyOnRequest,
       request: generator.request,
@@ -272,7 +275,7 @@ export class CredentialGeneratorService {
 
   private encryptor$(userId: UserId) {
     const packer = new PaddedDataPacker(OPTIONS_FRAME_SIZE);
-    const encryptor$ = this.cryptoService.userKey$(userId).pipe(
+    const encryptor$ = this.keyService.userKey$(userId).pipe(
       // complete when the account locks
       takeWhile((key) => !!key),
       map((key) => {
@@ -379,17 +382,30 @@ export class CredentialGeneratorService {
     configuration: Configuration<Settings, Policy>,
     dependencies: Policy$Dependencies,
   ): Observable<GeneratorConstraints<Settings>> {
-    const completion$ = dependencies.userId$.pipe(ignoreElements(), endWith(true));
+    const email$ = dependencies.userId$.pipe(
+      distinctUntilChanged(),
+      withLatestFrom(this.accountService.accounts$),
+      filter((accounts) => !!accounts),
+      map(([userId, accounts]) => {
+        if (userId in accounts) {
+          return { userId, email: accounts[userId].email };
+        }
 
-    const constraints$ = dependencies.userId$.pipe(
-      switchMap((userId) => {
-        // complete policy emissions otherwise `mergeMap` holds `policies$` open indefinitely
+        return { userId, email: null };
+      }),
+    );
+
+    const constraints$ = email$.pipe(
+      switchMap(({ userId, email }) => {
+        // complete policy emissions otherwise `switchMap` holds `policies$` open indefinitely
         const policies$ = this.policyService
           .getAll$(configuration.policy.type, userId)
-          .pipe(takeUntil(completion$));
+          .pipe(
+            mapPolicyToConstraints(configuration.policy, email),
+            takeUntil(anyComplete(email$)),
+          );
         return policies$;
       }),
-      mapPolicyToConstraints(configuration.policy),
     );
 
     return constraints$;
