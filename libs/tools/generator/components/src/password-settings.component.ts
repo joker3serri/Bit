@@ -150,9 +150,10 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
         }
 
         const boundariesHint = this.i18nService.t(
-          "generatorBoundariesHint",
+          "passwordLengthHint",
           constraints.length.min?.toString(),
           constraints.length.max?.toString(),
+          constraints.length.recommendation?.toString(),
         );
         this.lengthBoundariesHint.next(boundariesHint);
       });

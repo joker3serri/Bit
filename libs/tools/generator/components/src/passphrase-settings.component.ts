@@ -100,12 +100,12 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
         this.toggleEnabled(Controls.capitalize, !constraints.capitalize?.readonly);
         this.toggleEnabled(Controls.includeNumber, !constraints.includeNumber?.readonly);
 
-        const boundariesHint =
-          this.i18nService.t(
-            "generatorBoundariesHint",
-            constraints.numWords.min?.toString(),
-            constraints.numWords.max?.toString(),
-          ) + this.i18nService.t("passphraseNumWordsHint");
+        const boundariesHint = this.i18nService.t(
+          "passphraseNumWordsHint",
+          constraints.numWords.min?.toString(),
+          constraints.numWords.max?.toString(),
+          constraints.numWords.recommendation?.toString(),
+        );
         this.numWordsBoundariesHint.next(boundariesHint);
       });
 

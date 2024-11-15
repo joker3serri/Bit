@@ -6468,9 +6468,9 @@
   "generateEmail": {
     "message": "Generate email"
   },
-  "generatorBoundariesHint": {
-    "message": "Value must be between $MIN$ and $MAX$",
-    "description": "Explains spin box minimum and maximum values to the user",
+  "passwordLengthHint": {
+    "message": "Value must be between $MIN$ and $MAX$. Use $RECOMMENDED$ characters or more to generate a strong password.",
+    "description": "Explains password 'length' boundaries to the user",
     "placeholders": {
       "min": {
         "content": "$1",
@@ -6479,11 +6479,30 @@
       "max": {
         "content": "$2",
         "example": "128"
+      },
+      "recommended": {
+        "content": "$3",
+        "example": "14"
       }
     }
   },
   "passphraseNumWordsHint": {
-    "message": "We recommend at least 6 words for strong security."
+    "message": "Value must be between $MIN$ and $MAX$. Use $RECOMMENDED$ words or more to generate a strong passphrase.",
+    "description": "Explains passphrase 'number of words' boundaries to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      },
+      "recommended": {
+        "content": "$3",
+        "example": "6"
+      }
+    }
   },
   "usernameType": {
     "message": "Username type"
