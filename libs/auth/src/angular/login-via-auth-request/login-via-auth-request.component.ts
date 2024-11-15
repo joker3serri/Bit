@@ -38,9 +38,9 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legac
 
 import { AuthRequestApiService } from "../../common/abstractions/auth-request-api.service";
 
-enum State {
-  StandardAuthRequest, // used in the basic Login with Device flow
-  AdminAuthRequest, // used in the SSO with Trusted Devices flow
+enum Flow {
+  StandardAuthRequest, // when user clicks "Login with device" from /login or "Approve from your other device" from /login-initiated
+  AdminAuthRequest, // when user clicks "Request admin approval" from /login-initiated
 }
 
 const matchOptions: IsActiveMatchOptions = {
@@ -67,8 +67,8 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   protected email: string;
   protected fingerprintPhrase: string;
   protected showResendNotification = false;
-  protected StateEnum = State;
-  protected state = State.StandardAuthRequest;
+  protected Flow = Flow;
+  protected flow = Flow.StandardAuthRequest;
 
   constructor(
     private accountService: AccountService,
@@ -126,7 +126,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   private async initAdminAuthRequestFlow(): Promise<void> {
-    this.state = State.AdminAuthRequest;
+    this.flow = Flow.AdminAuthRequest;
     this.backToRoute = "/login-initiated";
 
     // Get email from state for admin auth requests because it is available and also
@@ -153,7 +153,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   private async initStandardAuthRequestFlow(): Promise<void> {
-    this.state = State.StandardAuthRequest;
+    this.flow = Flow.StandardAuthRequest;
     this.backToRoute = "/login";
 
     this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
@@ -311,25 +311,26 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
   private async verifyAndHandleApprovedAuthReq(requestId: string): Promise<void> {
     try {
-      // Get the auth request from the server
+      // Step 1: Get the auth request from the server
       let authRequestResponse: AuthRequestResponse;
 
-      if (this.state === State.AdminAuthRequest) {
-        // User is authenticated, therefore no access code is required.
+      if (this.flow === Flow.AdminAuthRequest) {
+        // User is authenticated, therefore the endpoint does not require an access code.
         authRequestResponse = await this.authRequestApiService.getAuthRequest(requestId);
       } else {
-        // User is not authenticated, therefore an access code is required for user verification.
+        // User could be unauthenticated, therefore the endpoint requires an access code for user verification.
         authRequestResponse = await this.authRequestApiService.getAuthResponse(
           requestId,
           this.authRequest.accessCode,
         );
       }
 
-      // Verify that the auth request is approved
+      // Step 2: Verify that the auth request is approved
       if (!authRequestResponse.requestApproved) {
         return;
       }
-      // Approved so proceed through one of the possible flows:
+
+      // Step 3: Approved, so proceed through one of the possible flows:
 
       /**
        * ***********************************
@@ -399,29 +400,14 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
        *              admin auth request, they are now logged into that device but that device does not have masterKey IN MEMORY.
        */
 
-      // If user has authenticated via SSO
-      if (this.authStatus === AuthenticationStatus.Locked) {
-        const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+      const userHasAuthenticatedViaSSO = this.authStatus === AuthenticationStatus.Locked;
 
-        // Handle Standard Auth Request Flows 3-4 and Admin Auth Request Flows 1-2
-        await this.decryptViaApprovedAuthRequest(
-          authRequestResponse,
-          this.authRequestKeyPair.privateKey,
-          userId,
-        );
+      if (userHasAuthenticatedViaSSO) {
+        // Handles Standard Flows 3-4 and Admin Flows 1-2
+        await this.handleAuthenticatedFlows(authRequestResponse);
       } else {
-        // If user has NOT authenticated via SSO...
-
-        // Handle Standard Auth Flows 1-2
-        const authRequestLoginCredentials = await this.buildAuthRequestLoginCredentials(
-          requestId,
-          authRequestResponse,
-        );
-
-        // Note: keys are set by AuthRequestLoginStrategy success handling
-        const authResult = await this.loginStrategyService.logIn(authRequestLoginCredentials);
-
-        await this.handlePostLoginNavigation(authResult);
+        // Handles Standard Flows 1-2
+        await this.handleUnauthenticatedFlows(authRequestResponse, requestId);
       }
     } catch (error) {
       if (error instanceof ErrorResponse) {
@@ -432,6 +418,31 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
       this.logService.error(error);
     }
+  }
+
+  private async handleAuthenticatedFlows(authRequestResponse: AuthRequestResponse) {
+    const userId = (await firstValueFrom(this.accountService.activeAccount$)).id;
+
+    await this.decryptViaApprovedAuthRequest(
+      authRequestResponse,
+      this.authRequestKeyPair.privateKey,
+      userId,
+    );
+  }
+
+  private async handleUnauthenticatedFlows(
+    authRequestResponse: AuthRequestResponse,
+    requestId: string,
+  ) {
+    const authRequestLoginCredentials = await this.buildAuthRequestLoginCredentials(
+      requestId,
+      authRequestResponse,
+    );
+
+    // Note: keys are set by AuthRequestLoginStrategy success handling
+    const authResult = await this.loginStrategyService.logIn(authRequestLoginCredentials);
+
+    await this.handlePostLoginNavigation(authResult);
   }
 
   private async decryptViaApprovedAuthRequest(
@@ -455,7 +466,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         userId,
       );
     } else {
-      // ...in Standard Auth Request Flow 4 or Admin Auth Request 2
       await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
         authRequestResponse,
         privateKey,
@@ -553,7 +563,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   private async handleSuccessfulLoginNavigation() {
-    if (this.state === State.StandardAuthRequest) {
+    if (this.flow === Flow.StandardAuthRequest) {
       // Only need to set remembered email on standard login with auth req flow
       await this.loginEmailService.saveEmailSettings();
     }

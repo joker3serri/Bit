@@ -1,5 +1,5 @@
 <div class="tw-text-center">
-  <ng-container *ngIf="state === StateEnum.StandardAuthRequest">
+  <ng-container *ngIf="flow === Flow.StandardAuthRequest">
     <p>{{ "makeSureYourAccountIsUnlockedAndTheFingerprintEtc" | i18n }}</p>
 
     <div class="tw-font-semibold">{{ "fingerprintPhraseHeader" | i18n }}</div>
@@ -25,7 +25,7 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="state === StateEnum.AdminAuthRequest">
+  <ng-container *ngIf="flow === Flow.AdminAuthRequest">
     <p>{{ "youWillBeNotifiedOnceTheRequestIsApproved" | i18n }}</p>
 
     <div class="tw-font-semibold">{{ "fingerprintPhraseHeader" | i18n }}</div>
