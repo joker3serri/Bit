@@ -132,7 +132,11 @@ export class GroupsComponent {
 
     // Connect the search input to the table dataSource filter input
     this.searchControl.valueChanges
-      .pipe(debounceTime(200), takeUntilDestroyed())
+      .pipe(
+        debounceTime(200),
+        map((v) => v ?? ""),
+        takeUntilDestroyed(),
+      )
       .subscribe((v) => (this.dataSource.filter = groupsFilter(v)));
 
     this.route.queryParams.pipe(first(), takeUntilDestroyed()).subscribe((qParams) => {
