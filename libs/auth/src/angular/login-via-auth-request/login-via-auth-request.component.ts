@@ -310,104 +310,98 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
   }
 
   private async verifyAndHandleApprovedAuthReq(requestId: string): Promise<void> {
+    /**
+     * ***********************************
+     *     Standard Auth Request Flows
+     * ***********************************
+     *
+     * Flow 1: Unauthed user requests approval from device; Approving device has a masterKey in memory.
+     *
+     *         Unauthed user clicks "Login with device" > navigates to /login-with-device which creates a StandardAuthRequest
+     *           > receives approval from a device with authRequestPublicKey(masterKey) > decrypts masterKey > decrypts userKey > proceed to vault
+     *
+     * Flow 2: Unauthed user requests approval from device; Approving device does NOT have a masterKey in memory.
+     *
+     *         Unauthed user clicks "Login with device" > navigates to /login-with-device which creates a StandardAuthRequest
+     *           > receives approval from a device with authRequestPublicKey(userKey) > decrypts userKey > proceeds to vault
+     *
+     *         Note: this flow is an uncommon scenario and relates to TDE off-boarding. The following describes how a user could get into this flow:
+     *           1) An SSO TD user logs into a device via an Admin auth request approval, therefore this device does NOT have a masterKey in memory.
+     *           2) The org admin...
+     *              (2a) Changes the member decryption options from "Trusted devices" to "Master password" AND
+     *              (2b) Turns off the "Require single sign-on authentication" policy
+     *           3) On another device, the user clicks "Login with device", which they can do because the org no longer requires SSO.
+     *           4) The user approves from the device they had previously logged into with SSO TD, which does NOT have a masterKey in memory (see step 1 above).
+     *
+     * Flow 3: Authed SSO TD user requests approval from device; Approving device has a masterKey in memory.
+     *
+     *         SSO TD user authenticates via SSO > navigates to /login-initiated > clicks "Approve from your other device"
+     *           > navigates to /login-with-device which creates a StandardAuthRequest > receives approval from device with authRequestPublicKey(masterKey)
+     *             > decrypts masterKey > decrypts userKey > establishes trust (if required) > proceeds to vault
+     *
+     * Flow 4: Authed SSO TD user requests approval from device; Approving device does NOT have a masterKey in memory.
+     *
+     *         SSO TD user authenticates via SSO > navigates to /login-initiated > clicks "Approve from your other device"
+     *           > navigates to /login-with-device which creates a StandardAuthRequest > receives approval from device with authRequestPublicKey(userKey)
+     *             > decrypts userKey > establishes trust (if required) > proceeds to vault
+     *
+     * ***********************************
+     *     Admin Auth Request Flows
+     * ***********************************
+     *
+     * Flow 1: Authed SSO TD user who has a masterKey in memory requests admin approval.
+     *
+     *         SSO TD user who has a masterKey in memory authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
+     *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(masterKey)
+     *             > decrypts masterKey > decrypts userKey > establishes trust (if required) > proceeds to vault
+     *
+     * Flow 2: Authed SSO TD user who does NOT have a masterKey in memory requests admin approval.
+     *
+     *         SSO TD user who does NOT have a masterKey in memory authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
+     *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(userKey)
+     *             > decrypts userKey > establishes trust (if required) > proceeds to vault
+     *
+     *
+     *   Summary Table
+     * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |      Flow       | Auth Status |           Clicks Button [active route]              |       Navigates to        | Approving device has masterKey in memory (see note 1) |
+     * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * | Standard Flow 1 | unauthed    | "Login with device"              [/login]           | /login-with-device        | yes                                                   |
+     * | Standard Flow 2 | unauthed    | "Login with device"              [/login]           | /login-with-device        | no                                                    |
+     * | Standard Flow 3 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | yes                                                   |
+     * | Standard Flow 4 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | no                                                    |
+     * | Admin Flow 1    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | yes                                                   |
+     * | Admin Flow 2    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | no                                                    |
+     * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     *    * Note 1: The phrase "in memory" here is important. It is possible for a user to have a master password for their account, but not have a masterKey IN MEMORY for
+     *              a specific device. For example, if a user registers an account with a master password, then joins an SSO TD org, then logs in to a device via SSO and
+     *              admin auth request, they are now logged into that device but that device does not have masterKey IN MEMORY.
+     */
+
     try {
-      // Step 1: Get the auth request from the server
-      let authRequestResponse: AuthRequestResponse;
-
-      if (this.flow === Flow.AdminAuthRequest) {
-        // User is authenticated, therefore the endpoint does not require an access code.
-        authRequestResponse = await this.authRequestApiService.getAuthRequest(requestId);
-      } else {
-        // User could be unauthenticated, therefore the endpoint requires an access code for user verification.
-        authRequestResponse = await this.authRequestApiService.getAuthResponse(
-          requestId,
-          this.authRequest.accessCode,
-        );
-      }
-
-      // Step 2: Verify that the auth request is approved
-      if (!authRequestResponse.requestApproved) {
-        return;
-      }
-
-      // Step 3: Approved, so proceed through one of the possible flows:
-
-      /**
-       * ***********************************
-       *     Standard Auth Request Flows
-       * ***********************************
-       *
-       * Flow 1: Unauthed user requests approval from device; Approving device has a masterKey in memory.
-       *
-       *         Unauthed user clicks "Login with device" > navigates to /login-with-device which creates a StandardAuthRequest
-       *           > receives approval from a device with authRequestPublicKey(masterKey) > decrypts masterKey > decrypts userKey > proceed to vault
-       *
-       * Flow 2: Unauthed user requests approval from device; Approving device does NOT have a masterKey in memory.
-       *
-       *         Unauthed user clicks "Login with device" > navigates to /login-with-device which creates a StandardAuthRequest
-       *           > receives approval from a device with authRequestPublicKey(userKey) > decrypts userKey > proceeds to vault
-       *
-       *         Note: this flow is an uncommon scenario and relates to TDE off-boarding. The following describes how a user could get into this flow:
-       *           1) An SSO TD user logs into a device via an Admin auth request approval, therefore this device does NOT have a masterKey in memory.
-       *           2) The org admin...
-       *              (2a) Changes the member decryption options from "Trusted devices" to "Master password" AND
-       *              (2b) Turns off the "Require single sign-on authentication" policy
-       *           3) On another device, the user clicks "Login with device", which they can do because the org no longer requires SSO.
-       *           4) The user approves from the device they had previously logged into with SSO TD, which does NOT have a masterKey in memory (see step 1 above).
-       *
-       * Flow 3: Authed SSO TD user requests approval from device; Approving device has a masterKey in memory.
-       *
-       *         SSO TD user authenticates via SSO > navigates to /login-initiated > clicks "Approve from your other device"
-       *           > navigates to /login-with-device which creates a StandardAuthRequest > receives approval from device with authRequestPublicKey(masterKey)
-       *             > decrypts masterKey > decrypts userKey > establishes trust (if required) > proceeds to vault
-       *
-       * Flow 4: Authed SSO TD user requests approval from device; Approving device does NOT have a masterKey in memory.
-       *
-       *         SSO TD user authenticates via SSO > navigates to /login-initiated > clicks "Approve from your other device"
-       *           > navigates to /login-with-device which creates a StandardAuthRequest > receives approval from device with authRequestPublicKey(userKey)
-       *             > decrypts userKey > establishes trust (if required) > proceeds to vault
-       *
-       * ***********************************
-       *     Admin Auth Request Flows
-       * ***********************************
-       *
-       * Flow 1: Authed SSO TD user who has a masterKey in memory requests admin approval.
-       *
-       *         SSO TD user who has a masterKey in memory authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
-       *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(masterKey)
-       *             > decrypts masterKey > decrypts userKey > establishes trust (if required) > proceeds to vault
-       *
-       * Flow 2: Authed SSO TD user who does NOT have a masterKey in memory requests admin approval.
-       *
-       *         SSO TD user who does NOT have a masterKey in memory authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
-       *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(userKey)
-       *             > decrypts userKey > establishes trust (if required) > proceeds to vault
-       *
-       *
-       *   Summary Table
-       * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-       * |      Flow       | Auth Status |           Clicks Button [active route]              |       Navigates to        | Approving device has masterKey in memory (see note 1) |
-       * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-       * | Standard Flow 1 | unauthed    | "Login with device"              [/login]           | /login-with-device        | yes                                                   |
-       * | Standard Flow 2 | unauthed    | "Login with device"              [/login]           | /login-with-device        | no                                                    |
-       * | Standard Flow 3 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | yes                                                   |
-       * | Standard Flow 4 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | no                                                    |
-       * | Admin Flow 1    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | yes                                                   |
-       * | Admin Flow 2    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | no                                                    |
-       * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-       *    * Note 1: The phrase "in memory" here is important. It is possible for a user to have a master password for their account, but not have a masterKey IN MEMORY for
-       *              a specific device. For example, if a user registers an account with a master password, then joins an SSO TD org, then logs in to a device via SSO and
-       *              admin auth request, they are now logged into that device but that device does not have masterKey IN MEMORY.
-       */
-
       const userHasAuthenticatedViaSSO = this.authStatus === AuthenticationStatus.Locked;
 
       if (userHasAuthenticatedViaSSO) {
-        // Handles Standard Flows 3-4 and Admin Flows 1-2
-        await this.handleAuthenticatedFlows(authRequestResponse);
+        // Get the auth request from the server
+        // User is authenticated, therefore the endpoint does not require an access code.
+        const authRequestResponse = await this.authRequestApiService.getAuthRequest(requestId);
+
+        if (authRequestResponse.requestApproved) {
+          // Handles Standard Flows 3-4 and Admin Flows 1-2
+          await this.handleAuthenticatedFlows(authRequestResponse);
+        }
       } else {
-        // Handles Standard Flows 1-2
-        await this.handleUnauthenticatedFlows(authRequestResponse, requestId);
+        // Get the auth request from the server
+        // User is unauthenticated, therefore the endpoint requires an access code for user verification.
+        const authRequestResponse = await this.authRequestApiService.getAuthResponse(
+          requestId,
+          this.authRequest.accessCode,
+        );
+
+        if (authRequestResponse.requestApproved) {
+          // Handles Standard Flows 1-2
+          await this.handleUnauthenticatedFlows(authRequestResponse, requestId);
+        }
       }
     } catch (error) {
       if (error instanceof ErrorResponse) {
@@ -466,6 +460,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         userId,
       );
     } else {
+      // ...in Standard Auth Request Flow 4 or Admin Auth Request 2
       await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
         authRequestResponse,
         privateKey,

@@ -9,7 +9,7 @@ export class AuthRequestResponse extends BaseResponse {
   requestDeviceType: DeviceType;
   requestIpAddress: string;
   key: string; // could be either an encrypted MasterKey or an encrypted UserKey
-  masterPasswordHash: string; // if present, the `key` above is an encrypted MasterKey (else `key` is an encrypted UserKey)
+  masterPasswordHash: string; // if hash is present, the `key` above is an encrypted MasterKey (else `key` is an encrypted UserKey)
   creationDate: string;
   requestApproved?: boolean;
   responseDate?: string;
