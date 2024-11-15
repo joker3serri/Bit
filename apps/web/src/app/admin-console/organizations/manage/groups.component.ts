@@ -59,6 +59,7 @@ type GroupDetailsRow = {
  * with members' names (who are assigned to the group) or collection names (which the group has access to).
  */
 const groupsFilter = (filter: string) => {
+  filter ??= "";
   const transformedFilter = filter.trim().toLowerCase();
   return (data: GroupDetailsRow) => {
     const group = data.details;
@@ -132,11 +133,7 @@ export class GroupsComponent {
 
     // Connect the search input to the table dataSource filter input
     this.searchControl.valueChanges
-      .pipe(
-        debounceTime(200),
-        map((v) => v ?? ""),
-        takeUntilDestroyed(),
-      )
+      .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((v) => (this.dataSource.filter = groupsFilter(v)));
 
     this.route.queryParams.pipe(first(), takeUntilDestroyed()).subscribe((qParams) => {
