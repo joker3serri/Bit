@@ -1,4 +1,4 @@
-import { firstValueFrom, of } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -19,7 +19,6 @@ import {
 describe("New Device Verification Notice", () => {
   const sut = NEW_DEVICE_VERIFICATION_NOTICE_KEY;
   const userId = Utils.newGuid() as UserId;
-  const mockUserId$ = of(userId);
   let newDeviceVerificationService: NewDeviceVerificationNoticeService;
   let mockNoticeState: FakeSingleUserState<NewDeviceVerificationNotice>;
   let stateProvider: FakeStateProvider;
@@ -58,7 +57,7 @@ describe("New Device Verification Notice", () => {
       };
       await stateProvider.setUserState(NEW_DEVICE_VERIFICATION_NOTICE_KEY, data, userId);
 
-      const result = await firstValueFrom(newDeviceVerificationService.noticeState$(mockUserId$));
+      const result = await firstValueFrom(newDeviceVerificationService.noticeState$(userId));
 
       expect(result).toBe(data);
     });
@@ -79,7 +78,7 @@ describe("New Device Verification Notice", () => {
       mockNoticeState.nextState(oldState);
       await newDeviceVerificationService.updateNewDeviceVerificationNoticeState(userId, newState);
 
-      const result = await firstValueFrom(newDeviceVerificationService.noticeState$(mockUserId$));
+      const result = await firstValueFrom(newDeviceVerificationService.noticeState$(userId));
       expect(result).toEqual(newState);
     });
   });

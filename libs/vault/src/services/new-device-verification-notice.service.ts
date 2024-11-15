@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, switchMap, takeWhile } from "rxjs";
+import { Observable } from "rxjs";
 import { Jsonify } from "type-fest";
 
 import {
@@ -50,11 +50,8 @@ export class NewDeviceVerificationNoticeService {
     return this.stateProvider.getUser(userId, NEW_DEVICE_VERIFICATION_NOTICE_KEY);
   }
 
-  noticeState$(userId$: Observable<UserId>): Observable<NewDeviceVerificationNotice> {
-    return userId$.pipe(
-      takeWhile((userId) => userId != null),
-      switchMap((userId) => this.noticeState(userId).state$),
-    );
+  noticeState$(userId: UserId): Observable<NewDeviceVerificationNotice> {
+    return this.noticeState(userId).state$;
   }
 
   async updateNewDeviceVerificationNoticeState(
