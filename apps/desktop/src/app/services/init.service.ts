@@ -21,6 +21,7 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { KeyService as KeyServiceAbstraction } from "@bitwarden/key-management";
 
 import { I18nRendererService } from "../../platform/services/i18n.renderer.service";
+import { SshAgentService } from "../../platform/services/ssh-agent.service";
 import { VersionService } from "../../platform/services/version.service";
 import { NativeMessagingService } from "../../services/native-messaging.service";
 
@@ -43,11 +44,13 @@ export class InitService {
     private userAutoUnlockKeyService: UserAutoUnlockKeyService,
     private accountService: AccountService,
     private versionService: VersionService,
+    private sshAgentService: SshAgentService,
     @Inject(DOCUMENT) private document: Document,
   ) {}
 
   init() {
     return async () => {
+      await this.sshAgentService.init();
       this.nativeMessagingService.init();
       await this.stateService.init({ runMigrations: false }); // Desktop will run them in main process
 
