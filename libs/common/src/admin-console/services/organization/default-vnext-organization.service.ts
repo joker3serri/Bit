@@ -1,4 +1,4 @@
-import { map, Observable, switchMap } from "rxjs";
+import { map, Observable } from "rxjs";
 
 import { StateProvider } from "../../../platform/state";
 import { UserId } from "../../../types/guid";
@@ -42,27 +42,27 @@ function mapToBooleanHasAnyOrganizations() {
 export class DefaultvNextOrganizationService
   implements vNextInternalOrganizationServiceAbstraction
 {
-  memberOrganizations$(userId$: Observable<UserId>): Observable<Organization[]> {
-    return this.organizations$(userId$).pipe(mapToExcludeProviderOrganizations());
+  memberOrganizations$(userId: UserId): Observable<Organization[]> {
+    return this.organizations$(userId).pipe(mapToExcludeProviderOrganizations());
   }
 
   constructor(private stateProvider: StateProvider) {}
 
-  canManageSponsorships$(userId$: Observable<UserId>) {
-    return this.organizations$(userId$).pipe(
+  canManageSponsorships$(userId: UserId) {
+    return this.organizations$(userId).pipe(
       mapToExcludeOrganizationsWithoutFamilySponsorshipSupport(),
       mapToBooleanHasAnyOrganizations(),
     );
   }
 
-  familySponsorshipAvailable$(userId$: Observable<UserId>) {
-    return this.organizations$(userId$).pipe(
+  familySponsorshipAvailable$(userId: UserId) {
+    return this.organizations$(userId).pipe(
       map((orgs) => orgs.some((o) => o.familySponsorshipAvailable)),
     );
   }
 
-  hasOrganizations(userId$: Observable<UserId>): Observable<boolean> {
-    return this.organizations$(userId$).pipe(mapToBooleanHasAnyOrganizations());
+  hasOrganizations(userId: UserId): Observable<boolean> {
+    return this.organizations$(userId).pipe(mapToBooleanHasAnyOrganizations());
   }
 
   async upsert(organization: OrganizationData, userId: UserId): Promise<void> {
@@ -77,12 +77,8 @@ export class DefaultvNextOrganizationService
     await this.organizationState(userId).update(() => organizations);
   }
 
-  organizations$(userId$: Observable<UserId>): Observable<Organization[] | undefined> {
-    return userId$.pipe(
-      switchMap((userId) =>
-        this.organizationState(userId).state$.pipe(this.mapOrganizationRecordToArray()),
-      ),
-    );
+  organizations$(userId: UserId): Observable<Organization[] | undefined> {
+    return this.organizationState(userId).state$.pipe(this.mapOrganizationRecordToArray());
   }
 
   private organizationState(userId: UserId) {

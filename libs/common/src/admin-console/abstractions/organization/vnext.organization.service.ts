@@ -81,20 +81,20 @@ export abstract class vNextOrganizationService {
    * Publishes state for all organizations under the specified user.
    * @returns An observable list of organizations
    */
-  organizations$: (userId: Observable<UserId>) => Observable<Organization[]>;
+  organizations$: (userId: UserId) => Observable<Organization[]>;
 
   // @todo Clean these up. Continuing to expand them is not recommended.
   // @see https://bitwarden.atlassian.net/browse/AC-2252
-  memberOrganizations$: (userId: Observable<UserId>) => Observable<Organization[]>;
+  memberOrganizations$: (userId: UserId) => Observable<Organization[]>;
   /**
    * Emits true if the user can create or manage a Free Bitwarden Families sponsorship.
    */
-  canManageSponsorships$: (userId: Observable<UserId>) => Observable<boolean>;
+  canManageSponsorships$: (userId: UserId) => Observable<boolean>;
   /**
    * Emits true if any of the user's organizations have a Free Bitwarden Families sponsorship available.
    */
-  familySponsorshipAvailable$: (userId: Observable<UserId>) => Observable<boolean>;
-  hasOrganizations: (userId: Observable<UserId>) => Observable<boolean>;
+  familySponsorshipAvailable$: (userId: UserId) => Observable<boolean>;
+  hasOrganizations: (userId: UserId) => Observable<boolean>;
 }
 
 /**
