@@ -1,4 +1,4 @@
-import { firstValueFrom, of } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { FakeStateProvider, mockAccountServiceWith } from "../../../../spec";
 import { Utils } from "../../../platform/misc/utils";
@@ -94,9 +94,7 @@ describe("OrganizationService", () => {
       const mockData: OrganizationData[] = buildMockOrganizations(1);
       mockData[0].familySponsorshipAvailable = true;
       await setOrganizationsState(mockData);
-      const result = await firstValueFrom(
-        organizationService.canManageSponsorships$(of(fakeUserId)),
-      );
+      const result = await firstValueFrom(organizationService.canManageSponsorships$(fakeUserId));
       expect(result).toBe(true);
     });
 
@@ -104,9 +102,7 @@ describe("OrganizationService", () => {
       const mockData: OrganizationData[] = buildMockOrganizations(1);
       mockData[0].familySponsorshipFriendlyName = "Something";
       await setOrganizationsState(mockData);
-      const result = await firstValueFrom(
-        organizationService.canManageSponsorships$(of(fakeUserId)),
-      );
+      const result = await firstValueFrom(organizationService.canManageSponsorships$(fakeUserId));
       expect(result).toBe(true);
     });
 
@@ -114,9 +110,7 @@ describe("OrganizationService", () => {
       const mockData: OrganizationData[] = buildMockOrganizations(1);
       mockData[0].familySponsorshipFriendlyName = null;
       await setOrganizationsState(mockData);
-      const result = await firstValueFrom(
-        organizationService.canManageSponsorships$(of(fakeUserId)),
-      );
+      const result = await firstValueFrom(organizationService.canManageSponsorships$(fakeUserId));
       expect(result).toBe(false);
     });
   });
@@ -126,28 +120,28 @@ describe("OrganizationService", () => {
       it("publishes an empty array if organizations in state = undefined", async () => {
         const mockData: OrganizationData[] = undefined;
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
         expect(result).toEqual([]);
       });
 
       it("publishes an empty array if organizations in state = null", async () => {
         const mockData: OrganizationData[] = null;
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
         expect(result).toEqual([]);
       });
 
       it("publishes an empty array if organizations in state = []", async () => {
         const mockData: OrganizationData[] = [];
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
         expect(result).toEqual([]);
       });
 
       it("returns state for a user", async () => {
         const mockData = buildMockOrganizations(10);
         await setOrganizationsState(mockData);
-        const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+        const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
         expect(result).toEqual(mockData);
       });
     });
@@ -159,7 +153,7 @@ describe("OrganizationService", () => {
       // `stateProvider` will be null when the `upsert` method is called.
       const mockData = buildMockOrganizations();
       await organizationService.upsert(mockData[0], fakeUserId);
-      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
       expect(result).toEqual(mockData.map((x) => new Organization(x)));
     });
 
@@ -172,7 +166,7 @@ describe("OrganizationService", () => {
         id: mockData[indexToUpdate].id,
       };
       await organizationService.upsert(anUpdatedOrganization, fakeUserId);
-      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
       expect(result[indexToUpdate]).not.toEqual(new Organization(mockData[indexToUpdate]));
       expect(result[indexToUpdate].id).toEqual(new Organization(mockData[indexToUpdate]).id);
       expectIsEqualExceptForIndex(
@@ -191,7 +185,7 @@ describe("OrganizationService", () => {
       const newData = buildMockOrganizations(10, "newData");
       await organizationService.replace(arrayToRecord(newData), fakeUserId);
 
-      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
 
       expect(result).toEqual(newData);
       expect(result).not.toEqual(originalData);
@@ -202,7 +196,7 @@ describe("OrganizationService", () => {
       const originalData = buildMockOrganizations(2);
       await setOrganizationsState(originalData);
       await organizationService.replace(null, fakeUserId);
-      const result = await firstValueFrom(organizationService.organizations$(of(fakeUserId)));
+      const result = await firstValueFrom(organizationService.organizations$(fakeUserId));
       expect(result).toEqual([]);
       expect(result).not.toEqual(originalData);
     });
