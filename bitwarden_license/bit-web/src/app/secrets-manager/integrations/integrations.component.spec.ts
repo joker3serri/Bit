@@ -5,8 +5,8 @@ import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
 import { SharedModule } from "@bitwarden/components/src/shared";
-import { IntegrationCardComponent } from "@bitwarden/web-vault/src/app/shared/components/integrations/integration-card/integration-card.component";
-import { IntegrationGridComponent } from "@bitwarden/web-vault/src/app/shared/components/integrations/integration-grid/integration-grid.component";
+import { IntegrationCardComponent } from "@bitwarden/web-vault/app/shared/components/integrations/integration-card/integration-card.component";
+import { IntegrationGridComponent } from "@bitwarden/web-vault/app/shared/components/integrations/integration-grid/integration-grid.component";
 
 import { SYSTEM_THEME_OBSERVABLE } from "../../../../../../libs/angular/src/services/injection-tokens";
 import { I18nService } from "../../../../../../libs/common/src/platform/abstractions/i18n.service";

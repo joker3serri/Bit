@@ -14,7 +14,7 @@ import { IntegrationCardComponent } from "./integration-card.component";
 class MockThemeService implements Partial<ThemeStateService> {}
 
 export default {
-  title: "Web/Integration Card",
+  title: "Web/Integration Layout/Integration Card",
   component: IntegrationCardComponent,
   decorators: [
     moduleMetadata({
@@ -56,8 +56,9 @@ export const Default: Story = {
       `,
   }),
   args: {
-    name: "test",
-    image: "",
-    linkURL: "",
+    name: "Bitwarden",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
+    linkURL: "https://bitwarden.com",
   },
 };

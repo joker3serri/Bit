@@ -15,7 +15,7 @@ import { IntegrationGridComponent } from "../integration-grid/integration-grid.c
 class MockThemeService implements Partial<ThemeStateService> {}
 
 export default {
-  title: "Web/Integration Grid",
+  title: "Web/Integration Layout/Integration Grid",
   component: IntegrationGridComponent,
   decorators: [
     moduleMetadata({
@@ -36,7 +36,7 @@ export default {
         },
         {
           provide: SYSTEM_THEME_OBSERVABLE,
-          useValue: of(ThemeTypes.Light),
+          useValue: of(ThemeTypes.Dark),
         },
       ],
     }),
@@ -56,20 +56,23 @@ export const Default: Story = {
     integrations: [
       {
         name: "Card 1",
-        linkURL: "",
-        image: "",
+        linkURL: "https://bitwarden.com",
+        image:
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
         type: IntegrationType.SSO,
       },
       {
         name: "Card 2",
-        linkURL: "",
-        image: "",
+        linkURL: "https://bitwarden.com",
+        image:
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
         type: IntegrationType.SDK,
       },
       {
         name: "Card 3",
-        linkURL: "",
-        image: "",
+        linkURL: "https://bitwarden.com",
+        image:
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
         type: IntegrationType.SCIM,
       },
     ],

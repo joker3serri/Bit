@@ -52,7 +52,7 @@ describe("IntegrationGridComponent", () => {
         },
         {
           provide: I18nService,
-          useValue: mock<I18nService>({ t: (key) => key }),
+          useValue: mock<I18nService>({ t: (key, p1) => key + " " + p1 }),
         },
       ],
     });
@@ -92,7 +92,9 @@ describe("IntegrationGridComponent", () => {
 
   it("has a tool tip and aria label attributes", () => {
     const card: HTMLElement = fixture.debugElement.queryAll(By.css("li"))[0].nativeElement;
-    expect(card.title).toBe("integrationCardTooltip");
-    expect(card.getAttribute("aria-label")).toBe("integrationCardAriaLabel");
+    expect(card.title).toBe("integrationCardTooltip" + " " + integrations[0].name);
+    expect(card.getAttribute("aria-label")).toBe(
+      "integrationCardAriaLabel" + " " + integrations[0].name,
+    );
   });
 });

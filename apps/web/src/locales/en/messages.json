@@ -8930,7 +8930,7 @@
   },
   "ssoDescStart": {
     "message": "Configure",
-    "description": "This represents the beggining of a sentence, broken up to include links. The full sentence will be 'Configure single sign-on for Bitwarden using the implementation guide for your Identity Provider."
+    "description": "This represents the begining of a sentence, broken up to include links. The full sentence will be 'Configure single sign-on for Bitwarden using the implementation guide for your Identity Provider."
   },
   "ssoDescEnd": {
     "message": "for Bitwarden using the implementation guide for your Identity Provider.",
@@ -8944,7 +8944,7 @@
   },
   "scimIntegrationDescStart": {
     "message": "Configure ",
-    "description": "This represents the beggining of a sentence, broken up to include links. The full sentence will be 'Configure SCIM (System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider"
+    "description": "This represents the begining of a sentence, broken up to include links. The full sentence will be 'Configure SCIM (System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider"
   },
   "scimIntegrationDescEnd": {
     "message": "(System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider.",
@@ -9022,45 +9022,6 @@
         "example": "google"
       }
     }
-  },
-  "setUpGithubActions": {
-    "message": "Set up Github Actions"
-  },
-  "setUpKubernetes": {
-    "message": "Set up Kubernetes"
-  },
-  "setUpGitlabCICD": {
-    "message": "Set up GitLab CI/CD"
-  },
-  "setUpAnsible": {
-    "message": "Set up Ansible"
-  },
-  "rustSDKRepo": {
-    "message": "View Rust repository"
-  },
-  "cSharpSDKRepo": {
-    "message": "View C# repository"
-  },
-  "cPlusPlusSDKRepo": {
-    "message": "View C++ repository"
-  },
-  "jsWebAssemblySDKRepo": {
-    "message": "View JS WebAssembly repository"
-  },
-  "javaSDKRepo": {
-    "message": "View Java repository"
-  },
-  "pythonSDKRepo": {
-    "message": "View Python repository"
-  },
-  "phpSDKRepo": {
-    "message": "View php repository"
-  },
-  "rubySDKRepo": {
-    "message": "View Ruby repository"
-  },
-  "goSDKRepo": {
-    "message": "View Go repository"
   },
   "createNewClientToManageAsProvider": {
     "message": "Create a new client organization to manage as a Provider. Additional seats will be reflected in the next billing cycle."
