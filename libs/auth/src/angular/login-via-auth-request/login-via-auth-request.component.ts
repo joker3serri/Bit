@@ -346,10 +346,10 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
      *             > decrypts userKey > establishes trust (if required) > proceeds to vault
      *
      * ***********************************
-     *     Admin Auth Request Flows
+     *     Admin Auth Request Flow
      * ***********************************
      *
-     * Flow 1: Authed SSO TD user requests admin approval.
+     * Flow: Authed SSO TD user requests admin approval.
      *
      *         SSO TD user authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
      *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(userKey)
@@ -367,7 +367,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
      * | Standard Flow 2 | unauthed    | "Login with device"              [/login]           | /login-with-device        | no                                                    |
      * | Standard Flow 3 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | yes                                                   |
      * | Standard Flow 4 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | no                                                    |                                                |
-     * | Admin Flow 1    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | NA - admin requests always send encrypted userKey     |
+     * | Admin Flow      | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | NA - admin requests always send encrypted userKey     |
      * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      *    * Note 1: The phrase "in memory" here is important. It is possible for a user to have a master password for their account, but not have a masterKey IN MEMORY for
      *              a specific device. For example, if a user registers an account with a master password, then joins an SSO TD org, then logs in to a device via SSO and
@@ -383,7 +383,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
         const authRequestResponse = await this.authRequestApiService.getAuthRequest(requestId);
 
         if (authRequestResponse.requestApproved) {
-          // Handles Standard Flows 3-4 and Admin Flows 1-2
+          // Handles Standard Flows 3-4 and Admin Flow
           await this.handleAuthenticatedFlows(authRequestResponse);
         }
       } else {
@@ -449,14 +449,14 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
      */
 
     if (authRequestResponse.masterPasswordHash) {
-      // ...in Standard Auth Request Flow 3 or Admin Auth Request 1
+      // ...in Standard Auth Request Flow 3
       await this.authRequestService.setKeysAfterDecryptingSharedMasterKeyAndHash(
         authRequestResponse,
         privateKey,
         userId,
       );
     } else {
-      // ...in Standard Auth Request Flow 4 or Admin Auth Request 2
+      // ...in Standard Auth Request Flow 4 or Admin Auth Request Flow
       await this.authRequestService.setUserKeyAfterDecryptingSharedUserKey(
         authRequestResponse,
         privateKey,
