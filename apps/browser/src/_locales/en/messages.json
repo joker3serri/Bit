@@ -4849,5 +4849,14 @@
   },
   "beta": {
     "message": "Beta"
+  },
+  "width": {
+    "message": "Width"
+  },
+  "wide": {
+    "message": "Wide"
+  },
+  "extraWide": {
+    "message": "Extra wide"
   }
 }
