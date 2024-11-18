@@ -4850,8 +4850,8 @@
   "beta": {
     "message": "Beta"
   },
-  "width": {
-    "message": "Width"
+  "extensionWidth": {
+    "message": "Extension width"
   },
   "wide": {
     "message": "Wide"
