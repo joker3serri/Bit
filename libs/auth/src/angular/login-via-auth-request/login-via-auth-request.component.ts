@@ -355,7 +355,7 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
      *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(userKey)
      *             > decrypts userKey > establishes trust (if required) > proceeds to vault
      *
-     *        Note: TDE user's are required to be enrolled in admin password reset, which gives the admin access to the user's userKey.
+     *        Note: TDE users are required to be enrolled in admin password reset, which gives the admin access to the user's userKey.
      *              This is how admins are able to send over the authRequestPublicKey(userKey) to the user to allow them to unlock.
      *
      *
