@@ -57,22 +57,19 @@ export const Default: Story = {
       {
         name: "Card 1",
         linkURL: "https://bitwarden.com",
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
+        image: "/integrations/bitwarden-vertical-blue.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "Card 2",
         linkURL: "https://bitwarden.com",
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
+        image: "/integrations/bitwarden-vertical-blue.svg",
         type: IntegrationType.SDK,
       },
       {
         name: "Card 3",
         linkURL: "https://bitwarden.com",
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
+        image: "/integrations/bitwarden-vertical-blue.svg",
         type: IntegrationType.SCIM,
       },
     ],

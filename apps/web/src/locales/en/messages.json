@@ -9028,7 +9028,7 @@
   },
   "ssoDescStart": {
     "message": "Configure",
-    "description": "This represents the begining of a sentence, broken up to include links. The full sentence will be 'Configure single sign-on for Bitwarden using the implementation guide for your Identity Provider."
+    "description": "This represents the beginning of a sentence, broken up to include links. The full sentence will be 'Configure single sign-on for Bitwarden using the implementation guide for your Identity Provider."
   },
   "ssoDescEnd": {
     "message": "for Bitwarden using the implementation guide for your Identity Provider.",

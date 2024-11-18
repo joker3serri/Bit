@@ -3,9 +3,7 @@ import { Component } from "@angular/core";
 import { IntegrationType } from "@bitwarden/common/enums";
 
 import { HeaderModule } from "../../../layouts/header/header.module";
-import { IntegrationGridComponent } from "../../../shared/components/integrations/integration-grid/integration-grid.component";
-import { FilterIntegrationsPipe } from "../../../shared/components/integrations/integrations.pipe";
-import { Integration } from "../../../shared/components/integrations/models";
+import { FilterIntegrationsPipe, IntegrationGridComponent, Integration } from "../../../shared/";
 import { SharedModule } from "../../../shared/shared.module";
 import { SharedOrganizationModule } from "../shared";
 

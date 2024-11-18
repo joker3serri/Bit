@@ -1,7 +1,9 @@
 import { NgModule } from "@angular/core";
 
-import { IntegrationCardComponent } from "@bitwarden/web-vault/app/shared/components/integrations/integration-card/integration-card.component";
-import { IntegrationGridComponent } from "@bitwarden/web-vault/app/shared/components/integrations/integration-grid/integration-grid.component";
+import {
+  IntegrationCardComponent,
+  IntegrationGridComponent,
+} from "@bitwarden/web-vault/app/shared";
 
 import { SecretsManagerSharedModule } from "../shared/sm-shared.module";
 
@@ -12,8 +14,8 @@ import { IntegrationsComponent } from "./integrations.component";
   imports: [
     SecretsManagerSharedModule,
     IntegrationsRoutingModule,
-    IntegrationGridComponent,
     IntegrationCardComponent,
+    IntegrationGridComponent,
   ],
   declarations: [IntegrationsComponent],
 })

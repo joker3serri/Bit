@@ -57,8 +57,7 @@ export const Default: Story = {
   }),
   args: {
     name: "Bitwarden",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Bitwarden_logo.svg/512px-Bitwarden_logo.svg.png",
+    image: "/integrations/bitwarden-vertical-blue.svg",
     linkURL: "https://bitwarden.com",
   },
 };
