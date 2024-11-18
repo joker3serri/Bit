@@ -349,17 +349,14 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
      *     Admin Auth Request Flows
      * ***********************************
      *
-     * Flow 1: Authed SSO TD user who has a masterKey in memory requests admin approval.
+     * Flow 1: Authed SSO TD user requests admin approval.
      *
-     *         SSO TD user who has a masterKey in memory authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
-     *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(masterKey)
-     *             > decrypts masterKey > decrypts userKey > establishes trust (if required) > proceeds to vault
-     *
-     * Flow 2: Authed SSO TD user who does NOT have a masterKey in memory requests admin approval.
-     *
-     *         SSO TD user who does NOT have a masterKey in memory authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
+     *         SSO TD user authenticates via SSO > navigates to /login-initiated > clicks "Request admin approval"
      *           > navigates to /admin-approval-requested which creates an AdminAuthRequest > receives approval from device with authRequestPublicKey(userKey)
      *             > decrypts userKey > establishes trust (if required) > proceeds to vault
+     *
+     *        Note: TDE user's are required to be enrolled in admin password reset, which gives the admin access to the user's userKey.
+     *              This is how admins are able to send over the authRequestPublicKey(userKey) to the user to allow them to unlock.
      *
      *
      *   Summary Table
@@ -369,9 +366,8 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
      * | Standard Flow 1 | unauthed    | "Login with device"              [/login]           | /login-with-device        | yes                                                   |
      * | Standard Flow 2 | unauthed    | "Login with device"              [/login]           | /login-with-device        | no                                                    |
      * | Standard Flow 3 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | yes                                                   |
-     * | Standard Flow 4 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | no                                                    |
-     * | Admin Flow 1    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | yes                                                   |
-     * | Admin Flow 2    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | no                                                    |
+     * | Standard Flow 4 | authed      | "Approve from your other device" [/login-initiated] | /login-with-device        | no                                                    |                                                |
+     * | Admin Flow 1    | authed      | "Request admin approval"         [/login-initiated] | /admin-approval-requested | NA - admin requests always send encrypted userKey     |
      * |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      *    * Note 1: The phrase "in memory" here is important. It is possible for a user to have a master password for their account, but not have a masterKey IN MEMORY for
      *              a specific device. For example, if a user registers an account with a master password, then joins an SSO TD org, then logs in to a device via SSO and
