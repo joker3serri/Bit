@@ -783,60 +783,65 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     });
   }
 
-  allSelectedHaveStatus(status: OrganizationUserStatusType): boolean {
-    return this.dataSource.getCheckedUsers().every((member) => member.status == status);
-  }
-
-  allSelectedDoNotHaveStatus(status: OrganizationUserStatusType): boolean {
-    return this.dataSource.getCheckedUsers().every((member) => member.status != status);
-  }
-
-  allSelectedMembersAreManagedByOrganization(): boolean {
-    return this.dataSource.getCheckedUsers().every((member) => member.managedByOrganization);
-  }
-
-  allSelectedMembersAreNotManagedByOrganization(): boolean {
-    return this.dataSource.getCheckedUsers().every((member) => !member.managedByOrganization);
-  }
-
   get showBulkConfirmUsers(): boolean {
     return (
-      !this.accountDeprovisioningEnabled || this.allSelectedHaveStatus(this.userStatusType.Accepted)
+      !this.accountDeprovisioningEnabled ||
+      this.dataSource
+        .getCheckedUsers()
+        .every((member) => member.status == this.userStatusType.Accepted)
     );
   }
 
   get showBulkReinviteUsers(): boolean {
     return (
-      !this.accountDeprovisioningEnabled || this.allSelectedHaveStatus(this.userStatusType.Invited)
+      !this.accountDeprovisioningEnabled ||
+      this.dataSource
+        .getCheckedUsers()
+        .every((member) => member.status == this.userStatusType.Invited)
     );
   }
 
   get showBulkRestoreUsers(): boolean {
     return (
-      !this.accountDeprovisioningEnabled || this.allSelectedHaveStatus(this.userStatusType.Revoked)
+      !this.accountDeprovisioningEnabled ||
+      this.dataSource
+        .getCheckedUsers()
+        .every((member) => member.status == this.userStatusType.Revoked)
     );
   }
 
   get showBulkRevokeUsers(): boolean {
     return (
       !this.accountDeprovisioningEnabled ||
-      this.allSelectedDoNotHaveStatus(this.userStatusType.Revoked)
+      this.dataSource
+        .getCheckedUsers()
+        .every((member) => member.status != this.userStatusType.Revoked)
     );
   }
 
   get showBulkRemoveUsers(): boolean {
     return (
-      !this.accountDeprovisioningEnabled || this.allSelectedMembersAreNotManagedByOrganization()
+      !this.accountDeprovisioningEnabled ||
+      this.dataSource.getCheckedUsers().every((member) => !member.managedByOrganization)
     );
   }
 
   get showBulkDeleteUsers(): boolean {
-    return (
-      this.accountDeprovisioningEnabled &&
-      this.allSelectedMembersAreManagedByOrganization() &&
-      (this.allSelectedHaveStatus(this.userStatusType.Accepted) ||
-        this.allSelectedHaveStatus(this.userStatusType.Confirmed) ||
-        this.allSelectedHaveStatus(this.userStatusType.Revoked))
-    );
+    const checkedUsers = this.dataSource.getCheckedUsers();
+
+    if (
+      !this.accountDeprovisioningEnabled ||
+      !checkedUsers.every((member) => member.managedByOrganization)
+    ) {
+      return false;
+    }
+
+    const validStatuses = [
+      this.userStatusType.Accepted,
+      this.userStatusType.Confirmed,
+      this.userStatusType.Revoked,
+    ];
+
+    return checkedUsers.every((member) => validStatuses.includes(member.status));
   }
 }
