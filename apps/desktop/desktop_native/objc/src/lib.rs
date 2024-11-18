@@ -1,3 +1,5 @@
+#![cfg(target_os = "macos")]
+
 use std::{
     ffi::{c_char, CStr, CString},
     os::raw::c_void,

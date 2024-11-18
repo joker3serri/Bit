@@ -1,5 +1,6 @@
 use glob::glob;
 
+#[cfg(target_os = "macos")]
 fn main() {
     let mut builder = cc::Build::new();
 
@@ -12,4 +13,9 @@ fn main() {
     builder
         .flag("-fobjc-arc") // Enable Auto Reference Counting (ARC)
         .compile("autofill");
+}
+
+#[cfg(not(target_os = "macos"))]
+fn main() {
+    // Crate is only supported on macOS
 }
