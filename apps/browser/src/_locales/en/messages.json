@@ -2889,9 +2889,9 @@
   "generateEmail": {
     "message": "Generate email"
   },
-  "passwordLengthHint": {
-    "message": "Value must be between $MIN$ and $MAX$. Use $RECOMMENDED$ characters or more to generate a strong password.",
-    "description": "Explains password 'length' boundaries to the user",
+  "generatorBoundariesHint": {
+    "message": "Value must be between $MIN$ and $MAX$.",
+    "description": "Explains spin box minimum and maximum values to the user",
     "placeholders": {
       "min": {
         "content": "$1",
@@ -2900,27 +2900,25 @@
       "max": {
         "content": "$2",
         "example": "128"
-      },
+      }
+    }
+  },
+  "passwordLengthRecommendationHint": {
+    "message": " Use $RECOMMENDED$ characters or more to generate a strong password.",
+    "description": "Extends `generatorBoundariesHint` to recommend a length to the user",
+    "placeholders": {
       "recommended": {
-        "content": "$3",
+        "content": "$1",
         "example": "14"
       }
     }
   },
-  "passphraseNumWordsHint": {
-    "message": "Value must be between $MIN$ and $MAX$. Use $RECOMMENDED$ words or more to generate a strong passphrase.",
-    "description": "Explains passphrase 'number of words' boundaries to the user",
+  "passphraseNumWordsRecommendationHint": {
+    "message": " Use $RECOMMENDED$ words or more to generate a strong passphrase.",
+    "description": "Extends `generatorBoundariesHint` to recommend a number of words to the user",
     "placeholders": {
-      "min": {
-        "content": "$1",
-        "example": "8"
-      },
-      "max": {
-        "content": "$2",
-        "example": "128"
-      },
       "recommended": {
-        "content": "$3",
+        "content": "$1",
         "example": "6"
       }
     }
