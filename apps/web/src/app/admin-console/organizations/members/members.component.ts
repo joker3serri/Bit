@@ -56,7 +56,7 @@ import {
 } from "../../../billing/organizations/change-plan-dialog.component";
 import { BaseMembersComponent } from "../../common/base-members.component";
 import { PeopleTableDataSource } from "../../common/people-table-data-source";
-import { GroupService } from "../core";
+import { GroupApiService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 import { openEntityEventsDialog } from "../manage/entity-events.component";
 
@@ -100,13 +100,9 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
 
   protected canUseSecretsManager$: Observable<boolean>;
 
-  protected enableUpgradePasswordManagerSub$ = this.configService.getFeatureFlag$(
-    FeatureFlag.EnableUpgradePasswordManagerSub,
-  );
-
   // Fixed sizes used for cdkVirtualScroll
-  protected rowHeight = 62;
-  protected rowHeightClass = `tw-h-[62px]`;
+  protected rowHeight = 69;
+  protected rowHeightClass = `tw-h-[69px]`;
 
   constructor(
     apiService: ApiService,
@@ -127,7 +123,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserApiService: OrganizationUserApiService,
     private router: Router,
-    private groupService: GroupService,
+    private groupService: GroupApiService,
     private collectionService: CollectionService,
     private billingApiService: BillingApiServiceAbstraction,
     private modalService: ModalService,
@@ -491,29 +487,20 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
         this.organization.productTierType === ProductTierType.TeamsStarter ||
         this.organization.productTierType === ProductTierType.Families)
     ) {
-      const enableUpgradePasswordManagerSub = await firstValueFrom(
-        this.enableUpgradePasswordManagerSub$,
-      );
-      if (enableUpgradePasswordManagerSub && this.organization.canEditSubscription) {
-        const reference = openChangePlanDialog(this.dialogService, {
-          data: {
-            organizationId: this.organization.id,
-            subscription: null,
-            productTierType: this.organization.productTierType,
-          },
-        });
+      const reference = openChangePlanDialog(this.dialogService, {
+        data: {
+          organizationId: this.organization.id,
+          subscription: null,
+          productTierType: this.organization.productTierType,
+        },
+      });
 
-        const result = await lastValueFrom(reference.closed);
+      const result = await lastValueFrom(reference.closed);
 
-        if (result === ChangePlanDialogResultType.Submitted) {
-          await this.load();
-        }
-        return;
-      } else {
-        // Show org upgrade modal
-        await this.showSeatLimitReachedDialog();
-        return;
+      if (result === ChangePlanDialogResultType.Submitted) {
+        await this.load();
       }
+      return;
     }
 
     const dialog = openUserAddEditDialog(this.dialogService, {
