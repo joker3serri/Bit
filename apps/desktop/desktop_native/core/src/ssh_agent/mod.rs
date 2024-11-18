@@ -129,6 +129,10 @@ impl BitwardenDesktopAgent {
         *request_id += 1;
         *request_id
     }
+
+    pub fn is_running(self) -> bool {
+        return self.is_running.blocking_lock().clone();
+    }
 }
 
 fn parse_key_safe(pem: &str) -> Result<ssh_key::private::PrivateKey, anyhow::Error> {

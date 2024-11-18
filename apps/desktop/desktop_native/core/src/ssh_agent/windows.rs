@@ -25,6 +25,7 @@ impl BitwardenDesktopAgent {
         };
         let stream = named_pipe_listener_stream::NamedPipeServerStream::new(
             agent_state.cancellation_token.clone(),
+            agent_state.is_running.clone(),
         );
 
         let cloned_agent_state = agent_state.clone();
