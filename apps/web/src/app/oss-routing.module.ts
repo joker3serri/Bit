@@ -408,7 +408,7 @@ const routes: Routes = [
             },
             titleId: "enterpriseSingleSignOn",
             pageSubtitle: {
-              key: "singleSignOnEnterOrgIdentifier",
+              key: "singleSignOnEnterOrgIdentifierText",
             },
             pageIcon: SsoKeyIcon,
           } satisfies RouteDataProperties & AnonLayoutWrapperData,
