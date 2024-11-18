@@ -125,7 +125,7 @@ export class PasswordSettingsComponent implements OnInit, OnDestroy {
       )
       .subscribe(([state, constraints]) => {
         let boundariesHint = this.i18nService.t(
-          "generatorBoundariesHint",
+          "spinboxBoundariesHint",
           constraints.length.min?.toString(),
           constraints.length.max?.toString(),
         );

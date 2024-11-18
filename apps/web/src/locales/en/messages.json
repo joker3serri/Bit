@@ -6468,7 +6468,7 @@
   "generateEmail": {
     "message": "Generate email"
   },
-  "generatorBoundariesHint": {
+  "spinboxBoundariesHint": {
     "message": "Value must be between $MIN$ and $MAX$.",
     "description": "Explains spin box minimum and maximum values to the user",
     "placeholders": {
@@ -6484,7 +6484,7 @@
   },
   "passwordLengthRecommendationHint": {
     "message": " Use $RECOMMENDED$ characters or more to generate a strong password.",
-    "description": "Extends `generatorBoundariesHint` to recommend a length to the user",
+    "description": "Extends `spinboxBoundariesHint` to recommend a length to the user",
     "placeholders": {
       "recommended": {
         "content": "$1",
@@ -6494,7 +6494,7 @@
   },
   "passphraseNumWordsRecommendationHint": {
     "message": " Use $RECOMMENDED$ words or more to generate a strong passphrase.",
-    "description": "Extends `generatorBoundariesHint` to recommend a number of words to the user",
+    "description": "Extends `spinboxBoundariesHint` to recommend a number of words to the user",
     "placeholders": {
       "recommended": {
         "content": "$1",

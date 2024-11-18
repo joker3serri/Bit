@@ -88,7 +88,7 @@ export class PassphraseSettingsComponent implements OnInit, OnDestroy {
         this.settings.patchValue(state, { emitEvent: false });
 
         let boundariesHint = this.i18nService.t(
-          "generatorBoundariesHint",
+          "spinboxBoundariesHint",
           constraints.numWords.min?.toString(),
           constraints.numWords.max?.toString(),
         );
