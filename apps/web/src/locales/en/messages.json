@@ -6484,7 +6484,7 @@
   },
   "passwordLengthRecommendationHint": {
     "message": " Use $RECOMMENDED$ characters or more to generate a strong password.",
-    "description": "Extends `spinboxBoundariesHint` to recommend a length to the user",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
     "placeholders": {
       "recommended": {
         "content": "$1",
@@ -6494,7 +6494,7 @@
   },
   "passphraseNumWordsRecommendationHint": {
     "message": " Use $RECOMMENDED$ words or more to generate a strong passphrase.",
-    "description": "Extends `spinboxBoundariesHint` to recommend a number of words to the user",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
     "placeholders": {
       "recommended": {
         "content": "$1",
