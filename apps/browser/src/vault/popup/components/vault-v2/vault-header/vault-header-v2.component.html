@@ -18,10 +18,9 @@
     >
       {{ supportingText }}
     </p>
-    <!-- FIXME PM-14855: associated colors are defined in the ps/extension branch and can be updated once merged -->
     <div
       *ngIf="showBadge$ | async"
-      class="tw-flex tw-items-center tw-justify-center tw-z-10 tw-absolute tw-rounded-full tw-h-[15px] tw-w-[15px] tw-top-[1px] tw-right-[1px] tw-text-[#c01176] tw-text-[8px] tw-border-[#c01176] tw-border-[0.5px] tw-border-solid tw-bg-[#FFEAFA] tw-leading-normal"
+      class="tw-flex tw-items-center tw-justify-center tw-z-10 tw-absolute tw-rounded-full tw-h-[15px] tw-w-[15px] tw-top-[1px] tw-right-[1px] tw-text-notification-600 tw-text-[8px] tw-border-notification-600 tw-border-[0.5px] tw-border-solid tw-bg-notification-100 tw-leading-normal"
       data-testid="filter-badge"
     >
       {{ numberOfAppliedFilters$ | async }}
