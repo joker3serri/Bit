@@ -18,12 +18,12 @@ export class VerifyBankAccountComponent {
   protected formGroup = this.formBuilder.group({
     amount1: new FormControl<number>(null, [
       Validators.required,
-      Validators.min(0),
+      Validators.min(-99),
       Validators.max(99),
     ]),
     amount2: new FormControl<number>(null, [
       Validators.required,
-      Validators.min(0),
+      Validators.min(-99),
       Validators.max(99),
     ]),
   });
