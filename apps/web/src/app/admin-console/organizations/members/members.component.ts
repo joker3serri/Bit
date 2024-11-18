@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
@@ -83,7 +83,7 @@ class MembersTableDataSource extends PeopleTableDataSource<OrganizationUserView>
 @Component({
   templateUrl: "members.component.html",
 })
-export class MembersComponent extends BaseMembersComponent<OrganizationUserView> {
+export class MembersComponent extends BaseMembersComponent<OrganizationUserView> implements OnInit {
   @ViewChild("resetPasswordTemplate", { read: ViewContainerRef, static: true })
   resetPasswordModalRef: ViewContainerRef;
 
@@ -96,15 +96,12 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   status: OrganizationUserStatusType = null;
   orgResetPasswordPolicyEnabled = false;
   orgIsOnSecretsManagerStandalone = false;
+  accountDeprovisioningEnabled = false;
 
   protected canUseSecretsManager$: Observable<boolean>;
 
   protected enableUpgradePasswordManagerSub$ = this.configService.getFeatureFlag$(
     FeatureFlag.EnableUpgradePasswordManagerSub,
-  );
-
-  protected accountDeprovisioningEnabled$: Observable<boolean> = this.configService.getFeatureFlag$(
-    FeatureFlag.AccountDeprovisioning,
   );
 
   // Fixed sizes used for cdkVirtualScroll
@@ -218,6 +215,12 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
         takeUntilDestroyed(),
       )
       .subscribe();
+  }
+
+  async ngOnInit() {
+    this.accountDeprovisioningEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.AccountDeprovisioning,
+    );
   }
 
   async getUsers(): Promise<OrganizationUserView[]> {
@@ -807,5 +810,46 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
 
   allSelectedMembersAreNotManagedByOrganization(): boolean {
     return this.dataSource.getCheckedUsers().every((member) => !member.managedByOrganization);
+  }
+
+  get showBulkConfirmUsers(): boolean {
+    return (
+      !this.accountDeprovisioningEnabled || this.allSelectedHaveStatus(this.userStatusType.Accepted)
+    );
+  }
+
+  get showBulkReinviteUsers(): boolean {
+    return (
+      !this.accountDeprovisioningEnabled || this.allSelectedHaveStatus(this.userStatusType.Invited)
+    );
+  }
+
+  get showBulkRestoreUsers(): boolean {
+    return (
+      !this.accountDeprovisioningEnabled || this.allSelectedHaveStatus(this.userStatusType.Revoked)
+    );
+  }
+
+  get showBulkRevokeUsers(): boolean {
+    return (
+      !this.accountDeprovisioningEnabled ||
+      this.allSelectedDoNotHaveStatus(this.userStatusType.Revoked)
+    );
+  }
+
+  get showBulkRemoveUsers(): boolean {
+    return (
+      !this.accountDeprovisioningEnabled || this.allSelectedMembersAreNotManagedByOrganization()
+    );
+  }
+
+  get showBulkDeleteUsers(): boolean {
+    return (
+      this.accountDeprovisioningEnabled &&
+      this.allSelectedMembersAreManagedByOrganization() &&
+      (this.allSelectedHaveStatus(this.userStatusType.Accepted) ||
+        this.allSelectedHaveStatus(this.userStatusType.Confirmed) ||
+        this.allSelectedHaveStatus(this.userStatusType.Revoked))
+    );
   }
 }
