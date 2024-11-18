@@ -1,8 +1,7 @@
 name: Build Desktop
 
 on:
-  pull_request_target:
-    types: [opened, synchronize]
+  pull_request:
     branches-ignore:
       - 'l10n_master'
       - 'cf-pages'
