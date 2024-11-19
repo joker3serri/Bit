@@ -19,5 +19,6 @@ export class PolicyApiServiceAbstraction {
   getMasterPasswordPolicyOptsForOrgUser: (
     orgId: string,
   ) => Promise<MasterPasswordPolicyOptions | null>;
+  getPolicyStatus: (organizationId: string, type: PolicyType) => Promise<boolean>;
   putPolicy: (organizationId: string, type: PolicyType, request: PolicyRequest) => Promise<any>;
 }
