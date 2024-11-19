@@ -2,6 +2,7 @@ import {
   LoginDecryptionOptionsService,
   DefaultLoginDecryptionOptionsService,
 } from "@bitwarden/auth/angular";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 
 import { RouterService } from "../../../../core/router.service";
 import { AcceptOrganizationInviteService } from "../../../organization-invite/accept-organization.service";
@@ -11,10 +12,11 @@ export class WebLoginDecryptionOptionsService
   implements LoginDecryptionOptionsService
 {
   constructor(
+    protected messagingService: MessagingService,
     private routerService: RouterService,
     private acceptOrganizationInviteService: AcceptOrganizationInviteService,
   ) {
-    super();
+    super(messagingService);
   }
 
   override async handleCreateUserSuccess(): Promise<void> {

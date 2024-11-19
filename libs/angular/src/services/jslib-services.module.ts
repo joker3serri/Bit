@@ -1382,7 +1382,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: LoginDecryptionOptionsService,
     useClass: DefaultLoginDecryptionOptionsService,
-    deps: [],
+    deps: [MessagingServiceAbstraction],
   }),
 ];
 

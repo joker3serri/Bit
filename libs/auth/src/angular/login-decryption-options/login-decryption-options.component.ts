@@ -155,7 +155,12 @@ export class LoginDecryptionOptionsComponent implements OnInit {
       message: this.i18nService.t("userEmailMissing"),
     });
 
-    await this.router.navigate(["/login"]);
+    this.loading = true;
+
+    // We can't simply redirect to `/login` because the user is authed and the unauthGuard
+    // will prevent navigation. We must logout the user first via messagingService, which
+    // redirects to `/`, which will be handled by the redirectGuard to navigate the user appropriately.
+    await this.loginDecryptionOptionsService.logOut();
   }
 
   private observeAndPersistRememberDeviceValueChanges() {
