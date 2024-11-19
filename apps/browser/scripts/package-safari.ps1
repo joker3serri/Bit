@@ -36,8 +36,6 @@ foreach ($subBuildPath in $subBuildPaths) {
     $builtAppexFrameworkPath = Join-Path -Path $safariBuildPath -ChildPath "build/Release/safari.appex/Contents/Frameworks/"
     $entitlementsPath = Join-Path -Path $safariSrc -ChildPath "safari/safari.entitlements"
 
-    Write-Output "DBG: Building $subBuildPath to $builtAppexPath."
-
     switch ($subBuildPath) {
         "mas" {
             $codesignArgs = @(
@@ -73,8 +71,6 @@ foreach ($subBuildPath in $subBuildPaths) {
         }
     }
 
-    Write-Output "DBG: Codesign args: $codesignArgs"
-
     # Copy safari src
     Copy-Item -Path $safariSrc -Destination $safariBuildPath -Recurse
 
@@ -107,8 +103,6 @@ foreach ($subBuildPath in $subBuildPaths) {
     # Codesign
     $libs = Get-ChildItem -Path $builtAppexFrameworkPath -Filter "*.dylib"
     foreach ($lib in $libs) {
-        $t = ($codesignArgs + $lib.FullName)
-        Write-Output "DBG: Codesign args: $t"
         $proc = Start-Process "codesign" -ArgumentList ($codesignArgs + $lib.FullName) -NoNewWindow -PassThru
         $proc.WaitForExit()
     }
