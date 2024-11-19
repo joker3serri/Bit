@@ -109,11 +109,10 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legac
 import { BiometricStateService, BiometricsService, KeyService } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
-import { ExtensionSsoComponentService } from "src/auth/popup/login/extension-sso-component.service";
-
 import { ForegroundLockService } from "../../auth/popup/accounts/foreground-lock.service";
 import { ExtensionAnonLayoutWrapperDataService } from "../../auth/popup/extension-anon-layout-wrapper/extension-anon-layout-wrapper-data.service";
 import { ExtensionLoginComponentService } from "../../auth/popup/login/extension-login-component.service";
+import { ExtensionSsoComponentService } from "../../auth/popup/login/extension-sso-component.service";
 import { AutofillService as AutofillServiceAbstraction } from "../../autofill/services/abstractions/autofill.service";
 import AutofillService from "../../autofill/services/autofill.service";
 import { InlineMenuFieldQualificationService } from "../../autofill/services/inline-menu-field-qualification.service";
@@ -587,7 +586,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: SsoComponentService,
     useClass: ExtensionSsoComponentService,
-    deps: [],
+    deps: [SyncService, AuthService, EnvironmentService, Window, I18nServiceAbstraction],
   }),
 ];
 

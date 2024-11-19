@@ -82,13 +82,6 @@ export class SsoComponent implements OnInit {
 
   formPromise: Promise<AuthResult>;
   initiateSsoFormPromise: Promise<SsoPreValidateResponse>;
-  onSuccessfulLogin: () => Promise<void>;
-  onSuccessfulLoginNavigate: () => Promise<void>;
-  onSuccessfulLoginTwoFactorNavigate: () => Promise<void>;
-  onSuccessfulLoginChangePasswordNavigate: () => Promise<void>;
-  onSuccessfulLoginForceResetNavigate: () => Promise<void>;
-  onSuccessfulLoginTde: () => Promise<void>;
-  onSuccessfulLoginTdeNavigate: () => Promise<void>;
 
   get identifierFormControl() {
     return this.formGroup.controls.identifier;
@@ -398,7 +391,7 @@ export class SsoComponent implements OnInit {
 
   private async handleTwoFactorRequired(orgIdentifier: string) {
     await this.navigateViaCallbackOrRoute(
-      this.onSuccessfulLoginTwoFactorNavigate,
+      this.ssoComponentService.onSuccessfulLoginTwoFactorNavigate,
       [this.twoFactorRoute],
       {
         queryParams: {
@@ -437,21 +430,14 @@ export class SsoComponent implements OnInit {
       );
     }
 
-    if (this.onSuccessfulLoginTde != null) {
-      // Don't await b/c causes hang on desktop & browser
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    if (this.ssoComponentService.onSuccessfulLoginTde) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.onSuccessfulLoginTde();
+      this.ssoComponentService.onSuccessfulLoginTde();
     }
 
-    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.navigateViaCallbackOrRoute(
-      this.onSuccessfulLoginTdeNavigate,
-      // Navigate to TDE page (if user was on trusted device and TDE has decrypted
-      //  their user key, the login-initiated guard will redirect them to the vault)
-      [this.trustedDeviceEncRoute],
-    );
+    await this.navigateViaCallbackOrRoute(this.ssoComponentService.onSuccessfulLoginTdeNavigate, [
+      this.trustedDeviceEncRoute,
+    ]);
   }
 
   private async handleChangePasswordRequired(orgIdentifier: string) {
@@ -464,7 +450,7 @@ export class SsoComponent implements OnInit {
     }
 
     await this.navigateViaCallbackOrRoute(
-      this.onSuccessfulLoginChangePasswordNavigate,
+      this.ssoComponentService.onSuccessfulLoginChangePasswordNavigate,
       [this.changePasswordRoute],
       {
         queryParams: {
@@ -476,7 +462,7 @@ export class SsoComponent implements OnInit {
 
   private async handleForcePasswordReset(orgIdentifier: string) {
     await this.navigateViaCallbackOrRoute(
-      this.onSuccessfulLoginForceResetNavigate,
+      this.ssoComponentService.onSuccessfulLoginForceResetNavigate,
       [this.forcePasswordResetRoute],
       {
         queryParams: {
@@ -487,14 +473,15 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleSuccessfulLogin() {
-    if (this.onSuccessfulLogin != null) {
+    if (this.ssoComponentService.onSuccessfulLogin) {
       // Don't await b/c causes hang on desktop & browser
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.onSuccessfulLogin();
+      this.ssoComponentService.onSuccessfulLogin();
     }
 
-    await this.navigateViaCallbackOrRoute(this.onSuccessfulLoginNavigate, [this.successRoute]);
+    await this.navigateViaCallbackOrRoute(this.ssoComponentService.onSuccessfulLoginNavigate, [
+      this.successRoute,
+    ]);
   }
 
   private async handleLoginError(e: any) {
