@@ -33,7 +33,7 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { KdfType } from "@bitwarden/common/platform/enums";
 import { Account, AccountProfile } from "@bitwarden/common/platform/models/domain/account";
 import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService, UserAsymmetricKeysRegenerationService } from "@bitwarden/key-management";
+import { KeyService } from "@bitwarden/key-management";
 
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import {
@@ -80,7 +80,6 @@ export abstract class LoginStrategy {
     protected billingAccountProfileStateService: BillingAccountProfileStateService,
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected KdfConfigService: KdfConfigService,
-    protected userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {}
 
   abstract exportCache(): CacheData;
@@ -266,8 +265,6 @@ export abstract class LoginStrategy {
     await this.setMasterKey(response, userId);
     await this.setUserKey(response, userId);
     await this.setPrivateKey(response, userId);
-
-    await this.userAsymmetricKeysRegenerationService.handleUserAsymmetricKeysRegeneration(userId);
 
     this.messagingService.send("loggedIn");
 

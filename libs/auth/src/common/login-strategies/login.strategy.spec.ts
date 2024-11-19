@@ -38,7 +38,7 @@ import {
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
-import { KeyService, UserAsymmetricKeysRegenerationService } from "@bitwarden/key-management";
+import { KeyService } from "@bitwarden/key-management";
 
 import { LoginStrategyServiceAbstraction } from "../abstractions";
 import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
@@ -120,7 +120,6 @@ describe("LoginStrategy", () => {
   let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
   let vaultTimeoutSettingsService: MockProxy<VaultTimeoutSettingsService>;
   let kdfConfigService: MockProxy<KdfConfigService>;
-  let userAsymmetricKeysRegenerationService: MockProxy<UserAsymmetricKeysRegenerationService>;
 
   let passwordLoginStrategy: PasswordLoginStrategy;
   let credentials: PasswordLoginCredentials;
@@ -145,7 +144,6 @@ describe("LoginStrategy", () => {
     policyService = mock<PolicyService>();
     passwordStrengthService = mock<PasswordStrengthService>();
     billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
-    userAsymmetricKeysRegenerationService = mock<UserAsymmetricKeysRegenerationService>();
 
     vaultTimeoutSettingsService = mock<VaultTimeoutSettingsService>();
 
@@ -174,7 +172,6 @@ describe("LoginStrategy", () => {
       billingAccountProfileStateService,
       vaultTimeoutSettingsService,
       kdfConfigService,
-      userAsymmetricKeysRegenerationService,
     );
     credentials = new PasswordLoginCredentials(email, masterPassword);
   });
@@ -487,7 +484,6 @@ describe("LoginStrategy", () => {
         billingAccountProfileStateService,
         vaultTimeoutSettingsService,
         kdfConfigService,
-        userAsymmetricKeysRegenerationService,
       );
 
       apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
