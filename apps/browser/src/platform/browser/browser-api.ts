@@ -205,10 +205,11 @@ export class BrowserApi {
       return;
     }
 
-    return new Promise<TResponse>((resolve) => {
+    return new Promise<TResponse>((resolve, reject) => {
       chrome.tabs.sendMessage(tab.id, obj, options, (response) => {
         if (chrome.runtime.lastError) {
           // Some error happened
+          reject();
         }
         resolve(response);
       });
