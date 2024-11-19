@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 
+import { SsoClientId } from "@bitwarden/auth/angular";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { DesktopSsoComponentService } from "./desktop-sso-component.service";
@@ -20,7 +21,7 @@ describe("DesktopSsoComponentService", () => {
   });
 
   it("sets clientId to desktop", () => {
-    expect(service.clientId).toBe("desktop");
+    expect(service.clientId).toBe(SsoClientId.Desktop);
   });
 
   it("sets redirectUri to bitwarden://sso-callback", () => {

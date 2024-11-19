@@ -3,6 +3,7 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
+import { SsoClientId } from "@bitwarden/auth/angular";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import {
@@ -18,6 +19,7 @@ import { ExtensionSsoComponentService } from "./extension-sso-component.service"
 
 describe("ExtensionSsoComponentService", () => {
   let service: ExtensionSsoComponentService;
+  const baseUrl = "https://vault.bitwarden.com";
 
   let syncService: MockProxy<SyncService>;
   let authService: MockProxy<AuthService>;
@@ -33,7 +35,7 @@ describe("ExtensionSsoComponentService", () => {
     windowMock = mock<Window>();
 
     environmentService.environment$ = new BehaviorSubject<Environment>({
-      getWebVaultUrl: () => "https://vault.bitwarden.com",
+      getWebVaultUrl: () => baseUrl,
     } as Environment);
 
     TestBed.configureTestingModule({
@@ -53,11 +55,11 @@ describe("ExtensionSsoComponentService", () => {
   });
 
   it("sets clientId to browser", () => {
-    expect(service.clientId).toBe("browser");
+    expect(service.clientId).toBe(SsoClientId.Browser);
   });
 
   it("sets redirectUri based on environment", () => {
-    expect(service.redirectUri).toBe("https://vault.bitwarden.com/sso-connector.html");
+    expect(service.redirectUri).toBe(`${baseUrl}/sso-connector.html`);
   });
 
   describe("onSuccessfulLogin", () => {
@@ -73,8 +75,8 @@ describe("ExtensionSsoComponentService", () => {
       expect(syncService.fullSync).toHaveBeenCalledWith(true);
     });
 
-    it("reloads windows when vault is not unlocked", async () => {
-      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.LoggedOut);
+    it("reloads windows when vault is locked", async () => {
+      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.Locked);
 
       await service.onSuccessfulLogin();
 
