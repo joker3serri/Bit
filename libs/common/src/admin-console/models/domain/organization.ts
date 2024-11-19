@@ -168,7 +168,11 @@ export class Organization {
     return (this.isAdmin || this.permissions.accessEventLogs) && this.useEvents;
   }
 
-  get canAccessImportExport() {
+  get canAccessImport() {
+    return this.isAdmin || this.permissions.accessImportExport || this.canCreateNewCollections;
+  }
+
+  get canAccessExport() {
     return this.isAdmin || this.permissions.accessImportExport;
   }
 
