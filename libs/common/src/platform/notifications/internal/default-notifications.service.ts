@@ -76,29 +76,30 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
         }
 
         // Check if authenticated
-        return this.authService.authStatusFor$(userId).pipe(
-          map(
-            (authStatus) =>
-              authStatus === AuthenticationStatus.Locked ||
-              authStatus === AuthenticationStatus.Unlocked,
-          ),
-          distinctUntilChanged(),
-          switchMap((hasAccessToken) => {
-            if (!hasAccessToken) {
-              return EMPTY;
-            }
+        return this.evaluateAuthStatus(userId, notificationsUrl);
+      }),
+    );
+  }
 
-            return this.activitySubject.pipe(
-              switchMap((activityStatus) => {
-                if (activityStatus === "inactive") {
-                  return EMPTY;
-                }
-
-                return this.choosePushService(userId, notificationsUrl);
-              }),
-            );
-          }),
-        );
+  private evaluateAuthStatus(userId: UserId, notificationsUrl: string) {
+    return this.authService.authStatusFor$(userId).pipe(
+      map(
+        (authStatus) =>
+          authStatus === AuthenticationStatus.Locked ||
+          authStatus === AuthenticationStatus.Unlocked,
+      ),
+      distinctUntilChanged(),
+      switchMap((hasAccessToken) => {
+        if (!hasAccessToken) {
+          return EMPTY;
+        }
+        return this.activitySubject;
+      }),
+      switchMap((activityStatus) => {
+        if (activityStatus !== "inactive") {
+          return EMPTY;
+        }
+        return this.choosePushService(userId, notificationsUrl);
       }),
     );
   }
