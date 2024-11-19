@@ -46,6 +46,8 @@ import {
 } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
+import { SsoComponentService } from "./sso-component.service";
+
 @Component({
   standalone: true,
   templateUrl: "sso.component.html",
@@ -68,7 +70,6 @@ export class SsoComponent implements OnInit {
   });
 
   protected redirectUri: string;
-  protected clientId: string;
   protected loggingIn = false;
   protected identifier: string;
   protected twoFactorRoute = "2fa";
@@ -112,9 +113,9 @@ export class SsoComponent implements OnInit {
     private masterPasswordService: InternalMasterPasswordServiceAbstraction,
     private accountService: AccountService,
     private toastService: ToastService,
+    private ssoComponentService: SsoComponentService,
   ) {
     this.redirectUri = window.location.origin + "/sso-connector.html";
-    this.clientId = "web";
   }
 
   async ngOnInit() {
@@ -148,7 +149,7 @@ export class SsoComponent implements OnInit {
         this.redirectUri = qParams.redirectUri;
         this.state = qParams.state;
         this.codeChallenge = qParams.codeChallenge;
-        this.clientId = qParams.clientId;
+        this.ssoComponentService.clientId = qParams.clientId;
       } else if (qParams.identifier != null) {
         // SSO Org Identifier in query params takes precedence over claimed domains
         this.identifierFormControl.setValue(qParams.identifier);
@@ -222,9 +223,7 @@ export class SsoComponent implements OnInit {
 
     this.identifier = this.identifierFormControl.value;
     await this.ssoLoginService.setOrganizationSsoIdentifier(this.identifier);
-    if (this.clientId === "browser") {
-      document.cookie = `ssoHandOffMessage=${this.i18nService.t("ssoHandOff")};SameSite=strict`;
-    }
+    this.ssoComponentService.setDocumentCookies();
     try {
       await this.submitSso();
     } catch (error) {
@@ -300,7 +299,7 @@ export class SsoComponent implements OnInit {
       env.getIdentityUrl() +
       "/connect/authorize?" +
       "client_id=" +
-      this.clientId +
+      this.ssoComponentService.clientId +
       "&redirect_uri=" +
       encodeURIComponent(this.redirectUri) +
       "&" +
