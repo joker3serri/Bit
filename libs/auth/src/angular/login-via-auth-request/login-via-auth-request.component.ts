@@ -113,6 +113,12 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
     // Get the authStatus early because we use it in both flows
     this.authStatus = await firstValueFrom(this.authService.activeAccountStatus$);
 
+    const userHasAuthenticatedViaSSO = this.authStatus === AuthenticationStatus.Locked;
+
+    if (userHasAuthenticatedViaSSO) {
+      this.backToRoute = "/login-initiated";
+    }
+
     /**
      * The LoginViaAuthRequestComponent handles both the `login-with-device` and
      * the `admin-approval-requested` routes. Therefore we check the route to determine
@@ -127,7 +133,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
   private async initAdminAuthRequestFlow(): Promise<void> {
     this.flow = Flow.AdminAuthRequest;
-    this.backToRoute = "/login-initiated";
 
     // Get email from state for admin auth requests because it is available and also
     // prevents it from being lost on refresh as the loginEmailService email does not persist.
@@ -154,7 +159,6 @@ export class LoginViaAuthRequestComponent implements OnInit, OnDestroy {
 
   private async initStandardAuthRequestFlow(): Promise<void> {
     this.flow = Flow.StandardAuthRequest;
-    this.backToRoute = "/login";
 
     this.email = await firstValueFrom(this.loginEmailService.loginEmail$);
 
