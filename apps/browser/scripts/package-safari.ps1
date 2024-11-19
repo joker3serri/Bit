@@ -107,6 +107,8 @@ foreach ($subBuildPath in $subBuildPaths) {
     # Codesign
     $libs = Get-ChildItem -Path $builtAppexFrameworkPath -Filter "*.dylib"
     foreach ($lib in $libs) {
+        $t = ($codesignArgs + $lib.FullName)
+        Write-Output "DBG: Codesign args: $t"
         $proc = Start-Process "codesign" -ArgumentList ($codesignArgs + $lib.FullName) -NoNewWindow -PassThru
         $proc.WaitForExit()
     }
