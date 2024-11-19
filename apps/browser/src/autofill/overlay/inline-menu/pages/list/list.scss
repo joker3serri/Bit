@@ -349,6 +349,34 @@ body * {
     overflow: hidden;
     text-align: left;
   }
+  .totp-sub-text {
+    text-align: start;
+  }
+  .totp-sec-span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @include themify($themes) {
+      color: themed("textColor");
+    }
+  }
+
+  .totp-sec-span-danger {
+    @include themify($themes) {
+      color: themed("passwordSpecialColor");
+    }
+  }
+  .circle-color {
+    @include themify($themes) {
+      stroke: themed("primaryColor");
+    }
+  }
+  .circle-danger-color {
+    @include themify($themes) {
+      stroke: themed("passwordSpecialColor");
+    }
+  }
 
   .cipher-name,
   .cipher-subtitle {

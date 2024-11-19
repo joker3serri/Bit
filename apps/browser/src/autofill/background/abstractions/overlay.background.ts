@@ -158,6 +158,9 @@ export type InlineMenuCipherData = {
   icon: WebsiteIconData;
   accountCreationFieldType?: string;
   login?: {
+    totp?: string;
+    totpField?: boolean;
+    totpCodeTimeInterval?: number;
     username: string;
     passkey: {
       rpName: string;

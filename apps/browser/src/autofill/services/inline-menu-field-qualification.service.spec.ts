@@ -21,7 +21,7 @@ describe("InlineMenuFieldQualificationService", () => {
   });
 
   describe("isFieldForLoginForm", () => {
-    it("disqualifies totp fields", () => {
+    it("does not disqualify totp fields", () => {
       const field = mock<AutofillField>({
         type: "text",
         autoCompleteType: "one-time-code",
@@ -31,7 +31,7 @@ describe("InlineMenuFieldQualificationService", () => {
       });
 
       expect(inlineMenuFieldQualificationService.isFieldForLoginForm(field, pageDetails)).toBe(
-        false,
+        true,
       );
     });
 

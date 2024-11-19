@@ -1044,6 +1044,69 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     cipherIcon.classList.add("cipher-icon");
     cipherIcon.setAttribute("aria-hidden", "true");
 
+    const totpField = cipher.login?.totpField;
+    const totpCode = cipher.login?.totp;
+    const totpCodeTimeInterval = cipher.login?.totpCodeTimeInterval;
+
+    if (totpField && totpCode) {
+      const totpContainer = globalThis.document.createElement("div");
+      totpContainer.style.position = "relative";
+
+      const svgString = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29">
+      <g>
+          <circle fill="none" cx="14.5" cy="14.5" r="12.5" stroke-width="3" stroke-dasharray="78.5" stroke-dashoffset="78.5" transform="rotate(-90 14.5 14.5)"></circle>
+          <circle fill="none" cx="14.5" cy="14.5" r="14" stroke-width="1.5"></circle>
+      </g>
+      </svg>
+  `;
+      const svgElement = buildSvgDomElement(svgString);
+      const innerCircleElement = svgElement.querySelector("circle:nth-child(1)") as HTMLElement;
+      const outerCircleElement = svgElement.querySelector("circle:nth-child(2)") as HTMLElement;
+      innerCircleElement.classList.add("circle-color");
+      outerCircleElement.classList.add("circle-color");
+
+      totpContainer.appendChild(svgElement);
+
+      const totpSecSpan = globalThis.document.createElement("span");
+      totpSecSpan.classList.add("totp-sec-span");
+      totpSecSpan.setAttribute("bitTypography", "helper");
+
+      totpContainer.appendChild(totpSecSpan);
+
+      cipherIcon.appendChild(totpContainer);
+
+      const intervalSeconds = totpCodeTimeInterval;
+
+      const updateCountdown = () => {
+        const epoch = Math.round(new Date().getTime() / 1000.0);
+        const mod = epoch % intervalSeconds;
+        const totpSec = intervalSeconds - mod;
+        totpSecSpan.textContent = `${totpSec}`;
+
+        if (totpSec <= 7) {
+          totpSecSpan.classList.add("totp-sec-span-danger");
+          innerCircleElement.classList.add("circle-danger-color");
+          outerCircleElement.classList.add("circle-danger-color");
+        } else {
+          totpSecSpan.classList.remove("totp-sec-span-danger");
+          innerCircleElement.classList.remove("circle-danger-color");
+          outerCircleElement.classList.remove("circle-danger-color");
+        }
+
+        if (innerCircleElement && outerCircleElement) {
+          const totalLength = 2 * Math.PI * 12.5;
+          const dashOffset = ((intervalSeconds - totpSec) / intervalSeconds) * totalLength;
+          innerCircleElement.style.strokeDashoffset = `${dashOffset}`;
+        }
+      };
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      return cipherIcon;
+    }
+
     if (cipher.icon?.image) {
       try {
         const url = new URL(cipher.icon.image);
@@ -1102,6 +1165,10 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       return this.buildPasskeysCipherDetailsElement(cipher, cipherDetailsElement);
     }
 
+    if (cipher.login?.totpField && cipher.login?.totp) {
+      return this.buildTotpElement(cipher);
+    }
+
     const subTitleText = this.getSubTitleText(cipher);
     const cipherSubtitleElement = this.buildCipherSubtitleElement(subTitleText);
     if (cipherSubtitleElement) {
@@ -1109,6 +1176,36 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     }
 
     return cipherDetailsElement;
+  }
+
+  /**
+   * Builds a TOTP element for a given TOTP code.
+   *
+   * @param totp - The TOTP code to display.
+   */
+
+  private buildTotpElement(cipher: InlineMenuCipherData): HTMLDivElement | null {
+    const containerElement = globalThis.document.createElement("div");
+    const totpCode = cipher.login?.totp;
+    const formattedTotpCode = `${totpCode.substring(0, 3)} ${totpCode.substring(3)}`;
+
+    if (totpCode == null) {
+      return;
+    }
+    if (totpCode) {
+      const totpHeading = globalThis.document.createElement("span");
+      totpHeading.classList.add("cipher-name");
+      totpHeading.textContent = "Fill verification code";
+      containerElement.appendChild(totpHeading);
+
+      const subtitleElement = this.buildCipherSubtitleElement(formattedTotpCode);
+      if (subtitleElement) {
+        subtitleElement.classList.add("totp-sub-text");
+        containerElement.appendChild(subtitleElement);
+      }
+    }
+
+    return containerElement;
   }
 
   /**

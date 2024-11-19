@@ -187,6 +187,9 @@ export function createAutofillOverlayCipherDataMock(
     id: String(index),
     name: `website login ${index}`,
     login: {
+      totp: "123456",
+      totpField: false,
+      totpCodeTimeInterval: 30,
       username: `username${index}`,
       passkey: null,
     },
