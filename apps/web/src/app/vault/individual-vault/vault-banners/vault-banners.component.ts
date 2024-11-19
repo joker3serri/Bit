@@ -25,7 +25,7 @@ export class VaultBannersComponent implements OnInit {
   VisibleVaultBanner = VisibleVaultBanner;
   @Input() organizationsPaymentStatus: FreeTrial[] = [];
 
-  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a.id));
+  private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a?.id));
 
   constructor(
     private vaultBannerService: VaultBannersService,
