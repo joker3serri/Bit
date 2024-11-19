@@ -58,11 +58,15 @@ function queryTranslateY(direction: string, from: number, to: number, zIndex = 1
 const animations: Record<string, AnimationMetadata[]> = {
   inSlideLeft: [
     queryShown,
-    group([queryTranslateX("enter", 100, 0), queryTranslateX("leave", 0, -100), queryChildRoute]),
+    group([
+      queryTranslateX("enter", 100, 0, 1010),
+      queryTranslateX("leave", 0, -100),
+      queryChildRoute,
+    ]),
   ],
   outSlideRight: [
     queryShown,
-    group([queryTranslateX("enter", -100, 0), queryTranslateX("leave", 0, 100)]),
+    group([queryTranslateX("enter", -100, 0), queryTranslateX("leave", 0, 100, 1010)]),
   ],
   inSlideUp: [
     queryShown,
@@ -76,14 +80,15 @@ const animations: Record<string, AnimationMetadata[]> = {
     queryShown,
     group([queryTranslateY("enter", 0, 0), queryTranslateY("leave", 0, 100, 1010)]),
   ],
-  inSlideDown: [
-    queryShown,
-    group([
-      queryTranslateY("enter", -100, 0, 1010),
-      queryTranslateY("leave", 0, 0),
-      queryChildRoute,
-    ]),
-  ],
+  /** Currently unused */
+  // inSlideDown: [
+  //   queryShown,
+  //   group([
+  //     queryTranslateY("enter", -100, 0, 1010),
+  //     queryTranslateY("leave", 0, 0),
+  //     queryChildRoute,
+  //   ]),
+  // ],
   outSlideUp: [
     queryShown,
     group([queryTranslateY("enter", 0, 0), queryTranslateY("leave", 0, -100, 1010)]),
