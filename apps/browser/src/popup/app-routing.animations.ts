@@ -32,7 +32,16 @@ const queryChildRoute = query("router-outlet ~ *", [style({}), animate(1, style(
 
 const speed = "0.4s";
 
-function queryTranslate(direction: string, axis: string, from: number, to: number, zIndex = 1000) {
+type TranslateDirection = "enter" | "leave";
+type TranslationAxis = "X" | "Y";
+
+function queryTranslate(
+  direction: TranslateDirection,
+  axis: TranslationAxis,
+  from: number,
+  to: number,
+  zIndex = 1000,
+) {
   return query(
     ":" + direction,
     [
@@ -41,44 +50,43 @@ function queryTranslate(direction: string, axis: string, from: number, to: numbe
         zIndex: zIndex,
         boxShadow: "0 3px 2px -2px gray",
       }),
-      animate(speed + " ease-in-out", style({ transform: "translate" + axis + "(" + to + "%)" })),
+      animate(
+        speed + " ease-in-out",
+        style({
+          transform: "translate" + axis + "(" + to + "%)",
+        }),
+      ),
     ],
-    { optional: true },
+    {
+      optional: true,
+    },
   );
-}
-
-function queryTranslateX(direction: string, from: number, to: number, zIndex = 1000) {
-  return queryTranslate(direction, "X", from, to, zIndex);
-}
-
-function queryTranslateY(direction: string, from: number, to: number, zIndex = 1000) {
-  return queryTranslate(direction, "Y", from, to, zIndex);
 }
 
 const animations = {
   slideInFromRight: [
     queryShown,
     group([
-      queryTranslateX("enter", 100, 0, 1010),
-      queryTranslateX("leave", 0, 0),
+      queryTranslate("enter", "X", 100, 0, 1010),
+      queryTranslate("leave", "X", 0, 0),
       queryChildRoute,
     ]),
   ],
   slideOutToRight: [
     queryShown,
-    group([queryTranslateX("enter", 0, 0), queryTranslateX("leave", 0, 100, 1010)]),
+    group([queryTranslate("enter", "X", 0, 0), queryTranslate("leave", "X", 0, 100, 1010)]),
   ],
   slideInFromTop: [
     queryShown,
     group([
-      queryTranslateY("enter", -100, 0, 1010),
-      queryTranslateY("leave", 0, 0),
+      queryTranslate("enter", "Y", -100, 0, 1010),
+      queryTranslate("leave", "Y", 0, 0),
       queryChildRoute,
     ]),
   ],
   slideOutToTop: [
     queryShown,
-    group([queryTranslateY("enter", 0, 0), queryTranslateY("leave", 0, -100, 1010)]),
+    group([queryTranslate("enter", "Y", 0, 0), queryTranslate("leave", "Y", 0, -100, 1010)]),
   ],
 } satisfies Record<string, AnimationMetadata[]>;
 
