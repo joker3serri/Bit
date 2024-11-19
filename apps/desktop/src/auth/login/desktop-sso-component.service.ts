@@ -1,6 +1,10 @@
 import { Injectable } from "@angular/core";
 
-import { DefaultSsoComponentService, SsoComponentService } from "@bitwarden/auth/angular";
+import {
+  DefaultSsoComponentService,
+  SsoClientId,
+  SsoComponentService,
+} from "@bitwarden/auth/angular";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 /**
@@ -11,14 +15,14 @@ export class DesktopSsoComponentService
   extends DefaultSsoComponentService
   implements SsoComponentService
 {
-  clientId: string;
+  clientId: SsoClientId;
   redirectUri: string;
   onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginTde: () => Promise<void>;
 
   constructor(private syncService: SyncService) {
     super();
-    this.clientId = "desktop";
+    this.clientId = SsoClientId.Desktop;
     this.redirectUri = "bitwarden://sso-callback";
 
     this.onSuccessfulLogin = async () => {
