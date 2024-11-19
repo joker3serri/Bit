@@ -44,7 +44,7 @@ foreach ($subBuildPath in $subBuildPaths) {
                 "--verbose",
                 "--force",
                 "--sign",
-                "3rd Party Mac Developer Application: Bitwarden Inc",
+                '"3rd Party Mac Developer Application: Bitwarden Inc"',
                 "--entitlements",
                 $entitlementsPath
             )
@@ -66,7 +66,7 @@ foreach ($subBuildPath in $subBuildPaths) {
                 "-o",
                 "runtime",
                 "--sign",
-                "Developer ID Application: 8bit Solutions LLC",
+                '"Developer ID Application: 8bit Solutions LLC"',
                 "--entitlements",
                 $entitlementsPath
             )
