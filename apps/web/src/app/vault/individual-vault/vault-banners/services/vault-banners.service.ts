@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, combineLatest, firstValueFrom, map } from "rxjs";
-import { filter, mergeMap, switchMap, take, takeWhile } from "rxjs/operators";
+import { filter, mergeMap, take } from "rxjs/operators";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -65,34 +65,29 @@ export class VaultBannersService {
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
   ) {}
 
-  shouldShowPremiumBanner$(userId$: Observable<UserId>): Observable<boolean> {
-    return userId$.pipe(
-      takeWhile((userId) => userId != null),
-      switchMap((userId) => {
-        const premiumBannerState = this.premiumBannerState(userId);
-        const premiumSources$ = combineLatest([
-          this.billingAccountProfileStateService.hasPremiumFromAnySource$,
-          premiumBannerState.state$,
-        ]);
+  shouldShowPremiumBanner$(userId: UserId): Observable<boolean> {
+    const premiumBannerState = this.premiumBannerState(userId);
+    const premiumSources$ = combineLatest([
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$,
+      premiumBannerState.state$,
+    ]);
 
-        return this.syncService.lastSync$(userId).pipe(
-          filter((lastSync) => lastSync !== null),
-          take(1), // Wait until the first sync is complete before considering the premium status
-          mergeMap(() => premiumSources$),
-          map(([canAccessPremium, dismissedState]) => {
-            const shouldShowPremiumBanner =
-              !canAccessPremium && !this.platformUtilsService.isSelfHost();
+    return this.syncService.lastSync$(userId).pipe(
+      filter((lastSync) => lastSync !== null),
+      take(1), // Wait until the first sync is complete before considering the premium status
+      mergeMap(() => premiumSources$),
+      map(([canAccessPremium, dismissedState]) => {
+        const shouldShowPremiumBanner =
+          !canAccessPremium && !this.platformUtilsService.isSelfHost();
 
-            // Check if nextPromptDate is in the past passed
-            if (shouldShowPremiumBanner && dismissedState?.nextPromptDate) {
-              const nextPromptDate = new Date(dismissedState.nextPromptDate);
-              const now = new Date();
-              return now >= nextPromptDate;
-            }
+        // Check if nextPromptDate is in the past passed
+        if (shouldShowPremiumBanner && dismissedState?.nextPromptDate) {
+          const nextPromptDate = new Date(dismissedState.nextPromptDate);
+          const now = new Date();
+          return now >= nextPromptDate;
+        }
 
-            return shouldShowPremiumBanner;
-          }),
-        );
+        return shouldShowPremiumBanner;
       }),
     );
   }
