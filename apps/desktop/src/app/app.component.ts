@@ -10,7 +10,17 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { catchError, filter, firstValueFrom, map, of, Subject, takeUntil, timeout } from "rxjs";
+import {
+  catchError,
+  filter,
+  firstValueFrom,
+  map,
+  of,
+  Subject,
+  takeUntil,
+  timeout,
+  withLatestFrom,
+} from "rxjs";
 
 import { CollectionService } from "@bitwarden/admin-console/common";
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
@@ -21,6 +31,7 @@ import { EventUploadService } from "@bitwarden/common/abstractions/event/event-u
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -155,6 +166,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private stateEventRunnerService: StateEventRunnerService,
     private accountService: AccountService,
     private sdkService: SdkService,
+    private organizationService: OrganizationService,
   ) {
     if (flagEnabled("sdk")) {
       // Warn if the SDK for some reason can't be initialized
@@ -168,7 +180,7 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe((supported) => {
           if (!supported) {
             this.logService.debug("SDK is not supported");
-            this.sdkService.failedToInitialize().catch((e) => this.logService.error(e));
+            this.sdkService.failedToInitialize("desktop").catch((e) => this.logService.error(e));
           } else {
             this.logService.debug("SDK is supported");
           }
@@ -300,7 +312,7 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           }
           case "deleteAccount":
-            DeleteAccountComponent.open(this.dialogService);
+            await this.deleteAccount();
             break;
           case "openPasswordHistory":
             await this.openModal<PasswordGeneratorHistoryComponent>(
@@ -853,5 +865,29 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     this.messagingService.send(message, { code: code, state: receivedState });
+  }
+
+  private async deleteAccount() {
+    await firstValueFrom(
+      this.configService.getFeatureFlag$(FeatureFlag.AccountDeprovisioning).pipe(
+        withLatestFrom(this.organizationService.organizations$),
+        map(async ([accountDeprovisioningEnabled, organization]) => {
+          if (
+            accountDeprovisioningEnabled &&
+            organization.some((o) => o.userIsManagedByOrganization === true)
+          ) {
+            await this.dialogService.openSimpleDialog({
+              title: { key: "cannotDeleteAccount" },
+              content: { key: "cannotDeleteAccountDesc" },
+              cancelButtonText: null,
+              acceptButtonText: { key: "close" },
+              type: "danger",
+            });
+          } else {
+            DeleteAccountComponent.open(this.dialogService);
+          }
+        }),
+      ),
+    );
   }
 }

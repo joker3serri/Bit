@@ -8,6 +8,7 @@ import {
   distinctUntilChanged,
   tap,
   switchMap,
+  catchError,
 } from "rxjs";
 
 import { KeyService } from "@bitwarden/key-management";
@@ -49,6 +50,11 @@ export class DefaultSdkService implements SdkService {
     concatMap(async (client) => {
       return client.echo("bitwarden wasm!") === "bitwarden wasm!";
     }),
+  );
+
+  version$ = this.client$.pipe(
+    map((client) => client.version()),
+    catchError(() => "Unsupported"),
   );
 
   constructor(
@@ -96,7 +102,7 @@ export class DefaultSdkService implements SdkService {
           let client: BitwardenClient;
 
           const createAndInitializeClient = async () => {
-            if (privateKey == null || userKey == null || orgKeys == null) {
+            if (privateKey == null || userKey == null) {
               return undefined;
             }
 
@@ -130,7 +136,7 @@ export class DefaultSdkService implements SdkService {
     return client$;
   }
 
-  async failedToInitialize(): Promise<void> {
+  async failedToInitialize(category: string, error?: Error): Promise<void> {
     // Only log on cloud instances
     if (
       this.platformUtilsService.isDev() ||
@@ -139,9 +145,20 @@ export class DefaultSdkService implements SdkService {
       return;
     }
 
-    return this.apiService.send("POST", "/wasm-debug", null, false, false, null, (headers) => {
-      headers.append("SDK-Version", "1.0.0");
-    });
+    return this.apiService.send(
+      "POST",
+      "/wasm-debug",
+      {
+        category: category,
+        error: error?.message,
+      },
+      false,
+      false,
+      null,
+      (headers) => {
+        headers.append("SDK-Version", "1.0.0");
+      },
+    );
   }
 
   private async initializeClient(
@@ -150,7 +167,7 @@ export class DefaultSdkService implements SdkService {
     kdfParams: KdfConfig,
     privateKey: EncryptedString,
     userKey: UserKey,
-    orgKeys: Record<OrganizationId, EncryptedOrganizationKeyData>,
+    orgKeys?: Record<OrganizationId, EncryptedOrganizationKeyData>,
   ) {
     await client.crypto().initialize_user_crypto({
       email: account.email,
@@ -169,9 +186,12 @@ export class DefaultSdkService implements SdkService {
             },
       privateKey,
     });
+
+    // We initialize the org crypto even if the org_keys are
+    // null to make sure any existing org keys are cleared.
     await client.crypto().initialize_org_crypto({
       organizationKeys: new Map(
-        Object.entries(orgKeys)
+        Object.entries(orgKeys ?? {})
           .filter(([_, v]) => v.type === "organization")
           .map(([k, v]) => [k, v.key]),
       ),

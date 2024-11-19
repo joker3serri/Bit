@@ -7,6 +7,7 @@ import {
   ThirdPartyServerConfigData,
   EnvironmentServerConfigData,
 } from "../../models/data/server-config.data";
+import { ServerSettings } from "../../models/domain/server-settings";
 
 type PushConfig =
   | { pushTechnology: PushTechnology.SignalR }
@@ -23,6 +24,7 @@ export class ServerConfig {
   utcDate: Date;
   featureStates: { [key: string]: AllowedFeatureFlagTypes } = {};
   push: PushConfig;
+  settings: ServerSettings;
 
   constructor(serverConfigData: ServerConfigData) {
     this.version = serverConfigData.version;
@@ -40,6 +42,7 @@ export class ServerConfig {
             pushTechnology: serverConfigData.push.pushTechnology,
             vapidPublicKey: serverConfigData.push.vapidPublicKey,
           };
+    this.settings = serverConfigData.settings;
 
     if (this.server?.name == null && this.server?.url == null) {
       this.server = null;

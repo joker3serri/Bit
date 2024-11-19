@@ -2,11 +2,29 @@
   "allApplications": {
     "message": "Alle applikationer"
   },
-  "priorityApplications": {
-    "message": "Prioriterede applikationer"
+  "criticalApplications": {
+    "message": "Kritiske apps"
   },
   "accessIntelligence": {
-    "message": "Adgangsintelligens"
+    "message": "Adgangsefterretning"
+  },
+  "riskInsights": {
+    "message": "Risikoindsigt"
+  },
+  "passwordRisk": {
+    "message": "Adgangskoderisiko"
+  },
+  "reviewAtRiskPasswords": {
+    "message": "Gennemgå risikobetonede adgangskoder (svage, eksponerede eller genbrugte) på tværs af applikationer. Vælg de mest kritiske applikationer for at prioritere sikkerhedshandlinger for brugerne til at håndtere risikobetonede adgangskoder."
+  },
+  "dataLastUpdated": {
+    "message": "Data senest opdateret: $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2021-01-01"
+      }
+    }
   },
   "notifiedMembers": {
     "message": "Underrettede medlemmer"
@@ -20,8 +38,11 @@
       }
     }
   },
-  "priorityApplicationsWithCount": {
-    "message": "Prioriterede applikationer ($COUNT$)",
+  "createNewLoginItem": {
+    "message": "Opret nyt login-emne"
+  },
+  "criticalApplicationsWithCount": {
+    "message": "Kritiske apps ($COUNT$)",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -38,14 +59,47 @@
       }
     }
   },
+  "noAppsInOrgTitle": {
+    "message": "Ingen apps fundet i $ORG NAME$",
+    "placeholders": {
+      "org name": {
+        "content": "$1",
+        "example": "Company Name"
+      }
+    }
+  },
+  "noAppsInOrgDescription": {
+    "message": "Når brugerne gemmer logins, vil apps med udsatte adgangskoder fremgå her. Markér kritiske apps og giv brugerne besked om at opdatere adgangskoder."
+  },
+  "noCriticalAppsTitle": {
+    "message": "Ingen apps markret som Kritisk"
+  },
+  "noCriticalAppsDescription": {
+    "message": "Vælg de mest kritiske apps for at afsløre udsatte adgangskoder og give brugerne besked om at ændre disse."
+  },
+  "markCriticalApps": {
+    "message": "Markér kritiske apps"
+  },
+  "markAppAsCritical": {
+    "message": "Markér app som kritisk"
+  },
+  "appsMarkedAsCritical": {
+    "message": "Apps markeret som kritiske"
+  },
   "application": {
     "message": "Applikation"
   },
   "atRiskPasswords": {
     "message": "Udsatte adgangskoder"
   },
+  "requestPasswordChange": {
+    "message": "Anmod om adgangskodeskift"
+  },
   "totalPasswords": {
     "message": "Adgangskoder i alt"
+  },
+  "searchApps": {
+    "message": "Søg i apps"
   },
   "atRiskMembers": {
     "message": "Udsatte medlemmer"
@@ -405,6 +459,9 @@
   "generatePassword": {
     "message": "Generér adgangskode"
   },
+  "generatePassphrase": {
+    "message": "Generér adgangssætning"
+  },
   "checkPassword": {
     "message": "Tjek, om adgangskode er blevet kompromitteret."
   },
@@ -504,6 +561,9 @@
   },
   "typeSecureNote": {
     "message": "Sikret notat"
+  },
+  "typeSshKey": {
+    "message": "SSH-nøgle"
   },
   "typeLoginPlural": {
     "message": "Logins"
@@ -662,6 +722,10 @@
   "copyPassword": {
     "message": "Kopiér adgangskode",
     "description": "Copy password to clipboard"
+  },
+  "copyPassphrase": {
+    "message": "Kopiér adgangssætning",
+    "description": "Copy passphrase to clipboard"
   },
   "passwordCopied": {
     "message": "Adgangskode kopieret"
@@ -932,8 +996,14 @@
   "useADifferentLogInMethod": {
     "message": "Benyt en anden login-metode"
   },
-  "loginWithPasskey": {
+  "logInWithPasskey": {
     "message": "Log ind med adgangsnøgle"
+  },
+  "useSingleSignOn": {
+    "message": "Brug Single Sign-On"
+  },
+  "welcomeBack": {
+    "message": "Velkommen tilbage"
   },
   "invalidPasskeyPleaseTryAgain": {
     "message": "Ugyldig adgangsnøgle. Prøv igen."
@@ -1016,6 +1086,9 @@
   "createAccount": {
     "message": "Opret konto"
   },
+  "newToBitwarden": {
+    "message": "Ny på Bitwarden?"
+  },
   "setAStrongPassword": {
     "message": "Indstil en stærk adgangskode"
   },
@@ -1030,6 +1103,9 @@
   },
   "logIn": {
     "message": "Log ind"
+  },
+  "logInToBitwarden": {
+    "message": "Log ind på Bitwarden"
   },
   "verifyIdentity": {
     "message": "Bekræft din identitet"
@@ -1537,38 +1613,6 @@
   "specialCharacters": {
     "message": "Specialtegn (!@#$%^&*)"
   },
-  "uppercaseDescription": {
-    "message": "Inkludér majuskler",
-    "description": "Tooltip for the password generator uppercase character checkbox"
-  },
-  "uppercaseLabel": {
-    "message": "A-Z",
-    "description": "Label for the password generator uppercase character checkbox"
-  },
-  "lowercaseDescription": {
-    "message": "Inkludér minuskler",
-    "description": "Full description for the password generator lowercase character checkbox"
-  },
-  "lowercaseLabel": {
-    "message": "a-z",
-    "description": "Label for the password generator lowercase character checkbox"
-  },
-  "numbersDescription": {
-    "message": "Inkludér tal",
-    "description": "Full description for the password generator numbers checkbox"
-  },
-  "numbersLabel": {
-    "message": "0-9",
-    "description": "Label for the password generator numbers checkbox"
-  },
-  "specialCharactersDescription": {
-    "message": "Inkludér specialtegn",
-    "description": "Full description for the password generator special characters checkbox"
-  },
-  "specialCharactersLabel": {
-    "message": "!@#$%^&*",
-    "description": "Label for the password generator special characters checkbox"
-  },
   "numWords": {
     "message": "Antal ord"
   },
@@ -1699,6 +1743,9 @@
   "dangerZoneDesc": {
     "message": "Pas på, disse handlinger er irreversible!"
   },
+  "dangerZoneDescSingular": {
+    "message": "Forsigtig, denne handling er irreversibel!"
+  },
   "deauthorizeSessions": {
     "message": "Fjern sessionsgodkendelser"
   },
@@ -1710,6 +1757,15 @@
   },
   "sessionsDeauthorized": {
     "message": "Godkendelser for alle sessioner fjernet"
+  },
+  "accountIsManagedMessage": {
+    "message": "Denne konto håndteres af $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "Organization"
+      }
+    }
   },
   "purgeVault": {
     "message": "Tøm boks"
@@ -3784,6 +3840,55 @@
   "updateBrowserDesc": {
     "message": "Du bruger en ikke-understøttet webbrowser. Web-boksen fungerer muligvis ikke korrekt."
   },
+  "freeTrialEndPrompt": {
+    "message": "Den gratis prøveperiode udløber om $COUNT$ dage. For at beholde abonnementet,",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "You must set up 2FA on your user account before you can join this organization."
+      }
+    }
+  },
+  "freeTrialEndPromptAboveTwoDays": {
+    "message": "$ORGANIZATION$, den gratis prøveperiode udløber om $COUNT$ dage. For at beholde abonnementet,",
+    "placeholders": {
+      "count": {
+        "content": "$2",
+        "example": "organization name"
+      },
+      "organization": {
+        "content": "$1",
+        "example": "remaining days"
+      }
+    }
+  },
+  "freeTrialEndPromptForOneDay": {
+    "message": "$ORGANIZATION$, den gratis prøveperiode udløber i morgen. For at beholde abonnementet,",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "organization name"
+      }
+    }
+  },
+  "freeTrialEndPromptForOneDayNoOrgName": {
+    "message": "Den gratis prøveperiode udløber i morgen. For at beholde abonnementet,"
+  },
+  "freeTrialEndPromptForLessThanADay": {
+    "message": "$ORGANIZATION$, den gratis prøveperiode udløber i dag. For at beholde abonnementet,",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "organization name"
+      }
+    }
+  },
+  "freeTrialEndingSoonWithoutOrgName": {
+    "message": "Den gratis prøveperiode udløber i dag. For at beholde abonnementet,"
+  },
+  "routeToPaymentMethodTrigger": {
+    "message": "tilføj en betalingsmetode."
+  },
   "joinOrganization": {
     "message": "Bliv medlem af organisation"
   },
@@ -4635,11 +4740,17 @@
   "singleOrgDesc": {
     "message": "Begræns medlemmer i at tilmelde sig andre organisationer."
   },
+  "singleOrgPolicyDesc": {
+    "message": "Begræns medlemmers deltagelse i andre organisationer. Denne politik kræves for organisationer med aktiveret domænebekræftelse."
+  },
   "singleOrgBlockCreateMessage": {
     "message": "Den nuværende organisationspolitik tillader dig ikke at deltage i mere end én organisation. Kontakt organisationens admins eller benyt en anden Bitwarden-konto under tilmelding."
   },
   "singleOrgPolicyWarning": {
     "message": "Organisationsmedlemmer, undtagen ejere eller admins, som allerede er medlem af en anden organisation, fjernes fra organisationen."
+  },
+  "singleOrgPolicyMemberWarning": {
+    "message": "Ikke-overholdende medlemmer placeres i privilegie-ophævet status, indtil de forlader alle øvrige organisationer. Administratorer er fritaget og kan gendanne medlemmer, når overholdelse er opfyldt."
   },
   "requireSso": {
     "message": "Kræv single sign-on godkendelse"
@@ -6354,6 +6465,23 @@
   "generateUsername": {
     "message": "Generér brugernavn"
   },
+  "generateEmail": {
+    "message": "Generér e-mail"
+  },
+  "generatorBoundariesHint": {
+    "message": "Værdi skal være mellem $MIN$ og $MAX$",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
   "usernameType": {
     "message": "Brugernavnstype"
   },
@@ -6458,6 +6586,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Generér et e-mail alias med en ekstern viderestillingstjeneste."
+  },
+  "forwarderDomainName": {
+    "message": "E-maildomæne",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Vælg et domæne understøttet af den valgte tjeneste",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$-fejl: $ERRORMESSAGE$",
@@ -8258,6 +8394,10 @@
   "baseUrl": {
     "message": "Server-URL"
   },
+  "selfHostBaseUrl": {
+    "message": "URL til selv-hostet server",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "aliasDomain": {
     "message": "Aliasdomæne"
   },
@@ -8356,7 +8496,7 @@
   },
   "addAPaymentMethod": {
     "message": "tilføj en betalingsmetode",
-    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To maintain your subscription for $ORG$, add a payment method.'"
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To maintain your subscription for $ORG$, add a payment method'"
   },
   "organizationInformation": {
     "message": "Organisationsoplysninger"
@@ -8929,6 +9069,12 @@
   "providerPlan": {
     "message": "Administreret Tjenesteudbyder"
   },
+  "managedServiceProvider": {
+    "message": "Håndteret tjenesteudbyder"
+  },
+  "multiOrganizationEnterprise": {
+    "message": "Multiorganisationsvirksomhed"
+  },
   "orgSeats": {
     "message": "Organisationspladser"
   },
@@ -9331,6 +9477,30 @@
   "additionalStorageGbMessage": {
     "message": "GB ekstra lagerplads"
   },
+  "sshKeyAlgorithm": {
+    "message": "Nøglealgoritme"
+  },
+  "sshKeyFingerprint": {
+    "message": "Fingeraftryk"
+  },
+  "sshKeyPrivateKey": {
+    "message": "Privat nøgle"
+  },
+  "sshKeyPublicKey": {
+    "message": "Offentlig nøgle"
+  },
+  "sshKeyAlgorithmED25519": {
+    "message": "ED25519"
+  },
+  "sshKeyAlgorithmRSA2048": {
+    "message": "RSA 2048-Bit"
+  },
+  "sshKeyAlgorithmRSA3072": {
+    "message": "RSA 3072-Bit"
+  },
+  "sshKeyAlgorithmRSA4096": {
+    "message": "RSA 4096-Bit"
+  },
   "premiumAccounts": {
     "message": "6 Premium-konti"
   },
@@ -9413,6 +9583,38 @@
   "linkedLabelHelpText": {
     "message": "Angiv feltets HTML-ID, navn, aria-label eller pladsholder."
   },
+  "uppercaseDescription": {
+    "message": "Inkludér majuskler",
+    "description": "Tooltip for the password generator uppercase character checkbox"
+  },
+  "uppercaseLabel": {
+    "message": "A-Z",
+    "description": "Label for the password generator uppercase character checkbox"
+  },
+  "lowercaseDescription": {
+    "message": "Inkludér minuskler",
+    "description": "Full description for the password generator lowercase character checkbox"
+  },
+  "lowercaseLabel": {
+    "message": "a-z",
+    "description": "Label for the password generator lowercase character checkbox"
+  },
+  "numbersDescription": {
+    "message": "Inkludér tal",
+    "description": "Full description for the password generator numbers checkbox"
+  },
+  "numbersLabel": {
+    "message": "0-9",
+    "description": "Label for the password generator numbers checkbox"
+  },
+  "specialCharactersDescription": {
+    "message": "Inkludér specialtegn",
+    "description": "Full description for the password generator special characters checkbox"
+  },
+  "specialCharactersLabel": {
+    "message": "!@#$%^&*",
+    "description": "Label for the password generator special characters checkbox"
+  },
   "addAttachment": {
     "message": "Tilføj vedhæftning"
   },
@@ -9421,5 +9623,89 @@
   },
   "permanentlyDeleteAttachmentConfirmation": {
     "message": "Sikker på, at denne vedhæftning skal slettes permanent?"
+  },
+  "manageSubscriptionFromThe": {
+    "message": "Håndtér abonnement fra",
+    "description": "This represents the beginning of a sentence. The full sentence will be 'Manage subscription from the Provider Portal', but 'Provider Portal' will be a link and thus cannot be included in the translation file."
+  },
+  "toHostBitwardenOnYourOwnServer": {
+    "message": "For at hoste Bitwarden på egen server skal man uploade sin licensfil. Opsæt automatisk faktureringssynk for den selv-hostede organisation for at understøtte Free Families-abonnementstyper og avancerede faktureringsmuligheder for organisationen."
+  },
+  "selfHostingTitleProper": {
+    "message": "Selv-hosting"
+  },
+  "verified-domain-single-org-warning": {
+    "message": "Bekræftelse af et domæne vil slå den enkelte organisationspolitik til."
+  },
+  "single-org-revoked-user-warning": {
+    "message": "Ikke-overholdende medlemmers privilegier ophæves. Administratorer kan gendanne medlemmer, når de har forladt alle øvrige organisationer."
+  },
+  "deleteOrganizationUser": {
+    "message": "Slet $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "John Doe"
+      },
+      "description": "Title for the delete organization user dialog"
+    }
+  },
+  "deleteOrganizationUserWarning": {
+    "message": "Når medlemmer slettes, vil deres Bitwarden-konto og individuelle boksdata blive slettet permanent. Indsamlingsdata vil forblive i organisationen. For at genindsætte dem, skal de oprette en konto og onboardes igen.",
+    "description": "Warning for the delete organization user dialog"
+  },
+  "organizationUserDeleted": {
+    "message": "Slet $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "John Doe"
+      }
+    }
+  },
+  "organizationUserDeletedDesc": {
+    "message": "Brugeren er fjernet fra organisationen, og alle tilknyttede brugerdata er slettet."
+  },
+  "deletedUserId": {
+    "message": "Slettet bruger $ID$ - en ejer/admin har slettet brugerkontoen",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "First 8 Character of a GUID"
+      }
+    }
+  },
+  "userLeftOrganization": {
+    "message": "Brugeren $ID$ har forladt organisationen",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "First 8 Character of a GUID"
+      }
+    }
+  },
+  "suspendedOrganizationTitle": {
+    "message": "$ORGANIZATION$ er suspenderet",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "Acme c"
+      }
+    }
+  },
+  "suspendedUserOrgMessage": {
+    "message": "Kontakt organisationsejeren for assistance."
+  },
+  "suspendedOwnerOrgMessage": {
+    "message": "Tilføj en betalingsmetode for at få adgang til organisationen igen."
+  },
+  "deleteMembers": {
+    "message": "Slet medlemmer"
+  },
+  "noSelectedMembersApplicable": {
+    "message": "Denne handling er ikke anvendelig til nogen af de valgte medlemmer."
+  },
+  "deletedSuccessfully": {
+    "message": "Slettet"
   }
 }

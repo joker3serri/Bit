@@ -1,29 +1,30 @@
-import { CommonModule } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormControl, FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { map } from "rxjs";
+import { debounceTime, map } from "rxjs";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
 // eslint-disable-next-line no-restricted-imports
-import { PasswordHealthService } from "@bitwarden/bit-common/tools/reports/access-intelligence";
+import {
+  MemberCipherDetailsApiService,
+  PasswordHealthService,
+} from "@bitwarden/bit-common/tools/reports/risk-insights";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
-  BadgeModule,
   BadgeVariant,
-  ContainerComponent,
+  SearchModule,
   TableDataSource,
   TableModule,
+  ToastService,
 } from "@bitwarden/components";
 
-// eslint-disable-next-line no-restricted-imports
 import { HeaderModule } from "../../layouts/header/header.module";
 // eslint-disable-next-line no-restricted-imports
-import { OrganizationBadgeModule } from "../../vault/individual-vault/organization-badge/organization-badge.module";
+import { SharedModule } from "../../shared";
 // eslint-disable-next-line no-restricted-imports
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
 
@@ -31,17 +32,8 @@ import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
   standalone: true,
   selector: "tools-password-health-members",
   templateUrl: "password-health-members.component.html",
-  imports: [
-    BadgeModule,
-    OrganizationBadgeModule,
-    CommonModule,
-    ContainerComponent,
-    PipesModule,
-    JslibModule,
-    HeaderModule,
-    TableModule,
-  ],
-  providers: [PasswordHealthService],
+  imports: [PipesModule, HeaderModule, SearchModule, FormsModule, SharedModule, TableModule],
+  providers: [PasswordHealthService, MemberCipherDetailsApiService],
 })
 export class PasswordHealthMembersComponent implements OnInit {
   passwordStrengthMap = new Map<string, [string, BadgeVariant]>();
@@ -56,6 +48,10 @@ export class PasswordHealthMembersComponent implements OnInit {
 
   loading = true;
 
+  selectedIds: Set<number> = new Set<number>();
+
+  protected searchControl = new FormControl("", { nonNullable: true });
+
   private destroyRef = inject(DestroyRef);
 
   constructor(
@@ -64,7 +60,13 @@ export class PasswordHealthMembersComponent implements OnInit {
     protected auditService: AuditService,
     protected i18nService: I18nService,
     protected activatedRoute: ActivatedRoute,
-  ) {}
+    protected toastService: ToastService,
+    protected memberCipherDetailsApiService: MemberCipherDetailsApiService,
+  ) {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(200), takeUntilDestroyed())
+      .subscribe((v) => (this.dataSource.filter = v));
+  }
 
   ngOnInit() {
     this.activatedRoute.paramMap
@@ -83,16 +85,46 @@ export class PasswordHealthMembersComponent implements OnInit {
       this.passwordStrengthService,
       this.auditService,
       this.cipherService,
+      this.memberCipherDetailsApiService,
       organizationId,
     );
 
     await passwordHealthService.generateReport();
 
     this.dataSource.data = passwordHealthService.reportCiphers;
+
     this.exposedPasswordMap = passwordHealthService.exposedPasswordMap;
     this.passwordStrengthMap = passwordHealthService.passwordStrengthMap;
     this.passwordUseMap = passwordHealthService.passwordUseMap;
     this.totalMembersMap = passwordHealthService.totalMembersMap;
     this.loading = false;
+  }
+
+  markAppsAsCritical = async () => {
+    // TODO: Send to API once implemented
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.selectedIds.clear();
+        this.toastService.showToast({
+          variant: "success",
+          title: null,
+          message: this.i18nService.t("appsMarkedAsCritical"),
+        });
+        resolve(true);
+      }, 1000);
+    });
+  };
+
+  trackByFunction(_: number, item: CipherView) {
+    return item.id;
+  }
+
+  onCheckboxChange(id: number, event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
+      this.selectedIds.add(id);
+    } else {
+      this.selectedIds.delete(id);
+    }
   }
 }

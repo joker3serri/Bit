@@ -2,6 +2,7 @@ import { Jsonify } from "type-fest";
 
 import { AllowedFeatureFlagTypes } from "../../../enums/feature-flag.enum";
 import { Region } from "../../abstractions/environment.service";
+import { ServerSettings } from "../domain/server-settings";
 import {
   ServerConfigResponse,
   ThirdPartyServerConfigResponse,
@@ -17,6 +18,7 @@ export class ServerConfigData {
   utcDate: string;
   featureStates: { [key: string]: AllowedFeatureFlagTypes } = {};
   push: PushSettingsConfigData;
+  settings: ServerSettings;
 
   constructor(serverConfigResponse: Partial<ServerConfigResponse>) {
     this.version = serverConfigResponse?.version;
@@ -29,6 +31,7 @@ export class ServerConfigData {
       ? new EnvironmentServerConfigData(serverConfigResponse.environment)
       : null;
     this.featureStates = serverConfigResponse?.featureStates;
+    this.settings = new ServerSettings(serverConfigResponse.settings);
     this.push = serverConfigResponse?.push
       ? new PushSettingsConfigData(serverConfigResponse.push)
       : null;
