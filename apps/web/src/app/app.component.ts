@@ -6,7 +6,6 @@ import * as jq from "jquery";
 import { Subject, filter, firstValueFrom, map, takeUntil, timeout, catchError, of } from "rxjs";
 
 import { CollectionService } from "@bitwarden/admin-console/common";
-import { LogoutReason } from "@bitwarden/auth/common";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
@@ -165,7 +164,8 @@ export class AppComponent implements OnDestroy, OnInit {
             this.router.navigate(["/"]);
             break;
           case "logout":
-            await this.logOut(message.logoutReason, message.redirect);
+            // note: the message.logoutReason isn't consumed anymore because of the process reload clearing any toasts.
+            await this.logOut(message.redirect);
             break;
           case "lockVault":
             await this.vaultTimeoutService.lock();
@@ -275,7 +275,7 @@ export class AppComponent implements OnDestroy, OnInit {
     this.destroy$.complete();
   }
 
-  private async logOut(logoutReason: LogoutReason, redirect = true) {
+  private async logOut(redirect = true) {
     // Ensure the loading state is applied before proceeding to avoid a flash
     // of the login screen before the process reload fires.
     this.ngZone.run(() => {
