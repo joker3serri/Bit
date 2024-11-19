@@ -33,7 +33,7 @@ import { NotificationsService as NotificationsServiceAbstraction } from "../noti
 import { ReceiveMessage, SignalRConnectionService } from "./signalr-connection.service";
 import { WebPushConnectionService } from "./webpush-connection.service";
 
-const DISABLED_NOTIFICATIONS_URL = "http://-";
+export const DISABLED_NOTIFICATIONS_URL = "http://-";
 
 export class DefaultNotificationsService implements NotificationsServiceAbstraction {
   notifications$: Observable<readonly [NotificationResponse, UserId]>;
@@ -106,7 +106,7 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
   private choosePushService(userId: UserId, notificationsUrl: string) {
     return this.webPushConnectionService.supportStatus$(userId).pipe(
       supportSwitch({
-        supported: (service) => service.connect$().pipe(map((n) => [n, userId] as const)),
+        supported: (service) => service.notifications$.pipe(map((n) => [n, userId] as const)),
         notSupported: () =>
           this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
             filter((n) => n.type === "ReceiveMessage"),

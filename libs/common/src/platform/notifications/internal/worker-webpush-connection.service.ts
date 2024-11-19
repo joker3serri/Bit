@@ -105,6 +105,8 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService 
 }
 
 class MyWebPushConnector implements WebPushConnector {
+  notifications$: Observable<NotificationResponse>;
+
   constructor(
     private readonly vapidPublicKey: string,
     private readonly userId: UserId,
@@ -112,10 +114,8 @@ class MyWebPushConnector implements WebPushConnector {
     private readonly serviceWorkerRegistration: ServiceWorkerRegistration,
     private readonly pushEvent$: Observable<PushEvent>,
     private readonly pushChangeEvent$: Observable<PushSubscriptionChangeEvent>,
-  ) {}
-
-  connect$(): Observable<NotificationResponse> {
-    return this.getOrCreateSubscription$(this.vapidPublicKey).pipe(
+  ) {
+    this.notifications$ = this.getOrCreateSubscription$(this.vapidPublicKey).pipe(
       concatMap((subscription) => {
         return defer(() => this.webPushApiService.putSubscription(subscription.toJSON())).pipe(
           switchMap(() => this.pushEvent$),

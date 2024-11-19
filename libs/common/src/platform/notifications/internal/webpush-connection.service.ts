@@ -5,7 +5,7 @@ import { UserId } from "../../../types/guid";
 import { SupportStatus } from "../../misc/support-status";
 
 export interface WebPushConnector {
-  connect$(): Observable<NotificationResponse>;
+  notifications$: Observable<NotificationResponse>;
 }
 
 export abstract class WebPushConnectionService {

@@ -18,7 +18,10 @@ import { MessageSender } from "../../messaging";
 import { SupportStatus } from "../../misc/support-status";
 import { SyncService } from "../../sync";
 
-import { DefaultNotificationsService } from "./default-notifications.service";
+import {
+  DefaultNotificationsService,
+  DISABLED_NOTIFICATIONS_URL,
+} from "./default-notifications.service";
 import { SignalRNotification, SignalRConnectionService } from "./signalr-connection.service";
 import { WebPushConnector } from "./webpush-connection.service";
 import { WorkerWebPushConnectionService } from "./worker-webpush-connection.service";
@@ -104,7 +107,7 @@ describe("NotificationsService", () => {
     authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
     const webPush = mock<WebPushConnector>();
     const webPushSubject = new Subject<NotificationResponse>();
-    webPush.connect$.mockImplementation(() => webPushSubject);
+    webPush.notifications$ = webPushSubject;
 
     // Start listening to notifications
     const notificationsPromise = firstValueFrom(sut.notifications$.pipe(bufferCount(4)));
@@ -187,5 +190,13 @@ describe("NotificationsService", () => {
       "http://test.example.com",
     );
     notificationsSubscriptions.unsubscribe();
+  });
+
+  test("that a disabled notification stream does not connect to any notification stream", () => {
+    emitActiveUser(mockUser1);
+    emitNotificationUrl(DISABLED_NOTIFICATIONS_URL);
+
+    expect(signalRNotificationConnectionService.connect$).not.toHaveBeenCalled();
+    expect(webPushNotificationConnectionService.supportStatus$).not.toHaveBeenCalled();
   });
 });
