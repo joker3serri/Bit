@@ -55,52 +55,40 @@ function queryTranslateY(direction: string, from: number, to: number, zIndex = 1
   return queryTranslate(direction, "Y", from, to, zIndex);
 }
 
-const animations: Record<string, AnimationMetadata[]> = {
-  inSlideLeft: [
+const animations = {
+  slideInFromRight: [
     queryShown,
     group([
       queryTranslateX("enter", 100, 0, 1010),
-      queryTranslateX("leave", 0, -100),
+      queryTranslateX("leave", 0, 0),
       queryChildRoute,
     ]),
   ],
-  outSlideRight: [
+  slideOutToRight: [
     queryShown,
-    group([queryTranslateX("enter", -100, 0), queryTranslateX("leave", 0, 100, 1010)]),
+    group([queryTranslateX("enter", 0, 0), queryTranslateX("leave", 0, 100, 1010)]),
   ],
-  inSlideUp: [
+  slideInFromTop: [
     queryShown,
     group([
-      queryTranslateY("enter", 100, 0, 1010),
+      queryTranslateY("enter", -100, 0, 1010),
       queryTranslateY("leave", 0, 0),
       queryChildRoute,
     ]),
   ],
-  outSlideDown: [
-    queryShown,
-    group([queryTranslateY("enter", 0, 0), queryTranslateY("leave", 0, 100, 1010)]),
-  ],
-  /** Currently unused */
-  // inSlideDown: [
-  //   queryShown,
-  //   group([
-  //     queryTranslateY("enter", -100, 0, 1010),
-  //     queryTranslateY("leave", 0, 0),
-  //     queryChildRoute,
-  //   ]),
-  // ],
-  outSlideUp: [
+  slideOutToTop: [
     queryShown,
     group([queryTranslateY("enter", 0, 0), queryTranslateY("leave", 0, -100, 1010)]),
   ],
-};
+} satisfies Record<string, AnimationMetadata[]>;
 
 export const routerTransition = trigger("routerTransition", [
-  transition("0 => 2", animations.inSlideUp),
-  transition("2 => 0", animations.outSlideUp),
-  transition("1 => 2", animations.inSlideUp),
-  transition("2 => 1", animations.outSlideDown),
+  transition("0 => 2", animations.slideInFromTop),
+  transition("1 => 2", animations.slideInFromTop),
 
-  transition("0 => 1", animations.inSlideLeft),
-  transition("1 => 0", animations.outSlideRight),
+  transition("2 => 0", animations.slideOutToTop),
+  transition("2 => 1", animations.slideOutToTop),
+
+  transition("0 => 1", animations.slideInFromRight),
+  transition("1 => 0", animations.slideOutToRight),
 ]);
