@@ -14,7 +14,6 @@ import { PoliciesComponent } from "../../organizations/policies";
 import { AccountComponent } from "./account.component";
 import { TwoFactorSetupComponent } from "./two-factor-setup.component";
 
-
 const removeProviderExportPermission$: CanMatchFn = () =>
   inject(ConfigService)
     .getFeatureFlag$(FeatureFlag.PM11360RemoveProviderExportPermission)
