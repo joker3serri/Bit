@@ -1,11 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Observable, firstValueFrom } from "rxjs";
+import { Observable, firstValueFrom, map, of, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { DialogService, ItemModule } from "@bitwarden/components";
 
@@ -30,15 +32,44 @@ import { PopupPageComponent } from "../../../../platform/popup/layout/popup-page
 export class MoreFromBitwardenPageV2Component {
   canAccessPremium$: Observable<boolean>;
   protected familySponsorshipAvailable$: Observable<boolean>;
+  protected isFreeFamilyPolicyEnabled$: Observable<boolean>;
+  protected hasSingleEnterpriseOrg$: Observable<boolean>;
 
   constructor(
     private dialogService: DialogService,
     billingAccountProfileStateService: BillingAccountProfileStateService,
     private environmentService: EnvironmentService,
     private organizationService: OrganizationService,
+    private policyService: PolicyService,
   ) {
     this.canAccessPremium$ = billingAccountProfileStateService.hasPremiumFromAnySource$;
     this.familySponsorshipAvailable$ = this.organizationService.familySponsorshipAvailable$;
+    this.hasSingleEnterpriseOrg$ = this.organizationService.organizations$.pipe(
+      map(
+        (organizations) =>
+          organizations.filter((org) => org.productTierType === ProductTierType.Enterprise)
+            .length === 1,
+      ),
+    );
+
+    this.isFreeFamilyPolicyEnabled$ = this.organizationService.organizations$.pipe(
+      map((organizations) =>
+        organizations.filter((org) => org.productTierType === ProductTierType.Enterprise),
+      ),
+      switchMap((enterpriseOrgs) => {
+        if (enterpriseOrgs.length === 1) {
+          const enterpriseOrgId = enterpriseOrgs[0].id;
+          return this.policyService.policies$.pipe(
+            map(
+              (policies) =>
+                policies.find((policy) => policy.organizationId === enterpriseOrgId)?.enabled ??
+                false,
+            ),
+          );
+        }
+        return of(false);
+      }),
+    );
   }
 
   async openFreeBitwardenFamiliesPage() {
