@@ -152,14 +152,14 @@ export class LoginDecryptionOptionsComponent implements OnInit {
     this.toastService.showToast({
       variant: "error",
       title: null,
-      message: this.i18nService.t("userEmailMissing"),
+      message: this.i18nService.t("activeUserEmailNotFoundLoggingYouOut"),
     });
 
     setTimeout(async () => {
       // We can't simply redirect to `/login` because the user is authed and the unauthGuard
       // will prevent navigation. We must logout the user first via messagingService, which
-      // redirects to `/`, which will be handled by the redirectGuard to navigate the user appropriately.
-      // The timeout gives the user a chance to see the error toast before process reload kicks on logout.
+      // redirects to `/`, which will be handled by the redirectGuard to navigate the user to `/login`.
+      // The timeout just gives the user a chance to see the error toast before process reload runs on logout.
       await this.loginDecryptionOptionsService.logOut();
     }, 5000);
   }

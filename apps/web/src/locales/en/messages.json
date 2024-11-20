@@ -8251,6 +8251,9 @@
   "userEmailMissing": {
     "message": "User email missing"
   },
+  "activeUserEmailNotFoundLoggingYouOut": {
+    "message": "Active user email not found. Logging you out."
+  },
   "deviceTrusted": {
     "message": "Device trusted"
   },
