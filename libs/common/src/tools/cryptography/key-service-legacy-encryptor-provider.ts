@@ -12,7 +12,7 @@ import {
 import { errorOnChange } from "../rx";
 import { PaddedDataPacker } from "../state/padded-data-packer";
 
-import { LegacyEncryptorProvider } from "./legacy-encryptor-provider copy";
+import { LegacyEncryptorProvider } from "./legacy-encryptor-provider";
 import { OrganizationEncryptor } from "./organization-encryptor.abstraction";
 import { OrganizationKeyEncryptor } from "./organization-key-encryptor";
 import { UserEncryptor } from "./user-encryptor.abstraction";
