@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { combineLatest, map, Observable, Subject, switchMap } from "rxjs";
+import { combineLatest, filter, map, Observable, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -42,7 +42,7 @@ import { AdminConsoleLogo } from "../../icons/admin-console-logo";
     BannerModule,
   ],
 })
-export class OrganizationLayoutComponent implements OnInit, OnDestroy {
+export class OrganizationLayoutComponent implements OnInit {
   protected readonly logo = AdminConsoleLogo;
 
   protected orgFilter = (org: Organization) => canAccessOrgAdmin(org);
@@ -53,8 +53,6 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   hideNewOrgButton$: Observable<boolean>;
   organizationIsUnmanaged$: Observable<boolean>;
   isAccessIntelligenceFeatureEnabled = false;
-
-  private _destroy = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -72,9 +70,11 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
       FeatureFlag.AccessIntelligence,
     );
 
-    this.organization$ = this.route.params
-      .pipe(map((p) => p.organizationId))
-      .pipe(switchMap((id) => this.organizationService.organizations$.pipe(getById(id))));
+    this.organization$ = this.route.params.pipe(
+      map((p) => p.organizationId),
+      switchMap((id) => this.organizationService.organizations$.pipe(getById(id))),
+      filter((org) => org != null),
+    );
 
     this.canAccessExport$ = combineLatest([
       this.organization$,
@@ -85,8 +85,8 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
       map(
         (org) =>
           !this.platformUtilsService.isSelfHost() &&
-          org?.canViewBillingHistory &&
-          org?.canEditPaymentMethods,
+          org.canViewBillingHistory &&
+          org.canEditPaymentMethods,
       ),
     );
 
@@ -104,11 +104,6 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
           provider.providerStatus !== ProviderStatusType.Billable,
       ),
     );
-  }
-
-  ngOnDestroy() {
-    this._destroy.next();
-    this._destroy.complete();
   }
 
   canShowVaultTab(organization: Organization): boolean {
