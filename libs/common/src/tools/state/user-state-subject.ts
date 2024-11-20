@@ -6,10 +6,8 @@ import {
   filter,
   map,
   takeUntil,
-  pairwise,
   distinctUntilChanged,
   BehaviorSubject,
-  startWith,
   Observable,
   Subscription,
   last,
@@ -30,15 +28,15 @@ import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SingleUserState, UserKeyDefinition } from "@bitwarden/common/platform/state";
 import { UserId } from "@bitwarden/common/types/guid";
 
+import { UserEncryptor } from "../cryptography/user-encryptor.abstraction";
 import { UserBound } from "../dependencies";
-import { anyComplete, ready, withLatestReady } from "../rx";
+import { anyComplete, errorOnChange, ready, withLatestReady } from "../rx";
 import { Constraints, SubjectConstraints, WithConstraints } from "../types";
 
 import { ClassifiedFormat, isClassifiedFormat } from "./classified-format";
 import { unconstrained$ } from "./identity-state-constraint";
 import { isObjectKey, ObjectKey, toUserKeyDefinition } from "./object-key";
 import { isDynamic } from "./state-constraints-dependency";
-import { UserEncryptor } from "./user-encryptor.abstraction";
 import { UserStateSubjectDependencies } from "./user-state-subject-dependencies";
 
 type Constrained<State> = { constraints: Readonly<Constraints<State>>; state: State };
@@ -195,24 +193,13 @@ export class UserStateSubject<
         }
       }),
       // fail the stream if the state desyncs from the bound userId
-      startWith({ userId: this.state.userId, encryptor: null } as UserBound<
-        "encryptor",
-        UserEncryptor
-      >),
-      pairwise(),
-      map(([expected, actual]) => {
-        if (expected.userId === actual.userId) {
-          return actual;
-        } else {
-          throw {
-            expectedUserId: expected.userId,
-            actualUserId: actual.userId,
-          };
-        }
-      }),
+      errorOnChange(
+        ({ userId }) => userId,
+        (expectedUserId, actualUserId) => ({ expectedUserId, actualUserId }),
+      ),
       // reduce emissions to when encryptor changes
-      distinctUntilChanged(),
       map(({ encryptor }) => encryptor),
+      distinctUntilChanged(),
     );
   }
 

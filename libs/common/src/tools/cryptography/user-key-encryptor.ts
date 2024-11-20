@@ -5,8 +5,8 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { EncString } from "../../platform/models/domain/enc-string";
 import { UserKey } from "../../types/key";
+import { DataPacker } from "../state/data-packer.abstraction";
 
-import { DataPacker } from "./data-packer.abstraction";
 import { UserEncryptor } from "./user-encryptor.abstraction";
 
 /** A classification strategy that protects a type's secrets by encrypting them

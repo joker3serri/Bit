@@ -27,6 +27,8 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { StateProvider } from "@bitwarden/common/platform/state";
+import { UserEncryptor } from "@bitwarden/common/tools/cryptography/user-encryptor.abstraction";
+import { UserKeyEncryptor } from "@bitwarden/common/tools/cryptography/user-key-encryptor";
 import {
   OnDependency,
   SingleUserDependency,
@@ -37,8 +39,6 @@ import { IntegrationId, IntegrationMetadata } from "@bitwarden/common/tools/inte
 import { RestClient } from "@bitwarden/common/tools/integration/rpc";
 import { anyComplete } from "@bitwarden/common/tools/rx";
 import { PaddedDataPacker } from "@bitwarden/common/tools/state/padded-data-packer";
-import { UserEncryptor } from "@bitwarden/common/tools/state/user-encryptor.abstraction";
-import { UserKeyEncryptor } from "@bitwarden/common/tools/state/user-key-encryptor";
 import { UserStateSubject } from "@bitwarden/common/tools/state/user-state-subject";
 import { UserId } from "@bitwarden/common/types/guid";
 import { KeyService } from "@bitwarden/key-management";
