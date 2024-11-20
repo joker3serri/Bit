@@ -1,6 +1,7 @@
-import { map, skipWhile, switchMap, takeWhile } from "rxjs";
+import { connect, dematerialize, map, materialize, ReplaySubject, skipWhile, switchMap, takeUntil, takeWhile } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { KeyService } from "@bitwarden/key-management";
 
 import {
@@ -9,7 +10,7 @@ import {
   SingleUserDependency,
   UserBound,
 } from "../dependencies";
-import { errorOnChange } from "../rx";
+import { anyComplete, errorOnChange } from "../rx";
 import { PaddedDataPacker } from "../state/padded-data-packer";
 
 import { LegacyEncryptorProvider } from "./legacy-encryptor-provider";
@@ -37,19 +38,29 @@ export class KeyServiceLegacyEncryptorProvider implements LegacyEncryptorProvide
         (userId) => userId,
         (expectedUserId, actualUserId) => ({ expectedUserId, actualUserId }),
       ),
-      switchMap((userId) =>
-        this.keyService.userKey$(userId).pipe(
-          // wait until the key becomes available
-          skipWhile((key) => !key),
-          // complete when the key becomes unavailable
-          takeWhile((key) => !!key),
-          map((key) => {
-            const encryptor = new UserKeyEncryptor(userId, this.encryptService, key, packer);
+      connect((singleUserId$) => {
+        const singleUserId = new ReplaySubject<UserId>(1);
+        singleUserId$.subscribe(singleUserId);
 
-            return { userId, encryptor } satisfies UserBound<"encryptor", UserEncryptor>;
-          }),
-        ),
-      ),
+        return singleUserId.pipe(
+          switchMap((userId) =>
+            this.keyService.userKey$(userId).pipe(
+              // wait until the key becomes available
+              skipWhile((key) => !key),
+              // complete when the key becomes unavailable
+              takeWhile((key) => !!key),
+              map((key) => {
+                const encryptor = new UserKeyEncryptor(userId, this.encryptService, key, packer);
+
+                return { userId, encryptor } satisfies UserBound<"encryptor", UserEncryptor>;
+              }),
+              materialize()
+            ),
+          ),
+          dematerialize(),
+          takeUntil(anyComplete(singleUserId)),
+        );
+      }),
     );
 
     return encryptor$;
@@ -69,29 +80,41 @@ export class KeyServiceLegacyEncryptorProvider implements LegacyEncryptorProvide
           actualOrganizationId,
         }),
       ),
-      switchMap((pair) =>
-        this.keyService.orgKeys$(pair.userId).pipe(
-          // wait until the key becomes available
-          skipWhile((keys) => !keys),
-          // complete when the key becomes unavailable
-          takeWhile((keys) => !!keys),
-          map((keys) => {
-            const organizationId = pair.organizationId;
-            const key = keys[organizationId];
-            const encryptor = new OrganizationKeyEncryptor(
-              organizationId,
-              this.encryptService,
-              key,
-              packer,
-            );
+      connect((singleOrganizationId$) => {
+        const singleOrganizationId = new ReplaySubject<UserBound<"organizationId", OrganizationId>>(
+          1,
+        );
+        singleOrganizationId$.subscribe(singleOrganizationId);
 
-            return { organizationId, encryptor } satisfies OrganizationBound<
-              "encryptor",
-              OrganizationEncryptor
-            >;
-          }),
-        ),
-      ),
+        return singleOrganizationId.pipe(
+          switchMap((pair) =>
+            this.keyService.orgKeys$(pair.userId).pipe(
+              // wait until the key becomes available
+              skipWhile((keys) => !keys),
+              // complete when the key becomes unavailable
+              takeWhile((keys) => !!keys),
+              map((keys) => {
+                const organizationId = pair.organizationId;
+                const key = keys[organizationId];
+                const encryptor = new OrganizationKeyEncryptor(
+                  organizationId,
+                  this.encryptService,
+                  key,
+                  packer,
+                );
+
+                return { organizationId, encryptor } satisfies OrganizationBound<
+                  "encryptor",
+                  OrganizationEncryptor
+                >;
+              }),
+              materialize()
+            ),
+          ),
+          dematerialize(),
+          takeUntil(anyComplete(singleOrganizationId)),
+        );
+      }),
     );
 
     return encryptor$;
