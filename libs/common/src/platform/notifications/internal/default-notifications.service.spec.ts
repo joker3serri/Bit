@@ -152,75 +152,76 @@ describe("NotificationsService", () => {
     expectNotification(notifications[1], mockUser1, NotificationType.SyncFolderDelete);
   });
 
-  test("observable chain reacts to inputs properly", async () => {
-    // Sets up two active unlocked user, one pointing to an environment with WebPush, the other
-    // falling back to using SignalR
+  it("switches to SignalR when web push is not supported.", async () => {
+    const notificationsPromise = firstValueFrom(sut.notifications$.pipe(bufferCount(2)));
 
-    // We start with one active user with an unlocked account that
     emitActiveUser(mockUser1);
     emitNotificationUrl("http://test.example.com");
     authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
+
     const webPush = mock<WebPushConnector>();
     const webPushSubject = new Subject<NotificationResponse>();
     webPush.notifications$ = webPushSubject;
 
-    // Start listening to notifications
-    const notificationsPromise = firstValueFrom(sut.notifications$.pipe(bufferCount(4)));
-
-    // Pretend web push becomes supported
     webPushSupportGetter(mockUser1).next({ type: "supported", service: webPush });
+    webPushSubject.next(new NotificationResponse({ type: NotificationType.SyncFolderCreate }));
 
-    // Emit a couple notifications through WebPush
-    webPushSubject.next(new NotificationResponse({ type: NotificationType.LogOut }));
-    webPushSubject.next(new NotificationResponse({ type: NotificationType.SyncCipherCreate }));
-
-    // Switch to having no active user
-    emitActiveUser(null);
-
-    // Switch to another user
     emitActiveUser(mockUser2);
-
-    // User unlocks
     authStatusGetter(mockUser2).next(AuthenticationStatus.Unlocked);
-
-    // Web push is not supported for second user
+    // Second user does not support web push
     webPushSupportGetter(mockUser2).next({ type: "not-supported", reason: "test" });
 
-    // They should connect and receive notifications from signalR
     signalrNotificationGetter(mockUser2, "http://test.example.com").next({
       type: "ReceiveMessage",
       message: new NotificationResponse({ type: NotificationType.SyncCipherUpdate }),
     });
 
-    // Heartbeats should be ignored.
-    signalrNotificationGetter(mockUser2, "http://test.example.com").next({
-      type: "Heartbeat",
-    });
+    const notifications = await notificationsPromise;
+    expectNotification(notifications[0], mockUser1, NotificationType.SyncFolderCreate);
+    expectNotification(notifications[1], mockUser2, NotificationType.SyncCipherUpdate);
+  });
 
-    // User could turn off notifications (this would generally happen while there is no active user)
-    emitNotificationUrl("http://-");
+  it("switches to WebPush when it becomes supported.", async () => {
+    const notificationsPromise = firstValueFrom(sut.notifications$.pipe(bufferCount(2)));
 
-    // Since notifications are shut down by this url, this notification shouldn't be read ever
-    signalrNotificationGetter(mockUser2, "http://-").next({
-      type: "ReceiveMessage",
-      message: new NotificationResponse({ type: NotificationType.LogOut }),
-    });
-
-    // User could turn them back on
+    emitActiveUser(mockUser1);
     emitNotificationUrl("http://test.example.com");
+    authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
+    webPushSupportGetter(mockUser1).next({ type: "not-supported", reason: "test" });
 
-    // SignalR emits another notification
-    signalrNotificationGetter(mockUser2, "http://test.example.com").next({
+    signalrNotificationGetter(mockUser1, "http://test.example.com").next({
       type: "ReceiveMessage",
-      message: new NotificationResponse({ type: NotificationType.SyncCipherDelete }),
+      message: new NotificationResponse({ type: NotificationType.AuthRequest }),
+    });
+
+    const webPush = mock<WebPushConnector>();
+    const webPushSubject = new Subject<NotificationResponse>();
+    webPush.notifications$ = webPushSubject;
+
+    webPushSupportGetter(mockUser1).next({ type: "supported", service: webPush });
+    webPushSubject.next(new NotificationResponse({ type: NotificationType.SyncLoginDelete }));
+
+    const notifications = await notificationsPromise;
+    expectNotification(notifications[0], mockUser1, NotificationType.AuthRequest);
+    expectNotification(notifications[1], mockUser1, NotificationType.SyncLoginDelete);
+  });
+
+  it("does not emit SignalR heartbeats", async () => {
+    const notificationsPromise = firstValueFrom(sut.notifications$.pipe(bufferCount(1)));
+
+    emitActiveUser(mockUser1);
+    emitNotificationUrl("http://test.example.com");
+    authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
+    webPushSupportGetter(mockUser1).next({ type: "not-supported", reason: "test" });
+
+    signalrNotificationGetter(mockUser1, "http://test.example.com").next({ type: "Heartbeat" });
+    signalrNotificationGetter(mockUser1, "http://test.example.com").next({
+      type: "ReceiveMessage",
+      message: new NotificationResponse({ type: NotificationType.AuthRequestResponse }),
     });
 
     const notifications = await notificationsPromise;
-
-    expectNotification(notifications[0], mockUser1, NotificationType.LogOut);
-    expectNotification(notifications[1], mockUser1, NotificationType.SyncCipherCreate);
-    expectNotification(notifications[2], mockUser2, NotificationType.SyncCipherUpdate);
-    expectNotification(notifications[3], mockUser2, NotificationType.SyncCipherDelete);
+    expectNotification(notifications[0], mockUser1, NotificationType.AuthRequestResponse);
   });
 
   it("does not re-connect when the user transitions from locked to unlocked doesn't reconnect", async () => {
@@ -243,13 +244,39 @@ describe("NotificationsService", () => {
     notificationsSubscriptions.unsubscribe();
   });
 
-  it("re-connects when a user transitions from ", () => {
-    //
-  });
+  it.each([AuthenticationStatus.Locked, AuthenticationStatus.Unlocked])(
+    "connects when a user transitions from logged out to %s",
+    async (newStatus: AuthenticationStatus) => {
+      emitActiveUser(mockUser1);
+      emitNotificationUrl("http://test.example.com");
+      authStatusGetter(mockUser1).next(AuthenticationStatus.LoggedOut);
+      webPushSupportGetter(mockUser1).next({ type: "not-supported", reason: "test" });
 
-  test("that a disabled notification stream does not connect to any notification stream", () => {
+      const notificationsSubscriptions = sut.notifications$.subscribe();
+      await awaitAsync(1);
+
+      authStatusGetter(mockUser1).next(newStatus);
+      await awaitAsync(1);
+
+      expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledTimes(1);
+      expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledWith(
+        mockUser1,
+        "http://test.example.com",
+      );
+      notificationsSubscriptions.unsubscribe();
+    },
+  );
+
+  it("does not connect to any notification stream when notifications are disabled through special url", () => {
     emitActiveUser(mockUser1);
     emitNotificationUrl(DISABLED_NOTIFICATIONS_URL);
+
+    expect(signalRNotificationConnectionService.connect$).not.toHaveBeenCalled();
+    expect(webPushNotificationConnectionService.supportStatus$).not.toHaveBeenCalled();
+  });
+
+  it("does not connect to any notification stream when there is no active user", () => {
+    emitActiveUser(null);
 
     expect(signalRNotificationConnectionService.connect$).not.toHaveBeenCalled();
     expect(webPushNotificationConnectionService.supportStatus$).not.toHaveBeenCalled();
