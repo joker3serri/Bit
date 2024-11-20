@@ -13,7 +13,7 @@ const WITNESS_VALUE = "known key";
 
 export default class BiometricWindowsMain implements OsBiometricService {
   // Use set helper method instead of direct access
-  private _iv: string | null = null;
+  private _iv?: string;
   // Use getKeyMaterial helper instead of direct access
   private _osKeyHalf: string | null = null;
 
@@ -102,13 +102,17 @@ export default class BiometricWindowsMain implements OsBiometricService {
   private async getStorageDetails({
     clientKeyHalfB64,
   }: {
-    clientKeyHalfB64: string;
+    clientKeyHalfB64: string | undefined;
   }): Promise<{ key_material: biometrics.KeyMaterial; ivB64: string }> {
     if (this._osKeyHalf == null) {
       // Prompts Windows Hello
       const keyMaterial = await biometrics.deriveKeyMaterial(this._iv);
       this._osKeyHalf = keyMaterial.keyB64;
       this._iv = keyMaterial.ivB64;
+    }
+
+    if (this._iv == null) {
+      throw new Error("Initialization Vector is null");
     }
 
     return {
@@ -122,7 +126,7 @@ export default class BiometricWindowsMain implements OsBiometricService {
 
   // Nulls out key material in order to force a re-derive. This should only be used in getBiometricKey
   // when we want to force a re-derive of the key material.
-  private setIv(iv: string) {
+  private setIv(iv?: string) {
     this._iv = iv;
     this._osKeyHalf = null;
   }
@@ -141,9 +145,9 @@ export default class BiometricWindowsMain implements OsBiometricService {
     encryptedValue: EncString,
     service: string,
     storageKey: string,
-    clientKeyPartB64: string,
+    clientKeyPartB64: string | undefined,
   ) {
-    if (encryptedValue.iv == null || encryptedValue == null) {
+    if (encryptedValue == null || encryptedValue.iv == null) {
       return;
     }
 
@@ -175,7 +179,7 @@ export default class BiometricWindowsMain implements OsBiometricService {
     storageKey,
   }: {
     value: SymmetricCryptoKey;
-    clientKeyPartB64: string;
+    clientKeyPartB64: string | undefined;
     service: string;
     storageKey: string;
   }): Promise<boolean> {
@@ -206,7 +210,7 @@ export default class BiometricWindowsMain implements OsBiometricService {
   /** Derives a witness key from a symmetric key being stored for biometric protection */
   private witnessKeyMaterial(
     symmetricKey: SymmetricCryptoKey,
-    clientKeyPartB64: string,
+    clientKeyPartB64: string | undefined,
   ): biometrics.KeyMaterial {
     const key = symmetricKey?.macKeyB64 ?? symmetricKey?.keyB64;
     return {
