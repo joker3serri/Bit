@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { combineLatest, map, mergeMap, Observable, Subject, switchMap, takeUntil } from "rxjs";
+import { combineLatest, map, Observable, Subject, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -12,7 +12,6 @@ import {
   canAccessReportingTab,
   canAccessSettingsTab,
   canAccessVaultTab,
-  getOrganizationById,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -22,6 +21,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { getById } from "@bitwarden/common/platform/misc";
 import { BannerModule, IconModule } from "@bitwarden/components";
 
 import { OrgSwitcherComponent } from "../../../layouts/org-switcher/org-switcher.component";
@@ -48,6 +48,7 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   protected orgFilter = (org: Organization) => canAccessOrgAdmin(org);
 
   organization$: Observable<Organization>;
+  canAccessExport$: Observable<boolean>;
   showPaymentAndHistory$: Observable<boolean>;
   hideNewOrgButton$: Observable<boolean>;
   organizationIsUnmanaged$: Observable<boolean>;
@@ -72,15 +73,13 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
     );
 
     this.organization$ = this.route.params
-      .pipe(takeUntil(this._destroy))
-      .pipe<string>(map((p) => p.organizationId))
-      .pipe(
-        mergeMap((id) => {
-          return this.organizationService.organizations$
-            .pipe(takeUntil(this._destroy))
-            .pipe(getOrganizationById(id));
-        }),
-      );
+      .pipe(map((p) => p.organizationId))
+      .pipe(switchMap((id) => this.organizationService.organizations$.pipe(getById(id))));
+
+    this.canAccessExport$ = combineLatest([
+      this.organization$,
+      this.configService.getFeatureFlag$(FeatureFlag.PM11360RemoveProviderExportPermission),
+    ]).pipe(map(([org, removeProviderExport]) => org.canAccessExport(removeProviderExport)));
 
     this.showPaymentAndHistory$ = this.organization$.pipe(
       map(

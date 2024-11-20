@@ -169,11 +169,26 @@ export class Organization {
   }
 
   get canAccessImport() {
-    return this.isAdmin || this.permissions.accessImportExport || this.canCreateNewCollections;
+    return (
+      this.isProviderUser ||
+      this.type === OrganizationUserType.Owner ||
+      this.type === OrganizationUserType.Admin ||
+      this.permissions.accessImportExport ||
+      this.canCreateNewCollections // To allow users to create collections and then import into them
+    );
   }
 
-  get canAccessExport() {
-    return this.isAdmin || this.permissions.accessImportExport;
+  canAccessExport(removeProviderExport: boolean) {
+    if (!removeProviderExport && this.isProviderUser) {
+      return true;
+    }
+
+    return (
+      this.isMember &&
+      (this.type === OrganizationUserType.Owner ||
+        this.type === OrganizationUserType.Admin ||
+        this.permissions.accessImportExport)
+    );
   }
 
   get canAccessReports() {
