@@ -5,6 +5,7 @@ import {
   SsoClientId,
   SsoComponentService,
 } from "@bitwarden/auth/angular";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 /**
@@ -20,15 +21,20 @@ export class DesktopSsoComponentService
   onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginTde: () => Promise<void>;
 
-  constructor(private syncService: SyncService) {
+  constructor(
+    private syncService: SyncService,
+    private logService: LogService,
+  ) {
     super();
     this.clientId = SsoClientId.Desktop;
     this.redirectUri = "bitwarden://sso-callback";
 
     this.onSuccessfulLogin = async () => {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.syncService.fullSync(true);
+      try {
+        await this.syncService.fullSync(true, true);
+      } catch (error) {
+        this.logService.error("Error syncing after SSO login:", error);
+      }
     };
 
     this.onSuccessfulLoginTde = async () => {
