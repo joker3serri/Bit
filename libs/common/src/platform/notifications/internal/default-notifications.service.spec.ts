@@ -1,4 +1,4 @@
-import { mock } from "jest-mock-extended";
+import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, bufferCount, firstValueFrom, ObservedValueOf, Subject } from "rxjs";
 
 import { LogoutReason } from "@bitwarden/auth/common";
@@ -23,49 +23,87 @@ import {
   DISABLED_NOTIFICATIONS_URL,
 } from "./default-notifications.service";
 import { SignalRNotification, SignalRConnectionService } from "./signalr-connection.service";
-import { WebPushConnector } from "./webpush-connection.service";
+import { WebPushConnectionService, WebPushConnector } from "./webpush-connection.service";
 import { WorkerWebPushConnectionService } from "./worker-webpush-connection.service";
 
 describe("NotificationsService", () => {
-  const syncService = mock<SyncService>();
-  const appIdService = mock<AppIdService>();
-  const environmentService = mock<EnvironmentService>();
-  const logoutCallback = jest.fn<Promise<void>, [logoutReason: LogoutReason]>();
-  const messagingService = mock<MessageSender>();
-  const accountService = mock<AccountService>();
-  const signalRNotificationConnectionService = mock<SignalRConnectionService>();
-  const authService = mock<AuthService>();
-  const webPushNotificationConnectionService = mock<WorkerWebPushConnectionService>();
+  let syncService: MockProxy<SyncService>;
+  let appIdService: MockProxy<AppIdService>;
+  let environmentService: MockProxy<EnvironmentService>;
+  let logoutCallback: jest.Mock<Promise<void>, [logoutReason: LogoutReason]>;
+  let messagingService: MockProxy<MessageSender>;
+  let accountService: MockProxy<AccountService>;
+  let signalRNotificationConnectionService: MockProxy<SignalRConnectionService>;
+  let authService: MockProxy<AuthService>;
+  let webPushNotificationConnectionService: MockProxy<WebPushConnectionService>;
 
-  const activeAccount = new BehaviorSubject<ObservedValueOf<AccountService["activeAccount$"]>>(
-    null,
-  );
-  accountService.activeAccount$ = activeAccount.asObservable();
+  let activeAccount: BehaviorSubject<ObservedValueOf<AccountService["activeAccount$"]>>;
 
-  const environment = new BehaviorSubject<ObservedValueOf<EnvironmentService["environment$"]>>({
-    getNotificationsUrl: () => "https://notifications.bitwarden.com",
-  } as Environment);
+  let environment: BehaviorSubject<ObservedValueOf<EnvironmentService["environment$"]>>;
 
-  environmentService.environment$ = environment;
+  let authStatusGetter: (userId: UserId) => BehaviorSubject<AuthenticationStatus>;
 
-  const authStatusGetter = Matrix.autoMockMethod(
-    authService.authStatusFor$,
-    () => new BehaviorSubject<AuthenticationStatus>(AuthenticationStatus.LoggedOut),
-  );
+  let webPushSupportGetter: (userId: UserId) => BehaviorSubject<SupportStatus<WebPushConnector>>;
 
-  const webPushSupportGetter = Matrix.autoMockMethod(
-    webPushNotificationConnectionService.supportStatus$,
-    () =>
-      new BehaviorSubject<SupportStatus<WebPushConnector>>({
-        type: "not-supported",
-        reason: "test",
-      }),
-  );
+  let signalrNotificationGetter: (
+    userId: UserId,
+    notificationsUrl: string,
+  ) => Subject<SignalRNotification>;
 
-  const signalrNotificationGetter = Matrix.autoMockMethod(
-    signalRNotificationConnectionService.connect$,
-    () => new Subject<SignalRNotification>(),
-  );
+  let sut: DefaultNotificationsService;
+
+  beforeEach(() => {
+    syncService = mock<SyncService>();
+    appIdService = mock<AppIdService>();
+    environmentService = mock<EnvironmentService>();
+    logoutCallback = jest.fn<Promise<void>, [logoutReason: LogoutReason]>();
+    messagingService = mock<MessageSender>();
+    accountService = mock<AccountService>();
+    signalRNotificationConnectionService = mock<SignalRConnectionService>();
+    authService = mock<AuthService>();
+    webPushNotificationConnectionService = mock<WorkerWebPushConnectionService>();
+
+    activeAccount = new BehaviorSubject<ObservedValueOf<AccountService["activeAccount$"]>>(null);
+    accountService.activeAccount$ = activeAccount.asObservable();
+
+    environment = new BehaviorSubject<ObservedValueOf<EnvironmentService["environment$"]>>({
+      getNotificationsUrl: () => "https://notifications.bitwarden.com",
+    } as Environment);
+
+    environmentService.environment$ = environment;
+
+    authStatusGetter = Matrix.autoMockMethod(
+      authService.authStatusFor$,
+      () => new BehaviorSubject<AuthenticationStatus>(AuthenticationStatus.LoggedOut),
+    );
+
+    webPushSupportGetter = Matrix.autoMockMethod(
+      webPushNotificationConnectionService.supportStatus$,
+      () =>
+        new BehaviorSubject<SupportStatus<WebPushConnector>>({
+          type: "not-supported",
+          reason: "test",
+        }),
+    );
+
+    signalrNotificationGetter = Matrix.autoMockMethod(
+      signalRNotificationConnectionService.connect$,
+      () => new Subject<SignalRNotification>(),
+    );
+
+    sut = new DefaultNotificationsService(
+      syncService,
+      appIdService,
+      environmentService,
+      logoutCallback,
+      messagingService,
+      accountService,
+      signalRNotificationConnectionService,
+      authService,
+      webPushNotificationConnectionService,
+      mock<LogService>(),
+    );
+  });
 
   const mockUser1 = "user1" as UserId;
   const mockUser2 = "user2" as UserId;
@@ -84,18 +122,35 @@ describe("NotificationsService", () => {
     } as Environment);
   }
 
-  const sut = new DefaultNotificationsService(
-    syncService,
-    appIdService,
-    environmentService,
-    logoutCallback,
-    messagingService,
-    accountService,
-    signalRNotificationConnectionService,
-    authService,
-    webPushNotificationConnectionService,
-    mock<LogService>(),
-  );
+  const expectNotification = (
+    notification: readonly [NotificationResponse, UserId],
+    expectedUser: UserId,
+    expectedType: NotificationType,
+  ) => {
+    const [actualNotification, actualUser] = notification;
+    expect(actualUser).toBe(expectedUser);
+    expect(actualNotification.type).toBe(expectedType);
+  };
+
+  it("emits notifications through WebPush when supported", async () => {
+    const notificationsPromise = firstValueFrom(sut.notifications$.pipe(bufferCount(2)));
+
+    emitActiveUser(mockUser1);
+    emitNotificationUrl("http://test.example.com");
+    authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
+
+    const webPush = mock<WebPushConnector>();
+    const webPushSubject = new Subject<NotificationResponse>();
+    webPush.notifications$ = webPushSubject;
+
+    webPushSupportGetter(mockUser1).next({ type: "supported", service: webPush });
+    webPushSubject.next(new NotificationResponse({ type: NotificationType.SyncFolderCreate }));
+    webPushSubject.next(new NotificationResponse({ type: NotificationType.SyncFolderDelete }));
+
+    const notifications = await notificationsPromise;
+    expectNotification(notifications[0], mockUser1, NotificationType.SyncFolderCreate);
+    expectNotification(notifications[1], mockUser1, NotificationType.SyncFolderDelete);
+  });
 
   test("observable chain reacts to inputs properly", async () => {
     // Sets up two active unlocked user, one pointing to an environment with WebPush, the other
@@ -145,6 +200,12 @@ describe("NotificationsService", () => {
     // User could turn off notifications (this would generally happen while there is no active user)
     emitNotificationUrl("http://-");
 
+    // Since notifications are shut down by this url, this notification shouldn't be read ever
+    signalrNotificationGetter(mockUser2, "http://-").next({
+      type: "ReceiveMessage",
+      message: new NotificationResponse({ type: NotificationType.LogOut }),
+    });
+
     // User could turn them back on
     emitNotificationUrl("http://test.example.com");
 
@@ -156,23 +217,13 @@ describe("NotificationsService", () => {
 
     const notifications = await notificationsPromise;
 
-    const expectNotification = (
-      notification: readonly [NotificationResponse, UserId],
-      expectedUser: UserId,
-      expectedType: NotificationType,
-    ) => {
-      const [actualNotification, actualUser] = notification;
-      expect(actualUser).toBe(expectedUser);
-      expect(actualNotification.type).toBe(expectedType);
-    };
-
     expectNotification(notifications[0], mockUser1, NotificationType.LogOut);
     expectNotification(notifications[1], mockUser1, NotificationType.SyncCipherCreate);
     expectNotification(notifications[2], mockUser2, NotificationType.SyncCipherUpdate);
     expectNotification(notifications[3], mockUser2, NotificationType.SyncCipherDelete);
   });
 
-  test("that a transition from locked to unlocked doesn't reconnect", async () => {
+  it("does not re-connect when the user transitions from locked to unlocked doesn't reconnect", async () => {
     emitActiveUser(mockUser1);
     emitNotificationUrl("http://test.example.com");
     authStatusGetter(mockUser1).next(AuthenticationStatus.Locked);
@@ -190,6 +241,10 @@ describe("NotificationsService", () => {
       "http://test.example.com",
     );
     notificationsSubscriptions.unsubscribe();
+  });
+
+  it("re-connects when a user transitions from ", () => {
+    //
   });
 
   test("that a disabled notification stream does not connect to any notification stream", () => {

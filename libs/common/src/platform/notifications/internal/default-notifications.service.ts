@@ -96,7 +96,7 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
         return this.activitySubject;
       }),
       switchMap((activityStatus) => {
-        if (activityStatus !== "inactive") {
+        if (activityStatus === "inactive") {
           return EMPTY;
         }
         return this.choosePushService(userId, notificationsUrl);
