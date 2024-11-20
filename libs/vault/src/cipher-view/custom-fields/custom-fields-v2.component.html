@@ -10,8 +10,21 @@
       data-testid="custom-field"
     >
       <bit-form-field *ngIf="field.type === fieldType.Text" [disableReadOnlyBorder]="last">
-        <bit-label>{{ field.name }}</bit-label>
-        <input readonly bitInput type="text" [value]="field.value" aria-readonly="true" />
+        <bit-label
+          for="textValue"
+          class="draggable"
+          draggable="true"
+          (dragstart)="setTextDataOnDrag($event, field.value)"
+          >{{ field.name }}</bit-label
+        >
+        <input
+          readonly
+          id="textValue"
+          bitInput
+          type="text"
+          [value]="field.value"
+          aria-readonly="true"
+        />
         <button
           bitIconButton="bwi-clone"
           bitSuffix
@@ -24,8 +37,15 @@
         ></button>
       </bit-form-field>
       <bit-form-field *ngIf="field.type === fieldType.Hidden" [disableReadOnlyBorder]="last">
-        <bit-label>{{ field.name }}</bit-label>
+        <bit-label
+          for="passwordValue"
+          class="draggable"
+          draggable="true"
+          (dragstart)="setTextDataOnDrag($event, field.value)"
+          >{{ field.name }}</bit-label
+        >
         <input
+          id="passwordValue"
           readonly
           bitInput
           type="password"
@@ -54,12 +74,20 @@
       <bit-form-control *ngIf="field.type === fieldType.Boolean">
         <input
           bitCheckbox
+          id="checkboxValue"
           type="checkbox"
           [checked]="field.value === 'true'"
           aria-readonly="true"
           disabled
         />
-        <bit-label> {{ field.name }} </bit-label>
+        <bit-label
+          for="checkboxValue"
+          class="draggable"
+          draggable="true"
+          (dragstart)="setTextDataOnDrag($event, field.value)"
+        >
+          {{ field.name }}
+        </bit-label>
       </bit-form-control>
       <bit-form-field *ngIf="field.type === fieldType.Linked" [disableReadOnlyBorder]="last">
         <bit-label> {{ "cfTypeLinked" | i18n }}: {{ field.name }} </bit-label>

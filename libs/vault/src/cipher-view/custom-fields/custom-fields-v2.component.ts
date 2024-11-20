@@ -89,4 +89,8 @@ export class CustomFieldV2Component implements OnInit {
         return null;
     }
   }
+
+  setTextDataOnDrag(event: DragEvent, data: string) {
+    event.dataTransfer.setData("text", data);
+  }
 }

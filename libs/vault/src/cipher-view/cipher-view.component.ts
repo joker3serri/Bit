@@ -127,4 +127,8 @@ export class CipherViewComponent implements OnChanges, OnDestroy {
         .pipe(takeUntil(this.destroyed$));
     }
   }
+
+  setTextDataOnDrag(event: DragEvent, data: string) {
+    event.dataTransfer.setData("text", data);
+  }
 }

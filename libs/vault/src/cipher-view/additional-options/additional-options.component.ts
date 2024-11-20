@@ -30,4 +30,8 @@ import {
 })
 export class AdditionalOptionsComponent {
   @Input() notes: string;
+
+  setTextDataOnDrag(event: DragEvent, data: string) {
+    event.dataTransfer.setData("text", data);
+  }
 }
