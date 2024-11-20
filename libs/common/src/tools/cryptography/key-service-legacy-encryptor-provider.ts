@@ -40,7 +40,7 @@ export class KeyServiceLegacyEncryptorProvider implements LegacyEncryptorProvide
       switchMap((userId) =>
         this.keyService.userKey$(userId).pipe(
           // wait until the key becomes available
-          skipWhile((key) => !!key),
+          skipWhile((key) => !key),
           // complete when the key becomes unavailable
           takeWhile((key) => !!key),
           map((key) => {
@@ -72,7 +72,7 @@ export class KeyServiceLegacyEncryptorProvider implements LegacyEncryptorProvide
       switchMap((pair) =>
         this.keyService.orgKeys$(pair.userId).pipe(
           // wait until the key becomes available
-          skipWhile((keys) => !!keys),
+          skipWhile((keys) => !keys),
           // complete when the key becomes unavailable
           takeWhile((keys) => !!keys),
           map((keys) => {
