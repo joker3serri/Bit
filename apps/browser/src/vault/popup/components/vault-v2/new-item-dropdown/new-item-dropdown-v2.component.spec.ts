@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { DialogService } from "@bitwarden/components";
@@ -37,6 +38,7 @@ describe("NewItemDropdownV2Component", () => {
     } as any;
 
     await TestBed.configureTestingModule({
+      imports: [JslibModule],
       providers: [
         { provide: Router, useValue: routerMock },
         { provide: DialogService, useValue: dialogServiceMock },
