@@ -22,14 +22,8 @@
       >
         <!-- Text Field -->
         <bit-form-field *ngIf="field.value.type === FieldType.Text" class="tw-flex-1" disableMargin>
-          <bit-label
-            for="value"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, value)"
-            >{{ field.value.name }}</bit-label
-          >
-          <input bitInput id="value" formControlName="value" data-testid="custom-text-field" />
+          <bit-label>{{ field.value.name }}</bit-label>
+          <input bitInput formControlName="value" data-testid="custom-text-field" />
         </bit-form-field>
 
         <!-- Hidden Field -->
@@ -38,16 +32,9 @@
           class="tw-flex-1"
           disableMargin
         >
-          <bit-label
-            for="fieldValue"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, value)"
-            >{{ field.value.name }}</bit-label
-          >
+          <bit-label>{{ field.value.name }}</bit-label>
           <input
             bitInput
-            id="fieldValue"
             formControlName="value"
             type="password"
             data-testid="custom-hidden-field"
@@ -72,18 +59,11 @@
         >
           <input
             bitCheckbox
-            id="checkboxValue"
             formControlName="value"
             type="checkbox"
             data-testid="custom-boolean-field"
           />
-          <bit-label
-            for="checkboxValue"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, value)"
-            >{{ value }}</bit-label
-          >
+          <bit-label>{{ field.value.name }}</bit-label>
         </bit-form-control>
 
         <!-- Linked Field -->
@@ -92,16 +72,9 @@
           class="tw-flex-1"
           disableMargin
         >
-          <bit-label
-            for="selectValue"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, option.value)"
-            >{{ field.value.name }}</bit-label
-          >
+          <bit-label>{{ field.value.name }}</bit-label>
           <bit-select formControlName="linkedId" data-testid="custom-linked-field">
             <bit-option
-              id="selectValue"
               *ngFor="let option of linkedFieldOptions"
               [value]="option.value"
               [label]="option.name"
