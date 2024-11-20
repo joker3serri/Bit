@@ -15,7 +15,7 @@ export function canAccessSettingsTab(org: Organization): boolean {
     org.canManageSso ||
     org.canManageScim ||
     org.canAccessImport ||
-    org.canAccessExport ||
+    org.canAccessExport(false) || // Feature flag value doesn't matter here, providers will have access to this group anyway
     org.canManageDeviceApprovals
   );
 }
