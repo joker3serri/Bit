@@ -11,6 +11,7 @@ import {
   Environment,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
@@ -26,14 +27,14 @@ describe("ExtensionSsoComponentService", () => {
   let environmentService: MockProxy<EnvironmentService>;
   let i18nService: MockProxy<I18nService>;
   let windowMock: MockProxy<Window>;
-
+  let logService: MockProxy<LogService>;
   beforeEach(() => {
     syncService = mock<SyncService>();
     authService = mock<AuthService>();
     environmentService = mock<EnvironmentService>();
     i18nService = mock<I18nService>();
     windowMock = mock<Window>();
-
+    logService = mock<LogService>();
     environmentService.environment$ = new BehaviorSubject<Environment>({
       getWebVaultUrl: () => baseUrl,
     } as Environment);
@@ -46,6 +47,7 @@ describe("ExtensionSsoComponentService", () => {
         { provide: EnvironmentService, useValue: environmentService },
         { provide: I18nService, useValue: i18nService },
         { provide: WINDOW, useValue: windowMock },
+        { provide: LogService, useValue: logService },
       ],
     });
 
@@ -72,7 +74,17 @@ describe("ExtensionSsoComponentService", () => {
 
       await service.onSuccessfulLogin();
 
-      expect(syncService.fullSync).toHaveBeenCalledWith(true);
+      expect(syncService.fullSync).toHaveBeenCalledWith(true, true);
+    });
+
+    it("logs error when sync fails", async () => {
+      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.LoggedOut);
+      const error = new Error("Sync failed");
+      syncService.fullSync.mockRejectedValue(error);
+
+      await service.onSuccessfulLogin();
+
+      expect(logService.error).toHaveBeenCalledWith("Error syncing after SSO login:", error);
     });
 
     it("reloads windows when vault is locked", async () => {
@@ -101,10 +113,19 @@ describe("ExtensionSsoComponentService", () => {
   });
 
   describe("onSuccessfulLoginTde", () => {
-    it("performs full sync", async () => {
+    it("performs full sync with both parameters true", async () => {
       await service.onSuccessfulLoginTde();
 
-      expect(syncService.fullSync).toHaveBeenCalledWith(true);
+      expect(syncService.fullSync).toHaveBeenCalledWith(true, true);
+    });
+
+    it("logs error when sync fails", async () => {
+      const error = new Error("Sync failed");
+      syncService.fullSync.mockRejectedValue(error);
+
+      await service.onSuccessfulLoginTde();
+
+      expect(logService.error).toHaveBeenCalledWith("Error syncing after TDE SSO login:", error);
     });
   });
 
