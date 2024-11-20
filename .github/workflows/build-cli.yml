@@ -177,7 +177,7 @@ jobs:
           if-no-files-found: error
 
   cli-windows:
-    name: Windows - "${{ matrix.license_type.readable }}"
+    name: Windows - ${{ matrix.license_type.readable }}
     strategy:
       matrix:
         license_type:
