@@ -1,6 +1,6 @@
 import { MockProxy, mock } from "jest-mock-extended";
 
-import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 
 import { RouterService } from "../../../../core/router.service";
 import { AcceptOrganizationInviteService } from "../../../organization-invite/accept-organization.service";
@@ -10,19 +10,19 @@ import { WebLoginDecryptionOptionsService } from "./web-login-decryption-options
 describe("WebLoginDecryptionOptionsService", () => {
   let service: WebLoginDecryptionOptionsService;
 
+  let messagingService: MockProxy<MessagingService>;
   let routerService: MockProxy<RouterService>;
   let acceptOrganizationInviteService: MockProxy<AcceptOrganizationInviteService>;
-  let validationService: MockProxy<ValidationService>;
 
   beforeEach(() => {
+    messagingService = mock<MessagingService>();
     routerService = mock<RouterService>();
     acceptOrganizationInviteService = mock<AcceptOrganizationInviteService>();
-    validationService = mock<ValidationService>();
 
     service = new WebLoginDecryptionOptionsService(
+      messagingService,
       routerService,
       acceptOrganizationInviteService,
-      validationService,
     );
   });
 
