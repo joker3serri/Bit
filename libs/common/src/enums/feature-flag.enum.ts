@@ -40,6 +40,7 @@ export enum FeatureFlag {
   NewDeviceVerificationTemporaryDismiss = "new-device-temporary-dismiss",
   NewDeviceVerificationPermanentDismiss = "new-device-permanent-dismiss",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
+  MacOsNativeCredentialSync = "macos-native-credential-sync",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -90,6 +91,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.NewDeviceVerificationTemporaryDismiss]: FALSE,
   [FeatureFlag.NewDeviceVerificationPermanentDismiss]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
+  [FeatureFlag.MacOsNativeCredentialSync]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;

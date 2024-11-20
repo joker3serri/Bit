@@ -51,6 +51,7 @@ import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/s
 import { ClientType } from "@bitwarden/common/enums";
 import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/abstractions/process-reload.service";
 import { ProcessReloadService } from "@bitwarden/common/key-management/services/process-reload.service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -303,7 +304,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: DesktopAutofillService,
-    deps: [LogService, CipherServiceAbstraction],
+    deps: [LogService, CipherServiceAbstraction, ConfigService],
   }),
   safeProvider({
     provide: NativeMessagingManifestService,

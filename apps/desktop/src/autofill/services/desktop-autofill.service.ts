@@ -1,7 +1,9 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { Subject, mergeMap, takeUntil } from "rxjs";
+import { EMPTY, Subject, distinctUntilChanged, mergeMap, switchMap, takeUntil } from "rxjs";
 
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { UriMatchStrategy } from "@bitwarden/common/models/domain/domain-service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { getCredentialsForAutofill } from "@bitwarden/common/platform/services/fido2/fido2-autofill-utils";
@@ -23,11 +25,21 @@ export class DesktopAutofillService implements OnDestroy {
   constructor(
     private logService: LogService,
     private cipherService: CipherService,
+    private configService: ConfigService,
   ) {}
 
   async init() {
-    this.cipherService.cipherViews$
+    this.configService
+      .getFeatureFlag$(FeatureFlag.MacOsNativeCredentialSync)
       .pipe(
+        distinctUntilChanged(),
+        switchMap((enabled) => {
+          if (!enabled) {
+            return EMPTY;
+          }
+
+          return this.cipherService.cipherViews$;
+        }),
         mergeMap((cipherViewMap) => this.sync(Object.values(cipherViewMap))),
         takeUntil(this.destroy$),
       )
