@@ -36,6 +36,7 @@ import {
   UserLockIcon,
   VaultIcon,
   LoginDecryptionOptionsComponent,
+  DevicesIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -496,13 +497,7 @@ const routes: Routes = [
       path: "login-initiated",
       canActivate: [tdeDecryptionRequiredGuard()],
       data: {
-        pageTitle: {
-          key: "deviceApprovalRequiredV2",
-        },
-        pageSubtitle: {
-          key: "selectAnApprovalOptionBelow",
-        },
-        titleId: "deviceApprovalRequiredV2",
+        pageIcon: DevicesIcon,
       },
       children: [{ path: "", component: LoginDecryptionOptionsComponent }],
     },
