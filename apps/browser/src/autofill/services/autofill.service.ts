@@ -115,11 +115,16 @@ export default class AutofillService implements AutofillServiceInterface {
         ),
       );
 
-    void BrowserApi.tabSendMessage(tab, {
-      tab: tab,
-      command: AutofillMessageCommand.collectPageDetails,
-      sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
-    }).catch(() => {
+    void BrowserApi.tabSendMessage(
+      tab,
+      {
+        tab: tab,
+        command: AutofillMessageCommand.collectPageDetails,
+        sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
+      },
+      null,
+      true,
+    ).catch(() => {
       // When `tabSendMessage` throws an error the `pageDetailsFromTab$` will not emit,
       // fallback to an empty array
       pageDetailsFallback$.next([]);

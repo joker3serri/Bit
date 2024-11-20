@@ -165,11 +165,16 @@ describe("AutofillService", () => {
     it("sends a `collectPageDetails` message to the passed tab", () => {
       autofillService.collectPageDetailsFromTab$(tab);
 
-      expect(BrowserApi.tabSendMessage).toHaveBeenCalledWith(tab, {
-        command: AutofillMessageCommand.collectPageDetails,
-        sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
+      expect(BrowserApi.tabSendMessage).toHaveBeenCalledWith(
         tab,
-      });
+        {
+          command: AutofillMessageCommand.collectPageDetails,
+          sender: AutofillMessageSender.collectPageDetailsFromTabObservable,
+          tab,
+        },
+        null,
+        true,
+      );
     });
 
     it("builds an array of page details from received `collectPageDetailsResponse` messages", async () => {

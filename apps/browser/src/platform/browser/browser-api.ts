@@ -200,6 +200,7 @@ export class BrowserApi {
     tab: chrome.tabs.Tab,
     obj: T,
     options: chrome.tabs.MessageSendOptions = null,
+    rejectOnError = false,
   ): Promise<TResponse> {
     if (!tab || !tab.id) {
       return;
@@ -207,7 +208,7 @@ export class BrowserApi {
 
     return new Promise<TResponse>((resolve, reject) => {
       chrome.tabs.sendMessage(tab.id, obj, options, (response) => {
-        if (chrome.runtime.lastError) {
+        if (chrome.runtime.lastError && rejectOnError) {
           // Some error happened
           reject();
         }
