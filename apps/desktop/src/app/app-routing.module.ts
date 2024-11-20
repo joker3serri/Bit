@@ -18,7 +18,6 @@ import { extensionRefreshRedirect } from "@bitwarden/angular/utils/extension-ref
 import {
   AnonLayoutWrapperComponent,
   AnonLayoutWrapperData,
-  DevicesIcon,
   LoginComponent,
   LoginSecondaryContentComponent,
   LockIcon,

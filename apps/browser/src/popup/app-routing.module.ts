@@ -21,7 +21,6 @@ import { extensionRefreshSwap } from "@bitwarden/angular/utils/extension-refresh
 import {
   AnonLayoutWrapperComponent,
   AnonLayoutWrapperData,
-  DevicesIcon,
   LoginComponent,
   LoginSecondaryContentComponent,
   LockIcon,
