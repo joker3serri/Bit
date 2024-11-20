@@ -22,7 +22,6 @@ import { PopOutComponent } from "../../../../platform/popup/components/pop-out.c
 export class MoreFromBitwardenPageComponent {
   canAccessPremium$: Observable<boolean>;
   protected isFreeFamilyPolicyEnabled$: Observable<boolean>;
-  protected isFreeFamilyEnabled: boolean;
   protected hasSingleEnterpriseOrg$: Observable<boolean>;
 
   constructor(
