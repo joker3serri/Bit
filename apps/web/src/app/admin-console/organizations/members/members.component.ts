@@ -784,21 +784,23 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   get showBulkConfirmUsers(): boolean {
-    return (
-      !this.accountDeprovisioningEnabled ||
-      this.dataSource
-        .getCheckedUsers()
-        .every((member) => member.status == this.userStatusType.Accepted)
-    );
+    if (!this.accountDeprovisioningEnabled) {
+      return super.showBulkConfirmUsers;
+    }
+
+    return this.dataSource
+      .getCheckedUsers()
+      .every((member) => member.status == this.userStatusType.Accepted);
   }
 
   get showBulkReinviteUsers(): boolean {
-    return (
-      !this.accountDeprovisioningEnabled ||
-      this.dataSource
-        .getCheckedUsers()
-        .every((member) => member.status == this.userStatusType.Invited)
-    );
+    if (!this.accountDeprovisioningEnabled) {
+      return super.showBulkReinviteUsers;
+    }
+
+    return this.dataSource
+      .getCheckedUsers()
+      .every((member) => member.status == this.userStatusType.Invited);
   }
 
   get showBulkRestoreUsers(): boolean {
@@ -827,12 +829,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   get showBulkDeleteUsers(): boolean {
-    const checkedUsers = this.dataSource.getCheckedUsers();
-
-    if (
-      !this.accountDeprovisioningEnabled ||
-      !checkedUsers.every((member) => member.managedByOrganization)
-    ) {
+    if (!this.accountDeprovisioningEnabled) {
       return false;
     }
 
@@ -842,6 +839,8 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
       this.userStatusType.Revoked,
     ];
 
-    return checkedUsers.every((member) => validStatuses.includes(member.status));
+    return this.dataSource
+      .getCheckedUsers()
+      .every((member) => member.managedByOrganization && validStatuses.includes(member.status));
   }
 }
