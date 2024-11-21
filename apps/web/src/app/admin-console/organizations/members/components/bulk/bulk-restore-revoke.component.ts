@@ -55,13 +55,18 @@ export class BulkRestoreRevokeComponent {
 
       response.data.forEach((entry) => {
         let bulkMessage;
+        let error;
         const isManaged = this.users.find((u) => u.id === entry.id)?.managedByOrganization;
         if (isManaged) {
           bulkMessage = this.isRevoking ? "bulkManagedRevokedMessage" : "bulkManagedRestoreMessage";
+          error =
+            entry.error !== ""
+              ? this.i18nService.t("cannotRestoreAccessError")
+              : this.i18nService.t(bulkMessage);
         } else {
           bulkMessage = this.isRevoking ? "bulkRevokedMessage" : "bulkRestoredMessage";
+          error = entry.error !== "" ? entry.error : this.i18nService.t(bulkMessage);
         }
-        const error = entry.error !== "" ? entry.error : this.i18nService.t(bulkMessage);
         this.statuses.set(entry.id, error);
         if (entry.error !== "") {
           this.nonCompliantMembers = true;

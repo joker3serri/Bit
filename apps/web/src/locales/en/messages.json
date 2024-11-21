@@ -50,6 +50,9 @@
   "restoreMembersInstructions": {
     "message": "To restore a member's account, go to the Revoked tab. The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
+  "cannotRestoreAccessError":{
+    "message": "Cannot restore account access"
+  },
   "allApplicationsWithCount": {
     "message": "All applications ($COUNT$)",
     "placeholders": {
