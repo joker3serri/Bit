@@ -26,11 +26,9 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
-import { UserAsymmetricKeysRegenerationService } from "@bitwarden/key-management";
 
 import { EnvironmentComponent } from "../environment.component";
 
@@ -81,7 +79,6 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit, OnDe
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
     private configService: ConfigService,
-    userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {
     super(
       devicesApiService,
@@ -105,10 +102,8 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit, OnDe
       registerRouteService,
       toastService,
     );
-    this.onSuccessfulLogin = (userId: UserId) => {
-      return syncService.fullSync(true).then(() => {
-        userAsymmetricKeysRegenerationService.handleUserAsymmetricKeysRegeneration(userId);
-      });
+    this.onSuccessfulLogin = () => {
+      return syncService.fullSync(true).then(() => {});
     };
   }
 

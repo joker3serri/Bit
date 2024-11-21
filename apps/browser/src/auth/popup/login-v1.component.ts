@@ -21,11 +21,9 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { UserId } from "@bitwarden/common/types/guid";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
-import { UserAsymmetricKeysRegenerationService } from "@bitwarden/key-management";
 
 import { flagEnabled } from "../../platform/flags";
 
@@ -57,7 +55,6 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
     webAuthnLoginService: WebAuthnLoginServiceAbstraction,
     registerRouteService: RegisterRouteService,
     toastService: ToastService,
-    userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {
     super(
       devicesApiService,
@@ -81,9 +78,8 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit {
       registerRouteService,
       toastService,
     );
-    this.onSuccessfulLogin = async (userId: UserId) => {
+    this.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);
-      await userAsymmetricKeysRegenerationService.handleUserAsymmetricKeysRegeneration(userId);
     };
     this.successRoute = "/tabs/vault";
     this.showPasswordless = flagEnabled("showPasswordless");
