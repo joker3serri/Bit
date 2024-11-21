@@ -33,6 +33,9 @@ import {
 export class ItemHistoryV2Component {
   @Input() cipher: CipherView;
 
+  /** When true, hides the option to view password history */
+  @Input() hidePasswordHistory?: boolean;
+
   constructor(private viewPasswordHistoryService: ViewPasswordHistoryService) {}
 
   get isLogin() {

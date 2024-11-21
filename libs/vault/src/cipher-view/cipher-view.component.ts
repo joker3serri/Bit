@@ -57,6 +57,9 @@ export class CipherViewComponent implements OnChanges, OnDestroy {
   /** Should be set to true when the component is used within the Admin Console */
   @Input() isAdminConsole?: boolean = false;
 
+  /** When true, hides the option to view password history */
+  @Input() hidePasswordHistory?: boolean = false;
+
   organization$: Observable<Organization>;
   folder$: Observable<FolderView>;
   private destroyed$: Subject<void> = new Subject();
