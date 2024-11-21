@@ -168,8 +168,27 @@ export class Organization {
     return (this.isAdmin || this.permissions.accessEventLogs) && this.useEvents;
   }
 
-  get canAccessImportExport() {
-    return this.isAdmin || this.permissions.accessImportExport;
+  get canAccessImport() {
+    return (
+      this.isProviderUser ||
+      this.type === OrganizationUserType.Owner ||
+      this.type === OrganizationUserType.Admin ||
+      this.permissions.accessImportExport ||
+      this.canCreateNewCollections // To allow users to create collections and then import into them
+    );
+  }
+
+  canAccessExport(removeProviderExport: boolean) {
+    if (!removeProviderExport && this.isProviderUser) {
+      return true;
+    }
+
+    return (
+      this.isMember &&
+      (this.type === OrganizationUserType.Owner ||
+        this.type === OrganizationUserType.Admin ||
+        this.permissions.accessImportExport)
+    );
   }
 
   get canAccessReports() {
@@ -283,9 +302,7 @@ export class Organization {
       return true;
     }
 
-    return this.hasProvider && this.providerType === ProviderType.Msp
-      ? this.isProviderUser
-      : this.isOwner;
+    return this.hasBillableProvider ? this.isProviderUser : this.isOwner;
   }
 
   get canEditSubscription() {
@@ -302,6 +319,14 @@ export class Organization {
 
   get hasProvider() {
     return this.providerId != null || this.providerName != null;
+  }
+
+  get hasBillableProvider() {
+    return (
+      this.hasProvider &&
+      (this.providerType === ProviderType.Msp ||
+        this.providerType === ProviderType.MultiOrganizationEnterprise)
+    );
   }
 
   get hasReseller() {
