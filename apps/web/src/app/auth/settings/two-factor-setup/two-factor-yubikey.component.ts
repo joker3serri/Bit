@@ -13,7 +13,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorSetupMethodBaseComponent } from "./two-factor-setup-method-base.component";
 
 interface Key {
   key: string;
@@ -24,7 +24,7 @@ interface Key {
   selector: "app-two-factor-yubikey",
   templateUrl: "two-factor-yubikey.component.html",
 })
-export class TwoFactorYubiKeyComponent extends TwoFactorBaseComponent implements OnInit {
+export class TwoFactorYubiKeyComponent extends TwoFactorSetupMethodBaseComponent implements OnInit {
   type = TwoFactorProviderType.Yubikey;
   keys: Key[];
   anyKeyHasNfc = false;

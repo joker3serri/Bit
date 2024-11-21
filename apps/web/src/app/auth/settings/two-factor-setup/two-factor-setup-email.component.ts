@@ -16,14 +16,17 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorSetupMethodBaseComponent } from "./two-factor-setup-method-base.component";
 
 @Component({
   selector: "app-two-factor-setup-email",
   templateUrl: "two-factor-setup-email.component.html",
   outputs: ["onUpdated"],
 })
-export class TwoFactorSetupEmailComponent extends TwoFactorBaseComponent implements OnInit {
+export class TwoFactorSetupEmailComponent
+  extends TwoFactorSetupMethodBaseComponent
+  implements OnInit
+{
   @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
   type = TwoFactorProviderType.Email;
   sentEmail: string;

@@ -13,13 +13,13 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorSetupMethodBaseComponent } from "./two-factor-setup-method-base.component";
 
 @Component({
   selector: "app-two-factor-duo",
   templateUrl: "two-factor-duo.component.html",
 })
-export class TwoFactorDuoComponent extends TwoFactorBaseComponent implements OnInit {
+export class TwoFactorDuoComponent extends TwoFactorSetupMethodBaseComponent implements OnInit {
   @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
 
   type = TwoFactorProviderType.Duo;

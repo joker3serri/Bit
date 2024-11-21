@@ -18,7 +18,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorSetupMethodBaseComponent } from "./two-factor-setup-method-base.component";
 
 interface Key {
   id: number;
@@ -32,7 +32,7 @@ interface Key {
   selector: "app-two-factor-webauthn",
   templateUrl: "two-factor-webauthn.component.html",
 })
-export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
+export class TwoFactorWebAuthnComponent extends TwoFactorSetupMethodBaseComponent {
   type = TwoFactorProviderType.WebAuthn;
   name: string;
   keys: Key[];

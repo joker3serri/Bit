@@ -18,7 +18,7 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService, ToastService } from "@bitwarden/components";
 
-import { TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorSetupMethodBaseComponent } from "./two-factor-setup-method-base.component";
 
 // NOTE: There are additional options available but these are just the ones we are current using.
 // See: https://github.com/neocotic/qrious#examples
@@ -39,7 +39,7 @@ declare global {
   templateUrl: "two-factor-setup-authenticator.component.html",
 })
 export class TwoFactorSetupAuthenticatorComponent
-  extends TwoFactorBaseComponent
+  extends TwoFactorSetupMethodBaseComponent
   implements OnInit, OnDestroy
 {
   @Output() onChangeStatus = new EventEmitter<boolean>();
