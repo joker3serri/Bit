@@ -115,36 +115,33 @@ export class SshAgentService implements OnDestroy {
             ),
           ),
           // This concatMap handles showing the dialog to approve the request.
-          concatMap(([message, ciphers]) => {
+          switchMap(([message, ciphers]) => {
             const cipherId = message.cipherId as string;
+            const isListRequest = message.isListRequest as boolean;
             const requestId = message.requestId as number;
 
-            // cipherid is empty has the special meaning of "unlock in order to list public keys"
-            if (cipherId == "") {
-              return of(true).pipe(
-                switchMap(async (result) => {
-                  const sshCiphers = ciphers.filter(
-                    (cipher) => cipher.type === CipherType.SshKey && !cipher.isDeleted,
-                  );
-                  const keys = sshCiphers.map((cipher) => {
-                    return {
-                      name: cipher.name,
-                      privateKey: cipher.sshKey.privateKey,
-                      cipherId: cipher.id,
-                    };
-                  });
-                  await ipc.platform.sshAgent.setKeys(keys);
-                  await ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result));
-                }),
-              );
+            if (isListRequest) {
+              (async () => {
+                const sshCiphers = ciphers.filter(
+                  (cipher) => cipher.type === CipherType.SshKey && !cipher.isDeleted,
+                );
+                const keys = sshCiphers.map((cipher) => {
+                  return {
+                    name: cipher.name,
+                    privateKey: cipher.sshKey.privateKey,
+                    cipherId: cipher.id,
+                  };
+                });
+                await ipc.platform.sshAgent.setKeys(keys);
+                await ipc.platform.sshAgent.signRequestResponse(requestId, true);
+              })().catch((e) => this.logService.error("Failed to respond to SSH request", e));
+              return;
             }
 
             if (ciphers === undefined) {
-              return of(false).pipe(
-                switchMap((result) =>
-                  ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result)),
-                ),
-              );
+              ipc.platform.sshAgent
+                .signRequestResponse(requestId, false)
+                .catch((e) => this.logService.error("Failed to respond to SSH request", e));
             }
 
             const cipher = ciphers.find((cipher) => cipher.id == cipherId);
@@ -158,7 +155,7 @@ export class SshAgentService implements OnDestroy {
 
             return dialogRef.closed.pipe(
               switchMap((result) => {
-                return ipc.platform.sshAgent.signRequestResponse(requestId, Boolean(result));
+                return ipc.platform.sshAgent.signRequestResponse(requestId, result);
               }),
             );
           }),

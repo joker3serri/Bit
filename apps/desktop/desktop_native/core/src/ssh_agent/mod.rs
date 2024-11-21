@@ -17,7 +17,7 @@ pub mod importer;
 pub struct BitwardenDesktopAgent {
     keystore: ssh_agent::KeyStore,
     cancellation_token: CancellationToken,
-    show_ui_request_tx: tokio::sync::mpsc::Sender<(u32, String)>,
+    show_ui_request_tx: tokio::sync::mpsc::Sender<(u32, (String, bool))>,
     get_ui_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
     request_id: Arc<Mutex<u32>>,
     /// before first unlock, or after account switching, listing keys should require an unlock to get a list of public keys
@@ -35,8 +35,9 @@ impl ssh_agent::Agent for BitwardenDesktopAgent {
         let request_id = self.get_request_id().await;
 
         let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
+        let message = (request_id, (ssh_key.cipher_uuid.clone(), false));
         self.show_ui_request_tx
-            .send((request_id, ssh_key.cipher_uuid.clone()))
+            .send(message)
             .await
             .expect("Should send request to ui");
         while let Ok((id, response)) = rx_channel.recv().await {
@@ -55,8 +56,9 @@ impl ssh_agent::Agent for BitwardenDesktopAgent {
         let request_id = self.get_request_id().await;
 
         let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
+        let message = (request_id, ("".to_string(), true));
         self.show_ui_request_tx
-            .send((request_id, "".to_string()))
+            .send(message)
             .await
             .expect("Should send request to ui");
         while let Ok((id, response)) = rx_channel.recv().await {
