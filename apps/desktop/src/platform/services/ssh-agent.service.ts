@@ -163,14 +163,14 @@ export class SshAgentService implements OnDestroy {
         )
         .subscribe();
 
-      this.accountService.activeAccount$
-        .pipe(skip(1), takeUntil(this.destroy$))
-        .subscribe((account) => {
+      this.accountService.activeAccount$.pipe(skip(1), takeUntil(this.destroy$)).subscribe({
+        next: (account) => {
           this.logService.info("Active account changed, clearing SSH keys");
           ipc.platform.sshAgent
             .clearKeys()
             .catch((e) => this.logService.error("Failed to clear SSH keys", e));
-        });
+        },
+      });
 
       combineLatest([
         timer(0, this.SSH_REFRESH_INTERVAL),
