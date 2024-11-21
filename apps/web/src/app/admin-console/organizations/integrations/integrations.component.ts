@@ -66,6 +66,7 @@ export class AdminConsoleIntegrationsComponent {
         name: "JumpCloud",
         linkURL: "https://bitwarden.com/help/saml-jumpcloud/",
         image: "../../../../../../../images/integrations/logo-jumpcloud-badge-color.svg",
+        imageDarkMode: "../../../../../../../images/integrations/jumpcloud-darkmode.svg",
         type: IntegrationType.SSO,
       },
       {
@@ -78,12 +79,14 @@ export class AdminConsoleIntegrationsComponent {
         name: "Okta",
         linkURL: "https://bitwarden.com/help/saml-okta/",
         image: "../../../../../../../images/integrations/logo-okta-symbol-black.svg",
+        imageDarkMode: "../../../../../../../images/integrations/okta-darkmode.svg",
         type: IntegrationType.SSO,
       },
       {
         name: "OneLogin",
         linkURL: "https://bitwarden.com/help/saml-onelogin/",
         image: "../../../../../../../images/integrations/logo-onelogin-badge-color.svg",
+        imageDarkMode: "../../../../../../../images/integrations/onelogin-darkmode.svg",
         type: IntegrationType.SSO,
       },
       {
@@ -102,18 +105,21 @@ export class AdminConsoleIntegrationsComponent {
         name: "Okta",
         linkURL: "https://bitwarden.com/help/okta-scim-integration/",
         image: "../../../../../../../images/integrations/logo-okta-symbol-black.svg",
+        imageDarkMode: "../../../../../../../images/integrations/okta-darkmode.svg",
         type: IntegrationType.SCIM,
       },
       {
         name: "OneLogin",
         linkURL: "https://bitwarden.com/help/onelogin-scim-integration/",
         image: "../../../../../../../images/integrations/logo-onelogin-badge-color.svg",
+        imageDarkMode: "../../../../../../../images/integrations/onelogin-darkmode.svg",
         type: IntegrationType.SCIM,
       },
       {
         name: "JumpCloud",
         linkURL: "https://bitwarden.com/help/jumpcloud-scim-integration/",
         image: "../../../../../../../images/integrations/logo-jumpcloud-badge-color.svg",
+        imageDarkMode: "../../../../../../../images/integrations/jumpcloud-darkmode.svg",
         type: IntegrationType.SCIM,
       },
       {
@@ -144,18 +150,21 @@ export class AdminConsoleIntegrationsComponent {
         name: "Okta",
         linkURL: "https://bitwarden.com/help/okta-directory/",
         image: "../../../../../../../images/integrations/logo-okta-symbol-black.svg",
+        imageDarkMode: "../../../../../../../images/integrations/okta-darkmode.svg",
         type: IntegrationType.BWDC,
       },
       {
         name: "OneLogin",
         linkURL: "https://bitwarden.com/help/onelogin-directory/",
         image: "../../../../../../../images/integrations/logo-onelogin-badge-color.svg",
+        imageDarkMode: "../../../../../../../images/integrations/onelogin-darkmode.svg",
         type: IntegrationType.BWDC,
       },
       {
         name: "Splunk",
         linkURL: "https://bitwarden.com/help/splunk-siem/",
         image: "../../../../../../../images/integrations/logo-splunk-black.svg",
+        imageDarkMode: "../../../../../../../images/integrations/splunk-darkmode.svg",
         type: IntegrationType.EVENT,
       },
       {
@@ -168,6 +177,7 @@ export class AdminConsoleIntegrationsComponent {
         name: "Rapid7",
         linkURL: "https://bitwarden.com/help/rapid7-siem/",
         image: "../../../../../../../images/integrations/logo-rapid7-black.svg",
+        imageDarkMode: "../../../../../../../images/integrations/rapid7-darkmode.svg",
         type: IntegrationType.EVENT,
       },
       {
