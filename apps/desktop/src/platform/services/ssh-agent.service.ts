@@ -170,6 +170,18 @@ export class SshAgentService implements OnDestroy {
             .clearKeys()
             .catch((e) => this.logService.error("Failed to clear SSH keys", e));
         },
+        error: (e: unknown) => {
+          this.logService.error("Error in active account observable", e);
+          ipc.platform.sshAgent
+            .clearKeys()
+            .catch((e) => this.logService.error("Failed to clear SSH keys", e));
+        },
+        complete: () => {
+          this.logService.info("Active account observable completed, clearing SSH keys");
+          ipc.platform.sshAgent
+            .clearKeys()
+            .catch((e) => this.logService.error("Failed to clear SSH keys", e));
+        },
       });
 
       combineLatest([
