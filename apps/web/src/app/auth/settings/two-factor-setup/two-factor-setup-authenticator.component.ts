@@ -35,10 +35,10 @@ declare global {
 }
 
 @Component({
-  selector: "app-two-factor-authenticator",
-  templateUrl: "two-factor-authenticator.component.html",
+  selector: "app-two-factor-setup-authenticator",
+  templateUrl: "two-factor-setup-authenticator.component.html",
 })
-export class TwoFactorAuthenticatorComponent
+export class TwoFactorSetupAuthenticatorComponent
   extends TwoFactorBaseComponent
   implements OnInit, OnDestroy
 {
@@ -200,7 +200,7 @@ export class TwoFactorAuthenticatorComponent
     dialogService: DialogService,
     config: DialogConfig<AuthResponse<TwoFactorAuthenticatorResponse>>,
   ) {
-    return dialogService.open<boolean>(TwoFactorAuthenticatorComponent, config);
+    return dialogService.open<boolean>(TwoFactorSetupAuthenticatorComponent, config);
   }
 
   async launchExternalUrl(url: string) {

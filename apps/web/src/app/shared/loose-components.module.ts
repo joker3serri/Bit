@@ -41,10 +41,10 @@ import { ApiKeyComponent } from "../auth/settings/security/api-key.component";
 import { ChangeKdfModule } from "../auth/settings/security/change-kdf/change-kdf.module";
 import { SecurityKeysComponent } from "../auth/settings/security/security-keys.component";
 import { SecurityComponent } from "../auth/settings/security/security.component";
-import { TwoFactorAuthenticatorComponent } from "../auth/settings/two-factor-setup/two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "../auth/settings/two-factor-setup/two-factor-duo.component";
 import { TwoFactorEmailComponent } from "../auth/settings/two-factor-setup/two-factor-email.component";
 import { TwoFactorRecoveryComponent } from "../auth/settings/two-factor-setup/two-factor-recovery.component";
+import { TwoFactorSetupAuthenticatorComponent } from "../auth/settings/two-factor-setup/two-factor-setup-authenticator.component";
 import { TwoFactorSetupComponent } from "../auth/settings/two-factor-setup/two-factor-setup.component";
 import { TwoFactorVerifyComponent } from "../auth/settings/two-factor-setup/two-factor-verify.component";
 import { TwoFactorWebAuthnComponent } from "../auth/settings/two-factor-setup/two-factor-webauthn.component";
@@ -159,7 +159,7 @@ import { SharedModule } from "./shared.module";
     SponsoredFamiliesComponent,
     SponsoringOrgRowComponent,
     SsoComponent,
-    TwoFactorAuthenticatorComponent,
+    TwoFactorSetupAuthenticatorComponent,
     TwoFactorComponent,
     TwoFactorDuoComponent,
     TwoFactorEmailComponent,
@@ -226,7 +226,7 @@ import { SharedModule } from "./shared.module";
     SponsoredFamiliesComponent,
     SponsoringOrgRowComponent,
     SsoComponent,
-    TwoFactorAuthenticatorComponent,
+    TwoFactorSetupAuthenticatorComponent,
     TwoFactorComponent,
     TwoFactorDuoComponent,
     TwoFactorEmailComponent,
