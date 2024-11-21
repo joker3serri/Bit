@@ -77,7 +77,7 @@ export class AllApplicationsComponent implements OnInit {
           this.applicationHealthReport =
             await this.passwordHealthService.generateReportDetails(organizationId);
           this.dataSource.data = this.applicationHealthReport.details;
-          // this.loading = false;
+          this.loading = false;
         }),
       )
       .subscribe();
