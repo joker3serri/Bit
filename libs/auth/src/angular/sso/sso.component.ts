@@ -120,81 +120,77 @@ export class SsoComponent implements OnInit {
 
   async ngOnInit() {
     const qParams: QueryParams = await firstValueFrom(this.route.queryParams);
-    if (qParams.code != null && qParams.state != null) {
-      const codeVerifier = await this.ssoLoginService.getCodeVerifier();
-      const state = await this.ssoLoginService.getSsoState();
-      await this.ssoLoginService.setCodeVerifier(null);
-      await this.ssoLoginService.setSsoState(null);
-
-      if (qParams.redirectUri != null) {
-        this.redirectUri = qParams.redirectUri;
-      }
-
-      if (
-        qParams.code != null &&
-        codeVerifier != null &&
-        state != null &&
-        this.checkState(state, qParams.state)
-      ) {
-        const ssoOrganizationIdentifier = this.getOrgIdentifierFromState(qParams.state);
-        await this.logIn(qParams.code, codeVerifier, ssoOrganizationIdentifier);
-      }
-    } else if (
-      qParams.clientId != null &&
-      qParams.redirectUri != null &&
-      qParams.state != null &&
-      qParams.codeChallenge != null
-    ) {
-      this.redirectUri = qParams.redirectUri;
-      this.state = qParams.state;
-      this.codeChallenge = qParams.codeChallenge;
-      this.ssoComponentService.clientId = qParams.clientId as SsoClientId;
+    if (this.hasCodeOrStateParams(qParams)) {
+      await this.handleCodeAndStateParams(qParams);
+    } else if (this.hasRequiredSsoParams(qParams)) {
+      this.setRequiredSsoVariables(qParams);
     } else if (qParams.identifier != null) {
       // SSO Org Identifier in query params takes precedence over claimed domains
       this.identifierFormControl.setValue(qParams.identifier);
       this.loggingIn = true;
       await this.submit();
     } else {
-      // Note: this flow is written for web but both browser and desktop
-      // redirect here on SSO button click.
-
-      // Check if email matches any claimed domains
-      if (qParams.email) {
-        // show loading spinner
-        this.loggingIn = true;
-        try {
-          if (await this.configService.getFeatureFlag(FeatureFlag.VerifiedSsoDomainEndpoint)) {
-            const response: ListResponse<VerifiedOrganizationDomainSsoDetailsResponse> =
-              await this.orgDomainApiService.getVerifiedOrgDomainsByEmail(qParams.email);
-
-            if (response.data.length > 0) {
-              this.identifierFormControl.setValue(response.data[0].organizationIdentifier);
-              await this.submit();
-              return;
-            }
-          } else {
-            const response: OrganizationDomainSsoDetailsResponse =
-              await this.orgDomainApiService.getClaimedOrgDomainByEmail(qParams.email);
-
-            if (response?.ssoAvailable && response?.verifiedDate) {
-              this.identifierFormControl.setValue(response.organizationIdentifier);
-              await this.submit();
-              return;
-            }
-          }
-        } catch (error) {
-          this.handleGetClaimedDomainByEmailError(error);
-        }
-
-        this.loggingIn = false;
-      }
-
-      // Fallback to state svc if domain is unclaimed
-      const storedIdentifier = await this.ssoLoginService.getOrganizationSsoIdentifier();
-      if (storedIdentifier != null) {
-        this.identifierFormControl.setValue(storedIdentifier);
-      }
+      await this.initializeIdentifierFromEmailOrStorage(qParams);
     }
+  }
+
+  /**
+   * Sets the required SSO variables from the query params
+   * @param qParams - The query params
+   */
+  private setRequiredSsoVariables(qParams: QueryParams): void {
+    this.redirectUri = qParams.redirectUri;
+    this.state = qParams.state;
+    this.codeChallenge = qParams.codeChallenge;
+    this.ssoComponentService.clientId = qParams.clientId as SsoClientId;
+  }
+
+  /**
+   * Checks if the query params have the required SSO params
+   * @param qParams - The query params
+   * @returns True if the query params have the required SSO params, false otherwise
+   */
+  private hasRequiredSsoParams(qParams: QueryParams): boolean {
+    return (
+      qParams.clientId != null &&
+      qParams.redirectUri != null &&
+      qParams.state != null &&
+      qParams.codeChallenge != null
+    );
+  }
+
+  /**
+   * Handles the code and state params
+   * @param qParams - The query params
+   */
+  private async handleCodeAndStateParams(qParams: QueryParams): Promise<void> {
+    const codeVerifier = await this.ssoLoginService.getCodeVerifier();
+    const state = await this.ssoLoginService.getSsoState();
+    await this.ssoLoginService.setCodeVerifier(null);
+    await this.ssoLoginService.setSsoState(null);
+
+    if (qParams.redirectUri != null) {
+      this.redirectUri = qParams.redirectUri;
+    }
+
+    if (
+      qParams.code != null &&
+      codeVerifier != null &&
+      state != null &&
+      this.checkState(state, qParams.state)
+    ) {
+      const ssoOrganizationIdentifier = this.getOrgIdentifierFromState(qParams.state);
+      await this.logIn(qParams.code, codeVerifier, ssoOrganizationIdentifier);
+    }
+  }
+
+  /**
+   * Checks if the query params have a code or state
+   * @param qParams - The query params
+   * @returns True if the query params have a code or state, false otherwise
+   */
+  private hasCodeOrStateParams(qParams: QueryParams): boolean {
+    return qParams.code != null && qParams.state != null;
   }
 
   private handleGetClaimedDomainByEmailError(error: unknown): void {
@@ -535,5 +531,50 @@ export class SsoComponent implements OnInit {
     const stateSplit = state.split("_identifier=");
     const checkStateSplit = checkState.split("_identifier=");
     return stateSplit[0] === checkStateSplit[0];
+  }
+
+  /**
+   * Attempts to initialize the SSO identifier from email or storage.
+   * Note: this flow is written for web but both browser and desktop
+   * redirect here on SSO button click.
+   * @param qParams - The query params
+   */
+  private async initializeIdentifierFromEmailOrStorage(qParams: QueryParams): Promise<void> {
+    // Check if email matches any claimed domains
+    if (qParams.email) {
+      // show loading spinner
+      this.loggingIn = true;
+      try {
+        if (await this.configService.getFeatureFlag(FeatureFlag.VerifiedSsoDomainEndpoint)) {
+          const response: ListResponse<VerifiedOrganizationDomainSsoDetailsResponse> =
+            await this.orgDomainApiService.getVerifiedOrgDomainsByEmail(qParams.email);
+
+          if (response.data.length > 0) {
+            this.identifierFormControl.setValue(response.data[0].organizationIdentifier);
+            await this.submit();
+            return;
+          }
+        } else {
+          const response: OrganizationDomainSsoDetailsResponse =
+            await this.orgDomainApiService.getClaimedOrgDomainByEmail(qParams.email);
+
+          if (response?.ssoAvailable && response?.verifiedDate) {
+            this.identifierFormControl.setValue(response.organizationIdentifier);
+            await this.submit();
+            return;
+          }
+        }
+      } catch (error) {
+        this.handleGetClaimedDomainByEmailError(error);
+      }
+
+      this.loggingIn = false;
+    }
+
+    // Fallback to state svc if domain is unclaimed
+    const storedIdentifier = await this.ssoLoginService.getOrganizationSsoIdentifier();
+    if (storedIdentifier != null) {
+      this.identifierFormControl.setValue(storedIdentifier);
+    }
   }
 }
