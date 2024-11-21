@@ -38,9 +38,11 @@ export class DesktopSsoComponentService
     };
 
     this.onSuccessfulLoginTde = async () => {
-      // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.syncService.fullSync(true);
+      try {
+        await this.syncService.fullSync(true, true);
+      } catch (error) {
+        this.logService.error("Error syncing after TDE SSO login:", error);
+      }
     };
   }
 }
