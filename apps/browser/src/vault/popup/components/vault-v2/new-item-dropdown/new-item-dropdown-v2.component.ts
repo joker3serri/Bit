@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
-import { Router, RouterLink } from "@angular/router";
+import { RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -34,10 +34,7 @@ export class NewItemDropdownV2Component implements OnInit {
   @Input()
   initialValues: NewItemInitialValues;
 
-  constructor(
-    private router: Router,
-    private dialogService: DialogService,
-  ) {}
+  constructor(private dialogService: DialogService) {}
 
   async ngOnInit() {
     this.tab = await BrowserApi.getTabFromCurrentWindow();

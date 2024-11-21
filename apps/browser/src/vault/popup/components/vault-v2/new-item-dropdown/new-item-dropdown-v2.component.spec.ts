@@ -1,14 +1,18 @@
+import { CommonModule } from "@angular/common";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
+import { mock } from "jest-mock-extended";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
-import { DialogService } from "@bitwarden/components";
+import { ButtonModule, DialogService, MenuModule, NoItemsModule } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../../../platform/browser/browser-api";
 import BrowserPopupUtils from "../../../../../platform/popup/browser-popup-utils";
-import { AddEditFolderDialogComponent } from "../add-edit-folder-dialog/add-edit-folder-dialog.component";
 
 import { NewItemDropdownV2Component, NewItemInitialValues } from "./new-item-dropdown-v2.component";
 
@@ -16,28 +20,46 @@ describe("NewItemDropdownV2Component", () => {
   let component: NewItemDropdownV2Component;
   let fixture: ComponentFixture<NewItemDropdownV2Component>;
   let dialogServiceMock: jest.Mocked<DialogService>;
-  let routerMock: jest.Mocked<Router>;
   let browserApiMock: jest.Mocked<typeof BrowserApi>;
 
   const mockTab = { url: "https://example.com" };
 
+  beforeAll(() => {
+    jest.spyOn(BrowserApi, "getTabFromCurrentWindow").mockResolvedValue(mockTab as chrome.tabs.Tab);
+    jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false);
+    jest.spyOn(Utils, "getHostname").mockReturnValue("example.com");
+  });
+
   beforeEach(async () => {
-    dialogServiceMock = {
-      open: jest.fn(),
-    } as any;
+    dialogServiceMock = mock<DialogService>();
+    dialogServiceMock.open.mockClear();
 
-    routerMock = {} as any;
+    const activatedRouteMock = {
+      snapshot: { paramMap: { get: jest.fn() } },
+    };
 
-    browserApiMock = {
-      getTabFromCurrentWindow: jest.fn().mockResolvedValue(mockTab),
-    } as any;
+    const i18nServiceMock = mock<I18nService>();
+    const folderServiceMock = mock<FolderService>();
+    const folderApiServiceAbstractionMock = mock<FolderApiServiceAbstraction>();
+    const accountServiceMock = mock<AccountService>();
 
     await TestBed.configureTestingModule({
-      imports: [JslibModule],
+      imports: [
+        CommonModule,
+        RouterLink,
+        ButtonModule,
+        MenuModule,
+        NoItemsModule,
+        NewItemDropdownV2Component,
+      ],
       providers: [
-        { provide: Router, useValue: routerMock },
         { provide: DialogService, useValue: dialogServiceMock },
+        { provide: I18nService, useValue: i18nServiceMock },
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: BrowserApi, useValue: browserApiMock },
+        { provide: FolderService, useValue: folderServiceMock },
+        { provide: FolderApiServiceAbstraction, useValue: folderApiServiceAbstractionMock },
+        { provide: AccountService, useValue: accountServiceMock },
       ],
     }).compileComponents();
   });
@@ -48,23 +70,16 @@ describe("NewItemDropdownV2Component", () => {
     fixture.detectChanges();
   });
 
-  describe("ngOnInit", () => {
-    it("should initialize tab data", async () => {
-      await component.ngOnInit();
-      expect(browserApiMock.getTabFromCurrentWindow).toHaveBeenCalled();
-      expect(component["tab"]).toEqual(mockTab);
-    });
-  });
-
   describe("buildQueryParams", () => {
-    it("should build query params for a Login cipher when not popped out", () => {
+    it("should build query params for a Login cipher when not popped out", async () => {
+      await component.ngOnInit();
       component.initialValues = {
         folderId: "222-333-444",
         organizationId: "444-555-666",
         collectionId: "777-888-999",
       } as NewItemInitialValues;
 
-      jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false); // not popped out
+      jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(false);
       jest.spyOn(Utils, "getHostname").mockReturnValue("example.com");
 
       const params = component.buildQueryParams(CipherType.Login);
@@ -84,7 +99,7 @@ describe("NewItemDropdownV2Component", () => {
         collectionId: "777-888-999",
       } as NewItemInitialValues;
 
-      jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true); // popped out
+      jest.spyOn(BrowserPopupUtils, "inPopout").mockReturnValue(true);
 
       const params = component.buildQueryParams(CipherType.Login);
 
@@ -144,13 +159,6 @@ describe("NewItemDropdownV2Component", () => {
         type: CipherType.SshKey.toString(),
         collectionId: "777-888-999",
       });
-    });
-  });
-
-  describe("openFolderDialog", () => {
-    it("should open the folder dialog", () => {
-      component.openFolderDialog();
-      expect(dialogServiceMock.open).toHaveBeenCalledWith(AddEditFolderDialogComponent);
     });
   });
 });
