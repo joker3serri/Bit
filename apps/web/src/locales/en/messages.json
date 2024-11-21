@@ -5546,6 +5546,12 @@
   "bulkRestoredMessage": {
     "message": "Restored organization access successfully"
   },
+  "bulkManagedRevokedMessage": {
+    "message": "Revoked account access successfully"
+  },
+  "bulkManagedRestoreMessage": {
+    "message": "Restored account access successfully"
+  },
   "bulkFilteredMessage": {
     "message": "Excluded, not applicable for this action"
   },

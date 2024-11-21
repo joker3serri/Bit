@@ -53,8 +53,14 @@ export class BulkRestoreRevokeComponent {
     try {
       const response = await this.performBulkUserAction();
 
-      const bulkMessage = this.isRevoking ? "bulkRevokedMessage" : "bulkRestoredMessage";
       response.data.forEach((entry) => {
+        let bulkMessage;
+        const isManaged = this.users.find((u) => u.id === entry.id)?.managedByOrganization;
+        if (isManaged) {
+          bulkMessage = this.isRevoking ? "bulkManagedRevokedMessage" : "bulkManagedRestoreMessage";
+        } else {
+          bulkMessage = this.isRevoking ? "bulkRevokedMessage" : "bulkRestoredMessage";
+        }
         const error = entry.error !== "" ? entry.error : this.i18nService.t(bulkMessage);
         this.statuses.set(entry.id, error);
         if (entry.error !== "") {

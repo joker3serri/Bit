@@ -100,7 +100,7 @@
               </div>
             </td>
             <td bitCell *ngIf="statuses.has(user.id)">
-              {{ "cannotRestoreStatusBulk" | i18n }}
+              {{ statuses.get(user.id) }}
             </td>
             <td bitCell *ngIf="!statuses.has(user.id)">
               {{ "bulkFilteredMessage" | i18n }}
