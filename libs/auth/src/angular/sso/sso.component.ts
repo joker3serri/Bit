@@ -72,9 +72,6 @@ export class SsoComponent implements OnInit {
   protected redirectUri: string;
   protected loggingIn = false;
   protected identifier: string;
-  protected trustedDeviceEncRoute = "login-initiated";
-  protected changePasswordRoute = "set-password";
-  protected forcePasswordResetRoute = "update-temp-password";
   protected state: string;
   protected codeChallenge: string;
 
@@ -434,7 +431,7 @@ export class SsoComponent implements OnInit {
     }
 
     await this.navigateViaCallbackOrRoute(this.ssoComponentService.onSuccessfulLoginTdeNavigate, [
-      this.trustedDeviceEncRoute,
+      "login-initiated",
     ]);
   }
 
@@ -443,13 +440,14 @@ export class SsoComponent implements OnInit {
       FeatureFlag.EmailVerification,
     );
 
+    let route = "set-password";
     if (emailVerification) {
-      this.changePasswordRoute = "set-password-jit";
+      route = "set-password-jit";
     }
 
     await this.navigateViaCallbackOrRoute(
       this.ssoComponentService.onSuccessfulLoginChangePasswordNavigate,
-      [this.changePasswordRoute],
+      [route],
       {
         queryParams: {
           identifier: orgIdentifier,
@@ -461,7 +459,7 @@ export class SsoComponent implements OnInit {
   private async handleForcePasswordReset(orgIdentifier: string) {
     await this.navigateViaCallbackOrRoute(
       this.ssoComponentService.onSuccessfulLoginForceResetNavigate,
-      [this.forcePasswordResetRoute],
+      ["update-temp-password"],
       {
         queryParams: {
           identifier: orgIdentifier,
