@@ -42,6 +42,7 @@ import {
   LinkModule,
   ToastService,
 } from "@bitwarden/components";
+import { UserAsymmetricKeysRegenerationService } from "@bitwarden/key-management";
 
 import { AnonLayoutWrapperDataService } from "../anon-layout/anon-layout-wrapper-data.service";
 import { VaultIcon, WaveIcon } from "../icons";
@@ -142,6 +143,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private validationService: ValidationService,
     private configService: ConfigService,
+    private userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {
     this.clientType = this.platformUtilsService.getClientType();
     this.loginViaAuthRequestSupported = this.loginComponentService.isLoginViaAuthRequestSupported();
@@ -298,6 +300,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     await this.syncService.fullSync(true);
+    await this.userAsymmetricKeysRegenerationService.handleUserAsymmetricKeysRegeneration(
+      authResult.userId,
+    );
 
     if (authResult.forcePasswordReset != ForceSetPasswordReason.None) {
       this.loginEmailService.clearValues();
