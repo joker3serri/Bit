@@ -74,7 +74,7 @@ import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/bill
 import { ClientType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/abstractions/process-reload.service";
-import { ProcessReloadService } from "@bitwarden/common/key-management/services/process-reload.service";
+import { DefaultProcessReloadService } from "@bitwarden/common/key-management/services/default-process-reload.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
@@ -376,6 +376,7 @@ export default class MainBackground {
   autoSubmitLoginBackground: AutoSubmitLoginBackground;
   sdkService: SdkService;
   cipherAuthorizationService: CipherAuthorizationService;
+  inlineMenuFieldQualificationService: InlineMenuFieldQualificationService;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -1067,7 +1068,7 @@ export default class MainBackground {
       this.taskSchedulerService,
     );
 
-    this.processReloadService = new ProcessReloadService(
+    this.processReloadService = new DefaultProcessReloadService(
       this.pinService,
       this.messagingService,
       systemUtilsServiceReloadCallback,
@@ -1249,6 +1250,8 @@ export default class MainBackground {
       this.collectionService,
       this.organizationService,
     );
+
+    this.inlineMenuFieldQualificationService = new InlineMenuFieldQualificationService();
   }
 
   async bootstrap() {
@@ -1630,7 +1633,6 @@ export default class MainBackground {
         this.themeStateService,
       );
     } else {
-      const inlineMenuFieldQualificationService = new InlineMenuFieldQualificationService();
       this.overlayBackground = new OverlayBackground(
         this.logService,
         this.cipherService,
@@ -1643,7 +1645,7 @@ export default class MainBackground {
         this.platformUtilsService,
         this.vaultSettingsService,
         this.fido2ActiveRequestManager,
-        inlineMenuFieldQualificationService,
+        this.inlineMenuFieldQualificationService,
         this.themeStateService,
         this.totpService,
         () => this.generatePassword(),

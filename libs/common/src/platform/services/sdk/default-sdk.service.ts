@@ -8,6 +8,7 @@ import {
   distinctUntilChanged,
   tap,
   switchMap,
+  catchError,
 } from "rxjs";
 
 import { KeyService, KdfConfigService, KdfConfig, KdfType } from "@bitwarden/key-management";
@@ -46,6 +47,11 @@ export class DefaultSdkService implements SdkService {
     concatMap(async (client) => {
       return client.echo("bitwarden wasm!") === "bitwarden wasm!";
     }),
+  );
+
+  version$ = this.client$.pipe(
+    map((client) => client.version()),
+    catchError(() => "Unsupported"),
   );
 
   constructor(
