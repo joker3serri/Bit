@@ -20,7 +20,7 @@ pub struct BitwardenDesktopAgent {
     show_ui_request_tx: tokio::sync::mpsc::Sender<(u32, String)>,
     get_ui_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
     request_id: Arc<Mutex<u32>>,
-    // before first unlock, or after account switching, listing keys should require an unlock to get a list of public keys
+    /// before first unlock, or after account switching, listing keys should require an unlock to get a list of public keys
     needs_unlock: Arc<Mutex<bool>>,
 }
 
