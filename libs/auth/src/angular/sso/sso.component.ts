@@ -72,8 +72,6 @@ export class SsoComponent implements OnInit {
   protected redirectUri: string;
   protected loggingIn = false;
   protected identifier: string;
-  protected twoFactorRoute = "2fa";
-  protected successRoute = "lock";
   protected trustedDeviceEncRoute = "login-initiated";
   protected changePasswordRoute = "set-password";
   protected forcePasswordResetRoute = "update-temp-password";
@@ -392,7 +390,7 @@ export class SsoComponent implements OnInit {
   private async handleTwoFactorRequired(orgIdentifier: string) {
     await this.navigateViaCallbackOrRoute(
       this.ssoComponentService.onSuccessfulLoginTwoFactorNavigate,
-      [this.twoFactorRoute],
+      ["2fa"],
       {
         queryParams: {
           identifier: orgIdentifier,
@@ -480,7 +478,7 @@ export class SsoComponent implements OnInit {
     }
 
     await this.navigateViaCallbackOrRoute(this.ssoComponentService.onSuccessfulLoginNavigate, [
-      this.successRoute,
+      "lock",
     ]);
   }
 
