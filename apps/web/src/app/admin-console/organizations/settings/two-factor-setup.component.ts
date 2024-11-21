@@ -15,13 +15,13 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { DialogService } from "@bitwarden/components";
 
-import { TwoFactorDuoComponent } from "../../../auth/settings/two-factor-duo.component";
-import { TwoFactorSetupComponent as BaseTwoFactorSetupComponent } from "../../../auth/settings/two-factor-setup.component";
-import { TwoFactorVerifyComponent } from "../../../auth/settings/two-factor-verify.component";
+import { TwoFactorDuoComponent } from "../../../auth/settings/two-factor-setup/two-factor-duo.component";
+import { TwoFactorSetupComponent as BaseTwoFactorSetupComponent } from "../../../auth/settings/two-factor-setup/two-factor-setup.component";
+import { TwoFactorVerifyComponent } from "../../../auth/settings/two-factor-setup/two-factor-verify.component";
 
 @Component({
   selector: "app-two-factor-setup",
-  templateUrl: "../../../auth/settings/two-factor-setup.component.html",
+  templateUrl: "../../../auth/settings/two-factor-setup/two-factor-setup.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class TwoFactorSetupComponent extends BaseTwoFactorSetupComponent implements OnInit {
