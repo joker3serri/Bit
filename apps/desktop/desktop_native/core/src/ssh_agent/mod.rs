@@ -50,11 +50,9 @@ impl ssh_agent::Agent for BitwardenDesktopAgent {
     }
 
     async fn can_list(&self) -> bool {
-        let needs_unlock = self.needs_unlock.lock().await;
-        if !*needs_unlock {
+        if !*self.needs_unlock.lock().await{
             return true;
         }
-        drop(needs_unlock);
 
         let request_id = self.get_request_id().await;
 
@@ -89,9 +87,7 @@ impl BitwardenDesktopAgent {
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
 
-        let mut needs_unlock = self.needs_unlock.blocking_lock();
-        *needs_unlock = false;
-        drop(needs_unlock);
+        *self.needs_unlock.blocking_lock() = false;
 
         for (key, name, cipher_id) in new_keys.iter() {
             match parse_key_safe(&key) {
@@ -134,9 +130,7 @@ impl BitwardenDesktopAgent {
     pub fn clear_keys(&mut self) -> Result<(), anyhow::Error> {
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
-        let mut needs_unlock = self.needs_unlock.blocking_lock();
-        *needs_unlock = true;
-        drop(needs_unlock);
+        *self.needs_unlock.blocking_lock() = true;
 
         Ok(())
     }
