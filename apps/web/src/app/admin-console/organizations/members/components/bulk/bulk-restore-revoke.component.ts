@@ -29,6 +29,7 @@ export class BulkRestoreRevokeComponent {
   done = false;
   error: string;
   showNoMasterPasswordWarning = false;
+  nonCompliantMembers: boolean = false;
 
   constructor(
     protected i18nService: I18nService,
@@ -56,6 +57,9 @@ export class BulkRestoreRevokeComponent {
       response.data.forEach((entry) => {
         const error = entry.error !== "" ? entry.error : this.i18nService.t(bulkMessage);
         this.statuses.set(entry.id, error);
+        if (entry.error !== "") {
+          this.nonCompliantMembers = true;
+        }
       });
       this.done = true;
     } catch (e) {

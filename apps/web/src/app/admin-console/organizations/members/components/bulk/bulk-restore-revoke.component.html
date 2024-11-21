@@ -11,6 +11,14 @@
       {{ error }}
     </bit-callout>
 
+    <bit-callout
+      type="danger"
+      *ngIf="nonCompliantMembers"
+      title="{{ 'nonCompliantMembersTitle' | i18n }}"
+    >
+      {{ "nonCompliantMembersError" | i18n }}
+    </bit-callout>
+
     <ng-container *ngIf="!done">
       <div *ngIf="users.length > 0 && !error && isRevoking">
         <p>{{ "revokeMembersWarning" | i18n }}</p>
@@ -34,7 +42,7 @@
         <ng-container header>
           <tr>
             <th bitCell class="tw-w-1/2">{{ "member" | i18n }}</th>
-            <th bitCell>{{ "details" | i18n }}</th>
+            <th bitCell *ngIf="isRevoking">{{ "details" | i18n }}</th>
             <th bitCell *ngIf="this.showNoMasterPasswordWarning">{{ "details" | i18n }}</th>
           </tr>
         </ng-container>
@@ -51,7 +59,7 @@
                 </div>
               </div>
             </td>
-            <td bitCell width="30">
+            <td *ngIf="isRevoking" bitCell width="30">
               {{
                 user.managedByOrganization ? ("claimedAccount" | i18n) : ("unclaimedAccount" | i18n)
               }}
@@ -92,7 +100,7 @@
               </div>
             </td>
             <td bitCell *ngIf="statuses.has(user.id)">
-              {{ statuses.get(user.id) }}
+              {{ "cannotRestoreStatusBulk" | i18n }}
             </td>
             <td bitCell *ngIf="!statuses.has(user.id)">
               {{ "bulkFilteredMessage" | i18n }}

@@ -5549,6 +5549,15 @@
   "bulkFilteredMessage": {
     "message": "Excluded, not applicable for this action"
   },
+  "nonCompliantMembersTitle":{
+    "message": "Non-compliant members"
+  },
+  "nonCompliantMembersError":{
+    "message": "Members that are non-compliant with the Single organization or Two-step login policy cannot be restored until they adhere to the policy requirements"
+  },
+  "cannotRestoreStatusBulk":{
+    "message": "Cannot restore account access"
+  },
   "fingerprint": {
     "message": "Fingerprint"
   },
