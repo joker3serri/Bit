@@ -30,7 +30,6 @@ import {
   KeyService,
   BiometricsService,
   BiometricStateService,
-  UserAsymmetricKeysRegenerationService,
 } from "@bitwarden/key-management";
 
 const BroadcasterSubscriptionId = "LockComponent";
@@ -76,7 +75,6 @@ export class LockComponent extends BaseLockComponent implements OnInit, OnDestro
     kdfConfigService: KdfConfigService,
     syncService: SyncService,
     toastService: ToastService,
-    userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {
     super(
       masterPasswordService,
@@ -106,7 +104,6 @@ export class LockComponent extends BaseLockComponent implements OnInit, OnDestro
       kdfConfigService,
       syncService,
       toastService,
-      userAsymmetricKeysRegenerationService,
     );
   }
 

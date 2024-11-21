@@ -39,7 +39,6 @@ import {
   KeyService,
   BiometricStateService,
   BiometricsService,
-  UserAsymmetricKeysRegenerationService,
 } from "@bitwarden/key-management";
 
 @Directive()
@@ -95,7 +94,6 @@ export class LockComponent implements OnInit, OnDestroy {
     protected kdfConfigService: KdfConfigService,
     protected syncService: SyncService,
     protected toastService: ToastService,
-    protected userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {}
 
   async ngOnInit() {

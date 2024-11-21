@@ -29,7 +29,6 @@ import {
   KeyService,
   BiometricsService,
   BiometricStateService,
-  UserAsymmetricKeysRegenerationService,
 } from "@bitwarden/key-management";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
@@ -76,7 +75,6 @@ export class LockComponent extends BaseLockComponent implements OnInit {
     kdfConfigService: KdfConfigService,
     syncService: SyncService,
     toastService: ToastService,
-    userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
   ) {
     super(
       masterPasswordService,

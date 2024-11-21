@@ -103,7 +103,7 @@ export class LoginComponentV1 extends BaseLoginComponent implements OnInit, OnDe
       toastService,
     );
     this.onSuccessfulLogin = () => {
-      return syncService.fullSync(true).then(() => {});
+      return syncService.fullSync(true);
     };
   }
 
