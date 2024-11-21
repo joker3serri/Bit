@@ -596,7 +596,14 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: SsoComponentService,
     useClass: ExtensionSsoComponentService,
-    deps: [SyncService, AuthService, EnvironmentService, Window, I18nServiceAbstraction],
+    deps: [
+      SyncService,
+      AuthService,
+      EnvironmentService,
+      Window,
+      I18nServiceAbstraction,
+      LogService,
+    ],
   }),
 ];
 
