@@ -22,18 +22,16 @@ pub struct BitwardenDesktopAgent {
     request_id: Arc<Mutex<u32>>,
     /// before first unlock, or after account switching, listing keys should require an unlock to get a list of public keys
     needs_unlock: Arc<Mutex<bool>>,
-}
-
-impl BitwardenDesktopAgent {
-    async fn get_request_id(&self) -> u32 {
-        let mut request_id = self.request_id.lock().await;
-        *request_id += 1;
-        *request_id
-    }
+    is_running: Arc<tokio::sync::Mutex<bool>>,
 }
 
 impl ssh_agent::Agent for BitwardenDesktopAgent {
     async fn confirm(&self, ssh_key: Key) -> bool {
+        if !*self.is_running.lock().await {
+            println!("[BitwardenDesktopAgent] Agent is not running, but tried to call confirm");
+            return false;
+        }
+
         let request_id = self.get_request_id().await;
 
         let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
@@ -72,6 +70,12 @@ impl ssh_agent::Agent for BitwardenDesktopAgent {
 
 impl BitwardenDesktopAgent {
     pub fn stop(&self) {
+        if !*self.is_running.blocking_lock() {
+            println!("[BitwardenDesktopAgent] Tried to stop agent while it is not running");
+            return;
+        }
+
+        *self.is_running.blocking_lock() = false;
         self.cancellation_token.cancel();
         self.keystore
             .0
@@ -84,6 +88,12 @@ impl BitwardenDesktopAgent {
         &mut self,
         new_keys: Vec<(String, String, String)>,
     ) -> Result<(), anyhow::Error> {
+        if !*self.is_running.blocking_lock() {
+            return Err(anyhow::anyhow!(
+                "[BitwardenDesktopAgent] Tried to set keys while agent is not running"
+            ));
+        }
+
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
 
@@ -115,6 +125,12 @@ impl BitwardenDesktopAgent {
     }
 
     pub fn lock(&mut self) -> Result<(), anyhow::Error> {
+        if !*self.is_running.blocking_lock() {
+            return Err(anyhow::anyhow!(
+                "[BitwardenDesktopAgent] Tried to lock agent, but it is not running"
+            ));
+        }
+
         let keystore = &mut self.keystore;
         keystore
             .0
@@ -133,6 +149,21 @@ impl BitwardenDesktopAgent {
         *self.needs_unlock.blocking_lock() = true;
 
         Ok(())
+    }
+
+    async fn get_request_id(&self) -> u32 {
+        if !*self.is_running.lock().await {
+            println!("[BitwardenDesktopAgent] Agent is not running, but tried to get request id");
+            return 0;
+        }
+
+        let mut request_id = self.request_id.lock().await;
+        *request_id += 1;
+        *request_id
+    }
+
+    pub fn is_running(self) -> bool {
+        return self.is_running.blocking_lock().clone();
     }
 }
 

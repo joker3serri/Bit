@@ -22,13 +22,16 @@ impl BitwardenDesktopAgent {
             cancellation_token: CancellationToken::new(),
             request_id: Arc::new(tokio::sync::Mutex::new(0)),
             needs_unlock: Arc::new(tokio::sync::Mutex::new(true)),
+            is_running: Arc::new(tokio::sync::Mutex::new(true)),
         };
         let stream = named_pipe_listener_stream::NamedPipeServerStream::new(
             agent_state.cancellation_token.clone(),
+            agent_state.is_running.clone(),
         );
 
         let cloned_agent_state = agent_state.clone();
         tokio::spawn(async move {
+            *cloned_agent_state.is_running.lock().await = true;
             let _ = ssh_agent::serve(
                 stream,
                 cloned_agent_state.clone(),
@@ -36,6 +39,7 @@ impl BitwardenDesktopAgent {
                 cloned_agent_state.cancellation_token.clone(),
             )
             .await;
+            *cloned_agent_state.is_running.lock().await = false;
         });
         Ok(agent_state)
     }
