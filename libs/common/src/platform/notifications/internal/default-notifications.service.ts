@@ -30,7 +30,7 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { supportSwitch } from "../../misc/support-status";
 import { NotificationsService as NotificationsServiceAbstraction } from "../notifications.service";
 
-import { ReceiveMessage, SignalRConnectionService } from "./signalr-connection.service";
+import { SignalRConnectionService } from "./signalr-connection.service";
 import { WebPushConnectionService } from "./webpush-connection.service";
 
 export const DISABLED_NOTIFICATIONS_URL = "http://-";
@@ -61,27 +61,59 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
           return EMPTY;
         }
 
-        return this.connectUser$(activeAccountId);
+        return this.userNotifications$(activeAccountId).pipe(
+          map((notification) => [notification, activeAccountId] as const),
+        );
       }),
     );
   }
 
-  private connectUser$(userId: UserId) {
+  /**
+   * Retrieves a stream of push notifications for the given user.
+   * @param userId The user id of the user to get the push notifications for.
+   */
+  private userNotifications$(userId: UserId) {
     return this.environmentService.environment$.pipe(
-      map((environment) => environment.getNotificationsUrl()),
+      map((env) => env.getNotificationsUrl()),
       distinctUntilChanged(),
       switchMap((notificationsUrl) => {
         if (notificationsUrl === DISABLED_NOTIFICATIONS_URL) {
           return EMPTY;
         }
 
-        // Check if authenticated
-        return this.evaluateAuthStatus(userId, notificationsUrl);
+        return this.userNotificationsHelper$(userId, notificationsUrl);
       }),
     );
   }
 
-  private evaluateAuthStatus(userId: UserId, notificationsUrl: string) {
+  private userNotificationsHelper$(userId: UserId, notificationsUrl: string) {
+    return this.hasAccessToken$(userId).pipe(
+      switchMap((hasAccessToken) => {
+        if (!hasAccessToken) {
+          return EMPTY;
+        }
+
+        return this.activitySubject;
+      }),
+      switchMap((activityStatus) => {
+        if (activityStatus === "inactive") {
+          return EMPTY;
+        }
+
+        return this.webPushConnectionService.supportStatus$(userId);
+      }),
+      supportSwitch({
+        supported: (service) => service.notifications$,
+        notSupported: () =>
+          this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
+            filter((n) => n.type === "ReceiveMessage"),
+            map((n) => n.message),
+          ),
+      }),
+    );
+  }
+
+  private hasAccessToken$(userId: UserId) {
     return this.authService.authStatusFor$(userId).pipe(
       map(
         (authStatus) =>
@@ -89,31 +121,6 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
           authStatus === AuthenticationStatus.Unlocked,
       ),
       distinctUntilChanged(),
-      switchMap((hasAccessToken) => {
-        if (!hasAccessToken) {
-          return EMPTY;
-        }
-        return this.activitySubject;
-      }),
-      switchMap((activityStatus) => {
-        if (activityStatus === "inactive") {
-          return EMPTY;
-        }
-        return this.choosePushService(userId, notificationsUrl);
-      }),
-    );
-  }
-
-  private choosePushService(userId: UserId, notificationsUrl: string) {
-    return this.webPushConnectionService.supportStatus$(userId).pipe(
-      supportSwitch({
-        supported: (service) => service.notifications$.pipe(map((n) => [n, userId] as const)),
-        notSupported: () =>
-          this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
-            filter((n) => n.type === "ReceiveMessage"),
-            map((n) => [(n as ReceiveMessage).message, userId] as const),
-          ),
-      }),
     );
   }
 
