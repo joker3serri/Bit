@@ -224,25 +224,33 @@ describe("NotificationsService", () => {
     expectNotification(notifications[0], mockUser1, NotificationType.AuthRequestResponse);
   });
 
-  it("does not re-connect when the user transitions from locked to unlocked doesn't reconnect", async () => {
-    emitActiveUser(mockUser1);
-    emitNotificationUrl("http://test.example.com");
-    authStatusGetter(mockUser1).next(AuthenticationStatus.Locked);
-    webPushSupportGetter(mockUser1).next({ type: "not-supported", reason: "test" });
+  it.each([
+    { initialStatus: AuthenticationStatus.Locked, updatedStatus: AuthenticationStatus.Unlocked },
+    { initialStatus: AuthenticationStatus.Unlocked, updatedStatus: AuthenticationStatus.Locked },
+    { initialStatus: AuthenticationStatus.Locked, updatedStatus: AuthenticationStatus.Locked },
+    { initialStatus: AuthenticationStatus.Unlocked, updatedStatus: AuthenticationStatus.Unlocked },
+  ])(
+    "does not re-connect when the user transitions from $initialStatus to $updatedStatus",
+    async ({ initialStatus, updatedStatus }) => {
+      emitActiveUser(mockUser1);
+      emitNotificationUrl("http://test.example.com");
+      authStatusGetter(mockUser1).next(initialStatus);
+      webPushSupportGetter(mockUser1).next({ type: "not-supported", reason: "test" });
 
-    const notificationsSubscriptions = sut.notifications$.subscribe();
-    await awaitAsync(1);
+      const notificationsSubscriptions = sut.notifications$.subscribe();
+      await awaitAsync(1);
 
-    authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
-    await awaitAsync(1);
+      authStatusGetter(mockUser1).next(updatedStatus);
+      await awaitAsync(1);
 
-    expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledTimes(1);
-    expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledWith(
-      mockUser1,
-      "http://test.example.com",
-    );
-    notificationsSubscriptions.unsubscribe();
-  });
+      expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledTimes(1);
+      expect(signalRNotificationConnectionService.connect$).toHaveBeenCalledWith(
+        mockUser1,
+        "http://test.example.com",
+      );
+      notificationsSubscriptions.unsubscribe();
+    },
+  );
 
   it.each([AuthenticationStatus.Locked, AuthenticationStatus.Unlocked])(
     "connects when a user transitions from logged out to %s",
@@ -268,17 +276,41 @@ describe("NotificationsService", () => {
   );
 
   it("does not connect to any notification stream when notifications are disabled through special url", () => {
+    const subscription = sut.notifications$.subscribe();
     emitActiveUser(mockUser1);
     emitNotificationUrl(DISABLED_NOTIFICATIONS_URL);
 
     expect(signalRNotificationConnectionService.connect$).not.toHaveBeenCalled();
     expect(webPushNotificationConnectionService.supportStatus$).not.toHaveBeenCalled();
+
+    subscription.unsubscribe();
   });
 
   it("does not connect to any notification stream when there is no active user", () => {
+    const subscription = sut.notifications$.subscribe();
     emitActiveUser(null);
 
     expect(signalRNotificationConnectionService.connect$).not.toHaveBeenCalled();
     expect(webPushNotificationConnectionService.supportStatus$).not.toHaveBeenCalled();
+
+    subscription.unsubscribe();
+  });
+
+  it("does not reconnect if the same notification url is emitted", async () => {
+    const subscription = sut.notifications$.subscribe();
+
+    emitActiveUser(mockUser1);
+    emitNotificationUrl("http://test.example.com");
+    authStatusGetter(mockUser1).next(AuthenticationStatus.Unlocked);
+
+    await awaitAsync(1);
+
+    expect(webPushNotificationConnectionService.supportStatus$).toHaveBeenCalledTimes(1);
+    emitNotificationUrl("http://test.example.com");
+
+    await awaitAsync(1);
+
+    expect(webPushNotificationConnectionService.supportStatus$).toHaveBeenCalledTimes(1);
+    subscription.unsubscribe();
   });
 });
