@@ -221,13 +221,15 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
       }
     }
 
-    const org = await this.organizationService.get(this.originalCipherView.organizationId);
+    if (this.originalCipherView?.organizationId) {
+      const org = await this.organizationService.get(this.originalCipherView.organizationId);
 
-    this.config.collections.map((collection) => {
-      if (collection.organizationId === org.id && !collection.canEditItems(org)) {
-        this.cannotEditCollections.push(collection.id as CollectionId);
-      }
-    });
+      this.config.collections.map((collection) => {
+        if (collection.organizationId === org.id && !collection.canEditItems(org)) {
+          this.cannotEditCollections.push(collection.id as CollectionId);
+        }
+      });
+    }
 
     this.loading = false;
     this.formReadySubject.next();
@@ -262,15 +264,17 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
      * We will remove that collection from the dropdown and add it back before the saveCipher call
      * This will persist any Cannot Edit collections for the cipher without allowing the user to change it's status
      */
-    const cannotEditOwnedCollection = this.originalCipherView.collectionIds.filter((id) => {
-      return this.cannotEditCollections.includes(id as CollectionId);
-    });
+    if (this.originalCipherView?.collectionIds) {
+      const cannotEditOwnedCollection = this.originalCipherView.collectionIds.filter((id) => {
+        return this.cannotEditCollections.includes(id as CollectionId);
+      });
 
-    if (cannotEditOwnedCollection.length > 0) {
-      this.updatedCipherView.collectionIds = [
-        ...this.updatedCipherView.collectionIds,
-        ...cannotEditOwnedCollection,
-      ];
+      if (cannotEditOwnedCollection.length > 0) {
+        this.updatedCipherView.collectionIds = [
+          ...this.updatedCipherView.collectionIds,
+          ...cannotEditOwnedCollection,
+        ];
+      }
     }
 
     if (this.cipherForm.invalid) {
