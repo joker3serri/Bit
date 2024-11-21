@@ -21,7 +21,6 @@ import {
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -32,6 +31,8 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ToastService } from "@bitwarden/components";
+
+import { FreeFamiliesPolicyService } from "./../services/free-families-policy.service";
 
 interface RequestSponsorshipForm {
   selectedSponsorshipOrgId: FormControl<string>;
@@ -67,7 +68,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private toastService: ToastService,
-    private PolicyApiService: PolicyApiServiceAbstraction,
+    private freeFamiliesPolicyService: FreeFamiliesPolicyService,
     private configService: ConfigService,
   ) {
     this.sponsorshipForm = this.formBuilder.group<RequestSponsorshipForm>({
@@ -89,7 +90,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.isFreeFamilyFlagEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.IdpAutoSubmitLogin,
+      FeatureFlag.DisableFreeFamiliesSponsorship,
     );
 
     if (this.isFreeFamilyFlagEnabled) {
@@ -98,7 +99,7 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
           combineLatest(
             orgs.map((o) =>
               from(
-                this.PolicyApiService.getPolicyStatus(
+                this.freeFamiliesPolicyService.getPolicyStatus$(
                   o.id,
                   PolicyType.FreeFamiliesSponsorshipPolicy,
                 ),

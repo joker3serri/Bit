@@ -1,12 +1,27 @@
+interface EnterpriseOrgStatus {
+  isFreeFamilyPolicyEnabled: boolean;
+  belongToOneEnterpriseOrgs: boolean;
+  belongToMultipleEnterpriseOrgs: boolean;
+}
+
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Observable, combineLatest, concatMap, filter, firstValueFrom, map, switchMap } from "rxjs";
+import {
+  Subject,
+  Observable,
+  concatMap,
+  filter,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { ProductTierType } from "@bitwarden/common/billing/enums";
@@ -15,6 +30,8 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { IconModule } from "@bitwarden/components";
+
+import { FreeFamiliesPolicyService } from "../billing/services/free-families-policy.service";
 
 import { PasswordManagerLogo } from "./password-manager-logo";
 import { WebLayoutModule } from "./web-layout.module";
@@ -27,7 +44,7 @@ import { WebLayoutModule } from "./web-layout.module";
 })
 export class UserLayoutComponent implements OnInit {
   protected readonly logo = PasswordManagerLogo;
-  protected enterpriseOrgStatus = {
+  protected enterpriseOrgStatus: EnterpriseOrgStatus = {
     isFreeFamilyPolicyEnabled: false,
     belongToOneEnterpriseOrgs: false,
     belongToMultipleEnterpriseOrgs: false,
@@ -36,6 +53,7 @@ export class UserLayoutComponent implements OnInit {
   showFreeFamilyLink: boolean;
   protected hasFamilySponsorshipAvailable$: Observable<boolean>;
   protected showSubscription$: Observable<boolean>;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -43,7 +61,7 @@ export class UserLayoutComponent implements OnInit {
     private apiService: ApiService,
     private syncService: SyncService,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
-    private PolicyApiService: PolicyApiServiceAbstraction,
+    private freeFamiliesPolicyService: FreeFamiliesPolicyService,
     private configService: ConfigService,
   ) {}
 
@@ -53,21 +71,23 @@ export class UserLayoutComponent implements OnInit {
     await this.syncService.fullSync(false);
 
     this.isFreeFamilyFlagEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.IdpAutoSubmitLogin,
+      FeatureFlag.DisableFreeFamiliesSponsorship,
     );
 
     if (this.isFreeFamilyFlagEnabled) {
-      this.enterpriseOrgStatus = await this.checkEnterpriseOrganizationsAndFetchPolicy();
-      this.showFreeFamilyLink = !(
-        this.enterpriseOrgStatus.belongToOneEnterpriseOrgs &&
-        this.enterpriseOrgStatus.isFreeFamilyPolicyEnabled
-      );
+      this.checkEnterpriseOrganizationsAndFetchPolicy()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: EnterpriseOrgStatus) => {
+          this.enterpriseOrgStatus = value;
+          this.showFreeFamilyLink = this.shouldShowFreeFamilyLink(this.enterpriseOrgStatus);
+        });
     }
+
     this.hasFamilySponsorshipAvailable$ = this.organizationService.canManageSponsorships$;
 
     // We want to hide the subscription menu for organizations that provide premium.
     // Except if the user has premium personally or has a billing history.
-    this.showSubscription$ = combineLatest([
+    this.showSubscription$ = forkJoin([
       this.billingAccountProfileStateService.hasPremiumPersonally$,
       this.billingAccountProfileStateService.hasPremiumFromAnyOrganization$,
     ]).pipe(
@@ -86,41 +106,41 @@ export class UserLayoutComponent implements OnInit {
     );
   }
 
-  async checkEnterpriseOrganizationsAndFetchPolicy(): Promise<{
-    isFreeFamilyPolicyEnabled: boolean;
-    belongToOneEnterpriseOrgs: boolean;
-    belongToMultipleEnterpriseOrgs: boolean;
-  }> {
-    const result$ = this.organizationService.organizations$.pipe(
+  checkEnterpriseOrganizationsAndFetchPolicy(): Observable<EnterpriseOrgStatus> {
+    return this.organizationService.organizations$.pipe(
       filter((organizations) => Array.isArray(organizations) && organizations.length > 0),
       map((organizations) => ({
         ...this.evaluateEnterpriseOrganizations(organizations),
         organizations,
       })),
-      switchMap(
-        async ({ belongToOneEnterpriseOrgs, belongToMultipleEnterpriseOrgs, organizations }) => {
-          let isFreeFamilyPolicyEnabled = false;
+      switchMap(({ belongToOneEnterpriseOrgs, belongToMultipleEnterpriseOrgs, organizations }) => {
+        const response = {
+          isFreeFamilyPolicyEnabled: false,
+          belongToOneEnterpriseOrgs,
+          belongToMultipleEnterpriseOrgs,
+        };
 
-          if (belongToOneEnterpriseOrgs) {
-            const organizationId = this.getOrganizationIdForOneEnterprise(organizations);
-            if (organizationId) {
-              const freeFamilyPolicyEnabled = await this.PolicyApiService.getPolicyStatus(
-                organizationId,
-                PolicyType.FreeFamiliesSponsorshipPolicy,
+        if (belongToOneEnterpriseOrgs) {
+          const organizationId = this.getOrganizationIdForOneEnterprise(organizations);
+          if (organizationId) {
+            return this.freeFamiliesPolicyService
+              .getPolicyStatus$(organizationId, PolicyType.FreeFamiliesSponsorshipPolicy)
+              .pipe(
+                map((isFreeFamilyPolicyEnabled: boolean) => ({
+                  isFreeFamilyPolicyEnabled,
+                  belongToOneEnterpriseOrgs,
+                  belongToMultipleEnterpriseOrgs,
+                })),
               );
-              isFreeFamilyPolicyEnabled = freeFamilyPolicyEnabled;
-            }
           }
-
-          return {
-            isFreeFamilyPolicyEnabled,
-            belongToOneEnterpriseOrgs,
-            belongToMultipleEnterpriseOrgs,
-          };
-        },
-      ),
+        }
+        return of(response);
+      }),
     );
-    return firstValueFrom(result$);
+  }
+
+  private shouldShowFreeFamilyLink(orgStatus: EnterpriseOrgStatus): boolean {
+    return !(orgStatus.belongToOneEnterpriseOrgs && orgStatus.isFreeFamilyPolicyEnabled);
   }
 
   private evaluateEnterpriseOrganizations(organizations: any[]): {

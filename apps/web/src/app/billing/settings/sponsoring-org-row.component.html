@@ -19,7 +19,9 @@
       type="button"
       bitMenuItem
       *ngIf="
-        !isSelfHosted && !sponsoringOrg.familySponsorshipValidUntil && !isFreeFamilyPolicyEnabled
+        !isSelfHosted &&
+        !sponsoringOrg.familySponsorshipValidUntil &&
+        !(isFreeFamilyPolicyEnabled$ | async)
       "
       (click)="resendEmail()"
       [attr.aria-label]="'resendEmailLabel' | i18n: sponsoringOrg.familySponsorshipFriendlyName"

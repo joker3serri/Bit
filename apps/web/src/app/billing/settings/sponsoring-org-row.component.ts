@@ -1,9 +1,8 @@
 import { formatDate } from "@angular/common";
 import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -12,6 +11,8 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, ToastService } from "@bitwarden/components";
+
+import { FreeFamiliesPolicyService } from "../services/free-families-policy.service";
 
 @Component({
   selector: "[sponsoring-org-row]",
@@ -25,7 +26,7 @@ export class SponsoringOrgRowComponent implements OnInit {
 
   statusMessage = "loading";
   statusClass: "tw-text-success" | "tw-text-danger" = "tw-text-success";
-  isFreeFamilyPolicyEnabled: boolean;
+  isFreeFamilyPolicyEnabled$: Observable<boolean>;
   isFreeFamilyFlagEnabled: boolean;
   private locale = "";
 
@@ -36,7 +37,7 @@ export class SponsoringOrgRowComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService,
     private dialogService: DialogService,
     private toastService: ToastService,
-    private PolicyApiService: PolicyApiServiceAbstraction,
+    private freeFamiliesPolicyService: FreeFamiliesPolicyService,
     private configService: ConfigService,
   ) {}
 
@@ -50,11 +51,11 @@ export class SponsoringOrgRowComponent implements OnInit {
       this.sponsoringOrg.familySponsorshipLastSyncDate,
     );
     this.isFreeFamilyFlagEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.IdpAutoSubmitLogin,
+      FeatureFlag.DisableFreeFamiliesSponsorship,
     );
 
     if (this.isFreeFamilyFlagEnabled) {
-      this.isFreeFamilyPolicyEnabled = await this.PolicyApiService.getPolicyStatus(
+      this.isFreeFamilyPolicyEnabled$ = this.freeFamiliesPolicyService.getPolicyStatus$(
         this.sponsoringOrg.id,
         PolicyType.FreeFamiliesSponsorshipPolicy,
       );

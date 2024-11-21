@@ -106,17 +106,6 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
     }
   }
 
-  async getPolicyStatus(organizationId: string, type: PolicyType): Promise<boolean> {
-    const response = await this.apiService.send(
-      "GET",
-      "/organizations/" + organizationId + "/policies/" + type + "/policy-status",
-      null,
-      true,
-      true,
-    );
-    return response as boolean;
-  }
-
   async putPolicy(organizationId: string, type: PolicyType, request: PolicyRequest): Promise<any> {
     const r = await this.apiService.send(
       "PUT",
