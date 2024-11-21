@@ -30,9 +30,9 @@ import { MessagingService } from "@bitwarden/common/platform/abstractions/messag
 import { DialogService } from "@bitwarden/components";
 
 import { TwoFactorDuoComponent } from "./two-factor-duo.component";
-import { TwoFactorEmailComponent } from "./two-factor-email.component";
 import { TwoFactorRecoveryComponent } from "./two-factor-recovery.component";
 import { TwoFactorSetupAuthenticatorComponent } from "./two-factor-setup-authenticator.component";
+import { TwoFactorSetupEmailComponent } from "./two-factor-setup-email.component";
 import { TwoFactorVerifyComponent } from "./two-factor-verify.component";
 import { TwoFactorWebAuthnComponent } from "./two-factor-webauthn.component";
 import { TwoFactorYubiKeyComponent } from "./two-factor-yubikey.component";
@@ -196,7 +196,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
         if (!result) {
           return;
         }
-        const emailComp: DialogRef<boolean, any> = TwoFactorEmailComponent.open(
+        const emailComp: DialogRef<boolean, any> = TwoFactorSetupEmailComponent.open(
           this.dialogService,
           {
             data: result,

@@ -19,11 +19,11 @@ import { DialogService, ToastService } from "@bitwarden/components";
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
 @Component({
-  selector: "app-two-factor-email",
-  templateUrl: "two-factor-email.component.html",
+  selector: "app-two-factor-setup-email",
+  templateUrl: "two-factor-setup-email.component.html",
   outputs: ["onUpdated"],
 })
-export class TwoFactorEmailComponent extends TwoFactorBaseComponent implements OnInit {
+export class TwoFactorSetupEmailComponent extends TwoFactorBaseComponent implements OnInit {
   @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
   type = TwoFactorProviderType.Email;
   sentEmail: string;
@@ -139,6 +139,6 @@ export class TwoFactorEmailComponent extends TwoFactorBaseComponent implements O
     dialogService: DialogService,
     config: DialogConfig<AuthResponse<TwoFactorEmailResponse>>,
   ) {
-    return dialogService.open<boolean>(TwoFactorEmailComponent, config);
+    return dialogService.open<boolean>(TwoFactorSetupEmailComponent, config);
   }
 }
