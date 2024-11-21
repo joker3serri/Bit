@@ -12,11 +12,6 @@ import { AddEditFolderDialogComponent } from "../add-edit-folder-dialog/add-edit
 
 import { NewItemDropdownV2Component, NewItemInitialValues } from "./new-item-dropdown-v2.component";
 
-jest.mock("@bitwarden/angular/jslib.module");
-jest.mock("@bitwarden/common/platform/misc/utils");
-jest.mock("../../../../../platform/browser/browser-api");
-jest.mock("../../../../../platform/popup/browser-popup-utils");
-
 describe("NewItemDropdownV2Component", () => {
   let component: NewItemDropdownV2Component;
   let fixture: ComponentFixture<NewItemDropdownV2Component>;
