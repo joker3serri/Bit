@@ -30,7 +30,7 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { supportSwitch } from "../../misc/support-status";
 import { NotificationsService as NotificationsServiceAbstraction } from "../notifications.service";
 
-import { SignalRConnectionService } from "./signalr-connection.service";
+import { ReceiveMessage, SignalRConnectionService } from "./signalr-connection.service";
 import { WebPushConnectionService } from "./webpush-connection.service";
 
 export const DISABLED_NOTIFICATIONS_URL = "http://-";
@@ -107,7 +107,7 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
         notSupported: () =>
           this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
             filter((n) => n.type === "ReceiveMessage"),
-            map((n) => n.message),
+            map((n) => (n as ReceiveMessage).message),
           ),
       }),
     );
