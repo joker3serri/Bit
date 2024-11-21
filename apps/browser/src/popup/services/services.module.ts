@@ -1,4 +1,5 @@
 import { APP_INITIALIZER, NgModule, NgZone } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject, merge, of } from "rxjs";
 
 import { CollectionService } from "@bitwarden/admin-console/common";
@@ -23,6 +24,7 @@ import {
   LoginComponentService,
   LockComponentService,
   SsoComponentService,
+  LoginDecryptionOptionsService,
 } from "@bitwarden/auth/angular";
 import { LockService, LoginEmailService, PinServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -117,6 +119,7 @@ import { ForegroundLockService } from "../../auth/popup/accounts/foreground-lock
 import { ExtensionAnonLayoutWrapperDataService } from "../../auth/popup/extension-anon-layout-wrapper/extension-anon-layout-wrapper-data.service";
 import { ExtensionLoginComponentService } from "../../auth/popup/login/extension-login-component.service";
 import { ExtensionSsoComponentService } from "../../auth/popup/login/extension-sso-component.service";
+import { ExtensionLoginDecryptionOptionsService } from "../../auth/popup/login-decryption-options/extension-login-decryption-options.service";
 import { AutofillService as AutofillServiceAbstraction } from "../../autofill/services/abstractions/autofill.service";
 import AutofillService from "../../autofill/services/autofill.service";
 import { InlineMenuFieldQualificationService } from "../../autofill/services/inline-menu-field-qualification.service";
@@ -604,6 +607,11 @@ const safeProviders: SafeProvider[] = [
       I18nServiceAbstraction,
       LogService,
     ],
+  }),
+  safeProvider({
+    provide: LoginDecryptionOptionsService,
+    useClass: ExtensionLoginDecryptionOptionsService,
+    deps: [MessagingServiceAbstraction, Router],
   }),
 ];
 

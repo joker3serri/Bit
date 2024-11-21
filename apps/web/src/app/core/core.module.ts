@@ -31,6 +31,7 @@ import {
   LockComponentService,
   SetPasswordJitService,
   SsoComponentService,
+  LoginDecryptionOptionsService,
 } from "@bitwarden/auth/angular";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
@@ -61,6 +62,7 @@ import {
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
 import { AbstractStorageService } from "@bitwarden/common/platform/abstractions/storage.service";
@@ -96,6 +98,7 @@ import {
   WebRegistrationFinishService,
   WebLoginComponentService,
   WebLockComponentService,
+  WebLoginDecryptionOptionsService,
 } from "../auth";
 import { WebSsoComponentService } from "../auth/core/services/login/web-sso-component.service";
 import { AcceptOrganizationInviteService } from "../auth/organization-invite/accept-organization.service";
@@ -302,6 +305,11 @@ const safeProviders: SafeProvider[] = [
     provide: SsoComponentService,
     useClass: WebSsoComponentService,
     deps: [I18nServiceAbstraction],
+  }),
+  safeProvider({
+    provide: LoginDecryptionOptionsService,
+    useClass: WebLoginDecryptionOptionsService,
+    deps: [MessagingService, RouterService, AcceptOrganizationInviteService],
   }),
 ];
 
