@@ -1099,6 +1099,9 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
           const dashOffset = ((intervalSeconds - totpSec) / intervalSeconds) * totalLength;
           innerCircleElement.style.strokeDashoffset = `${dashOffset}`;
         }
+        if (mod === 0) {
+          this.postMessageToParent({ command: "refreshOverlayCiphers" });
+        }
       };
 
       updateCountdown();

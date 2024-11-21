@@ -263,6 +263,7 @@ export type InlineMenuListPortMessageHandlers = {
   updateAutofillInlineMenuListHeight: ({ message, port }: PortOnMessageHandlerParams) => void;
   refreshGeneratedPassword: () => Promise<void>;
   fillGeneratedPassword: ({ port }: PortConnectionParam) => Promise<void>;
+  refreshOverlayCiphers: () => Promise<void>;
 };
 
 export interface OverlayBackground {

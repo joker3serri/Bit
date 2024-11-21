@@ -202,6 +202,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     updateAutofillInlineMenuListHeight: ({ message }) => this.updateInlineMenuListHeight(message),
     refreshGeneratedPassword: () => this.updateGeneratedPassword(true),
     fillGeneratedPassword: ({ port }) => this.fillGeneratedPassword(port),
+    refreshOverlayCiphers: () => this.updateOverlayCiphers(false),
   };
 
   constructor(
