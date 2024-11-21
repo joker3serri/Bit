@@ -46,8 +46,21 @@ import {
 } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
-import { SsoComponentService } from "./sso-component.service";
+import { SsoClientId, SsoComponentService } from "./sso-component.service";
 
+interface QueryParams {
+  code?: string;
+  state?: string;
+  redirectUri?: string;
+  clientId?: string;
+  codeChallenge?: string;
+  identifier?: string;
+  email?: string;
+}
+
+/**
+ * This component handles the SSO flow.
+ */
 @Component({
   standalone: true,
   templateUrl: "sso.component.html",
@@ -108,7 +121,7 @@ export class SsoComponent implements OnInit {
 
   async ngOnInit() {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-    this.route.queryParams.pipe(first()).subscribe(async (qParams: any) => {
+    this.route.queryParams.pipe(first()).subscribe(async (qParams: QueryParams) => {
       if (qParams.code != null && qParams.state != null) {
         const codeVerifier = await this.ssoLoginService.getCodeVerifier();
         const state = await this.ssoLoginService.getSsoState();
@@ -137,7 +150,7 @@ export class SsoComponent implements OnInit {
         this.redirectUri = qParams.redirectUri;
         this.state = qParams.state;
         this.codeChallenge = qParams.codeChallenge;
-        this.ssoComponentService.clientId = qParams.clientId;
+        this.ssoComponentService.clientId = qParams.clientId as SsoClientId;
       } else if (qParams.identifier != null) {
         // SSO Org Identifier in query params takes precedence over claimed domains
         this.identifierFormControl.setValue(qParams.identifier);
@@ -187,7 +200,7 @@ export class SsoComponent implements OnInit {
     });
   }
 
-  private handleGetClaimedDomainByEmailError(error: any): void {
+  private handleGetClaimedDomainByEmailError(error: unknown): void {
     if (error instanceof ErrorResponse) {
       const errorResponse: ErrorResponse = error as ErrorResponse;
       switch (errorResponse.statusCode) {
@@ -252,8 +265,8 @@ export class SsoComponent implements OnInit {
     let codeChallenge = this.codeChallenge;
     let state = this.state;
 
-    const passwordOptions: any = {
-      type: "password",
+    const passwordOptions = {
+      type: "password" as const,
       length: 64,
       uppercase: true,
       lowercase: true,
@@ -480,11 +493,11 @@ export class SsoComponent implements OnInit {
     ]);
   }
 
-  private async handleLoginError(e: any) {
+  private async handleLoginError(e: unknown) {
     this.logService.error(e);
 
     // TODO: Key Connector Service should pass this error message to the logout callback instead of displaying here
-    if (e.message === "Key Connector error") {
+    if (e instanceof Error && e.message === "Key Connector error") {
       this.toastService.showToast({
         variant: "error",
         title: null,
