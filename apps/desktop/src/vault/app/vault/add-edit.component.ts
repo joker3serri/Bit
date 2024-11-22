@@ -26,7 +26,6 @@ import { DialogService, ToastService } from "@bitwarden/components";
 import { SshKeyPasswordPromptComponent } from "@bitwarden/importer/ui";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
-
 const BroadcasterSubscriptionId = "AddEditComponent";
 
 @Component({
