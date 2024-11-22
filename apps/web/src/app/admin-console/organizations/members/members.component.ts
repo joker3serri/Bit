@@ -316,12 +316,16 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     }
 
     this.actionPromise = this.revokeUser(user.id);
+    const message =
+      (await firstValueFrom(this.accountDeprovisioningEnabled$)) && user.managedByOrganization
+        ? "revokedManagedUserId"
+        : "revokedUserId";
     try {
       await this.actionPromise;
       this.toastService.showToast({
         variant: "success",
         title: null,
-        message: this.i18nService.t("revokedUserId", this.userNamePipe.transform(user)),
+        message: this.i18nService.t(message, this.userNamePipe.transform(user)),
       });
       await this.load();
     } catch (e) {
@@ -332,12 +336,16 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
 
   async restore(user: OrganizationUserView) {
     this.actionPromise = this.restoreUser(user.id);
+    const message =
+      (await firstValueFrom(this.accountDeprovisioningEnabled$)) && user.managedByOrganization
+        ? "restoredManagedUserId"
+        : "restoredUserId";
     try {
       await this.actionPromise;
       this.toastService.showToast({
         variant: "success",
         title: null,
-        message: this.i18nService.t("restoredUserId", this.userNamePipe.transform(user)),
+        message: this.i18nService.t(message, this.userNamePipe.transform(user)),
       });
       await this.load();
     } catch (e) {
