@@ -50,6 +50,9 @@
   "restoreMembersInstructions": {
     "message": "To restore a member's account, go to the Revoked tab. The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
+  "cannotRestoreAccessError":{
+    "message": "Cannot restore account access"
+  },
   "allApplicationsWithCount": {
     "message": "All applications ($COUNT$)",
     "placeholders": {
@@ -3621,6 +3624,24 @@
       }
     }
   },
+ "revokedManagedUserId": {
+    "message": "Revoked account access for $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "restoredManagedUserId": {
+    "message": "Restored account access for $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
   "revokeUserId": {
     "message": "Revoke $ID$ access",
     "placeholders": {
@@ -5546,8 +5567,20 @@
   "bulkRestoredMessage": {
     "message": "Restored organization access successfully"
   },
+  "bulkManagedRevokedMessage": {
+    "message": "Revoked account access successfully"
+  },
+  "bulkManagedRestoreMessage": {
+    "message": "Restored account access successfully"
+  },
   "bulkFilteredMessage": {
     "message": "Excluded, not applicable for this action"
+  },
+  "nonCompliantMembersTitle":{
+    "message": "Non-compliant members"
+  },
+  "nonCompliantMembersError":{
+    "message": "Members that are non-compliant with the Single organization or Two-step login policy cannot be restored until they adhere to the policy requirements"
   },
   "fingerprint": {
     "message": "Fingerprint"
