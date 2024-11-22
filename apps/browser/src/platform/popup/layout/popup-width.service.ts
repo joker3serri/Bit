@@ -1,10 +1,13 @@
 import { inject, Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 
-import { GlobalStateProvider, KeyDefinition, THEMING_DISK } from "@bitwarden/common/platform/state";
+import {
+  GlobalStateProvider,
+  KeyDefinition,
+  POPUP_WIDTH_DISK,
+} from "@bitwarden/common/platform/state";
 
 /**
- * Available widths for the extension popup.
  *
  * Value represents width in pixels
  */
@@ -17,7 +20,7 @@ export const PopupWidthOptions = Object.freeze({
 type PopupWidthOptions = typeof PopupWidthOptions;
 export type PopupWidthOption = keyof PopupWidthOptions;
 
-const POPUP_WIDTH_KEY_DEF = new KeyDefinition<PopupWidthOption>(THEMING_DISK, "popup-width", {
+const POPUP_WIDTH_KEY_DEF = new KeyDefinition<PopupWidthOption>(POPUP_WIDTH_DISK, "popup-width", {
   deserializer: (s) => s,
 });
 
