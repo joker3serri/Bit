@@ -3,27 +3,27 @@ name: Build Desktop
 on:
   pull_request:
     branches-ignore:
-      - 'l10n_master'
-      - 'cf-pages'
+      - "l10n_master"
+      - "cf-pages"
     paths:
-      - 'apps/desktop/**'
-      - 'libs/**'
-      - '*'
-      - '!*.md'
-      - '!*.txt'
-      - '.github/workflows/build-desktop.yml'
+      - "apps/desktop/**"
+      - "libs/**"
+      - "*"
+      - "!*.md"
+      - "!*.txt"
+      - ".github/workflows/build-desktop.yml"
   push:
     branches:
-      - 'main'
-      - 'rc'
-      - 'hotfix-rc-desktop'
+      - "main"
+      - "rc"
+      - "hotfix-rc-desktop"
     paths:
-      - 'apps/desktop/**'
-      - 'libs/**'
-      - '*'
-      - '!*.md'
-      - '!*.txt'
-      - '.github/workflows/build-desktop.yml'
+      - "apps/desktop/**"
+      - "libs/**"
+      - "*"
+      - "!*.md"
+      - "!*.txt"
+      - ".github/workflows/build-desktop.yml"
   workflow_dispatch:
     inputs: {}
 
@@ -144,8 +144,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
           node-version: ${{ env._NODE_VERSION }}
 
       - name: Set up environment
@@ -234,7 +234,6 @@ jobs:
           path: apps/desktop/dist/${{ needs.setup.outputs.release_channel }}-linux.yml
           if-no-files-found: error
 
-
   windows:
     name: Windows Build
     runs-on: windows-2022
@@ -254,8 +253,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
           node-version: ${{ env._NODE_VERSION }}
 
       - name: Install AST
@@ -443,7 +442,6 @@ jobs:
           path: apps/desktop/dist/nsis-web/${{ needs.setup.outputs.release_channel }}.yml
           if-no-files-found: error
 
-
   macos-build:
     name: MacOS Build
     runs-on: macos-13
@@ -462,8 +460,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
           node-version: ${{ env._NODE_VERSION }}
 
       - name: Set up Node-gyp
@@ -599,13 +597,11 @@ jobs:
       - name: Build application (dev)
         run: npm run build
 
-
   browser-build:
     name: Browser Build
     needs: setup
     uses: ./.github/workflows/build-browser.yml
     secrets: inherit
-
 
   macos-package-github:
     name: MacOS Package GitHub Release Assets
@@ -628,8 +624,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
           node-version: ${{ env._NODE_VERSION }}
 
       - name: Set up Node-gyp
@@ -825,7 +821,6 @@ jobs:
           path: apps/desktop/dist/${{ needs.setup.outputs.release_channel }}-mac.yml
           if-no-files-found: error
 
-
   macos-package-mas:
     name: MacOS Package Prod Release Asset
     runs-on: macos-13
@@ -847,8 +842,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
           node-version: ${{ env._NODE_VERSION }}
 
       - name: Set up Node-gyp
@@ -1033,9 +1028,11 @@ jobs:
       - name: Deploy to TestFlight
         id: testflight-deploy
         if: |
-            (github.ref == 'refs/heads/main'
-            || github.ref == 'refs/heads/rc'
-            || github.ref == 'refs/heads/hotfix-rc-desktop')
+          (github.ref == 'refs/heads/main'
+          || github.ref == 'refs/heads/rc'
+          || github.ref == 'refs/heads/hotfix-rc-desktop'
+          || contains(github.event.pull_request.labels.*.name, 'testflight'))
+
         env:
           APP_STORE_CONNECT_TEAM_ISSUER: ${{ secrets.APP_STORE_CONNECT_TEAM_ISSUER }}
           APP_STORE_CONNECT_AUTH_KEY: 6TV9MKN3GP
@@ -1050,9 +1047,9 @@ jobs:
       - name: Post message to a Slack channel
         id: slack-message
         if: |
-            (github.ref == 'refs/heads/main'
-            || github.ref == 'refs/heads/rc'
-            || github.ref == 'refs/heads/hotfix-rc-desktop')
+          (github.ref == 'refs/heads/main'
+          || github.ref == 'refs/heads/rc'
+          || github.ref == 'refs/heads/hotfix-rc-desktop')
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
         with:
           channel-id: C074F5UESQ0
@@ -1071,7 +1068,6 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ steps.retrieve-slack-secret.outputs.slack-bot-token }}
           BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
-
 
   macos-package-dev:
     name: MacOS Package Dev Release Asset
@@ -1094,8 +1090,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
           node-version: ${{ env._NODE_VERSION }}
 
       - name: Set up Node-gyp
@@ -1268,7 +1264,6 @@ jobs:
           path: apps/desktop/dist/mas-dev-universal/Bitwarden-${{ env._PACKAGE_VERSION }}-masdev-universal.zip
           if-no-files-found: error
 
-
   crowdin-push:
     name: Crowdin Push
     if: github.ref == 'refs/heads/main'
@@ -1305,7 +1300,6 @@ jobs:
           crowdin_branch_name: main
           upload_sources: true
           upload_translations: false
-
 
   check-failures:
     name: Check for failures
