@@ -6,6 +6,7 @@ import { autofill } from "@bitwarden/desktop-napi";
 import { CommandDefinition } from "./command";
 
 export type RunCommandParams<C extends CommandDefinition> = {
+  namespace: C["namespace"];
   command: C["name"];
   params: C["input"];
 };

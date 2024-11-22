@@ -1,20 +1,16 @@
 #import <Foundation/Foundation.h>
-#import "commands/status.h"
-#import "commands/sync.h"
-#import "../interop.h"
-#import "../utils.h"
+#import "autofill/run_autofill_command.h"
+#import "interop.h"
+#import "utils.h"
 
 void pickAndRunCommand(void* context, NSDictionary *input) {
-  NSString *command = input[@"command"];
-  NSDictionary *params = input[@"params"];
+  NSString *namespace = input[@"namespace"];
 
-  if ([command isEqual:@"status"]) {
-    return status(context, params);
-  } else if ([command isEqual:@"sync"]) {
-    return runSync(context, params);
+  if ([namespace isEqual:@"autofill"]) {
+    return runAutofillCommand(context, input);
   }
 
-  _return(context, _error([NSString stringWithFormat:@"Unknown command: %@", command]));
+  _return(context, _error([NSString stringWithFormat:@"Unknown namespace: %@", namespace]));
 }
 
 /// [Callable from Rust]

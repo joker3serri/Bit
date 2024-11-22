@@ -40,7 +40,10 @@ export class DesktopAutofillService implements OnDestroy {
 
           return this.cipherService.cipherViews$;
         }),
-        mergeMap((cipherViewMap) => this.sync(Object.values(cipherViewMap))),
+        // TODO: This will unset all the autofill credentials on the OS
+        // when the account locks. We should instead explicilty clear the credentials
+        // when the user logs out. Maybe by subscribing to the encrypted ciphers observable instead.
+        mergeMap((cipherViewMap) => this.sync(Object.values(cipherViewMap ?? []))),
         takeUntil(this.destroy$),
       )
       .subscribe();
@@ -87,6 +90,7 @@ export class DesktopAutofillService implements OnDestroy {
     }
 
     const syncResult = await ipc.autofill.runCommand<NativeAutofillSyncCommand>({
+      namespace: "autofill",
       command: "sync",
       params: {
         credentials: [...fido2Credentials, ...passwordCredentials],
@@ -104,6 +108,7 @@ export class DesktopAutofillService implements OnDestroy {
   private status() {
     // TODO: Investigate why this type needs to be explicitly set
     return ipc.autofill.runCommand<NativeAutofillStatusCommand>({
+      namespace: "autofill",
       command: "status",
       params: {},
     });

@@ -2,6 +2,7 @@ import { NativeAutofillStatusCommand } from "./status.command";
 import { NativeAutofillSyncCommand } from "./sync.command";
 
 export type CommandDefinition = {
+  namespace: string;
   name: string;
   input: Record<string, unknown>;
   output: Record<string, unknown>;
