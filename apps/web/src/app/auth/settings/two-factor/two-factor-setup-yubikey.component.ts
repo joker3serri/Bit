@@ -21,10 +21,13 @@ interface Key {
 }
 
 @Component({
-  selector: "app-two-factor-yubikey",
-  templateUrl: "two-factor-yubikey.component.html",
+  selector: "app-two-factor-setup-yubikey",
+  templateUrl: "two-factor-setup-yubikey.component.html",
 })
-export class TwoFactorYubiKeyComponent extends TwoFactorSetupMethodBaseComponent implements OnInit {
+export class TwoFactorSetupYubiKeyComponent
+  extends TwoFactorSetupMethodBaseComponent
+  implements OnInit
+{
   type = TwoFactorProviderType.Yubikey;
   keys: Key[];
   anyKeyHasNfc = false;
@@ -169,6 +172,6 @@ export class TwoFactorYubiKeyComponent extends TwoFactorSetupMethodBaseComponent
     dialogService: DialogService,
     config: DialogConfig<AuthResponse<TwoFactorYubiKeyResponse>>,
   ) {
-    return dialogService.open<boolean>(TwoFactorYubiKeyComponent, config);
+    return dialogService.open<boolean>(TwoFactorSetupYubiKeyComponent, config);
   }
 }

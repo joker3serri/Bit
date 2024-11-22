@@ -34,8 +34,8 @@ import { TwoFactorSetupAuthenticatorComponent } from "./two-factor-setup-authent
 import { TwoFactorSetupDuoComponent } from "./two-factor-setup-duo.component";
 import { TwoFactorSetupEmailComponent } from "./two-factor-setup-email.component";
 import { TwoFactorSetupWebAuthnComponent } from "./two-factor-setup-webauthn.component";
+import { TwoFactorSetupYubiKeyComponent } from "./two-factor-setup-yubikey.component";
 import { TwoFactorVerifyComponent } from "./two-factor-verify.component";
-import { TwoFactorYubiKeyComponent } from "./two-factor-yubikey.component";
 
 @Component({
   selector: "app-two-factor-setup",
@@ -160,7 +160,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
         if (!result) {
           return;
         }
-        const yubiComp: DialogRef<boolean, any> = TwoFactorYubiKeyComponent.open(
+        const yubiComp: DialogRef<boolean, any> = TwoFactorSetupYubiKeyComponent.open(
           this.dialogService,
           { data: result },
         );

@@ -46,9 +46,9 @@ import { TwoFactorSetupAuthenticatorComponent } from "../auth/settings/two-facto
 import { TwoFactorSetupDuoComponent } from "../auth/settings/two-factor/two-factor-setup-duo.component";
 import { TwoFactorSetupEmailComponent } from "../auth/settings/two-factor/two-factor-setup-email.component";
 import { TwoFactorSetupWebAuthnComponent } from "../auth/settings/two-factor/two-factor-setup-webauthn.component";
+import { TwoFactorSetupYubiKeyComponent } from "../auth/settings/two-factor/two-factor-setup-yubikey.component";
 import { TwoFactorSetupComponent } from "../auth/settings/two-factor/two-factor-setup.component";
 import { TwoFactorVerifyComponent } from "../auth/settings/two-factor/two-factor-verify.component";
-import { TwoFactorYubiKeyComponent } from "../auth/settings/two-factor/two-factor-yubikey.component";
 import { UserVerificationModule } from "../auth/shared/components/user-verification";
 import { SsoComponent } from "../auth/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/two-factor-options.component";
@@ -168,7 +168,7 @@ import { SharedModule } from "./shared.module";
     TwoFactorSetupComponent,
     TwoFactorVerifyComponent,
     TwoFactorSetupWebAuthnComponent,
-    TwoFactorYubiKeyComponent,
+    TwoFactorSetupYubiKeyComponent,
     UpdatePasswordComponent,
     UpdateTempPasswordComponent,
     VerifyEmailTokenComponent,
@@ -235,7 +235,7 @@ import { SharedModule } from "./shared.module";
     TwoFactorSetupComponent,
     TwoFactorVerifyComponent,
     TwoFactorSetupWebAuthnComponent,
-    TwoFactorYubiKeyComponent,
+    TwoFactorSetupYubiKeyComponent,
     UpdatePasswordComponent,
     UpdateTempPasswordComponent,
     UserLayoutComponent,
