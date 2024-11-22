@@ -29,10 +29,10 @@ interface Key {
 }
 
 @Component({
-  selector: "app-two-factor-webauthn",
-  templateUrl: "two-factor-webauthn.component.html",
+  selector: "app-two-factor-setup-webauthn",
+  templateUrl: "two-factor-setup-webauthn.component.html",
 })
-export class TwoFactorWebAuthnComponent extends TwoFactorSetupMethodBaseComponent {
+export class TwoFactorSetupWebAuthnComponent extends TwoFactorSetupMethodBaseComponent {
   type = TwoFactorProviderType.WebAuthn;
   name: string;
   keys: Key[];
@@ -213,6 +213,6 @@ export class TwoFactorWebAuthnComponent extends TwoFactorSetupMethodBaseComponen
     dialogService: DialogService,
     config: DialogConfig<AuthResponse<TwoFactorWebAuthnResponse>>,
   ) {
-    return dialogService.open<boolean>(TwoFactorWebAuthnComponent, config);
+    return dialogService.open<boolean>(TwoFactorSetupWebAuthnComponent, config);
   }
 }

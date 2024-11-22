@@ -33,8 +33,8 @@ import { TwoFactorDuoComponent } from "./two-factor-duo.component";
 import { TwoFactorRecoveryComponent } from "./two-factor-recovery.component";
 import { TwoFactorSetupAuthenticatorComponent } from "./two-factor-setup-authenticator.component";
 import { TwoFactorSetupEmailComponent } from "./two-factor-setup-email.component";
+import { TwoFactorSetupWebAuthnComponent } from "./two-factor-setup-webauthn.component";
 import { TwoFactorVerifyComponent } from "./two-factor-verify.component";
-import { TwoFactorWebAuthnComponent } from "./two-factor-webauthn.component";
 import { TwoFactorYubiKeyComponent } from "./two-factor-yubikey.component";
 
 @Component({
@@ -216,7 +216,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
         if (!result) {
           return;
         }
-        const webAuthnComp: DialogRef<boolean, any> = TwoFactorWebAuthnComponent.open(
+        const webAuthnComp: DialogRef<boolean, any> = TwoFactorSetupWebAuthnComponent.open(
           this.dialogService,
           { data: result },
         );
