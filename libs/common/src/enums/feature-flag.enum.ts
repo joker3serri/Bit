@@ -33,7 +33,6 @@ export enum FeatureFlag {
   PM11901_RefactorSelfHostingLicenseUploader = "PM-11901-refactor-self-hosting-license-uploader",
   AccessIntelligence = "pm-13227-access-intelligence",
   Pm13322AddPolicyDefinitions = "pm-13322-add-policy-definitions",
-  LimitCollectionCreationDeletionSplit = "pm-10863-limit-collection-creation-deletion-split",
   PM14505AdminConsoleIntegrationPage = "pm-14505-admin-console-integration-page",
   CriticalApps = "pm-14466-risk-insights-critical-application",
   TrialPaymentOptional = "PM-8163-trial-payment",
@@ -41,6 +40,7 @@ export enum FeatureFlag {
   NewDeviceVerificationTemporaryDismiss = "new-device-temporary-dismiss",
   NewDeviceVerificationPermanentDismiss = "new-device-permanent-dismiss",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
+  PM11360RemoveProviderExportPermission = "pm-11360-remove-provider-export-permission",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -84,7 +84,6 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.PM11901_RefactorSelfHostingLicenseUploader]: FALSE,
   [FeatureFlag.AccessIntelligence]: FALSE,
   [FeatureFlag.Pm13322AddPolicyDefinitions]: FALSE,
-  [FeatureFlag.LimitCollectionCreationDeletionSplit]: FALSE,
   [FeatureFlag.PM14505AdminConsoleIntegrationPage]: FALSE,
   [FeatureFlag.CriticalApps]: FALSE,
   [FeatureFlag.TrialPaymentOptional]: FALSE,
@@ -92,6 +91,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.NewDeviceVerificationTemporaryDismiss]: FALSE,
   [FeatureFlag.NewDeviceVerificationPermanentDismiss]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
+  [FeatureFlag.PM11360RemoveProviderExportPermission]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;
