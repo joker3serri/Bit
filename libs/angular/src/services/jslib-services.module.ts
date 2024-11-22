@@ -35,6 +35,8 @@ import {
   RegisterRouteService,
   AuthRequestApiService,
   DefaultAuthRequestApiService,
+  DefaultLoginSuccessHandlerService,
+  LoginSuccessHandlerService,
 } from "@bitwarden/auth/common";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -1412,6 +1414,11 @@ const safeProviders: SafeProvider[] = [
       ApiServiceAbstraction,
       ConfigService,
     ],
+  }),
+  safeProvider({
+    provide: LoginSuccessHandlerService,
+    useClass: DefaultLoginSuccessHandlerService,
+    deps: [SyncService, UserAsymmetricKeysRegenerationService],
   }),
 ];
 
