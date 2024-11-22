@@ -38,7 +38,7 @@ import {
   VaultIcon,
   LoginDecryptionOptionsComponent,
   DevicesIcon,
-} from "@bitwarden/auth/angular";
+ SsoComponent } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-factor-component-refactor-route-swap";
@@ -60,7 +60,7 @@ import { RemovePasswordComponent } from "../auth/popup/remove-password.component
 import { SetPasswordComponent } from "../auth/popup/set-password.component";
 import { AccountSecurityComponent as AccountSecurityV1Component } from "../auth/popup/settings/account-security-v1.component";
 import { AccountSecurityComponent } from "../auth/popup/settings/account-security.component";
-import { SsoComponent } from "../auth/popup/sso.component";
+import { SsoComponent as SsoComponentV1 } from "../auth/popup/sso.component";
 import { TwoFactorAuthComponent } from "../auth/popup/two-factor-auth.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
@@ -207,12 +207,11 @@ const routes: Routes = [
     canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "2fa-options" } satisfies RouteDataProperties,
   },
-  {
+  ...unauthUiRefreshSwap(SsoComponentV1, SsoComponent, {
     path: "sso",
-    component: SsoComponent,
     canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { state: "sso" } satisfies RouteDataProperties,
-  },
+  }),
   {
     path: "set-password",
     component: SetPasswordComponent,
