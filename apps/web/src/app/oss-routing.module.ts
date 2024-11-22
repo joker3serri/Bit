@@ -39,6 +39,7 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-factor-component-refactor-route-swap";
 import { flagEnabled, Flags } from "../utils/flags";
 
+import { NewDeviceVerificationNoticeComponent } from "./../../../../libs/vault/src/components/new-device-verification-notice/new-device-verification-notice.component";
 import { VerifyRecoverDeleteOrgComponent } from "./admin-console/organizations/manage/verify-recover-delete-org.component";
 import { AcceptFamilySponsorshipComponent } from "./admin-console/organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "./admin-console/organizations/sponsorships/families-for-enterprise-setup.component";
@@ -627,6 +628,10 @@ const routes: Routes = [
         } satisfies AnonLayoutWrapperData,
       },
     ],
+  },
+  {
+    path: "blah",
+    component: NewDeviceVerificationNoticeComponent,
   },
   {
     path: "",
