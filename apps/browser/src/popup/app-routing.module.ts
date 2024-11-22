@@ -38,7 +38,8 @@ import {
   VaultIcon,
   LoginDecryptionOptionsComponent,
   DevicesIcon,
- SsoComponent } from "@bitwarden/auth/angular";
+  SsoComponent,
+} from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
 import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-factor-component-refactor-route-swap";
