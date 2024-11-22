@@ -3376,5 +3376,26 @@
   },
   "fileSavedToDevice": {
     "message": "File saved to device. Manage from your device downloads."
+  },
+  "importantNotice": {
+    "message": "Important notice"
+  },
+  "newDeviceVerificationNoticeContentPage1": {
+    "message": "Bitwarden will soon send a code to your account email to verify logins from new devices."
+  },
+  "newDeviceVerificationNoticePage1FormContent": {
+    "message": "Do you have reliable access to your email, $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "your_name@email.com"
+      }
+    }
+  },
+  "newDeviceVerificationNoticePage1OptionA": {
+    "message": "No, I do not"
+  },
+  "newDeviceVerificationNoticePage1OptionB": {
+    "message": "Yes, I can reliably access my email"
   }
 }
