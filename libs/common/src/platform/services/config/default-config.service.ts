@@ -121,9 +121,6 @@ export class DefaultConfigService implements ConfigService {
   }
 
   getFeatureFlag$<Flag extends FeatureFlag>(key: Flag) {
-    if (key === FeatureFlag.ExtensionRefresh || key === FeatureFlag.PersistPopupView) {
-      return of(true);
-    }
     return this.serverConfig$.pipe(
       map((serverConfig) => this.getFeatureFlagValue(serverConfig, key)),
     );
