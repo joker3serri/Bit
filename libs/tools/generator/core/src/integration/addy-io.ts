@@ -27,6 +27,7 @@ export type AddyIoConfiguration = ForwarderConfiguration<AddyIoSettings>;
 const defaultSettings = Object.freeze({
   token: "",
   domain: "",
+  baseUrl: "",
 });
 
 // supported RPC calls
@@ -68,6 +69,7 @@ const forwarder = Object.freeze({
       format: "classified",
       classifier: new PrivateClassifier<AddyIoSettings>(),
       state: GENERATOR_DISK,
+      initial: defaultSettings,
       options: {
         deserializer: (value) => value,
         clearOn: ["logout"],

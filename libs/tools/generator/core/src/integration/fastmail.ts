@@ -126,6 +126,7 @@ const forwarder = Object.freeze({
       format: "classified",
       classifier: new PrivateClassifier<FastmailSettings>(),
       state: GENERATOR_DISK,
+      initial: defaultSettings,
       options: {
         deserializer: (value) => value,
         clearOn: ["logout"],
