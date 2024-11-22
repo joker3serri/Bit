@@ -3,9 +3,9 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
-import { SsoClientId } from "@bitwarden/auth/angular";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { ClientType } from "@bitwarden/common/enums";
 import {
   EnvironmentService,
   Environment,
@@ -57,7 +57,7 @@ describe("ExtensionSsoComponentService", () => {
   });
 
   it("sets clientId to browser", () => {
-    expect(service.clientId).toBe(SsoClientId.Browser);
+    expect(service.clientId).toBe(ClientType.Browser);
   });
 
   it("sets redirectUri based on environment", () => {

@@ -22,7 +22,7 @@ import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/force-set-password-reason";
 import { SsoPreValidateResponse } from "@bitwarden/common/auth/models/response/sso-pre-validate.response";
-import { HttpStatusCode } from "@bitwarden/common/enums";
+import { ClientType, HttpStatusCode } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
@@ -45,7 +45,7 @@ import {
 } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
-import { SsoClientId, SsoComponentService } from "./sso-component.service";
+import { SsoClientType, SsoComponentService } from "./sso-component.service";
 
 interface QueryParams {
   code?: string;
@@ -142,7 +142,20 @@ export class SsoComponent implements OnInit {
     this.redirectUri = qParams.redirectUri;
     this.state = qParams.state;
     this.codeChallenge = qParams.codeChallenge;
-    this.ssoComponentService.clientId = qParams.clientId as SsoClientId;
+    if (this.isValidSsoClientType(qParams.clientId)) {
+      this.ssoComponentService.clientId = qParams.clientId;
+    } else {
+      throw new Error(`Invalid SSO client type: ${qParams.clientId}`);
+    }
+  }
+
+  /**
+   * Checks if the value is a valid SSO client type
+   * @param value - The value to check
+   * @returns True if the value is a valid SSO client type, otherwise false
+   */
+  private isValidSsoClientType(value: string): value is SsoClientType {
+    return [ClientType.Web, ClientType.Browser, ClientType.Desktop].includes(value as ClientType);
   }
 
   /**

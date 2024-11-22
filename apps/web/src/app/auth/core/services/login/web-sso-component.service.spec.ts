@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { SsoClientId } from "@bitwarden/auth/angular";
+import { ClientType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 import { WebSsoComponentService } from "./web-sso-component.service";
@@ -21,7 +21,7 @@ describe("WebSsoComponentService", () => {
   });
 
   it("sets clientId to web", () => {
-    expect(service.clientId).toBe(SsoClientId.Web);
+    expect(service.clientId).toBe(ClientType.Web);
   });
 
   describe("setDocumentCookies", () => {

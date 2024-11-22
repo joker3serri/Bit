@@ -4,11 +4,12 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import {
   DefaultSsoComponentService,
-  SsoClientId,
+  SsoClientType,
   SsoComponentService,
 } from "@bitwarden/auth/angular";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { ClientType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -24,7 +25,7 @@ export class ExtensionSsoComponentService
   extends DefaultSsoComponentService
   implements SsoComponentService
 {
-  clientId: SsoClientId;
+  clientId: SsoClientType;
   redirectUri: string;
   onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginTde: () => Promise<void>;
@@ -39,7 +40,7 @@ export class ExtensionSsoComponentService
     private logService: LogService,
   ) {
     super();
-    this.clientId = SsoClientId.Browser;
+    this.clientId = ClientType.Browser;
 
     environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
       this.redirectUri = env.getWebVaultUrl() + "/sso-connector.html";

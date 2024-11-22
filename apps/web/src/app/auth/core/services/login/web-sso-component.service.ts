@@ -2,9 +2,10 @@ import { Injectable } from "@angular/core";
 
 import {
   DefaultSsoComponentService,
-  SsoClientId,
+  SsoClientType,
   SsoComponentService,
 } from "@bitwarden/auth/angular";
+import { ClientType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
 /**
@@ -15,11 +16,11 @@ export class WebSsoComponentService
   extends DefaultSsoComponentService
   implements SsoComponentService
 {
-  clientId: SsoClientId;
+  clientId: SsoClientType;
 
   constructor(private i18nService: I18nService) {
     super();
-    this.clientId = SsoClientId.Web;
+    this.clientId = ClientType.Web;
   }
 
   setDocumentCookies(): void {
