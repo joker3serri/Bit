@@ -7,7 +7,8 @@ fn main() {
     // Auto compile all .m files in the src/native directory
     for entry in glob("src/native/**/*.m").expect("Failed to read glob pattern") {
         let path = entry.expect("Failed to read glob entry");
-        builder.file(path);
+        builder.file(path.clone());
+        println!("cargo::rerun-if-changed={}", path.display());
     }
 
     builder
