@@ -1,8 +1,9 @@
 import { formatDate } from "@angular/common";
 import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
-import { firstValueFrom, Observable } from "rxjs";
+import { firstValueFrom, map, Observable } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -11,8 +12,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { DialogService, ToastService } from "@bitwarden/components";
-
-import { FreeFamiliesPolicyService } from "../services/free-families-policy.service";
 
 @Component({
   selector: "[sponsoring-org-row]",
@@ -37,8 +36,8 @@ export class SponsoringOrgRowComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService,
     private dialogService: DialogService,
     private toastService: ToastService,
-    private freeFamiliesPolicyService: FreeFamiliesPolicyService,
     private configService: ConfigService,
+    private policyService: PolicyService,
   ) {}
 
   async ngOnInit() {
@@ -55,10 +54,17 @@ export class SponsoringOrgRowComponent implements OnInit {
     );
 
     if (this.isFreeFamilyFlagEnabled) {
-      this.isFreeFamilyPolicyEnabled$ = this.freeFamiliesPolicyService.getPolicyStatus$(
-        this.sponsoringOrg.id,
-        PolicyType.FreeFamiliesSponsorshipPolicy,
-      );
+      this.isFreeFamilyPolicyEnabled$ = this.policyService
+        .getAll$(PolicyType.FreeFamiliesSponsorshipPolicy)
+        .pipe(
+          map(
+            (policies) =>
+              Array.isArray(policies) &&
+              policies.some(
+                (policy) => policy.organizationId === this.sponsoringOrg.id && policy.enabled,
+              ),
+          ),
+        );
     }
   }
 

@@ -238,6 +238,8 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
       case PolicyType.PersonalOwnership:
         // individual vault policy applies to everyone except admins and owners
         return organization.isAdmin;
+      case PolicyType.FreeFamiliesSponsorshipPolicy:
+        return false;
       default:
         return organization.canManagePolicies;
     }

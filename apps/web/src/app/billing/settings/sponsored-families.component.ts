@@ -8,19 +8,11 @@ import {
   AsyncValidatorFn,
   ValidationErrors,
 } from "@angular/forms";
-import {
-  combineLatest,
-  firstValueFrom,
-  from,
-  map,
-  Observable,
-  Subject,
-  switchMap,
-  takeUntil,
-} from "rxjs";
+import { combineLatest, firstValueFrom, map, Observable, Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -31,8 +23,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { ToastService } from "@bitwarden/components";
-
-import { FreeFamiliesPolicyService } from "./../services/free-families-policy.service";
 
 interface RequestSponsorshipForm {
   selectedSponsorshipOrgId: FormControl<string>;
@@ -68,8 +58,8 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private toastService: ToastService,
-    private freeFamiliesPolicyService: FreeFamiliesPolicyService,
     private configService: ConfigService,
+    private policyService: PolicyService,
   ) {
     this.sponsorshipForm = this.formBuilder.group<RequestSponsorshipForm>({
       selectedSponsorshipOrgId: new FormControl("", {
@@ -94,30 +84,20 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
     );
 
     if (this.isFreeFamilyFlagEnabled) {
-      this.availableSponsorshipOrgs$ = this.organizationService.organizations$.pipe(
-        switchMap((orgs) =>
-          combineLatest(
-            orgs.map((o) =>
-              from(
-                this.freeFamiliesPolicyService.getPolicyStatus$(
-                  o.id,
-                  PolicyType.FreeFamiliesSponsorshipPolicy,
-                ),
-              ).pipe(
-                map((isFreeFamilyPolicyEnabled) => ({
-                  organization: o,
-                  isPolicyEnabled: isFreeFamilyPolicyEnabled ?? false,
-                })),
+      this.availableSponsorshipOrgs$ = combineLatest([
+        this.organizationService.organizations$,
+        this.policyService.getAll$(PolicyType.FreeFamiliesSponsorshipPolicy),
+      ]).pipe(
+        map(([organizations, policies]) =>
+          organizations
+            .filter((org) => org.familySponsorshipAvailable)
+            .map((org) => ({
+              organization: org,
+              isPolicyEnabled: policies.some(
+                (policy) => policy.organizationId === org.id && policy.enabled,
               ),
-            ),
-          ),
-        ),
-        map((orgsWithPolicies) =>
-          orgsWithPolicies
-            .filter(
-              ({ organization, isPolicyEnabled }) =>
-                organization.familySponsorshipAvailable && !isPolicyEnabled,
-            )
+            }))
+            .filter(({ isPolicyEnabled }) => !isPolicyEnabled)
             .map(({ organization }) => organization),
         ),
       );
