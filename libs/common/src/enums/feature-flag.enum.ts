@@ -58,7 +58,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.ItemShare]: FALSE,
   [FeatureFlag.GeneratorToolsModernization]: FALSE,
   [FeatureFlag.AC1795_UpdatedSubscriptionStatusSection]: FALSE,
-  [FeatureFlag.ExtensionRefresh]: FALSE,
+  [FeatureFlag.ExtensionRefresh]: true,
   [FeatureFlag.PersistPopupView]: FALSE,
   [FeatureFlag.PM4154_BulkEncryptionService]: FALSE,
   [FeatureFlag.UseTreeWalkerApiForPageDetailsCollection]: FALSE,
