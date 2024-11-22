@@ -1,20 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "commands/status.h"
 #import "commands/sync.h"
-#import "interop.h"
-#import "utils.h"
-
-// Tips for developing Objective-C code:
-// - Use the `NSLog` function to log messages to the system log
-//   - Example:
-//     NSLog(@"An example log: %@", someVariable);
-// - Use the `@try` and `@catch` directives to catch exceptions
-
-#if !__has_feature(objc_arc)
-  // Auto Reference Counting makes memory management easier for Objective-C objects
-  // Regular C objects still need to be managed manually
-  #error ARC must be enabled!
-#endif
+#import "../interop.h"
+#import "../utils.h"
 
 void pickAndRunCommand(void* context, NSDictionary *input) {
   NSString *command = input[@"command"];

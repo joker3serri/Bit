@@ -4,8 +4,8 @@
 #import <AuthenticationServices/ASCredentialServiceIdentifier.h>
 #import <AuthenticationServices/ASPasswordCredentialIdentity.h>
 #import <AuthenticationServices/ASPasskeyCredentialIdentity.h>
-#import "../utils.h"
-#import "../interop.h"
+#import "../../utils.h"
+#import "../../interop.h"
 #import "sync.h"
 
 // 'run' is added to the name because it clashes with internal macOS function

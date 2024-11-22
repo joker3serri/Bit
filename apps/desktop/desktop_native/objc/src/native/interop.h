@@ -3,6 +3,18 @@
 
 #import <Foundation/Foundation.h>
 
+// Tips for developing Objective-C code:
+// - Use the `NSLog` function to log messages to the system log
+//   - Example:
+//     NSLog(@"An example log: %@", someVariable);
+// - Use the `@try` and `@catch` directives to catch exceptions
+
+#if !__has_feature(objc_arc)
+  // Auto Reference Counting makes memory management easier for Objective-C objects
+  // Regular C objects still need to be managed manually
+  #error ARC must be enabled!
+#endif
+
 /// [Shared with Rust]
 /// Simple struct to hold a C-string and its length
 /// This is used to return strings created in Objective-C to Rust

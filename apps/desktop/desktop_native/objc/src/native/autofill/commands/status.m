@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <AuthenticationServices/ASCredentialIdentityStore.h>
 #import <AuthenticationServices/ASCredentialIdentityStoreState.h>
-#import "../interop.h"
+#import "../../interop.h"
 #import "status.h"
 
 void storeState(void (^callback)(ASCredentialIdentityStoreState*)) {
