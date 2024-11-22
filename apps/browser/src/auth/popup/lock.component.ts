@@ -104,7 +104,6 @@ export class LockComponent extends BaseLockComponent implements OnInit {
       kdfConfigService,
       syncService,
       toastService,
-      userAsymmetricKeysRegenerationService,
     );
     this.successRoute = "/tabs/current";
     this.isInitialLockScreen = (window as any).previousPopupUrl == null;

@@ -18,16 +18,16 @@ export class DefaultUserAsymmetricKeysRegenerationService
   implements UserAsymmetricKeysRegenerationService
 {
   constructor(
-    protected keyService: KeyService,
-    protected cipherService: CipherService,
-    protected userAsymmetricKeysRegenerationApiService: UserAsymmetricKeysRegenerationApiService,
-    protected logService: LogService,
-    protected sdkService: SdkService,
-    protected apiService: ApiService,
-    protected configService: ConfigService,
+    private keyService: KeyService,
+    private cipherService: CipherService,
+    private userAsymmetricKeysRegenerationApiService: UserAsymmetricKeysRegenerationApiService,
+    private logService: LogService,
+    private sdkService: SdkService,
+    private apiService: ApiService,
+    private configService: ConfigService,
   ) {}
 
-  async handleUserAsymmetricKeysRegeneration(userId: UserId): Promise<void> {
+  async regenerateIfNeeded(userId: UserId): Promise<void> {
     try {
       const privateKeyRegenerationFlag = await this.configService.getFeatureFlag(
         FeatureFlag.PrivateKeyRegeneration,
@@ -41,7 +41,7 @@ export class DefaultUserAsymmetricKeysRegenerationService
       }
     } catch (error) {
       this.logService.error(
-        "[UserAsymmetricKeyRegeneration] User Key regeneration error: " +
+        "[UserAsymmetricKeyRegeneration] An error occurred: " +
           error +
           " Skipping regeneration for the user.",
       );
@@ -73,6 +73,9 @@ export class DefaultUserAsymmetricKeysRegenerationService
         return false;
       } else {
         // The private key is decryptable but not valid so we should regenerate it.
+        this.logService.info(
+          "[UserAsymmetricKeyRegeneration] User's private key is decryptable but not a valid key, attempting regeneration.",
+        );
         return true;
       }
     }
@@ -80,11 +83,14 @@ export class DefaultUserAsymmetricKeysRegenerationService
     // The private isn't decryptable, check to see if we can decrypt something with the userKey.
     const userKeyCanDecrypt = await this.userKeyCanDecrypt(userKey);
     if (userKeyCanDecrypt) {
+      this.logService.info(
+        "[UserAsymmetricKeyRegeneration] User Asymmetric Key decryption failure detected, attempting regeneration.",
+      );
       return true;
     }
 
     this.logService.warning(
-      "[UserAsymmetricKeyRegeneration] User Asymmetric Key decryption failure detected, but unable to determine User Symmetric Key validity.",
+      "[UserAsymmetricKeyRegeneration] User Asymmetric Key decryption failure detected, but unable to determine User Symmetric Key validity, skipping regeneration.",
     );
     return false;
   }
@@ -115,6 +121,9 @@ export class DefaultUserAsymmetricKeysRegenerationService
     }
 
     await this.keyService.setPrivateKey(makeKeyPairResponse.userKeyEncryptedPrivateKey, userId);
+    this.logService.info(
+      "[UserAsymmetricKeyRegeneration] User's asymmetric keys successfully regenerated.",
+    );
   }
 
   private async userKeyCanDecrypt(userKey: UserKey): Promise<boolean> {

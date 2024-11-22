@@ -118,7 +118,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
   it("should not call regeneration code when feature flag is off", async () => {
     configService.getFeatureFlag.mockResolvedValue(false);
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(keyService.userKey$).not.toHaveBeenCalled();
   });
@@ -131,7 +131,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     setupVerificationResponse(mockVerificationResponse, sdkService);
     keyService.userKey$.mockReturnValue(throwError(() => new Error("error")));
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -146,7 +146,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     };
     setupVerificationResponse(mockVerificationResponse, sdkService);
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -161,7 +161,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     };
     setupVerificationResponse(mockVerificationResponse, sdkService);
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -180,7 +180,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
       new Error("Key regeneration not supported for this user."),
     );
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -199,7 +199,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
       new Error("error"),
     );
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -215,7 +215,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     setupVerificationResponse(mockVerificationResponse, sdkService);
     setupUserKeyValidation(cipherService, keyService, encryptService);
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -232,7 +232,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     setupUserKeyValidation(cipherService, keyService, encryptService);
     encryptService.decryptToBytes.mockRejectedValue(new Error("error"));
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -248,7 +248,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     setupVerificationResponse(mockVerificationResponse, sdkService);
     cipherService.getAll.mockResolvedValue([]);
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -264,7 +264,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     setupVerificationResponse(mockVerificationResponse, sdkService);
     setupUserKeyValidation(cipherService, keyService, encryptService);
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -281,7 +281,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     setupUserKeyValidation(cipherService, keyService, encryptService);
     encryptService.decryptToBytes.mockRejectedValue(new Error("error"));
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
@@ -297,7 +297,7 @@ describe("handleUserAsymmetricKeysRegeneration", () => {
     setupVerificationResponse(mockVerificationResponse, sdkService);
     cipherService.getAll.mockResolvedValue([]);
 
-    await sut.handleUserAsymmetricKeysRegeneration(userId);
+    await sut.regenerateIfNeeded(userId);
 
     expect(
       userAsymmetricKeysRegenerationApiService.regenerateUserAsymmetricKeys,
