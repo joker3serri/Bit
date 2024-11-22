@@ -16,10 +16,13 @@ import { DialogService, ToastService } from "@bitwarden/components";
 import { TwoFactorSetupMethodBaseComponent } from "./two-factor-setup-method-base.component";
 
 @Component({
-  selector: "app-two-factor-duo",
-  templateUrl: "two-factor-duo.component.html",
+  selector: "app-two-factor-setup-duo",
+  templateUrl: "two-factor-setup-duo.component.html",
 })
-export class TwoFactorDuoComponent extends TwoFactorSetupMethodBaseComponent implements OnInit {
+export class TwoFactorSetupDuoComponent
+  extends TwoFactorSetupMethodBaseComponent
+  implements OnInit
+{
   @Output() onChangeStatus: EventEmitter<boolean> = new EventEmitter();
 
   type = TwoFactorProviderType.Duo;
@@ -137,7 +140,7 @@ export class TwoFactorDuoComponent extends TwoFactorSetupMethodBaseComponent imp
     dialogService: DialogService,
     config: DialogConfig<TwoFactorDuoComponentConfig>,
   ) => {
-    return dialogService.open<boolean>(TwoFactorDuoComponent, config);
+    return dialogService.open<boolean>(TwoFactorSetupDuoComponent, config);
   };
 }
 

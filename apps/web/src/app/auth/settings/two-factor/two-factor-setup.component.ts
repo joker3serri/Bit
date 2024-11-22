@@ -29,9 +29,9 @@ import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { DialogService } from "@bitwarden/components";
 
-import { TwoFactorDuoComponent } from "./two-factor-duo.component";
 import { TwoFactorRecoveryComponent } from "./two-factor-recovery.component";
 import { TwoFactorSetupAuthenticatorComponent } from "./two-factor-setup-authenticator.component";
+import { TwoFactorSetupDuoComponent } from "./two-factor-setup-duo.component";
 import { TwoFactorSetupEmailComponent } from "./two-factor-setup-email.component";
 import { TwoFactorSetupWebAuthnComponent } from "./two-factor-setup-webauthn.component";
 import { TwoFactorVerifyComponent } from "./two-factor-verify.component";
@@ -177,11 +177,14 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
         if (!result) {
           return;
         }
-        const duoComp: DialogRef<boolean, any> = TwoFactorDuoComponent.open(this.dialogService, {
-          data: {
-            authResponse: result,
+        const duoComp: DialogRef<boolean, any> = TwoFactorSetupDuoComponent.open(
+          this.dialogService,
+          {
+            data: {
+              authResponse: result,
+            },
           },
-        });
+        );
         this.twoFactorSetupSubscription = duoComp.componentInstance.onChangeStatus
           .pipe(first(), takeUntil(this.destroy$))
           .subscribe((enabled: boolean) => {

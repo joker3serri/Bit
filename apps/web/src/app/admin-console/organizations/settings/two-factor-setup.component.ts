@@ -15,7 +15,7 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { DialogService } from "@bitwarden/components";
 
-import { TwoFactorDuoComponent } from "../../../auth/settings/two-factor/two-factor-duo.component";
+import { TwoFactorSetupDuoComponent } from "../../../auth/settings/two-factor/two-factor-setup-duo.component";
 import { TwoFactorSetupComponent as BaseTwoFactorSetupComponent } from "../../../auth/settings/two-factor/two-factor-setup.component";
 import { TwoFactorVerifyComponent } from "../../../auth/settings/two-factor/two-factor-verify.component";
 
@@ -79,12 +79,15 @@ export class TwoFactorSetupComponent extends BaseTwoFactorSetupComponent impleme
         if (!result) {
           return;
         }
-        const duoComp: DialogRef<boolean, any> = TwoFactorDuoComponent.open(this.dialogService, {
-          data: {
-            authResponse: result,
-            organizationId: this.organizationId,
+        const duoComp: DialogRef<boolean, any> = TwoFactorSetupDuoComponent.open(
+          this.dialogService,
+          {
+            data: {
+              authResponse: result,
+              organizationId: this.organizationId,
+            },
           },
-        });
+        );
         this.twoFactorSetupSubscription = duoComp.componentInstance.onChangeStatus
           .pipe(first(), takeUntil(this.destroy$))
           .subscribe((enabled: boolean) => {
