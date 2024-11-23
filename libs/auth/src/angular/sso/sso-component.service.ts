@@ -17,28 +17,6 @@ export abstract class SsoComponentService {
   setDocumentCookies?(): void;
 
   /**
-   * Submits the SSO request and handles the response
-   */
-  abstract submitSso(
-    identifier: string,
-    returnUri?: string,
-    includeUserIdentifier?: boolean,
-  ): Promise<void>;
-
-  /**
-   * Builds the authorize URL for SSO
-   */
-  abstract buildAuthorizeUrl(
-    identifier: string,
-    returnUri?: string,
-    includeUserIdentifier?: boolean,
-    token?: string,
-    redirectUri?: string,
-    state?: string,
-    codeChallenge?: string,
-  ): Promise<string>;
-
-  /**
    * Navigation callbacks
    */
   onSuccessfulLoginNavigate?(): Promise<void>;

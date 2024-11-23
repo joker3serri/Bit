@@ -12,6 +12,7 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrganizationDomainSsoDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-domain/responses/organization-domain-sso-details.response";
 import { VerifiedOrganizationDomainSsoDetailsResponse } from "@bitwarden/common/admin-console/abstractions/organization-domain/responses/verified-organization-domain-sso-details.response";
@@ -26,9 +27,13 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
+import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -38,6 +43,7 @@ import {
   LinkModule,
   ToastService,
 } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { SsoClientType, SsoComponentService } from "./sso-component.service";
 
@@ -97,6 +103,11 @@ export class SsoComponent implements OnInit {
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
     private validationService: ValidationService,
     private configService: ConfigService,
+    private platformUtilsService: PlatformUtilsService,
+    private apiService: ApiService,
+    private cryptoFunctionService: CryptoFunctionService,
+    private environmentService: EnvironmentService,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private logService: LogService,
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private masterPasswordService: InternalMasterPasswordServiceAbstraction,
@@ -221,7 +232,7 @@ export class SsoComponent implements OnInit {
     await this.ssoLoginService.setOrganizationSsoIdentifier(this.identifier);
     this.ssoComponentService.setDocumentCookies();
     try {
-      await this.ssoComponentService.submitSso(this.identifier);
+      await this.submitSso();
     } catch (error) {
       if (autoSubmit) {
         await this.router.navigate(["/login"]);
@@ -230,6 +241,94 @@ export class SsoComponent implements OnInit {
       }
     }
   };
+
+  private async submitSso(returnUri?: string, includeUserIdentifier?: boolean) {
+    if (this.identifier == null || this.identifier === "") {
+      this.toastService.showToast({
+        variant: "error",
+        title: this.i18nService.t("ssoValidationFailed"),
+        message: this.i18nService.t("ssoIdentifierRequired"),
+      });
+      return;
+    }
+
+    this.initiateSsoFormPromise = this.apiService.preValidateSso(this.identifier);
+    const response = await this.initiateSsoFormPromise;
+
+    const authorizeUrl = await this.buildAuthorizeUrl(
+      returnUri,
+      includeUserIdentifier,
+      response.token,
+    );
+    this.platformUtilsService.launchUri(authorizeUrl, { sameWindow: true });
+  }
+
+  private async buildAuthorizeUrl(
+    returnUri?: string,
+    includeUserIdentifier?: boolean,
+    token?: string,
+  ): Promise<string> {
+    let codeChallenge = this.codeChallenge;
+    let state = this.state;
+
+    const passwordOptions = {
+      type: "password" as const,
+      length: 64,
+      uppercase: true,
+      lowercase: true,
+      numbers: true,
+      special: false,
+    };
+
+    if (codeChallenge == null) {
+      const codeVerifier = await this.passwordGenerationService.generatePassword(passwordOptions);
+      const codeVerifierHash = await this.cryptoFunctionService.hash(codeVerifier, "sha256");
+      codeChallenge = Utils.fromBufferToUrlB64(codeVerifierHash);
+      await this.ssoLoginService.setCodeVerifier(codeVerifier);
+    }
+
+    if (state == null) {
+      state = await this.passwordGenerationService.generatePassword(passwordOptions);
+      if (returnUri) {
+        state += `_returnUri='${returnUri}'`;
+      }
+    }
+
+    // Add Organization Identifier to state
+    state += `_identifier=${this.identifier}`;
+
+    // Save state (regardless of new or existing)
+    await this.ssoLoginService.setSsoState(state);
+
+    const env = await firstValueFrom(this.environmentService.environment$);
+
+    let authorizeUrl =
+      env.getIdentityUrl() +
+      "/connect/authorize?" +
+      "client_id=" +
+      this.ssoComponentService.clientId +
+      "&redirect_uri=" +
+      encodeURIComponent(this.redirectUri) +
+      "&" +
+      "response_type=code&scope=api offline_access&" +
+      "state=" +
+      state +
+      "&code_challenge=" +
+      codeChallenge +
+      "&" +
+      "code_challenge_method=S256&response_mode=query&" +
+      "domain_hint=" +
+      encodeURIComponent(this.identifier) +
+      "&ssoToken=" +
+      encodeURIComponent(token);
+
+    if (includeUserIdentifier) {
+      const userIdentifier = await this.apiService.getSsoUserIdentifier();
+      authorizeUrl += `&user_identifier=${encodeURIComponent(userIdentifier)}`;
+    }
+
+    return authorizeUrl;
+  }
 
   private async logIn(code: string, codeVerifier: string, orgSsoIdentifier: string): Promise<void> {
     this.loggingIn = true;

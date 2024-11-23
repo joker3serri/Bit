@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
@@ -7,19 +7,13 @@ import {
   SsoClientType,
   SsoComponentService,
 } from "@bitwarden/auth/angular";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ClientType } from "@bitwarden/common/enums";
-import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { ToastService } from "@bitwarden/components";
-import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 
@@ -40,27 +34,12 @@ export class ExtensionSsoComponentService
   constructor(
     private syncService: SyncService,
     private authService: AuthService,
-    private logService: LogService,
-    apiService: ApiService,
-    environmentService: EnvironmentService,
-    passwordGenerationService: PasswordGenerationServiceAbstraction,
-    cryptoFunctionService: CryptoFunctionService,
-    platformUtilsService: PlatformUtilsService,
-    i18nService: I18nService,
-    toastService: ToastService,
-    ssoLoginService: SsoLoginServiceAbstraction,
+    protected environmentService: EnvironmentService,
     @Inject(WINDOW) private win: Window,
+    protected i18nService: I18nService,
+    private logService: LogService,
   ) {
-    super(
-      apiService,
-      environmentService,
-      passwordGenerationService,
-      cryptoFunctionService,
-      platformUtilsService,
-      i18nService,
-      toastService,
-      ssoLoginService,
-    );
+    super();
     this.clientId = ClientType.Browser;
 
     environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
