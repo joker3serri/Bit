@@ -3,16 +3,22 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ClientType } from "@bitwarden/common/enums";
+import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import {
   EnvironmentService,
   Environment,
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { ToastService } from "@bitwarden/components";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 
@@ -28,6 +34,13 @@ describe("ExtensionSsoComponentService", () => {
   let i18nService: MockProxy<I18nService>;
   let windowMock: MockProxy<Window>;
   let logService: MockProxy<LogService>;
+  let apiService: MockProxy<ApiService>;
+  let passwordGenerationService: MockProxy<PasswordGenerationServiceAbstraction>;
+  let cryptoFunctionService: MockProxy<CryptoFunctionService>;
+  let platformUtilsService: MockProxy<PlatformUtilsService>;
+  let ssoLoginService: MockProxy<SsoLoginServiceAbstraction>;
+  let toastService: MockProxy<ToastService>;
+
   beforeEach(() => {
     syncService = mock<SyncService>();
     authService = mock<AuthService>();
@@ -35,6 +48,12 @@ describe("ExtensionSsoComponentService", () => {
     i18nService = mock<I18nService>();
     windowMock = mock<Window>();
     logService = mock<LogService>();
+    apiService = mock<ApiService>();
+    passwordGenerationService = mock<PasswordGenerationServiceAbstraction>();
+    cryptoFunctionService = mock<CryptoFunctionService>();
+    platformUtilsService = mock<PlatformUtilsService>();
+    ssoLoginService = mock<SsoLoginServiceAbstraction>();
+    toastService = mock<ToastService>();
     environmentService.environment$ = new BehaviorSubject<Environment>({
       getWebVaultUrl: () => baseUrl,
     } as Environment);
@@ -48,6 +67,12 @@ describe("ExtensionSsoComponentService", () => {
         { provide: I18nService, useValue: i18nService },
         { provide: WINDOW, useValue: windowMock },
         { provide: LogService, useValue: logService },
+        { provide: ApiService, useValue: apiService },
+        { provide: PasswordGenerationServiceAbstraction, useValue: passwordGenerationService },
+        { provide: CryptoFunctionService, useValue: cryptoFunctionService },
+        { provide: PlatformUtilsService, useValue: platformUtilsService },
+        { provide: SsoLoginServiceAbstraction, useValue: ssoLoginService },
+        { provide: ToastService, useValue: toastService },
       ],
     });
 

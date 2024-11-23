@@ -84,6 +84,7 @@ import {
   ThemeStateService,
 } from "@bitwarden/common/platform/theming/theme-state.service";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
+import { ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import {
   KdfConfigService,
@@ -304,7 +305,16 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: SsoComponentService,
     useClass: WebSsoComponentService,
-    deps: [I18nServiceAbstraction],
+    deps: [
+      I18nServiceAbstraction,
+      ApiService,
+      EnvironmentService,
+      PasswordGenerationServiceAbstraction,
+      PlatformUtilsService,
+      CryptoFunctionService,
+      ToastService,
+      SsoLoginServiceAbstraction,
+    ],
   }),
   safeProvider({
     provide: LoginDecryptionOptionsService,
