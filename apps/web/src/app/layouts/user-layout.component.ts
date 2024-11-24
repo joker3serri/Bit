@@ -7,7 +7,7 @@ interface EnterpriseOrgStatus {
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Subject, Observable, concatMap, forkJoin, takeUntil } from "rxjs";
+import { Subject, Observable, concatMap, forkJoin, takeUntil, combineLatest, map, of } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -38,8 +38,8 @@ export class UserLayoutComponent implements OnInit {
     belongToMultipleEnterpriseOrgs: false,
   };
   isFreeFamilyFlagEnabled: boolean;
-  showFreeFamilyLink: boolean;
   protected hasFamilySponsorshipAvailable$: Observable<boolean>;
+  protected showSponsoredFamilies$: Observable<boolean>;
   protected showSubscription$: Observable<boolean>;
   private destroy$ = new Subject<void>();
 
@@ -62,15 +62,35 @@ export class UserLayoutComponent implements OnInit {
       FeatureFlag.DisableFreeFamiliesSponsorship,
     );
 
+    // if (this.isFreeFamilyFlagEnabled) {
+    //   this.freeFamiliesPolicyService
+    //     .checkEnterpriseOrganizationsAndFetchPolicy()
+    //     .pipe(takeUntil(this.destroy$))
+    //     .subscribe((value: EnterpriseOrgStatus) => {
+    //       this.enterpriseOrgStatus = value;
+    //       this.showFreeFamilyLink = this.shouldShowFreeFamilyLink(this.enterpriseOrgStatus);
+    //     });
+    // }
+
+    let enterpriseOrgStatus$: Observable<EnterpriseOrgStatus> = of(null); // Default to a no-op observable.
+
     if (this.isFreeFamilyFlagEnabled) {
-      this.freeFamiliesPolicyService
+      enterpriseOrgStatus$ = this.freeFamiliesPolicyService
         .checkEnterpriseOrganizationsAndFetchPolicy()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value: EnterpriseOrgStatus) => {
-          this.enterpriseOrgStatus = value;
-          this.showFreeFamilyLink = this.shouldShowFreeFamilyLink(this.enterpriseOrgStatus);
-        });
+        .pipe(takeUntil(this.destroy$));
     }
+
+    this.showSponsoredFamilies$ = combineLatest([
+      enterpriseOrgStatus$,
+      this.organizationService.canManageSponsorships$,
+    ]).pipe(
+      map(([orgStatus, canManageSponsorships]) => {
+        const showFreeFamilyLink =
+          orgStatus &&
+          !(orgStatus.belongToOneEnterpriseOrgs && orgStatus.isFreeFamilyPolicyEnabled);
+        return canManageSponsorships && showFreeFamilyLink;
+      }),
+    );
 
     this.hasFamilySponsorshipAvailable$ = this.organizationService.canManageSponsorships$;
 
@@ -95,7 +115,7 @@ export class UserLayoutComponent implements OnInit {
     );
   }
 
-  private shouldShowFreeFamilyLink(orgStatus: EnterpriseOrgStatus): boolean {
-    return !(orgStatus.belongToOneEnterpriseOrgs && orgStatus.isFreeFamilyPolicyEnabled);
-  }
+  // private shouldShowFreeFamilyLink(orgStatus: EnterpriseOrgStatus): boolean {
+  //   return !(orgStatus.belongToOneEnterpriseOrgs && orgStatus.isFreeFamilyPolicyEnabled);
+  // }
 }
