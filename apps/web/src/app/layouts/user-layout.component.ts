@@ -62,16 +62,6 @@ export class UserLayoutComponent implements OnInit {
       FeatureFlag.DisableFreeFamiliesSponsorship,
     );
 
-    // if (this.isFreeFamilyFlagEnabled) {
-    //   this.freeFamiliesPolicyService
-    //     .checkEnterpriseOrganizationsAndFetchPolicy()
-    //     .pipe(takeUntil(this.destroy$))
-    //     .subscribe((value: EnterpriseOrgStatus) => {
-    //       this.enterpriseOrgStatus = value;
-    //       this.showFreeFamilyLink = this.shouldShowFreeFamilyLink(this.enterpriseOrgStatus);
-    //     });
-    // }
-
     let enterpriseOrgStatus$: Observable<EnterpriseOrgStatus> = of(null); // Default to a no-op observable.
 
     if (this.isFreeFamilyFlagEnabled) {
@@ -114,8 +104,4 @@ export class UserLayoutComponent implements OnInit {
       }),
     );
   }
-
-  // private shouldShowFreeFamilyLink(orgStatus: EnterpriseOrgStatus): boolean {
-  //   return !(orgStatus.belongToOneEnterpriseOrgs && orgStatus.isFreeFamilyPolicyEnabled);
-  // }
 }
