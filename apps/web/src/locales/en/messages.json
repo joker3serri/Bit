@@ -3880,7 +3880,7 @@
     }
   },
   "freeTrialEndPromptAboveTwoDays": {
-    "message": "$ORGANIZATION$, your free trial ends in $COUNT$ days. To maintain your subscription,",
+    "message": "$ORGANIZATION$, your free trial ends in $COUNT$ days.",
     "placeholders": {
       "count": {
         "content": "$2",
@@ -3893,7 +3893,7 @@
     }
   },
   "freeTrialEndPromptForOneDay": {
-    "message": "$ORGANIZATION$, your free trial ends tomorrow. To maintain your subscription,",
+    "message": "$ORGANIZATION$, your free trial ends tomorrow.",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -3902,10 +3902,10 @@
     }
   },
   "freeTrialEndPromptForOneDayNoOrgName": {
-    "message": "Your free trial ends tomorrow. To maintain your subscription,"
+    "message": "Your free trial ends tomorrow."
   },
   "freeTrialEndPromptForLessThanADay": {
-    "message": "$ORGANIZATION$, your free trial ends today. To maintain your subscription,",
+    "message": "$ORGANIZATION$, your free trial ends today.",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -3914,10 +3914,10 @@
     }
   },
   "freeTrialEndingSoonWithoutOrgName": {
-    "message": "Your free trial ends today. To maintain your subscription,"
+    "message": "Your free trial ends today."
   },
   "routeToPaymentMethodTrigger": {
-    "message": "add a payment method."
+    "message": "Click here to add a payment method."
   },
   "joinOrganization": {
     "message": "Join organization"
