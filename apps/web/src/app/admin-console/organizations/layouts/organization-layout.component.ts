@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { combineLatest, filter, map, Observable, switchMap, withLatestFrom } from "rxjs";
+import { combineLatest, filter, map, Observable, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -109,13 +109,13 @@ export class OrganizationLayoutComponent implements OnInit {
       ),
     );
 
-    this.integrationPageEnabled$ = this.organization$.pipe(
-      withLatestFrom(
-        this.configService.getFeatureFlag$(FeatureFlag.PM14505AdminConsoleIntegrationPage),
-      ),
+    this.integrationPageEnabled$ = combineLatest(
+      this.organization$,
+      this.configService.getFeatureFlag$(FeatureFlag.PM14505AdminConsoleIntegrationPage),
+    ).pipe(
       map(
-        ([org, featrueFlagEnabled]) =>
-          org.productTierType === ProductTierType.Enterprise && featrueFlagEnabled,
+        ([org, featureFlagEnabled]) =>
+          org.productTierType === ProductTierType.Enterprise && featureFlagEnabled,
       ),
     );
   }
