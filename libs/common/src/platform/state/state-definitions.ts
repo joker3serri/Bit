@@ -123,7 +123,7 @@ export const TASK_SCHEDULER_DISK = new StateDefinition("taskScheduler", "disk");
 
 // Design System
 
-export const POPUP_WIDTH_DISK = new StateDefinition("popupWidth", "disk");
+export const POPUP_STYLE_DISK = new StateDefinition("popupStyle", "disk");
 
 // Secrets Manager
 

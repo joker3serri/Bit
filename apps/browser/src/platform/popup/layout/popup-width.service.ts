@@ -4,7 +4,7 @@ import { map, Observable } from "rxjs";
 import {
   GlobalStateProvider,
   KeyDefinition,
-  POPUP_WIDTH_DISK,
+  POPUP_STYLE_DISK,
 } from "@bitwarden/common/platform/state";
 
 /**
@@ -20,7 +20,7 @@ export const PopupWidthOptions = Object.freeze({
 type PopupWidthOptions = typeof PopupWidthOptions;
 export type PopupWidthOption = keyof PopupWidthOptions;
 
-const POPUP_WIDTH_KEY_DEF = new KeyDefinition<PopupWidthOption>(POPUP_WIDTH_DISK, "popup-width", {
+const POPUP_WIDTH_KEY_DEF = new KeyDefinition<PopupWidthOption>(POPUP_STYLE_DISK, "popup-width", {
   deserializer: (s) => s,
 });
 
