@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Observable, concatMap, forkJoin, combineLatest, map, of } from "rxjs";
+import { Observable, concatMap, combineLatest, map, of } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -72,7 +72,7 @@ export class UserLayoutComponent implements OnInit {
 
     // We want to hide the subscription menu for organizations that provide premium.
     // Except if the user has premium personally or has a billing history.
-    this.showSubscription$ = forkJoin([
+    this.showSubscription$ = combineLatest([
       this.billingAccountProfileStateService.hasPremiumPersonally$,
       this.billingAccountProfileStateService.hasPremiumFromAnyOrganization$,
     ]).pipe(
