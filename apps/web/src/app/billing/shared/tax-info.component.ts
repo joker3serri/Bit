@@ -10,7 +10,6 @@ import { TaxServiceAbstraction } from "@bitwarden/common/billing/abstractions/ta
 import { CountryListItem } from "@bitwarden/common/billing/models/domain";
 import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/expanded-tax-info-update.request";
 import { TaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/tax-info-update.request";
-import { TaxRateResponse } from "@bitwarden/common/billing/models/response/tax-rate.response";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 import { SharedModule } from "../../shared";
@@ -46,7 +45,6 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
   organizationId: string;
   providerId: string;
   countryList: CountryListItem[] = this.taxService.getCountries();
-  taxRates: TaxRateResponse[];
 
   constructor(
     private apiService: ApiService,
@@ -84,10 +82,6 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
     return this.taxFormGroup.controls.state.value;
   }
 
-  protected get includeTaxId(): boolean {
-    return this.taxFormGroup.controls.includeTaxId.value;
-  }
-
   async ngOnInit() {
     // Provider setup
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
@@ -108,7 +102,7 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
             this.taxFormGroup.controls.line2.setValue(taxInfo.line2);
             this.taxFormGroup.controls.city.setValue(taxInfo.city);
             this.taxFormGroup.controls.postalCode.setValue(taxInfo.postalCode);
-            this.taxFormGroup.controls.country.setValue(taxInfo.country || "US");
+            this.taxFormGroup.controls.country.setValue(taxInfo.country);
             this.taxFormGroup.controls.includeTaxId.setValue(
               !!taxInfo.taxId ||
                 !!taxInfo.line1 ||
@@ -125,7 +119,7 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
           const taxInfo = await this.apiService.getTaxInfo();
           if (taxInfo) {
             this.taxFormGroup.controls.postalCode.setValue(taxInfo.postalCode);
-            this.taxFormGroup.controls.country.setValue(taxInfo.country || "US");
+            this.taxFormGroup.controls.country.setValue(taxInfo.country);
           }
         } catch (e) {
           this.logService.error(e);
@@ -141,20 +135,18 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
         this.taxFormGroup.controls.postalCode.updateValueAndValidity();
       }
 
-      if (this.country !== "US") {
-        this.onCountryChanged.emit();
-      }
+      this.onCountryChanged.emit();
     });
 
     this.taxFormGroup.controls.country.valueChanges
       .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value === "US") {
-          this.taxFormGroup.get("postalCode").setValidators([Validators.required]);
+          this.taxFormGroup.controls.postalCode.setValidators([Validators.required]);
         } else {
-          this.taxFormGroup.get("postalCode").clearValidators();
+          this.taxFormGroup.controls.postalCode.clearValidators();
         }
-        this.taxFormGroup.get("postalCode").updateValueAndValidity();
+        this.taxFormGroup.controls.postalCode.updateValueAndValidity();
         this.changeCountry();
         this.onTaxInformationChanged.emit();
       });
@@ -177,34 +169,12 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
         this.clearTaxInformationFields();
       });
 
-    try {
-      const taxRates = await this.apiService.getTaxRates();
-      if (taxRates) {
-        this.taxRates = taxRates.data;
-      }
-    } catch (e) {
-      this.logService.error(e);
-    } finally {
-      this.loading = false;
-    }
+    this.loading = false;
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  get taxRate() {
-    if (this.taxRates != null) {
-      const localTaxRate = this.taxRates.find(
-        (x) => x.country === this.country && x.postalCode === this.postalCode,
-      );
-      return localTaxRate?.rate ?? null;
-    }
-  }
-
-  get showTaxIdFields(): boolean {
-    return this.includeTaxId && this.isTaxSupported;
   }
 
   getTaxInfoRequest(): TaxInfoUpdateRequest {
