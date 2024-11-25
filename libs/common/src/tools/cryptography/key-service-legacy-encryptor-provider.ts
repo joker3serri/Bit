@@ -1,4 +1,14 @@
-import { connect, dematerialize, map, materialize, ReplaySubject, skipWhile, switchMap, takeUntil, takeWhile } from "rxjs";
+import {
+  connect,
+  dematerialize,
+  map,
+  materialize,
+  ReplaySubject,
+  skipWhile,
+  switchMap,
+  takeUntil,
+  takeWhile,
+} from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
@@ -54,7 +64,7 @@ export class KeyServiceLegacyEncryptorProvider implements LegacyEncryptorProvide
 
                 return { userId, encryptor } satisfies UserBound<"encryptor", UserEncryptor>;
               }),
-              materialize()
+              materialize(),
             ),
           ),
           dematerialize(),
@@ -108,7 +118,7 @@ export class KeyServiceLegacyEncryptorProvider implements LegacyEncryptorProvide
                   OrganizationEncryptor
                 >;
               }),
-              materialize()
+              materialize(),
             ),
           ),
           dematerialize(),
