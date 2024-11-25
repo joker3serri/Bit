@@ -1,7 +1,3 @@
-// import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
-// import { CommonModule } from "@angular/common";
-// import { Component, Inject } from "@angular/core";
-
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
