@@ -66,6 +66,8 @@ export class EmergencyAccessViewComponent implements OnInit {
       return;
     }
 
+    // FIXME PM-15385: Remove below dialog service logic once extension refresh is live.
+
     // eslint-disable-next-line
     const [_, childComponent] = await this.modalService.openViewRef(
       EmergencyAddEditCipherComponent,
