@@ -1,13 +1,7 @@
-interface EnterpriseOrgStatus {
-  isFreeFamilyPolicyEnabled: boolean;
-  belongToOneEnterpriseOrgs: boolean;
-  belongToMultipleEnterpriseOrgs: boolean;
-}
-
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Subject, Observable, concatMap, forkJoin, takeUntil, combineLatest, map, of } from "rxjs";
+import { Observable, concatMap, forkJoin, combineLatest, map, of } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -32,16 +26,10 @@ import { WebLayoutModule } from "./web-layout.module";
 })
 export class UserLayoutComponent implements OnInit {
   protected readonly logo = PasswordManagerLogo;
-  protected enterpriseOrgStatus: EnterpriseOrgStatus = {
-    isFreeFamilyPolicyEnabled: false,
-    belongToOneEnterpriseOrgs: false,
-    belongToMultipleEnterpriseOrgs: false,
-  };
   isFreeFamilyFlagEnabled: boolean;
   protected hasFamilySponsorshipAvailable$: Observable<boolean>;
   protected showSponsoredFamilies$: Observable<boolean>;
   protected showSubscription$: Observable<boolean>;
-  private destroy$ = new Subject<void>();
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -62,25 +50,23 @@ export class UserLayoutComponent implements OnInit {
       FeatureFlag.DisableFreeFamiliesSponsorship,
     );
 
-    let enterpriseOrgStatus$: Observable<EnterpriseOrgStatus> = of(null); // Default to a no-op observable.
-
     if (this.isFreeFamilyFlagEnabled) {
-      enterpriseOrgStatus$ = this.freeFamiliesPolicyService
-        .checkEnterpriseOrganizationsAndFetchPolicy()
-        .pipe(takeUntil(this.destroy$));
-    }
+      const enterpriseOrgStatus$ = this.isFreeFamilyFlagEnabled
+        ? this.freeFamiliesPolicyService.checkEnterpriseOrganizationsAndFetchPolicy()
+        : of(null);
 
-    this.showSponsoredFamilies$ = combineLatest([
-      enterpriseOrgStatus$,
-      this.organizationService.canManageSponsorships$,
-    ]).pipe(
-      map(([orgStatus, canManageSponsorships]) => {
-        const showFreeFamilyLink =
-          orgStatus &&
-          !(orgStatus.belongToOneEnterpriseOrgs && orgStatus.isFreeFamilyPolicyEnabled);
-        return canManageSponsorships && showFreeFamilyLink;
-      }),
-    );
+      this.showSponsoredFamilies$ = combineLatest([
+        enterpriseOrgStatus$,
+        this.organizationService.canManageSponsorships$,
+      ]).pipe(
+        map(([orgStatus, canManageSponsorships]) => {
+          const showFreeFamilyLink =
+            orgStatus &&
+            !(orgStatus.belongToOneEnterpriseOrgs && orgStatus.isFreeFamilyPolicyEnabled);
+          return canManageSponsorships && showFreeFamilyLink;
+        }),
+      );
+    }
 
     this.hasFamilySponsorshipAvailable$ = this.organizationService.canManageSponsorships$;
 
