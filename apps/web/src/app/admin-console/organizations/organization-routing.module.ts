@@ -20,6 +20,7 @@ import { OrganizationLayoutComponent } from "../../admin-console/organizations/l
 import { deepLinkGuard } from "../../auth/guards/deep-link.guard";
 import { VaultModule } from "../../vault/org-vault/vault.module";
 
+import { isEnterpriseOrgGuard } from "./guards/is-enterprise-org.guard";
 import { AdminConsoleIntegrationsComponent } from "./integrations/integrations.component";
 import { GroupsComponent } from "./manage/groups.component";
 
@@ -41,7 +42,10 @@ const routes: Routes = [
       },
       {
         path: "integrations",
-        canActivate: [canAccessFeature(FeatureFlag.PM14505AdminConsoleIntegrationPage)],
+        canActivate: [
+          canAccessFeature(FeatureFlag.PM14505AdminConsoleIntegrationPage),
+          isEnterpriseOrgGuard(false),
+        ],
         component: AdminConsoleIntegrationsComponent,
         data: {
           titleId: "integrations",
