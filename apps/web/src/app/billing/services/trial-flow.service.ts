@@ -52,11 +52,11 @@ export class TrialFlowService {
 
   getFreeTrialMessage(trialRemainingDays: number): string {
     if (trialRemainingDays >= 2) {
-      return this.i18nService.t("freeTrialEndPromptV2", trialRemainingDays);
+      return this.i18nService.t("freeTrialEndPromptCount", trialRemainingDays);
     } else if (trialRemainingDays === 1) {
-      return this.i18nService.t("freeTrialEndPromptForOneDayNoOrgNameV2");
+      return this.i18nService.t("freeTrialEndPromptTomorrowNoOrgName");
     } else {
-      return this.i18nService.t("freeTrialEndingSoonWithoutOrgNameV2");
+      return this.i18nService.t("freeTrialEndingTodayWithoutOrgName");
     }
   }
 
