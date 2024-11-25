@@ -7,6 +7,7 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherId, UserId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { PasswordHistoryView } from "@bitwarden/common/vault/models/view/password-history.view";
 import { ItemModule, ColorPasswordModule, IconButtonModule } from "@bitwarden/components";
 
@@ -20,7 +21,12 @@ export class PasswordHistoryViewComponent implements OnInit {
   /**
    * The ID of the cipher to display the password history for.
    */
-  @Input({ required: true }) cipherId: CipherId;
+  @Input() cipherId: CipherId;
+
+  /**
+   * Optional cipher view. When included `cipherId` is ignored.
+   */
+  @Input() cipher?: CipherView;
 
   /** The password history for the cipher. */
   history: PasswordHistoryView[] = [];
@@ -35,8 +41,14 @@ export class PasswordHistoryViewComponent implements OnInit {
     await this.init();
   }
 
-  /** Retrieve the password history for the given cipher */
+  /** Retrieve the password history based on the input parameters */
   protected async init() {
+    // Use the decrypted cipher if it was passed.
+    if (this.cipher) {
+      this.history = this.cipher.passwordHistory == null ? [] : this.cipher.passwordHistory;
+      return;
+    }
+
     const cipher = await this.cipherService.get(this.cipherId);
     const activeAccount = await firstValueFrom(
       this.accountService.activeAccount$.pipe(map((a: { id: string | undefined }) => a)),

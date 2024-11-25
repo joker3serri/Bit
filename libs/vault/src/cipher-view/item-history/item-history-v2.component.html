@@ -26,7 +26,7 @@
       {{ cipher.passwordRevisionDisplayDate | date: "medium" }}
     </p>
     <a
-      *ngIf="cipher.hasPasswordHistory && isLogin && !hidePasswordHistory"
+      *ngIf="cipher.hasPasswordHistory && isLogin"
       class="tw-font-bold tw-no-underline tw-cursor-pointer tw-text-primary-600"
       (click)="viewPasswordHistory()"
       bitTypography="body2"
