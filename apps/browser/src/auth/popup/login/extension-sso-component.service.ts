@@ -1,7 +1,6 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
-import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import {
   DefaultSsoComponentService,
   SsoClientType,
@@ -35,7 +34,7 @@ export class ExtensionSsoComponentService
     private syncService: SyncService,
     private authService: AuthService,
     protected environmentService: EnvironmentService,
-    @Inject(WINDOW) private win: Window,
+    private win: Window,
     protected i18nService: I18nService,
     private logService: LogService,
   ) {
