@@ -11,7 +11,7 @@ export abstract class OrganizationEncryptor {
   /** Identifies the user bound to the encryptor. */
   readonly organizationId: OrganizationId;
 
-  /** Protects secrets in `value` with a user-specific key.
+  /** Protects secrets in `value` with an organization-specific key.
    *  @param secret the object to protect. This object is mutated during encryption.
    *  @returns a promise that resolves to a tuple. The tuple's first property contains
    *    the encrypted secret and whose second property contains an object w/ disclosed

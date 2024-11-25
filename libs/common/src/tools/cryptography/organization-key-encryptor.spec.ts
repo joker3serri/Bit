@@ -110,7 +110,7 @@ describe("OrgKeyEncryptor", () => {
       );
     });
 
-    it("should declassify a decrypted packed value using the user's key", async () => {
+    it("should declassify a decrypted packed value using the organization's key", async () => {
       const encryptor = new OrganizationKeyEncryptor(anyOrgId, encryptService, orgKey, dataPacker);
       const secret = "encrypted" as any;
 
