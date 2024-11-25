@@ -87,7 +87,7 @@ describe("OrgKeyEncryptor", () => {
       );
     });
 
-    it("should encrypt a packed value using the user's key", async () => {
+    it("should encrypt a packed value using the organization's key", async () => {
       const encryptor = new OrganizationKeyEncryptor(anyOrgId, encryptService, orgKey, dataPacker);
       const value = { foo: true };
 

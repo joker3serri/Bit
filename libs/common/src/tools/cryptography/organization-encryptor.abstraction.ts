@@ -8,7 +8,7 @@ import { EncString } from "../../platform/models/domain/enc-string";
  *  organization-specific keys. This strategy is bound to a specific organization.
  */
 export abstract class OrganizationEncryptor {
-  /** Identifies the user bound to the encryptor. */
+  /** Identifies the organization bound to the encryptor. */
   readonly organizationId: OrganizationId;
 
   /** Protects secrets in `value` with an organization-specific key.
