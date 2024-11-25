@@ -19,10 +19,12 @@ import {
   pairwise,
 } from "rxjs";
 
+/** Returns its input. */
 function identity(value: any): any {
   return value;
 }
 
+/** Combines its arguments into a plain old javascript object. */
 function expectedAndActualValue(expectedValue: any, actualValue: any) {
   return {
     expectedValue,

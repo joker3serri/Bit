@@ -10,7 +10,7 @@ import { DataPacker } from "../state/data-packer.abstraction";
 import { OrganizationEncryptor } from "./organization-encryptor.abstraction";
 
 /** A classification strategy that protects a type's secrets by encrypting them
- *  with a `UserKey`
+ *  with an `OrgKey`
  */
 export class OrganizationKeyEncryptor extends OrganizationEncryptor {
   /** Instantiates the encryptor
