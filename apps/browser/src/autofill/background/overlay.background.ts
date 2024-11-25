@@ -629,7 +629,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
       const pageDetailsMap = this.pageDetailsForTab[currentTabId];
       const pageDetail = pageDetailsMap?.get(currentFrameId);
       if (pageDetail) {
-        return pageDetail.details.fields.some((field) =>
+        return pageDetail.details.fields.every((field) =>
           this.inlineMenuFieldQualificationService.isTotpField(field),
         );
       }
@@ -2030,6 +2030,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "lowercaseAriaLabel",
         "uppercaseAriaLabel",
         "generatedPassword",
+        "fillVerificationCode",
         ...Object.values(specialCharacterToKeyMap),
       ];
       this.inlineMenuPageTranslations = translationKeys.reduce(

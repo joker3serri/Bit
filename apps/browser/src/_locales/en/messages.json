@@ -192,6 +192,9 @@
   "autoFillIdentity": {
     "message": "Autofill identity"
   },
+  "fillVerificationCode":{
+    "message": "Fill verification code"
+  },
   "generatePasswordCopied": {
     "message": "Generate password (copied)"
   },
