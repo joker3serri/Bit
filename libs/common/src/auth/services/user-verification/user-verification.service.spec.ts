@@ -7,9 +7,14 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
-import { BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
+import {
+  BiometricsService,
+  BiometricsStatus,
+  KdfConfig,
+  KeyService,
+} from "@bitwarden/key-management";
 
-import { KeyService } from "../../../../../key-management/src/abstractions/key.service";
+import { KdfConfigService } from "../../../../../key-management/src/abstractions/kdf-config.service";
 import { FakeAccountService, mockAccountServiceWith } from "../../../../spec";
 import { VaultTimeoutSettingsService } from "../../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
@@ -17,11 +22,9 @@ import { HashPurpose } from "../../../platform/enums";
 import { Utils } from "../../../platform/misc/utils";
 import { UserId } from "../../../types/guid";
 import { MasterKey } from "../../../types/key";
-import { KdfConfigService } from "../../abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../abstractions/master-password.service.abstraction";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/user-verification/user-verification-api.service.abstraction";
 import { VerificationType } from "../../enums/verification-type";
-import { KdfConfig } from "../../models/domain/kdf-config";
 import { MasterPasswordPolicyResponse } from "../../models/response/master-password-policy.response";
 import { MasterPasswordVerification } from "../../types/verification";
 

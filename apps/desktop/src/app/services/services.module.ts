@@ -26,6 +26,7 @@ import {
 } from "@bitwarden/auth/angular";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
+  LoginApprovalComponentServiceAbstraction,
   LoginEmailService,
   PinServiceAbstraction,
 } from "@bitwarden/auth/common";
@@ -41,16 +42,12 @@ import {
   AuthService,
   AuthService as AuthServiceAbstraction,
 } from "@bitwarden/common/auth/abstractions/auth.service";
-import {
-  KdfConfigService,
-  KdfConfigService as KdfConfigServiceAbstraction,
-} from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { SsoLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/sso-login.service.abstraction";
 import { AutofillSettingsServiceAbstraction } from "@bitwarden/common/autofill/services/autofill-settings.service";
 import { ClientType } from "@bitwarden/common/enums";
 import { ProcessReloadServiceAbstraction } from "@bitwarden/common/key-management/abstractions/process-reload.service";
-import { ProcessReloadService } from "@bitwarden/common/key-management/services/process-reload.service";
+import { DefaultProcessReloadService } from "@bitwarden/common/key-management/services/default-process-reload.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -84,12 +81,14 @@ import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vau
 import { DialogService, ToastService } from "@bitwarden/components";
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legacy";
 import {
+  KdfConfigService,
   KeyService,
   KeyService as KeyServiceAbstraction,
   BiometricStateService,
   BiometricsService,
 } from "@bitwarden/key-management";
 
+import { DesktopLoginApprovalComponentService } from "../../auth/login/desktop-login-approval-component.service";
 import { DesktopLoginComponentService } from "../../auth/login/desktop-login-component.service";
 import { DesktopAutofillSettingsService } from "../../autofill/services/desktop-autofill-settings.service";
 import { DesktopBiometricsService } from "../../key-management/biometrics/desktop.biometrics.service";
@@ -229,7 +228,7 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: ProcessReloadServiceAbstraction,
-    useClass: ProcessReloadService,
+    useClass: DefaultProcessReloadService,
     deps: [
       PinServiceAbstraction,
       MessagingServiceAbstraction,
@@ -297,7 +296,7 @@ const safeProviders: SafeProvider[] = [
       AccountServiceAbstraction,
       StateProvider,
       BiometricStateService,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
       DesktopBiometricsService,
     ],
   }),
@@ -360,6 +359,11 @@ const safeProviders: SafeProvider[] = [
     provide: LoginEmailService,
     useClass: LoginEmailService,
     deps: [AccountService, AuthService, StateProvider],
+  }),
+  safeProvider({
+    provide: LoginApprovalComponentServiceAbstraction,
+    useClass: DesktopLoginApprovalComponentService,
+    deps: [I18nServiceAbstraction],
   }),
 ];
 
