@@ -69,14 +69,17 @@ export class VaultBannersComponent implements OnInit {
   freeTrialMessage(organization: FreeTrial) {
     if (organization.remainingDays >= 2) {
       return this.i18nService.t(
-        "freeTrialEndPromptAboveTwoDays",
+        "freeTrialEndPromptAboveTwoDaysV2",
         organization.organizationName,
         organization.remainingDays.toString(),
       );
     } else if (organization.remainingDays === 1) {
-      return this.i18nService.t("freeTrialEndPromptForOneDay", organization.organizationName);
+      return this.i18nService.t("freeTrialEndPromptForOneDayV2", organization.organizationName);
     } else {
-      return this.i18nService.t("freeTrialEndPromptForLessThanADay", organization.organizationName);
+      return this.i18nService.t(
+        "freeTrialEndPromptForLessThanADayV2",
+        organization.organizationName,
+      );
     }
   }
 
