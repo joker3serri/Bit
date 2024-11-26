@@ -9,13 +9,11 @@ import {
 } from "@angular/animations";
 
 /**
- * Routes can belong to one of three elevations that determine the router transition behavior.
- *
- * 0 - will not animate
- * 1 - will slide in and out from the left when navigating to/from elevation 0
- * 2 - will slide in and out from the bottom
+ * Determines the router transition behavior.
+ * Changing between elevations will animate from the left, except for "top", which animates from the top.
+ * Moving from two pages of the same elevation will not animate.
  */
-export type RouteElevation = 0 | 1 | 2;
+export type RouteElevation = 0 | 1 | 2 | "top";
 
 const queryShown = query(
   ":enter, :leave",
@@ -91,12 +89,19 @@ const animations = {
 } satisfies Record<string, AnimationMetadata[]>;
 
 export const routerTransition = trigger("routerTransition", [
-  transition("0 => 2", animations.slideInFromTop),
-  transition("1 => 2", animations.slideInFromTop),
+  transition("0 => top", animations.slideInFromTop),
+  transition("1 => top", animations.slideInFromTop),
+  transition("2 => top", animations.slideInFromTop),
 
-  transition("2 => 0", animations.slideOutToTop),
-  transition("2 => 1", animations.slideOutToTop),
+  transition("top => 0", animations.slideOutToTop),
+  transition("top => 1", animations.slideOutToTop),
+  transition("top => 2", animations.slideOutToTop),
 
   transition("0 => 1", animations.slideInFromRight),
+  transition("0 => 2", animations.slideInFromRight),
+  transition("1 => 2", animations.slideInFromRight),
+
   transition("1 => 0", animations.slideOutToRight),
+  transition("2 => 0", animations.slideOutToRight),
+  transition("2 => 1", animations.slideOutToRight),
 ]);

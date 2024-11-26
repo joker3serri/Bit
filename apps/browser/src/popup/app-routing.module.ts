@@ -303,7 +303,7 @@ const routes: Routes = [
   ...extensionRefreshSwap(ExportBrowserComponent, ExportBrowserV2Component, {
     path: "export",
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 2 } satisfies RouteDataProperties,
   }),
   ...extensionRefreshSwap(AutofillV1Component, AutofillComponent, {
     path: "autofill",
@@ -328,7 +328,7 @@ const routes: Routes = [
   ...extensionRefreshSwap(FoldersComponent, FoldersV2Component, {
     path: "folders",
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 2 } satisfies RouteDataProperties,
   }),
   {
     path: "add-folder",
@@ -351,7 +351,7 @@ const routes: Routes = [
   ...extensionRefreshSwap(ExcludedDomainsV1Component, ExcludedDomainsComponent, {
     path: "excluded-domains",
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 2 } satisfies RouteDataProperties,
   }),
   ...extensionRefreshSwap(PremiumComponent, PremiumV2Component, {
     path: "premium",
@@ -631,7 +631,7 @@ const routes: Routes = [
   ...extensionRefreshSwap(MoreFromBitwardenPageComponent, MoreFromBitwardenPageV2Component, {
     path: "more-from-bitwarden",
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 2 } satisfies RouteDataProperties,
   }),
   ...extensionRefreshSwap(TabsComponent, TabsV2Component, {
     path: "tabs",
@@ -676,13 +676,13 @@ const routes: Routes = [
   {
     path: "account-switcher",
     component: AccountSwitcherComponent,
-    data: { elevation: 2, doNotSaveUrl: true } satisfies RouteDataProperties,
+    data: { elevation: "top", doNotSaveUrl: true } satisfies RouteDataProperties,
   },
   {
     path: "trash",
     component: TrashComponent,
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: { elevation: 2 } satisfies RouteDataProperties,
   },
 ];
 
