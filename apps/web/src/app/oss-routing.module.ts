@@ -36,10 +36,13 @@ import {
   LoginDecryptionOptionsComponent,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { VaultIcons } from "@bitwarden/vault";
+import {
+  NewDeviceVerificationNoticePageOneComponent,
+  NewDeviceVerificationNoticePageTwoComponent,
+  VaultIcons,
+} from "@bitwarden/vault";
 
 import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-factor-component-refactor-route-swap";
-import { NewDeviceVerificationNoticePageOneComponent } from "../../../../libs/vault/src/components/new-device-verification-notice/new-device-verification-notice-page-one.component";
 import { flagEnabled, Flags } from "../utils/flags";
 
 import { VerifyRecoverDeleteOrgComponent } from "./admin-console/organizations/manage/verify-recover-delete-org.component";
@@ -654,6 +657,16 @@ const routes: Routes = [
           pageIcon: VaultIcons.ExclamationTriangle,
           pageTitle: {
             key: "importantNotice",
+          },
+        },
+      },
+      {
+        path: "setup",
+        component: NewDeviceVerificationNoticePageTwoComponent,
+        data: {
+          pageIcon: VaultIcons.UserLock,
+          pageTitle: {
+            key: "setupTwoStepLogin",
           },
         },
       },
