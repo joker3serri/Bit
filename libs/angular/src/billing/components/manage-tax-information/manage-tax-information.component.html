@@ -51,8 +51,8 @@
         </bit-select>
       </bit-form-field>
     </div>
-    <div class="tw-col-span-12">
-      <button *ngIf="!!onSubmit" bitButton bitFormButton buttonType="primary" type="submit">
+    <div class="tw-col-span-12" *ngIf="!!onSubmit">
+      <button bitButton bitFormButton buttonType="primary" type="submit">
         {{ "submit" | i18n }}
       </button>
     </div>
