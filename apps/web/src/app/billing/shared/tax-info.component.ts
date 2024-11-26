@@ -24,8 +24,8 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   @Input() trialFlow = false;
-  @Output() onCountryChanged = new EventEmitter();
-  @Output() onTaxInformationChanged: EventEmitter<void> = new EventEmitter<void>();
+  @Output() countryChanged = new EventEmitter();
+  @Output() taxInformationChanged: EventEmitter<void> = new EventEmitter<void>();
 
   taxFormGroup = new FormGroup({
     country: new FormControl<string>(null, [Validators.required]),
@@ -121,7 +121,7 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
         this.taxFormGroup.controls.country.value,
       );
 
-      this.onCountryChanged.emit();
+      this.countryChanged.emit();
     });
 
     this.taxFormGroup.controls.country.valueChanges
@@ -144,21 +144,21 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
               this.taxFormGroup.controls.state.setValue(null);
             }
 
-            this.onCountryChanged.emit();
+            this.countryChanged.emit();
           });
-        this.onTaxInformationChanged.emit();
+        this.taxInformationChanged.emit();
       });
 
     this.taxFormGroup.controls.postalCode.valueChanges
       .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.onTaxInformationChanged.emit();
+        this.taxInformationChanged.emit();
       });
 
     this.taxFormGroup.controls.taxId.valueChanges
       .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.onTaxInformationChanged.emit();
+        this.taxInformationChanged.emit();
       });
 
     this.loading = false;

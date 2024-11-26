@@ -361,8 +361,8 @@
         </app-payment-v2>
         <app-tax-info
           *ngIf="showPayment || upgradeRequiresPaymentMethod || isPaymentSourceEmpty()"
-          (onCountryChanged)="changedCountry()"
-          (onTaxInformationChanged)="onTaxInformationChanged()"
+          (countryChanged)="changedCountry()"
+          (taxInformationChanged)="onTaxInformationChanged()"
         ></app-tax-info>
         <div id="price" class="tw-mt-4">
           <p class="tw-text-lg tw-mb-1">

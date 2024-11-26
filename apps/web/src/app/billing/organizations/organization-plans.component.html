@@ -441,8 +441,8 @@
       *ngIf="deprecateStripeSourcesAPI && (createOrganization || upgradeRequiresPaymentMethod)"
     ></app-payment-v2>
     <app-tax-info
-      (onCountryChanged)="changedCountry()"
-      (onTaxInformationChanged)="onTaxInformationChanged()"
+      (countryChanged)="changedCountry()"
+      (taxInformationChanged)="onTaxInformationChanged()"
       class="tw-my-4"
     />
     <div id="price" class="tw-my-4">

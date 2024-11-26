@@ -5,7 +5,7 @@
       [showBankAccount]="!!organizationId"
       [initialPaymentMethod]="initialPaymentMethod"
     ></app-payment-v2>
-    <app-tax-info (onCountryChanged)="onCountryChanged()"></app-tax-info>
+    <app-tax-info (countryChanged)="onCountryChanged()"></app-tax-info>
   </ng-container>
   <ng-container bitDialogFooter>
     <button type="submit" bitButton bitFormButton buttonType="primary" [bitAction]="submit">
