@@ -175,43 +175,52 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   async importSshKeyFromClipboard(password: string = "") {
     const key = await this.platformUtilsService.readFromClipboard();
     const parsedKey = await ipc.platform.sshAgent.importKey(key, password);
-    if (parsedKey == null || parsedKey.status === sshAgent.SshKeyImportStatus.ParsingError) {
+    if (parsedKey == null) {
       this.toastService.showToast({
         variant: "error",
         title: "",
         message: this.i18nService.t("invalidSshKey"),
       });
       return;
-    } else if (parsedKey.status === sshAgent.SshKeyImportStatus.UnsupportedKeyType) {
-      this.toastService.showToast({
-        variant: "error",
-        title: "",
-        message: this.i18nService.t("sshKeyTypeUnsupported"),
-      });
-    } else if (
-      parsedKey.status === sshAgent.SshKeyImportStatus.PasswordRequired ||
-      parsedKey.status === sshAgent.SshKeyImportStatus.WrongPassword
-    ) {
-      if (password !== "") {
+    }
+
+    switch (parsedKey.status) {
+      case sshAgent.SshKeyImportStatus.ParsingError:
         this.toastService.showToast({
           variant: "error",
           title: "",
-          message: this.i18nService.t("sshKeyWrongPassword"),
+          message: this.i18nService.t("invalidSshKey"),
         });
-      } else {
-        password = await this.getSshKeyPassword();
-        await this.importSshKeyFromClipboard(password);
-      }
-      return;
-    } else {
-      this.cipher.sshKey.privateKey = parsedKey.sshKey.privateKey;
-      this.cipher.sshKey.publicKey = parsedKey.sshKey.publicKey;
-      this.cipher.sshKey.keyFingerprint = parsedKey.sshKey.keyFingerprint;
-      this.toastService.showToast({
-        variant: "success",
-        title: "",
-        message: this.i18nService.t("sshKeyPasted"),
-      });
+        return;
+      case sshAgent.SshKeyImportStatus.UnsupportedKeyType:
+        this.toastService.showToast({
+          variant: "error",
+          title: "",
+          message: this.i18nService.t("sshKeyTypeUnsupported"),
+        });
+        return;
+      case sshAgent.SshKeyImportStatus.PasswordRequired:
+      case sshAgent.SshKeyImportStatus.WrongPassword:
+        if (password !== "") {
+          this.toastService.showToast({
+            variant: "error",
+            title: "",
+            message: this.i18nService.t("sshKeyWrongPassword"),
+          });
+        } else {
+          password = await this.getSshKeyPassword();
+          await this.importSshKeyFromClipboard(password);
+        }
+        return;
+      default:
+        this.cipher.sshKey.privateKey = parsedKey.sshKey.privateKey;
+        this.cipher.sshKey.publicKey = parsedKey.sshKey.publicKey;
+        this.cipher.sshKey.keyFingerprint = parsedKey.sshKey.keyFingerprint;
+        this.toastService.showToast({
+          variant: "success",
+          title: "",
+          message: this.i18nService.t("sshKeyPasted"),
+        });
     }
   }
 
