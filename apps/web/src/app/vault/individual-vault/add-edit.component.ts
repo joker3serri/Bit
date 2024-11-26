@@ -103,7 +103,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
 
     // https://bitwarden.atlassian.net/browse/PM-10413
     // cannot generate ssh keys so block creation
-    if (this.type == CipherType.SshKey && this.cipherId === undefined) {
+    if (this.type === CipherType.SshKey && this.cipherId == null) {
       this.type = CipherType.Login;
       this.cipher.type = CipherType.Login;
     }
