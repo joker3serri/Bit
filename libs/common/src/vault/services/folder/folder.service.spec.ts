@@ -1,14 +1,13 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { firstValueFrom } from "rxjs";
 
+import { KeyService } from "../../../../../key-management/src/abstractions/key.service";
 import { makeStaticByteArray } from "../../../../spec";
 import { FakeAccountService, mockAccountServiceWith } from "../../../../spec/fake-account-service";
 import { FakeActiveUserState } from "../../../../spec/fake-state";
 import { FakeStateProvider } from "../../../../spec/fake-state-provider";
-import { CryptoService } from "../../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
-import { StateService } from "../../../platform/abstractions/state.service";
 import { Utils } from "../../../platform/misc/utils";
 import { EncString } from "../../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
@@ -23,11 +22,10 @@ import { FOLDER_ENCRYPTED_FOLDERS } from "../key-state/folder.state";
 describe("Folder Service", () => {
   let folderService: FolderService;
 
-  let cryptoService: MockProxy<CryptoService>;
+  let keyService: MockProxy<KeyService>;
   let encryptService: MockProxy<EncryptService>;
   let i18nService: MockProxy<I18nService>;
   let cipherService: MockProxy<CipherService>;
-  let stateService: MockProxy<StateService>;
   let stateProvider: FakeStateProvider;
 
   const mockUserId = Utils.newGuid() as UserId;
@@ -35,28 +33,27 @@ describe("Folder Service", () => {
   let folderState: FakeActiveUserState<Record<string, FolderData>>;
 
   beforeEach(() => {
-    cryptoService = mock<CryptoService>();
+    keyService = mock<KeyService>();
     encryptService = mock<EncryptService>();
     i18nService = mock<I18nService>();
     cipherService = mock<CipherService>();
-    stateService = mock<StateService>();
 
     accountService = mockAccountServiceWith(mockUserId);
     stateProvider = new FakeStateProvider(accountService);
 
     i18nService.collator = new Intl.Collator("en");
 
-    cryptoService.hasUserKey.mockResolvedValue(true);
-    cryptoService.getUserKeyWithLegacySupport.mockResolvedValue(
+    keyService.hasUserKey.mockResolvedValue(true);
+    keyService.getUserKeyWithLegacySupport.mockResolvedValue(
       new SymmetricCryptoKey(makeStaticByteArray(32)) as UserKey,
     );
     encryptService.decryptToUtf8.mockResolvedValue("DEC");
 
     folderService = new FolderService(
-      cryptoService,
+      keyService,
+      encryptService,
       i18nService,
       cipherService,
-      stateService,
       stateProvider,
     );
 
@@ -71,9 +68,9 @@ describe("Folder Service", () => {
     model.id = "2";
     model.name = "Test Folder";
 
-    cryptoService.encrypt.mockResolvedValue(new EncString("ENC"));
+    encryptService.encrypt.mockResolvedValue(new EncString("ENC"));
 
-    const result = await folderService.encrypt(model);
+    const result = await folderService.encrypt(model, null);
 
     expect(result).toEqual({
       id: "2",
@@ -129,7 +126,7 @@ describe("Folder Service", () => {
   });
 
   it("replace", async () => {
-    await folderService.replace({ "2": folderData("2", "test 2") });
+    await folderService.replace({ "2": folderData("2", "test 2") }, mockUserId);
 
     expect(await firstValueFrom(folderService.folders$)).toEqual([
       {
@@ -185,6 +182,29 @@ describe("Folder Service", () => {
     //   expect((await firstValueFrom(folderService.folders$)).length).toBe(1);
     //   expect((await firstValueFrom(folderService.folderViews$)).length).toBe(2);
     // });
+  });
+
+  describe("getRotatedData", () => {
+    const originalUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
+    const newUserKey = new SymmetricCryptoKey(new Uint8Array(32)) as UserKey;
+    let encryptedKey: EncString;
+
+    beforeEach(() => {
+      encryptedKey = new EncString("Re-encrypted Folder");
+      encryptService.encrypt.mockResolvedValue(encryptedKey);
+    });
+
+    it("returns re-encrypted user folders", async () => {
+      const result = await folderService.getRotatedData(originalUserKey, newUserKey, mockUserId);
+
+      expect(result[0]).toMatchObject({ id: "1", name: "Re-encrypted Folder" });
+    });
+
+    it("throws if the new user key is null", async () => {
+      await expect(folderService.getRotatedData(originalUserKey, null, mockUserId)).rejects.toThrow(
+        "New user key is required for rotation.",
+      );
+    });
   });
 
   function folderData(id: string, name: string) {

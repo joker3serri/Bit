@@ -1,17 +1,17 @@
 import { Jsonify } from "type-fest";
 
+import { UriMatchStrategySetting } from "../../../models/domain/domain-service";
 import { Utils } from "../../../platform/misc/utils";
 import Domain from "../../../platform/models/domain/domain-base";
 import { EncString } from "../../../platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
-import { UriMatchType } from "../../enums";
 import { LoginUriData } from "../data/login-uri.data";
 import { LoginUriView } from "../view/login-uri.view";
 
 export class LoginUri extends Domain {
   uri: EncString;
   uriChecksum: EncString | undefined;
-  match: UriMatchType;
+  match: UriMatchStrategySetting;
 
   constructor(obj?: LoginUriData) {
     super();
@@ -47,8 +47,8 @@ export class LoginUri extends Domain {
       return false;
     }
 
-    const cryptoService = Utils.getContainerService().getEncryptService();
-    const localChecksum = await cryptoService.hash(clearTextUri, "sha256");
+    const keyService = Utils.getContainerService().getEncryptService();
+    const localChecksum = await keyService.hash(clearTextUri, "sha256");
 
     const remoteChecksum = await this.uriChecksum.decrypt(orgId, encKey);
     return remoteChecksum === localChecksum;

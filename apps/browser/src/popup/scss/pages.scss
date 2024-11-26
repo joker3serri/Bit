@@ -111,11 +111,6 @@ app-home {
   }
 }
 
-.app-private-mode-warning {
-  display: block;
-  padding-top: 1rem;
-}
-
 body.body-sm,
 body.body-xs {
   app-home {
@@ -222,7 +217,7 @@ app-vault-attachments {
   }
 }
 
-app-fido2 {
+app-fido2-v1 {
   .auth-wrapper {
     display: flex;
     flex-direction: column;
@@ -306,7 +301,7 @@ app-fido2 {
       margin-top: 32px;
 
       .subtitle {
-        font-family: Open Sans;
+        font-family: "DM Sans";
         font-size: 24px;
         font-style: normal;
         font-weight: 600;

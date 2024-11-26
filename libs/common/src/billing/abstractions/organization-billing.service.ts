@@ -1,10 +1,12 @@
 import { OrganizationResponse } from "../../admin-console/models/response/organization.response";
+import { InitiationPath } from "../../models/request/reference-event.request";
 import { PaymentMethodType, PlanType } from "../enums";
 
 export type OrganizationInformation = {
   name: string;
   billingEmail: string;
   businessName?: string;
+  initiationPath?: InitiationPath;
 };
 
 export type PlanInformation = {
@@ -42,4 +44,8 @@ export abstract class OrganizationBillingServiceAbstraction {
   purchaseSubscription: (subscription: SubscriptionInformation) => Promise<OrganizationResponse>;
 
   startFree: (subscription: SubscriptionInformation) => Promise<OrganizationResponse>;
+
+  purchaseSubscriptionNoPaymentMethod: (
+    subscription: SubscriptionInformation,
+  ) => Promise<OrganizationResponse>;
 }
