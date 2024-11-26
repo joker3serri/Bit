@@ -8,13 +8,13 @@
     </div>
   </div>
   <div class="tw-grid tw-grid-cols-12 tw-gap-4">
-    <div class="tw-col-span-6">
+    <div class="tw-col-span-6" *ngIf="isTaxSupported">
       <bit-form-field disableMargin>
         <bit-label>{{ "address1" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="line1" autocomplete="address-line1" />
       </bit-form-field>
     </div>
-    <div class="tw-col-span-6">
+    <div class="tw-col-span-6" *ngIf="isTaxSupported">
       <bit-form-field disableMargin>
         <bit-label>{{ "address2" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="line2" autocomplete="address-line2" />
@@ -26,13 +26,13 @@
         <input bitInput type="text" formControlName="postalCode" autocomplete="postal-code" />
       </bit-form-field>
     </div>
-    <div class="tw-col-span-6">
+    <div class="tw-col-span-6" *ngIf="isTaxSupported">
       <bit-form-field disableMargin>
         <bit-label>{{ "cityTown" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="city" autocomplete="address-level2" />
       </bit-form-field>
     </div>
-    <div class="tw-col-span-6">
+    <div class="tw-col-span-6" *ngIf="isTaxSupported">
       <bit-form-field disableMargin>
         <bit-label>{{ "stateProvince" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="state" autocomplete="address-level1" />

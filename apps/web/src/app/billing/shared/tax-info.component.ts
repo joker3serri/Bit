@@ -138,6 +138,10 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
           .finally(() => {
             if (!this.isTaxSupported) {
               this.taxFormGroup.controls.taxId.setValue(null);
+              this.taxFormGroup.controls.line1.setValue(null);
+              this.taxFormGroup.controls.line2.setValue(null);
+              this.taxFormGroup.controls.city.setValue(null);
+              this.taxFormGroup.controls.state.setValue(null);
             }
 
             this.onCountryChanged.emit();
