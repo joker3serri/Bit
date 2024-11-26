@@ -1,4 +1,5 @@
 import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
+import { RecoverableSDKError } from "@bitwarden/common/platform/services/sdk/default-sdk.service";
 import type { BitwardenClient } from "@bitwarden/sdk-internal";
 
 import { BrowserApi } from "../../browser/browser-api";
@@ -65,21 +66,32 @@ export class BrowserSdkClientFactory implements SdkClientFactory {
   async createSdkClient(
     ...args: ConstructorParameters<typeof BitwardenClient>
   ): Promise<BitwardenClient> {
+    const startTime = performance.now();
     try {
       await loadWithTimeout();
     } catch (error) {
       throw new Error(`Failed to load: ${error.message}`);
     }
 
-    return Promise.resolve((globalThis as any).init_sdk(...args));
+    const endTime = performance.now();
+    const elapsed = Math.round((endTime - startTime) / 1000);
+
+    const instance = (globalThis as any).init_sdk(...args);
+
+    // If it takes more than 5 seconds to initialize, we want to capture it.
+    if (elapsed > 5) {
+      throw new RecoverableSDKError(instance, elapsed);
+    }
+
+    return instance;
   }
 }
 
 const loadWithTimeout = async () => {
   return new Promise<void>((resolve, reject) => {
     const timer = setTimeout(() => {
-      reject(new Error("Operation timed out after 1 second"));
-    }, 1000);
+      reject(new Error("Operation timed out after 10 second"));
+    }, 10000);
 
     load()
       .then(() => {
