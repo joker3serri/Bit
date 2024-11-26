@@ -21,25 +21,25 @@
       </bit-form-field>
     </div>
     <div class="tw-col-span-6">
-      <bit-form-field [disableMargin]="isTaxSupported">
+      <bit-form-field disableMargin>
         <bit-label>{{ "zipPostalCode" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="postalCode" autocomplete="postal-code" />
       </bit-form-field>
     </div>
     <div class="tw-col-span-6">
-      <bit-form-field>
+      <bit-form-field disableMargin>
         <bit-label>{{ "cityTown" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="city" autocomplete="address-level2" />
       </bit-form-field>
     </div>
     <div class="tw-col-span-6">
-      <bit-form-field>
+      <bit-form-field disableMargin>
         <bit-label>{{ "stateProvince" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="state" autocomplete="address-level1" />
       </bit-form-field>
     </div>
     <div class="tw-col-span-6">
-      <bit-form-field [disableMargin]="isTaxSupported">
+      <bit-form-field disableMargin>
         <bit-label>{{ "country" | i18n }}</bit-label>
         <bit-select formControlName="country">
           <bit-option
@@ -51,8 +51,10 @@
         </bit-select>
       </bit-form-field>
     </div>
+    <div class="tw-col-span-12">
+      <button *ngIf="!!onSubmit" bitButton bitFormButton buttonType="primary" type="submit">
+        {{ "submit" | i18n }}
+      </button>
+    </div>
   </div>
-  <button *ngIf="!!onSubmit" bitButton bitFormButton buttonType="primary" type="submit">
-    {{ "submit" | i18n }}
-  </button>
 </form>
