@@ -245,8 +245,6 @@ describe("AutofillService", () => {
     ["moz-extension://", "chrome-extension://", "safari-web-extension://"].forEach(
       (extensionPrefix) => {
         it(`returns an empty array when the tab.url starts with ${extensionPrefix}`, async () => {
-          (BrowserApi.tabSendMessage as jest.Mock).mockRejectedValueOnce(undefined);
-
           const tracker = subscribeTo(
             autofillService.collectPageDetailsFromTab$({
               ...tab,
