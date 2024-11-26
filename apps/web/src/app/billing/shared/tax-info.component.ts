@@ -9,7 +9,6 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { TaxServiceAbstraction } from "@bitwarden/common/billing/abstractions/tax.service.abstraction";
 import { CountryListItem } from "@bitwarden/common/billing/models/domain";
 import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/expanded-tax-info-update.request";
-import { TaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/tax-info-update.request";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 
 import { SharedModule } from "../../shared";
@@ -29,14 +28,13 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
   @Output() onTaxInformationChanged: EventEmitter<void> = new EventEmitter<void>();
 
   taxFormGroup = new FormGroup({
-    country: new FormControl(null, [Validators.required]),
-    postalCode: new FormControl(null),
-    includeTaxId: new FormControl(null),
-    taxId: new FormControl(null),
-    line1: new FormControl(null),
-    line2: new FormControl(null),
-    city: new FormControl(null),
-    state: new FormControl(null),
+    country: new FormControl<string>(null, [Validators.required]),
+    postalCode: new FormControl<string>(null, [Validators.required]),
+    taxId: new FormControl<string>(null),
+    line1: new FormControl<string>(null),
+    line2: new FormControl<string>(null),
+    city: new FormControl<string>(null),
+    state: new FormControl<string>(null),
   });
 
   protected isTaxSupported: boolean;
@@ -103,13 +101,6 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
             this.taxFormGroup.controls.city.setValue(taxInfo.city);
             this.taxFormGroup.controls.postalCode.setValue(taxInfo.postalCode);
             this.taxFormGroup.controls.country.setValue(taxInfo.country);
-            this.taxFormGroup.controls.includeTaxId.setValue(
-              !!taxInfo.taxId ||
-                !!taxInfo.line1 ||
-                !!taxInfo.line2 ||
-                !!taxInfo.city ||
-                !!taxInfo.state,
-            );
           }
         } catch (e) {
           this.logService.error(e);
@@ -130,24 +121,27 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
         this.taxFormGroup.controls.country.value,
       );
 
-      if (this.country === "US") {
-        this.taxFormGroup.controls.postalCode.setValidators([Validators.required]);
-        this.taxFormGroup.controls.postalCode.updateValueAndValidity();
-      }
-
       this.onCountryChanged.emit();
     });
 
     this.taxFormGroup.controls.country.valueChanges
       .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value === "US") {
-          this.taxFormGroup.controls.postalCode.setValidators([Validators.required]);
-        } else {
-          this.taxFormGroup.controls.postalCode.clearValidators();
-        }
-        this.taxFormGroup.controls.postalCode.updateValueAndValidity();
-        this.changeCountry();
+        this.taxService
+          .isCountrySupported(this.taxFormGroup.controls.country.value)
+          .then((isSupported) => {
+            this.isTaxSupported = isSupported;
+          })
+          .catch(() => {
+            this.isTaxSupported = false;
+          })
+          .finally(() => {
+            if (!this.isTaxSupported) {
+              this.taxFormGroup.controls.taxId.setValue(null);
+            }
+
+            this.onCountryChanged.emit();
+          });
         this.onTaxInformationChanged.emit();
       });
 
@@ -163,12 +157,6 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
         this.onTaxInformationChanged.emit();
       });
 
-    this.taxFormGroup.controls.includeTaxId.valueChanges
-      .pipe(debounceTime(1000), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.clearTaxInformationFields();
-      });
-
     this.loading = false;
   }
 
@@ -177,7 +165,10 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  getTaxInfoRequest(): TaxInfoUpdateRequest {
+  submitTaxInfo(): Promise<any> {
+    this.taxFormGroup.updateValueAndValidity();
+    this.taxFormGroup.markAllAsTouched();
+
     const request = new ExpandedTaxInfoUpdateRequest();
     request.country = this.country;
     request.postalCode = this.postalCode;
@@ -186,45 +177,12 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
     request.line2 = this.line2;
     request.city = this.city;
     request.state = this.state;
-    return request;
-  }
 
-  submitTaxInfo(): Promise<any> {
-    this.taxFormGroup.updateValueAndValidity();
-    this.taxFormGroup.markAllAsTouched();
-    const request = this.getTaxInfoRequest();
     return this.organizationId
       ? this.organizationApiService.updateTaxInfo(
           this.organizationId,
           request as ExpandedTaxInfoUpdateRequest,
         )
       : this.apiService.putTaxInfo(request);
-  }
-
-  changeCountry(): void {
-    this.taxService
-      .isCountrySupported(this.taxFormGroup.controls.country.value)
-      .then((isSupported) => {
-        this.isTaxSupported = isSupported;
-      })
-      .catch(() => {
-        this.isTaxSupported = false;
-      })
-      .finally(() => {
-        if (!this.isTaxSupported) {
-          this.taxFormGroup.controls.includeTaxId.setValue(false);
-          this.clearTaxInformationFields();
-        }
-
-        this.onCountryChanged.emit();
-      });
-  }
-
-  private clearTaxInformationFields(): void {
-    this.taxFormGroup.controls.taxId.setValue(null);
-    this.taxFormGroup.controls.line1.setValue(null);
-    this.taxFormGroup.controls.line2.setValue(null);
-    this.taxFormGroup.controls.city.setValue(null);
-    this.taxFormGroup.controls.state.setValue(null);
   }
 }

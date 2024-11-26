@@ -787,13 +787,11 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       request.planType = this.selectedPlan.type;
       request.billingAddressPostalCode = this.taxComponent.taxFormGroup?.value.postalCode;
       request.billingAddressCountry = this.taxComponent.taxFormGroup?.value.country;
-      if (this.taxComponent.taxFormGroup?.value.includeTaxId) {
-        request.taxIdNumber = this.taxComponent.taxFormGroup?.value.taxId;
-        request.billingAddressLine1 = this.taxComponent.taxFormGroup?.value.line1;
-        request.billingAddressLine2 = this.taxComponent.taxFormGroup?.value.line2;
-        request.billingAddressCity = this.taxComponent.taxFormGroup?.value.city;
-        request.billingAddressState = this.taxComponent.taxFormGroup?.value.state;
-      }
+      request.taxIdNumber = this.taxComponent.taxFormGroup?.value.taxId;
+      request.billingAddressLine1 = this.taxComponent.taxFormGroup?.value.line1;
+      request.billingAddressLine2 = this.taxComponent.taxFormGroup?.value.line2;
+      request.billingAddressCity = this.taxComponent.taxFormGroup?.value.city;
+      request.billingAddressState = this.taxComponent.taxFormGroup?.value.state;
     }
 
     // Secrets Manager
