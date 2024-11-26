@@ -134,12 +134,9 @@ export default class AutofillService implements AutofillServiceInterface {
     // - In Safari, `tabSendMessage` doesn't throw an error for this case.
     // - When opening the extension directly via the URL, `tabSendMessage` doesn't always respond nor throw an error in FireFox.
     //   Adding checks for the major 3 browsers here to be safe.
-    if (
-      !tab.url ||
-      ["moz-extension://", "chrome-extension://", "safari-web-extension://"].some((prefix) =>
-        tab.url.startsWith(prefix),
-      )
-    ) {
+    const browserPrefixes = ["moz-extension://", "chrome-extension://", "safari-web-extension://"];
+
+    if (!tab.url || browserPrefixes.some((prefix) => tab.url.startsWith(prefix))) {
       pageDetailsFallback$.next([]);
     }
 
