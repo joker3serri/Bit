@@ -6,9 +6,9 @@ import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticatio
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { AvatarModule, ItemModule } from "@bitwarden/components";
+import { BiometricsService } from "@bitwarden/key-management";
 
 import { AccountSwitcherService, AvailableAccount } from "./services/account-switcher.service";
-import { BiometricsService } from "../../../../../../libs/key-management/src/biometrics/biometric.service";
 
 @Component({
   standalone: true,
@@ -46,9 +46,9 @@ export class AccountComponent {
     // locked or logged out account statuses are handled by background and app.component
     if (result?.status === AuthenticationStatus.Unlocked) {
       this.location.back();
-      this.biometricsService.setShouldAutopromptNow(false);
+      await this.biometricsService.setShouldAutopromptNow(false);
     } else {
-      this.biometricsService.setShouldAutopromptNow(true);
+      await this.biometricsService.setShouldAutopromptNow(true);
     }
     this.loading.emit(false);
   }
