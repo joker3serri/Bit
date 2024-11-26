@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import { BiometricsService, BiometricsCommands, BiometricsStatus } from "@bitwarden/key-management";
@@ -70,9 +69,9 @@ export class BackgroundBrowserBiometricsService extends BiometricsService {
           command: BiometricsCommands.Unlock,
         });
         if (response.response == "unlocked") {
-          return SymmetricCryptoKey.fromString(response.userKeyB64) as UserKey;
+          return response.userKeyB64;
         } else {
-          throw new Error("Biometric unlock failed");
+          return null;
         }
       } else {
         const response = await this.nativeMessagingBackground().callCommand({
@@ -80,9 +79,9 @@ export class BackgroundBrowserBiometricsService extends BiometricsService {
           userId: userId,
         });
         if (response.response) {
-          return SymmetricCryptoKey.fromString(response.userKeyB64) as UserKey;
+          return response.userKeyB64;
         } else {
-          throw new Error("Biometric unlock failed");
+          return null;
         }
       }
     } catch (e) {
@@ -100,7 +99,7 @@ export class BackgroundBrowserBiometricsService extends BiometricsService {
 
       return (
         await this.nativeMessagingBackground().callCommand({
-          command: "getBiometricsStatusForUser",
+          command: BiometricsCommands.GetBiometricsStatusForUser,
           userId: id,
         })
       ).response;

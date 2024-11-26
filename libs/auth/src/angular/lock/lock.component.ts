@@ -2,7 +2,16 @@ import { CommonModule } from "@angular/common";
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { BehaviorSubject, firstValueFrom, Subject, switchMap, take, takeUntil } from "rxjs";
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  interval,
+  mergeMap,
+  Subject,
+  switchMap,
+  take,
+  takeUntil,
+} from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -34,7 +43,12 @@ import {
   IconButtonModule,
   ToastService,
 } from "@bitwarden/components";
-import { KeyService, BiometricStateService, BiometricsService } from "@bitwarden/key-management";
+import {
+  KeyService,
+  BiometricStateService,
+  BiometricsService,
+  BiometricsStatus,
+} from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../common/abstractions";
 import { AnonLayoutWrapperDataService } from "../anon-layout/anon-layout-wrapper-data.service";
@@ -109,9 +123,6 @@ export class LockV2Component implements OnInit, OnDestroy {
   private deferFocus: boolean = null;
   private biometricAsked = false;
 
-  // Browser extension properties:
-  private isInitialLockScreen = (window as any).previousPopupUrl == null;
-
   defaultUnlockOptionSetForUser = false;
 
   unlockingViaBiometrics = false;
@@ -152,12 +163,29 @@ export class LockV2Component implements OnInit, OnDestroy {
     // Listen for active account changes
     this.listenForActiveAccountChanges();
 
+    this.listenForUnlockOptionsChanges();
+
     // Identify client
     this.clientType = this.platformUtilsService.getClientType();
 
     if (this.clientType === "desktop") {
       await this.desktopOnInit();
+    } else if (this.clientType === ClientType.Browser) {
+      this.biometricUnlockBtnText = this.lockComponentService.getBiometricsUnlockBtnText();
     }
+  }
+
+  private listenForUnlockOptionsChanges() {
+    interval(1000)
+      .pipe(
+        mergeMap(async () => {
+          this.unlockOptions = await firstValueFrom(
+            this.lockComponentService.getAvailableUnlockOptions$(this.activeAccount.id),
+          );
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
   }
 
   // Base component methods
@@ -229,7 +257,6 @@ export class LockV2Component implements OnInit, OnDestroy {
     this.unlockOptions = null;
     this.activeUnlockOption = null;
     this.formGroup = null; // new form group will be created based on new active unlock option
-    this.isInitialLockScreen = true;
 
     // Desktop properties:
     this.biometricAsked = false;
@@ -271,8 +298,9 @@ export class LockV2Component implements OnInit, OnDestroy {
       if (
         this.unlockOptions.biometrics.enabled &&
         autoPromptBiometrics &&
-        this.isInitialLockScreen // only autoprompt biometrics on initial lock screen
+        (await this.biometricService.getShouldAutopromptNow())
       ) {
+        await this.biometricService.setShouldAutopromptNow(false);
         await this.unlockViaBiometrics();
       }
     }
@@ -573,6 +601,8 @@ export class LockV2Component implements OnInit, OnDestroy {
   // -----------------------------------------------------------------------------------------------
 
   async desktopOnInit() {
+    this.biometricUnlockBtnText = this.lockComponentService.getBiometricsUnlockBtnText();
+
     // TODO: move this into a WindowService and subscribe to messages via MessageListener service.
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
       this.ngZone.run(() => {
@@ -638,6 +668,46 @@ export class LockV2Component implements OnInit, OnDestroy {
 
     if (this.clientType === "desktop") {
       this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
+    }
+  }
+
+  get biometricsAvailable(): boolean {
+    return this.unlockOptions.biometrics.enabled;
+  }
+
+  get showBiometrics(): boolean {
+    return (
+      this.unlockOptions.biometrics.biometricsStatus !== BiometricsStatus.PlatformUnsupported &&
+      this.unlockOptions.biometrics.biometricsStatus !== BiometricsStatus.NotEnabledLocally
+    );
+  }
+
+  get biometricUnavailabilityReason(): string {
+    switch (this.unlockOptions.biometrics.biometricsStatus) {
+      case BiometricsStatus.Available:
+        return "";
+      case BiometricsStatus.UnlockNeeded:
+        return this.i18nService.t("biometricsStatusHelptextUnlockNeeded");
+      case BiometricsStatus.HardwareUnavailable:
+        return this.i18nService.t("biometricsStatusHelptextHardwareUnavailable");
+      case BiometricsStatus.AutoSetupNeeded:
+        return this.i18nService.t("biometricsStatusHelptextAutoSetupNeeded");
+      case BiometricsStatus.ManualSetupNeeded:
+        return this.i18nService.t("biometricsStatusHelptextManualSetupNeeded");
+      case BiometricsStatus.NotEnabledInConnectedDesktopApp:
+        return this.i18nService.t(
+          "biometricsStatusHelptextNotEnabledInDesktop",
+          this.activeAccount.email,
+        );
+      case BiometricsStatus.NotEnabledLocally:
+        return this.i18nService.t("biometricsStatusHelptextNotEnabledInDesktop");
+      case BiometricsStatus.DesktopDisconnected:
+        return this.i18nService.t("biometricsStatusHelptextDesktopDisconnected");
+      default:
+        return (
+          this.i18nService.t("biometricsStatusHelptextUnavailableReasonUnknown") +
+          this.unlockOptions.biometrics.biometricsStatus
+        );
     }
   }
 }

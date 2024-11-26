@@ -236,6 +236,7 @@ const safeProviders: SafeProvider[] = [
       VaultTimeoutSettingsService,
       BiometricStateService,
       AccountServiceAbstraction,
+      LogService,
     ],
   }),
   safeProvider({

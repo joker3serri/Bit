@@ -8,6 +8,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { AvatarModule, ItemModule } from "@bitwarden/components";
 
 import { AccountSwitcherService, AvailableAccount } from "./services/account-switcher.service";
+import { BiometricsService } from "../../../../../../libs/key-management/src/biometrics/biometric.service";
 
 @Component({
   standalone: true,
@@ -25,6 +26,7 @@ export class AccountComponent {
     private location: Location,
     private i18nService: I18nService,
     private logService: LogService,
+    private biometricsService: BiometricsService,
   ) {}
 
   get specialAccountAddId() {
@@ -44,6 +46,9 @@ export class AccountComponent {
     // locked or logged out account statuses are handled by background and app.component
     if (result?.status === AuthenticationStatus.Unlocked) {
       this.location.back();
+      this.biometricsService.setShouldAutopromptNow(false);
+    } else {
+      this.biometricsService.setShouldAutopromptNow(true);
     }
     this.loading.emit(false);
   }

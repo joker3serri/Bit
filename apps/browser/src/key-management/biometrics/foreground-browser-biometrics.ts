@@ -1,3 +1,4 @@
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import { BiometricsCommands, BiometricsService, BiometricsStatus } from "@bitwarden/key-management";
@@ -5,6 +6,8 @@ import { BiometricsCommands, BiometricsService, BiometricsStatus } from "@bitwar
 import { BrowserApi } from "../../platform/browser/browser-api";
 
 export class ForegroundBrowserBiometricsService extends BiometricsService {
+  shouldAutopromptNow = true;
+
   async authenticateWithBiometrics(): Promise<boolean> {
     const response = await BrowserApi.sendMessageWithResponse<{
       result: boolean;
@@ -24,15 +27,15 @@ export class ForegroundBrowserBiometricsService extends BiometricsService {
     return response.result;
   }
 
-  async unlockWithBiometricsForUser(userId: UserId): Promise<UserKey> {
+  async unlockWithBiometricsForUser(userId: UserId): Promise<UserKey | null> {
     const response = await BrowserApi.sendMessageWithResponse<{
-      result: UserKey;
+      result: string;
       error: string;
     }>(BiometricsCommands.UnlockWithBiometricsForUser, { userId });
     if (!response.result) {
-      throw response.error;
+      return null;
     }
-    return response.result;
+    return SymmetricCryptoKey.fromString(response.result) as UserKey;
   }
 
   async getBiometricsStatusForUser(id: UserId): Promise<BiometricsStatus> {
@@ -44,7 +47,9 @@ export class ForegroundBrowserBiometricsService extends BiometricsService {
   }
 
   async getShouldAutopromptNow(): Promise<boolean> {
-    return true;
+    return this.shouldAutopromptNow;
   }
-  async setShouldAutopromptNow(value: boolean): Promise<void> {}
+  async setShouldAutopromptNow(value: boolean): Promise<void> {
+    this.shouldAutopromptNow = value;
+  }
 }

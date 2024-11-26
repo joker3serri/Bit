@@ -411,6 +411,7 @@ export default class MainBackground {
       await this.refreshMenu(true);
       if (this.systemService != null) {
         await this.systemService.clearPendingClipboard();
+        await this.biometricsService.setShouldAutopromptNow(false);
         await this.processReloadService.startProcessReload(this.authService);
       }
     };
@@ -1072,6 +1073,7 @@ export default class MainBackground {
       this.vaultTimeoutSettingsService,
       this.biometricStateService,
       this.accountService,
+      this.logService,
     );
 
     // Other fields
