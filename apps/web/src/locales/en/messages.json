@@ -4689,7 +4689,7 @@
     "message": "Include VAT/GST Information (optional)"
   },
   "taxIdNumber": {
-    "message": "Tax ID"
+    "message": "VAT/GST Tax ID"
   },
   "taxInfoUpdated": {
     "message": "Tax information updated."
