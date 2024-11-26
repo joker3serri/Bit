@@ -109,9 +109,7 @@ export class SetupComponent implements OnInit, OnDestroy {
     try {
       this.formGroup.markAllAsTouched();
 
-      const formIsValid = this.formGroup.valid && this.manageTaxInformationComponent.touch();
-
-      if (!formIsValid) {
+      if (!this.manageTaxInformationComponent.validate() || !this.formGroup.valid) {
         return;
       }
 

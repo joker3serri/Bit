@@ -51,7 +51,7 @@ export class ManageTaxInformationComponent implements OnInit, OnDestroy {
     this.taxInformationUpdated.emit();
   };
 
-  touch = (): boolean => {
+  validate = (): boolean => {
     this.formGroup.markAllAsTouched();
     return this.formGroup.valid;
   };
