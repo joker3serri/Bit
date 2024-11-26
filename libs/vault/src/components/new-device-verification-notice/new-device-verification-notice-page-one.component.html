@@ -1,0 +1,29 @@
+<form #form (ngSubmit)="submit()">
+  <p class="tw-text-center" bitTypography="body1">
+    {{ "newDeviceVerificationNoticeContentPage1" | i18n }}
+  </p>
+
+  <div
+    class="tw-flex tw-flex-col tw-items-center tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 tw-pb-2"
+  >
+    <p bitTypography="body2" class="text-muted tw-w-9/12">{{ formMessage }}</p>
+
+    <div class="radio-group tw-w-9/12">
+      <input type="radio" class="radio" id="option_A" />
+      <label class="unstyled">
+        {{ "newDeviceVerificationNoticePage1OptionA" | i18n }}
+      </label>
+    </div>
+
+    <div class="radio-group tw-w-9/12">
+      <input type="radio" class="radio" id="option_A" />
+      <label class="unstyled">
+        {{ "newDeviceVerificationNoticePage1OptionB" | i18n }}
+      </label>
+    </div>
+  </div>
+
+  <button bitButton type="submit" buttonType="primary" class="tw-w-full tw-mt-4">
+    {{ "continue" | i18n }}
+  </button>
+</form>
