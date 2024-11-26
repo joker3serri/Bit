@@ -129,14 +129,11 @@ export class SetupComponent implements OnInit, OnDestroy {
 
       request.taxInfo.country = taxInformation.country;
       request.taxInfo.postalCode = taxInformation.postalCode;
-
-      if (taxInformation.includeTaxId) {
-        request.taxInfo.taxId = taxInformation.taxId;
-        request.taxInfo.line1 = taxInformation.line1;
-        request.taxInfo.line2 = taxInformation.line2;
-        request.taxInfo.city = taxInformation.city;
-        request.taxInfo.state = taxInformation.state;
-      }
+      request.taxInfo.taxId = taxInformation.taxId;
+      request.taxInfo.line1 = taxInformation.line1;
+      request.taxInfo.line2 = taxInformation.line2;
+      request.taxInfo.city = taxInformation.city;
+      request.taxInfo.state = taxInformation.state;
 
       const provider = await this.providerApiService.postProviderSetup(this.providerId, request);
 

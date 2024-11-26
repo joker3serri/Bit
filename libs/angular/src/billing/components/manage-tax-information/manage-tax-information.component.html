@@ -1,35 +1,5 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit">
-  <div class="tw-grid tw-grid-cols-12 tw-gap-4">
-    <div class="tw-col-span-6">
-      <bit-form-field [disableMargin]="selectionSupportsAdditionalOptions">
-        <bit-label>{{ "country" | i18n }}</bit-label>
-        <bit-select formControlName="country">
-          <bit-option
-            *ngFor="let country of countries"
-            [value]="country.value"
-            [disabled]="country.disabled"
-            [label]="country.name"
-          ></bit-option>
-        </bit-select>
-      </bit-form-field>
-    </div>
-    <div class="tw-col-span-6">
-      <bit-form-field [disableMargin]="selectionSupportsAdditionalOptions">
-        <bit-label>{{ "zipPostalCode" | i18n }}</bit-label>
-        <input bitInput type="text" formControlName="postalCode" autocomplete="postal-code" />
-      </bit-form-field>
-    </div>
-    <div class="tw-col-span-6" *ngIf="selectionSupportsAdditionalOptions">
-      <bit-form-control>
-        <input bitCheckbox type="checkbox" formControlName="includeTaxId" />
-        <bit-label>{{ "includeVAT" | i18n }}</bit-label>
-      </bit-form-control>
-    </div>
-  </div>
-  <div
-    class="tw-grid tw-grid-cols-12 tw-gap-4"
-    *ngIf="selectionSupportsAdditionalOptions && includeTaxIdIsSelected"
-  >
+  <div class="tw-grid tw-grid-cols-12 tw-gap-4" *ngIf="isTaxSupported">
     <div class="tw-col-span-6">
       <bit-form-field>
         <bit-label>{{ "taxIdNumber" | i18n }}</bit-label>
@@ -37,10 +7,7 @@
       </bit-form-field>
     </div>
   </div>
-  <div
-    class="tw-grid tw-grid-cols-12 tw-gap-4"
-    *ngIf="selectionSupportsAdditionalOptions && includeTaxIdIsSelected"
-  >
+  <div class="tw-grid tw-grid-cols-12 tw-gap-4">
     <div class="tw-col-span-6">
       <bit-form-field disableMargin>
         <bit-label>{{ "address1" | i18n }}</bit-label>
@@ -54,6 +21,12 @@
       </bit-form-field>
     </div>
     <div class="tw-col-span-6">
+      <bit-form-field [disableMargin]="isTaxSupported">
+        <bit-label>{{ "zipPostalCode" | i18n }}</bit-label>
+        <input bitInput type="text" formControlName="postalCode" autocomplete="postal-code" />
+      </bit-form-field>
+    </div>
+    <div class="tw-col-span-6">
       <bit-form-field>
         <bit-label>{{ "cityTown" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="city" autocomplete="address-level2" />
@@ -63,6 +36,19 @@
       <bit-form-field>
         <bit-label>{{ "stateProvince" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="state" autocomplete="address-level1" />
+      </bit-form-field>
+    </div>
+    <div class="tw-col-span-6">
+      <bit-form-field [disableMargin]="isTaxSupported">
+        <bit-label>{{ "country" | i18n }}</bit-label>
+        <bit-select formControlName="country">
+          <bit-option
+            *ngFor="let country of countries"
+            [value]="country.value"
+            [disabled]="country.disabled"
+            [label]="country.name"
+          ></bit-option>
+        </bit-select>
       </bit-form-field>
     </div>
   </div>

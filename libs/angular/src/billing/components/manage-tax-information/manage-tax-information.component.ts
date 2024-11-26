@@ -17,7 +17,6 @@ export class ManageTaxInformationComponent implements OnInit, OnDestroy {
   protected formGroup = this.formBuilder.group({
     country: ["", Validators.required],
     postalCode: ["", Validators.required],
-    includeTaxId: false,
     taxId: "",
     taxIdType: "",
     line1: "",
@@ -26,7 +25,7 @@ export class ManageTaxInformationComponent implements OnInit, OnDestroy {
     state: "",
   });
 
-  isTaxSupported: boolean;
+  protected isTaxSupported: boolean;
 
   private destroy$ = new Subject<void>();
 
@@ -39,10 +38,9 @@ export class ManageTaxInformationComponent implements OnInit, OnDestroy {
     private taxService: TaxServiceAbstraction,
   ) {}
 
-  getTaxInformation = (): TaxInformation & { includeTaxId: boolean } => ({
-    ...this.taxInformation,
-    includeTaxId: this.formGroup.value.includeTaxId,
-  });
+  getTaxInformation(): TaxInformation {
+    return this.taxInformation;
+  }
 
   submit = async () => {
     this.formGroup.markAllAsTouched();
@@ -59,19 +57,6 @@ export class ManageTaxInformationComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
-    if (this.startWith) {
-      this.formGroup.patchValue({
-        ...this.startWith,
-        includeTaxId:
-          this.isTaxSupported &&
-          (!!this.startWith.taxId ||
-            !!this.startWith.line1 ||
-            !!this.startWith.line2 ||
-            !!this.startWith.city ||
-            !!this.startWith.state),
-      });
-    }
-
     this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((values) => {
       this.taxInformation = {
         country: values.country,
@@ -95,13 +80,5 @@ export class ManageTaxInformationComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  protected get includeTaxIdIsSelected() {
-    return this.formGroup.value.includeTaxId;
-  }
-
-  protected get selectionSupportsAdditionalOptions() {
-    return this.formGroup.value.country !== "US" && this.isTaxSupported;
   }
 }
