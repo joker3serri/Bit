@@ -28,7 +28,8 @@ const queryChildRoute = query("router-outlet ~ *", [style({}), animate(1, style(
   optional: true,
 });
 
-const speed = "0.4s";
+const speedX = "0.225s";
+const speedY = "0.3s";
 
 type TranslateDirection = "enter" | "leave";
 type TranslationAxis = "X" | "Y";
@@ -49,7 +50,7 @@ function queryTranslate(
         boxShadow: "0 3px 2px -2px gray",
       }),
       animate(
-        speed + " ease-in-out",
+        (axis === "X" ? speedX : speedY) + " ease-in-out",
         style({
           transform: "translate" + axis + "(" + to + "%)",
         }),
