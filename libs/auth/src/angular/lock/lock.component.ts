@@ -603,6 +603,10 @@ export class LockV2Component implements OnInit, OnDestroy {
       return;
     }
 
+    if (!(await this.biometricService.getShouldAutopromptNow())) {
+      return;
+    }
+
     // prevent the biometric prompt from showing if the user has already cancelled it
     if (await firstValueFrom(this.biometricStateService.promptCancelled$)) {
       return;
