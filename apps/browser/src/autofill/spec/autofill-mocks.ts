@@ -187,9 +187,6 @@ export function createAutofillOverlayCipherDataMock(
     id: String(index),
     name: `website login ${index}`,
     login: {
-      totp: "123456",
-      totpField: false,
-      totpCodeTimeInterval: 30,
       username: `username${index}`,
       passkey: null,
     },
@@ -242,7 +239,7 @@ export function createInitAutofillInlineMenuListMessageMock(
       createAutofillOverlayCipherDataMock(4, {
         icon: { imageEnabled: false, image: "", fallbackImage: "", icon: "" },
       }),
-      createAutofillOverlayCipherDataMock(5),
+      createAutofillOverlayCipherDataMock(5, { login: { totp: "123456", totpField: true } }),
       createAutofillOverlayCipherDataMock(6),
       createAutofillOverlayCipherDataMock(7),
       createAutofillOverlayCipherDataMock(8),

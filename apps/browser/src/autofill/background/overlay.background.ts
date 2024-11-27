@@ -621,6 +621,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     return this.inlineMenuFido2Credentials.has(credentialId);
   }
 
+  /**
+   * This function is being updated on PM-15189 and is currently a place holder
+   */
   private isTotpFieldForCurrentField(): boolean {
     const currentTabId = this.focusedFieldData?.tabId;
     const currentFrameId = this.focusedFieldData?.frameId;
@@ -636,6 +639,7 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     }
     return false;
   }
+
   /**
    * Builds the cipher data for the inline menu list.
    *

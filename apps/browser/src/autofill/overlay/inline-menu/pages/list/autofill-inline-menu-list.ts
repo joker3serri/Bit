@@ -1080,11 +1080,15 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
         const totpSeconds = intervalSeconds - mod;
 
         totpSecondsSpan.textContent = `${totpSeconds}`;
-        const totpSecondsLow = totpSeconds <= 7;
 
-        totpSecondsSpan.classList.toggle("totp-sec-span-danger", totpSecondsLow);
-        innerCircleElement.classList.toggle("circle-danger-color", totpSecondsLow);
-        outerCircleElement.classList.toggle("circle-danger-color", totpSecondsLow);
+        /**
+         * Design specifies a seven-second time span as the period where expiry is approaching.
+         */
+        const totpExpiryApproaching = totpSeconds <= 7;
+
+        totpSecondsSpan.classList.toggle("totp-sec-span-danger", totpExpiryApproaching);
+        innerCircleElement.classList.toggle("circle-danger-color", totpExpiryApproaching);
+        outerCircleElement.classList.toggle("circle-danger-color", totpExpiryApproaching);
 
         innerCircleElement.style.strokeDashoffset = `${((intervalSeconds - totpSeconds) / intervalSeconds) * (2 * Math.PI * 12.5)}`;
 
@@ -1158,9 +1162,8 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     }
 
     if (cipher.login?.totpField && cipher.login?.totp) {
-      return this.buildTotpElement(cipher);
+      return this.buildTotpElement(cipher.login?.totp);
     }
-
     const subTitleText = this.getSubTitleText(cipher);
     const cipherSubtitleElement = this.buildCipherSubtitleElement(subTitleText);
     if (cipherSubtitleElement) {
@@ -1176,25 +1179,26 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
    * @param totp - The TOTP code to display.
    */
 
-  private buildTotpElement(cipher: InlineMenuCipherData): HTMLDivElement | null {
-    if (!cipher.login?.totp) {
+  private buildTotpElement(totpCode: string): HTMLDivElement | null {
+    if (!totpCode) {
       return null;
     }
 
-    const totpCode = cipher.login.totp;
     const formattedTotpCode = `${totpCode.substring(0, 3)} ${totpCode.substring(3)}`;
 
     const containerElement = globalThis.document.createElement("div");
     const totpHeading = document.createElement("span");
     totpHeading.classList.add("cipher-name");
     totpHeading.textContent = this.getTranslation("fillVerificationCode");
+    totpHeading.setAttribute("aria-label", "Fill Verification Code");
+
     containerElement.appendChild(totpHeading);
 
-    const subtitleElement = this.buildCipherSubtitleElement(formattedTotpCode);
-    if (subtitleElement) {
-      subtitleElement.classList.add("totp-sub-text");
-      containerElement.appendChild(subtitleElement);
-    }
+    const subtitleElement = document.createElement("span");
+    subtitleElement.classList.add("cipher-subtitle", "totp-sub-text");
+    subtitleElement.textContent = formattedTotpCode;
+    totpHeading.setAttribute("aria-label", "Time-based One-Time Password Verification Code");
+    containerElement.appendChild(subtitleElement);
 
     return containerElement;
   }
