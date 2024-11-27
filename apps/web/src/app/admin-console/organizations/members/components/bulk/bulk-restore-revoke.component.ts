@@ -1,6 +1,6 @@
 import { DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
-import { Observable, firstValueFrom } from "rxjs";
+import { Observable } from "rxjs";
 
 import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
 import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
@@ -66,20 +66,13 @@ export class BulkRestoreRevokeComponent {
     try {
       const response = await this.performBulkUserAction();
 
+      const bulkMessage = this.isRevoking ? "bulkRevokedMessage" : "bulkRestoredMessage";
+
       response.data.forEach(async (entry) => {
-        let bulkMessage;
-        let error;
-        const isManaged = this.users.find((u) => u.id === entry.id)?.managedByOrganization;
-        if (isManaged && (await firstValueFrom(this.accountDeprovisioningEnabled$))) {
-          bulkMessage = this.isRevoking ? "bulkManagedRevokedMessage" : "bulkManagedRestoreMessage";
-          error =
-            entry.error !== ""
-              ? this.i18nService.t("cannotRestoreAccessError")
-              : this.i18nService.t(bulkMessage);
-        } else {
-          bulkMessage = this.isRevoking ? "bulkRevokedMessage" : "bulkRestoredMessage";
-          error = entry.error !== "" ? entry.error : this.i18nService.t(bulkMessage);
-        }
+        const error =
+          entry.error !== ""
+            ? this.i18nService.t("cannotRestoreAccessError")
+            : this.i18nService.t(bulkMessage);
         this.statuses.set(entry.id, error);
         if (entry.error !== "") {
           this.nonCompliantMembers = true;
