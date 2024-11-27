@@ -1068,6 +1068,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
       const totpSecondsSpan = document.createElement("span");
       totpSecondsSpan.classList.add("totp-sec-span");
       totpSecondsSpan.setAttribute("bitTypography", "helper");
+      totpSecondsSpan.setAttribute("aria-label", this.getTranslation("totpSecondsSpanAria"));
       totpContainer.appendChild(totpSecondsSpan);
 
       cipherIcon.appendChild(totpContainer);
@@ -1190,14 +1191,14 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     const totpHeading = document.createElement("span");
     totpHeading.classList.add("cipher-name");
     totpHeading.textContent = this.getTranslation("fillVerificationCode");
-    totpHeading.setAttribute("aria-label", "Fill Verification Code");
+    totpHeading.setAttribute("aria-label", this.getTranslation("fillVerificationCodeAria"));
 
     containerElement.appendChild(totpHeading);
 
     const subtitleElement = document.createElement("span");
     subtitleElement.classList.add("cipher-subtitle", "totp-sub-text");
     subtitleElement.textContent = formattedTotpCode;
-    totpHeading.setAttribute("aria-label", "Time-based One-Time Password Verification Code");
+    totpHeading.setAttribute("aria-label", this.getTranslation("totpCodeAria"));
     containerElement.appendChild(subtitleElement);
 
     return containerElement;
