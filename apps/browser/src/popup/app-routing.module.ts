@@ -243,7 +243,10 @@ const routes: Routes = [
   ...extensionRefreshSwap(ViewComponent, ViewV2Component, {
     path: "view-cipher",
     canActivate: [authGuard],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: {
+      // Above "trash"
+      elevation: 3,
+    } satisfies RouteDataProperties,
   }),
   ...extensionRefreshSwap(PasswordHistoryComponent, PasswordHistoryV2Component, {
     path: "cipher-password-history",
@@ -259,7 +262,10 @@ const routes: Routes = [
   ...extensionRefreshSwap(AddEditComponent, AddEditV2Component, {
     path: "edit-cipher",
     canActivate: [authGuard, debounceNavigationGuard()],
-    data: { elevation: 1 } satisfies RouteDataProperties,
+    data: {
+      // Above "trash"
+      elevation: 3,
+    } satisfies RouteDataProperties,
     runGuardsAndResolvers: "always",
   }),
   {
