@@ -5,9 +5,10 @@
 
 import { trackEmissions } from "@bitwarden/common/../spec/utils";
 
+import { mockPorts } from "../../../spec/mock-port.spec-util";
+
 import { BackgroundMemoryStorageService } from "./background-memory-storage.service";
 import { ForegroundMemoryStorageService } from "./foreground-memory-storage.service";
-import { mockPorts } from "./mock-ports.spec-util";
 
 describe("foreground background memory storage interaction", () => {
   let foreground: ForegroundMemoryStorageService;
@@ -24,9 +25,9 @@ describe("foreground background memory storage interaction", () => {
     jest.resetAllMocks();
   });
 
-  test.each(["has", "get", "getBypassCache"])(
+  test.each(["has", "get"])(
     "background should respond with the correct value for %s",
-    async (action: "get" | "has" | "getBypassCache") => {
+    async (action: "get" | "has") => {
       const key = "key";
       const value = "value";
       background[action] = jest.fn().mockResolvedValue(value);

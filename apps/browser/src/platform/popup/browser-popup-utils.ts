@@ -1,6 +1,7 @@
 import { BrowserApi } from "../browser/browser-api";
 
 import { ScrollOptions } from "./abstractions/browser-popup-utils.abstractions";
+import { PopupWidthOptions } from "./layout/popup-width.service";
 
 class BrowserPopupUtils {
   /**
@@ -86,14 +87,7 @@ class BrowserPopupUtils {
    * Identifies if the background page needs to be initialized.
    */
   static backgroundInitializationRequired() {
-    return BrowserApi.getBackgroundPage() === null;
-  }
-
-  /**
-   * Identifies if the popup is loading in private mode.
-   */
-  static inPrivateMode() {
-    return BrowserPopupUtils.backgroundInitializationRequired() && BrowserApi.manifestVersion !== 3;
+    return !BrowserApi.getBackgroundPage() || BrowserApi.isManifestVersion(3);
   }
 
   /**
@@ -115,7 +109,7 @@ class BrowserPopupUtils {
     const defaultPopoutWindowOptions: chrome.windows.CreateData = {
       type: "popup",
       focused: true,
-      width: 380,
+      width: Math.max(PopupWidthOptions.default, document.body.clientWidth),
       height: 630,
     };
     const offsetRight = 15;

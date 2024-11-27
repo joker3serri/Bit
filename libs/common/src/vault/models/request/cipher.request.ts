@@ -7,6 +7,7 @@ import { IdentityApi } from "../api/identity.api";
 import { LoginUriApi } from "../api/login-uri.api";
 import { LoginApi } from "../api/login.api";
 import { SecureNoteApi } from "../api/secure-note.api";
+import { SshKeyApi } from "../api/ssh-key.api";
 import { Cipher } from "../domain/cipher";
 
 import { AttachmentRequest } from "./attachment.request";
@@ -23,6 +24,7 @@ export class CipherRequest {
   secureNote: SecureNoteApi;
   card: CardApi;
   identity: IdentityApi;
+  sshKey: SshKeyApi;
   fields: FieldApi[];
   passwordHistory: PasswordHistoryRequest[];
   // Deprecated, remove at some point and rename attachments2 to attachments
@@ -46,7 +48,14 @@ export class CipherRequest {
     switch (this.type) {
       case CipherType.Login:
         this.login = new LoginApi();
-        this.login.uris = null;
+        this.login.uris =
+          cipher.login.uris?.map((u) => {
+            const uri = new LoginUriApi();
+            uri.uri = u.uri != null ? u.uri.encryptedString : null;
+            uri.match = u.match != null ? u.match : null;
+            uri.uriChecksum = u.uriChecksum != null ? u.uriChecksum.encryptedString : null;
+            return uri;
+          }) ?? [];
         this.login.username = cipher.login.username ? cipher.login.username.encryptedString : null;
         this.login.password = cipher.login.password ? cipher.login.password.encryptedString : null;
         this.login.passwordRevisionDate =
@@ -55,15 +64,6 @@ export class CipherRequest {
             : null;
         this.login.totp = cipher.login.totp ? cipher.login.totp.encryptedString : null;
         this.login.autofillOnPageLoad = cipher.login.autofillOnPageLoad;
-
-        if (cipher.login.uris != null) {
-          this.login.uris = cipher.login.uris.map((u) => {
-            const uri = new LoginUriApi();
-            uri.uri = u.uri != null ? u.uri.encryptedString : null;
-            uri.match = u.match != null ? u.match : null;
-            return uri;
-          });
-        }
 
         if (cipher.login.fido2Credentials != null) {
           this.login.fido2Credentials = cipher.login.fido2Credentials.map((key) => {
@@ -94,6 +94,17 @@ export class CipherRequest {
       case CipherType.SecureNote:
         this.secureNote = new SecureNoteApi();
         this.secureNote.type = cipher.secureNote.type;
+        break;
+      case CipherType.SshKey:
+        this.sshKey = new SshKeyApi();
+        this.sshKey.privateKey =
+          cipher.sshKey.privateKey != null ? cipher.sshKey.privateKey.encryptedString : null;
+        this.sshKey.publicKey =
+          cipher.sshKey.publicKey != null ? cipher.sshKey.publicKey.encryptedString : null;
+        this.sshKey.keyFingerprint =
+          cipher.sshKey.keyFingerprint != null
+            ? cipher.sshKey.keyFingerprint.encryptedString
+            : null;
         break;
       case CipherType.Card:
         this.card = new CardApi();

@@ -1,5 +1,5 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EncArrayBuffer } from "@bitwarden/common/platform/models/domain/enc-array-buffer";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 
@@ -12,11 +12,11 @@ import { CliUtils } from "../utils";
  */
 export abstract class DownloadCommand {
   /**
-   * @param cryptoService - Needed for decryption of the retrieved attachment
+   * @param encryptService - Needed for decryption of the retrieved attachment
    * @param apiService - Needed to override the existing nativeFetch which is available as of Node 18, to support proxies
    */
   constructor(
-    protected cryptoService: CryptoService,
+    protected encryptService: EncryptService,
     protected apiService: ApiService,
   ) {}
 
@@ -45,7 +45,7 @@ export abstract class DownloadCommand {
 
     try {
       const encBuf = await EncArrayBuffer.fromResponse(response);
-      const decBuf = await this.cryptoService.decryptFromBytes(encBuf, key);
+      const decBuf = await this.encryptService.decryptToBytes(encBuf, key);
       if (process.env.BW_SERVE === "true") {
         const res = new FileResponse(Buffer.from(decBuf), fileName);
         return Response.success(res);
