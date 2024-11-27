@@ -17,7 +17,7 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
 
   ngOnInit() {
     this.formMessage = this.i18nService.t(
-      "newDeviceVerificationNoticePage1FormContent",
+      "newDeviceVerificationNoticePageOneFormContent",
       "peter.parker@daily.com",
     );
   }

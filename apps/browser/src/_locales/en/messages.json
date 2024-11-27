@@ -4901,7 +4901,7 @@
   "newDeviceVerificationNoticeContentPage2": {
     "message": "You can set up two-step login as an alternative way to protect your account or change your email to one you can access."
   },
-  "newDeviceVerificationNoticePage1FormContent": {
+  "newDeviceVerificationNoticePageOneFormContent": {
     "message": "Do you have reliable access to your email, $EMAIL$",
     "placeholders": {
       "email": {
@@ -4910,10 +4910,10 @@
       }
     }
   },
-  "newDeviceVerificationNoticePage1OptionA": {
+  "newDeviceVerificationNoticePageOneEmailAccessNo": {
     "message": "No, I do not"
   },
-  "newDeviceVerificationNoticePage1OptionB": {
+  "newDeviceVerificationNoticePageOneEmailAccessYes": {
     "message": "Yes, I can reliably access my email"
   },
   "turnOnTwoStepLogin": {
