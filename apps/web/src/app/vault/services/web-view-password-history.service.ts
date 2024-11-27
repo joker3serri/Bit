@@ -10,7 +10,7 @@ import { openPasswordHistoryDialog } from "../individual-vault/password-history.
  * This service is used to display the password history dialog in the web vault.
  */
 @Injectable()
-export class WebViewPasswordHistoryService implements ViewPasswordHistoryService<CipherView> {
+export class WebViewPasswordHistoryService implements ViewPasswordHistoryService {
   constructor(private dialogService: DialogService) {}
 
   /**

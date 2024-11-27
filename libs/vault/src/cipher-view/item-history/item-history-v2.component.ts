@@ -32,7 +32,7 @@ import {
 export class ItemHistoryV2Component {
   @Input() cipher: CipherView;
 
-  constructor(private viewPasswordHistoryService: ViewPasswordHistoryService<CipherView>) {}
+  constructor(private viewPasswordHistoryService: ViewPasswordHistoryService) {}
 
   get isLogin() {
     return this.cipher.type === CipherType.Login;
