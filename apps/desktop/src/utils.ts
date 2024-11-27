@@ -55,11 +55,15 @@ export function isWindowsStore() {
   if (
     windows &&
     !windowsStore &&
-    process.resourcesPath.indexOf("8bitSolutionsLLC.bitwardendesktop_") > -1
+    process.resourcesPath?.indexOf("8bitSolutionsLLC.bitwardendesktop_") > -1
   ) {
     windowsStore = true;
   }
   return windows && windowsStore === true;
+}
+
+export function isFlatpak() {
+  return process.platform === "linux" && process.env.container != null;
 }
 
 export function isWindowsPortable() {

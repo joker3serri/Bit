@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
+import { CollectionAdminView, CollectionView } from "@bitwarden/admin-console/common";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CollectionView } from "@bitwarden/common/src/vault/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/src/vault/models/view/folder.view";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
@@ -20,7 +20,6 @@ export abstract class VaultFilterService {
   folderTree$: Observable<TreeNode<FolderFilter>>;
   collectionTree$: Observable<TreeNode<CollectionFilter>>;
   cipherTypeTree$: Observable<TreeNode<CipherTypeFilter>>;
-  reloadCollections: (collections: CollectionView[]) => void;
   getCollectionNodeFromTree: (id: string) => Promise<TreeNode<CollectionFilter>>;
   setCollapsedFilterNodes: (collapsedFilterNodes: Set<string>) => Promise<void>;
   expandOrgFilter: () => Promise<void>;
@@ -30,4 +29,7 @@ export abstract class VaultFilterService {
     head: CipherTypeFilter,
     array: CipherTypeFilter[],
   ) => Observable<TreeNode<CipherTypeFilter>>;
+  // TODO: Remove this from org vault when collection admin service adopts state management
+  reloadCollections?: (collections: CollectionAdminView[]) => void;
+  clearOrganizationFilter: () => void;
 }

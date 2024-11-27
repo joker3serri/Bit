@@ -20,6 +20,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import {
   AsyncActionsModule,
   ButtonModule,
+  CalloutModule,
   FormFieldModule,
   IconButtonModule,
   IconModule,
@@ -62,6 +63,7 @@ import { ActiveClientVerificationOption } from "./active-client-verification-opt
     IconModule,
     LinkModule,
     ButtonModule,
+    CalloutModule,
   ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
@@ -195,8 +197,8 @@ export class UserVerificationFormInputComponent implements ControlValueAccessor,
       }
     }
 
-    // Don't bother executing secret changes if biometrics verification is active.
-    if (this.activeClientVerificationOption === ActiveClientVerificationOption.Biometrics) {
+    // Executing secret changes for all non biometrics verification. Biometrics doesn't have a user entered secret.
+    if (this.activeClientVerificationOption !== ActiveClientVerificationOption.Biometrics) {
       this.processSecretChanges(this.secret.value);
     }
 

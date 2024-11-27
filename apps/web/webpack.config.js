@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 
 const { AngularWebpackPlugin } = require("@ngtools/webpack");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackInjector = require("html-webpack-injector");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -69,8 +68,7 @@ const moduleRules = [
       {
         loader: "babel-loader",
         options: {
-          configFile: false,
-          plugins: ["@angular/compiler-cli/linker/babel"],
+          configFile: "../../babel.config.json",
         },
       },
     ],
@@ -80,25 +78,19 @@ const moduleRules = [
     loader: "@ngtools/webpack",
   },
   {
-    test: /\.wasm$/,
+    test: /argon2(-simd)?\.wasm$/,
     loader: "base64-loader",
     type: "javascript/auto",
   },
 ];
 
 const plugins = [
-  new CleanWebpackPlugin(),
   new HtmlWebpackPlugin({
     template: "./src/index.html",
     filename: "index.html",
-    chunks: ["theme_head", "app/polyfills", "app/vendor", "app/main"],
+    chunks: ["theme_head", "app/polyfills", "app/vendor", "app/main", "styles"],
   }),
   new HtmlWebpackInjector(),
-  new HtmlWebpackPlugin({
-    template: "./src/connectors/duo.html",
-    filename: "duo-connector.html",
-    chunks: ["connectors/duo"],
-  }),
   new HtmlWebpackPlugin({
     template: "./src/connectors/webauthn.html",
     filename: "webauthn-connector.html",
@@ -120,6 +112,11 @@ const plugins = [
     chunks: ["connectors/sso"],
   }),
   new HtmlWebpackPlugin({
+    template: "./src/connectors/redirect.html",
+    filename: "redirect-connector.html",
+    chunks: ["connectors/redirect", "styles"],
+  }),
+  new HtmlWebpackPlugin({
     template: "./src/connectors/captcha.html",
     filename: "captcha-connector.html",
     chunks: ["connectors/captcha"],
@@ -134,6 +131,13 @@ const plugins = [
     filename: "duo-redirect-connector.html",
     chunks: ["connectors/duo-redirect"],
   }),
+  new HtmlWebpackPlugin({
+    template: "./src/404.html",
+    filename: "404.html",
+    chunks: ["styles"],
+    // 404 page is a wildcard, this ensures it uses absolute paths.
+    publicPath: "/",
+  }),
   new CopyWebpackPlugin({
     patterns: [
       { from: "./src/.nojekyll" },
@@ -141,8 +145,6 @@ const plugins = [
       { from: "./src/favicon.ico" },
       { from: "./src/browserconfig.xml" },
       { from: "./src/app-id.json" },
-      { from: "./src/404.html" },
-      { from: "./src/404", to: "404" },
       { from: "./src/images", to: "images" },
       { from: "./src/locales", to: "locales" },
       { from: "../../node_modules/qrious/dist/qrious.min.js", to: "scripts" },
@@ -173,9 +175,10 @@ const plugins = [
     PAYPAL_CONFIG: envConfig["paypal"] ?? {},
     FLAGS: envConfig["flags"] ?? {},
     DEV_FLAGS: NODE_ENV === "development" ? envConfig["devFlags"] : {},
+    ADDITIONAL_REGIONS: envConfig["additionalRegions"] ?? [],
   }),
   new AngularWebpackPlugin({
-    tsConfigPath: "tsconfig.json",
+    tsconfig: "tsconfig.build.json",
     entryModule: "src/app/app.module#AppModule",
     sourceMap: true,
   }),
@@ -195,39 +198,44 @@ const devServer =
           },
         },
         // host: '192.168.1.9',
-        proxy: {
-          "/api": {
+        proxy: [
+          {
+            context: ["/api"],
             target: envConfig.dev?.proxyApi,
             pathRewrite: { "^/api": "" },
             secure: false,
             changeOrigin: true,
           },
-          "/identity": {
+          {
+            context: ["/identity"],
             target: envConfig.dev?.proxyIdentity,
             pathRewrite: { "^/identity": "" },
             secure: false,
             changeOrigin: true,
           },
-          "/events": {
+          {
+            context: ["/events"],
             target: envConfig.dev?.proxyEvents,
             pathRewrite: { "^/events": "" },
             secure: false,
             changeOrigin: true,
           },
-          "/notifications": {
+          {
+            context: ["/notifications"],
             target: envConfig.dev?.proxyNotifications,
             pathRewrite: { "^/notifications": "" },
             secure: false,
             changeOrigin: true,
             ws: true,
           },
-          "/icons": {
+          {
+            context: ["/icons"],
             target: envConfig.dev?.proxyIcons,
             pathRewrite: { "^/icons": "" },
             secure: false,
             changeOrigin: true,
           },
-        },
+        ],
         headers: (req) => {
           if (!req.originalUrl.includes("connector.html")) {
             return {
@@ -316,16 +324,18 @@ const webpackConfig = {
   mode: NODE_ENV,
   devtool: "source-map",
   devServer: devServer,
+  target: "web",
   entry: {
     "app/polyfills": "./src/polyfills.ts",
     "app/main": "./src/main.ts",
     "connectors/webauthn": "./src/connectors/webauthn.ts",
     "connectors/webauthn-fallback": "./src/connectors/webauthn-fallback.ts",
-    "connectors/duo": "./src/connectors/duo.ts",
     "connectors/sso": "./src/connectors/sso.ts",
     "connectors/captcha": "./src/connectors/captcha.ts",
     "connectors/duo-redirect": "./src/connectors/duo-redirect.ts",
-    theme_head: "./src/theme.js",
+    "connectors/redirect": "./src/connectors/redirect.ts",
+    styles: ["./src/scss/styles.scss", "./src/scss/tailwind.css"],
+    theme_head: "./src/theme.ts",
   },
   optimization: {
     splitChunks: {
@@ -371,10 +381,14 @@ const webpackConfig = {
   output: {
     filename: "[name].[contenthash].js",
     path: path.resolve(__dirname, "build"),
+    clean: true,
   },
   module: {
-    noParse: /\.wasm$/,
+    noParse: /argon2(-simd)?\.wasm$/,
     rules: moduleRules,
+  },
+  experiments: {
+    asyncWebAssembly: true,
   },
   plugins: plugins,
 };

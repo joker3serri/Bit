@@ -1,4 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
+import { BehaviorSubject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -6,24 +7,37 @@ import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IUserDecryptionOptionsServerResponse } from "@bitwarden/common/auth/models/response/user-decryption-options/user-decryption-options.response";
+import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { WebAuthnLoginAssertionResponseRequest } from "@bitwarden/common/auth/services/webauthn-login/request/webauthn-login-assertion-response.request";
+import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vault-timeout/vault-timeout-settings.service";
+import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
 import { PrfKey, UserKey } from "@bitwarden/common/types/key";
+import { KdfConfigService, KeyService } from "@bitwarden/key-management";
 
+import { InternalUserDecryptionOptionsServiceAbstraction } from "../abstractions/user-decryption-options.service.abstraction";
 import { WebAuthnLoginCredentials } from "../models/domain/login-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
-import { WebAuthnLoginStrategy } from "./webauthn-login.strategy";
+import { WebAuthnLoginStrategy, WebAuthnLoginStrategyData } from "./webauthn-login.strategy";
 
 describe("WebAuthnLoginStrategy", () => {
-  let cryptoService!: MockProxy<CryptoService>;
+  let cache: WebAuthnLoginStrategyData;
+  let accountService: FakeAccountService;
+  let masterPasswordService: FakeMasterPasswordService;
+
+  let keyService!: MockProxy<KeyService>;
+  let encryptService!: MockProxy<EncryptService>;
   let apiService!: MockProxy<ApiService>;
   let tokenService!: MockProxy<TokenService>;
   let appIdService!: MockProxy<AppIdService>;
@@ -32,11 +46,16 @@ describe("WebAuthnLoginStrategy", () => {
   let logService!: MockProxy<LogService>;
   let stateService!: MockProxy<StateService>;
   let twoFactorService!: MockProxy<TwoFactorService>;
+  let userDecryptionOptionsService: MockProxy<InternalUserDecryptionOptionsServiceAbstraction>;
+  let billingAccountProfileStateService: MockProxy<BillingAccountProfileStateService>;
+  let vaultTimeoutSettingsService: MockProxy<VaultTimeoutSettingsService>;
+  let kdfConfigService: MockProxy<KdfConfigService>;
 
   let webAuthnLoginStrategy!: WebAuthnLoginStrategy;
 
   const token = "mockToken";
   const deviceId = Utils.newGuid();
+  const userId = Utils.newGuid() as UserId;
 
   let webAuthnCredentials!: WebAuthnLoginCredentials;
 
@@ -57,7 +76,11 @@ describe("WebAuthnLoginStrategy", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    cryptoService = mock<CryptoService>();
+    accountService = mockAccountServiceWith(userId);
+    masterPasswordService = new FakeMasterPasswordService();
+
+    keyService = mock<KeyService>();
+    encryptService = mock<EncryptService>();
     apiService = mock<ApiService>();
     tokenService = mock<TokenService>();
     appIdService = mock<AppIdService>();
@@ -66,13 +89,23 @@ describe("WebAuthnLoginStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    userDecryptionOptionsService = mock<InternalUserDecryptionOptionsServiceAbstraction>();
+    billingAccountProfileStateService = mock<BillingAccountProfileStateService>();
+    vaultTimeoutSettingsService = mock<VaultTimeoutSettingsService>();
+    kdfConfigService = mock<KdfConfigService>();
 
     tokenService.getTwoFactorToken.mockResolvedValue(null);
     appIdService.getAppId.mockResolvedValue(deviceId);
-    tokenService.decodeToken.mockResolvedValue({});
+    tokenService.decodeAccessToken.mockResolvedValue({
+      sub: userId,
+    });
 
     webAuthnLoginStrategy = new WebAuthnLoginStrategy(
-      cryptoService,
+      cache,
+      accountService,
+      masterPasswordService,
+      keyService,
+      encryptService,
       apiService,
       tokenService,
       appIdService,
@@ -81,6 +114,10 @@ describe("WebAuthnLoginStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      userDecryptionOptionsService,
+      billingAccountProfileStateService,
+      vaultTimeoutSettingsService,
+      kdfConfigService,
     );
 
     // Create credentials
@@ -88,6 +125,22 @@ describe("WebAuthnLoginStrategy", () => {
     const deviceResponse = new WebAuthnLoginAssertionResponseRequest(publicKeyCredential);
     const prfKey = new SymmetricCryptoKey(randomBytes(32)) as PrfKey;
     webAuthnCredentials = new WebAuthnLoginCredentials(token, deviceResponse, prfKey);
+
+    // Mock vault timeout settings
+    const mockVaultTimeoutAction = VaultTimeoutAction.Lock;
+    const mockVaultTimeoutActionBSub = new BehaviorSubject<VaultTimeoutAction>(
+      mockVaultTimeoutAction,
+    );
+    vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$.mockReturnValue(
+      mockVaultTimeoutActionBSub.asObservable(),
+    );
+
+    const mockVaultTimeout = 1000;
+
+    const mockVaultTimeoutBSub = new BehaviorSubject<number>(mockVaultTimeout);
+    vaultTimeoutSettingsService.getVaultTimeoutByUserId$.mockReturnValue(
+      mockVaultTimeoutBSub.asObservable(),
+    );
   });
 
   afterAll(() => {
@@ -171,32 +224,35 @@ describe("WebAuthnLoginStrategy", () => {
     const mockUserKeyArray: Uint8Array = randomBytes(32);
     const mockUserKey = new SymmetricCryptoKey(mockUserKeyArray) as UserKey;
 
-    cryptoService.decryptToBytes.mockResolvedValue(mockPrfPrivateKey);
-    cryptoService.rsaDecrypt.mockResolvedValue(mockUserKeyArray);
+    encryptService.decryptToBytes.mockResolvedValue(mockPrfPrivateKey);
+    encryptService.rsaDecrypt.mockResolvedValue(mockUserKeyArray);
 
     // Act
     await webAuthnLoginStrategy.logIn(webAuthnCredentials);
 
     // Assert
     // Master key encrypted user key should be set
-    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledTimes(1);
-    expect(cryptoService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(idTokenResponse.key);
+    expect(keyService.setMasterKeyEncryptedUserKey).toHaveBeenCalledTimes(1);
+    expect(keyService.setMasterKeyEncryptedUserKey).toHaveBeenCalledWith(
+      idTokenResponse.key,
+      userId,
+    );
 
-    expect(cryptoService.decryptToBytes).toHaveBeenCalledTimes(1);
-    expect(cryptoService.decryptToBytes).toHaveBeenCalledWith(
+    expect(encryptService.decryptToBytes).toHaveBeenCalledTimes(1);
+    expect(encryptService.decryptToBytes).toHaveBeenCalledWith(
       idTokenResponse.userDecryptionOptions.webAuthnPrfOption.encryptedPrivateKey,
       webAuthnCredentials.prfKey,
     );
-    expect(cryptoService.rsaDecrypt).toHaveBeenCalledTimes(1);
-    expect(cryptoService.rsaDecrypt).toHaveBeenCalledWith(
-      idTokenResponse.userDecryptionOptions.webAuthnPrfOption.encryptedUserKey.encryptedString,
+    expect(encryptService.rsaDecrypt).toHaveBeenCalledTimes(1);
+    expect(encryptService.rsaDecrypt).toHaveBeenCalledWith(
+      idTokenResponse.userDecryptionOptions.webAuthnPrfOption.encryptedUserKey,
       mockPrfPrivateKey,
     );
-    expect(cryptoService.setUserKey).toHaveBeenCalledWith(mockUserKey);
-    expect(cryptoService.setPrivateKey).toHaveBeenCalledWith(idTokenResponse.privateKey);
+    expect(keyService.setUserKey).toHaveBeenCalledWith(mockUserKey, userId);
+    expect(keyService.setPrivateKey).toHaveBeenCalledWith(idTokenResponse.privateKey, userId);
 
     // Master key and private key should not be set
-    expect(cryptoService.setMasterKey).not.toHaveBeenCalled();
+    expect(masterPasswordService.mock.setMasterKey).not.toHaveBeenCalled();
   });
 
   it("does not try to set the user key when prfKey is missing", async () => {
@@ -215,9 +271,9 @@ describe("WebAuthnLoginStrategy", () => {
     await webAuthnLoginStrategy.logIn(webAuthnCredentials);
 
     // Assert
-    expect(cryptoService.decryptToBytes).not.toHaveBeenCalled();
-    expect(cryptoService.rsaDecrypt).not.toHaveBeenCalled();
-    expect(cryptoService.setUserKey).not.toHaveBeenCalled();
+    expect(encryptService.decryptToBytes).not.toHaveBeenCalled();
+    expect(encryptService.rsaDecrypt).not.toHaveBeenCalled();
+    expect(keyService.setUserKey).not.toHaveBeenCalled();
   });
 
   describe.each([
@@ -237,7 +293,7 @@ describe("WebAuthnLoginStrategy", () => {
       await webAuthnLoginStrategy.logIn(webAuthnCredentials);
 
       // Assert
-      expect(cryptoService.setUserKey).not.toHaveBeenCalled();
+      expect(keyService.setUserKey).not.toHaveBeenCalled();
     });
   });
 
@@ -250,13 +306,13 @@ describe("WebAuthnLoginStrategy", () => {
 
     apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
 
-    cryptoService.decryptToBytes.mockResolvedValue(null);
+    encryptService.decryptToBytes.mockResolvedValue(null);
 
     // Act
     await webAuthnLoginStrategy.logIn(webAuthnCredentials);
 
     // Assert
-    expect(cryptoService.setUserKey).not.toHaveBeenCalled();
+    expect(keyService.setUserKey).not.toHaveBeenCalled();
   });
 
   it("does not set the user key when the encrypted user key decryption fails", async () => {
@@ -268,13 +324,13 @@ describe("WebAuthnLoginStrategy", () => {
 
     apiService.postIdentityToken.mockResolvedValue(idTokenResponse);
 
-    cryptoService.rsaDecrypt.mockResolvedValue(null);
+    encryptService.rsaDecrypt.mockResolvedValue(null);
 
     // Act
     await webAuthnLoginStrategy.logIn(webAuthnCredentials);
 
     // Assert
-    expect(cryptoService.setUserKey).not.toHaveBeenCalled();
+    expect(keyService.setUserKey).not.toHaveBeenCalled();
   });
 });
 
@@ -286,7 +342,7 @@ function randomBytes(length: number): Uint8Array {
 // AuthenticatorAssertionResponse && PublicKeyCredential are only available in secure contexts
 // so we need to mock them and assign them to the global object to make them available
 // for the tests
-class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionResponse {
+export class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionResponse {
   clientDataJSON: ArrayBuffer = randomBytes(32).buffer;
   authenticatorData: ArrayBuffer = randomBytes(196).buffer;
   signature: ArrayBuffer = randomBytes(72).buffer;
@@ -298,7 +354,7 @@ class MockAuthenticatorAssertionResponse implements AuthenticatorAssertionRespon
   userHandleB64Str = Utils.fromBufferToUrlB64(this.userHandle);
 }
 
-class MockPublicKeyCredential implements PublicKeyCredential {
+export class MockPublicKeyCredential implements PublicKeyCredential {
   authenticatorAttachment = "cross-platform";
   id = "mockCredentialId";
   type = "public-key";

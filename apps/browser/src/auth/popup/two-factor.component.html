@@ -111,16 +111,13 @@
     </ng-container>
     <!-- Duo -->
     <ng-container *ngIf="isDuoProvider">
-      <div *ngIf="duoFrameless" class="tw-my-4">
-        <p
-          *ngIf="selectedProviderType === providerType.OrganizationDuo"
-          class="tw-mb-0 tw-text-center"
-        >
-          {{ "duoRequiredByOrgForAccount" | i18n }}
+      <div class="tw-my-4">
+        <p class="tw-mb-0 tw-text-center">
+          {{ "duoRequiredForAccount" | i18n }}
         </p>
 
         <p class="tw-text-center" *ngIf="!inPopout">
-          {{ "openExtensionInNewWindowToCompleteLogin" | i18n }}
+          {{ "popoutTheExtensionToCompleteLogin" | i18n }}
         </p>
 
         <ng-container *ngIf="inPopout">
@@ -129,17 +126,6 @@
           <ng-container *ngTemplateOutlet="duoRememberMe"></ng-container>
         </ng-container>
       </div>
-
-      <ng-container *ngIf="!duoFrameless">
-        <div id="duo-frame">
-          <iframe
-            id="duo_iframe"
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          ></iframe>
-        </div>
-
-        <ng-container *ngTemplateOutlet="duoRememberMe"></ng-container>
-      </ng-container>
 
       <ng-template #duoRememberMe>
         <div class="box">
@@ -161,7 +147,7 @@
     </div>
     <!-- Buttons -->
     <div class="content no-vpad" *ngIf="selectedProviderType != null">
-      <ng-container *ngIf="duoFrameless && isDuoProvider">
+      <ng-container *ngIf="isDuoProvider">
         <button
           *ngIf="inPopout"
           bitButton
