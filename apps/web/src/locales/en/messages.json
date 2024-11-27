@@ -3666,24 +3666,6 @@
       }
     }
   },
-  "revokedManagedUserId": {
-    "message": "Revoked account access for $ID$.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "John Smith"
-      }
-    }
-  },
-  "restoredManagedUserId": {
-    "message": "Restored account access for $ID$.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "John Smith"
-      }
-    }
-  },
   "createdAttachmentForItem": {
     "message": "Created attachment for item $ID$.",
     "placeholders": {
