@@ -111,7 +111,7 @@ class BrowserPopupUtils {
       focused: true,
       width: Math.max(
         PopupWidthOptions.default,
-        globalThis?.document.body.clientWidth ?? PopupWidthOptions.default,
+        typeof document === "undefined" ? PopupWidthOptions.default : document.body.clientWidth,
       ),
       height: 630,
     };
