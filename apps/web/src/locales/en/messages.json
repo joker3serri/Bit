@@ -3666,6 +3666,24 @@
       }
     }
   },
+  "revokedManagedUserId": {
+    "message": "Revoked account access for $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "restoredManagedUserId": {
+    "message": "Restored account access for $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
   "createdAttachmentForItem": {
     "message": "Created attachment for item $ID$.",
     "placeholders": {
@@ -5633,12 +5651,6 @@
   },
   "bulkRestoredMessage": {
     "message": "Restored organization access successfully"
-  },
-  "bulkManagedRevokedMessage": {
-    "message": "Revoked account access successfully"
-  },
-  "bulkManagedRestoreMessage": {
-    "message": "Restored account access successfully"
   },
   "bulkFilteredMessage": {
     "message": "Excluded, not applicable for this action"
