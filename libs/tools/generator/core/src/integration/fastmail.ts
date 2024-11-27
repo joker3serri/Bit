@@ -123,7 +123,7 @@ const forwarder = Object.freeze({
       // e.g. key: "forwarder.Fastmail.local.settings"
       key: "fastmailForwarder",
       target: "object",
-      format: "classified",
+      format: "secret-state",
       classifier: new PrivateClassifier<FastmailSettings>(),
       state: GENERATOR_DISK,
       initial: defaultSettings,

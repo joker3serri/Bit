@@ -62,7 +62,7 @@ const forwarder = Object.freeze({
       // e.g. key: "forwarder.ForwardEmail.local.settings",
       key: "forwardEmailForwarder",
       target: "object",
-      format: "classified",
+      format: "secret-state",
       classifier: new PrivateClassifier<ForwardEmailSettings>(),
       state: GENERATOR_DISK,
       initial: defaultSettings,
