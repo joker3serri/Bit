@@ -3,9 +3,9 @@ import { Observable } from "rxjs";
 
 import { NavigationModule } from "@bitwarden/components";
 
-import { BillingSharedModule } from "../billing/shared/billing-shared.module";
+import { FreeFamiliesPolicyService } from "../services/free-families-policy.service";
 
-import { FreeFamiliesPolicyService } from "./../billing/services/free-families-policy.service";
+import { BillingSharedModule } from "./billing-shared.module";
 
 @Component({
   selector: "billing-free-families-nav-item",

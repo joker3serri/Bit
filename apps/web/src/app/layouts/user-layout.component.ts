@@ -5,15 +5,13 @@ import { Observable, concatMap, combineLatest } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/platform/sync";
 import { IconModule } from "@bitwarden/components";
 
-import { FreeFamiliesPolicyService } from "../billing/services/free-families-policy.service";
+import { BillingFreeFamiliesNavItemComponent } from "../billing/shared/billing-free-families-nav-item.component";
 
-import { BillingFreeFamiliesNavItemComponent } from "./billing-free-families-nav-item.component";
 import { PasswordManagerLogo } from "./password-manager-logo";
 import { WebLayoutModule } from "./web-layout.module";
 
@@ -39,11 +37,9 @@ export class UserLayoutComponent implements OnInit {
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
-    private organizationService: OrganizationService,
     private apiService: ApiService,
     private syncService: SyncService,
     private billingAccountProfileStateService: BillingAccountProfileStateService,
-    private freeFamiliesPolicyService: FreeFamiliesPolicyService,
   ) {}
 
   async ngOnInit() {
