@@ -10,10 +10,10 @@ import {
 
 /**
  * Determines the router transition behavior.
- * Changing between elevations will animate from the left, except for "top", which animates from the top.
- * Moving from two pages of the same elevation will not animate.
+ * Changing between elevations will animate from the right.
+ * Navigating between two pages of the same elevation will not animate.
  */
-export type RouteElevation = 0 | 1 | 2 | 3 | "top";
+export type RouteElevation = 0 | 1 | 2 | 3 | 4;
 
 const queryShown = query(
   ":enter, :leave",
@@ -75,41 +75,41 @@ const animations = {
     queryShown,
     group([queryTranslate("enter", "X", 0, 0), queryTranslate("leave", "X", 0, 100, 1010)]),
   ],
-  slideInFromTop: [
-    queryShown,
-    group([
-      queryTranslate("enter", "Y", -100, 0, 1010),
-      queryTranslate("leave", "Y", 0, 0),
-      queryChildRoute,
-    ]),
-  ],
-  slideOutToTop: [
-    queryShown,
-    group([queryTranslate("enter", "Y", 0, 0), queryTranslate("leave", "Y", 0, -100, 1010)]),
-  ],
+  /** --- Not used --- */
+  // slideInFromTop: [
+  //   queryShown,
+  //   group([
+  //     queryTranslate("enter", "Y", -100, 0, 1010),
+  //     queryTranslate("leave", "Y", 0, 0),
+  //     queryChildRoute,
+  //   ]),
+  // ],
+  // slideOutToTop: [
+  //   queryShown,
+  //   group([queryTranslate("enter", "Y", 0, 0), queryTranslate("leave", "Y", 0, -100, 1010)]),
+  // ],
 } satisfies Record<string, AnimationMetadata[]>;
 
 export const routerTransition = trigger("routerTransition", [
-  transition("0 => top", animations.slideInFromTop),
-  transition("1 => top", animations.slideInFromTop),
-  transition("2 => top", animations.slideInFromTop),
-  transition("3 => top", animations.slideInFromTop),
-
-  transition("top => 0", animations.slideOutToTop),
-  transition("top => 1", animations.slideOutToTop),
-  transition("top => 2", animations.slideOutToTop),
-  transition("top => 3", animations.slideOutToTop),
-
   transition("0 => 1", animations.slideInFromRight),
   transition("0 => 2", animations.slideInFromRight),
   transition("0 => 3", animations.slideInFromRight),
+  transition("0 => 4", animations.slideInFromRight),
   transition("1 => 2", animations.slideInFromRight),
   transition("1 => 3", animations.slideInFromRight),
+  transition("1 => 4", animations.slideInFromRight),
   transition("2 => 3", animations.slideInFromRight),
+  transition("2 => 4", animations.slideInFromRight),
+  transition("3 => 4", animations.slideInFromRight),
 
   transition("1 => 0", animations.slideOutToRight),
   transition("2 => 0", animations.slideOutToRight),
-  transition("3 => 0", animations.slideOutToRight),
   transition("2 => 1", animations.slideOutToRight),
+  transition("3 => 0", animations.slideOutToRight),
   transition("3 => 1", animations.slideOutToRight),
+  transition("3 => 2", animations.slideOutToRight),
+  transition("4 => 0", animations.slideOutToRight),
+  transition("4 => 1", animations.slideOutToRight),
+  transition("4 => 2", animations.slideOutToRight),
+  transition("4 => 3", animations.slideOutToRight),
 ]);

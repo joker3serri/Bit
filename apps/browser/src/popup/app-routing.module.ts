@@ -694,7 +694,7 @@ const routes: Routes = [
   {
     path: "account-switcher",
     component: AccountSwitcherComponent,
-    data: { elevation: "top", doNotSaveUrl: true } satisfies RouteDataProperties,
+    data: { elevation: 4, doNotSaveUrl: true } satisfies RouteDataProperties,
   },
   {
     path: "trash",
