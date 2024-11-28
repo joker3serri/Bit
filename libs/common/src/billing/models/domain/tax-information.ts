@@ -4,7 +4,6 @@ export class TaxInformation {
   country: string;
   postalCode: string;
   taxId: string;
-  taxIdType: string;
   line1: string;
   line2: string;
   city: string;
@@ -15,7 +14,6 @@ export class TaxInformation {
       country: null,
       postalCode: null,
       taxId: null,
-      taxIdType: null,
       line1: null,
       line2: null,
       city: null,
