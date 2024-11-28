@@ -5,6 +5,7 @@ import {
   concatMap,
   EMPTY,
   filter,
+  firstValueFrom,
   from,
   map,
   of,
@@ -115,26 +116,24 @@ export class SshAgentService implements OnDestroy {
             ),
           ),
           // This concatMap handles showing the dialog to approve the request.
-          switchMap(([message, ciphers]) => {
+          concatMap(async ([message, ciphers]) => {
             const cipherId = message.cipherId as string;
             const isListRequest = message.isListRequest as boolean;
             const requestId = message.requestId as number;
 
             if (isListRequest) {
-              (async () => {
-                const sshCiphers = ciphers.filter(
-                  (cipher) => cipher.type === CipherType.SshKey && !cipher.isDeleted,
-                );
-                const keys = sshCiphers.map((cipher) => {
-                  return {
-                    name: cipher.name,
-                    privateKey: cipher.sshKey.privateKey,
-                    cipherId: cipher.id,
-                  };
-                });
-                await ipc.platform.sshAgent.setKeys(keys);
-                await ipc.platform.sshAgent.signRequestResponse(requestId, true);
-              })().catch((e) => this.logService.error("Failed to respond to SSH request", e));
+              const sshCiphers = ciphers.filter(
+                (cipher) => cipher.type === CipherType.SshKey && !cipher.isDeleted,
+              );
+              const keys = sshCiphers.map((cipher) => {
+                return {
+                  name: cipher.name,
+                  privateKey: cipher.sshKey.privateKey,
+                  cipherId: cipher.id,
+                };
+              });
+              await ipc.platform.sshAgent.setKeys(keys);
+              await ipc.platform.sshAgent.signRequestResponse(requestId, true);
               return;
             }
 
@@ -153,11 +152,8 @@ export class SshAgentService implements OnDestroy {
               this.i18nService.t("unknownApplication"),
             );
 
-            return dialogRef.closed.pipe(
-              switchMap((result) => {
-                return ipc.platform.sshAgent.signRequestResponse(requestId, result);
-              }),
-            );
+            const result = await firstValueFrom(dialogRef.closed);
+            return ipc.platform.sshAgent.signRequestResponse(requestId, result);
           }),
           takeUntil(this.destroy$),
         )
