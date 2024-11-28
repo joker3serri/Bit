@@ -1,3 +1,4 @@
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { SdkClientFactory } from "@bitwarden/common/platform/abstractions/sdk/sdk-client-factory";
 import { RecoverableSDKError } from "@bitwarden/common/platform/services/sdk/default-sdk.service";
 import type { BitwardenClient } from "@bitwarden/sdk-internal";
@@ -63,6 +64,8 @@ async function load() {
  * Works both in popup and service worker.
  */
 export class BrowserSdkClientFactory implements SdkClientFactory {
+  constructor(private logService: LogService) {}
+
   async createSdkClient(
     ...args: ConstructorParameters<typeof BitwardenClient>
   ): Promise<BitwardenClient> {
@@ -78,8 +81,10 @@ export class BrowserSdkClientFactory implements SdkClientFactory {
 
     const instance = (globalThis as any).init_sdk(...args);
 
-    // If it takes more than 5 seconds to initialize, we want to capture it.
-    if (elapsed > 5) {
+    this.logService.info("WASM SDK loaded in", Math.round(endTime - startTime), "ms");
+
+    // If it takes 3 seconds or more to load, we want to capture it.
+    if (elapsed >= 3) {
       throw new RecoverableSDKError(instance, elapsed);
     }
 
