@@ -1,10 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
 import {
   CardComponent,
   FormFieldModule,
@@ -17,8 +19,6 @@ import {
 import { generate_ssh_key } from "@bitwarden/sdk-internal";
 
 import { CipherFormContainer } from "../../cipher-form-container";
-import { SshKeyView } from "@bitwarden/common/vault/models/view/ssh-key.view";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "vault-sshkey-section",
