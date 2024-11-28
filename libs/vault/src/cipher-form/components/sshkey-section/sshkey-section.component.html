@@ -10,6 +10,13 @@
       <input id="privateKey" bitInput formControlName="privateKey" type="password" />
       <button
         type="button"
+        bitSuffix
+        data-testid="toggle-privateKey-generate"
+        bitIconButton="bwi-generate"
+        (click)="generateSshKey()"
+      ></button>
+      <button
+        type="button"
         bitIconButton
         bitSuffix
         data-testid="toggle-privateKey-visibility"
