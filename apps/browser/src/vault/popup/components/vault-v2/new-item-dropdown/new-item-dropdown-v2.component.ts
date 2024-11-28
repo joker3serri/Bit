@@ -1,8 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -25,7 +27,7 @@ export interface NewItemInitialValues {
   standalone: true,
   imports: [NoItemsModule, JslibModule, CommonModule, ButtonModule, RouterLink, MenuModule],
 })
-export class NewItemDropdownV2Component {
+export class NewItemDropdownV2Component implements OnInit {
   cipherType = CipherType;
 
   /**
@@ -33,11 +35,17 @@ export class NewItemDropdownV2Component {
    */
   @Input()
   initialValues: NewItemInitialValues;
-
   constructor(
     private router: Router,
     private dialogService: DialogService,
+    private configService: ConfigService,
   ) {}
+
+  sshKeysEnabled = false;
+
+  async ngOnInit() {
+    this.sshKeysEnabled = await this.configService.getFeatureFlag(FeatureFlag.SSHKeyVaultItem);
+  }
 
   private async buildQueryParams(type: CipherType): Promise<AddEditQueryParams> {
     const tab = await BrowserApi.getTabFromCurrentWindow();

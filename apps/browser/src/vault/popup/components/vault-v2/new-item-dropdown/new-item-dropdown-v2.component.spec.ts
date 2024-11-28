@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, DialogService, MenuModule } from "@bitwarden/components";
@@ -33,6 +34,7 @@ describe("NewItemDropdownV2Component", () => {
       providers: [
         { provide: I18nService, useValue: { t: (key: string) => key } },
         { provide: Router, useValue: { navigate } },
+        { provide: ConfigService, useValue: { getFeatureFlag: () => Promise.resolve(false) } },
       ],
     })
       .overrideProvider(DialogService, { useValue: { open } })
