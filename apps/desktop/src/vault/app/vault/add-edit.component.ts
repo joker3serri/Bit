@@ -24,6 +24,7 @@ import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 import { SshKeyPasswordPromptComponent } from "@bitwarden/importer/ui";
+import { generate_ssh_key } from "@bitwarden/sdk-internal";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 const BroadcasterSubscriptionId = "AddEditComponent";
@@ -158,10 +159,10 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   }
 
   async generateSshKey(showNotification: boolean = true) {
-    const sshKey = await ipc.platform.sshAgent.generateKey("ed25519");
-    this.cipher.sshKey.privateKey = sshKey.privateKey;
-    this.cipher.sshKey.publicKey = sshKey.publicKey;
-    this.cipher.sshKey.keyFingerprint = sshKey.keyFingerprint;
+    const sshKey = generate_ssh_key("Ed25519");
+    this.cipher.sshKey.privateKey = sshKey.private_key;
+    this.cipher.sshKey.publicKey = sshKey.public_key;
+    this.cipher.sshKey.keyFingerprint = sshKey.key_fingerprint;
 
     if (showNotification) {
       this.toastService.showToast({
