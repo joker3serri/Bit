@@ -41,13 +41,13 @@ describe("ExtensionSsoComponentService", () => {
 
     TestBed.configureTestingModule({
       providers: [
-        ExtensionSsoComponentService,
         { provide: SyncService, useValue: syncService },
         { provide: AuthService, useValue: authService },
         { provide: EnvironmentService, useValue: environmentService },
-        { provide: I18nService, useValue: i18nService },
         { provide: WINDOW, useValue: windowMock },
+        { provide: I18nService, useValue: i18nService },
         { provide: LogService, useValue: logService },
+        ExtensionSsoComponentService,
       ],
     });
 

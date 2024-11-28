@@ -1,6 +1,7 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
+import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import {
   DefaultSsoComponentService,
   SsoClientType,
@@ -34,7 +35,7 @@ export class ExtensionSsoComponentService
     private syncService: SyncService,
     private authService: AuthService,
     protected environmentService: EnvironmentService,
-    private win: Window,
+    @Inject(WINDOW) private window: Window,
     protected i18nService: I18nService,
     private logService: LogService,
   ) {
@@ -57,7 +58,7 @@ export class ExtensionSsoComponentService
         BrowserApi.reloadOpenWindows();
       }
 
-      this.win.close();
+      this.window.close();
     };
 
     this.onSuccessfulLoginTde = async () => {
@@ -69,7 +70,7 @@ export class ExtensionSsoComponentService
     };
 
     this.onSuccessfulLoginTdeNavigate = async () => {
-      this.win.close();
+      this.window.close();
     };
   }
 }

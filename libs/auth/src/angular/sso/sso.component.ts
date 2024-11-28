@@ -186,6 +186,10 @@ export class SsoComponent implements OnInit {
       this.redirectUri = qParams.redirectUri;
     }
 
+    if (this.ssoComponentService.redirectUri != null) {
+      this.redirectUri = this.ssoComponentService.redirectUri;
+    }
+
     if (
       qParams.code != null &&
       codeVerifier != null &&

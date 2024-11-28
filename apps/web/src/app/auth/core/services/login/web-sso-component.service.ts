@@ -16,7 +16,15 @@ export class WebSsoComponentService
   extends DefaultSsoComponentService
   implements SsoComponentService
 {
+  /**
+   * The client ID for the SSO component service. Either "browser", "extension", or "desktop".
+   */
   clientId: SsoClientType;
+
+  /**
+   * The redirect URI for the SSO component service.
+   */
+  redirectUri: string;
 
   constructor(private i18nService: I18nService) {
     super();

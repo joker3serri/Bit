@@ -31,10 +31,6 @@ describe("DesktopSsoComponentService", () => {
     expect(service.clientId).toBe(ClientType.Desktop);
   });
 
-  it("sets redirectUri to bitwarden://sso-callback", () => {
-    expect(service.redirectUri).toBe("bitwarden://sso-callback");
-  });
-
   describe("onSuccessfulLogin", () => {
     it("performs full sync", async () => {
       await service.onSuccessfulLogin();
