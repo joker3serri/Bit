@@ -15,9 +15,9 @@ describe("SecureArrayBuffer", () => {
   });
 
   it("allocates memory using the global allocator", () => {
-    new SecureArrayBuffer(10);
+    const buffer = new SecureArrayBuffer(10);
 
-    expect(allocator.allocate).toHaveBeenCalledWith(10);
+    expect(allocator.allocate).toHaveBeenCalledWith(buffer, 10);
   });
 
   it("returns a Uint8Array view of the buffer", () => {
