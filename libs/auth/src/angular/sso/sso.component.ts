@@ -472,15 +472,11 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleForcePasswordReset(orgIdentifier: string) {
-    await this.navigateViaCallbackOrRoute(
-      this.ssoComponentService.onSuccessfulLoginForceResetNavigate,
-      ["update-temp-password"],
-      {
-        queryParams: {
-          identifier: orgIdentifier,
-        },
+    await this.navigateViaCallbackOrRoute(async () => {}, ["update-temp-password"], {
+      queryParams: {
+        identifier: orgIdentifier,
       },
-    );
+    });
   }
 
   private async handleSuccessfulLogin() {
