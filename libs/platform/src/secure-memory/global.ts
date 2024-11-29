@@ -24,4 +24,5 @@ export function clearSecureMemoryAllocator() {
   globalAllocator = undefined;
 }
 
+// TODO: This should not be called here, but in the main entry point of the application
 initSecureMemoryAllocator(new SecureHeapAllocator());

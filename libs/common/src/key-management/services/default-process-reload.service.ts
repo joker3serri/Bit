@@ -2,6 +2,11 @@ import { firstValueFrom, map, timeout } from "rxjs";
 
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { BiometricStateService } from "@bitwarden/key-management";
+import {
+  SecureHeapAllocator,
+  clearSecureMemoryAllocator,
+  initSecureMemoryAllocator,
+} from "@bitwarden/platform";
 
 import { PinServiceAbstraction } from "../../../../auth/src/common/abstractions";
 import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
@@ -85,6 +90,11 @@ export class DefaultProcessReloadService implements ProcessReloadServiceAbstract
           await this.accountService.switchAccount(nextUser);
         }
       }
+
+      // eslint-disable-next-line no-console
+      console.log("Forcibly clearing allocated secure memory");
+      clearSecureMemoryAllocator();
+      initSecureMemoryAllocator(new SecureHeapAllocator());
 
       this.messagingService.send("reloadProcess");
       if (this.reloadCallback != null) {
