@@ -498,9 +498,7 @@ export class SsoComponent implements OnInit {
       this.ssoComponentService.onSuccessfulLogin();
     }
 
-    await this.navigateViaCallbackOrRoute(this.ssoComponentService.onSuccessfulLoginNavigate, [
-      "lock",
-    ]);
+    await this.navigateViaCallbackOrRoute(async () => {}, ["lock"]);
   }
 
   private async handleLoginError(e: unknown) {
