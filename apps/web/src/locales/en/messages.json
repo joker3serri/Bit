@@ -9787,5 +9787,8 @@
   },
   "descriptorCode": {
     "message": "Descriptor code"
+  },
+  "claimedDomainsDesc": {
+    "message": "Claim a domain to own all member accounts whose email address matches the domain. Members will be able to skip the SSO identifier when logging in. Administrators will also be able to delete member accounts."
   }
 }
