@@ -408,16 +408,12 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleTwoFactorRequired(orgIdentifier: string) {
-    await this.navigateViaCallbackOrRoute(
-      this.ssoComponentService.onSuccessfulLoginTwoFactorNavigate,
-      ["2fa"],
-      {
-        queryParams: {
-          identifier: orgIdentifier,
-          sso: "true",
-        },
+    await this.navigateViaCallbackOrRoute(async () => {}, ["2fa"], {
+      queryParams: {
+        identifier: orgIdentifier,
+        sso: "true",
       },
-    );
+    });
   }
 
   private async handleTrustedDeviceEncryptionEnabled(
