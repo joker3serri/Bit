@@ -24,7 +24,6 @@ export abstract class SsoComponentService {
   /**
    * Navigation callbacks
    */
-  onSuccessfulLoginChangePasswordNavigate?(): Promise<void>;
   onSuccessfulLoginForceResetNavigate?(): Promise<void>;
   onSuccessfulLoginTdeNavigate?(): Promise<void>;
   onSuccessfulLogin?(): Promise<void>;

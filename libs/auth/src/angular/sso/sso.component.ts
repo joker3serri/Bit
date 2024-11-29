@@ -464,15 +464,11 @@ export class SsoComponent implements OnInit {
       route = "set-password-jit";
     }
 
-    await this.navigateViaCallbackOrRoute(
-      this.ssoComponentService.onSuccessfulLoginChangePasswordNavigate,
-      [route],
-      {
-        queryParams: {
-          identifier: orgIdentifier,
-        },
+    await this.navigateViaCallbackOrRoute(async () => {}, [route], {
+      queryParams: {
+        identifier: orgIdentifier,
       },
-    );
+    });
   }
 
   private async handleForcePasswordReset(orgIdentifier: string) {
