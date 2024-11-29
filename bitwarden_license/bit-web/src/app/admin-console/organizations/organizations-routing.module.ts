@@ -27,7 +27,7 @@ const routes: Routes = [
             component: DomainVerificationComponent,
             canActivate: [organizationPermissionsGuard((org) => org.canManageDomainVerification)],
             data: {
-              titleId: "domainVerification",
+              titleId: "claimedDomains",
             },
           },
           {

@@ -209,13 +209,13 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
         this.toastService.showToast({
           variant: "success",
           title: null,
-          message: this.i18nService.t("domainVerified"),
+          message: this.i18nService.t("domainClaimed"),
         });
         this.dialogRef.close();
       } else {
         this.domainNameCtrl.setErrors({
           errorPassthrough: {
-            message: this.i18nService.t("domainNotVerified", this.domainNameCtrl.value),
+            message: this.i18nService.t("domainNotClaimed", this.domainNameCtrl.value),
           },
         });
         // For the case where user opens dialog and reverifies when domain name formControl disabled.

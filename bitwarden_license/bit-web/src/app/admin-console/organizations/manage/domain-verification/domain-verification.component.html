@@ -40,10 +40,10 @@
             </td>
             <td bitCell>
               <span *ngIf="!orgDomain?.verifiedDate" bitBadge variant="warning">{{
-                "domainStatusUnverified" | i18n
+                "domainStatusUnderVerification" | i18n
               }}</span>
               <span *ngIf="orgDomain?.verifiedDate" bitBadge variant="success">{{
-                "domainStatusVerified" | i18n
+                "domainStatusClaimed" | i18n
               }}</span>
             </td>
             <td bitCell class="tw-text-muted">
@@ -70,7 +70,7 @@
                   type="button"
                 >
                   <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
-                  {{ "verifyDomain" | i18n }}
+                  {{ "claimDomain" | i18n }}
                 </button>
                 <button bitMenuItem (click)="deleteDomain(orgDomain.id)" type="button">
                   <span class="tw-text-danger">

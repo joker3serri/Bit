@@ -167,13 +167,13 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
         this.toastService.showToast({
           variant: "success",
           title: null,
-          message: this.i18nService.t("domainVerified"),
+          message: this.i18nService.t("domainClaimed"),
         });
       } else {
         this.toastService.showToast({
           variant: "error",
           title: null,
-          message: this.i18nService.t("domainNotVerified", domainName),
+          message: this.i18nService.t("domainNotClaimed", domainName),
         });
         // Update this item so the last checked date gets updated.
         await this.updateOrgDomain(orgDomainId);

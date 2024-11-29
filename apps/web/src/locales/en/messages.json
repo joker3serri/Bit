@@ -7491,8 +7491,8 @@
   "group": {
     "message": "Group"
   },
-  "domainVerification": {
-    "message": "Domain verification"
+  "claimedDomains": {
+    "message": "Claimed domains"
   },
   "newDomain": {
     "message": "New domain"
@@ -7503,11 +7503,11 @@
   "noDomainsSubText": {
     "message": "Connecting a domain allows members to skip the SSO identifier field during Login with SSO."
   },
-  "verifyDomain": {
-    "message": "Verify domain"
+  "claimDomain": {
+    "message": "Claim domain"
   },
-  "reverifyDomain": {
-    "message": "Reverify domain"
+  "reclaimDomain": {
+    "message": "Reclaim domain"
   },
   "copyDnsTxtRecord": {
     "message": "Copy DNS TXT record"
@@ -7518,14 +7518,14 @@
   "dnsTxtRecordInputHint": {
     "message": "Copy and paste the TXT record into your DNS Provider."
   },
-  "domainNameInputHint": {
-    "message": "Example: mydomain.com. Subdomains require separate entries to be verified."
+  "claimDomainNameInputHint": {
+    "message": "Example: mydomain.com. Subdomains require separate entries to be claimed."
   },
-  "automaticDomainVerification": {
-    "message": "Automatic Domain Verification"
+  "automaticClaimedDomains": {
+    "message": "Automatic Claimed Domains"
   },
-  "automaticDomainVerificationProcess": {
-    "message": "Bitwarden will attempt to verify the domain 3 times during the first 72 hours. If the domain can’t be verified, check the DNS record in your host and manually verify. The domain will be removed from your organization in 7 days if it is not verified"
+  "automaticDomainClaimProcess": {
+    "message": "Bitwarden will attempt to claim the domain 3 times during the first 72 hours. If the domain can’t be claimed, check the DNS record in your host and manually claim. The domain will be removed from your organization in 7 days if it is not claimed."
   },
   "invalidDomainNameMessage": {
     "message": "Input is not a valid format. Format: mydomain.com. Subdomains require separate entries to be verified."
@@ -7557,8 +7557,8 @@
       }
     }
   },
-  "domainNotVerified": {
-    "message": "$DOMAIN$ not verified. Check your DNS record.",
+  "domainNotClaimed": {
+    "message": "$DOMAIN$ not claimed. Check your DNS records.",
     "placeholders": {
       "DOMAIN": {
         "content": "$1",
@@ -7566,11 +7566,11 @@
       }
     }
   },
-  "domainStatusVerified": {
-    "message": "Verified"
+  "domainStatusClaimed": {
+    "message": "Claimed"
   },
-  "domainStatusUnverified": {
-    "message": "Unverified"
+  "domainStatusUnderVerification": {
+    "message": "Under verification"
   },
   "domainNameTh": {
     "message": "Name"
