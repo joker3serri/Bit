@@ -87,6 +87,7 @@ import {
   BiometricStateService,
   BiometricsService,
 } from "@bitwarden/key-management";
+import { DefaultSecureMemoryService, SecureMemoryService } from "@bitwarden/platform";
 
 import { DesktopLoginApprovalComponentService } from "../../auth/login/desktop-login-approval-component.service";
 import { DesktopLoginComponentService } from "../../auth/login/desktop-login-component.service";
@@ -357,6 +358,11 @@ const safeProviders: SafeProvider[] = [
     provide: LoginApprovalComponentServiceAbstraction,
     useClass: DesktopLoginApprovalComponentService,
     deps: [I18nServiceAbstraction],
+  }),
+  safeProvider({
+    provide: SecureMemoryService,
+    useClass: DefaultSecureMemoryService,
+    deps: [],
   }),
 ];
 
