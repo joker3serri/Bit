@@ -3,7 +3,7 @@ import { SecureMemoryAllocator } from "./secure-memory-allocator";
 /**
  * A secure storage implementation that stores data in regular JS heap memory.
  */
-export class HeapAllocator extends SecureMemoryAllocator {
+export class SecureHeapAllocator extends SecureMemoryAllocator {
   #finalizationRegistry = new FinalizationRegistry<ArrayBuffer>((buffer) => this.finalize(buffer));
   #storage = new Set<ArrayBuffer>();
 

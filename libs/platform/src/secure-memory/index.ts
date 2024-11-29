@@ -1,3 +1,6 @@
-export { initGlobalAllocator, clearGlobalAllocator } from "./global";
+export {
+  initSecureMemoryAllocator as initGlobalAllocator,
+  clearSecureMemoryAllocator as clearGlobalAllocator,
+} from "./global";
 export * from "./secure-array-buffer";
-export * from "./heap-secure-storage";
+export * from "./secure-heap-allocator";

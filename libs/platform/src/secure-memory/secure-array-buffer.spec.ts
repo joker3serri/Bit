@@ -1,4 +1,4 @@
-import { clearGlobalAllocator, initGlobalAllocator } from "./global";
+import { clearSecureMemoryAllocator, initSecureMemoryAllocator } from "./global";
 import { SecureArrayBuffer } from "./secure-array-buffer";
 import { TestAllocator } from "./test/test-allocator";
 
@@ -7,11 +7,11 @@ describe("SecureArrayBuffer", () => {
 
   beforeEach(() => {
     allocator = new TestAllocator();
-    initGlobalAllocator(allocator);
+    initSecureMemoryAllocator(allocator);
   });
 
   afterEach(() => {
-    clearGlobalAllocator();
+    clearSecureMemoryAllocator();
   });
 
   it("allocates memory using the global allocator", () => {

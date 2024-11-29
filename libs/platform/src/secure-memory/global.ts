@@ -2,7 +2,7 @@ import { SecureMemoryAllocator } from "./secure-memory-allocator";
 
 let globalAllocator: SecureMemoryAllocator;
 
-export function initGlobalAllocator(allocator: SecureMemoryAllocator) {
+export function initSecureMemoryAllocator(allocator: SecureMemoryAllocator) {
   if (globalAllocator) {
     throw new Error("Global allocator is already initialized");
   }
@@ -10,7 +10,7 @@ export function initGlobalAllocator(allocator: SecureMemoryAllocator) {
   globalAllocator = allocator;
 }
 
-export function getGlobalAllocator(): SecureMemoryAllocator {
+export function getSecureMemoryAllocator(): SecureMemoryAllocator {
   if (!globalAllocator) {
     throw new Error("Global allocator is not initialized");
   }
@@ -18,7 +18,7 @@ export function getGlobalAllocator(): SecureMemoryAllocator {
   return globalAllocator;
 }
 
-export function clearGlobalAllocator() {
+export function clearSecureMemoryAllocator() {
   globalAllocator?.clearAll();
   globalAllocator = undefined;
 }
