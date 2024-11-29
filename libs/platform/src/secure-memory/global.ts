@@ -1,3 +1,4 @@
+import { SecureHeapAllocator } from "./secure-heap-allocator";
 import { SecureMemoryAllocator } from "./secure-memory-allocator";
 
 let globalAllocator: SecureMemoryAllocator;
@@ -22,3 +23,5 @@ export function clearSecureMemoryAllocator() {
   globalAllocator?.clearAll();
   globalAllocator = undefined;
 }
+
+initSecureMemoryAllocator(new SecureHeapAllocator());

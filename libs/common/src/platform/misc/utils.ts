@@ -6,6 +6,8 @@ import { Observable, of, switchMap } from "rxjs";
 import { getHostname, parse } from "tldts";
 import { Merge } from "type-fest";
 
+import { SecureUint8Array } from "@bitwarden/platform";
+
 import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { I18nService } from "../abstractions/i18n.service";
@@ -70,10 +72,10 @@ export class Utils {
     }
 
     if (Utils.isNode) {
-      return new Uint8Array(Buffer.from(str, "base64"));
+      return new SecureUint8Array(Buffer.from(str, "base64"));
     } else {
       const binaryString = Utils.global.atob(str);
-      const bytes = new Uint8Array(binaryString.length);
+      const bytes = new SecureUint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
@@ -87,9 +89,9 @@ export class Utils {
 
   static fromHexToArray(str: string): Uint8Array {
     if (Utils.isNode) {
-      return new Uint8Array(Buffer.from(str, "hex"));
+      return new SecureUint8Array(Buffer.from(str, "hex"));
     } else {
-      const bytes = new Uint8Array(str.length / 2);
+      const bytes = new SecureUint8Array(str.length / 2);
       for (let i = 0; i < str.length; i += 2) {
         bytes[i / 2] = parseInt(str.substr(i, 2), 16);
       }
@@ -99,10 +101,10 @@ export class Utils {
 
   static fromUtf8ToArray(str: string): Uint8Array {
     if (Utils.isNode) {
-      return new Uint8Array(Buffer.from(str, "utf8"));
+      return new SecureUint8Array(Buffer.from(str, "utf8"));
     } else {
       const strUtf8 = unescape(encodeURIComponent(str));
-      const arr = new Uint8Array(strUtf8.length);
+      const arr = new SecureUint8Array(strUtf8.length);
       for (let i = 0; i < strUtf8.length; i++) {
         arr[i] = strUtf8.charCodeAt(i);
       }
@@ -114,7 +116,7 @@ export class Utils {
     if (str == null) {
       return null;
     }
-    const arr = new Uint8Array(str.length);
+    const arr = new SecureUint8Array(str.length);
     for (let i = 0; i < str.length; i++) {
       arr[i] = str.charCodeAt(i);
     }
@@ -129,7 +131,7 @@ export class Utils {
       return Buffer.from(buffer).toString("base64");
     } else {
       let binary = "";
-      const bytes = new Uint8Array(buffer);
+      const bytes = new SecureUint8Array(buffer);
       for (let i = 0; i < bytes.byteLength; i++) {
         binary += String.fromCharCode(bytes[i]);
       }
@@ -150,7 +152,7 @@ export class Utils {
   }
 
   static fromBufferToByteString(buffer: ArrayBuffer): string {
-    return String.fromCharCode.apply(null, new Uint8Array(buffer));
+    return String.fromCharCode.apply(null, new SecureUint8Array(buffer));
   }
 
   // ref: https://stackoverflow.com/a/40031979/1090359
@@ -158,7 +160,7 @@ export class Utils {
     if (Utils.isNode) {
       return Buffer.from(buffer).toString("hex");
     } else {
-      const bytes = new Uint8Array(buffer);
+      const bytes = new SecureUint8Array(buffer);
       return Array.prototype.map
         .call(bytes, (x: number) => ("00" + x.toString(16)).slice(-2))
         .join("");
@@ -185,7 +187,7 @@ export class Utils {
 
     // Create a Uint8Array view on top of the ArrayBuffer (each position represents a byte)
     // as ArrayBuffers cannot be edited directly.
-    const uint8Array = new Uint8Array(arrayBuffer);
+    const uint8Array = new SecureUint8Array(arrayBuffer);
 
     // Loop through the bytes
     for (let i = 0; i < uint8Array.length; i++) {
