@@ -449,9 +449,10 @@ export class SsoComponent implements OnInit {
       this.ssoComponentService.onSuccessfulLoginTde();
     }
 
-    await this.navigateViaCallbackOrRoute(this.ssoComponentService.onSuccessfulLoginTdeNavigate, [
-      "login-initiated",
-    ]);
+    await this.navigateViaCallbackOrRoute(
+      async () => this.ssoComponentService.closeWindow(),
+      ["login-initiated"],
+    );
   }
 
   private async handleChangePasswordRequired(orgIdentifier: string) {

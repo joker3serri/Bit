@@ -24,7 +24,11 @@ export abstract class SsoComponentService {
   /**
    * Navigation callbacks
    */
-  onSuccessfulLoginTdeNavigate?(): Promise<void>;
   onSuccessfulLogin?(): Promise<void>;
   onSuccessfulLoginTde?(): Promise<void>;
+
+  /**
+   * Closes the window.
+   */
+  closeWindow?(): Promise<void>;
 }

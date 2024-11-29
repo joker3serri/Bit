@@ -73,4 +73,11 @@ export class ExtensionSsoComponentService
       this.window.close();
     };
   }
+
+  /**
+   * Close the popup window for the extension.
+   */
+  closeWindow(): Promise<void> {
+    return Promise.resolve(this.window.close());
+  }
 }

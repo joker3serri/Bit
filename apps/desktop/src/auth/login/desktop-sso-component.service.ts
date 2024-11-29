@@ -53,4 +53,11 @@ export class DesktopSsoComponentService
       }
     };
   }
+
+  /**
+   * No-op for desktop.
+   */
+  closeWindow(): Promise<void> {
+    return Promise.resolve();
+  }
 }
