@@ -15,4 +15,9 @@ export class DefaultSsoComponentService implements SsoComponentService {
    * Default no-op implementation as extension and desktop don't need to set cookies.
    */
   setDocumentCookies(): void {}
+
+  /**
+   * Default undefined implementation as extension and desktop don't need to close windows.
+   */
+  closeWindow: () => undefined | Promise<void>;
 }

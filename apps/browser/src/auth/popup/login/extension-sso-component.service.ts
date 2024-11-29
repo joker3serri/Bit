@@ -72,12 +72,12 @@ export class ExtensionSsoComponentService
     this.onSuccessfulLoginTdeNavigate = async () => {
       this.window.close();
     };
-  }
 
-  /**
-   * Close the popup window for the extension.
-   */
-  closeWindow(): Promise<void> {
-    return Promise.resolve(this.window.close());
+    /**
+     * Closes the popup window after a successful login.
+     */
+    this.closeWindow = async (): Promise<void> => {
+      this.window.close();
+    };
   }
 }

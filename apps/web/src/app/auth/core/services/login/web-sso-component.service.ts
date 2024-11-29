@@ -34,11 +34,4 @@ export class WebSsoComponentService
   setDocumentCookies(): void {
     document.cookie = `ssoHandOffMessage=${this.i18nService.t("ssoHandOff")};SameSite=strict`;
   }
-
-  /**
-   * No-op for web.
-   */
-  closeWindow(): Promise<void> {
-    return Promise.resolve();
-  }
 }
