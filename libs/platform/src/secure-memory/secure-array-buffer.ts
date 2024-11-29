@@ -7,7 +7,7 @@ export class SecureArrayBuffer {
     this.#buffer = getGlobalAllocator().allocate(byteLength);
   }
 
-  asUint8Array(): Uint8Array {
+  asUint8Array(): Omit<Uint8Array, "buffer"> {
     return new Uint8Array(this.#buffer);
   }
 }

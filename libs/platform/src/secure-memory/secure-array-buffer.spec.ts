@@ -19,4 +19,13 @@ describe("SecureArrayBuffer", () => {
 
     expect(allocator.allocate).toHaveBeenCalledWith(10);
   });
+
+  it("returns a Uint8Array view of the buffer", () => {
+    const buffer = new SecureArrayBuffer(10);
+
+    const view = buffer.asUint8Array();
+
+    expect(view).toBeInstanceOf(Uint8Array);
+    expect((view as any).buffer).toBe(allocator.buffers[0]);
+  });
 });
