@@ -1,8 +1,10 @@
+import { getGlobalAllocator } from "./global";
+
 export class SecureArrayBuffer {
   #buffer: ArrayBuffer;
 
   constructor(byteLength: number) {
-    this.#buffer = new ArrayBuffer(byteLength);
+    this.#buffer = getGlobalAllocator().allocate(byteLength);
   }
 
   asUint8Array(): Uint8Array {
