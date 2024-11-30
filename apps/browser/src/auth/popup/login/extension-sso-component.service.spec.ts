@@ -4,7 +4,6 @@ import { BehaviorSubject } from "rxjs";
 
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { ClientType } from "@bitwarden/common/enums";
 import {
   EnvironmentService,
@@ -64,74 +63,9 @@ describe("ExtensionSsoComponentService", () => {
     expect(service.redirectUri).toBe(`${baseUrl}/sso-connector.html`);
   });
 
-  describe("onSuccessfulLogin", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it("performs full sync", async () => {
-      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.LoggedOut);
-
-      await service.onSuccessfulLogin();
-
-      expect(syncService.fullSync).toHaveBeenCalledWith(true, true);
-    });
-
-    it("logs error when sync fails", async () => {
-      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.LoggedOut);
-      const error = new Error("Sync failed");
-      syncService.fullSync.mockRejectedValue(error);
-
-      await service.onSuccessfulLogin();
-
-      expect(logService.error).toHaveBeenCalledWith("Error syncing after SSO login:", error);
-    });
-
-    it("reloads windows when vault is locked", async () => {
-      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.Locked);
-
-      await service.onSuccessfulLogin();
-
-      expect(BrowserApi.reloadOpenWindows).toHaveBeenCalled();
-    });
-
-    it("does not reload windows when vault is unlocked", async () => {
-      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.Unlocked);
-
-      await service.onSuccessfulLogin();
-
-      expect(BrowserApi.reloadOpenWindows).not.toHaveBeenCalled();
-    });
-
+  describe("closeWindow", () => {
     it("closes window", async () => {
-      authService.getAuthStatus.mockResolvedValue(AuthenticationStatus.LoggedOut);
-
-      await service.onSuccessfulLogin();
-
-      expect(windowMock.close).toHaveBeenCalled();
-    });
-  });
-
-  describe("onSuccessfulLoginTde", () => {
-    it("performs full sync with both parameters true", async () => {
-      await service.onSuccessfulLoginTde();
-
-      expect(syncService.fullSync).toHaveBeenCalledWith(true, true);
-    });
-
-    it("logs error when sync fails", async () => {
-      const error = new Error("Sync failed");
-      syncService.fullSync.mockRejectedValue(error);
-
-      await service.onSuccessfulLoginTde();
-
-      expect(logService.error).toHaveBeenCalledWith("Error syncing after TDE SSO login:", error);
-    });
-  });
-
-  describe("onSuccessfulLoginTdeNavigate", () => {
-    it("closes window", async () => {
-      await service.onSuccessfulLoginTdeNavigate();
+      await service.closeWindow();
 
       expect(windowMock.close).toHaveBeenCalled();
     });
