@@ -26,7 +26,6 @@ export class DesktopSsoComponentService
    * The redirect URI for the SSO component service.
    */
   redirectUri: string;
-  onSuccessfulLogin: () => Promise<void>;
   onSuccessfulLoginTde: () => Promise<void>;
 
   constructor(
@@ -35,15 +34,6 @@ export class DesktopSsoComponentService
   ) {
     super();
     this.clientId = ClientType.Desktop;
-    // this.redirectUri = "bitwarden://sso-callback";
-
-    this.onSuccessfulLogin = async () => {
-      try {
-        await this.syncService.fullSync(true, true);
-      } catch (error) {
-        this.logService.error("Error syncing after SSO login:", error);
-      }
-    };
 
     this.onSuccessfulLoginTde = async () => {
       try {

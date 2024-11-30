@@ -24,11 +24,15 @@ export abstract class SsoComponentService {
   /**
    * Navigation callbacks
    */
-  onSuccessfulLogin?(): Promise<void>;
   onSuccessfulLoginTde?(): Promise<void>;
 
   /**
    * Closes the window.
    */
   closeWindow?(): Promise<void>;
+
+  /**
+   * Prevents clearing keys from memory.
+   */
+  preventClearingKeys?(): Promise<void>;
 }

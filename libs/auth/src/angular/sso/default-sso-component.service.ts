@@ -20,4 +20,9 @@ export class DefaultSsoComponentService implements SsoComponentService {
    * Default undefined implementation as extension and desktop don't need to close windows.
    */
   closeWindow: () => undefined | Promise<void>;
+
+  /**
+   * Default undefined implementation as extension and desktop don't need to prevent clearing keys.
+   */
+  preventClearingKeys?: () => undefined | Promise<void>;
 }

@@ -34,6 +34,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import {
   AsyncActionsModule,
   ButtonModule,
@@ -114,6 +115,7 @@ export class SsoComponent implements OnInit {
     private accountService: AccountService,
     private toastService: ToastService,
     private ssoComponentService: SsoComponentService,
+    private syncService: SyncService,
   ) {
     this.redirectUri = window.location.origin + "/sso-connector.html";
   }
@@ -480,11 +482,13 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleSuccessfulLogin() {
-    if (this.ssoComponentService.onSuccessfulLogin) {
-      // Don't await b/c causes hang on desktop & browser
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.ssoComponentService.onSuccessfulLogin();
+    try {
+      await this.syncService.fullSync(true, true);
+    } catch (error) {
+      this.logService.error("Error syncing after TDE SSO login:", error);
     }
+
+    await this.ssoComponentService.preventClearingKeys?.();
 
     await this.navigateViaCallbackOrRoute(async () => {}, ["lock"]);
   }
