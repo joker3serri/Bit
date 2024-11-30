@@ -24,7 +24,6 @@ export class ExtensionSsoComponentService
 {
   clientId: SsoClientType;
   redirectUri: string;
-  onSuccessfulLoginTde: () => Promise<void>;
   onSuccessfulLoginTdeNavigate: () => Promise<void>;
 
   constructor(
@@ -41,14 +40,6 @@ export class ExtensionSsoComponentService
     environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
       this.redirectUri = env.getWebVaultUrl() + "/sso-connector.html";
     });
-
-    this.onSuccessfulLoginTde = async () => {
-      try {
-        await this.syncService.fullSync(true, true);
-      } catch (error) {
-        this.logService.error("Error syncing after TDE SSO login:", error);
-      }
-    };
 
     this.onSuccessfulLoginTdeNavigate = async () => {
       this.window.close();

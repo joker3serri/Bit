@@ -446,9 +446,10 @@ export class SsoComponent implements OnInit {
       );
     }
 
-    if (this.ssoComponentService.onSuccessfulLoginTde) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.ssoComponentService.onSuccessfulLoginTde();
+    try {
+      await this.syncService.fullSync(true, true);
+    } catch (error) {
+      this.logService.error("Error syncing after TDE SSO login:", error);
     }
 
     await this.navigateViaCallbackOrRoute(this.ssoComponentService.closeWindow, [

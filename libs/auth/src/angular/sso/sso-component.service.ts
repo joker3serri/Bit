@@ -22,11 +22,6 @@ export abstract class SsoComponentService {
   setDocumentCookies?(): void;
 
   /**
-   * Navigation callbacks
-   */
-  onSuccessfulLoginTde?(): Promise<void>;
-
-  /**
    * Closes the window.
    */
   closeWindow?(): Promise<void>;
