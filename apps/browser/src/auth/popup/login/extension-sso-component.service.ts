@@ -24,7 +24,6 @@ export class ExtensionSsoComponentService
 {
   clientId: SsoClientType;
   redirectUri: string;
-  onSuccessfulLoginTdeNavigate: () => Promise<void>;
 
   constructor(
     private syncService: SyncService,
@@ -40,10 +39,6 @@ export class ExtensionSsoComponentService
     environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
       this.redirectUri = env.getWebVaultUrl() + "/sso-connector.html";
     });
-
-    this.onSuccessfulLoginTdeNavigate = async () => {
-      this.window.close();
-    };
 
     /**
      * Closes the popup window after a successful login.
