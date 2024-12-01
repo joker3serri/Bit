@@ -20,7 +20,7 @@ import { ButtonModule } from "@bitwarden/components";
     </button>
   `,
 })
-export class twoFactorTimeoutComponent {
+export class TwoFactorTimeoutComponent {
   constructor(private router: Router) {}
 
   async logIn() {
