@@ -69,9 +69,7 @@ import {
   CACHE_KEY,
 } from "./login-strategy.state";
 
-// const sessionTimeoutLength = 5 * 60 * 1000; // 5 minutes
-// TODO: remove this
-const sessionTimeoutLength = 15 * 1000; // 15 seconds
+const sessionTimeoutLength = 5 * 60 * 1000; // 5 minutes
 
 export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   private sessionTimeoutSubscription: Subscription;
