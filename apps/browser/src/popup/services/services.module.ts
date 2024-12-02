@@ -569,8 +569,9 @@ const safeProviders: SafeProvider[] = [
   }),
   safeProvider({
     provide: SdkClientFactory,
-    useClass: flagEnabled("sdk") ? BrowserSdkClientFactory : NoopSdkClientFactory,
-    deps: [],
+    useFactory: (logService) =>
+      flagEnabled("sdk") ? new BrowserSdkClientFactory(logService) : new NoopSdkClientFactory(),
+    deps: [LogService],
   }),
   safeProvider({
     provide: LoginEmailService,
