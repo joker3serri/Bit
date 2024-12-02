@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ButtonModule, LinkModule } from "@bitwarden/components";
+import { ButtonModule } from "@bitwarden/components";
 
 /**
  * This component is used to display a message to the user that their authentication session has expired.
@@ -12,7 +12,7 @@ import { ButtonModule, LinkModule } from "@bitwarden/components";
 @Component({
   selector: "app-two-factor-expired",
   standalone: true,
-  imports: [CommonModule, JslibModule, ButtonModule, RouterModule, LinkModule],
+  imports: [CommonModule, JslibModule, ButtonModule, RouterModule],
   template: `
     <p class="tw-text-center">
       {{ "authenticationSessionTimedOut" | i18n }}
