@@ -54,14 +54,14 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
   async unauthedHandler(qParams: Params): Promise<void> {
     const invite = OrganizationInvite.fromParams(qParams);
     await this.acceptOrganizationInviteService.setOrganizationInvitation(invite);
-    await this.accelerateInviteAcceptIfPossible(invite);
+    await this.navigateInviteAcceptance(invite);
   }
 
   /**
    * In certain scenarios, we want to accelerate the user through the accept org invite process
    * For example, if the user has a BW account already, we want them to be taken to login instead of creation.
    */
-  private async accelerateInviteAcceptIfPossible(invite: OrganizationInvite): Promise<void> {
+  private async navigateInviteAcceptance(invite: OrganizationInvite): Promise<void> {
     // if user exists, send user to login
     if (invite.orgUserHasExistingUser) {
       await this.router.navigate(["/login"], {
