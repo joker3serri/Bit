@@ -62,12 +62,6 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
    * For example, if the user has a BW account already, we want them to be taken to login instead of creation.
    */
   private async accelerateInviteAcceptIfPossible(invite: OrganizationInvite): Promise<void> {
-    // if orgUserHasExistingUser is null, we can't determine the user's status
-    // so we don't want to accelerate the process
-    if (invite.orgUserHasExistingUser == null) {
-      return;
-    }
-
     // if user exists, send user to login
     if (invite.orgUserHasExistingUser) {
       await this.router.navigate(["/login"], {
