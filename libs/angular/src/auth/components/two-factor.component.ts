@@ -1,6 +1,7 @@
-import { Directive, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Directive, Inject, OnInit, OnDestroy } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
-import { firstValueFrom, Subscription } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
 // eslint-disable-next-line no-restricted-imports
@@ -70,8 +71,6 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   protected successRoute = "vault";
   protected twoFactorTimeoutRoute = "2fa-timeout";
 
-  private twoFactorTimeoutSubscription: Subscription;
-
   get isDuoProvider(): boolean {
     return (
       this.selectedProviderType === TwoFactorProviderType.Duo ||
@@ -104,8 +103,9 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     this.webAuthnSupported = this.platformUtilsService.supportsWebAuthn(win);
 
     // Add subscription to twoFactorTimeout$ and navigate to twoFactorTimeoutRoute if expired
-    this.twoFactorTimeoutSubscription = this.loginStrategyService.twoFactorTimeout$.subscribe(
-      async (expired) => {
+    this.loginStrategyService.twoFactorTimeout$
+      .pipe(takeUntilDestroyed())
+      .subscribe(async (expired) => {
         if (!expired) {
           return;
         }
@@ -115,8 +115,7 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
         } catch (err) {
           this.logService.error(`Failed to navigate to ${this.twoFactorTimeoutRoute} route`, err);
         }
-      },
-    );
+      });
   }
 
   async ngOnInit() {
@@ -176,11 +175,6 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
   ngOnDestroy(): void {
     this.cleanupWebAuthn();
     this.webAuthn = null;
-
-    // Clean up the twoFactorTimeoutSubscription subscription
-    if (this.twoFactorTimeoutSubscription) {
-      this.twoFactorTimeoutSubscription.unsubscribe();
-    }
   }
 
   async init() {
