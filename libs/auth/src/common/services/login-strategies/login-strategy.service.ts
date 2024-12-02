@@ -202,6 +202,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
       | WebAuthnLoginCredentials,
   ): Promise<AuthResult> {
     await this.clearCache();
+    this.twoFactorTimeoutSubject.next(false);
 
     await this.currentAuthnTypeState.update((_) => credentials.type);
 
@@ -286,6 +287,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   private async clearCache(): Promise<void> {
     await this.currentAuthnTypeState.update((_) => null);
     await this.loginStrategyCacheState.update((_) => null);
+    this.twoFactorTimeoutSubject.next(false);
     await this.clearSessionTimeout();
   }
 
