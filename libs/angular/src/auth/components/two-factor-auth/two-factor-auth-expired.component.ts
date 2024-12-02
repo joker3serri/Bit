@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
+import { RouterModule } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { ButtonModule } from "@bitwarden/components";
+import { ButtonModule, LinkModule } from "@bitwarden/components";
 
 /**
  * This component is used to display a message to the user that their authentication session has expired.
@@ -12,23 +12,14 @@ import { ButtonModule } from "@bitwarden/components";
 @Component({
   selector: "app-two-factor-expired",
   standalone: true,
-  imports: [CommonModule, JslibModule, ButtonModule],
+  imports: [CommonModule, JslibModule, ButtonModule, RouterModule, LinkModule],
   template: `
     <p class="tw-text-center">
       {{ "authenticationSessionTimedOut" | i18n }}
     </p>
-    <button bitButton block (click)="navigateToLogin()" buttonType="primary">
+    <a routerLink="/login" bitButton block buttonType="primary">
       {{ "logIn" | i18n }}
-    </button>
+    </a>
   `,
 })
-export class TwoFactorTimeoutComponent {
-  constructor(private router: Router) {}
-
-  /**
-   * Navigates to the login page.
-   */
-  async navigateToLogin() {
-    await this.router.navigate(["login"]);
-  }
-}
+export class TwoFactorTimeoutComponent {}
