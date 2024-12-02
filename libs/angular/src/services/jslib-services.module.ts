@@ -1213,6 +1213,8 @@ const safeProviders: SafeProvider[] = [
     useClass: OrganizationBillingService,
     deps: [
       ApiServiceAbstraction,
+      BillingApiServiceAbstraction,
+      ConfigService,
       KeyService,
       EncryptService,
       I18nServiceAbstraction,
