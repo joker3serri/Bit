@@ -1,0 +1,3 @@
+<ng-container *ngIf="string">
+  <span *ngFor="let char of string.data; let i = index" [innerHtml]="character(i)"></span>
+</ng-container>

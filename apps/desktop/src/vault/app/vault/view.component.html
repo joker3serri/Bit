@@ -49,12 +49,9 @@
               <div *ngIf="!showPassword" class="monospaced">
                 {{ cipher.login.maskedPassword }}
               </div>
-              <div
-                *ngIf="showPassword && !showPasswordCount"
-                class="monospaced password-wrapper"
-                [appCopyText]="cipher.login.password"
-                [innerHTML]="cipher.login.password | colorPassword"
-              ></div>
+              <div *ngIf="showPassword && !showPasswordCount" class="monospaced">
+                <app-secure-string [string]="cipher.login.securePassword"></app-secure-string>
+              </div>
               <div
                 *ngIf="showPassword && showPasswordCount"
                 [innerHTML]="cipher.login.password | colorPasswordCount"
