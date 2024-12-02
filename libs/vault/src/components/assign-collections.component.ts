@@ -123,7 +123,6 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
   protected readonlyItemCount: number;
   protected personalItemsCount: number;
   protected availableCollections: SelectItemView[] = [];
-  protected unavailableCollections: CollectionId[] = [];
   protected orgName: string;
   protected showOrgSelector: boolean = false;
 
@@ -292,9 +291,6 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
 
     this.availableCollections = this.params.availableCollections
       .filter((collection) => {
-        if (!collection.canEditItems(org)) {
-          this.unavailableCollections.push(collection.id as CollectionId);
-        }
         return collection.canEditItems(org);
       })
       .map((c) => ({
@@ -479,25 +475,7 @@ export class AssignCollectionsComponent implements OnInit, OnDestroy, AfterViewI
 
   private async updateAssignedCollections(cipherView: CipherView) {
     const { collections } = this.formGroup.getRawValue();
-    /**
-     * If a cipher is part of a collection this user cannot edit.
-     * We will remove that collection from the dropdown and add it back before the saveCipher call
-     * This will persist any Cannot Edit collections for the cipher without allowing the user to change it's status
-     */
-    const assignedCollectionIds = this.params.ciphers[0].collectionIds;
-    const assignedCannotEditCollection: CollectionId[] = [];
-
-    if (this.unavailableCollections.length > 0) {
-      this.unavailableCollections.map((id) => {
-        if (assignedCollectionIds.includes(id) && id !== this.params.activeCollection?.id) {
-          assignedCannotEditCollection.push(id as CollectionId);
-        }
-      });
-    }
-    cipherView.collectionIds = [
-      ...collections.map((i) => i.id as CollectionId),
-      ...assignedCannotEditCollection,
-    ];
+    cipherView.collectionIds = collections.map((i) => i.id as CollectionId);
     const cipher = await this.cipherService.encrypt(cipherView, this.activeUserId);
     if (this.params.isSingleCipherAdmin) {
       await this.cipherService.saveCollectionsWithServerAdmin(cipher);

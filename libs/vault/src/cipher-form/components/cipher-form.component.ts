@@ -19,7 +19,6 @@ import { Subject } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionId } from "@bitwarden/common/types/guid";
 import { CipherType, SecureNoteType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
@@ -79,7 +78,6 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
   private bitSubmit: BitSubmitDirective;
   private destroyRef = inject(DestroyRef);
   private _firstInitialized = false;
-  private cannotEditCollections: CollectionId[] = [];
 
   /**
    * The form ID to use for the form. Used to connect it to a submit button.
@@ -221,16 +219,6 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
       }
     }
 
-    if (this.originalCipherView?.organizationId) {
-      const org = await this.organizationService.get(this.originalCipherView.organizationId);
-
-      this.config.collections.map((collection) => {
-        if (collection.organizationId === org.id && !collection.canEditItems(org)) {
-          this.cannotEditCollections.push(collection.id as CollectionId);
-        }
-      });
-    }
-
     this.loading = false;
     this.formReadySubject.next();
   }
@@ -259,24 +247,6 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
   }
 
   submit = async () => {
-    /**
-     * If a cipher is part of a collection this user cannot edit.
-     * We will remove that collection from the dropdown and add it back before the saveCipher call
-     * This will persist any Cannot Edit collections for the cipher without allowing the user to change it's status
-     */
-    if (this.originalCipherView?.collectionIds) {
-      const cannotEditOwnedCollection = this.originalCipherView.collectionIds.filter((id) => {
-        return this.cannotEditCollections.includes(id as CollectionId);
-      });
-
-      if (cannotEditOwnedCollection.length > 0) {
-        this.updatedCipherView.collectionIds = [
-          ...this.updatedCipherView.collectionIds,
-          ...cannotEditOwnedCollection,
-        ];
-      }
-    }
-
     if (this.cipherForm.invalid) {
       this.cipherForm.markAllAsTouched();
 

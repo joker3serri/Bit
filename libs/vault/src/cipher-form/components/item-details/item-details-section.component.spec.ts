@@ -437,8 +437,8 @@ describe("ItemDetailsSectionComponent", () => {
       } as CipherView;
       component.config.organizations = [{ id: "org1" } as Organization];
       component.config.collections = [
-        createMockCollection("col1", "Collection 1", "org1") as CollectionView,
-        createMockCollection("col2", "Collection 2", "org1") as CollectionView,
+        createMockCollection("col1", "Collection 1", "org1", true, false) as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1", true, false) as CollectionView,
         createMockCollection("col3", "Collection 3", "org1", true) as CollectionView,
       ];
 
@@ -477,7 +477,7 @@ describe("ItemDetailsSectionComponent", () => {
       component.config.admin = true;
       component.config.collections = [
         createMockCollection("col1", "Collection 1", "org1", true, false) as CollectionView,
-        createMockCollection("col2", "Collection 2", "org1", false, false) as CollectionView,
+        createMockCollection("col2", "Collection 2", "org1", false, true) as CollectionView,
         createMockCollection("col3", "Collection 3", "org1", true, false) as CollectionView,
       ];
       component.originalCipherView = {
