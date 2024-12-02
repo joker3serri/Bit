@@ -25,7 +25,7 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legac
   selector: "app-sso",
   templateUrl: "sso.component.html",
 })
-export class SsoComponent extends BaseSsoComponent {
+export class SsoComponentV1 extends BaseSsoComponent {
   constructor(
     ssoLoginService: SsoLoginServiceAbstraction,
     loginStrategyService: LoginStrategyServiceAbstraction,

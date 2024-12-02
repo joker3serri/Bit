@@ -62,7 +62,7 @@ import { AccountComponent } from "./auth/settings/account/account.component";
 import { EmergencyAccessComponent } from "./auth/settings/emergency-access/emergency-access.component";
 import { EmergencyAccessViewComponent } from "./auth/settings/emergency-access/view/emergency-access-view.component";
 import { SecurityRoutingModule } from "./auth/settings/security/security-routing.module";
-import { SsoComponent as SsoComponentV1 } from "./auth/sso.component";
+import { SsoComponentV1 } from "./auth/sso.component";
 import { CompleteTrialInitiationComponent } from "./auth/trial-initiation/complete-trial-initiation/complete-trial-initiation.component";
 import { freeTrialTextResolver } from "./auth/trial-initiation/complete-trial-initiation/resolver/free-trial-text.resolver";
 import { TrialInitiationComponent } from "./auth/trial-initiation/trial-initiation.component";
