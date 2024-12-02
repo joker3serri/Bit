@@ -731,6 +731,7 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
       
               </svg>
               <span
+                aria-label=""
                 bittypography="helper"
                 class="totp-sec-span"
               >
@@ -740,10 +741,11 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
           </span>
           <div>
             <span
-              aria-label="Time-based One-Time Password Verification Code"
+              aria-label=""
               class="cipher-name"
             />
             <span
+              aria-label=""
               class="cipher-subtitle totp-sub-text"
             >
               123 456
@@ -1204,6 +1206,7 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
       
               </svg>
               <span
+                aria-label=""
                 bittypography="helper"
                 class="totp-sec-span"
               >
@@ -1213,10 +1216,11 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
           </span>
           <div>
             <span
-              aria-label="Time-based One-Time Password Verification Code"
+              aria-label=""
               class="cipher-name"
             />
             <span
+              aria-label=""
               class="cipher-subtitle totp-sub-text"
             >
               123 456
@@ -1677,6 +1681,7 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
       
               </svg>
               <span
+                aria-label=""
                 bittypography="helper"
                 class="totp-sec-span"
               >
@@ -1686,10 +1691,11 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
           </span>
           <div>
             <span
-              aria-label="Time-based One-Time Password Verification Code"
+              aria-label=""
               class="cipher-name"
             />
             <span
+              aria-label=""
               class="cipher-subtitle totp-sub-text"
             >
               123 456
@@ -2150,6 +2156,7 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
       
               </svg>
               <span
+                aria-label=""
                 bittypography="helper"
                 class="totp-sec-span"
               >
@@ -2159,10 +2166,11 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
           </span>
           <div>
             <span
-              aria-label="Time-based One-Time Password Verification Code"
+              aria-label=""
               class="cipher-name"
             />
             <span
+              aria-label=""
               class="cipher-subtitle totp-sub-text"
             >
               123 456

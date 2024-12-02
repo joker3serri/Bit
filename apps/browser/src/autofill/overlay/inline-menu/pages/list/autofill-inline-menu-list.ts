@@ -1198,7 +1198,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     const subtitleElement = document.createElement("span");
     subtitleElement.classList.add("cipher-subtitle", "totp-sub-text");
     subtitleElement.textContent = formattedTotpCode;
-    totpHeading.setAttribute("aria-label", this.getTranslation("totpCodeAria"));
+    subtitleElement.setAttribute("aria-label", this.getTranslation("totpCodeAria"));
     containerElement.appendChild(subtitleElement);
 
     return containerElement;

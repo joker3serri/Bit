@@ -2035,6 +2035,9 @@ export class OverlayBackground implements OverlayBackgroundInterface {
         "uppercaseAriaLabel",
         "generatedPassword",
         "fillVerificationCode",
+        "fillVerificationCodeAria",
+        "totpCodeAria",
+        "totpSecondsSpanAria",
         ...Object.values(specialCharacterToKeyMap),
       ];
       this.inlineMenuPageTranslations = translationKeys.reduce(
