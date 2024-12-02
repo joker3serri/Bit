@@ -1,20 +1,20 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
 import { firstValueFrom, Subject } from "rxjs";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { ConfigServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config.service.abstraction";
+import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
+import { DialogService } from "@bitwarden/components";
 
 import { VaultFilterComponent as BaseVaultFilterComponent } from "../../individual-vault/vault-filter/components/vault-filter.component"; //../../vault/vault-filter/components/vault-filter.component";
 import { VaultFilterService } from "../../individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import {
   VaultFilterList,
-  VaultFilterType,
   VaultFilterSection,
+  VaultFilterType,
 } from "../../individual-vault/vault-filter/shared/models/vault-filter-section.type";
 import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
 
@@ -22,7 +22,10 @@ import { CollectionFilter } from "../../individual-vault/vault-filter/shared/mod
   selector: "app-organization-vault-filter",
   templateUrl: "../../individual-vault/vault-filter/components/vault-filter.component.html",
 })
-export class VaultFilterComponent extends BaseVaultFilterComponent implements OnInit, OnDestroy {
+export class VaultFilterComponent
+  extends BaseVaultFilterComponent
+  implements OnInit, OnDestroy, OnChanges
+{
   @Input() set organization(value: Organization) {
     if (value && value !== this._organization) {
       this._organization = value;
@@ -32,22 +35,25 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   _organization: Organization;
   protected destroy$: Subject<void>;
 
-  private flexibleCollectionsEnabled: boolean;
-
   constructor(
     protected vaultFilterService: VaultFilterService,
     protected policyService: PolicyService,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
-    protected configService: ConfigServiceAbstraction,
+    protected billingApiService: BillingApiServiceAbstraction,
+    protected dialogService: DialogService,
   ) {
-    super(vaultFilterService, policyService, i18nService, platformUtilsService);
+    super(
+      vaultFilterService,
+      policyService,
+      i18nService,
+      platformUtilsService,
+      billingApiService,
+      dialogService,
+    );
   }
 
   async ngOnInit() {
-    this.flexibleCollectionsEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.FlexibleCollections,
-    );
     this.filters = await this.buildAllFilters();
     if (!this.activeFilter.selectedCipherTypeNode) {
       this.activeFilter.resetFilter();
@@ -55,6 +61,12 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
         (await this.getDefaultFilter()) as TreeNode<CollectionFilter>;
     }
     this.isLoaded = true;
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.organization) {
+      this.filters = await this.buildAllFilters();
+    }
   }
 
   ngOnDestroy() {
@@ -72,6 +84,8 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
 
   protected async addCollectionFilter(): Promise<VaultFilterSection> {
     // Ensure the Collections filter is never collapsed for the org vault
+    // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.removeCollapsibleCollection();
 
     const collectionFilterSection: VaultFilterSection = {
@@ -103,11 +117,7 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   async buildAllFilters(): Promise<VaultFilterList> {
     const builderFilter = {} as VaultFilterList;
     builderFilter.typeFilter = await this.addTypeFilter(["favorites"]);
-    if (this.flexibleCollectionsEnabled) {
-      builderFilter.collectionFilter = await this.addCollectionFilter();
-    } else {
-      builderFilter.collectionFilter = await super.addCollectionFilter();
-    }
+    builderFilter.collectionFilter = await this.addCollectionFilter();
     builderFilter.trashFilter = await this.addTrashFilter();
     return builderFilter;
   }

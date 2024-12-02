@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { hasModifierKey } from "@angular/cdk/keycodes";
 import {
   Component,
@@ -39,10 +40,10 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   @Input() removeSelectedItems = false;
   @Input() placeholder: string;
   @Input() loading = false;
-  @Input() disabled = false;
+  @Input({ transform: coerceBooleanProperty }) disabled?: boolean;
 
   // Internal tracking of selected items
-  @Input() selectedItems: SelectItemView[];
+  protected selectedItems: SelectItemView[];
 
   // Default values for our implementation
   loadingText: string;

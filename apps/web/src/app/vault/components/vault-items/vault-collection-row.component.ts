@@ -1,25 +1,14 @@
-import {
-  Component,
-  EventEmitter,
-  HostBinding,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-} from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
+import { CollectionAdminView, Unassigned, CollectionView } from "@bitwarden/admin-console/common";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
 import { GroupView } from "../../../admin-console/organizations/core";
-import { CollectionAdminView } from "../../core/views/collection-admin.view";
 
 import {
   convertToPermission,
   getPermissionList,
-  Permission,
 } from "./../../../admin-console/organizations/shared/components/access-selector/access-selector.models";
 import { VaultItemEvent } from "./vault-item-event";
 import { RowHeightClass } from "./vault-items.component";
@@ -28,8 +17,9 @@ import { RowHeightClass } from "./vault-items.component";
   selector: "tr[appVaultCollectionRow]",
   templateUrl: "vault-collection-row.component.html",
 })
-export class VaultCollectionRowComponent implements OnInit {
+export class VaultCollectionRowComponent {
   protected RowHeightClass = RowHeightClass;
+  protected Unassigned = "unassigned";
 
   @Input() disabled: boolean;
   @Input() collection: CollectionView;
@@ -38,31 +28,17 @@ export class VaultCollectionRowComponent implements OnInit {
   @Input() showGroups: boolean;
   @Input() canEditCollection: boolean;
   @Input() canDeleteCollection: boolean;
+  @Input() canViewCollectionInfo: boolean;
   @Input() organizations: Organization[];
   @Input() groups: GroupView[];
   @Input() showPermissionsColumn: boolean;
-  @Input() flexibleCollectionsEnabled: boolean;
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
   @Input() checked: boolean;
   @Output() checkedToggled = new EventEmitter<void>();
 
-  private permissionList: Permission[];
-
-  constructor(
-    private router: Router,
-    private i18nService: I18nService,
-  ) {}
-
-  ngOnInit() {
-    this.permissionList = getPermissionList(this.flexibleCollectionsEnabled);
-  }
-
-  @HostBinding("class")
-  get classes() {
-    return [].concat(this.disabled ? [] : ["tw-cursor-pointer"]);
-  }
+  constructor(private i18nService: I18nService) {}
 
   get collectionGroups() {
     if (!(this.collection instanceof CollectionAdminView)) {
@@ -76,33 +52,61 @@ export class VaultCollectionRowComponent implements OnInit {
     return this.organizations.find((o) => o.id === this.collection.organizationId);
   }
 
-  get permissionText() {
-    if (!(this.collection as CollectionAdminView).assigned) {
-      return "-";
-    } else {
-      return this.i18nService.t(
-        this.permissionList.find((p) => p.perm === convertToPermission(this.collection))?.labelId,
+  get showAddAccess() {
+    if (this.collection.id == Unassigned) {
+      return false;
+    }
+
+    // Only show AddAccess when viewing the Org vault (implied by CollectionAdminView)
+    if (this.collection instanceof CollectionAdminView) {
+      // Only show AddAccess if unmanaged and allowAdminAccessToAllCollectionItems is disabled
+      return (
+        !this.organization?.allowAdminAccessToAllCollectionItems &&
+        this.collection.unmanaged &&
+        this.organization?.canEditUnmanagedCollections
       );
     }
+
+    return false;
   }
 
-  @HostListener("click")
-  protected click() {
-    this.router.navigate([], {
-      queryParams: { collectionId: this.collection.id },
-      queryParamsHandling: "merge",
-    });
+  get permissionText() {
+    if (this.collection.id == Unassigned && this.organization?.canEditUnassignedCiphers) {
+      return this.i18nService.t("canEdit");
+    }
+    if ((this.collection as CollectionAdminView).assigned) {
+      const permissionList = getPermissionList();
+      return this.i18nService.t(
+        permissionList.find((p) => p.perm === convertToPermission(this.collection))?.labelId,
+      );
+    }
+    return this.i18nService.t("noAccess");
   }
 
-  protected edit() {
-    this.onEvent.next({ type: "editCollection", item: this.collection });
+  get permissionTooltip() {
+    if (this.collection.id == Unassigned) {
+      return this.i18nService.t("collectionAdminConsoleManaged");
+    }
+    return "";
   }
 
-  protected access() {
-    this.onEvent.next({ type: "viewCollectionAccess", item: this.collection });
+  protected edit(readonly: boolean) {
+    this.onEvent.next({ type: "editCollection", item: this.collection, readonly: readonly });
+  }
+
+  protected access(readonly: boolean) {
+    this.onEvent.next({ type: "viewCollectionAccess", item: this.collection, readonly: readonly });
   }
 
   protected deleteCollection() {
     this.onEvent.next({ type: "delete", items: [{ collection: this.collection }] });
+  }
+
+  protected get showCheckbox() {
+    if (this.collection?.id === Unassigned) {
+      return false; // Never show checkbox for Unassigned
+    }
+
+    return this.canEditCollection || this.canDeleteCollection;
   }
 }
