@@ -86,7 +86,7 @@ export class MainBiometricsService extends DesktopBiometricsService {
     }
 
     const platformStatus = await this.getBiometricsStatus();
-    if (!(platformStatus == BiometricsStatus.Available)) {
+    if (!(platformStatus === BiometricsStatus.Available)) {
       return platformStatus;
     }
 
