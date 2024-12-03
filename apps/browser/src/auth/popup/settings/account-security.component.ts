@@ -205,7 +205,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     this.form.patchValue(initialValues, { emitEvent: false });
 
     this.supportsBiometric =
-      (await this.biometricsService.getBiometricsStatus()) == BiometricsStatus.Available;
+      (await this.biometricsService.getBiometricsStatus()) === BiometricsStatus.Available;
     this.showChangeMasterPass = await this.userVerificationService.hasMasterPassword();
 
     this.form.controls.vaultTimeout.valueChanges
