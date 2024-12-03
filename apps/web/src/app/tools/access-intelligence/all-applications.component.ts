@@ -114,6 +114,12 @@ export class AllApplicationsComponent implements OnInit {
     await this.criticalAppsService
       .setCriticalApps(this.organization.id, Array.from(this.selectedUrls))
       .then(() => {
+        this.dataSource.data.forEach((data) => {
+          if (this.selectedUrls.has(data.name)) {
+            data.isMarkedAsCritical = true;
+          }
+        });
+
         this.toastService.showToast({
           variant: "success",
           title: null,
