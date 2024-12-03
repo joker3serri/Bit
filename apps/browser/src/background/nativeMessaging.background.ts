@@ -116,7 +116,7 @@ export class NativeMessagingBackground {
 
       const connectedCallback = () => {
         this.logService.info(
-          "[Native Messaging IPC] Connection to Bitwarden Desktop app establishd!",
+          "[Native Messaging IPC] Connection to Bitwarden Desktop app established!",
         );
         this.connected = true;
         this.connecting = false;
