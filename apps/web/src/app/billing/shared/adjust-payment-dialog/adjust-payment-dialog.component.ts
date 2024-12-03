@@ -64,6 +64,15 @@ export class AdjustPaymentDialogComponent implements OnInit {
         .catch(() => {
           this.taxInformation = new TaxInformation();
         });
+    } else {
+      this.apiService
+        .getTaxInfo()
+        .then((response: TaxInfoResponse) => {
+          this.taxInformation = TaxInformation.from(response);
+        })
+        .catch(() => {
+          this.taxInformation = new TaxInformation();
+        });
     }
   }
 
