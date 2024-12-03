@@ -5,6 +5,7 @@ import { unauthUiRefreshSwap } from "@bitwarden/angular/auth/functions/unauth-ui
 import {
   authGuard,
   lockGuard,
+  NewDeviceVerificationNoticeGuard,
   redirectGuard,
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
@@ -646,7 +647,7 @@ const routes: Routes = [
     ],
   },
   {
-    path: "blah",
+    path: "new-device-notice",
     component: AnonLayoutWrapperComponent,
     canActivate: [],
     children: [
@@ -675,7 +676,7 @@ const routes: Routes = [
   {
     path: "",
     component: UserLayoutComponent,
-    canActivate: [deepLinkGuard(), authGuard],
+    canActivate: [deepLinkGuard(), authGuard, NewDeviceVerificationNoticeGuard],
     children: [
       {
         path: "vault",
