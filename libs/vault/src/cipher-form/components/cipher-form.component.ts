@@ -209,6 +209,8 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
     // Force change detection so that all child components are destroyed and re-created
     this.changeDetectorRef.detectChanges();
 
+    await this.cipherFormCacheService.init();
+
     this.updatedCipherView = new CipherView();
     this.originalCipherView = null;
     this.cipherForm = this.formBuilder.group<CipherForm>({});
