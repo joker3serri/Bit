@@ -122,18 +122,26 @@ export class SsoComponent implements OnInit {
 
   async ngOnInit() {
     const qParams: QueryParams = await firstValueFrom(this.route.queryParams);
+
     if (this.hasCodeOrStateParams(qParams)) {
       await this.handleCodeAndStateParams(qParams);
-    } else if (this.hasRequiredSsoParams(qParams)) {
+      return;
+    }
+
+    if (this.hasRequiredSsoParams(qParams)) {
       this.setRequiredSsoVariables(qParams);
-    } else if (qParams.identifier != null) {
+      return;
+    }
+
+    if (qParams.identifier != null) {
       // SSO Org Identifier in query params takes precedence over claimed domains
       this.identifierFormControl.setValue(qParams.identifier);
       this.loggingIn = true;
       await this.submit();
-    } else {
-      await this.initializeIdentifierFromEmailOrStorage(qParams);
+      return;
     }
+
+    await this.initializeIdentifierFromEmailOrStorage(qParams);
   }
 
   /**
