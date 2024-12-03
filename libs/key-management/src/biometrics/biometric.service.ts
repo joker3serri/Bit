@@ -23,7 +23,7 @@ export abstract class BiometricsService {
   abstract getBiometricsStatus(): Promise<BiometricsStatus>;
 
   /**
-   * Retreives a userkey for the provided user, as present in the biometrics system.
+   * Retrieves a userkey for the provided user, as present in the biometrics system.
    * THIS NEEDS TO BE VERIFIED FOR RECENCY AND VALIDITY
    * @param userId the user to unlock
    * @returns the user key
