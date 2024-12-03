@@ -54,4 +54,9 @@ export abstract class CipherFormContainer {
    * @param updateFn - A function that takes the current cipherView and returns the updated cipherView
    */
   abstract patchCipher(updateFn: (current: CipherView) => CipherView): void;
+
+  /**
+   * Returns initial values for the input properties of properties
+   */
+  abstract getInitialCipherView(): CipherView | null;
 }
