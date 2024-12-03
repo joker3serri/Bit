@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -34,6 +34,7 @@ import { PasswordRepromptService } from "@bitwarden/vault";
     IconButtonModule,
     TypographyModule,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrashListItemsContainerComponent {
   /**
