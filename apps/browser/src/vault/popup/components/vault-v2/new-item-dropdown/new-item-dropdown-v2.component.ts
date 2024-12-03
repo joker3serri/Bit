@@ -29,7 +29,7 @@ export interface NewItemInitialValues {
 })
 export class NewItemDropdownV2Component implements OnInit {
   cipherType = CipherType;
-
+  private tab?: chrome.tabs.Tab;
   /**
    * Optional initial values to pass to the add cipher form
    */
@@ -45,19 +45,19 @@ export class NewItemDropdownV2Component implements OnInit {
 
   async ngOnInit() {
     this.sshKeysEnabled = await this.configService.getFeatureFlag(FeatureFlag.SSHKeyVaultItem);
+    this.tab = await BrowserApi.getTabFromCurrentWindow();
   }
 
   private async buildQueryParams(type: CipherType): Promise<AddEditQueryParams> {
-    const tab = await BrowserApi.getTabFromCurrentWindow();
     const poppedOut = BrowserPopupUtils.inPopout(window);
 
     const loginDetails: { uri?: string; name?: string } = {};
 
     // When a Login Cipher is created and the extension is not popped out,
     // pass along the uri and name
-    if (!poppedOut && type === CipherType.Login && tab) {
-      loginDetails.uri = tab.url;
-      loginDetails.name = Utils.getHostname(tab.url);
+    if (!poppedOut && type === CipherType.Login && this.tab) {
+      loginDetails.uri = this.tab.url;
+      loginDetails.name = Utils.getHostname(this.tab.url);
     }
 
     return {
@@ -67,10 +67,6 @@ export class NewItemDropdownV2Component implements OnInit {
       folderId: this.initialValues?.folderId,
       ...loginDetails,
     };
-  }
-
-  async newItemNavigate(type: CipherType) {
-    await this.router.navigate(["/add-cipher"], { queryParams: await this.buildQueryParams(type) });
   }
 
   openFolderDialog() {
