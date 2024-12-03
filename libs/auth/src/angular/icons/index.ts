@@ -11,3 +11,4 @@ export * from "./registration-user-add.icon";
 export * from "./registration-lock-alt.icon";
 export * from "./registration-expired-link.icon";
 export * from "./sso-key.icon";
+export * from "./two-factor-timeout.icon";

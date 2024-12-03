@@ -5,6 +5,7 @@ import {
   DesktopDefaultOverlayPosition,
   EnvironmentSelectorComponent,
 } from "@bitwarden/angular/auth/components/environment-selector.component";
+import { TwoFactorTimeoutComponent } from "@bitwarden/angular/auth/components/two-factor-auth/two-factor-auth-expired.component";
 import { unauthUiRefreshSwap } from "@bitwarden/angular/auth/functions/unauth-ui-refresh-route-swap";
 import {
   authGuard,
@@ -36,6 +37,7 @@ import {
   LoginDecryptionOptionsComponent,
   DevicesIcon,
   SsoComponent,
+  TwoFactorTimeoutIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 
@@ -97,6 +99,22 @@ const routes: Routes = [
       ],
     },
   ),
+  {
+    path: "2fa-timeout",
+    component: AnonLayoutWrapperComponent,
+    children: [
+      {
+        path: "",
+        component: TwoFactorTimeoutComponent,
+      },
+    ],
+    data: {
+      pageIcon: TwoFactorTimeoutIcon,
+      pageTitle: {
+        key: "authenticationTimeout",
+      },
+    } satisfies RouteDataProperties & AnonLayoutWrapperData,
+  },
   { path: "register", component: RegisterComponent },
   {
     path: "vault",
