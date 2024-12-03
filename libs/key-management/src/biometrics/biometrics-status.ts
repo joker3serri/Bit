@@ -3,7 +3,7 @@ export enum BiometricsStatus {
   Available,
   /** Biometrics cannot be used, because the userkey needs to first be unlocked by the user's password, because unlock needs some volatile data that is not available on app-start */
   UnlockNeeded,
-  /** Biometric handware is not available (i.e laptop folded shut, sensor unplugged) */
+  /** Biometric hardware is not available (i.e laptop folded shut, sensor unplugged) */
   HardwareUnavailable,
   /** Only relevant for linux, this means that polkit policies need to be set up and that can happen automatically */
   AutoSetupNeeded,
