@@ -12,6 +12,7 @@ import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 
+import { ManageTaxInformationComponent } from "@bitwarden/angular/billing/components";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -27,6 +28,7 @@ import { ProviderResponse } from "@bitwarden/common/admin-console/models/respons
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
 import { TaxServiceAbstraction } from "@bitwarden/common/billing/abstractions/tax.service.abstraction";
 import { PaymentMethodType, PlanType, ProductTierType } from "@bitwarden/common/billing/enums";
+import { TaxInformation } from "@bitwarden/common/billing/models/domain";
 import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/expanded-tax-info-update.request";
 import { PaymentRequest } from "@bitwarden/common/billing/models/request/payment.request";
 import { PreviewOrganizationInvoiceRequest } from "@bitwarden/common/billing/models/request/preview-organization-invoice.request";
@@ -51,7 +53,6 @@ import { OrganizationCreateModule } from "../../admin-console/organizations/crea
 import { BillingSharedModule, secretsManagerSubscribeFormFactory } from "../shared";
 import { PaymentV2Component } from "../shared/payment/payment-v2.component";
 import { PaymentComponent } from "../shared/payment/payment.component";
-import { TaxInfoComponent } from "../shared/tax-info.component";
 
 interface OnSuccessArgs {
   organizationId: string;
@@ -73,7 +74,7 @@ const Allowed2020PlansForLegacyProviders = [
 export class OrganizationPlansComponent implements OnInit, OnDestroy {
   @ViewChild(PaymentComponent) paymentComponent: PaymentComponent;
   @ViewChild(PaymentV2Component) paymentV2Component: PaymentV2Component;
-  @ViewChild(TaxInfoComponent) taxComponent: TaxInfoComponent;
+  @ViewChild(ManageTaxInformationComponent) taxComponent: ManageTaxInformationComponent;
 
   @Input() organizationId?: string;
   @Input() showFree = true;
@@ -94,6 +95,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   private _productTier = ProductTierType.Free;
+
+  protected taxInformation: TaxInformation;
 
   @Input()
   get plan(): PlanType {
@@ -151,8 +154,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   billing: BillingResponse;
   provider: ProviderResponse;
 
-  protected estimatedTax: number;
-  protected total: number;
+  protected estimatedTax: number = 0;
+  protected total: number = 0;
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -187,6 +190,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.organization = await this.organizationService.get(this.organizationId);
       this.billing = await this.organizationApiService.getBilling(this.organizationId);
       this.sub = await this.organizationApiService.getSubscription(this.organizationId);
+      this.taxInformation = await this.organizationApiService.getTaxInfo(this.organizationId);
+    } else {
+      this.taxInformation = await this.apiService.getTaxInfo();
     }
 
     if (!this.selfHosted) {
@@ -561,7 +567,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
   protected changedCountry(): void {
     if (this.deprecateStripeSourcesAPI) {
-      this.paymentV2Component.showBankAccount = this.taxComponent.country === "US";
+      this.paymentV2Component.showBankAccount = this.taxInformation?.country === "US";
       if (
         !this.paymentV2Component.showBankAccount &&
         this.paymentV2Component.selected === PaymentMethodType.BankAccount
@@ -569,7 +575,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         this.paymentV2Component.select(PaymentMethodType.Card);
       }
     } else {
-      this.paymentComponent.hideBank = this.taxComponent.taxFormGroup?.value.country !== "US";
+      this.paymentComponent.hideBank = this.taxInformation?.country !== "US";
       if (
         this.paymentComponent.hideBank &&
         this.paymentComponent.method === PaymentMethodType.BankAccount
@@ -580,7 +586,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected onTaxInformationChanged(): void {
+  protected onTaxInformationChanged(event: TaxInformation): void {
+    this.taxInformation = event;
+    this.changedCountry();
     this.refreshSalesTax();
   }
 
@@ -594,11 +602,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
-    if (this.taxComponent) {
-      if (!this.taxComponent?.taxFormGroup.valid) {
-        this.taxComponent?.taxFormGroup.markAllAsTouched();
-        return;
-      }
+    if (this.taxComponent && !this.taxComponent.validate()) {
+      return;
     }
 
     if (this.singleOrgPolicyBlock) {
@@ -661,9 +666,15 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   };
 
   private refreshSalesTax(): void {
-    if (!this.taxComponent.country || !this.taxComponent.postalCode) {
+    if (this.formGroup.controls.plan.value == PlanType.Free) {
+      this.estimatedTax = 0;
       return;
     }
+
+    if (!this.taxComponent.validate()) {
+      return;
+    }
+
     const request: PreviewOrganizationInvoiceRequest = {
       organizationId: this.organizationId,
       passwordManager: {
@@ -672,9 +683,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         seats: this.formGroup.controls.additionalSeats.value,
       },
       taxInformation: {
-        postalCode: this.taxComponent.postalCode,
-        country: this.taxComponent.country,
-        taxId: this.taxComponent.taxId,
+        postalCode: this.taxInformation.postalCode,
+        country: this.taxInformation.country,
+        taxId: this.taxInformation.taxId,
       },
     };
 
@@ -708,8 +719,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.selectedPlan.PasswordManager.hasPremiumAccessOption &&
       this.formGroup.controls.premiumAccessAddon.value;
     request.planType = this.selectedPlan.type;
-    request.billingAddressCountry = this.taxComponent.taxFormGroup?.value.country;
-    request.billingAddressPostalCode = this.taxComponent.taxFormGroup?.value.postalCode;
+    request.billingAddressCountry = this.taxInformation?.country;
+    request.billingAddressPostalCode = this.taxInformation?.postalCode;
 
     // Secrets Manager
     this.buildSecretsManagerRequest(request);
@@ -718,10 +729,9 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       if (this.deprecateStripeSourcesAPI) {
         const updatePaymentMethodRequest = new UpdatePaymentMethodRequest();
         updatePaymentMethodRequest.paymentSource = await this.paymentV2Component.tokenize();
-        const expandedTaxInfoUpdateRequest = new ExpandedTaxInfoUpdateRequest();
-        expandedTaxInfoUpdateRequest.country = this.taxComponent.country;
-        expandedTaxInfoUpdateRequest.postalCode = this.taxComponent.postalCode;
-        updatePaymentMethodRequest.taxInformation = expandedTaxInfoUpdateRequest;
+        updatePaymentMethodRequest.taxInformation = ExpandedTaxInfoUpdateRequest.From(
+          this.taxInformation,
+        );
         await this.billingApiService.updateOrganizationPaymentMethod(
           this.organizationId,
           updatePaymentMethodRequest,
@@ -731,8 +741,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         const paymentRequest = new PaymentRequest();
         paymentRequest.paymentToken = paymentToken;
         paymentRequest.paymentMethodType = paymentMethodType;
-        paymentRequest.country = this.taxComponent.taxFormGroup?.value.country;
-        paymentRequest.postalCode = this.taxComponent.taxFormGroup?.value.postalCode;
+        paymentRequest.country = this.taxInformation?.country;
+        paymentRequest.postalCode = this.taxInformation?.postalCode;
         await this.organizationApiService.updatePayment(this.organizationId, paymentRequest);
       }
     }
@@ -785,13 +795,13 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
         this.selectedPlan.PasswordManager.hasPremiumAccessOption &&
         this.formGroup.controls.premiumAccessAddon.value;
       request.planType = this.selectedPlan.type;
-      request.billingAddressPostalCode = this.taxComponent.taxFormGroup?.value.postalCode;
-      request.billingAddressCountry = this.taxComponent.taxFormGroup?.value.country;
-      request.taxIdNumber = this.taxComponent.taxFormGroup?.value.taxId;
-      request.billingAddressLine1 = this.taxComponent.taxFormGroup?.value.line1;
-      request.billingAddressLine2 = this.taxComponent.taxFormGroup?.value.line2;
-      request.billingAddressCity = this.taxComponent.taxFormGroup?.value.city;
-      request.billingAddressState = this.taxComponent.taxFormGroup?.value.state;
+      request.billingAddressPostalCode = this.taxInformation?.postalCode;
+      request.billingAddressCountry = this.taxInformation?.country;
+      request.taxIdNumber = this.taxInformation?.taxId;
+      request.billingAddressLine1 = this.taxInformation?.line1;
+      request.billingAddressLine2 = this.taxInformation?.line2;
+      request.billingAddressCity = this.taxInformation?.city;
+      request.billingAddressState = this.taxInformation?.state;
     }
 
     // Secrets Manager
