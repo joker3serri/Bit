@@ -621,23 +621,21 @@ export class OverlayBackground implements OverlayBackgroundInterface {
     return this.inlineMenuFido2Credentials.has(credentialId);
   }
 
-  /**
-   * This function is being updated on PM-15189 and is currently a place holder
-   */
   private isTotpFieldForCurrentField(): boolean {
-    const currentTabId = this.focusedFieldData?.tabId;
-    const currentFrameId = this.focusedFieldData?.frameId;
-
-    if (currentTabId !== undefined && currentFrameId !== undefined) {
-      const pageDetailsMap = this.pageDetailsForTab[currentTabId];
-      const pageDetail = pageDetailsMap?.get(currentFrameId);
-      if (pageDetail) {
-        return pageDetail.details.fields.every((field) =>
-          this.inlineMenuFieldQualificationService.isTotpField(field),
-        );
-      }
+    if (!this.focusedFieldData) {
+      return false;
     }
-    return false;
+    const { tabId, frameId } = this.focusedFieldData;
+    const pageDetailsMap = this.pageDetailsForTab[tabId];
+    if (!pageDetailsMap || !pageDetailsMap.has(frameId)) {
+      return false;
+    }
+    const pageDetail = pageDetailsMap.get(frameId);
+    return (
+      pageDetail?.details?.fields?.every((field) =>
+        this.inlineMenuFieldQualificationService.isTotpField(field),
+      ) || false
+    );
   }
 
   /**
