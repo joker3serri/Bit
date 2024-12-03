@@ -148,12 +148,16 @@ export class InlineMenuFieldQualificationService
   ]);
   private totpFieldAutocompleteValue = "one-time-code";
   private inlineMenuFieldQualificationFlagSet = false;
+  private inlineMenuTotpFeatureFlag = false;
 
   constructor() {
-    void sendExtensionMessage("getInlineMenuFieldQualificationFeatureFlag").then(
-      (getInlineMenuFieldQualificationFlag) =>
-        (this.inlineMenuFieldQualificationFlagSet = !!getInlineMenuFieldQualificationFlag?.result),
-    );
+    void Promise.all([
+      sendExtensionMessage("getInlineMenuFieldQualificationFeatureFlag"),
+      sendExtensionMessage("getInlineMenuTotpFeatureFlag"),
+    ]).then(([fieldQualificationFlag, totpFeatureFlag]) => {
+      this.inlineMenuFieldQualificationFlagSet = !!fieldQualificationFlag?.result;
+      this.inlineMenuTotpFeatureFlag = !!totpFeatureFlag?.result;
+    });
   }
 
   /**
@@ -168,8 +172,10 @@ export class InlineMenuFieldQualificationService
     }
 
     const isTotpField = this.isTotpField(field);
-    if (isTotpField) {
-      return true;
+    if (this.inlineMenuTotpFeatureFlag) {
+      if (isTotpField) {
+        return true;
+      }
     }
 
     const isCurrentPasswordField = this.isCurrentPasswordField(field);

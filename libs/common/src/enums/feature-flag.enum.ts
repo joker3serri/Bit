@@ -39,7 +39,7 @@ export enum FeatureFlag {
   NewDeviceVerificationTemporaryDismiss = "new-device-temporary-dismiss",
   NewDeviceVerificationPermanentDismiss = "new-device-permanent-dismiss",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
-  TotpInlineMenu = "pm-5550-implement-inline-menu-for-totp",
+  InlineMenuTotp = "inline-menu-totp",
   PM11360RemoveProviderExportPermission = "pm-11360-remove-provider-export-permission",
 }
 
@@ -90,7 +90,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.NewDeviceVerificationTemporaryDismiss]: FALSE,
   [FeatureFlag.NewDeviceVerificationPermanentDismiss]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
-  [FeatureFlag.TotpInlineMenu]: FALSE,
+  [FeatureFlag.InlineMenuTotp]: FALSE,
   [FeatureFlag.PM11360RemoveProviderExportPermission]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
