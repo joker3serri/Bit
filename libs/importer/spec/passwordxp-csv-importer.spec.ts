@@ -56,6 +56,12 @@ describe("PasswordXPCsvImporter", () => {
     expect(result.success).toBe(false);
   });
 
+  it("should return success false if CSV headers did not get translated", async () => {
+    const data = germanHeaders.replace("Titel;", "UnknownTitle;");
+    const result: ImportResult = await importer.parse(data);
+    expect(result.success).toBe(false);
+  });
+
   it("should skip rows starting with >>>", async () => {
     const result: ImportResult = await importer.parse(noFolder);
     expect(result.success).toBe(true);

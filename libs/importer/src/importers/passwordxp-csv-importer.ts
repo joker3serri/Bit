@@ -55,6 +55,13 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
       result.success = false;
       return Promise.resolve(result);
     }
+
+    // If the first row (header check) does not contain the column "Title", then the data is invalid (no translation found)
+    if (!results[0].Title) {
+      result.success = false;
+      return Promise.resolve(result);
+    }
+
     let currentFolderName = "";
     results.forEach((row) => {
       // Skip rows starting with '>>>' as they indicate items following have no folder assigned to them
