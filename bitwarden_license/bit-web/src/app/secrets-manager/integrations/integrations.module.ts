@@ -1,15 +1,15 @@
 import { NgModule } from "@angular/core";
 
+import { SharedIntegrationsModule } from "@bitwarden/web-vault/app/shared/components/integrations/integrations.module";
+
 import { SecretsManagerSharedModule } from "../shared/sm-shared.module";
 
-import { IntegrationCardComponent } from "./integration-card/integration-card.component";
-import { IntegrationGridComponent } from "./integration-grid/integration-grid.component";
 import { IntegrationsRoutingModule } from "./integrations-routing.module";
 import { IntegrationsComponent } from "./integrations.component";
 
 @NgModule({
-  imports: [SecretsManagerSharedModule, IntegrationsRoutingModule],
-  declarations: [IntegrationsComponent, IntegrationGridComponent, IntegrationCardComponent],
+  imports: [SecretsManagerSharedModule, IntegrationsRoutingModule, SharedIntegrationsModule],
+  declarations: [IntegrationsComponent],
   providers: [],
 })
 export class IntegrationsModule {}

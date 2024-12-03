@@ -2,10 +2,10 @@ import { Component, Input } from "@angular/core";
 
 import { IntegrationType } from "@bitwarden/common/enums";
 
-import { Integration } from "../models/integration";
+import { Integration } from "../models";
 
 @Component({
-  selector: "sm-integration-grid",
+  selector: "integration-grid",
   templateUrl: "./integration-grid.component.html",
 })
 export class IntegrationGridComponent {

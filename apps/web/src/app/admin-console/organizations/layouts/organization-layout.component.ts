@@ -47,6 +47,10 @@ export class OrganizationLayoutComponent implements OnInit {
 
   protected orgFilter = (org: Organization) => canAccessOrgAdmin(org);
 
+  protected integrations$ = this.configService.getFeatureFlag$(
+    FeatureFlag.PM14505AdminConsoleIntegrationPage,
+  );
+
   organization$: Observable<Organization>;
   canAccessExport$: Observable<boolean>;
   showPaymentAndHistory$: Observable<boolean>;

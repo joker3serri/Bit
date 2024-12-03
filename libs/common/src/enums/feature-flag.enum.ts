@@ -40,6 +40,7 @@ export enum FeatureFlag {
   NewDeviceVerificationPermanentDismiss = "new-device-permanent-dismiss",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
   PM11360RemoveProviderExportPermission = "pm-11360-remove-provider-export-permission",
+  PM14505AdminConsoleIntegrationPage = "pm-14505-admin-console-integration-page",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -90,6 +91,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.NewDeviceVerificationPermanentDismiss]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
   [FeatureFlag.PM11360RemoveProviderExportPermission]: FALSE,
+  [FeatureFlag.PM14505AdminConsoleIntegrationPage]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;

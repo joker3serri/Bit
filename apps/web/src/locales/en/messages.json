@@ -6822,7 +6822,7 @@
     "description": "The text, 'SCIM', is an acronym and should not be translated."
   },
   "scimDescription": {
-    "message": "Automatically provision users and groups with your preferred identity provider via SCIM provisioning",
+    "message": "Automatically provision users and groups with your preferred identity provider via SCIM provisioning. Find supported integrations",
     "description": "the text, 'SCIM', is an acronym and should not be translated."
   },
   "scimEnabledCheckboxDesc": {
@@ -9018,6 +9018,54 @@
   },
   "sdksDesc": {
     "message": "Use Bitwarden Secrets Manager SDK in the following programming languages to build your own applications."
+  },
+  "singleSignOn": {
+    "message": "Single sign-on"
+  },
+  "ssoDescStart": {
+    "message": "Configure"
+  },
+  "ssoDescAnchor": {
+    "message": "single sign-on"
+  },
+  "ssoDescEnd": {
+    "message": "for Bitwarden using the implementation guide for your Identity Provider."
+  },
+  "userProvisioning":{
+    "message": "User provisioning"
+  },
+  "scim": {
+    "message": "SCIM"
+  },
+  "scimDesc": {
+    "message": "Configure SCIM (System for Cross-domain Identity Management) to automatically provision users and groups to Bitwarden using the implementation guide for your Identity Provider."
+  },
+  "bwdc":{
+    "message": "Bitwarden Directory Connector"
+  },
+  "bwdcDesc": {
+    "message": "Configure Bitwarden Directory Connector to automatically provision users and groups using the implementation guide for your Identity Provider."
+  },
+  "eventManagement":{
+    "message": "Event management"
+  },
+  "eventManagementDesc":{
+    "message": "Integrate Bitwarden event logs with your SIEM (system information and event management) system by using the implementation guide for your platform."
+  },
+  "deviceManagement":{
+    "message": "Device management"
+  },
+  "deviceManagementDesc":{
+    "message": "Configure device management for Bitwarden using the implementation guide for your platform."
+  },
+  "integrationCardTooltip":{
+    "message": "Launch $INTEGRATION$ implementation guide.",
+    "placeholders": {
+      "integration": {
+        "content": "$1",
+        "example": "Google"
+      }
+    }
   },
   "setUpGithubActions": {
     "message": "Set up Github Actions"

@@ -14,7 +14,7 @@ import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 
 @Component({
-  selector: "sm-integration-card",
+  selector: "integration-card",
   templateUrl: "./integration-card.component.html",
 })
 export class IntegrationCardComponent implements AfterViewInit, OnDestroy {
