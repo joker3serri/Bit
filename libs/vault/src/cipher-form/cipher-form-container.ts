@@ -12,7 +12,6 @@ import { SshKeySectionComponent } from "./components/sshkey-section/sshkey-secti
 
 /**
  * The complete form for a cipher. Includes all the sub-forms from their respective section components.
- * TODO: Add additional form sections as they are implemented.
  */
 export type CipherForm = {
   itemDetails?: ItemDetailsSectionComponent["itemDetailsForm"];
