@@ -25,10 +25,16 @@ describe("ItemDetailsSectionComponent", () => {
 
   const activeAccount$ = new BehaviorSubject<{ email: string }>({ email: "test@example.com" });
   const getInitialCipherView = jest.fn(() => null);
+  const initializedWithCachedCipher = jest.fn(() => false);
 
   beforeEach(async () => {
     getInitialCipherView.mockClear();
-    cipherFormProvider = mock<CipherFormContainer>({ getInitialCipherView });
+    initializedWithCachedCipher.mockClear();
+
+    cipherFormProvider = mock<CipherFormContainer>({
+      getInitialCipherView,
+      initializedWithCachedCipher,
+    });
     i18nService = mock<I18nService>();
 
     await TestBed.configureTestingModule({
@@ -246,8 +252,11 @@ describe("ItemDetailsSectionComponent", () => {
   });
 
   describe("cloneMode", () => {
-    it("should append '- Clone' to the title if in clone mode", async () => {
+    beforeEach(() => {
       component.config.mode = "clone";
+    });
+
+    it("should append '- Clone' to the title if in clone mode", async () => {
       component.config.allowPersonalOwnership = true;
       const cipher = {
         name: "cipher1",
@@ -266,8 +275,28 @@ describe("ItemDetailsSectionComponent", () => {
       expect(component.itemDetailsForm.controls.name.value).toBe("cipher1 - Clone");
     });
 
+    it("does not append clone when the cipher was populated from the cache", async () => {
+      component.config.allowPersonalOwnership = true;
+      const cipher = {
+        name: "from cache cipher",
+        organizationId: null,
+        folderId: null,
+        collectionIds: null,
+        favorite: false,
+      } as CipherView;
+
+      getInitialCipherView.mockReturnValueOnce(cipher);
+
+      initializedWithCachedCipher.mockReturnValueOnce(true);
+
+      i18nService.t.calledWith("clone").mockReturnValue("Clone");
+
+      await component.ngOnInit();
+
+      expect(component.itemDetailsForm.controls.name.value).toBe("from cache cipher");
+    });
+
     it("should select the first organization if personal ownership is not allowed", async () => {
-      component.config.mode = "clone";
       component.config.allowPersonalOwnership = false;
       component.config.organizations = [
         { id: "org1" } as Organization,

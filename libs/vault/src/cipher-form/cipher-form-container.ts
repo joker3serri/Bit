@@ -59,4 +59,7 @@ export abstract class CipherFormContainer {
    * Returns initial values for the CipherView, either from the config or the cached cipher
    */
   abstract getInitialCipherView(): CipherView | null;
+
+  /** Returns true when the `CipherFormContainer` was initialized with a cached cipher available. */
+  abstract initializedWithCachedCipher(): boolean;
 }

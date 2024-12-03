@@ -221,11 +221,15 @@ export class ItemDetailsSectionComponent implements OnInit {
       favorite: prefillCipher.favorite,
     });
 
+    const initializedWithCachedCipher = this.cipherFormContainer.initializedWithCachedCipher();
+
     // Configure form for clone mode.
     if (this.config.mode === "clone") {
-      this.itemDetailsForm.controls.name.setValue(
-        prefillCipher.name + " - " + this.i18nService.t("clone"),
-      );
+      if (!initializedWithCachedCipher) {
+        this.itemDetailsForm.controls.name.setValue(
+          prefillCipher.name + " - " + this.i18nService.t("clone"),
+        );
+      }
 
       if (!this.allowPersonalOwnership && prefillCipher.organizationId == null) {
         this.itemDetailsForm.controls.organizationId.setValue(this.defaultOwner);
