@@ -8,6 +8,35 @@ import { Importer } from "./importer";
 
 const _mappedColumns = new Set(["Title", "Username", "URL", "Password", "Description"]);
 
+/* Translates the headers from non-English to English
+ * This is necessary because the parser only maps English headers to ciphers
+ * Currently only supports German and Dutch translations
+ */
+function translateIntoEnglishHeaders(header: string): string {
+  const translations: { [key: string]: string } = {
+    Titel: "Title",
+    // The header column 'User name' is parsed by the parser, but cannot be used as a variable. This converts it to a valid variable name, prior to parsing.
+    "User name": "Username",
+    Benutzername: "Username",
+    Gebruikersnaam: "Username",
+    Konto: "Account",
+    Passwort: "Password",
+    Wachtwoord: "Password",
+    "Geändert am": "Modified",
+    Gewijzigd: "Modified",
+    "Erstellt am": "Created",
+    Gemaakt: "Created",
+    "Läuft ab am": "Expire on",
+    "Verloopt op": "Expire on",
+    Beschreibung: "Description",
+    Beschrijving: "Description",
+    "Geändert von": "Modified by",
+    "Gewijzigd door": "Modified by",
+  };
+
+  return translations[header] || header;
+}
+
 /**
  * PasswordXP CSV importer
  */
@@ -17,11 +46,11 @@ export class PasswordXPCsvImporter extends BaseImporter implements Importer {
    * @param data
    */
   parse(data: string): Promise<ImportResult> {
-    // The header column 'User name' is parsed by the parser, but cannot be used as a variable. This converts it to a valid variable name, prior to parsing.
-    data = data.replace(";User name;", ";Username;");
-
     const result = new ImportResult();
-    const results = this.parseCsv(data, true, { skipEmptyLines: true });
+    const results = this.parseCsv(data, true, {
+      skipEmptyLines: true,
+      transformHeader: translateIntoEnglishHeaders,
+    });
     if (results == null) {
       result.success = false;
       return Promise.resolve(result);
