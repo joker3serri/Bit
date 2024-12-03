@@ -158,7 +158,7 @@ export class MainBiometricsService extends DesktopBiometricsService {
   }
 
   /**
-   * Get whether to auto-prompt the user for biometric unlock; If the user is auto-prompted, setAutopromptNow should be immediately called with false in order to prevent another auto-prompt.
+   * Get whether to auto-prompt the user for biometric unlock; If the user is auto-prompted, setShouldAutopromptNow should be immediately called with false in order to prevent another auto-prompt.
    * @returns Whether to auto-prompt the user for biometric unlock
    */
   async getShouldAutopromptNow(): Promise<boolean> {
