@@ -74,6 +74,7 @@ describe("ViewV2Component", () => {
     mockNavigate.mockClear();
     collect.mockClear();
     doAutofill.mockClear();
+    copy.mockClear();
 
     await TestBed.configureTestingModule({
       imports: [ViewV2Component],
