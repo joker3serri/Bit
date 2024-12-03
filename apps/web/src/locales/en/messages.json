@@ -3875,7 +3875,7 @@
     "placeholders": {
       "count": {
         "content": "$1",
-        "example": "You must set up 2FA on your user account before you can join this organization."
+        "example": "remaining days"
       }
     }
   },
@@ -3884,11 +3884,11 @@
     "placeholders": {
       "count": {
         "content": "$2",
-        "example": "organization name"
+        "example": "remaining days"
       },
       "organization": {
         "content": "$1",
-        "example": "remaining days"
+        "example": "organization name"
       }
     }
   },
@@ -3917,7 +3917,7 @@
     "message": "Your free trial ends today."
   },
   "clickHereToAddPaymentMethod": {
-    "message": "Click here add a payment method."
+    "message": "Click here to add a payment method."
   },
   "joinOrganization": {
     "message": "Join organization"
