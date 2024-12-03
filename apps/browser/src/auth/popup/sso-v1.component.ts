@@ -29,7 +29,7 @@ import { BrowserApi } from "../../platform/browser/browser-api";
 
 @Component({
   selector: "app-sso",
-  templateUrl: "sso.component.html",
+  templateUrl: "sso-v1.component.html",
 })
 export class SsoComponentV1 extends BaseSsoComponent {
   constructor(

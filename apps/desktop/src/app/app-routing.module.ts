@@ -50,7 +50,7 @@ import { LoginViaAuthRequestComponentV1 } from "../auth/login/login-via-auth-req
 import { RegisterComponent } from "../auth/register.component";
 import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
-import { SsoComponentV1 } from "../auth/sso.component";
+import { SsoComponentV1 } from "../auth/sso-v1.component";
 import { TwoFactorAuthComponent } from "../auth/two-factor-auth.component";
 import { TwoFactorComponent } from "../auth/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
