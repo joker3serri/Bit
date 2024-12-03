@@ -358,10 +358,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
       });
 
     this.supportsBiometric =
-      (await this.biometricsService.getBiometricsStatus()) == BiometricsStatus.Available;
+      (await this.biometricsService.getBiometricsStatus()) === BiometricsStatus.Available;
     this.timerId = setInterval(async () => {
       this.supportsBiometric =
-        (await this.biometricsService.getBiometricsStatus()) == BiometricsStatus.Available;
+        (await this.biometricsService.getBiometricsStatus()) === BiometricsStatus.Available;
     }, 1000);
   }
 
