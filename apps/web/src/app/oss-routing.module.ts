@@ -467,6 +467,7 @@ const routes: Routes = [
             pageSubtitle: {
               key: "singleSignOnEnterOrgIdentifierText",
             },
+            titleAreaMaxWidth: "md",
             pageIcon: SsoKeyIcon,
           } satisfies RouteDataProperties & AnonLayoutWrapperData,
           children: [
