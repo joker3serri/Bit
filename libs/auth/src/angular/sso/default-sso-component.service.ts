@@ -7,11 +7,6 @@ export class DefaultSsoComponentService implements SsoComponentService {
   clientId: SsoClientType;
 
   /**
-   * The redirect URI for the SSO component service.
-   */
-  redirectUri: string;
-
-  /**
    * Default no-op implementation as extension and desktop don't need to set cookies.
    */
   setDocumentCookies(): void {}

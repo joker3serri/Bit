@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import {
@@ -23,7 +22,6 @@ export class ExtensionSsoComponentService
   implements SsoComponentService
 {
   clientId: SsoClientType;
-  redirectUri: string;
 
   constructor(
     private syncService: SyncService,
@@ -35,10 +33,6 @@ export class ExtensionSsoComponentService
   ) {
     super();
     this.clientId = ClientType.Browser;
-
-    environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
-      this.redirectUri = env.getWebVaultUrl() + "/sso-connector.html";
-    });
 
     /**
      * Closes the popup window after a successful login.

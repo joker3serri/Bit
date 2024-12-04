@@ -59,10 +59,6 @@ describe("ExtensionSsoComponentService", () => {
     expect(service.clientId).toBe(ClientType.Browser);
   });
 
-  it("sets redirectUri based on environment", () => {
-    expect(service.redirectUri).toBe(`${baseUrl}/sso-connector.html`);
-  });
-
   describe("closeWindow", () => {
     it("closes window", async () => {
       await service.closeWindow();

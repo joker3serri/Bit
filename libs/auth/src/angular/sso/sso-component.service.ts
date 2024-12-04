@@ -12,11 +12,6 @@ export abstract class SsoComponentService {
   clientId: SsoClientType;
 
   /**
-   * The redirect URI for the SSO component service.
-   */
-  redirectUri: string;
-
-  /**
    * Sets the cookies for the SSO component service.
    */
   setDocumentCookies?(): void;

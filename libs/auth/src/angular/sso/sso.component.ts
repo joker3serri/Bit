@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule, NavigationExtras } from "@angular/router";
 import { firstValueFrom } from "rxjs";
@@ -117,7 +118,9 @@ export class SsoComponent implements OnInit {
     private ssoComponentService: SsoComponentService,
     private syncService: SyncService,
   ) {
-    this.redirectUri = window.location.origin + "/sso-connector.html";
+    environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
+      this.redirectUri = env.getWebVaultUrl() + "/sso-connector.html";
+    });
   }
 
   async ngOnInit() {
@@ -194,10 +197,6 @@ export class SsoComponent implements OnInit {
 
     if (qParams.redirectUri != null) {
       this.redirectUri = qParams.redirectUri;
-    }
-
-    if (this.ssoComponentService.redirectUri != null) {
-      this.redirectUri = this.ssoComponentService.redirectUri;
     }
 
     if (

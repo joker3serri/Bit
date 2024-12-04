@@ -21,11 +21,6 @@ export class WebSsoComponentService
    */
   clientId: SsoClientType;
 
-  /**
-   * The redirect URI for the SSO component service.
-   */
-  redirectUri: string;
-
   constructor(private i18nService: I18nService) {
     super();
     this.clientId = ClientType.Web;

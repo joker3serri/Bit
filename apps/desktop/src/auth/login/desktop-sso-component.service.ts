@@ -20,11 +20,6 @@ export class DesktopSsoComponentService
    */
   clientId: SsoClientType;
 
-  /**
-   * The redirect URI for the SSO component service.
-   */
-  redirectUri: string;
-
   constructor() {
     super();
     this.clientId = ClientType.Desktop;
