@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::sync::{atomic::{AtomicBool, AtomicU32}, Arc};
 
 use tokio::sync::Mutex;
 use tokio_util::sync::CancellationToken;
@@ -22,10 +22,10 @@ pub struct BitwardenDesktopAgent {
     cancellation_token: CancellationToken,
     show_ui_request_tx: tokio::sync::mpsc::Sender<SshAgentUIRequest>,
     get_ui_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
-    request_id: Arc<Mutex<u32>>,
+    request_id: Arc<AtomicU32>,
     /// before first unlock, or after account switching, listing keys should require an unlock to get a list of public keys
-    needs_unlock: Arc<Mutex<bool>>,
-    is_running: Arc<tokio::sync::Mutex<bool>>,
+    needs_unlock: Arc<AtomicBool>,
+    is_running: Arc<AtomicBool>,
 }
 
 pub struct SshAgentUIRequest {
@@ -37,7 +37,7 @@ pub struct SshAgentUIRequest {
 
 impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
     async fn confirm(&self, ssh_key: Key, info: &peerinfo::models::PeerInfo) -> bool {
-        if !*self.is_running.lock().await {
+        if self.is_running.load(std::sync::atomic::Ordering::Relaxed) {
             println!("[BitwardenDesktopAgent] Agent is not running, but tried to call confirm");
             return false;
         }
@@ -64,7 +64,7 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
     }
 
     async fn can_list(&self, info: &peerinfo::models::PeerInfo) -> bool {
-        if !*self.needs_unlock.lock().await{
+        if !self.needs_unlock.load(std::sync::atomic::Ordering::Relaxed) {
             return true;
         }
 
@@ -92,13 +92,12 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
 
 impl BitwardenDesktopAgent {
     pub fn stop(&self) {
-        if !*self.is_running.blocking_lock() {
+        if self.is_running.load(std::sync::atomic::Ordering::Relaxed) {
             println!("[BitwardenDesktopAgent] Tried to stop agent while it is not running");
             return;
         }
 
-        *self.is_running.blocking_lock() = false;
-        self.cancellation_token.cancel();
+        self.is_running.store(false, std::sync::atomic::Ordering::Relaxed);
         self.keystore
             .0
             .write()
@@ -110,7 +109,7 @@ impl BitwardenDesktopAgent {
         &mut self,
         new_keys: Vec<(String, String, String)>,
     ) -> Result<(), anyhow::Error> {
-        if !*self.is_running.blocking_lock() {
+        if self.is_running.load(std::sync::atomic::Ordering::Relaxed) {
             return Err(anyhow::anyhow!(
                 "[BitwardenDesktopAgent] Tried to set keys while agent is not running"
             ));
@@ -119,7 +118,7 @@ impl BitwardenDesktopAgent {
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
 
-        *self.needs_unlock.blocking_lock() = false;
+        self.needs_unlock.store(true, std::sync::atomic::Ordering::Relaxed);
 
         for (key, name, cipher_id) in new_keys.iter() {
             match parse_key_safe(&key) {
@@ -147,7 +146,7 @@ impl BitwardenDesktopAgent {
     }
 
     pub fn lock(&mut self) -> Result<(), anyhow::Error> {
-        if !*self.is_running.blocking_lock() {
+        if self.is_running.load(std::sync::atomic::Ordering::Relaxed) {
             return Err(anyhow::anyhow!(
                 "[BitwardenDesktopAgent] Tried to lock agent, but it is not running"
             ));
@@ -168,24 +167,23 @@ impl BitwardenDesktopAgent {
     pub fn clear_keys(&mut self) -> Result<(), anyhow::Error> {
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
-        *self.needs_unlock.blocking_lock() = true;
+        self.needs_unlock.store(true, std::sync::atomic::Ordering::Relaxed);
 
         Ok(())
     }
 
     async fn get_request_id(&self) -> u32 {
-        if !*self.is_running.lock().await {
+        if self.is_running.load(std::sync::atomic::Ordering::Relaxed) {
             println!("[BitwardenDesktopAgent] Agent is not running, but tried to get request id");
             return 0;
         }
 
-        let mut request_id = self.request_id.lock().await;
-        *request_id += 1;
-        *request_id
+        let request_id = self.request_id.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        request_id
     }
 
     pub fn is_running(self) -> bool {
-        return self.is_running.blocking_lock().clone();
+        self.is_running.load(std::sync::atomic::Ordering::Relaxed)
     }
 }
 

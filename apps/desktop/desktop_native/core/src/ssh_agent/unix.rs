@@ -2,7 +2,7 @@ use std::{
     collections::HashMap,
     fs,
     os::unix::fs::PermissionsExt,
-    sync::{Arc, RwLock},
+    sync::{atomic::{AtomicBool, AtomicU32}, Arc, RwLock},
 };
 
 use bitwarden_russh::ssh_agent;
@@ -24,9 +24,9 @@ impl BitwardenDesktopAgent{
             cancellation_token: CancellationToken::new(),
             show_ui_request_tx: auth_request_tx,
             get_ui_response_rx: auth_response_rx,
-            request_id: Arc::new(tokio::sync::Mutex::new(0)),
-            needs_unlock: Arc::new(tokio::sync::Mutex::new(true)),
-            is_running: Arc::new(tokio::sync::Mutex::new(false)),
+            request_id: Arc::new(AtomicU32::new(0)),
+            needs_unlock: Arc::new(AtomicBool::new(false)),
+            is_running: Arc::new(AtomicBool::new(false)),
         };
         let cloned_agent_state = agent.clone();
         tokio::spawn(async move {
@@ -81,7 +81,7 @@ impl BitwardenDesktopAgent{
 
                     let cloned_keystore = cloned_agent_state.keystore.clone();
                     let cloned_cancellation_token = cloned_agent_state.cancellation_token.clone();
-                    *cloned_agent_state.is_running.lock().await = true;
+                    cloned_agent_state.is_running.store(true, std::sync::atomic::Ordering::Relaxed);
                     let _ = ssh_agent::serve(
                 stream,
                         cloned_agent_state.clone(),
@@ -89,7 +89,7 @@ impl BitwardenDesktopAgent{
                         cloned_cancellation_token,
                     )
                     .await;
-                    *cloned_agent_state.is_running.lock().await = false;
+                    cloned_agent_state.is_running.store(false, std::sync::atomic::Ordering::Relaxed);
                     println!("[SSH Agent Native Module] SSH Agent server exited");
                 }
                 Err(e) => {
