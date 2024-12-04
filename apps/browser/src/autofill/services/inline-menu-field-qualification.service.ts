@@ -148,7 +148,7 @@ export class InlineMenuFieldQualificationService
   ]);
   private totpFieldAutocompleteValue = "one-time-code";
   private inlineMenuFieldQualificationFlagSet = false;
-  private inlineMenuTotpFeatureFlag = false;
+  private inlineMenuTotpFeatureFlag = true;
 
   constructor() {
     void Promise.all([
@@ -156,7 +156,6 @@ export class InlineMenuFieldQualificationService
       sendExtensionMessage("getInlineMenuTotpFeatureFlag"),
     ]).then(([fieldQualificationFlag, totpFeatureFlag]) => {
       this.inlineMenuFieldQualificationFlagSet = !!fieldQualificationFlag?.result;
-      this.inlineMenuTotpFeatureFlag = !!totpFeatureFlag?.result;
     });
   }
 

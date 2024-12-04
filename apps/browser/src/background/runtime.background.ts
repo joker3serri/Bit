@@ -197,7 +197,7 @@ export default class RuntimeBackground {
         return await this.configService.getFeatureFlag(FeatureFlag.InlineMenuFieldQualification);
       }
       case "getInlineMenuTotpFeatureFlag": {
-        return await this.configService.getFeatureFlag(FeatureFlag.InlineMenuTotp);
+        return true;
       }
     }
   }
