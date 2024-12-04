@@ -281,6 +281,7 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
     // If the cipher was newly created (via add/clone), switch the form to edit for subsequent edits.
     if (this._originalFormMode === "add" || this._originalFormMode === "clone") {
       this.formConfig.mode = "edit";
+      this.formConfig.initialValues = null;
     }
 
     let cipher = await this.cipherService.get(cipherView.id);
