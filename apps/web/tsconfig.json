@@ -30,12 +30,7 @@
       "@bitwarden/tools-card": ["../../libs/tools/card/src"],
       "@bitwarden/vault": ["../../libs/vault/src"],
       "@bitwarden/web-vault/*": ["src/*"]
-    },
-    "plugins": [
-      {
-        "name": "typescript-strict-plugin"
-      }
-    ]
+    }
   },
   "angularCompilerOptions": {
     "strictTemplates": true,
