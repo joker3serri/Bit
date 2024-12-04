@@ -48,6 +48,7 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -81,7 +82,7 @@ import {
   PasswordRepromptService,
 } from "@bitwarden/vault";
 
-import { GroupService, GroupView } from "../../admin-console/organizations/core";
+import { GroupApiService, GroupView } from "../../admin-console/organizations/core";
 import { openEntityEventsDialog } from "../../admin-console/organizations/manage/entity-events.component";
 import { TrialFlowService } from "../../billing/services/trial-flow.service";
 import { FreeTrial } from "../../core/types/free-trial";
@@ -178,6 +179,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected selectedCollection: TreeNode<CollectionAdminView> | undefined;
   protected isEmpty: boolean;
   protected showCollectionAccessRestricted: boolean;
+  private hasSubscription$ = new BehaviorSubject<boolean>(false);
   protected currentSearchText$: Observable<string>;
   protected freeTrial$: Observable<FreeTrial>;
   /**
@@ -197,10 +199,15 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected addAccessStatus$ = new BehaviorSubject<AddAccessStatusType>(0);
   private extensionRefreshEnabled: boolean;
   private vaultItemDialogRef?: DialogRef<VaultItemDialogResult> | undefined;
+
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
     filter((organizations) => organizations.length === 1),
-    switchMap(([organization]) =>
+    map(([organization]) => organization),
+    switchMap((organization) =>
       from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
+        tap((organizationMetaData) => {
+          this.hasSubscription$.next(organizationMetaData.hasSubscription);
+        }),
         switchMap((organizationMetaData) =>
           from(
             this.trialFlowService.handleUnpaidSubscriptionDialog(
@@ -234,7 +241,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private collectionAdminService: CollectionAdminService,
     private searchService: SearchService,
     private searchPipe: SearchPipe,
-    private groupService: GroupService,
+    private groupService: GroupApiService,
     private logService: LogService,
     private eventCollectionService: EventCollectionService,
     private totpService: TotpService,
@@ -246,6 +253,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private organizationApiService: OrganizationApiServiceAbstraction,
     private trialFlowService: TrialFlowService,
     protected billingApiService: BillingApiServiceAbstraction,
+    private organizationBillingService: OrganizationBillingServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -580,21 +588,20 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.unpaidSubscriptionDialog$.pipe(takeUntil(this.destroy$)).subscribe();
 
-    this.freeTrial$ = organization$.pipe(
-      filter((org) => org.isOwner),
-      switchMap((org) =>
+    this.freeTrial$ = combineLatest([
+      organization$,
+      this.hasSubscription$.pipe(filter((hasSubscription) => hasSubscription !== null)),
+    ]).pipe(
+      filter(([org, hasSubscription]) => org.isOwner && hasSubscription),
+      switchMap(([org]) =>
         combineLatest([
           of(org),
           this.organizationApiService.getSubscription(org.id),
-          this.organizationApiService.getBilling(org.id),
+          this.organizationBillingService.getPaymentSource(org.id),
         ]),
       ),
-      map(([org, sub, billing]) => {
-        return this.trialFlowService.checkForOrgsWithUpcomingPaymentIssues(
-          org,
-          sub,
-          billing?.paymentSource,
-        );
+      map(([org, sub, paymentSource]) => {
+        return this.trialFlowService.checkForOrgsWithUpcomingPaymentIssues(org, sub, paymentSource);
       }),
     );
 

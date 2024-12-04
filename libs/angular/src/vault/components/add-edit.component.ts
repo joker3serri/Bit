@@ -699,7 +699,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   protected saveCipher(cipher: Cipher) {
-    const isNotClone = this.editMode && !this.cloneMode;
     let orgAdmin = this.organization?.canEditAllCiphers;
 
     // if a cipher is unassigned we want to check if they are an admin or have permission to edit any collection
@@ -709,19 +708,30 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
     return this.cipher.id == null
       ? this.cipherService.createWithServer(cipher, orgAdmin)
-      : this.cipherService.updateWithServer(cipher, orgAdmin, isNotClone);
+      : this.cipherService.updateWithServer(cipher, orgAdmin);
   }
 
   protected deleteCipher() {
-    const asAdmin = this.organization?.canEditAllCiphers || !this.cipher.collectionIds;
     return this.cipher.isDeleted
-      ? this.cipherService.deleteWithServer(this.cipher.id, asAdmin)
-      : this.cipherService.softDeleteWithServer(this.cipher.id, asAdmin);
+      ? this.cipherService.deleteWithServer(this.cipher.id, this.asAdmin)
+      : this.cipherService.softDeleteWithServer(this.cipher.id, this.asAdmin);
   }
 
   protected restoreCipher() {
-    const asAdmin = this.organization?.canEditAllCiphers;
-    return this.cipherService.restoreWithServer(this.cipher.id, asAdmin);
+    return this.cipherService.restoreWithServer(this.cipher.id, this.asAdmin);
+  }
+
+  /**
+   * Determines if a cipher must be deleted as an admin by belonging to an organization and being unassigned to a collection.
+   */
+  get asAdmin(): boolean {
+    return (
+      this.cipher.organizationId !== null &&
+      this.cipher.organizationId.length > 0 &&
+      (this.organization?.canEditAllCiphers ||
+        !this.cipher.collectionIds ||
+        this.cipher.collectionIds.length === 0)
+    );
   }
 
   get defaultOwnerId(): string | null {
