@@ -41,6 +41,7 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
 
   organizationId: string;
   orgDomains$: Observable<OrganizationDomainResponse[]>;
+  accountDeprovisioningEnabled: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -56,6 +57,9 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   async ngOnInit() {
+    this.accountDeprovisioningEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.AccountDeprovisioning,
+    );
     this.orgDomains$ = this.orgDomainService.orgDomains$;
 
     // Note: going to use concatMap as async subscribe blocks don't work as you expect and
@@ -167,13 +171,18 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
         this.toastService.showToast({
           variant: "success",
           title: null,
-          message: this.i18nService.t("domainClaimed"),
+          message: this.i18nService.t(
+            this.accountDeprovisioningEnabled ? "domainClaimed" : "domainVerified",
+          ),
         });
       } else {
         this.toastService.showToast({
           variant: "error",
           title: null,
-          message: this.i18nService.t("domainNotClaimed", domainName),
+          message: this.i18nService.t(
+            this.accountDeprovisioningEnabled ? "domainNotClaimed" : "domainNotVerified",
+            domainName,
+          ),
         });
         // Update this item so the last checked date gets updated.
         await this.updateOrgDomain(orgDomainId);
