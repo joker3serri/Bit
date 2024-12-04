@@ -106,8 +106,6 @@ export class vNextManageClientsComponent implements OnInit {
       });
   }
 
-  removeMonthly = (plan: string) => plan.replace(" (Monthly)", "");
-
   async load() {
     this.provider = await firstValueFrom(this.providerService.get$(this.providerId));
 
@@ -116,6 +114,8 @@ export class vNextManageClientsComponent implements OnInit {
     this.clients = (
       await this.billingApiService.getProviderClientOrganizations(this.providerId)
     ).data;
+
+    this.clients.map((client) => (client.plan = client.plan.replace(" (Monthly)", "")));
 
     this.dataSource.data = this.clients;
 
