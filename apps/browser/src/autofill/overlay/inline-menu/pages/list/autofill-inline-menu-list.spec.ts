@@ -158,7 +158,7 @@ describe("AutofillInlineMenuList", () => {
 
         const cipherSubtitleElement = autofillInlineMenuList[
           "inlineMenuListContainer"
-        ].querySelector(".cipher-subtitle.totp-sub-text");
+        ].querySelector('[data-testid="totp-code"]');
 
         expect(autofillInlineMenuList["inlineMenuListContainer"]).toMatchSnapshot();
         expect(cipherSubtitleElement).not.toBeNull();

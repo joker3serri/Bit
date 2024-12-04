@@ -1188,6 +1188,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     const formattedTotpCode = `${totpCode.substring(0, 3)} ${totpCode.substring(3)}`;
 
     const containerElement = globalThis.document.createElement("div");
+    containerElement.classList.add("cipher-details");
     const totpHeading = document.createElement("span");
     totpHeading.classList.add("cipher-name");
     totpHeading.textContent = this.getTranslation("fillVerificationCode");
@@ -1196,9 +1197,10 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     containerElement.appendChild(totpHeading);
 
     const subtitleElement = document.createElement("span");
-    subtitleElement.classList.add("cipher-subtitle", "totp-sub-text");
+    subtitleElement.classList.add("cipher-subtitle");
     subtitleElement.textContent = formattedTotpCode;
     subtitleElement.setAttribute("aria-label", this.getTranslation("totpCodeAria"));
+    subtitleElement.setAttribute("data-testid", "totp-code");
     containerElement.appendChild(subtitleElement);
 
     return containerElement;

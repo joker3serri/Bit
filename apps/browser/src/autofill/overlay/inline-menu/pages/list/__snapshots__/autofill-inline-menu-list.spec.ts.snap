@@ -739,14 +739,17 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
               </span>
             </div>
           </span>
-          <div>
+          <div
+            class="cipher-details"
+          >
             <span
               aria-label=""
               class="cipher-name"
             />
             <span
               aria-label=""
-              class="cipher-subtitle totp-sub-text"
+              class="cipher-subtitle"
+              data-testid="totp-code"
             >
               123 456
             </span>
@@ -1214,14 +1217,17 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
               </span>
             </div>
           </span>
-          <div>
+          <div
+            class="cipher-details"
+          >
             <span
               aria-label=""
               class="cipher-name"
             />
             <span
               aria-label=""
-              class="cipher-subtitle totp-sub-text"
+              class="cipher-subtitle"
+              data-testid="totp-code"
             >
               123 456
             </span>
@@ -1689,14 +1695,17 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
               </span>
             </div>
           </span>
-          <div>
+          <div
+            class="cipher-details"
+          >
             <span
               aria-label=""
               class="cipher-name"
             />
             <span
               aria-label=""
-              class="cipher-subtitle totp-sub-text"
+              class="cipher-subtitle"
+              data-testid="totp-code"
             >
               123 456
             </span>
@@ -2164,14 +2173,17 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
               </span>
             </div>
           </span>
-          <div>
+          <div
+            class="cipher-details"
+          >
             <span
               aria-label=""
               class="cipher-name"
             />
             <span
               aria-label=""
-              class="cipher-subtitle totp-sub-text"
+              class="cipher-subtitle"
+              data-testid="totp-code"
             >
               123 456
             </span>
