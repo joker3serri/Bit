@@ -7,7 +7,6 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import {
   DialogService,
   IconButtonModule,
@@ -18,7 +17,7 @@ import {
   ToastService,
   TypographyModule,
 } from "@bitwarden/components";
-import { PasswordRepromptService } from "@bitwarden/vault";
+import { CanDeleteCipherDirective, PasswordRepromptService } from "@bitwarden/vault";
 
 @Component({
   selector: "app-trash-list-items-container",
@@ -30,6 +29,7 @@ import { PasswordRepromptService } from "@bitwarden/vault";
     JslibModule,
     SectionComponent,
     SectionHeaderComponent,
+    CanDeleteCipherDirective,
     MenuModule,
     IconButtonModule,
     TypographyModule,
@@ -46,13 +46,6 @@ export class TrashListItemsContainerComponent {
   @Input()
   headerText: string;
 
-  /**
-   * Determines if the user can delete the specified cipher.
-   * @param cipher The cipher item to evaluate for deletion permissions.
-   * @returns An observable that emits a boolean value indicating if the user can delete the cipher.
-   */
-  canDelete$ = (cipher: CipherView) => this.cipherAuthorizationService.canDeleteCipher$(cipher);
-
   constructor(
     private cipherService: CipherService,
     private logService: LogService,
@@ -61,7 +54,6 @@ export class TrashListItemsContainerComponent {
     private dialogService: DialogService,
     private passwordRepromptService: PasswordRepromptService,
     private router: Router,
-    private cipherAuthorizationService: CipherAuthorizationService,
   ) {}
 
   async restore(cipher: CipherView) {
