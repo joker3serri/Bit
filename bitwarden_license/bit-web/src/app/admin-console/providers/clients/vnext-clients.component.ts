@@ -85,7 +85,7 @@ export class vNextClientsComponent implements OnInit, OnDestroy {
           return this.providerService.get$(this.providerId).pipe(
             map((provider) => provider?.providerStatus === ProviderStatusType.Billable),
             map((isBillable) => {
-              if (!isBillable) {
+              if (isBillable) {
                 return from(
                   this.router.navigate(["../manage-client-organizations"], {
                     relativeTo: this.activatedRoute,
