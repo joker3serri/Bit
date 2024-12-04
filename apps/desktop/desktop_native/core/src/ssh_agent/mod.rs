@@ -23,6 +23,8 @@ pub struct BitwardenDesktopAgent {
     show_ui_request_tx: tokio::sync::mpsc::Sender<SshAgentUIRequest>,
     get_ui_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
     request_id: Arc<Mutex<u32>>,
+    /// before first unlock, or after account switching, listing keys should require an unlock to get a list of public keys
+    needs_unlock: Arc<Mutex<bool>>,
     is_running: Arc<tokio::sync::Mutex<bool>>,
 }
 
@@ -30,6 +32,7 @@ pub struct SshAgentUIRequest {
     pub request_id: u32,
     pub cipher_id: String,
     pub process_name: String,
+    pub is_list: bool,
 }
 
 impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
@@ -48,6 +51,7 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
                 request_id,
                 cipher_id: ssh_key.cipher_uuid.clone(),
                 process_name: info.process_name().to_string(),
+                is_list: false,
             })
             .await
             .expect("Should send request to ui");
@@ -59,9 +63,30 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
         false
     }
 
-    fn can_list(&self, info: &peerinfo::models::PeerInfo) -> impl std::future::Future<Output = bool> + Send {
-        println!("[SSH Agent] List ssh keys request from application: {}", info.process_name());
-        async { true }
+    async fn can_list(&self, info: &peerinfo::models::PeerInfo) -> bool {
+        if !*self.needs_unlock.lock().await{
+            return true;
+        }
+
+        let request_id = self.get_request_id().await;
+
+        let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
+        let message = SshAgentUIRequest {
+            request_id,
+            cipher_id: "".to_string(),
+            process_name: info.process_name().to_string(),
+            is_list: true,
+        };
+        self.show_ui_request_tx
+            .send(message)
+            .await
+            .expect("Should send request to ui");
+        while let Ok((id, response)) = rx_channel.recv().await {
+            if id == request_id {
+                return response;
+            }
+        }
+        false
     }
 }
 
@@ -93,6 +118,8 @@ impl BitwardenDesktopAgent {
 
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
+
+        *self.needs_unlock.blocking_lock() = false;
 
         for (key, name, cipher_id) in new_keys.iter() {
             match parse_key_safe(&key) {
@@ -135,6 +162,14 @@ impl BitwardenDesktopAgent {
             .for_each(|(_public_key, key)| {
                 key.private_key = None;
             });
+        Ok(())
+    }
+
+    pub fn clear_keys(&mut self) -> Result<(), anyhow::Error> {
+        let keystore = &mut self.keystore;
+        keystore.0.write().expect("RwLock is not poisoned").clear();
+        *self.needs_unlock.blocking_lock() = true;
+
         Ok(())
     }
 
