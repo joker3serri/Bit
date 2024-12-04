@@ -1,4 +1,4 @@
-name: Build Desktop
+name: Build Desktop (PR Target)
 
 on:
   pull_request_target:
