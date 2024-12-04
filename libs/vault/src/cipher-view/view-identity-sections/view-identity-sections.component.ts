@@ -72,8 +72,4 @@ export class ViewIdentitySectionsComponent implements OnInit {
 
     return Boolean(email || phone || this.addressFields);
   }
-
-  setTextDataOnDrag(event: DragEvent, data: string) {
-    event.dataTransfer.setData("text", data);
-  }
 }

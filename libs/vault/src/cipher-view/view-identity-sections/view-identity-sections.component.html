@@ -5,13 +5,7 @@
 
   <read-only-cipher-card>
     <bit-form-field *ngIf="cipher.identity.fullName">
-      <bit-label
-        for="fullName"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.fullName)"
-        >{{ "name" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.fullName">{{ "name" | i18n }}</bit-label>
       <input
         bitInput
         id="fullName"
@@ -31,13 +25,7 @@
       ></button>
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.username">
-      <bit-label
-        for="username"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.username)"
-        >{{ "username" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.username">{{ "username" | i18n }}</bit-label>
       <input
         bitInput
         id="username"
@@ -56,13 +44,7 @@
       ></button>
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.company">
-      <bit-label
-        for="company"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.company)"
-        >{{ "company" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.company">{{ "company" | i18n }}</bit-label>
       <input
         bitInput
         id="company"
@@ -91,13 +73,7 @@
 
   <read-only-cipher-card>
     <bit-form-field *ngIf="cipher.identity.ssn">
-      <bit-label
-        for="ssn"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.ssn)"
-        >{{ "ssn" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.ssn">{{ "ssn" | i18n }}</bit-label>
       <input
         bitInput
         id="ssn"
@@ -125,13 +101,9 @@
       ></button>
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.passportNumber">
-      <bit-label
-        for="passportNumber"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.passportNumber)"
-        >{{ "passportNumber" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.passportNumber">{{
+        "passportNumber" | i18n
+      }}</bit-label>
       <input
         id="passportNumber"
         bitInput
@@ -159,13 +131,9 @@
       ></button>
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.licenseNumber">
-      <bit-label
-        for="licenseNumber"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.licenseNumber)"
-        >{{ "licenseNumber" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.licenseNumber">{{
+        "licenseNumber" | i18n
+      }}</bit-label>
       <input
         bitInput
         id="licenseNumber"
@@ -194,13 +162,7 @@
 
   <read-only-cipher-card>
     <bit-form-field *ngIf="cipher.identity.email">
-      <bit-label
-        for="email"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.email)"
-        >{{ "email" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.email">{{ "email" | i18n }}</bit-label>
       <input bitInput id="email" [value]="cipher.identity.email" readonly data-testid="email" />
       <button
         type="button"
@@ -214,13 +176,7 @@
       ></button>
     </bit-form-field>
     <bit-form-field *ngIf="cipher.identity.phone">
-      <bit-label
-        for="phone"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.identity.phone)"
-        >{{ "phone" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.phone">{{ "phone" | i18n }}</bit-label>
       <input bitInput id="phone" [value]="cipher.identity.phone" readonly data-testid="phone" />
       <button
         type="button"
@@ -234,13 +190,7 @@
       ></button>
     </bit-form-field>
     <bit-form-field *ngIf="addressFields">
-      <bit-label
-        for="address"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, addressFields)"
-        >{{ "address" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="cipher.identity.addressFields">{{ "address" | i18n }}</bit-label>
       <textarea
         bitInput
         id="address"

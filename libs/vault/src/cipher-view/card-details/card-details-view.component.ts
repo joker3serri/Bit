@@ -63,8 +63,4 @@ export class CardDetailsComponent {
       );
     }
   }
-
-  setTextDataOnDrag(event: DragEvent, data: string) {
-    event.dataTransfer.setData("text", data);
-  }
 }

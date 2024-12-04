@@ -4,13 +4,7 @@
   </bit-section-header>
   <read-only-cipher-card>
     <bit-form-field *ngIf="card.cardholderName">
-      <bit-label
-        for="cardholderName"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, card.cardholderName)"
-        >{{ "cardholderName" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="card.cardholderName">{{ "cardholderName" | i18n }}</bit-label>
       <input
         id="cardholderName"
         readonly
@@ -22,13 +16,7 @@
       />
     </bit-form-field>
     <bit-form-field *ngIf="card.number">
-      <bit-label
-        for="cardNumber"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, card.number)"
-        >{{ "number" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="card.number">{{ "number" | i18n }}</bit-label>
       <input
         id="cardNumber"
         readonly
@@ -59,13 +47,7 @@
       ></button>
     </bit-form-field>
     <bit-form-field *ngIf="card.expiration">
-      <bit-label
-        for="expiration"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, card.expiration)"
-        >{{ "expiration" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="card.expiration">{{ "expiration" | i18n }}</bit-label>
       <input
         id="expiration"
         readonly
@@ -77,13 +59,7 @@
       />
     </bit-form-field>
     <bit-form-field *ngIf="card.code">
-      <bit-label
-        for="securityCode"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, card.code)"
-        >{{ "securityCode" | i18n }}</bit-label
-      >
+      <bit-label [appTextDrag]="card.code">{{ "securityCode" | i18n }}</bit-label>
       <input
         id="securityCode"
         readonly

@@ -41,8 +41,4 @@ export class ItemDetailsV2Component {
   get showOwnership() {
     return this.cipher.organizationId && this.organization && !this.hideOwner;
   }
-
-  setTextDataOnDrag(event: DragEvent, data: string) {
-    event.dataTransfer.setData("text", data);
-  }
 }

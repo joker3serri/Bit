@@ -108,8 +108,4 @@ export class LoginCredentialsViewComponent {
       this.cipher.organizationId,
     );
   }
-
-  setTextDataOnDrag(event: DragEvent, data: string) {
-    event.dataTransfer.setData("text", data);
-  }
 }

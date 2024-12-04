@@ -7,12 +7,7 @@
       [disableMargin]="!cipher.collectionIds?.length && !showOwnership && !cipher.folderId"
       [disableReadOnlyBorder]="!cipher.collectionIds?.length && !showOwnership && !cipher.folderId"
     >
-      <bit-label
-        for="itemName"
-        class="draggable"
-        draggable="true"
-        (dragstart)="setTextDataOnDrag($event, cipher.name)"
-      >
+      <bit-label [appTextDrag]="cipher.name">
         {{ "itemName" | i18n }}
       </bit-label>
       <input
