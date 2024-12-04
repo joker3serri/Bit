@@ -1,60 +1,22 @@
-import { BehaviorSubject, Observable, defer, filter, map, shareReplay, tap } from "rxjs";
-import { Jsonify } from "type-fest";
-
-import { AbstractStorageService } from "../../abstractions/storage.service";
+import { LogService } from "../../abstractions/log.service";
+import {
+  AbstractStorageService,
+  ObservableStorageService,
+} from "../../abstractions/storage.service";
 import { GlobalState } from "../global-state";
 import { KeyDefinition, globalKeyBuilder } from "../key-definition";
 
-export class DefaultGlobalState<T> implements GlobalState<T> {
-  private storageKey: string;
-  private seededPromise: Promise<void>;
+import { StateBase } from "./state-base";
 
-  protected stateSubject: BehaviorSubject<T | null> = new BehaviorSubject<T | null>(null);
-
-  state$: Observable<T>;
-
+export class DefaultGlobalState<T>
+  extends StateBase<T, KeyDefinition<T>>
+  implements GlobalState<T>
+{
   constructor(
-    private keyDefinition: KeyDefinition<T>,
-    private chosenLocation: AbstractStorageService
+    keyDefinition: KeyDefinition<T>,
+    chosenLocation: AbstractStorageService & ObservableStorageService,
+    logService: LogService,
   ) {
-    this.storageKey = globalKeyBuilder(this.keyDefinition);
-
-    this.seededPromise = this.chosenLocation.get<Jsonify<T>>(this.storageKey).then((data) => {
-      const serializedData = this.keyDefinition.deserializer(data);
-      this.stateSubject.next(serializedData);
-    });
-
-    const storageUpdates$ = this.chosenLocation.updates$.pipe(
-      filter((update) => update.key === this.storageKey),
-      map((update) => {
-        return this.keyDefinition.deserializer(update.value as Jsonify<T>);
-      }),
-      shareReplay({ bufferSize: 1, refCount: false })
-    );
-
-    this.state$ = defer(() => {
-      const storageUpdateSubscription = storageUpdates$.subscribe((value) => {
-        this.stateSubject.next(value);
-      });
-
-      return this.stateSubject.pipe(
-        tap({
-          complete: () => storageUpdateSubscription.unsubscribe(),
-        })
-      );
-    });
-  }
-
-  async update(configureState: (state: T) => T): Promise<T> {
-    await this.seededPromise;
-    const currentState = this.stateSubject.getValue();
-    const newState = configureState(currentState);
-    await this.chosenLocation.save(this.storageKey, newState);
-    return newState;
-  }
-
-  async getFromState(): Promise<T> {
-    const data = await this.chosenLocation.get<Jsonify<T>>(this.storageKey);
-    return this.keyDefinition.deserializer(data);
+    super(globalKeyBuilder(keyDefinition), chosenLocation, keyDefinition, logService);
   }
 }

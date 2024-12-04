@@ -4,6 +4,7 @@ import { OrgDomainApiServiceAbstraction } from "../../abstractions/organization-
 import { OrgDomainInternalServiceAbstraction } from "../../abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainSsoDetailsResponse } from "../../abstractions/organization-domain/responses/organization-domain-sso-details.response";
 import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
+import { VerifiedOrganizationDomainSsoDetailsResponse } from "../../abstractions/organization-domain/responses/verified-organization-domain-sso-details.response";
 
 import { OrganizationDomainSsoDetailsRequest } from "./requests/organization-domain-sso-details.request";
 import { OrganizationDomainRequest } from "./requests/organization-domain.request";
@@ -11,7 +12,7 @@ import { OrganizationDomainRequest } from "./requests/organization-domain.reques
 export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
   constructor(
     private orgDomainService: OrgDomainInternalServiceAbstraction,
-    private apiService: ApiService
+    private apiService: ApiService,
   ) {}
 
   async getAllByOrgId(orgId: string): Promise<Array<OrganizationDomainResponse>> {
@@ -20,11 +21,11 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
       `/organizations/${orgId}/domain`,
       null,
       true,
-      true
+      true,
     );
 
     const orgDomains = listResponse.data.map(
-      (resultOrgDomain: any) => new OrganizationDomainResponse(resultOrgDomain)
+      (resultOrgDomain: any) => new OrganizationDomainResponse(resultOrgDomain),
     );
 
     this.orgDomainService.replace(orgDomains);
@@ -34,14 +35,14 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
 
   async getByOrgIdAndOrgDomainId(
     orgId: string,
-    orgDomainId: string
+    orgDomainId: string,
   ): Promise<OrganizationDomainResponse> {
     const result = await this.apiService.send(
       "GET",
       `/organizations/${orgId}/domain/${orgDomainId}`,
       null,
       true,
-      true
+      true,
     );
 
     const response = new OrganizationDomainResponse(result);
@@ -53,14 +54,14 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
 
   async post(
     orgId: string,
-    orgDomainReq: OrganizationDomainRequest
+    orgDomainReq: OrganizationDomainRequest,
   ): Promise<OrganizationDomainResponse> {
     const result = await this.apiService.send(
       "POST",
       `/organizations/${orgId}/domain`,
       orgDomainReq,
       true,
-      true
+      true,
     );
 
     const response = new OrganizationDomainResponse(result);
@@ -76,7 +77,7 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
       `/organizations/${orgId}/domain/${orgDomainId}/verify`,
       null,
       true,
-      true
+      true,
     );
 
     const response = new OrganizationDomainResponse(result);
@@ -92,7 +93,7 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
       `/organizations/${orgId}/domain/${orgDomainId}`,
       null,
       true,
-      false
+      false,
     );
     this.orgDomainService.delete([orgDomainId]);
   }
@@ -103,10 +104,24 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
       `/organizations/domain/sso/details`,
       new OrganizationDomainSsoDetailsRequest(email),
       false, // anonymous
-      true
+      true,
     );
     const response = new OrganizationDomainSsoDetailsResponse(result);
 
     return response;
+  }
+
+  async getVerifiedOrgDomainsByEmail(
+    email: string,
+  ): Promise<ListResponse<VerifiedOrganizationDomainSsoDetailsResponse>> {
+    const result = await this.apiService.send(
+      "POST",
+      `/organizations/domain/sso/verified`,
+      new OrganizationDomainSsoDetailsRequest(email),
+      false, // anonymous
+      true,
+    );
+
+    return new ListResponse(result, VerifiedOrganizationDomainSsoDetailsResponse);
   }
 }

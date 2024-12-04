@@ -12,7 +12,7 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
-    private i18nService: I18nService
+    private i18nService: I18nService,
   ) {}
 
   get(orgDomainId: string): OrganizationDomainResponse {
@@ -23,11 +23,6 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
 
   copyDnsTxt(dnsTxt: string): void {
     this.platformUtilsService.copyToClipboard(dnsTxt);
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t("dnsTxtRecord"))
-    );
   }
 
   upsert(orgDomains: OrganizationDomainResponse[]): void {
@@ -36,7 +31,7 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
     orgDomains.forEach((orgDomain: OrganizationDomainResponse) => {
       // Determine if passed in orgDomain exists in existing array:
       const index = existingOrgDomains.findIndex(
-        (existingOrgDomain) => existingOrgDomain.id === orgDomain.id
+        (existingOrgDomain) => existingOrgDomain.id === orgDomain.id,
       );
       if (index !== -1) {
         existingOrgDomains[index] = orgDomain;
@@ -61,7 +56,7 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
 
     orgDomainIds.forEach((orgDomainId: string) => {
       const index = existingOrgDomains.findIndex(
-        (existingOrgDomain) => existingOrgDomain.id === orgDomainId
+        (existingOrgDomain) => existingOrgDomain.id === orgDomainId,
       );
       if (index !== -1) {
         existingOrgDomains.splice(index, 1);

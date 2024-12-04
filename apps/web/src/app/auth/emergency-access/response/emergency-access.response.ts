@@ -1,6 +1,6 @@
-import { KdfType } from "@bitwarden/common/enums";
 import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 import { CipherResponse } from "@bitwarden/common/vault/models/response/cipher.response";
+import { KdfType } from "@bitwarden/key-management";
 
 import { EmergencyAccessStatusType } from "../enums/emergency-access-status-type";
 import { EmergencyAccessType } from "../enums/emergency-access-type";

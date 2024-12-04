@@ -29,7 +29,7 @@ export const regularImportOptions = [
   { id: "enpassjson", name: "Enpass (json)" },
   { id: "protonpass", name: "ProtonPass (zip/json)" },
   { id: "safeincloudxml", name: "SafeInCloud (xml)" },
-  { id: "pwsafexml", name: "Password Safe (xml)" },
+  { id: "pwsafexml", name: "Password Safe - pwsafe.org (xml)" },
   { id: "stickypasswordxml", name: "Sticky Password (xml)" },
   { id: "msecurecsv", name: "mSecure (csv)" },
   { id: "truekeycsv", name: "True Key (csv)" },
@@ -70,6 +70,8 @@ export const regularImportOptions = [
   { id: "nordpasscsv", name: "Nordpass (csv)" },
   { id: "psonojson", name: "Psono (json)" },
   { id: "passkyjson", name: "Passky (json)" },
+  { id: "passwordxpcsv", name: "Password XP (csv)" },
+  { id: "netwrixpasswordsecure", name: "Netwrix Password Secure (csv)" },
 ] as const;
 
 export type ImportType =

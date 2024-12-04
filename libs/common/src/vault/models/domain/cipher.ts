@@ -19,6 +19,7 @@ import { Identity } from "./identity";
 import { Login } from "./login";
 import { Password } from "./password";
 import { SecureNote } from "./secure-note";
+import { SshKey } from "./ssh-key";
 
 export class Cipher extends Domain implements Decryptable<CipherView> {
   readonly initializerKey = InitializerKey.Cipher;
@@ -39,6 +40,7 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
   identity: Identity;
   card: Card;
   secureNote: SecureNote;
+  sshKey: SshKey;
   attachments: Attachment[];
   fields: Field[];
   passwordHistory: Password[];
@@ -65,7 +67,7 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
         notes: null,
         key: null,
       },
-      ["id", "organizationId", "folderId"]
+      ["id", "organizationId", "folderId"],
     );
 
     this.type = obj.type;
@@ -97,6 +99,9 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
       case CipherType.Identity:
         this.identity = new Identity(obj.identity);
         break;
+      case CipherType.SshKey:
+        this.sshKey = new SshKey(obj.sshKey);
+        break;
       default:
         break;
     }
@@ -125,10 +130,12 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
   // We will refactor the EncString.decrypt() in https://bitwarden.atlassian.net/browse/PM-3762 to remove the dependency on the organizationId.
   async decrypt(encKey: SymmetricCryptoKey): Promise<CipherView> {
     const model = new CipherView(this);
+    let bypassValidation = true;
 
     if (this.key != null) {
       const encryptService = Utils.getContainerService().getEncryptService();
       encKey = new SymmetricCryptoKey(await encryptService.decryptToBytes(this.key, encKey));
+      bypassValidation = false;
     }
 
     await this.decryptObj(
@@ -138,12 +145,12 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
         notes: null,
       },
       this.organizationId,
-      encKey
+      encKey,
     );
 
     switch (this.type) {
       case CipherType.Login:
-        model.login = await this.login.decrypt(this.organizationId, encKey);
+        model.login = await this.login.decrypt(this.organizationId, bypassValidation, encKey);
         break;
       case CipherType.SecureNote:
         model.secureNote = await this.secureNote.decrypt(this.organizationId, encKey);
@@ -153,6 +160,9 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
         break;
       case CipherType.Identity:
         model.identity = await this.identity.decrypt(this.organizationId, encKey);
+        break;
+      case CipherType.SshKey:
+        model.sshKey = await this.sshKey.decrypt(this.organizationId, encKey);
         break;
       default:
         break;
@@ -238,6 +248,9 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
       case CipherType.Identity:
         c.identity = this.identity.toIdentityData();
         break;
+      case CipherType.SshKey:
+        c.sshKey = this.sshKey.toSshKeyData();
+        break;
       default:
         break;
     }
@@ -292,6 +305,9 @@ export class Cipher extends Domain implements Decryptable<CipherView> {
         break;
       case CipherType.SecureNote:
         domain.secureNote = SecureNote.fromJSON(obj.secureNote);
+        break;
+      case CipherType.SshKey:
+        domain.sshKey = SshKey.fromJSON(obj.sshKey);
         break;
       default:
         break;

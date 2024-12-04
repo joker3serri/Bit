@@ -1,3 +1,5 @@
 export class OrganizationCollectionManagementUpdateRequest {
-  limitCreateDeleteOwnerAdmin: boolean;
+  limitCollectionCreation: boolean;
+  limitCollectionDeletion: boolean;
+  allowAdminAccessToAllCollectionItems: boolean;
 }

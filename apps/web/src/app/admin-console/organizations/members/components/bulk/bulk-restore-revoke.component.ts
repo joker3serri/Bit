@@ -1,7 +1,11 @@
 import { DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
+import { Observable } from "rxjs";
 
-import { OrganizationUserService } from "@bitwarden/common/admin-console/abstractions/organization-user/organization-user.service";
+import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { DialogService } from "@bitwarden/components";
 
@@ -28,20 +32,33 @@ export class BulkRestoreRevokeComponent {
   done = false;
   error: string;
   showNoMasterPasswordWarning = false;
+  nonCompliantMembers: boolean = false;
+  accountDeprovisioningEnabled$: Observable<boolean>;
 
   constructor(
     protected i18nService: I18nService,
-    private organizationUserService: OrganizationUserService,
-    @Inject(DIALOG_DATA) protected data: BulkRestoreDialogParams
+    private organizationUserApiService: OrganizationUserApiService,
+    private configService: ConfigService,
+    @Inject(DIALOG_DATA) protected data: BulkRestoreDialogParams,
   ) {
     this.isRevoking = data.isRevoking;
     this.organizationId = data.organizationId;
     this.users = data.users;
-    this.showNoMasterPasswordWarning = this.users.some((u) => u.hasMasterPassword === false);
+    this.showNoMasterPasswordWarning = this.users.some(
+      (u) => u.status > OrganizationUserStatusType.Invited && u.hasMasterPassword === false,
+    );
+    this.accountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
+      FeatureFlag.AccountDeprovisioning,
+    );
   }
 
   get bulkTitle() {
     const titleKey = this.isRevoking ? "revokeUsers" : "restoreUsers";
+    return this.i18nService.t(titleKey);
+  }
+
+  get bulkMemberTitle() {
+    const titleKey = this.isRevoking ? "revokeMembers" : "restoreMembers";
     return this.i18nService.t(titleKey);
   }
 
@@ -50,9 +67,16 @@ export class BulkRestoreRevokeComponent {
       const response = await this.performBulkUserAction();
 
       const bulkMessage = this.isRevoking ? "bulkRevokedMessage" : "bulkRestoredMessage";
-      response.data.forEach((entry) => {
-        const error = entry.error !== "" ? entry.error : this.i18nService.t(bulkMessage);
+
+      response.data.forEach(async (entry) => {
+        const error =
+          entry.error !== ""
+            ? this.i18nService.t("cannotRestoreAccessError")
+            : this.i18nService.t(bulkMessage);
         this.statuses.set(entry.id, error);
+        if (entry.error !== "") {
+          this.nonCompliantMembers = true;
+        }
       });
       this.done = true;
     } catch (e) {
@@ -63,14 +87,14 @@ export class BulkRestoreRevokeComponent {
   protected async performBulkUserAction() {
     const userIds = this.users.map((user) => user.id);
     if (this.isRevoking) {
-      return await this.organizationUserService.revokeManyOrganizationUsers(
+      return await this.organizationUserApiService.revokeManyOrganizationUsers(
         this.organizationId,
-        userIds
+        userIds,
       );
     } else {
-      return await this.organizationUserService.restoreManyOrganizationUsers(
+      return await this.organizationUserApiService.restoreManyOrganizationUsers(
         this.organizationId,
-        userIds
+        userIds,
       );
     }
   }

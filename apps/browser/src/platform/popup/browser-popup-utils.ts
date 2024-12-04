@@ -1,6 +1,7 @@
 import { BrowserApi } from "../browser/browser-api";
 
 import { ScrollOptions } from "./abstractions/browser-popup-utils.abstractions";
+import { PopupWidthOptions } from "./layout/popup-width.service";
 
 class BrowserPopupUtils {
   /**
@@ -67,7 +68,7 @@ class BrowserPopupUtils {
     options: ScrollOptions = {
       delay: 0,
       containerSelector: "main",
-    }
+    },
   ) {
     const { delay, containerSelector } = options;
     return new Promise<void>((resolve) =>
@@ -78,7 +79,7 @@ class BrowserPopupUtils {
         }
 
         resolve();
-      }, delay)
+      }, delay),
     );
   }
 
@@ -86,14 +87,7 @@ class BrowserPopupUtils {
    * Identifies if the background page needs to be initialized.
    */
   static backgroundInitializationRequired() {
-    return BrowserApi.getBackgroundPage() === null;
-  }
-
-  /**
-   * Identifies if the popup is loading in private mode.
-   */
-  static inPrivateMode() {
-    return BrowserPopupUtils.backgroundInitializationRequired() && BrowserApi.manifestVersion !== 3;
+    return !BrowserApi.getBackgroundPage() || BrowserApi.isManifestVersion(3);
   }
 
   /**
@@ -109,13 +103,16 @@ class BrowserPopupUtils {
       singleActionKey?: string;
       forceCloseExistingWindows?: boolean;
       windowOptions?: Partial<chrome.windows.CreateData>;
-    } = {}
+    } = {},
   ) {
     const { senderWindowId, singleActionKey, forceCloseExistingWindows, windowOptions } = options;
     const defaultPopoutWindowOptions: chrome.windows.CreateData = {
       type: "popup",
       focused: true,
-      width: 380,
+      width: Math.max(
+        PopupWidthOptions.default,
+        typeof document === "undefined" ? PopupWidthOptions.default : document.body.clientWidth,
+      ),
       height: 630,
     };
     const offsetRight = 15;
@@ -127,16 +124,14 @@ class BrowserPopupUtils {
       top: senderWindow.top + offsetTop,
       ...defaultPopoutWindowOptions,
       ...windowOptions,
-      url: chrome.runtime.getURL(
-        BrowserPopupUtils.buildPopoutUrlPath(extensionUrlPath, singleActionKey)
-      ),
+      url: BrowserPopupUtils.buildPopoutUrl(extensionUrlPath, singleActionKey),
     };
 
     if (
       (await BrowserPopupUtils.isSingleActionPopoutOpen(
         singleActionKey,
         popoutWindowOptions,
-        forceCloseExistingWindows
+        forceCloseExistingWindows,
       )) &&
       !forceCloseExistingWindows
     ) {
@@ -199,7 +194,7 @@ class BrowserPopupUtils {
   private static async isSingleActionPopoutOpen(
     popoutKey: string | undefined,
     windowInfo: chrome.windows.CreateData,
-    forceCloseExistingWindows = false
+    forceCloseExistingWindows = false,
   ) {
     if (!popoutKey) {
       return false;
@@ -207,7 +202,7 @@ class BrowserPopupUtils {
 
     const extensionUrl = chrome.runtime.getURL("popup/index.html");
     const popoutTabs = (await BrowserApi.tabsQuery({ url: `${extensionUrl}*` })).filter((tab) =>
-      tab.url.includes(`singleActionPopout=${popoutKey}`)
+      tab.url.includes(`singleActionPopout=${popoutKey}`),
     );
     if (popoutTabs.length === 0) {
       return false;
@@ -240,7 +235,7 @@ class BrowserPopupUtils {
   private static urlContainsSearchParams(
     win: Window,
     searchParam: string,
-    searchValue: string
+    searchValue: string,
   ): boolean {
     return win.location.href.indexOf(`${searchParam}=${searchValue}`) > -1;
   }
@@ -252,23 +247,15 @@ class BrowserPopupUtils {
    * @param extensionUrlPath - A relative path to the extension page. Example: "popup/index.html#/tabs/vault"
    * @param singleActionKey - The single action popout key used to identify the popout.
    */
-  private static buildPopoutUrlPath(extensionUrlPath: string, singleActionKey: string) {
-    let formattedExtensionUrlPath = extensionUrlPath;
-    if (formattedExtensionUrlPath.includes("uilocation=")) {
-      formattedExtensionUrlPath = formattedExtensionUrlPath.replace(
-        /uilocation=[^&]*/g,
-        "uilocation=popout"
-      );
-    } else {
-      formattedExtensionUrlPath +=
-        (formattedExtensionUrlPath.includes("?") ? "&" : "?") + "uilocation=popout";
-    }
+  private static buildPopoutUrl(extensionUrlPath: string, singleActionKey: string) {
+    const parsedUrl = new URL(chrome.runtime.getURL(extensionUrlPath));
+    parsedUrl.searchParams.set("uilocation", "popout");
 
     if (singleActionKey) {
-      formattedExtensionUrlPath += `&singleActionPopout=${singleActionKey}`;
+      parsedUrl.searchParams.set("singleActionPopout", singleActionKey);
     }
 
-    return formattedExtensionUrlPath;
+    return parsedUrl.toString();
   }
 }
 

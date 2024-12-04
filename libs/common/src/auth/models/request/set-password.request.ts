@@ -1,4 +1,5 @@
-import { KdfType } from "../../../enums";
+import { KdfType } from "@bitwarden/key-management";
+
 import { KeysRequest } from "../../../models/request/keys.request";
 
 export class SetPasswordRequest {
@@ -21,7 +22,7 @@ export class SetPasswordRequest {
     kdf: KdfType,
     kdfIterations: number,
     kdfMemory?: number,
-    kdfParallelism?: number
+    kdfParallelism?: number,
   ) {
     this.masterPasswordHash = masterPasswordHash;
     this.key = key;
