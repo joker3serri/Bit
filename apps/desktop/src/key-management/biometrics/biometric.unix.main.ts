@@ -86,7 +86,7 @@ export default class BiometricUnixMain implements OsBiometricService {
 
   async authenticateBiometric(): Promise<boolean> {
     const hwnd = Buffer.from("");
-    return await biometrics.prompt(hwnd, this.i18nservice.t("polkitConsentMessage"));
+    return await biometrics.prompt(hwnd, "");
   }
 
   async osSupportsBiometric(): Promise<boolean> {
