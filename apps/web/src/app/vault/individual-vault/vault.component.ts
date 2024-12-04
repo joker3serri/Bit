@@ -16,6 +16,7 @@ import {
   from,
   lastValueFrom,
   Observable,
+  of,
   Subject,
 } from "rxjs";
 import {
@@ -31,11 +32,11 @@ import {
 } from "rxjs/operators";
 
 import {
-  Unassigned,
-  CollectionService,
   CollectionData,
   CollectionDetailsResponse,
+  CollectionService,
   CollectionView,
+  Unassigned,
 } from "@bitwarden/admin-console/common";
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -46,6 +47,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { OrganizationBillingServiceAbstraction } from "@bitwarden/common/billing/abstractions";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { EventType } from "@bitwarden/common/enums";
@@ -179,17 +181,21 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected canCreateCollections = false;
   protected currentSearchText$: Observable<string>;
   private activeUserId: UserId;
-  protected organizationsPaymentStatus: FreeTrial[] = [];
   private searchText$ = new Subject<string>();
   private refresh$ = new BehaviorSubject<void>(null);
   private destroy$ = new Subject<void>();
   private extensionRefreshEnabled: boolean;
+  private hasSubscription$ = new BehaviorSubject<boolean>(false);
 
   private vaultItemDialogRef?: DialogRef<VaultItemDialogResult> | undefined;
   private readonly unpaidSubscriptionDialog$ = this.organizationService.organizations$.pipe(
     filter((organizations) => organizations.length === 1),
-    switchMap(([organization]) =>
+    map(([organization]) => organization),
+    switchMap((organization) =>
       from(this.billingApiService.getOrganizationBillingMetadata(organization.id)).pipe(
+        tap((organizationMetaData) => {
+          this.hasSubscription$.next(organizationMetaData.hasSubscription);
+        }),
         switchMap((organizationMetaData) =>
           from(
             this.trialFlowService.handleUnpaidSubscriptionDialog(
@@ -200,6 +206,37 @@ export class VaultComponent implements OnInit, OnDestroy {
         ),
       ),
     ),
+  );
+
+  protected organizationsPaymentStatus$: Observable<FreeTrial[]> = combineLatest([
+    this.organizationService.organizations$.pipe(
+      map((organizations) => organizations?.filter((org) => org.isOwner) ?? []),
+    ),
+    this.hasSubscription$,
+  ]).pipe(
+    switchMap(([ownerOrgs, hasSubscription]) => {
+      if (!ownerOrgs || ownerOrgs.length === 0 || !hasSubscription) {
+        return of([]);
+      }
+      return combineLatest(
+        ownerOrgs.map((org) =>
+          combineLatest([
+            this.organizationApiService.getSubscription(org.id),
+            this.organizationBillingService.getPaymentSource(org.id),
+          ]).pipe(
+            map(([subscription, paymentSource]) => {
+              return this.trialFlowService.checkForOrgsWithUpcomingPaymentIssues(
+                org,
+                subscription,
+                paymentSource,
+              );
+            }),
+          ),
+        ),
+      );
+    }),
+    map((results) => results.filter((result) => result.shownBanner)),
+    shareReplay({ refCount: false, bufferSize: 1 }),
   );
 
   constructor(
@@ -235,6 +272,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private organizationApiService: OrganizationApiServiceAbstraction,
     protected billingApiService: BillingApiServiceAbstraction,
     private trialFlowService: TrialFlowService,
+    private organizationBillingService: OrganizationBillingServiceAbstraction,
   ) {}
 
   async ngOnInit() {
@@ -417,30 +455,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.unpaidSubscriptionDialog$.pipe(takeUntil(this.destroy$)).subscribe();
 
-    const organizationsPaymentStatus$ = this.organizationService.organizations$.pipe(
-      switchMap((allOrganizations) => {
-        return combineLatest(
-          allOrganizations
-            .filter((org) => org.isOwner)
-            .map((org) =>
-              combineLatest([
-                this.organizationApiService.getSubscription(org.id),
-                this.organizationApiService.getBilling(org.id),
-              ]).pipe(
-                map(([subscription, billing]) => {
-                  return this.trialFlowService.checkForOrgsWithUpcomingPaymentIssues(
-                    org,
-                    subscription,
-                    billing?.paymentSource,
-                  );
-                }),
-              ),
-            ),
-        );
-      }),
-      map((results) => results.filter((result) => result.shownBanner)),
-    );
-
     firstSetup$
       .pipe(
         switchMap(() => this.refresh$),
@@ -454,7 +468,6 @@ export class VaultComponent implements OnInit, OnDestroy {
             ciphers$,
             collections$,
             selectedCollection$,
-            organizationsPaymentStatus$,
           ]),
         ),
         takeUntil(this.destroy$),
@@ -468,7 +481,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           ciphers,
           collections,
           selectedCollection,
-          organizationsPaymentStatus,
         ]) => {
           this.filter = filter;
           this.canAccessPremium = canAccessPremium;
@@ -484,7 +496,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
           this.showBulkMove = filter.type !== "trash";
           this.isEmpty = collections?.length === 0 && ciphers?.length === 0;
-          this.organizationsPaymentStatus = organizationsPaymentStatus;
           this.performingInitialLoad = false;
           this.refreshing = false;
         },

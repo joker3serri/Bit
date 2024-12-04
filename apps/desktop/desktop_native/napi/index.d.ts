@@ -67,11 +67,13 @@ export declare namespace sshagent {
     status: SshKeyImportStatus
     sshKey?: SshKey
   }
-  export function serve(callback: (err: Error | null, arg: string) => any): Promise<SshAgentState>
+  export function serve(callback: (err: Error | null, arg0: string, arg1: boolean) => any): Promise<SshAgentState>
   export function stop(agentState: SshAgentState): void
+  export function isRunning(agentState: SshAgentState): boolean
   export function setKeys(agentState: SshAgentState, newKeys: Array<PrivateKey>): void
   export function lock(agentState: SshAgentState): void
   export function importKey(encodedKey: string, password: string): SshKeyImportResult
+  export function clearKeys(agentState: SshAgentState): void
   export function generateKeypair(keyAlgorithm: string): Promise<SshKey>
   export class SshAgentState {   }
 }
@@ -107,6 +109,8 @@ export declare namespace ipc {
      * @param callback This function will be called whenever a message is received from a client.
      */
     static listen(name: string, callback: (error: null | Error, message: IpcMessage) => void): Promise<IpcServer>
+    /** Return the path to the IPC server. */
+    getPath(): string
     /** Stop the IPC server. */
     stop(): void
     /**
