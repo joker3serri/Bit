@@ -1,6 +1,5 @@
 import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
@@ -20,7 +19,7 @@ export class CanDeleteCipherDirective implements OnDestroy {
 
     this.cipherAuthorizationService
       .canDeleteCipher$(cipher)
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntil(this.destroy$))
       .subscribe((canDelete: boolean) => {
         if (canDelete) {
           this.viewContainer.createEmbeddedView(this.templateRef);
