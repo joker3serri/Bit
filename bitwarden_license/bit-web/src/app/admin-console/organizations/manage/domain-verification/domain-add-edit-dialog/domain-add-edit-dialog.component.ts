@@ -8,7 +8,9 @@ import { OrgDomainServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { OrganizationDomainResponse } from "@bitwarden/common/admin-console/abstractions/organization-domain/responses/organization-domain.response";
 import { OrganizationDomainRequest } from "@bitwarden/common/admin-console/services/organization-domain/requests/organization-domain.request";
 import { HttpStatusCode } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/platform/abstractions/crypto-function.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -55,6 +57,10 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
 
   rejectedDomainNames: Array<string> = [];
 
+  accountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
+    FeatureFlag.AccountDeprovisioning,
+  );
+
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) public data: DomainAddEditDialogData,
@@ -67,6 +73,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     private validationService: ValidationService,
     private dialogService: DialogService,
     private toastService: ToastService,
+    private configService: ConfigService,
   ) {}
 
   // Angular Method Implementations
