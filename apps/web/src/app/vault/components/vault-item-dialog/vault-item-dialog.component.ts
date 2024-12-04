@@ -283,15 +283,16 @@ export class VaultItemDialogComponent implements OnInit, OnDestroy {
       this.formConfig.mode = "edit";
     }
 
-    let cipher: Cipher;
+    let cipher = await this.cipherService.get(cipherView.id);
 
-    // When the form config is used within the Admin Console, retrieve the cipher from the admin endpoint
-    if (this.formConfig.isAdminConsole) {
+    // When the form config is used within the Admin Console, retrieve the cipher from the admin endpoint (if not found in local state)
+    if (this.formConfig.isAdminConsole && (cipher == null || this.formConfig.admin)) {
       const cipherResponse = await this.apiService.getCipherAdmin(cipherView.id);
+      cipherResponse.edit = true;
+      cipherResponse.viewPassword = true;
+
       const cipherData = new CipherData(cipherResponse);
       cipher = new Cipher(cipherData);
-    } else {
-      cipher = await this.cipherService.get(cipherView.id);
     }
 
     // Store the updated cipher so any following edits use the most up to date cipher
