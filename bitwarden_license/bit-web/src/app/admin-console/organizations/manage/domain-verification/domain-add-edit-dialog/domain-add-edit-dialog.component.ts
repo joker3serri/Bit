@@ -31,20 +31,8 @@ export interface DomainAddEditDialogData {
 export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject();
 
-  domainForm: FormGroup = this.formBuilder.group({
-    domainName: [
-      "",
-      [
-        Validators.required,
-        domainNameValidator(this.i18nService.t("invalidDomainNameClaimMessage")),
-        uniqueInArrayValidator(
-          this.data.existingDomainNames,
-          this.i18nService.t("duplicateDomainError"),
-        ),
-      ],
-    ],
-    txt: [{ value: null, disabled: true }],
-  });
+  accountDeprovisioningEnabled: boolean = false;
+  domainForm: FormGroup;
 
   get domainNameCtrl(): FormControl {
     return this.domainForm.controls.domainName as FormControl;
@@ -56,10 +44,6 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   rejectedDomainNameValidator: ValidatorFn = null;
 
   rejectedDomainNames: Array<string> = [];
-
-  accountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
-    FeatureFlag.AccountDeprovisioning,
-  );
 
   constructor(
     public dialogRef: DialogRef,
@@ -79,6 +63,27 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   // Angular Method Implementations
 
   async ngOnInit(): Promise<void> {
+    this.accountDeprovisioningEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.AccountDeprovisioning,
+    );
+    this.domainForm = this.formBuilder.group({
+      domainName: [
+        "",
+        [
+          Validators.required,
+          domainNameValidator(
+            this.accountDeprovisioningEnabled
+              ? this.i18nService.t("invalidDomainNameClaimMessage")
+              : this.i18nService.t("invalidDomainNameMessage"),
+          ),
+          uniqueInArrayValidator(
+            this.data.existingDomainNames,
+            this.i18nService.t("duplicateDomainError"),
+          ),
+        ],
+      ],
+      txt: [{ value: null, disabled: true }],
+    });
     // If we have data.orgDomain, then editing, otherwise creating new domain
     await this.populateForm();
   }
@@ -216,13 +221,18 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
         this.toastService.showToast({
           variant: "success",
           title: null,
-          message: this.i18nService.t("domainClaimed"),
+          message: this.i18nService.t(
+            this.accountDeprovisioningEnabled ? "domainClaimed" : "domainVerified",
+          ),
         });
         this.dialogRef.close();
       } else {
         this.domainNameCtrl.setErrors({
           errorPassthrough: {
-            message: this.i18nService.t("domainNotClaimed", this.domainNameCtrl.value),
+            message: this.i18nService.t(
+              this.accountDeprovisioningEnabled ? "domainNotClaimed" : "domainNotVerified",
+              this.domainNameCtrl.value,
+            ),
           },
         });
         // For the case where user opens dialog and reverifies when domain name formControl disabled.

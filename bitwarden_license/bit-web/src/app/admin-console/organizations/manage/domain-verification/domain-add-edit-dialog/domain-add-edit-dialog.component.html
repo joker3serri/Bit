@@ -7,9 +7,7 @@
     <span bitDialogTitle>
       <span *ngIf="!data.orgDomain">{{ "newDomain" | i18n }}</span>
       <span *ngIf="data.orgDomain">
-        {{
-          ((accountDeprovisioningEnabled$ | async) ? "claimDomain" : "verifyDomain") | i18n
-        }}</span
+        {{ (accountDeprovisioningEnabled ? "claimDomain" : "verifyDomain") | i18n }}</span
       >
 
       <span *ngIf="data.orgDomain" class="tw-text-xs tw-text-muted">{{
@@ -17,14 +15,11 @@
       }}</span>
 
       <span *ngIf="data?.orgDomain && !data.orgDomain?.verifiedDate" bitBadge variant="warning">{{
-        ((accountDeprovisioningEnabled$ | async)
-          ? "domainStatusUnderVerification"
-          : "domainStatusUnverified"
-        ) | i18n
+        (accountDeprovisioningEnabled ? "domainStatusUnderVerification" : "domainStatusUnverified")
+          | i18n
       }}</span>
       <span *ngIf="data?.orgDomain && data?.orgDomain?.verifiedDate" bitBadge variant="success">{{
-        ((accountDeprovisioningEnabled$ | async) ? "domainStatusClaimed" : "domainStatusVerified")
-          | i18n
+        (accountDeprovisioningEnabled ? "domainStatusClaimed" : "domainStatusVerified") | i18n
       }}</span>
     </span>
     <div bitDialogContent>
@@ -32,10 +27,7 @@
         <bit-label>{{ "domainName" | i18n }}</bit-label>
         <input bitInput appAutofocus formControlName="domainName" [showErrorsWhenDisabled]="true" />
         <bit-hint>{{
-          ((accountDeprovisioningEnabled$ | async)
-            ? "claimDomainNameInputHint"
-            : "domainNameInputHint"
-          ) | i18n
+          (accountDeprovisioningEnabled ? "claimDomainNameInputHint" : "domainNameInputHint") | i18n
         }}</bit-hint>
       </bit-form-field>
 
@@ -56,15 +48,15 @@
         *ngIf="data?.orgDomain && !data?.orgDomain?.verifiedDate"
         type="info"
         title="{{
-          (accountDeprovisioningEnabled$ | async)
+          accountDeprovisioningEnabled
             ? ('automaticClaimedDomains' | i18n | uppercase)
             : ('automaticDomainVerification' | i18n)
         }}"
       >
         {{
-          ((accountDeprovisioningEnabled$ | async)
-            ? ("automaticDomainClaimProcess" | i18n)
-            : ("automaticDomainVerificationProcess" | i18n)
+          (accountDeprovisioningEnabled
+            ? "automaticDomainClaimProcess"
+            : "automaticDomainVerificationProcess"
           ) | i18n
         }}
       </bit-callout>
@@ -73,10 +65,10 @@
       <button type="submit" bitButton bitFormButton buttonType="primary">
         <span *ngIf="!data?.orgDomain">{{ "next" | i18n }}</span>
         <span *ngIf="data?.orgDomain && !data?.orgDomain?.verifiedDate">{{
-          ((accountDeprovisioningEnabled$ | async) ? "claimDomain" : "verifyDomain") | i18n
+          (accountDeprovisioningEnabled ? "claimDomain" : "verifyDomain") | i18n
         }}</span>
         <span *ngIf="data?.orgDomain?.verifiedDate">{{
-          ((accountDeprovisioningEnabled$ | async) ? "reclaimDomain" : "reverifyDomain") | i18n
+          (accountDeprovisioningEnabled ? "reclaimDomain" : "reverifyDomain") | i18n
         }}</span>
       </button>
       <button bitButton buttonType="secondary" (click)="dialogRef.close()" type="button">
