@@ -34,7 +34,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
       "",
       [
         Validators.required,
-        domainNameValidator(this.i18nService.t("invalidDomainNameMessage")),
+        domainNameValidator(this.i18nService.t("invalidDomainNameClaimMessage")),
         uniqueInArrayValidator(
           this.data.existingDomainNames,
           this.i18nService.t("duplicateDomainError"),
