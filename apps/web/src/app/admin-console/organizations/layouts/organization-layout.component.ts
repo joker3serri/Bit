@@ -20,6 +20,7 @@ import { PolicyType, ProviderStatusType } from "@bitwarden/common/admin-console/
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { getById } from "@bitwarden/common/platform/misc";
 import { BannerModule, IconModule } from "@bitwarden/components";
@@ -61,6 +62,7 @@ export class OrganizationLayoutComponent implements OnInit {
     private configService: ConfigService,
     private policyService: PolicyService,
     private providerService: ProviderService,
+    private i18nService: I18nService,
   ) {}
 
   async ngOnInit() {
@@ -132,5 +134,11 @@ export class OrganizationLayoutComponent implements OnInit {
 
   getReportTabLabel(organization: Organization): string {
     return organization.useEvents ? "reporting" : "reports";
+  }
+
+  getDomainVerificationNavigationTextKey(): Observable<string> {
+    return this.configService
+      .getFeatureFlag$(FeatureFlag.AccountDeprovisioning)
+      .pipe(map((isEnabled) => (isEnabled ? "claimedDomains" : "domainVerification")));
   }
 }
