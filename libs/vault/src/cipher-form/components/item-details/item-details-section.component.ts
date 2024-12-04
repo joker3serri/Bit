@@ -214,7 +214,7 @@ export class ItemDetailsSectionComponent implements OnInit {
     const { name, folderId } = prefillCipher;
 
     this.itemDetailsForm.setValue({
-      name: name ? name : (this.initialValues.name ?? ""),
+      name: name ? name : (this.initialValues?.name ?? ""),
       organizationId: prefillCipher.organizationId, // We do not allow changing ownership of an existing cipher.
       folderId: folderId ? folderId : (this.initialValues?.folderId ?? null),
       collectionIds: prefillCipher.collectionIds,
