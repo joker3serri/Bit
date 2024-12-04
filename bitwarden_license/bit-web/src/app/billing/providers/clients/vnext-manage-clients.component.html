@@ -65,7 +65,7 @@
             <i aria-hidden="true" class="bwi bwi-family"></i>
             {{ "manageSubscription" | i18n }}
           </button>
-          <button *ngIf="this.isProviderAdmin" type="button" bitMenuItem (click)="remove(row)">
+          <button *ngIf="isProviderAdmin" type="button" bitMenuItem (click)="remove(row)">
             <span class="tw-text-danger">
               <i aria-hidden="true" class="bwi bwi-close"></i> {{ "unlinkOrganization" | i18n }}
             </span>
@@ -76,7 +76,7 @@
   </bit-table-scroll>
   <div *ngIf="clients.length === 0" class="tw-mt-10">
     <app-no-clients
-      [showAddOrganizationButton]="this.isProviderAdmin"
+      [showAddOrganizationButton]="isProviderAdmin"
       (addNewOrganizationClicked)="createClient()"
     />
   </div>
