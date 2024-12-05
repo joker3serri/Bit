@@ -555,6 +555,7 @@ pub mod autofill {
     }
 }
 
+#[napi]
 pub mod crypto {
     use napi::bindgen_prelude::Buffer;
 
