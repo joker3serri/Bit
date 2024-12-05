@@ -25,8 +25,8 @@ export class RadioInputComponent implements BitFormControlAbstraction {
     "tw-border",
     "tw-border-solid",
     "tw-border-secondary-600",
-    "tw-w-5",
-    "tw-h-5",
+    "tw-w-[1.12rem]",
+    "tw-h-[1.12rem]",
     "tw-mr-1.5",
     "tw-flex-none", // Flexbox fix for bit-form-control
 
