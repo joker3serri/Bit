@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { PasswordInputResult, RegistrationFinishService } from "@bitwarden/auth/angular";
 import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
@@ -199,15 +199,13 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   }
 
   async orgNameEntrySubmit(): Promise<void> {
-    this.trialPaymentOptional$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((isTrialPaymentOptional) => {
-        if (isTrialPaymentOptional) {
-          void this.createOrganizationOnTrial();
-        } else {
-          void this.conditionallyCreateOrganization();
-        }
-      });
+    const isTrialPaymentOptional = await firstValueFrom(this.trialPaymentOptional$);
+
+    if (isTrialPaymentOptional) {
+      await this.createOrganizationOnTrial();
+    } else {
+      await this.conditionallyCreateOrganization();
+    }
   }
 
   /** Update local details from organization created event */
