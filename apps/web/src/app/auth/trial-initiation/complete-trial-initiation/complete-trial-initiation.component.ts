@@ -84,7 +84,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   protected readonly SubscriptionProduct = SubscriptionProduct;
   protected readonly ProductType = ProductType;
-  protected enableTrialPayment$ = this.configService.getFeatureFlag$(
+  protected trialPaymentOptional$ = this.configService.getFeatureFlag$(
     FeatureFlag.TrialPaymentOptional,
   );
 
@@ -107,7 +107,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.isTrialPaymentEnabled = await firstValueFrom(this.enableTrialPayment$);
+    this.isTrialPaymentEnabled = await firstValueFrom(this.trialPaymentOptional$);
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((qParams) => {
       // Retrieve email from query params
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
@@ -200,7 +200,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     }
   }
 
-  async handleButtonClick(): Promise<void> {
+  async orgNameEntrySubmit(): Promise<void> {
     if (this.isTrialPaymentEnabled) {
       void this.createOrganizationOnTrial();
     } else {
