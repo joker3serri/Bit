@@ -1,10 +1,9 @@
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { ImportResult } from "../models/import-result";
-
-import { BaseImporter } from "./base-importer";
-import { Importer } from "./importer";
+import { ImportResult } from "../../models/import-result";
+import { BaseImporter } from "../base-importer";
+import { Importer } from "../importer";
 
 const _mappedColumns = new Set(["Title", "Username", "URL", "Password", "Description"]);
 
