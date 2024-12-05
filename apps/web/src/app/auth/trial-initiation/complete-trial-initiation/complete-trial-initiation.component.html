@@ -23,10 +23,10 @@
         bitButton
         buttonType="primary"
         [disabled]="orgInfoFormGroup.controls.name.invalid"
-        [loading]="loading && isTrialPaymentEnabled"
+        [loading]="loading && (trialPaymentOptional$ | async)"
         (click)="orgNameEntrySubmit()"
       >
-        {{ isTrialPaymentEnabled ? ("startTrial" | i18n) : ("next" | i18n) }}
+        {{ (trialPaymentOptional$ | async) ? ("startTrial" | i18n) : ("next" | i18n) }}
       </button>
     </app-vertical-step>
     <app-vertical-step

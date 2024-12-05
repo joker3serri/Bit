@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { PasswordInputResult, RegistrationFinishService } from "@bitwarden/auth/angular";
 import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
@@ -74,7 +74,6 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   /** Token from the backend associated with the email verification */
   emailVerificationToken: string;
   loading = false;
-  isTrialPaymentEnabled: boolean = false;
 
   orgInfoFormGroup = this.formBuilder.group({
     name: ["", { validators: [Validators.required, Validators.maxLength(50)], updateOn: "change" }],
@@ -107,7 +106,6 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.isTrialPaymentEnabled = await firstValueFrom(this.trialPaymentOptional$);
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((qParams) => {
       // Retrieve email from query params
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
@@ -201,11 +199,15 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   }
 
   async orgNameEntrySubmit(): Promise<void> {
-    if (this.isTrialPaymentEnabled) {
-      void this.createOrganizationOnTrial();
-    } else {
-      void this.conditionallyCreateOrganization();
-    }
+    this.trialPaymentOptional$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isTrialPaymentOptional) => {
+        if (isTrialPaymentOptional) {
+          void this.createOrganizationOnTrial();
+        } else {
+          void this.conditionallyCreateOrganization();
+        }
+      });
   }
 
   /** Update local details from organization created event */
