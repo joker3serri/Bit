@@ -9738,8 +9738,8 @@
   "selfHostingTitleProper": {
     "message": "Self-Hosting"
   },
-  "verified-domain-single-org-warning" : {
-    "message": "Verifying a domain will turn on the single organization policy."
+  "claim-domain-single-org-warning" : {
+    "message": "Claiming a domain will turn on the single organization policy."
   },
   "single-org-revoked-user-warning": {
     "message": "Non-compliant members will be revoked. Administrators can restore members once they leave all other organizations."

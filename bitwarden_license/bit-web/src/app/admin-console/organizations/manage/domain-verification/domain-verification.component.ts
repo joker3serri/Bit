@@ -107,7 +107,7 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
             organizationDomains.every((domain) => domain.verifiedDate === null)
           ) {
             await this.dialogService.openSimpleDialog({
-              title: { key: "verified-domain-single-org-warning" },
+              title: { key: "claim-domain-single-org-warning" },
               content: { key: "single-org-revoked-user-warning" },
               cancelButtonText: { key: "cancel" },
               acceptButtonText: { key: "confirm" },
