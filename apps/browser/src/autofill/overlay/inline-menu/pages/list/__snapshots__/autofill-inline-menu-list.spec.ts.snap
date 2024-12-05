@@ -698,35 +698,29 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
                 xmlns="http://www.w3.org/2000/svg"
               >
                 
-        
-                <g>
-                  
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="12.5"
-                    stroke-dasharray="78.5"
-                    stroke-dashoffset="78.5"
-                    stroke-width="3"
-                    style="stroke-dashoffset: NaN;"
-                    transform="rotate(-90 14.5 14.5)"
-                  />
-                  
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="12.5"
+                  stroke-dasharray="78.5"
+                  stroke-dashoffset="78.5"
+                  stroke-width="3"
+                  style="stroke-dashoffset: NaN;"
+                  transform="rotate(-90 14.5 14.5)"
+                />
+                
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="14"
-                    stroke-width="1"
-                  />
-                  
-        
-                </g>
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="14"
+                  stroke-width="1"
+                />
                 
       
               </svg>
@@ -1176,35 +1170,29 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
                 xmlns="http://www.w3.org/2000/svg"
               >
                 
-        
-                <g>
-                  
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="12.5"
-                    stroke-dasharray="78.5"
-                    stroke-dashoffset="78.5"
-                    stroke-width="3"
-                    style="stroke-dashoffset: NaN;"
-                    transform="rotate(-90 14.5 14.5)"
-                  />
-                  
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="12.5"
+                  stroke-dasharray="78.5"
+                  stroke-dashoffset="78.5"
+                  stroke-width="3"
+                  style="stroke-dashoffset: NaN;"
+                  transform="rotate(-90 14.5 14.5)"
+                />
+                
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="14"
-                    stroke-width="1"
-                  />
-                  
-        
-                </g>
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="14"
+                  stroke-width="1"
+                />
                 
       
               </svg>
@@ -1654,35 +1642,29 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
                 xmlns="http://www.w3.org/2000/svg"
               >
                 
-        
-                <g>
-                  
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="12.5"
-                    stroke-dasharray="78.5"
-                    stroke-dashoffset="78.5"
-                    stroke-width="3"
-                    style="stroke-dashoffset: NaN;"
-                    transform="rotate(-90 14.5 14.5)"
-                  />
-                  
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="12.5"
+                  stroke-dasharray="78.5"
+                  stroke-dashoffset="78.5"
+                  stroke-width="3"
+                  style="stroke-dashoffset: NaN;"
+                  transform="rotate(-90 14.5 14.5)"
+                />
+                
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="14"
-                    stroke-width="1"
-                  />
-                  
-        
-                </g>
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="14"
+                  stroke-width="1"
+                />
                 
       
               </svg>
@@ -2132,35 +2114,29 @@ exports[`AutofillInlineMenuList initAutofillInlineMenuList the list of ciphers f
                 xmlns="http://www.w3.org/2000/svg"
               >
                 
-        
-                <g>
-                  
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="12.5"
-                    stroke-dasharray="78.5"
-                    stroke-dashoffset="78.5"
-                    stroke-width="3"
-                    style="stroke-dashoffset: NaN;"
-                    transform="rotate(-90 14.5 14.5)"
-                  />
-                  
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="12.5"
+                  stroke-dasharray="78.5"
+                  stroke-dashoffset="78.5"
+                  stroke-width="3"
+                  style="stroke-dashoffset: NaN;"
+                  transform="rotate(-90 14.5 14.5)"
+                />
+                
           
-                  <circle
-                    class="circle-color"
-                    cx="14.5"
-                    cy="14.5"
-                    fill="none"
-                    r="14"
-                    stroke-width="1"
-                  />
-                  
-        
-                </g>
+                <circle
+                  class="circle-color"
+                  cx="14.5"
+                  cy="14.5"
+                  fill="none"
+                  r="14"
+                  stroke-width="1"
+                />
                 
       
               </svg>
