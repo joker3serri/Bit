@@ -1,6 +1,5 @@
 import { Directive, HostListener, Input } from "@angular/core";
 
-export
 @Directive({
   selector: "[appTextDrag]",
   standalone: true,
@@ -9,7 +8,7 @@ export
     class: "tw-cursor-move",
   },
 })
-class TextDragDirective {
+export class TextDragDirective {
   @Input({
     alias: "appTextDrag",
     required: true,
