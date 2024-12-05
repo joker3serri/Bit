@@ -1,3 +1,4 @@
+import { NgZone } from "@angular/core";
 import {
   combineLatestWith,
   distinctUntilChanged,
@@ -118,6 +119,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected kdfConfigService: KdfConfigService,
     protected taskSchedulerService: TaskSchedulerService,
+    private ngZone: NgZone,
   ) {
     this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
@@ -128,7 +130,9 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     this.taskSchedulerService.registerTaskHandler(
       ScheduledTaskNames.loginStrategySessionTimeout,
       async () => {
-        this.twoFactorTimeoutSubject.next(true);
+        this.ngZone.run(() => {
+          this.twoFactorTimeoutSubject.next(true);
+        });
         try {
           await this.clearCache();
         } catch (e) {

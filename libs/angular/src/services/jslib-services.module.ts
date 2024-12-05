@@ -1,4 +1,4 @@
-import { ErrorHandler, LOCALE_ID, NgModule } from "@angular/core";
+import { ErrorHandler, LOCALE_ID, NgModule, NgZone } from "@angular/core";
 import { Subject } from "rxjs";
 
 import {
@@ -440,6 +440,7 @@ const safeProviders: SafeProvider[] = [
       VaultTimeoutSettingsServiceAbstraction,
       KdfConfigService,
       TaskSchedulerService,
+      NgZone,
     ],
   }),
   safeProvider({
