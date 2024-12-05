@@ -640,6 +640,7 @@ export class ServiceContainer {
       this.vaultTimeoutSettingsService,
       this.kdfConfigService,
       this.taskSchedulerService,
+      null,
     );
 
     // FIXME: CLI does not support autofill

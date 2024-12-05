@@ -119,7 +119,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected kdfConfigService: KdfConfigService,
     protected taskSchedulerService: TaskSchedulerService,
-    private ngZone: NgZone,
+    private ngZone: NgZone | null,
   ) {
     this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
@@ -130,9 +130,14 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     this.taskSchedulerService.registerTaskHandler(
       ScheduledTaskNames.loginStrategySessionTimeout,
       async () => {
-        this.ngZone.run(() => {
+        // If an angular context is available, run the timeout in the context
+        if (this.ngZone) {
+          this.ngZone.run(() => {
+            this.twoFactorTimeoutSubject.next(true);
+          });
+        } else {
           this.twoFactorTimeoutSubject.next(true);
-        });
+        }
         try {
           await this.clearCache();
         } catch (e) {
