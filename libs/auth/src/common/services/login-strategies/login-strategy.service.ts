@@ -130,7 +130,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     this.taskSchedulerService.registerTaskHandler(
       ScheduledTaskNames.loginStrategySessionTimeout,
       async () => {
-        // If an angular context is available, run the timeout in the context
+        // If an angular context is available, emit timeout inside that context
         if (this.ngZone) {
           this.ngZone.run(() => {
             this.twoFactorTimeoutSubject.next(true);
