@@ -32,7 +32,6 @@ export enum FeatureFlag {
   VerifiedSsoDomainEndpoint = "pm-12337-refactor-sso-details-endpoint",
   PM11901_RefactorSelfHostingLicenseUploader = "PM-11901-refactor-self-hosting-license-uploader",
   PM14505AdminConsoleIntegrationPage = "pm-14505-admin-console-integration-page",
-
   CriticalApps = "pm-14466-risk-insights-critical-application",
   TrialPaymentOptional = "PM-8163-trial-payment",
   SecurityTasks = "security-tasks",
