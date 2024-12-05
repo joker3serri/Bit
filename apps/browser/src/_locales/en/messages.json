@@ -192,12 +192,12 @@
   "autoFillIdentity": {
     "message": "Autofill identity"
   },
-  "fillVerificationCode":{
+  "fillVerificationCode": {
     "message": "Fill verification code"
   },
-  "fillVerificationCodeAria":{
+  "fillVerificationCodeAria": {
     "message": "Fill Verification Code",
-    "description":"Aria label for the heading displayed the inline menu for totp code autofill"
+    "description": "Aria label for the heading displayed the inline menu for totp code autofill"
   },
   "generatePasswordCopied": {
     "message": "Generate password (copied)"
