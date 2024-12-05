@@ -9878,5 +9878,23 @@
   },
   "invalidDomainNameClaimMessage": {
     "message": "Input is not a valid format. Format: mydomain.com. Subdomains require separate entries to be claimed."
+  },
+  "domainClaimedEvent": {
+    "message": "$DOMAIN$ claimed",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
+  },
+  "domainNotClaimedEvent": {
+    "message": "$DOMAIN$ not claimed",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
   }
 }
