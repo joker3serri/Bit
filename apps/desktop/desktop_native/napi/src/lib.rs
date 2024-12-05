@@ -9,13 +9,7 @@ pub mod passwords {
     #[napi]
     pub async fn get_password(service: String, account: String) -> napi::Result<String> {
         desktop_core::password::get_password(&service, &account)
-            .map_err(|e| napi::Error::from_reason(e.to_string()))
-    }
-
-    /// Fetch the stored password from the keychain that was stored with Keytar.
-    #[napi]
-    pub async fn get_password_keytar(service: String, account: String) -> napi::Result<String> {
-        desktop_core::password::get_password_keytar(&service, &account)
+            .await
             .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
@@ -27,6 +21,7 @@ pub mod passwords {
         password: String,
     ) -> napi::Result<()> {
         desktop_core::password::set_password(&service, &account, &password)
+            .await
             .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
@@ -34,13 +29,16 @@ pub mod passwords {
     #[napi]
     pub async fn delete_password(service: String, account: String) -> napi::Result<()> {
         desktop_core::password::delete_password(&service, &account)
+            .await
             .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
     // Checks if the os secure storage is available
     #[napi]
     pub async fn is_available() -> napi::Result<bool> {
-        desktop_core::password::is_available().map_err(|e| napi::Error::from_reason(e.to_string()))
+        desktop_core::password::is_available()
+            .await
+            .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 }
 
@@ -81,6 +79,7 @@ pub mod biometrics {
             key_material.map(|m| m.into()),
             &iv_b64,
         )
+        .await
         .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
@@ -92,6 +91,7 @@ pub mod biometrics {
     ) -> napi::Result<String> {
         let result =
             Biometric::get_biometric_secret(&service, &account, key_material.map(|m| m.into()))
+                .await
                 .map_err(|e| napi::Error::from_reason(e.to_string()));
         result
     }
@@ -552,5 +552,23 @@ pub mod autofill {
         desktop_core::autofill::run_command(value)
             .await
             .map_err(|e| napi::Error::from_reason(e.to_string()))
+    }
+}
+
+pub mod crypto {
+    use napi::bindgen_prelude::Buffer;
+
+    #[napi]
+    pub async fn argon2(
+        secret: Buffer,
+        salt: Buffer,
+        iterations: u32,
+        memory: u32,
+        parallelism: u32,
+    ) -> napi::Result<Buffer> {
+        desktop_core::crypto::argon2(&secret, &salt, iterations, memory, parallelism)
+            .map_err(|e| napi::Error::from_reason(e.to_string()))
+            .map(|v| v.to_vec())
+            .map(|v| Buffer::from(v))
     }
 }
