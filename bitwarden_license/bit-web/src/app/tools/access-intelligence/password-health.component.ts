@@ -5,16 +5,9 @@ import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import {
-  CipherHealthReportDetail,
-  MemberCipherDetailsApiService,
-  PasswordHealthService,
-  RiskInsightsReportService,
-} from "@bitwarden/bit-common/tools/reports/risk-insights";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
+import { RiskInsightsReportService } from "@bitwarden/bit-common/tools/reports/risk-insights";
+import { CipherHealthReportDetail } from "@bitwarden/bit-common/tools/reports/risk-insights/models/password-health";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import {
   BadgeModule,
   ContainerComponent,
@@ -39,7 +32,6 @@ import { PipesModule } from "@bitwarden/web-vault/app/vault/individual-vault/pip
     HeaderModule,
     TableModule,
   ],
-  providers: [PasswordHealthService, MemberCipherDetailsApiService],
 })
 export class PasswordHealthComponent implements OnInit {
   passwordUseMap = new Map<string, number>();
@@ -50,12 +42,9 @@ export class PasswordHealthComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   constructor(
-    protected cipherService: CipherService,
-    protected passwordStrengthService: PasswordStrengthServiceAbstraction,
-    protected auditService: AuditService,
+    protected riskInsightsReportService: RiskInsightsReportService,
     protected i18nService: I18nService,
     protected activatedRoute: ActivatedRoute,
-    protected memberCipherDetailsApiService: MemberCipherDetailsApiService,
   ) {}
 
   ngOnInit() {
@@ -71,15 +60,9 @@ export class PasswordHealthComponent implements OnInit {
   }
 
   async setCiphers(organizationId: string) {
-    const passwordHealthService = new RiskInsightsReportService(
-      this.passwordStrengthService,
-      this.auditService,
-      this.cipherService,
-      this.memberCipherDetailsApiService,
-    );
-
-    this.dataSource.data = await passwordHealthService.generateRawDataReport(organizationId);
-    this.passwordUseMap = passwordHealthService.passwordUseMap;
+    this.dataSource.data =
+      await this.riskInsightsReportService.generateRawDataReport(organizationId);
+    this.passwordUseMap = this.riskInsightsReportService.passwordUseMap;
     this.loading = false;
   }
 }
