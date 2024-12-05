@@ -6,6 +6,8 @@ import { BaseImporter } from "../base-importer";
 import { Importer } from "../importer";
 
 const _mappedColumns = new Set(["Title", "Username", "URL", "Password", "Description"]);
+import { dutchHeaderTranslations } from "./dutch-csv-headers";
+import { germanHeaderTranslations } from "./german-csv-headers";
 
 /* Translates the headers from non-English to English
  * This is necessary because the parser only maps English headers to ciphers
@@ -13,24 +15,10 @@ const _mappedColumns = new Set(["Title", "Username", "URL", "Password", "Descrip
  */
 function translateIntoEnglishHeaders(header: string): string {
   const translations: { [key: string]: string } = {
-    Titel: "Title",
     // The header column 'User name' is parsed by the parser, but cannot be used as a variable. This converts it to a valid variable name, prior to parsing.
     "User name": "Username",
-    Benutzername: "Username",
-    Gebruikersnaam: "Username",
-    Konto: "Account",
-    Passwort: "Password",
-    Wachtwoord: "Password",
-    "Geändert am": "Modified",
-    Gewijzigd: "Modified",
-    "Erstellt am": "Created",
-    Gemaakt: "Created",
-    "Läuft ab am": "Expire on",
-    "Verloopt op": "Expire on",
-    Beschreibung: "Description",
-    Beschrijving: "Description",
-    "Geändert von": "Modified by",
-    "Gewijzigd door": "Modified by",
+    ...germanHeaderTranslations,
+    ...dutchHeaderTranslations,
   };
 
   return translations[header] || header;
