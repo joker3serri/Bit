@@ -47,6 +47,7 @@ export class OrganizationLayoutComponent implements OnInit {
   protected readonly logo = AdminConsoleLogo;
 
   protected orgFilter = (org: Organization) => canAccessOrgAdmin(org);
+  protected domainVerificationNavigationTextKey: string;
 
   organization$: Observable<Organization>;
   canAccessExport$: Observable<boolean>;
@@ -106,6 +107,12 @@ export class OrganizationLayoutComponent implements OnInit {
           provider.providerStatus !== ProviderStatusType.Billable,
       ),
     );
+
+    this.domainVerificationNavigationTextKey = (await this.configService.getFeatureFlag(
+      FeatureFlag.AccountDeprovisioning,
+    ))
+      ? "claimedDomains"
+      : "domainVerification";
   }
 
   canShowVaultTab(organization: Organization): boolean {
@@ -134,11 +141,5 @@ export class OrganizationLayoutComponent implements OnInit {
 
   getReportTabLabel(organization: Organization): string {
     return organization.useEvents ? "reporting" : "reports";
-  }
-
-  getDomainVerificationNavigationTextKey(): Observable<string> {
-    return this.configService
-      .getFeatureFlag$(FeatureFlag.AccountDeprovisioning)
-      .pipe(map((isEnabled) => (isEnabled ? "claimedDomains" : "domainVerification")));
   }
 }
