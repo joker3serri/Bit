@@ -112,7 +112,6 @@
         "@types/lowdb",
         "@types/node",
         "@types/node-forge",
-        "@types/node-ipc",
         "@yao-pkg",
         "babel-loader",
         "browserslist",
@@ -127,7 +126,6 @@
         "html-webpack-plugin",
         "lowdb",
         "node-forge",
-        "node-ipc",
         "pkg",
         "rxjs",
         "tsconfig-paths-webpack-plugin",
@@ -267,5 +265,5 @@
       "reviewers": ["team:team-key-management-dev"]
     }
   ],
-  "ignoreDeps": ["@types/koa-bodyparser", "bootstrap", "node-ipc", "node", "npm"]
+  "ignoreDeps": ["@types/koa-bodyparser", "bootstrap", "node", "npm"]
 }
