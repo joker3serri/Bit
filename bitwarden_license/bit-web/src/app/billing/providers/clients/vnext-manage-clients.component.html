@@ -74,7 +74,7 @@
       </td>
     </ng-template>
   </bit-table-scroll>
-  <div *ngIf="clients.length === 0" class="tw-mt-10">
+  <div *ngIf="dataSource.data.length === 0" class="tw-mt-10">
     <app-no-clients
       [showAddOrganizationButton]="isProviderAdmin"
       (addNewOrganizationClicked)="createClient()"

@@ -89,7 +89,7 @@ const routes: Routes = [
           ...featureFlaggedRoute({
             defaultComponent: ClientsComponent,
             flaggedComponent: vNextClientsComponent,
-            featureFlag: FeatureFlag.PM12443RemovePagingLocic,
+            featureFlag: FeatureFlag.PM12443RemovePagingLogic,
             routeOptions: {
               path: "clients",
               data: { titleId: "clients" },
@@ -98,10 +98,11 @@ const routes: Routes = [
           ...featureFlaggedRoute({
             defaultComponent: ManageClientsComponent,
             flaggedComponent: vNextManageClientsComponent,
-            featureFlag: FeatureFlag.PM12443RemovePagingLocic,
+            featureFlag: FeatureFlag.PM12443RemovePagingLogic,
             routeOptions: {
               path: "manage-client-organizations",
               data: { titleId: "clients" },
+              canActivate: [hasConsolidatedBilling],
             },
           }),
           {

@@ -1,9 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { Subject, firstValueFrom, from, map } from "rxjs";
-import { debounceTime, switchMap, takeUntil } from "rxjs/operators";
+import { firstValueFrom, from, map } from "rxjs";
+import { debounceTime, first, switchMap } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -51,17 +52,15 @@ const DisallowedPlanTypes = [
     TableModule,
   ],
 })
-export class vNextClientsComponent implements OnInit, OnDestroy {
+export class vNextClientsComponent {
   providerId: string;
   addableOrganizations: Organization[];
   loading = true;
   manageOrganizations = false;
   showAddExisting = false;
-  clients: ProviderOrganizationOrganizationDetailsResponse[];
   dataSource: TableDataSource<ProviderOrganizationOrganizationDetailsResponse> =
     new TableDataSource();
   protected searchControl = new FormControl("", { nonNullable: true });
-  private destroy$: Subject<void> = new Subject();
 
   constructor(
     private router: Router,
@@ -75,9 +74,11 @@ export class vNextClientsComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private validationService: ValidationService,
     private webProviderService: WebProviderService,
-  ) {}
+  ) {
+    this.activatedRoute.queryParams.pipe(first(), takeUntilDestroyed()).subscribe((queryParams) => {
+      this.searchControl.setValue(queryParams.search);
+    });
 
-  ngOnInit() {
     this.activatedRoute.parent.params
       .pipe(
         switchMap((params) => {
@@ -97,21 +98,16 @@ export class vNextClientsComponent implements OnInit, OnDestroy {
             }),
           );
         }),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(),
       )
       .subscribe();
 
     this.searchControl.valueChanges
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((searchText) => {
         this.dataSource.filter = (data) =>
-          data.organizationName.toLowerCase().startsWith(searchText.toLowerCase());
+          data.organizationName.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
       });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   async remove(organization: ProviderOrganizationOrganizationDetailsResponse) {
@@ -140,8 +136,8 @@ export class vNextClientsComponent implements OnInit, OnDestroy {
 
   async load() {
     const response = await this.apiService.getProviderClients(this.providerId);
-    this.clients = response.data != null && response.data.length > 0 ? response.data : [];
-    this.dataSource.data = this.clients;
+    const clients = response.data != null && response.data.length > 0 ? response.data : [];
+    this.dataSource.data = clients;
     this.manageOrganizations =
       (await this.providerService.get(this.providerId)).type === ProviderUserType.ProviderAdmin;
     const candidateOrgs = (await this.organizationService.getAll()).filter(

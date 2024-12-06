@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, firstValueFrom, from, lastValueFrom, map } from "rxjs";
-import { debounceTime, switchMap, takeUntil } from "rxjs/operators";
+import { firstValueFrom, from, lastValueFrom, map } from "rxjs";
+import { debounceTime, first, switchMap } from "rxjs/operators";
 
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { ProviderStatusType, ProviderUserType } from "@bitwarden/common/admin-console/enums";
@@ -49,7 +50,7 @@ import { vNextNoClientsComponent } from "./vnext-no-clients.component";
     vNextNoClientsComponent,
   ],
 })
-export class vNextManageClientsComponent implements OnInit {
+export class vNextManageClientsComponent {
   providerId: string;
   provider: Provider;
   loading = true;
@@ -58,7 +59,6 @@ export class vNextManageClientsComponent implements OnInit {
   dataSource: TableDataSource<ProviderOrganizationOrganizationDetailsResponse> =
     new TableDataSource();
 
-  protected destroy$ = new Subject<void>();
   protected searchControl = new FormControl("", { nonNullable: true });
   protected plans: PlanResponse[];
 
@@ -72,9 +72,11 @@ export class vNextManageClientsComponent implements OnInit {
     private toastService: ToastService,
     private validationService: ValidationService,
     private webProviderService: WebProviderService,
-  ) {}
+  ) {
+    this.activatedRoute.queryParams.pipe(first(), takeUntilDestroyed()).subscribe((queryParams) => {
+      this.searchControl.setValue(queryParams.search);
+    });
 
-  ngOnInit(): void {
     this.activatedRoute.parent.params
       .pipe(
         switchMap((params) => {
@@ -94,15 +96,15 @@ export class vNextManageClientsComponent implements OnInit {
             }),
           );
         }),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(),
       )
       .subscribe();
 
     this.searchControl.valueChanges
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((searchText) => {
         this.dataSource.filter = (data) =>
-          data.organizationName.toLowerCase().startsWith(searchText.toLowerCase());
+          data.organizationName.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
       });
   }
 
@@ -115,7 +117,7 @@ export class vNextManageClientsComponent implements OnInit {
       await this.billingApiService.getProviderClientOrganizations(this.providerId)
     ).data;
 
-    this.clients.map((client) => (client.plan = client.plan.replace(" (Monthly)", "")));
+    this.clients.forEach((client) => (client.plan = client.plan.replace(" (Monthly)", "")));
 
     this.dataSource.data = this.clients;
 
