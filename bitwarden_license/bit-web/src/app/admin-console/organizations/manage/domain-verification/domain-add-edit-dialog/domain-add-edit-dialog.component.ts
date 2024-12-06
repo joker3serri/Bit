@@ -1,7 +1,7 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil, Observable, firstValueFrom } from "rxjs";
 
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrgDomainServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain.service.abstraction";
@@ -31,7 +31,7 @@ export interface DomainAddEditDialogData {
 export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject();
 
-  accountDeprovisioningEnabled: boolean = false;
+  accountDeprovisioningEnabled$: Observable<boolean>;
   domainForm: FormGroup;
 
   get domainNameCtrl(): FormControl {
@@ -58,21 +58,22 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private toastService: ToastService,
     private configService: ConfigService,
-  ) {}
+  ) {
+    this.accountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
+      FeatureFlag.AccountDeprovisioning,
+    );
+  }
 
   // Angular Method Implementations
 
   async ngOnInit(): Promise<void> {
-    this.accountDeprovisioningEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.AccountDeprovisioning,
-    );
     this.domainForm = this.formBuilder.group({
       domainName: [
         "",
         [
           Validators.required,
           domainNameValidator(
-            this.accountDeprovisioningEnabled
+            (await firstValueFrom(this.accountDeprovisioningEnabled$))
               ? this.i18nService.t("invalidDomainNameClaimMessage")
               : this.i18nService.t("invalidDomainNameMessage"),
           ),
@@ -222,7 +223,9 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
           variant: "success",
           title: null,
           message: this.i18nService.t(
-            this.accountDeprovisioningEnabled ? "domainClaimed" : "domainVerified",
+            (await firstValueFrom(this.accountDeprovisioningEnabled$))
+              ? "domainClaimed"
+              : "domainVerified",
           ),
         });
         this.dialogRef.close();
@@ -230,7 +233,9 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
         this.domainNameCtrl.setErrors({
           errorPassthrough: {
             message: this.i18nService.t(
-              this.accountDeprovisioningEnabled ? "domainNotClaimed" : "domainNotVerified",
+              (await firstValueFrom(this.accountDeprovisioningEnabled$))
+                ? "domainNotClaimed"
+                : "domainNotVerified",
               this.domainNameCtrl.value,
             ),
           },
