@@ -29,8 +29,8 @@
 </ng-container>
 
 <ng-container *ngIf="!loading">
-  <p *ngIf="clients.length < 1">{{ "noClientsInList" | i18n }}</p>
-  <ng-container *ngIf="clients.length >= 1">
+  <p *ngIf="dataSource.data.length < 1">{{ "noClientsInList" | i18n }}</p>
+  <ng-container *ngIf="dataSource.data.length >= 1">
     <bit-table-scroll
       [dataSource]="dataSource"
       [rowSize]="47"

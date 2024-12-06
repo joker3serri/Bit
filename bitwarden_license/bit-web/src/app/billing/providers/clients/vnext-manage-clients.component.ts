@@ -55,7 +55,6 @@ export class vNextManageClientsComponent {
   provider: Provider;
   loading = true;
   isProviderAdmin = false;
-  clients: ProviderOrganizationOrganizationDetailsResponse[];
   dataSource: TableDataSource<ProviderOrganizationOrganizationDetailsResponse> =
     new TableDataSource();
 
@@ -113,13 +112,12 @@ export class vNextManageClientsComponent {
 
     this.isProviderAdmin = this.provider.type === ProviderUserType.ProviderAdmin;
 
-    this.clients = (
-      await this.billingApiService.getProviderClientOrganizations(this.providerId)
-    ).data;
+    const clients = (await this.billingApiService.getProviderClientOrganizations(this.providerId))
+      .data;
 
-    this.clients.forEach((client) => (client.plan = client.plan.replace(" (Monthly)", "")));
+    clients.forEach((client) => (client.plan = client.plan.replace(" (Monthly)", "")));
 
-    this.dataSource.data = this.clients;
+    this.dataSource.data = clients;
 
     this.plans = (await this.billingApiService.getPlans()).data;
 
