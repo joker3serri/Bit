@@ -41,7 +41,7 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
 
   organizationId: string;
   orgDomains$: Observable<OrganizationDomainResponse[]>;
-  accountDeprovisioningEnabled: boolean;
+  accountDeprovisioningEnabled$: Observable<boolean>;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,13 +53,14 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private configService: ConfigService,
     private policyApiService: PolicyApiServiceAbstraction,
-  ) {}
+  ) {
+    this.accountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
+      FeatureFlag.AccountDeprovisioning,
+    );
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   async ngOnInit() {
-    this.accountDeprovisioningEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.AccountDeprovisioning,
-    );
     this.orgDomains$ = this.orgDomainService.orgDomains$;
 
     // Note: going to use concatMap as async subscribe blocks don't work as you expect and
@@ -172,7 +173,9 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
           variant: "success",
           title: null,
           message: this.i18nService.t(
-            this.accountDeprovisioningEnabled ? "domainClaimed" : "domainVerified",
+            (await firstValueFrom(this.accountDeprovisioningEnabled$))
+              ? "domainClaimed"
+              : "domainVerified",
           ),
         });
       } else {
@@ -180,7 +183,9 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
           variant: "error",
           title: null,
           message: this.i18nService.t(
-            this.accountDeprovisioningEnabled ? "domainNotClaimed" : "domainNotVerified",
+            (await firstValueFrom(this.accountDeprovisioningEnabled$))
+              ? "domainNotClaimed"
+              : "domainNotVerified",
             domainName,
           ),
         });
