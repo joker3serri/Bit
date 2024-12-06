@@ -1,4 +1,4 @@
-import { ErrorHandler, LOCALE_ID, NgModule } from "@angular/core";
+import { ErrorHandler, LOCALE_ID, NgModule, NgZone } from "@angular/core";
 import { Subject } from "rxjs";
 
 import {
@@ -16,6 +16,8 @@ import {
   DefaultAnonLayoutWrapperDataService,
   LoginComponentService,
   DefaultLoginComponentService,
+  LoginDecryptionOptionsService,
+  DefaultLoginDecryptionOptionsService,
 } from "@bitwarden/auth/angular";
 import {
   AuthRequestServiceAbstraction,
@@ -31,6 +33,8 @@ import {
   UserDecryptionOptionsServiceAbstraction,
   LogoutReason,
   RegisterRouteService,
+  AuthRequestApiService,
+  DefaultAuthRequestApiService,
 } from "@bitwarden/auth/common";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -78,7 +82,6 @@ import { AvatarService as AvatarServiceAbstraction } from "@bitwarden/common/aut
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DevicesApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices-api.service.abstraction";
-import { KdfConfigService as KdfConfigServiceAbstraction } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import {
   InternalMasterPasswordServiceAbstraction,
@@ -101,7 +104,6 @@ import { AvatarService } from "@bitwarden/common/auth/services/avatar.service";
 import { DeviceTrustService } from "@bitwarden/common/auth/services/device-trust.service.implementation";
 import { DevicesServiceImplementation } from "@bitwarden/common/auth/services/devices/devices.service.implementation";
 import { DevicesApiServiceImplementation } from "@bitwarden/common/auth/services/devices-api.service.implementation";
-import { KdfConfigService } from "@bitwarden/common/auth/services/kdf-config.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { MasterPasswordService } from "@bitwarden/common/auth/services/master-password/master-password.service";
 import { PasswordResetEnrollmentServiceImplementation } from "@bitwarden/common/auth/services/password-reset-enrollment.service.implementation";
@@ -275,6 +277,8 @@ import {
   DefaultKeyService as KeyService,
   BiometricStateService,
   DefaultBiometricStateService,
+  KdfConfigService,
+  DefaultKdfConfigService,
 } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 import {
@@ -315,6 +319,7 @@ import {
   CLIENT_TYPE,
   REFRESH_ACCESS_TOKEN_ERROR_CALLBACK,
   ENV_ADDITIONAL_REGIONS,
+  AUTHN_SESSION_TIMEOUT_EXECUTOR,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
 
@@ -408,6 +413,11 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
+    provide: AUTHN_SESSION_TIMEOUT_EXECUTOR,
+    useFactory: (ngZone: NgZone) => (fn: () => void) => ngZone.run(fn),
+    deps: [NgZone],
+  }),
+  safeProvider({
     provide: LoginStrategyServiceAbstraction,
     useClass: LoginStrategyService,
     deps: [
@@ -434,8 +444,9 @@ const safeProviders: SafeProvider[] = [
       GlobalStateProvider,
       BillingAccountProfileStateService,
       VaultTimeoutSettingsServiceAbstraction,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
       TaskSchedulerService,
+      AUTHN_SESSION_TIMEOUT_EXECUTOR,
     ],
   }),
   safeProvider({
@@ -603,7 +614,7 @@ const safeProviders: SafeProvider[] = [
       StateServiceAbstraction,
       AccountServiceAbstraction,
       StateProvider,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
     ],
   }),
   safeProvider({
@@ -822,7 +833,7 @@ const safeProviders: SafeProvider[] = [
       KeyServiceAbstraction,
       EncryptService,
       CryptoFunctionServiceAbstraction,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
       AccountServiceAbstraction,
     ],
   }),
@@ -837,7 +848,7 @@ const safeProviders: SafeProvider[] = [
       EncryptService,
       CryptoFunctionServiceAbstraction,
       CollectionService,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
       AccountServiceAbstraction,
     ],
   }),
@@ -964,7 +975,7 @@ const safeProviders: SafeProvider[] = [
       LogService,
       VaultTimeoutSettingsServiceAbstraction,
       PlatformUtilsServiceAbstraction,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
     ],
   }),
   safeProvider({
@@ -1130,7 +1141,7 @@ const safeProviders: SafeProvider[] = [
       AccountServiceAbstraction,
       CryptoFunctionServiceAbstraction,
       EncryptService,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
       KeyGenerationServiceAbstraction,
       LogService,
       MasterPasswordServiceAbstraction,
@@ -1209,6 +1220,8 @@ const safeProviders: SafeProvider[] = [
     useClass: OrganizationBillingService,
     deps: [
       ApiServiceAbstraction,
+      BillingApiServiceAbstraction,
+      ConfigService,
       KeyServiceAbstraction,
       EncryptService,
       I18nServiceAbstraction,
@@ -1304,8 +1317,8 @@ const safeProviders: SafeProvider[] = [
     deps: [ApiServiceAbstraction],
   }),
   safeProvider({
-    provide: KdfConfigServiceAbstraction,
-    useClass: KdfConfigService,
+    provide: KdfConfigService,
+    useClass: DefaultKdfConfigService,
     deps: [StateProvider],
   }),
   safeProvider({
@@ -1316,7 +1329,7 @@ const safeProviders: SafeProvider[] = [
       KeyServiceAbstraction,
       EncryptService,
       I18nServiceAbstraction,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
       InternalMasterPasswordServiceAbstraction,
       OrganizationApiServiceAbstraction,
       OrganizationUserApiService,
@@ -1367,7 +1380,7 @@ const safeProviders: SafeProvider[] = [
       EnvironmentService,
       PlatformUtilsServiceAbstraction,
       AccountServiceAbstraction,
-      KdfConfigServiceAbstraction,
+      KdfConfigService,
       KeyServiceAbstraction,
       ApiServiceAbstraction,
     ],
@@ -1376,6 +1389,16 @@ const safeProviders: SafeProvider[] = [
     provide: CipherAuthorizationService,
     useClass: DefaultCipherAuthorizationService,
     deps: [CollectionService, OrganizationServiceAbstraction],
+  }),
+  safeProvider({
+    provide: AuthRequestApiService,
+    useClass: DefaultAuthRequestApiService,
+    deps: [ApiServiceAbstraction, LogService],
+  }),
+  safeProvider({
+    provide: LoginDecryptionOptionsService,
+    useClass: DefaultLoginDecryptionOptionsService,
+    deps: [MessagingServiceAbstraction],
   }),
 ];
 
