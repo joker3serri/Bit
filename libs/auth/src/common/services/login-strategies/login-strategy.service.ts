@@ -1,4 +1,3 @@
-import { NgZone } from "@angular/core";
 import {
   combineLatestWith,
   distinctUntilChanged,
@@ -72,6 +71,8 @@ import {
 
 const sessionTimeoutLength = 5 * 60 * 1000; // 5 minutes
 
+export type Executor = (fn: () => void) => void;
+
 export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   private sessionTimeoutSubscription: Subscription;
   private currentAuthnTypeState: GlobalState<AuthenticationType | null>;
@@ -119,7 +120,7 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected kdfConfigService: KdfConfigService,
     protected taskSchedulerService: TaskSchedulerService,
-    private ngZone: NgZone | null,
+    private authnSessionTimeoutExecutor: Executor = (fn) => fn(), // Default to no-op
   ) {
     this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
@@ -130,19 +131,14 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     this.taskSchedulerService.registerTaskHandler(
       ScheduledTaskNames.loginStrategySessionTimeout,
       async () => {
-        // If an angular context is available, emit timeout inside that context
-        if (this.ngZone) {
-          this.ngZone.run(() => {
-            this.twoFactorTimeoutSubject.next(true);
-          });
-        } else {
+        this.authnSessionTimeoutExecutor(async () => {
           this.twoFactorTimeoutSubject.next(true);
-        }
-        try {
-          await this.clearCache();
-        } catch (e) {
-          this.logService.error("Failed to clear cache during session timeout", e);
-        }
+          try {
+            await this.clearCache();
+          } catch (e) {
+            this.logService.error("Failed to clear cache during session timeout", e);
+          }
+        });
       },
     );
 
