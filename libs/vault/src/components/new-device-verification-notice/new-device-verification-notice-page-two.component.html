@@ -1,5 +1,5 @@
 <p class="tw-text-center" bitTypography="body1">
-  {{ "newDeviceVerificationNoticeContentPage1" | i18n }}
+  {{ "newDeviceVerificationNoticeContentPage2" | i18n }}
 </p>
 
 <button bitButton type="submit" buttonType="primary" class="tw-w-full tw-mt-4">
@@ -8,3 +8,9 @@
 <button bitButton type="submit" buttonType="secondary" class="tw-w-full tw-mt-4">
   {{ "changeAcctEmail" | i18n }}
 </button>
+
+<div class="tw-flex tw-justify-center tw-mt-6">
+  <a bitLink linkType="primary" (click)="remindMeLaterSelect()">
+    {{ "remindMeLater" | i18n }}
+  </a>
+</div>
