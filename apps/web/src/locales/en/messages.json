@@ -9902,5 +9902,8 @@
   },
   "removeMembers": {
     "message": "Remove members"
+  },
+  "devices": {
+    "message": "Devices"
   }
 }

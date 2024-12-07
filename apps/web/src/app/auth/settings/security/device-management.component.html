@@ -1,0 +1,34 @@
+<div class="tabbed-content">
+  <h2>{{ "devices" | i18n }}</h2>
+  <h3>test1</h3>
+  <bit-table>
+    <ng-container header>
+      <tr>
+        <th bitCell>{{ "deviceType" | i18n }}</th>
+        <th bitCell>{{ "deviceName" | i18n }}</th>
+        <th bitCell>{{ "lastActive" | i18n }}</th>
+        <th bitCell class="text-right">{{ "action" | i18n }}</th>
+      </tr>
+    </ng-container>
+    <ng-template body>
+      <tr bitRow>
+        <td bitCell>
+          <i class="bwi bwi-desktop" aria-hidden="true"></i>
+          {{ "desktop" | i18n }}
+        </td>
+        <td bitCell>Windows 10 Chrome</td>
+        <td bitCell>{{ "now" | i18n }}</td>
+        <td bitCell class="text-right">
+          <button type="button" bitButton buttonType="danger" [bitMenuTriggerFor]="deviceMenu">
+            <i class="bwi bwi-ellipsis-v" aria-hidden="true"></i>
+          </button>
+          <bit-menu #deviceMenu>
+            <button type="button" bitMenuItem (click)="revokeDevice()">
+              <span class="tw-text-danger">{{ "revokeAccess" | i18n }}</span>
+            </button>
+          </bit-menu>
+        </td>
+      </tr>
+    </ng-template>
+  </bit-table>
+</div>

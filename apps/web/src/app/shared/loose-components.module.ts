@@ -39,6 +39,7 @@ import { EmergencyAccessViewComponent } from "../auth/settings/emergency-access/
 import { EmergencyAddEditCipherComponent } from "../auth/settings/emergency-access/view/emergency-add-edit-cipher.component";
 import { ApiKeyComponent } from "../auth/settings/security/api-key.component";
 import { ChangeKdfModule } from "../auth/settings/security/change-kdf/change-kdf.module";
+import { DeviceManagementComponent } from "../auth/settings/security/device-management.component";
 import { SecurityKeysComponent } from "../auth/settings/security/security-keys.component";
 import { SecurityComponent } from "../auth/settings/security/security.component";
 import { TwoFactorRecoveryComponent } from "../auth/settings/two-factor/two-factor-recovery.component";
@@ -121,6 +122,7 @@ import { SharedModule } from "./shared.module";
     ChangeEmailComponent,
     DeauthorizeSessionsComponent,
     DeleteAccountDialogComponent,
+    DeviceManagementComponent,
     DomainRulesComponent,
     EmergencyAccessAddEditComponent,
     EmergencyAccessAttachmentsComponent,
