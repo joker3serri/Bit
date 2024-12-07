@@ -7,6 +7,7 @@ import { NgModule } from "@angular/core";
 
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
+import { SecureStringComponent } from "@bitwarden/angular/platform/secure-string.component";
 import { DialogModule, CalloutModule } from "@bitwarden/components";
 
 import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
@@ -62,6 +63,7 @@ import { SendComponent } from "./tools/send/send.component";
     CalloutModule,
     DeleteAccountComponent,
     UserVerificationComponent,
+    SecureStringComponent,
   ],
   declarations: [
     AccessibilityCookieComponent,

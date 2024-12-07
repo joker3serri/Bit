@@ -1,3 +1,4 @@
+import { SecureString } from "../../../../../platform/src";
 import { UriMatchStrategySetting } from "../../../models/domain/domain-service";
 import { Utils } from "../../../platform/misc/utils";
 import { DeepJsonify } from "../../../types/deep-jsonify";
@@ -13,7 +14,19 @@ export class LoginView extends ItemView {
   @linkedFieldOption(LinkedId.Username, { sortPosition: 0 })
   username: string = null;
   @linkedFieldOption(LinkedId.Password, { sortPosition: 1 })
-  password: string = null;
+  _password: string = null;
+
+  get password() {
+    return this._password;
+  }
+
+  set password(value: string) {
+    this._password = value;
+    // TODO: Construct this straight from decrypted buffer
+    this.securePassword = new SecureString(value);
+  }
+
+  securePassword: SecureString = null;
 
   passwordRevisionDate?: Date = null;
   totp: string = null;

@@ -23,6 +23,7 @@ import { DefaultStateProvider } from "@bitwarden/common/platform/state/implement
 import { StateEventRegistrarService } from "@bitwarden/common/platform/state/state-event-registrar.service";
 import { MemoryStorageService as MemoryStorageServiceForStateProviders } from "@bitwarden/common/platform/state/storage/memory-storage.service";
 import { DefaultBiometricStateService } from "@bitwarden/key-management";
+// import { initGlobalAllocator, SecureHeapAllocator } from "@bitwarden/platform";
 /* eslint-enable import/no-restricted-paths */
 
 import { DesktopAutofillSettingsService } from "./autofill/services/desktop-autofill-settings.service";
@@ -49,6 +50,8 @@ import { I18nMainService } from "./platform/services/i18n.main.service";
 import { SSOLocalhostCallbackService } from "./platform/services/sso-localhost-callback.service";
 import { ElectronMainMessagingService } from "./services/electron-main-messaging.service";
 import { isMacAppStore } from "./utils";
+
+// initGlobalAllocator(new SecureHeapAllocator());
 
 export class Main {
   logService: ElectronLogMainService;
