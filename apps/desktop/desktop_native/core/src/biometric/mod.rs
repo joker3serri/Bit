@@ -39,6 +39,7 @@ pub trait BiometricTrait {
         account: &str,
         key_material: Option<KeyMaterial>,
     ) -> Result<String>;
+    async fn needs_setup() -> Result<bool>;
 }
 
 fn encrypt(secret: &str, key_material: &KeyMaterial, iv_b64: &str) -> Result<String> {
