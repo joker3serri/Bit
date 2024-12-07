@@ -3,6 +3,7 @@ import { OptionValues } from "commander";
 import * as koa from "koa";
 import * as koaBodyParser from "koa-bodyparser";
 import * as koaJson from "koa-json";
+import { koaSwagger } from "koa2-swagger-ui";
 
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 
@@ -19,11 +20,20 @@ export class ServeCommand {
     const protectOrigin = !options.disableOriginProtection;
     const port = options.port || 8087;
     const hostname = options.hostname || "localhost";
+    const enableDocs = options.docs;
+    const origin = "http://" + hostname + ":" + port;
+
     this.serviceContainer.logService.info(
       `Starting server on ${hostname}:${port} with ${
         protectOrigin ? "origin protection" : "no origin protection"
       }`,
     );
+
+    if (enableDocs) {
+      this.serviceContainer.logService.warning(
+        `Starting SwaggerUI on ${origin}/docs. Requests from this origin will be allowed regardless of origin protection.`,
+      );
+    }
 
     const server = new koa();
     const router = new koaRouter();
@@ -32,7 +42,11 @@ export class ServeCommand {
 
     server
       .use(async (ctx, next) => {
-        if (protectOrigin && ctx.headers.origin != undefined) {
+        if (
+          protectOrigin &&
+          ctx.headers.origin != undefined &&
+          (!enableDocs || ctx.headers.origin !== origin)
+        ) {
           ctx.status = 403;
           this.serviceContainer.logService.warning(
             `Blocking request from "${
@@ -47,6 +61,27 @@ export class ServeCommand {
       })
       .use(koaBodyParser())
       .use(koaJson({ pretty: false, param: "pretty" }));
+
+    // Enable SwaggerUI
+    if (enableDocs) {
+      // eslint-disable-next-line
+      const spec = require("../../swagger.json");
+      spec.servers = [
+        {
+          url: origin,
+          description: "bw serve",
+        },
+        ...(spec.servers ?? []),
+      ];
+
+      server.use(
+        koaSwagger({
+          swaggerOptions: {
+            spec,
+          },
+        }),
+      );
+    }
 
     this.serveConfigurator.configureRouter(router);
 
