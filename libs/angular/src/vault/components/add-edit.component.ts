@@ -123,7 +123,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected policyService: PolicyService,
     protected logService: LogService,
     protected passwordRepromptService: PasswordRepromptService,
-    private organizationService: OrganizationService,
+    protected organizationService: OrganizationService,
     protected sendApiService: SendApiService,
     protected dialogService: DialogService,
     protected win: Window,
