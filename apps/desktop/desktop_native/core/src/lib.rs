@@ -1,3 +1,4 @@
+pub mod autofill;
 #[cfg(feature = "sys")]
 pub mod biometric;
 #[cfg(feature = "sys")]

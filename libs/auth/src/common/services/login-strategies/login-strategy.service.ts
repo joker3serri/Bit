@@ -71,8 +71,6 @@ import {
 
 const sessionTimeoutLength = 5 * 60 * 1000; // 5 minutes
 
-export type Executor = (fn: () => void) => void;
-
 export class LoginStrategyService implements LoginStrategyServiceAbstraction {
   private sessionTimeoutSubscription: Subscription;
   private currentAuthnTypeState: GlobalState<AuthenticationType | null>;
@@ -120,7 +118,6 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected kdfConfigService: KdfConfigService,
     protected taskSchedulerService: TaskSchedulerService,
-    private authnSessionTimeoutExecutor: Executor = (fn) => fn(), // Default to no-op
   ) {
     this.currentAuthnTypeState = this.stateProvider.get(CURRENT_LOGIN_STRATEGY_KEY);
     this.loginStrategyCacheState = this.stateProvider.get(CACHE_KEY);
@@ -131,14 +128,12 @@ export class LoginStrategyService implements LoginStrategyServiceAbstraction {
     this.taskSchedulerService.registerTaskHandler(
       ScheduledTaskNames.loginStrategySessionTimeout,
       async () => {
-        this.authnSessionTimeoutExecutor(async () => {
-          this.twoFactorTimeoutSubject.next(true);
-          try {
-            await this.clearCache();
-          } catch (e) {
-            this.logService.error("Failed to clear cache during session timeout", e);
-          }
-        });
+        this.twoFactorTimeoutSubject.next(true);
+        try {
+          await this.clearCache();
+        } catch (e) {
+          this.logService.error("Failed to clear cache during session timeout", e);
+        }
       },
     );
 
