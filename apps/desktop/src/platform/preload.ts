@@ -100,8 +100,8 @@ const nativeMessaging = {
 
 const crypto = {
   argon2: (
-    password: string | Uint8Array,
-    salt: string | Uint8Array,
+    password: Uint8Array,
+    salt: Uint8Array,
     iterations: number,
     memory: number,
     parallelism: number,
