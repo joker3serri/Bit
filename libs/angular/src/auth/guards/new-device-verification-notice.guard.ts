@@ -8,7 +8,7 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 
 import { NewDeviceVerificationNoticeService } from "../../../../vault/src/services/new-device-verification-notice.service";
 
-export const NewDeviceVerificationNoticeGuard: CanActivateFn = async (override?) => {
+export const NewDeviceVerificationNoticeGuard: CanActivateFn = async () => {
   const router = inject(Router);
   const configService = inject(ConfigService);
   const newDeviceVerificationNoticeService = inject(NewDeviceVerificationNoticeService);

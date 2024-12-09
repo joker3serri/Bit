@@ -11,6 +11,7 @@ import { UserId } from "@bitwarden/common/types/guid";
 import {
   AsyncActionsModule,
   ButtonModule,
+  CardComponent,
   FormFieldModule,
   RadioButtonModule,
   TypographyModule,
@@ -23,6 +24,7 @@ import { NewDeviceVerificationNoticeService } from "./../../services/new-device-
   selector: "app-new-device-verification-notice-page-one",
   templateUrl: "./new-device-verification-notice-page-one.component.html",
   imports: [
+    CardComponent,
     CommonModule,
     JslibModule,
     TypographyModule,
@@ -59,21 +61,19 @@ export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
     );
   }
 
-  submit = () => {
+  submit = async () => {
     if (this.formGroup.controls.hasEmailAccess.value === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["new-device-notice/setup"]);
+      await this.router.navigate(["new-device-notice/setup"]);
     } else if (this.formGroup.controls.hasEmailAccess.value === 1) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(
+      await this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(
         this.currentUserId,
         {
           last_dismissal: new Date(),
           permanent_dismissal: null,
         },
       );
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.router.navigate(["/vault"]);
+
+      await this.router.navigate(["/vault"]);
     }
   };
 }

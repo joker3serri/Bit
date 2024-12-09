@@ -3,12 +3,10 @@
     {{ "newDeviceVerificationNoticeContentPage1" | i18n }}
   </p>
 
-  <div
-    class="tw-flex tw-flex-col tw-items-center tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 tw-pb-2"
-  >
-    <p bitTypography="body2" class="text-muted tw-w-9/12">{{ formMessage }}</p>
+  <bit-card class="tw-pb-0 md:tw-flex md:tw-flex-col md:tw-items-center md:!tw-rounded-b-none">
+    <p bitTypography="body2" class="text-muted md:tw-w-9/12">{{ formMessage }}</p>
 
-    <bit-radio-group formControlName="hasEmailAccess" class="tw-w-9/12">
+    <bit-radio-group formControlName="hasEmailAccess" class="md:tw-w-9/12">
       <bit-radio-button id="option_A" [value]="0">
         <bit-label>{{ "newDeviceVerificationNoticePageOneEmailAccessNo" | i18n }}</bit-label>
       </bit-radio-button>
@@ -16,7 +14,7 @@
         <bit-label>{{ "newDeviceVerificationNoticePageOneEmailAccessYes" | i18n }}</bit-label>
       </bit-radio-button>
     </bit-radio-group>
-  </div>
+  </bit-card>
 
   <button bitButton type="submit" buttonType="primary" class="tw-w-full tw-mt-4">
     {{ "continue" | i18n }}

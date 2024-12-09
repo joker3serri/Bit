@@ -36,16 +36,15 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
       "peter.parker@daily.com",
     );
   }
-  remindMeLaterSelect = () => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(
+  async remindMeLaterSelect() {
+    await this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(
       this.currentUserId,
       {
         last_dismissal: new Date(),
         permanent_dismissal: null,
       },
     );
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.router.navigate(["/vault"]);
-  };
+
+    await this.router.navigate(["/vault"]);
+  }
 }
