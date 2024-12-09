@@ -632,11 +632,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   async saveBrowserIntegration() {
-    if (!ipc.platform.allowBrowserintegrationOverride && !ipc.platform.isDev) {
+    const skipSupportedPlatformCheck =
+      ipc.platform.allowBrowserintegrationOverride || ipc.platform.isDev;
+
+    if (skipSupportedPlatformCheck) {
       if (
         ipc.platform.deviceType === DeviceType.MacOsDesktop &&
-        !this.platformUtilsService.isMacAppStore() &&
-        !ipc.platform.isDev
+        !this.platformUtilsService.isMacAppStore()
       ) {
         await this.dialogService.openSimpleDialog({
           title: { key: "browserIntegrationUnsupportedTitle" },
@@ -648,7 +650,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
         this.form.controls.enableBrowserIntegration.setValue(false);
         return;
-      } else if (ipc.platform.isWindowsStore) {
+      }
+
+      if (ipc.platform.isWindowsStore) {
         await this.dialogService.openSimpleDialog({
           title: { key: "browserIntegrationUnsupportedTitle" },
           content: { key: "browserIntegrationWindowsStoreDesc" },
@@ -659,7 +663,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
         this.form.controls.enableBrowserIntegration.setValue(false);
         return;
-      } else if (ipc.platform.isSnapStore || ipc.platform.isFlatpak) {
+      }
+
+      if (ipc.platform.isSnapStore || ipc.platform.isFlatpak) {
         await this.dialogService.openSimpleDialog({
           title: { key: "browserIntegrationUnsupportedTitle" },
           content: { key: "browserIntegrationLinuxDesc" },
