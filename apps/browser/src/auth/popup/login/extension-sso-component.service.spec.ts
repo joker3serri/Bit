@@ -2,7 +2,6 @@ import { TestBed } from "@angular/core/testing";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
-import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { ClientType } from "@bitwarden/common/enums";
 import {
@@ -20,19 +19,25 @@ import { ExtensionSsoComponentService } from "./extension-sso-component.service"
 describe("ExtensionSsoComponentService", () => {
   let service: ExtensionSsoComponentService;
   const baseUrl = "https://vault.bitwarden.com";
+  let originalWindow: Window & typeof globalThis;
 
   let syncService: MockProxy<SyncService>;
   let authService: MockProxy<AuthService>;
   let environmentService: MockProxy<EnvironmentService>;
   let i18nService: MockProxy<I18nService>;
-  let windowMock: MockProxy<Window>;
   let logService: MockProxy<LogService>;
+
   beforeEach(() => {
+    originalWindow = global.window;
+    Object.defineProperty(global, "window", {
+      value: { close: jest.fn() },
+      writable: true,
+    });
+
     syncService = mock<SyncService>();
     authService = mock<AuthService>();
     environmentService = mock<EnvironmentService>();
     i18nService = mock<I18nService>();
-    windowMock = mock<Window>();
     logService = mock<LogService>();
     environmentService.environment$ = new BehaviorSubject<Environment>({
       getWebVaultUrl: () => baseUrl,
@@ -43,7 +48,6 @@ describe("ExtensionSsoComponentService", () => {
         { provide: SyncService, useValue: syncService },
         { provide: AuthService, useValue: authService },
         { provide: EnvironmentService, useValue: environmentService },
-        { provide: WINDOW, useValue: windowMock },
         { provide: I18nService, useValue: i18nService },
         { provide: LogService, useValue: logService },
         ExtensionSsoComponentService,
@@ -55,6 +59,14 @@ describe("ExtensionSsoComponentService", () => {
     jest.spyOn(BrowserApi, "reloadOpenWindows").mockImplementation();
   });
 
+  afterEach(() => {
+    // Restore original window
+    Object.defineProperty(global, "window", {
+      value: originalWindow,
+      writable: true,
+    });
+  });
+
   it("sets clientId to browser", () => {
     expect(service.clientId).toBe(ClientType.Browser);
   });
@@ -62,8 +74,7 @@ describe("ExtensionSsoComponentService", () => {
   describe("closeWindow", () => {
     it("closes window", async () => {
       await service.closeWindow();
-
-      expect(windowMock.close).toHaveBeenCalled();
+      expect(window.close).toHaveBeenCalled();
     });
   });
 });

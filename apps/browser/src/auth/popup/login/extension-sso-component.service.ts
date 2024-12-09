@@ -26,7 +26,6 @@ export class ExtensionSsoComponentService
     protected syncService: SyncService,
     protected authService: AuthService,
     protected environmentService: EnvironmentService,
-    private window: Window,
     protected i18nService: I18nService,
     protected logService: LogService,
   ) {
@@ -37,7 +36,7 @@ export class ExtensionSsoComponentService
      * Closes the popup window after a successful login.
      */
     this.closeWindow = async (): Promise<void> => {
-      this.window.close();
+      window.close();
     };
   }
 }

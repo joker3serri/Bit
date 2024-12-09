@@ -17,7 +17,6 @@ import {
   SYSTEM_THEME_OBSERVABLE,
   SafeInjectionToken,
   ENV_ADDITIONAL_REGIONS,
-  WINDOW,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import {
@@ -601,14 +600,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: SsoComponentService,
     useClass: ExtensionSsoComponentService,
-    deps: [
-      SyncService,
-      AuthService,
-      EnvironmentService,
-      WINDOW,
-      I18nServiceAbstraction,
-      LogService,
-    ],
+    deps: [SyncService, AuthService, EnvironmentService, I18nServiceAbstraction, LogService],
   }),
   safeProvider({
     provide: LoginDecryptionOptionsService,
