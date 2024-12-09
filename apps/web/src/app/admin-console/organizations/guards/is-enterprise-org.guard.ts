@@ -6,10 +6,8 @@ import {
   RouterStateSnapshot,
 } from "@angular/router";
 
-import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ProductTierType } from "@bitwarden/common/billing/enums";
-import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { DialogService } from "@bitwarden/components";
 
 /**
@@ -19,7 +17,7 @@ import { DialogService } from "@bitwarden/components";
  * if they have access to upgrade the organization. If the organization is
  * enterprise routing proceeds."
  */
-export function isEnterpriseOrgGuard(): CanActivateFn {
+export function isEnterpriseOrgGuard(showError: boolean = true): CanActivateFn {
   return async (route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) => {
     const router = inject(Router);
     const organizationService = inject(OrganizationService);
@@ -31,12 +29,7 @@ export function isEnterpriseOrgGuard(): CanActivateFn {
       return router.createUrlTree(["/"]);
     }
 
-    // TODO: Remove on "MemberAccessReport" feature flag cleanup
-    if (!canAccessFeature(FeatureFlag.MemberAccessReport)) {
-      return router.createUrlTree(["/"]);
-    }
-
-    if (org.productTierType != ProductTierType.Enterprise) {
+    if (org.productTierType != ProductTierType.Enterprise && showError) {
       // Users without billing permission can't access billing
       if (!org.canEditSubscription) {
         await dialogService.openSimpleDialog({

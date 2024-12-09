@@ -19,17 +19,17 @@ import {
   CollectionAdminView,
   OrganizationUserApiService,
   OrganizationUserUserMiniResponse,
+  CollectionResponse,
+  CollectionView,
 } from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { CollectionResponse } from "@bitwarden/common/vault/models/response/collection.response";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 import { BitValidators, DialogService } from "@bitwarden/components";
 
-import { GroupService, GroupView } from "../../../admin-console/organizations/core";
+import { GroupApiService, GroupView } from "../../../admin-console/organizations/core";
 import { PermissionMode } from "../../../admin-console/organizations/shared/components/access-selector/access-selector.component";
 import {
   AccessItemType,
@@ -101,7 +101,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private dialogRef: DialogRef<CollectionDialogResult>,
     private organizationService: OrganizationService,
-    private groupService: GroupService,
+    private groupService: GroupApiService,
     private collectionAdminService: CollectionAdminService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,

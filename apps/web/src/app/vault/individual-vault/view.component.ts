@@ -1,17 +1,20 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, Inject, OnInit, EventEmitter } from "@angular/core";
+import { Component, EventEmitter, Inject, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
 
+import { CollectionView } from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { CollectionId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { ViewPasswordHistoryService } from "@bitwarden/common/vault/abstractions/view-password-history.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
+import { CipherAuthorizationService } from "@bitwarden/common/vault/services/cipher-authorization.service";
 import {
   AsyncActionsModule,
   DialogModule,
@@ -35,6 +38,11 @@ export interface ViewCipherDialogParams {
   collections?: CollectionView[];
 
   /**
+   * Optional collection ID used to know the collection filter selected.
+   */
+  activeCollectionId?: CollectionId;
+
+  /**
    * If true, the edit button will be disabled in the dialog.
    */
   disableEdit?: boolean;
@@ -52,6 +60,7 @@ export interface ViewCipherDialogCloseResult {
 
 /**
  * Component for viewing a cipher, presented in a dialog.
+ * @deprecated Use the VaultItemDialogComponent instead.
  */
 @Component({
   selector: "app-vault-view",
@@ -70,6 +79,8 @@ export class ViewComponent implements OnInit {
   cipherTypeString: string;
   organization: Organization;
 
+  canDeleteCipher$: Observable<boolean>;
+
   constructor(
     @Inject(DIALOG_DATA) public params: ViewCipherDialogParams,
     private dialogRef: DialogRef<ViewCipherDialogCloseResult>,
@@ -80,6 +91,7 @@ export class ViewComponent implements OnInit {
     private cipherService: CipherService,
     private toastService: ToastService,
     private organizationService: OrganizationService,
+    private cipherAuthorizationService: CipherAuthorizationService,
   ) {}
 
   /**
@@ -92,6 +104,10 @@ export class ViewComponent implements OnInit {
     if (this.cipher.organizationId) {
       this.organization = await this.organizationService.get(this.cipher.organizationId);
     }
+
+    this.canDeleteCipher$ = this.cipherAuthorizationService.canDeleteCipher$(this.cipher, [
+      this.params.activeCollectionId,
+    ]);
   }
 
   /**
@@ -168,6 +184,8 @@ export class ViewComponent implements OnInit {
         return this.i18nService.t("viewItemType", this.i18nService.t("typeCard").toLowerCase());
       case CipherType.Identity:
         return this.i18nService.t("viewItemType", this.i18nService.t("typeIdentity").toLowerCase());
+      case CipherType.SshKey:
+        return this.i18nService.t("viewItemType", this.i18nService.t("typeSshKey").toLowerCase());
       default:
         return null;
     }

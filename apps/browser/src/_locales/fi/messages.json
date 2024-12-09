@@ -19,6 +19,18 @@
   "createAccount": {
     "message": "Luo tili"
   },
+  "newToBitwarden": {
+    "message": "Oletko uusi Bitwarden-käyttäjä?"
+  },
+  "logInWithPasskey": {
+    "message": "Kirjaudu pääsyavaimella"
+  },
+  "useSingleSignOn": {
+    "message": "Käytä kertakirjautumista"
+  },
+  "welcomeBack": {
+    "message": "Tervetuloa takaisin"
+  },
   "setAStrongPassword": {
     "message": "Aseta vahva salasana"
   },
@@ -71,6 +83,15 @@
   "joinOrganization": {
     "message": "Liity organisaatioon"
   },
+  "joinOrganizationName": {
+    "message": "Liity organisaatioon $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "Viimeistele liittyminen organisaatioon asettamalla pääsalasana."
   },
@@ -97,6 +118,9 @@
   },
   "copyPassword": {
     "message": "Kopioi salasana"
+  },
+  "copyPassphrase": {
+    "message": "Kopioi salalause"
   },
   "copyNote": {
     "message": "Kopioi merkinnät"
@@ -128,6 +152,15 @@
   "copyLicenseNumber": {
     "message": "Kopioi ajokortin numero"
   },
+  "copyPrivateKey": {
+    "message": "Kopioi yksityinen avain"
+  },
+  "copyPublicKey": {
+    "message": "Kopioi julkinen avain"
+  },
+  "copyFingerprint": {
+    "message": "Kopioi sormenjälki"
+  },
   "copyCustomField": {
     "message": "Kopioi $FIELD$",
     "placeholders": {
@@ -142,6 +175,10 @@
   },
   "copyNotes": {
     "message": "Kopioi merkinnät"
+  },
+  "fill": {
+    "message": "Täytä",
+    "description": "This string is used on the vault page to indicate autofilling. Horizontal space is limited in the interface here so try and keep translations as concise as possible."
   },
   "autoFill": {
     "message": "Automaattitäyttö"
@@ -381,7 +418,7 @@
   },
   "generator": {
     "message": "Generaattori",
-    "description": "Short for 'Password Generator'."
+    "description": "Short for 'credential generator'."
   },
   "passGenInfo": {
     "message": "Luo kirjautumistiedoillesi automaattisesti vahvoja, ainutlaatuisia salasanoja."
@@ -397,6 +434,9 @@
   },
   "generatePassword": {
     "message": "Luo salasana"
+  },
+  "generatePassphrase": {
+    "message": "Luo salalause"
   },
   "regeneratePassword": {
     "message": "Luo uusi salasana"
@@ -490,7 +530,7 @@
     "description": "Label for the avoid ambiguous characters checkbox."
   },
   "generatorPolicyInEffect": {
-    "message": "Enterprise policy requirements have been applied to your generator options.",
+    "message": "Yrityskäytännön säännöt vaikuttavat generaattoriasetuksiisi.",
     "description": "Indicates that a policy limits the credential generator screen."
   },
   "searchVault": {
@@ -559,6 +599,15 @@
   "launchWebsite": {
     "message": "Avaa verkkosivusto"
   },
+  "launchWebsiteName": {
+    "message": "Avaa verkkosivusto $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret item"
+      }
+    }
+  },
   "website": {
     "message": "Verkkosivusto"
   },
@@ -603,6 +652,15 @@
   },
   "yourVaultIsLocked": {
     "message": "Holvisi on lukittu. Jatka vahvistamalla henkilöllisyytesi."
+  },
+  "yourVaultIsLockedV2": {
+    "message": "Holvisi on lukittu"
+  },
+  "yourAccountIsLocked": {
+    "message": "Tilisi on lukittu"
+  },
+  "or": {
+    "message": "tai"
   },
   "unlock": {
     "message": "Avaa"
@@ -795,6 +853,9 @@
   },
   "logIn": {
     "message": "Kirjaudu"
+  },
+  "logInToBitwarden": {
+    "message": "Kirjaudu Bitwardeniin"
   },
   "restartRegistration": {
     "message": "Aloita rekisteröityminen alusta"
@@ -1063,6 +1124,10 @@
   "warning": {
     "message": "VAROITUS",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
+  },
+  "warningCapitalized": {
+    "message": "Varoitus",
+    "description": "Warning (should maintain locale-relevant capitalization)"
   },
   "confirmVaultExport": {
     "message": "Vahvista holvin vienti"
@@ -1371,6 +1436,10 @@
   "baseUrl": {
     "message": "Palvelimen URL"
   },
+  "selfHostBaseUrl": {
+    "message": "Itse ylläpidetyn palvelimen URL-osoite",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "apiUrl": {
     "message": "API-palvelimen URL"
   },
@@ -1398,6 +1467,12 @@
   },
   "showInlineMenuLabel": {
     "message": "Näytä automaattitäytön ehdotukset lomakekentissä"
+  },
+  "showInlineMenuIdentitiesLabel": {
+    "message": "Näytä identiteetit ehdotuksina"
+  },
+  "showInlineMenuCardsLabel": {
+    "message": "Näytä kortit ehdotuksina"
   },
   "showInlineMenuOnIconSelectionLabel": {
     "message": "Näytä ehdotukset kun kuvaketta painetaan"
@@ -1431,19 +1506,6 @@
   },
   "enableAutoFillOnPageLoadDesc": {
     "message": "Automaattinen täyttö suoritetaan sivun avautuessa, jos sivulla havaitaan kirjautumislomake."
-  },
-  "autofillOnPageLoadWarning": {
-    "message": "$OPENTAG$Varoitus:$CLOSETAG$ Vaarantuneet tai epäluotettavat sivustot voivat hyväksikäyttää sivun avautuessa suoritettavaa automaattista täyttöä.",
-    "placeholders": {
-      "openTag": {
-        "content": "$1",
-        "example": "<b>"
-      },
-      "closeTag": {
-        "content": "$2",
-        "example": "</b>"
-      }
-    }
   },
   "experimentalFeature": {
     "message": "Vaarantuneet tai epäluotettavat sivustot voivat hyväksikäyttää sivun avautuessa suoritettavaa automaattista täyttöä."
@@ -1565,7 +1627,7 @@
     "message": "Erääntymisvuosi"
   },
   "expiration": {
-    "message": "Erääntymisaika"
+    "message": "Voimassaolo päättyy"
   },
   "january": {
     "message": "Tammikuu"
@@ -1702,6 +1764,9 @@
   "typeIdentity": {
     "message": "Henkilöllisyys"
   },
+  "typeSshKey": {
+    "message": "SSH-avain"
+  },
   "newItemHeader": {
     "message": "Uusi $TYPE$",
     "placeholders": {
@@ -1731,6 +1796,15 @@
   },
   "passwordHistory": {
     "message": "Salasanahistoria"
+  },
+  "generatorHistory": {
+    "message": "Generaattorihistoria"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Tyhjennä generaattorihistoria"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "Jos jatkat, kaikki generaattorihistorian kohteet poistetaan. Haluatko varmasti jatkaa?"
   },
   "back": {
     "message": "Takaisin"
@@ -1767,6 +1841,9 @@
   },
   "secureNotes": {
     "message": "Salatut muistiot"
+  },
+  "sshKeys": {
+    "message": "SSH-avaimet"
   },
   "clear": {
     "message": "Tyhjennä",
@@ -1848,11 +1925,11 @@
   "clearHistory": {
     "message": "Tyhjennä historia"
   },
-  "noPasswordsToShow": {
-    "message": "Näytettäviä salasanoja ei ole"
+  "nothingToShow": {
+    "message": "Mitään näytettävää ei ole"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "Et ole luonut salasanoja hiljattain"
+  "nothingGeneratedRecently": {
+    "message": "Et ole luonut mitään hiljattain"
   },
   "remove": {
     "message": "Poista"
@@ -1935,6 +2012,9 @@
   },
   "unlockWithBiometrics": {
     "message": "Avaa biometrialla"
+  },
+  "unlockWithMasterPassword": {
+    "message": "Avaa pääsalasanalla"
   },
   "awaitDesktop": {
     "message": "Odottaa vahvistusta työpöydältä"
@@ -2375,7 +2455,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "deleteSendPermanentConfirmation": {
-    "message": "Are you sure you want to permanently delete this Send?",
+    "message": "Haluatko varmasti poistaa Sendin pysyvästi?",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "editSend": {
@@ -2437,8 +2517,8 @@
     "message": "Halutessasi, vaadi käyttäjiä syöttämään salasana Sendin avaamiseksi.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendPasswordDescV2": {
-    "message": "Vaadi tämä salasana Sendin avaukseen.",
+  "sendPasswordDescV3": {
+    "message": "Lisää valinnainen salasana vastaanottajille tähän Sendiin.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
@@ -2486,7 +2566,25 @@
     "message": "Sendin luonti onnistui!",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendAvailability": {
+  "sendExpiresInHoursSingle": {
+    "message": "Tämän linkin välityksellä Send on kenen tahansa avattavissa seuraavan tunnin ajan.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInHours": {
+    "message": "Tämän linkin välityksellä Send on kenen tahansa avattavissa seuraavien $HOURS$ tunnin ajan.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "sendExpiresInDaysSingle": {
+    "message": "Tämän linkin välityksellä Send on kenen tahansa avattavissa seuraavan päivän ajan.",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInDays": {
     "message": "Tämän linkin välityksellä Send on kenen tahansa avattavissa seuraavien $DAYS$ päivän ajan.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
     "placeholders": {
@@ -2505,11 +2603,11 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendFilePopoutDialogText": {
-    "message": "Pop out extension?",
+    "message": "Irrota laajennus?",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendFilePopoutDialogDesc": {
-    "message": "To create a file Send, you need to pop out te extension to a new window.",
+    "message": "Irrota laajennus uuteen ikkunaan luodaksesi tiedosto-Sendin.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
@@ -2522,7 +2620,7 @@
     "message": "Jotta voit valita tiedoston käyttäen Safaria, avaa laajennus erilliseen ikkunaan klikkaamalla tätä banneria."
   },
   "popOut": {
-    "message": "Pop out"
+    "message": "Irrota"
   },
   "sendFileCalloutHeader": {
     "message": "Ennen kuin aloitat"
@@ -2616,6 +2714,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "Organisaatiosi edellyttää, että asetat pääsalasanan.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": "/$TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "Vahvistus vaaditaan",
@@ -2773,6 +2880,43 @@
   "generateUsername": {
     "message": "Luo käyttäjätunnus"
   },
+  "generateEmail": {
+    "message": "Luo sähköpostiosoite"
+  },
+  "spinboxBoundariesHint": {
+    "message": "Arvon tulee olla väliltä $MIN$—$MAX$.",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
+  "passwordLengthRecommendationHint": {
+    "message": " Käytä $RECOMMENDED$ tai useampaa merkkiä vahvan salasanan luomiseen.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "passphraseNumWordsRecommendationHint": {
+    "message": " Käytä $RECOMMENDED$ tai useampaa sanaa vahvan salalauseen luomiseen.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "6"
+      }
+    }
+  },
   "usernameType": {
     "message": "Käyttäjätunnuksen tyyppi"
   },
@@ -2812,6 +2956,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Luo sähköpostialias ulkoisella ohjauspalvelulla."
+  },
+  "forwarderDomainName": {
+    "message": "Sähköpostin verkkotunnus",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Valitse verkkotunnus, jota valittu palvelu tukee",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ -virhe: $ERRORMESSAGE$",
@@ -3012,11 +3164,26 @@
   "resendNotification": {
     "message": "Lähetä ilmoitus uudelleen"
   },
+  "viewAllLogInOptions": {
+    "message": "Näytä kaikki kirjautumisvaihtoehdot"
+  },
   "viewAllLoginOptions": {
     "message": "Näytä kaikki kirjautumisvaihtoehdot"
   },
   "notificationSentDevice": {
     "message": "Laitteellesi on lähetetty ilmoitus."
+  },
+  "aNotificationWasSentToYourDevice": {
+    "message": "Laitteeseesi lähetettiin ilmoitus"
+  },
+  "makeSureYourAccountIsUnlockedAndTheFingerprintEtc": {
+    "message": "Varmista, että vahvistavan laitteen holvi on avattu ja että se näyttää saman tunnistelausekkeen"
+  },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "Sinulle ilmoitetaan, kun pyyntö on hyväksytty"
+  },
+  "needAnotherOptionV1": {
+    "message": "Tarvitsetko toisen vaihtoehdon?"
   },
   "loginInitiated": {
     "message": "Kirjautuminen aloitettu"
@@ -3108,14 +3275,20 @@
       }
     }
   },
-  "loggingInOn": {
-    "message": "Kirjaudutaan sijaintiin"
-  },
   "opensInANewWindow": {
     "message": "Avautuu uudessa ikkunassa"
   },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "Muista tämä laite tehdäksesi tulevista kirjautumisista saumattomia"
+  },
   "deviceApprovalRequired": {
     "message": "Laitehyväksyntä vaaditaan. Valitse hyväksyntätapa alta:"
+  },
+  "deviceApprovalRequiredV2": {
+    "message": "Laitteen hyväksyntä vaaditaan"
+  },
+  "selectAnApprovalOptionBelow": {
+    "message": "Valitse hyväksyntävaihtoehto alla"
   },
   "rememberThisDevice": {
     "message": "Muista tämä laite"
@@ -3189,6 +3362,9 @@
   },
   "userEmailMissing": {
     "message": "Käyttäjän sähköpostiosoite puuttuu"
+  },
+  "activeUserEmailNotFoundLoggingYouOut": {
+    "message": "Aktiivista käyttäjän sähköpostiosoitetta ei löytynyt. Kirjaudutaan ulos."
   },
   "deviceTrusted": {
     "message": "Laitteeseen luotettu"
@@ -3623,6 +3799,12 @@
   "typePasskey": {
     "message": "Pääsyavain"
   },
+  "accessing": {
+    "message": "Avataan"
+  },
+  "loggedInExclamation": {
+    "message": "Kirjautuminen onnistui!"
+  },
   "passkeyNotCopied": {
     "message": "Pääsyavainta ei kopioida"
   },
@@ -3646,6 +3828,9 @@
   },
   "noMatchingLoginsForSite": {
     "message": "Tälle sivustolle sopivia kirjautumistietoja ei ole"
+  },
+  "searchSavePasskeyNewLogin": {
+    "message": "Hae tai tallenna pääsyavain uutena kirjautumistietona"
   },
   "confirm": {
     "message": "Vahvista"
@@ -3898,7 +4083,7 @@
     "message": "Tyhjennä suodattimet tai kokeile toista hakutermiä"
   },
   "copyInfoTitle": {
-    "message": "Kopioi tietoja - $ITEMNAME$",
+    "message": "Kopioi tiedot - $ITEMNAME$",
     "description": "Title for a button that opens a menu with options to copy information from an item.",
     "placeholders": {
       "itemname": {
@@ -3961,7 +4146,7 @@
     "message": "Ei kopioitavia arvoja"
   },
   "assignToCollections": {
-    "message": "Määritä kokoelmiin"
+    "message": "Määritä kokoelmat"
   },
   "copyEmail": {
     "message": "Kopioi sähköpostiosoite"
@@ -4111,6 +4296,21 @@
   "filters": {
     "message": "Suodattimet"
   },
+  "filterVault": {
+    "message": "Suodata holvi"
+  },
+  "filterApplied": {
+    "message": "Yksi suodatin käytössä"
+  },
+  "filterAppliedPlural": {
+    "message": "$COUNT$ suodatinta käytössä",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "personalDetails": {
     "message": "Henkilökohtaiset tiedot"
   },
@@ -4217,7 +4417,7 @@
     "message": "Käytä animaatioita"
   },
   "showAnimations": {
-    "message": "Show animations"
+    "message": "Näytä animaatiot"
   },
   "addAccount": {
     "message": "Lisää tili"
@@ -4434,8 +4634,14 @@
   "itemLocation": {
     "message": "Kohteen sijainti"
   },
+  "fileSend": {
+    "message": "Tiedosto-Send"
+  },
   "fileSends": {
     "message": "Tiedosto-Sendit"
+  },
+  "textSend": {
+    "message": "Teksti-Send"
   },
   "textSends": {
     "message": "Teksti-Sendit"
@@ -4444,7 +4650,7 @@
     "message": "Bitwardenilla on uusi ulkoasu!"
   },
   "bitwardenNewLookDesc": {
-    "message": "Automaattitäyttäminen ja hakujen tekeminen Holvi-välilehdeltä on entistä helpompaa ja luontevampaa. Kokeile nyt!"
+    "message": "Automaattinen täyttö ja sisällön haku Holvi-välilehdeltä on nyt entistä helpompaa ja luontevampaa. Kokeile nyt!"
   },
   "accountActions": {
     "message": "Tilitoiminnot"
@@ -4457,6 +4663,30 @@
   },
   "enterprisePolicyRequirementsApplied": {
     "message": "Yrityskäytännön vaatimukset vaikuttavat tähän asetukseen"
+  },
+  "sshPrivateKey": {
+    "message": "Yksityinen avain"
+  },
+  "sshPublicKey": {
+    "message": "Julkinen avain"
+  },
+  "sshFingerprint": {
+    "message": "Sormenjälki"
+  },
+  "sshKeyAlgorithm": {
+    "message": "Avaintyyppi"
+  },
+  "sshKeyAlgorithmED25519": {
+    "message": "ED25519"
+  },
+  "sshKeyAlgorithmRSA2048": {
+    "message": "RSA 2048-Bit"
+  },
+  "sshKeyAlgorithmRSA3072": {
+    "message": "RSA 3072-Bit"
+  },
+  "sshKeyAlgorithmRSA4096": {
+    "message": "RSA 4096-Bit"
   },
   "retry": {
     "message": "Yritä uudelleen"
@@ -4498,6 +4728,174 @@
     "message": "Sinulla ei ole oikeutta muokata tätä kohdetta"
   },
   "authenticating": {
-    "message": "Authenticating"
+    "message": "Todennetaan"
+  },
+  "fillGeneratedPassword": {
+    "message": "Täytä luotu salasana",
+    "description": "Heading for the password generator within the inline menu"
+  },
+  "passwordRegenerated": {
+    "message": "Salasana luotiin uudelleen",
+    "description": "Notification message for when a password has been regenerated"
+  },
+  "saveLoginToBitwarden": {
+    "message": "Tallennetaanko kirjautumistieto Bitwardeniin?",
+    "description": "Confirmation message for saving a login to Bitwarden"
+  },
+  "spaceCharacterDescriptor": {
+    "message": "Välilyönti",
+    "description": "Represents the space key in screen reader content as a readable word"
+  },
+  "tildeCharacterDescriptor": {
+    "message": "Aaltoviiva",
+    "description": "Represents the ~ key in screen reader content as a readable word"
+  },
+  "backtickCharacterDescriptor": {
+    "message": "Graaviaksentti",
+    "description": "Represents the ` key in screen reader content as a readable word"
+  },
+  "exclamationCharacterDescriptor": {
+    "message": "Huutomerkkli",
+    "description": "Represents the ! key in screen reader content as a readable word"
+  },
+  "atSignCharacterDescriptor": {
+    "message": "Ät-merkki",
+    "description": "Represents the @ key in screen reader content as a readable word"
+  },
+  "hashSignCharacterDescriptor": {
+    "message": "Ristikkomerkki",
+    "description": "Represents the # key in screen reader content as a readable word"
+  },
+  "dollarSignCharacterDescriptor": {
+    "message": "Dollarin merkki",
+    "description": "Represents the $ key in screen reader content as a readable word"
+  },
+  "percentSignCharacterDescriptor": {
+    "message": "Prosenttimerkki",
+    "description": "Represents the % key in screen reader content as a readable word"
+  },
+  "caretCharacterDescriptor": {
+    "message": "Hattu",
+    "description": "Represents the ^ key in screen reader content as a readable word"
+  },
+  "ampersandCharacterDescriptor": {
+    "message": "Ampersandi",
+    "description": "Represents the & key in screen reader content as a readable word"
+  },
+  "asteriskCharacterDescriptor": {
+    "message": "Asteriski",
+    "description": "Represents the * key in screen reader content as a readable word"
+  },
+  "parenLeftCharacterDescriptor": {
+    "message": "Vasen kaarisulje",
+    "description": "Represents the ( key in screen reader content as a readable word"
+  },
+  "parenRightCharacterDescriptor": {
+    "message": "Oikea kaarisulje",
+    "description": "Represents the ) key in screen reader content as a readable word"
+  },
+  "hyphenCharacterDescriptor": {
+    "message": "Alaviiva",
+    "description": "Represents the _ key in screen reader content as a readable word"
+  },
+  "underscoreCharacterDescriptor": {
+    "message": "Yhdysmerkki",
+    "description": "Represents the - key in screen reader content as a readable word"
+  },
+  "plusCharacterDescriptor": {
+    "message": "Plus-merkki",
+    "description": "Represents the + key in screen reader content as a readable word"
+  },
+  "equalsCharacterDescriptor": {
+    "message": "Yhtäsuuri kuin",
+    "description": "Represents the = key in screen reader content as a readable word"
+  },
+  "braceLeftCharacterDescriptor": {
+    "message": "Vasen aaltosulje",
+    "description": "Represents the { key in screen reader content as a readable word"
+  },
+  "braceRightCharacterDescriptor": {
+    "message": "Oikea aaltosulje",
+    "description": "Represents the } key in screen reader content as a readable word"
+  },
+  "bracketLeftCharacterDescriptor": {
+    "message": "Vasen hakasulje",
+    "description": "Represents the [ key in screen reader content as a readable word"
+  },
+  "bracketRightCharacterDescriptor": {
+    "message": "Oikea hakasulje",
+    "description": "Represents the ] key in screen reader content as a readable word"
+  },
+  "pipeCharacterDescriptor": {
+    "message": "Putkimerkki",
+    "description": "Represents the | key in screen reader content as a readable word"
+  },
+  "backSlashCharacterDescriptor": {
+    "message": "Kenoviiva",
+    "description": "Represents the back slash key in screen reader content as a readable word"
+  },
+  "colonCharacterDescriptor": {
+    "message": "Kaksoispiste",
+    "description": "Represents the : key in screen reader content as a readable word"
+  },
+  "semicolonCharacterDescriptor": {
+    "message": "Puolipiste",
+    "description": "Represents the ; key in screen reader content as a readable word"
+  },
+  "doubleQuoteCharacterDescriptor": {
+    "message": "Lainausmerkki",
+    "description": "Represents the double quote key in screen reader content as a readable word"
+  },
+  "singleQuoteCharacterDescriptor": {
+    "message": "Heittomerkki",
+    "description": "Represents the ' key in screen reader content as a readable word"
+  },
+  "lessThanCharacterDescriptor": {
+    "message": "Pienempi kuin",
+    "description": "Represents the < key in screen reader content as a readable word"
+  },
+  "greaterThanCharacterDescriptor": {
+    "message": "Suurempi kuin",
+    "description": "Represents the > key in screen reader content as a readable word"
+  },
+  "commaCharacterDescriptor": {
+    "message": "Pilkku",
+    "description": "Represents the , key in screen reader content as a readable word"
+  },
+  "periodCharacterDescriptor": {
+    "message": "Piste",
+    "description": "Represents the . key in screen reader content as a readable word"
+  },
+  "questionCharacterDescriptor": {
+    "message": "Kysymysmerkki",
+    "description": "Represents the ? key in screen reader content as a readable word"
+  },
+  "forwardSlashCharacterDescriptor": {
+    "message": "Kauttaviiva",
+    "description": "Represents the / key in screen reader content as a readable word"
+  },
+  "lowercaseAriaLabel": {
+    "message": "Pienet kirjaimet"
+  },
+  "uppercaseAriaLabel": {
+    "message": "Isot kirjaimet"
+  },
+  "generatedPassword": {
+    "message": "Luotu salasana"
+  },
+  "compactMode": {
+    "message": "Pienikokoinen tila"
+  },
+  "beta": {
+    "message": "Beta"
+  },
+  "extensionWidth": {
+    "message": "Extension width"
+  },
+  "wide": {
+    "message": "Wide"
+  },
+  "extraWide": {
+    "message": "Extra wide"
   }
 }

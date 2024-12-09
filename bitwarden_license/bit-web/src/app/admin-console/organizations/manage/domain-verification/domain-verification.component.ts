@@ -1,14 +1,26 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { concatMap, Observable, Subject, take, takeUntil } from "rxjs";
+import {
+  concatMap,
+  firstValueFrom,
+  map,
+  Observable,
+  Subject,
+  take,
+  takeUntil,
+  withLatestFrom,
+} from "rxjs";
 
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrgDomainServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "@bitwarden/common/admin-console/abstractions/organization-domain/responses/organization-domain.response";
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { HttpStatusCode } from "@bitwarden/common/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { DialogService, ToastService } from "@bitwarden/components";
 
@@ -23,6 +35,7 @@ import {
 })
 export class DomainVerificationComponent implements OnInit, OnDestroy {
   private componentDestroyed$ = new Subject<void>();
+  private singleOrgPolicyEnabled = false;
 
   loading = true;
 
@@ -31,13 +44,14 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
     private orgDomainService: OrgDomainServiceAbstraction,
     private dialogService: DialogService,
     private validationService: ValidationService,
     private toastService: ToastService,
+    private configService: ConfigService,
+    private policyApiService: PolicyApiServiceAbstraction,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -61,16 +75,50 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
   async load() {
     await this.orgDomainApiService.getAllByOrgId(this.organizationId);
 
+    if (await this.configService.getFeatureFlag(FeatureFlag.AccountDeprovisioning)) {
+      const singleOrgPolicy = await this.policyApiService.getPolicy(
+        this.organizationId,
+        PolicyType.SingleOrg,
+      );
+      this.singleOrgPolicyEnabled = singleOrgPolicy?.enabled ?? false;
+    }
+
     this.loading = false;
   }
 
-  addDomain() {
+  async addDomain() {
     const domainAddEditDialogData: DomainAddEditDialogData = {
       organizationId: this.organizationId,
       orgDomain: null,
       existingDomainNames: this.getExistingDomainNames(),
     };
 
+    await firstValueFrom(
+      this.configService.getFeatureFlag$(FeatureFlag.AccountDeprovisioning).pipe(
+        withLatestFrom(this.orgDomains$),
+        map(async ([accountDeprovisioningEnabled, organizationDomains]) => {
+          if (
+            accountDeprovisioningEnabled &&
+            !this.singleOrgPolicyEnabled &&
+            organizationDomains.every((domain) => domain.verifiedDate === null)
+          ) {
+            await this.dialogService.openSimpleDialog({
+              title: { key: "verified-domain-single-org-warning" },
+              content: { key: "single-org-revoked-user-warning" },
+              cancelButtonText: { key: "cancel" },
+              acceptButtonText: { key: "confirm" },
+              acceptAction: () => this.openAddDomainDialog(domainAddEditDialogData),
+              type: "info",
+            });
+          } else {
+            await this.openAddDomainDialog(domainAddEditDialogData);
+          }
+        }),
+      ),
+    );
+  }
+
+  private async openAddDomainDialog(domainAddEditDialogData: DomainAddEditDialogData) {
     this.dialogService.open(DomainAddEditDialogComponent, {
       data: domainAddEditDialogData,
     });
@@ -101,6 +149,11 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
 
   copyDnsTxt(dnsTxt: string): void {
     this.orgDomainService.copyDnsTxt(dnsTxt);
+    this.toastService.showToast({
+      variant: "success",
+      title: null,
+      message: this.i18nService.t("valueCopied", this.i18nService.t("dnsTxtRecord")),
+    });
   }
 
   async verifyDomain(orgDomainId: string, domainName: string): Promise<void> {
