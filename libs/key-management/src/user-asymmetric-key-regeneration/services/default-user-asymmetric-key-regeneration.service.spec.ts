@@ -63,7 +63,7 @@ function setupUserKeyValidation(
   (window as any).bitwardenContainerService = new ContainerService(keyService, encryptService);
 }
 
-describe("handleUserAsymmetricKeysRegeneration", () => {
+describe("regenerateIfNeeded", () => {
   let sut: DefaultUserAsymmetricKeysRegenerationService;
   const userId = "userId" as UserId;
 
