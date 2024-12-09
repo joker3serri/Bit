@@ -79,7 +79,7 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
         let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
         let message = SshAgentUIRequest {
             request_id,
-            cipher_id: Some("".to_string()),
+            cipher_id: None,
             process_name: info.process_name().to_string(),
             is_list: true,
         };
