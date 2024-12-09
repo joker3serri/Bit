@@ -1,6 +1,5 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 
-import { WINDOW } from "@bitwarden/angular/services/injection-tokens";
 import {
   DefaultSsoComponentService,
   SsoClientType,
@@ -24,12 +23,12 @@ export class ExtensionSsoComponentService
   clientId: SsoClientType;
 
   constructor(
-    private syncService: SyncService,
-    private authService: AuthService,
+    protected syncService: SyncService,
+    protected authService: AuthService,
     protected environmentService: EnvironmentService,
-    @Inject(WINDOW) private window: Window,
+    private window: Window,
     protected i18nService: I18nService,
-    private logService: LogService,
+    protected logService: LogService,
   ) {
     super();
     this.clientId = ClientType.Browser;
