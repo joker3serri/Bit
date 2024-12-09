@@ -109,11 +109,11 @@ export class DefaultUserAsymmetricKeysRegenerationService
     } catch (error) {
       if (error.message === "Key regeneration not supported for this user.") {
         this.logService.info(
-          "[UserAsymmetricKeyRegeneration] User Key regeneration not supported for this user at this time.",
+          "[UserAsymmetricKeyRegeneration] Regeneration not supported for this user at this time.",
         );
       } else {
         this.logService.error(
-          "[UserAsymmetricKeyRegeneration] User Key regeneration error when submitting the request to the server: " +
+          "[UserAsymmetricKeyRegeneration] Regeneration error when submitting the request to the server: " +
             error,
         );
       }
@@ -136,7 +136,7 @@ export class DefaultUserAsymmetricKeysRegenerationService
         return true;
       } catch (error) {
         this.logService.error(
-          "[UserAsymmetricKeyRegeneration] User Key decryption error: " + error,
+          "[UserAsymmetricKeyRegeneration] User Symmetric Key validation error: " + error,
         );
         return false;
       }
