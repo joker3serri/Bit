@@ -1,6 +1,7 @@
 <div class="tabbed-content">
   <h2>
-    {{ "devices" | i18n }} <i class="bwi bwi-question-circle tw-h-7 tw-w-7" aria-hidden="true"></i>
+    {{ "devices" | i18n }}
+    <i class="bwi bwi-question-circle tw-h-5 tw-w-5 bwi-color-primary" aria-hidden="true"></i>
   </h2>
   <p>{{ "deviceListDescription" | i18n }}</p>
 
@@ -13,9 +14,12 @@
           bitCell
           scope="col"
           role="columnheader"
+          [bitSortable]="col.name"
+          default
         >
           {{ col.title }}
         </th>
+        <th bitCell scope="col" role="columnheader"></th>
       </tr>
     </ng-container>
     <ng-template body>
@@ -37,6 +41,19 @@
           <span bitBadge variant="primary">{{ device.loginStatus }} test</span>
         </td>
         <td bitCell>{{ device.firstLogin | date }}</td>
+        <td bitCell>
+          <button
+            type="button"
+            bitIconButton="bwi-ellipsis-v"
+            [bitMenuTriggerFor]="optionsMenu"
+          ></button>
+          <bit-menu #optionsMenu>
+            <a href="#" bitMenuItem>Anchor link</a>
+            <a href="#" bitMenuItem>Another link</a>
+            <bit-menu-divider></bit-menu-divider>
+            <button type="button" bitMenuItem>Button after divider</button>
+          </bit-menu>
+        </td>
       </tr>
     </ng-template>
   </bit-table>

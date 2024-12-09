@@ -5,6 +5,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { TableDataSource, TableModule } from "@bitwarden/components";
 
 import { SharedModule } from "../../../shared";
+import { TableScrollComponent } from "@bitwarden/components/src/table/table-scroll.component";
 
 interface Device {
   type: string;
@@ -35,7 +36,7 @@ export class DeviceManagementComponent implements OnInit {
     {
       name: "loginStatus",
       title: this.i18nService.t("loginStatus"),
-      headerClass: "tw-w-1/4",
+      headerClass: "tw-w-1/3",
     },
     {
       name: "firstLogin",
