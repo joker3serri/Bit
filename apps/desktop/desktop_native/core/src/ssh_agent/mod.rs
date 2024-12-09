@@ -40,7 +40,7 @@ pub struct SshAgentUIRequest {
 
 impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
     async fn confirm(&self, ssh_key: Key, info: &peerinfo::models::PeerInfo) -> bool {
-        if self.is_running() {
+        if !self.is_running() {
             println!("[BitwardenDesktopAgent] Agent is not running, but tried to call confirm");
             return false;
         }
@@ -98,7 +98,7 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
 
 impl BitwardenDesktopAgent {
     pub fn stop(&self) {
-        if self.is_running() {
+        if !self.is_running() {
             println!("[BitwardenDesktopAgent] Tried to stop agent while it is not running");
             return;
         }
@@ -116,7 +116,7 @@ impl BitwardenDesktopAgent {
         &mut self,
         new_keys: Vec<(String, String, String)>,
     ) -> Result<(), anyhow::Error> {
-        if self.is_running() {
+        if !self.is_running() {
             return Err(anyhow::anyhow!(
                 "[BitwardenDesktopAgent] Tried to set keys while agent is not running"
             ));
@@ -154,7 +154,7 @@ impl BitwardenDesktopAgent {
     }
 
     pub fn lock(&mut self) -> Result<(), anyhow::Error> {
-        if self.is_running() {
+        if !self.is_running() {
             return Err(anyhow::anyhow!(
                 "[BitwardenDesktopAgent] Tried to lock agent, but it is not running"
             ));
@@ -182,7 +182,7 @@ impl BitwardenDesktopAgent {
     }
 
     async fn get_request_id(&self) -> u32 {
-        if self.is_running() {
+        if !self.is_running() {
             println!("[BitwardenDesktopAgent] Agent is not running, but tried to get request id");
             return 0;
         }
