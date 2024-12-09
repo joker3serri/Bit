@@ -1,4 +1,7 @@
-use std::sync::{atomic::{AtomicBool, AtomicU32}, Arc};
+use std::sync::{
+    atomic::{AtomicBool, AtomicU32},
+    Arc,
+};
 
 use tokio::sync::Mutex;
 use tokio_util::sync::CancellationToken;
@@ -43,7 +46,10 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
         }
 
         let request_id = self.get_request_id().await;
-        println!("[SSH Agent] Confirming request from application: {}", info.process_name());
+        println!(
+            "[SSH Agent] Confirming request from application: {}",
+            info.process_name()
+        );
 
         let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
         self.show_ui_request_tx
@@ -97,7 +103,8 @@ impl BitwardenDesktopAgent {
             return;
         }
 
-        self.is_running.store(false, std::sync::atomic::Ordering::Relaxed);
+        self.is_running
+            .store(false, std::sync::atomic::Ordering::Relaxed);
         self.keystore
             .0
             .write()
@@ -118,7 +125,8 @@ impl BitwardenDesktopAgent {
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
 
-        self.needs_unlock.store(true, std::sync::atomic::Ordering::Relaxed);
+        self.needs_unlock
+            .store(true, std::sync::atomic::Ordering::Relaxed);
 
         for (key, name, cipher_id) in new_keys.iter() {
             match parse_key_safe(&key) {
@@ -167,7 +175,8 @@ impl BitwardenDesktopAgent {
     pub fn clear_keys(&mut self) -> Result<(), anyhow::Error> {
         let keystore = &mut self.keystore;
         keystore.0.write().expect("RwLock is not poisoned").clear();
-        self.needs_unlock.store(true, std::sync::atomic::Ordering::Relaxed);
+        self.needs_unlock
+            .store(true, std::sync::atomic::Ordering::Relaxed);
 
         Ok(())
     }
@@ -178,7 +187,9 @@ impl BitwardenDesktopAgent {
             return 0;
         }
 
-        let request_id = self.request_id.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let request_id = self
+            .request_id
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         request_id
     }
 

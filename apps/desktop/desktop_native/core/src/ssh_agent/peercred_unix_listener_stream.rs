@@ -47,12 +47,10 @@ impl Stream for PeercredUnixListenerStream {
                 let peer_info = peerinfo::gather::get_peer_info(pid as u32);
                 match peer_info {
                     Ok(info) => Poll::Ready(Some(Ok((stream, info)))),
-                    Err(err) => {
-                        Poll::Ready(Some(Err(io::Error::new(
-                            io::ErrorKind::Other,
-                            format!("Failed to get peer info: {}", err),
-                        ))))
-                    }
+                    Err(err) => Poll::Ready(Some(Err(io::Error::new(
+                        io::ErrorKind::Other,
+                        format!("Failed to get peer info: {}", err),
+                    )))),
                 }
             }
             Poll::Ready(Err(err)) => Poll::Ready(Some(Err(err))),

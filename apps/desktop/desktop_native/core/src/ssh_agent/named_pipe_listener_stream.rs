@@ -1,8 +1,14 @@
-use std::{
-    io, pin::Pin, sync::{atomic::{AtomicBool, Ordering}, Arc}, task::{Context, Poll}
-};
-use std::os::windows::prelude::AsRawHandle as _;
 use futures::Stream;
+use std::os::windows::prelude::AsRawHandle as _;
+use std::{
+    io,
+    pin::Pin,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    task::{Context, Poll},
+};
 use tokio::{
     net::windows::named_pipe::{NamedPipeServer, ServerOptions},
     select,

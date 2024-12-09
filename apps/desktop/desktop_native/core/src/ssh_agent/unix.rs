@@ -2,7 +2,10 @@ use std::{
     collections::HashMap,
     fs,
     os::unix::fs::PermissionsExt,
-    sync::{atomic::{AtomicBool, AtomicU32}, Arc, RwLock},
+    sync::{
+        atomic::{AtomicBool, AtomicU32},
+        Arc, RwLock,
+    },
 };
 
 use bitwarden_russh::ssh_agent;
@@ -14,7 +17,7 @@ use crate::ssh_agent::peercred_unix_listener_stream::PeercredUnixListenerStream;
 
 use super::{BitwardenDesktopAgent, SshAgentUIRequest};
 
-impl BitwardenDesktopAgent{
+impl BitwardenDesktopAgent {
     pub async fn start_server(
         auth_request_tx: tokio::sync::mpsc::Sender<SshAgentUIRequest>,
         auth_response_rx: Arc<Mutex<tokio::sync::broadcast::Receiver<(u32, bool)>>>,
@@ -81,15 +84,19 @@ impl BitwardenDesktopAgent{
 
                     let cloned_keystore = cloned_agent_state.keystore.clone();
                     let cloned_cancellation_token = cloned_agent_state.cancellation_token.clone();
-                    cloned_agent_state.is_running.store(true, std::sync::atomic::Ordering::Relaxed);
+                    cloned_agent_state
+                        .is_running
+                        .store(true, std::sync::atomic::Ordering::Relaxed);
                     let _ = ssh_agent::serve(
-                stream,
+                        stream,
                         cloned_agent_state.clone(),
                         cloned_keystore,
                         cloned_cancellation_token,
                     )
                     .await;
-                    cloned_agent_state.is_running.store(false, std::sync::atomic::Ordering::Relaxed);
+                    cloned_agent_state
+                        .is_running
+                        .store(false, std::sync::atomic::Ordering::Relaxed);
                     println!("[SSH Agent Native Module] SSH Agent server exited");
                 }
                 Err(e) => {

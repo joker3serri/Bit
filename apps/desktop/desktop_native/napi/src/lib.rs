@@ -8,7 +8,8 @@ pub mod passwords {
     /// Fetch the stored password from the keychain.
     #[napi]
     pub async fn get_password(service: String, account: String) -> napi::Result<String> {
-        desktop_core::password::get_password(&service, &account).await
+        desktop_core::password::get_password(&service, &account)
+            .await
             .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
@@ -19,21 +20,25 @@ pub mod passwords {
         account: String,
         password: String,
     ) -> napi::Result<()> {
-        desktop_core::password::set_password(&service, &account, &password).await
+        desktop_core::password::set_password(&service, &account, &password)
+            .await
             .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
     /// Delete the stored password from the keychain.
     #[napi]
     pub async fn delete_password(service: String, account: String) -> napi::Result<()> {
-        desktop_core::password::delete_password(&service, &account).await
+        desktop_core::password::delete_password(&service, &account)
+            .await
             .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
     // Checks if the os secure storage is available
     #[napi]
     pub async fn is_available() -> napi::Result<bool> {
-        desktop_core::password::is_available().await.map_err(|e| napi::Error::from_reason(e.to_string()))
+        desktop_core::password::is_available()
+            .await
+            .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 }
 
@@ -244,8 +249,10 @@ pub mod sshagent {
     pub async fn serve(
         callback: ThreadsafeFunction<(Option<String>, bool, String), CalleeHandled>,
     ) -> napi::Result<SshAgentState> {
-        let (auth_request_tx, mut auth_request_rx) = tokio::sync::mpsc::channel::<desktop_core::ssh_agent::SshAgentUIRequest>(32);
-        let (auth_response_tx, auth_response_rx) = tokio::sync::broadcast::channel::<(u32, bool)>(32);
+        let (auth_request_tx, mut auth_request_rx) =
+            tokio::sync::mpsc::channel::<desktop_core::ssh_agent::SshAgentUIRequest>(32);
+        let (auth_response_tx, auth_response_rx) =
+            tokio::sync::broadcast::channel::<(u32, bool)>(32);
         let auth_response_tx_arc = Arc::new(Mutex::new(auth_response_tx));
         tokio::spawn(async move {
             let _ = auth_response_rx;
@@ -256,23 +263,37 @@ pub mod sshagent {
                 tokio::spawn(async move {
                     let auth_response_tx_arc = cloned_response_tx_arc;
                     let callback = cloned_callback;
-                    let promise_result: Result<Promise<bool>, napi::Error> =
-                        callback.call_async(Ok((request.cipher_id, request.is_list, request.process_name))).await;
+                    let promise_result: Result<Promise<bool>, napi::Error> = callback
+                        .call_async(Ok((
+                            request.cipher_id,
+                            request.is_list,
+                            request.process_name,
+                        )))
+                        .await;
                     match promise_result {
                         Ok(promise_result) => match promise_result.await {
                             Ok(result) => {
-                                let _ = auth_response_tx_arc.lock().await.send((request.request_id, result))
+                                let _ = auth_response_tx_arc
+                                    .lock()
+                                    .await
+                                    .send((request.request_id, result))
                                     .expect("should be able to send auth response to agent");
                             }
                             Err(e) => {
                                 println!("[SSH Agent Native Module] calling UI callback promise was rejected: {}", e);
-                                let _ = auth_response_tx_arc.lock().await.send((request.request_id, false))
+                                let _ = auth_response_tx_arc
+                                    .lock()
+                                    .await
+                                    .send((request.request_id, false))
                                     .expect("should be able to send auth response to agent");
                             }
                         },
                         Err(e) => {
                             println!("[SSH Agent Native Module] calling UI callback could not create promise: {}", e);
-                            let _ = auth_response_tx_arc.lock().await.send((request.request_id, false))
+                            let _ = auth_response_tx_arc
+                                .lock()
+                                .await
+                                .send((request.request_id, false))
                                 .expect("should be able to send auth response to agent");
                         }
                     }
@@ -339,7 +360,9 @@ pub mod sshagent {
     #[napi]
     pub fn clear_keys(agent_state: &mut SshAgentState) -> napi::Result<()> {
         let bitwarden_agent_state = &mut agent_state.state;
-        bitwarden_agent_state.clear_keys().map_err(|e| napi::Error::from_reason(e.to_string()))
+        bitwarden_agent_state
+            .clear_keys()
+            .map_err(|e| napi::Error::from_reason(e.to_string()))
     }
 
     #[napi]
