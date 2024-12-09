@@ -1,5 +1,6 @@
 import { Directive, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 import { LoginSuccessHandlerService } from "@bitwarden/auth/common";
 import { WebAuthnLoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/webauthn/webauthn-login.service.abstraction";
@@ -9,6 +10,7 @@ import { ErrorResponse } from "@bitwarden/common/models/response/error.response"
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
+import { KeyService } from "@bitwarden/key-management";
 
 export type State = "assert" | "assertFailed";
 
@@ -26,6 +28,7 @@ export class BaseLoginViaWebAuthnComponent implements OnInit {
     private validationService: ValidationService,
     private i18nService: I18nService,
     private loginSuccessHandlerService: LoginSuccessHandlerService,
+    private keyService: KeyService,
   ) {}
 
   ngOnInit(): void {
@@ -62,7 +65,11 @@ export class BaseLoginViaWebAuthnComponent implements OnInit {
         return;
       }
 
-      await this.loginSuccessHandlerService.run(authResult.userId);
+      // Only run loginSuccessHandlerService if webAuthn is used for vault decryption.
+      const userKey = await firstValueFrom(this.keyService.userKey$(authResult.userId));
+      if (userKey) {
+        await this.loginSuccessHandlerService.run(authResult.userId);
+      }
 
       if (authResult.forcePasswordReset == ForceSetPasswordReason.AdminForcePasswordReset) {
         await this.router.navigate([this.forcePasswordResetRoute]);
