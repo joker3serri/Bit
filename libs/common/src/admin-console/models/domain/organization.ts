@@ -83,6 +83,7 @@ export class Organization {
    * matches one of the verified domains of that organization, and the user is a member of it.
    */
   userIsManagedByOrganization: boolean;
+  useRiskInsights: boolean;
 
   constructor(obj?: OrganizationData) {
     if (obj == null) {
@@ -139,6 +140,7 @@ export class Organization {
     this.limitCollectionDeletion = obj.limitCollectionDeletion;
     this.allowAdminAccessToAllCollectionItems = obj.allowAdminAccessToAllCollectionItems;
     this.userIsManagedByOrganization = obj.userIsManagedByOrganization;
+    this.useRiskInsights = obj.useRiskInsights;
   }
 
   get canAccess() {

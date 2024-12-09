@@ -58,6 +58,7 @@ export class OrganizationData {
   limitCollectionDeletion: boolean;
   allowAdminAccessToAllCollectionItems: boolean;
   userIsManagedByOrganization: boolean;
+  useRiskInsights: boolean;
 
   constructor(
     response?: ProfileOrganizationResponse,
@@ -118,6 +119,7 @@ export class OrganizationData {
     this.limitCollectionDeletion = response.limitCollectionDeletion;
     this.allowAdminAccessToAllCollectionItems = response.allowAdminAccessToAllCollectionItems;
     this.userIsManagedByOrganization = response.userIsManagedByOrganization;
+    this.useRiskInsights = response.useRiskInsights;
 
     this.isMember = options.isMember;
     this.isProviderUser = options.isProviderUser;
