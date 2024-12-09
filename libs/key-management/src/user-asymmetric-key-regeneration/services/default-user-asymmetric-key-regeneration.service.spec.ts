@@ -56,7 +56,6 @@ function setupUserKeyValidation(
   cipher.favorite = false;
   cipher.name = mockEnc("EncryptedString");
   cipher.notes = mockEnc("EncryptedString");
-  cipher.deletedDate = null;
   cipher.key = mockEnc("EncKey");
   cipherService.getAll.mockResolvedValue([cipher]);
   encryptService.decryptToBytes.mockResolvedValue(makeStaticByteArray(64));

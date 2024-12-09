@@ -57,13 +57,16 @@ export class DefaultUserAsymmetricKeysRegenerationService
 
     const verificationResponse = await firstValueFrom(
       this.sdkService.client$.pipe(
-        map((sdk) =>
-          sdk.crypto().verify_asymmetric_keys({
+        map((sdk) => {
+          if (sdk === undefined) {
+            throw new Error("SDK is undefined");
+          }
+          return sdk.crypto().verify_asymmetric_keys({
             userKey: userKey.keyB64,
             userPublicKey: publicKeyResponse.publicKey,
             userKeyEncryptedPrivateKey: userKeyEncryptedPrivateKey,
-          }),
-        ),
+          });
+        }),
       ),
     );
 
@@ -98,7 +101,14 @@ export class DefaultUserAsymmetricKeysRegenerationService
   private async regenerateUserAsymmetricKeys(userId: UserId): Promise<void> {
     const userKey = await firstValueFrom(this.keyService.userKey$(userId));
     const makeKeyPairResponse = await firstValueFrom(
-      this.sdkService.client$.pipe(map((sdk) => sdk.crypto().make_key_pair(userKey.keyB64))),
+      this.sdkService.client$.pipe(
+        map((sdk) => {
+          if (sdk === undefined) {
+            throw new Error("SDK is undefined");
+          }
+          return sdk.crypto().make_key_pair(userKey.keyB64);
+        }),
+      ),
     );
 
     try {
@@ -106,8 +116,8 @@ export class DefaultUserAsymmetricKeysRegenerationService
         makeKeyPairResponse.userPublicKey,
         new EncString(makeKeyPairResponse.userKeyEncryptedPrivateKey),
       );
-    } catch (error) {
-      if (error.message === "Key regeneration not supported for this user.") {
+    } catch (error: any) {
+      if (error?.message === "Key regeneration not supported for this user.") {
         this.logService.info(
           "[UserAsymmetricKeyRegeneration] Regeneration not supported for this user at this time.",
         );
