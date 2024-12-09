@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { ApiService } from "../../../abstractions/api.service";
 import { LogService } from "../../abstractions/log.service";
 import { Utils } from "../../misc/utils";
