@@ -242,7 +242,7 @@ pub mod sshagent {
 
     #[napi]
     pub async fn serve(
-        callback: ThreadsafeFunction<(String, bool, String), CalleeHandled>,
+        callback: ThreadsafeFunction<(Option<String>, bool, String), CalleeHandled>,
     ) -> napi::Result<SshAgentState> {
         let (auth_request_tx, mut auth_request_rx) = tokio::sync::mpsc::channel::<desktop_core::ssh_agent::SshAgentUIRequest>(32);
         let (auth_response_tx, auth_response_rx) = tokio::sync::broadcast::channel::<(u32, bool)>(32);

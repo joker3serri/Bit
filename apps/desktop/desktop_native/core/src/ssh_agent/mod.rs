@@ -30,7 +30,7 @@ pub struct BitwardenDesktopAgent {
 
 pub struct SshAgentUIRequest {
     pub request_id: u32,
-    pub cipher_id: String,
+    pub cipher_id: Option<String>,
     pub process_name: String,
     pub is_list: bool,
 }
@@ -49,7 +49,7 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
         self.show_ui_request_tx
             .send(SshAgentUIRequest {
                 request_id,
-                cipher_id: ssh_key.cipher_uuid.clone(),
+                cipher_id: Some(ssh_key.cipher_uuid.clone()),
                 process_name: info.process_name().to_string(),
                 is_list: false,
             })
@@ -73,7 +73,7 @@ impl ssh_agent::Agent<peerinfo::models::PeerInfo> for BitwardenDesktopAgent {
         let mut rx_channel = self.get_ui_response_rx.lock().await.resubscribe();
         let message = SshAgentUIRequest {
             request_id,
-            cipher_id: "".to_string(),
+            cipher_id: Some("".to_string()),
             process_name: info.process_name().to_string(),
             is_list: true,
         };
