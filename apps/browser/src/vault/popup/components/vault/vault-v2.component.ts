@@ -55,7 +55,7 @@ enum VaultState {
   providers: [VaultUiOnboardingService],
 })
 export class VaultV2Component implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(CdkVirtualScrollableElement) virtualScrollElement: CdkVirtualScrollableElement;
+  @ViewChild(CdkVirtualScrollableElement) virtualScrollElement?: CdkVirtualScrollableElement;
 
   cipherType = CipherType;
 
@@ -117,7 +117,9 @@ export class VaultV2Component implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.vaultScrollPositionService.start(this.virtualScrollElement);
+    if (this.virtualScrollElement) {
+      this.vaultScrollPositionService.start(this.virtualScrollElement);
+    }
   }
 
   async ngOnInit() {

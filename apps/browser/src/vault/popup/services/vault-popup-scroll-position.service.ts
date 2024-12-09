@@ -17,7 +17,7 @@ export class VaultPopupScrollPositionService {
   private scrollPosition: number | null = null;
 
   /** Subscription associated with the virtual scroll element. */
-  private scrollSubscription: Subscription;
+  private scrollSubscription: Subscription | null = null;
 
   /** Stored cipher id when the `/view-cipher`*/
   private viewedCipherId: string | null = null;
@@ -39,7 +39,8 @@ export class VaultPopupScrollPositionService {
     if (this.scrollPosition) {
       // Use `setTimeout` to scroll after rendering is complete
       setTimeout(async () => {
-        virtualScrollElement.scrollTo({ top: this.scrollPosition, behavior: "instant" });
+        // `?? 0` is only to make typescript happy. It shouldn't happen with the above truthy check for `this.scrollPosition`.
+        virtualScrollElement.scrollTo({ top: this.scrollPosition ?? 0, behavior: "instant" });
 
         // wait for scrolling to be complete so the virtual item is rendered
         await this.waitForScroll(virtualScrollElement);
@@ -47,7 +48,7 @@ export class VaultPopupScrollPositionService {
         // Move the users focus to the previous item when available
         if (this.viewedCipherId) {
           const virtualNativeElement = virtualScrollElement.getElementRef().nativeElement;
-          const viewedCipherEle: HTMLElement = virtualNativeElement.querySelector(
+          const viewedCipherEle: HTMLElement | null = virtualNativeElement.querySelector(
             `[data-id="${this.viewedCipherId}"]`,
           );
           viewedCipherEle?.focus();
