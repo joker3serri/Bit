@@ -49,12 +49,9 @@ impl NamedPipeServerStream {
                         let handle = HANDLE(listener.as_raw_handle());
                         let mut pid = 0;
                         unsafe {
-                            match GetNamedPipeClientProcessId(handle, &mut pid) {
-                                Err(e) => {
-                                    println!("Error getting named pipe client process id {}", e);
-                                    continue
-                                },
-                                Ok(_) => {}
+                            if let Err(e) = GetNamedPipeClientProcessId(handle, &mut pid) {
+                                println!("Error getting named pipe client process id {}", e);
+                                continue
                             }
                         };
 
