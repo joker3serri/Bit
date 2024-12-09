@@ -231,11 +231,40 @@ const routes: Routes = [
     canActivate: [unauthGuardFn(unauthRouteOverrides)],
     data: { elevation: 1 } satisfies RouteDataProperties,
   },
-  ...unauthUiRefreshSwap(SsoComponentV1, SsoComponent, {
-    path: "sso",
-    canActivate: [unauthGuardFn(unauthRouteOverrides)],
-    data: { elevation: 1 } satisfies RouteDataProperties,
-  }),
+  ...unauthUiRefreshSwap(
+    SsoComponentV1,
+    ExtensionAnonLayoutWrapperComponent,
+    {
+      path: "sso",
+      canActivate: [unauthGuardFn(unauthRouteOverrides)],
+      data: { elevation: 1 } satisfies RouteDataProperties,
+    },
+    {
+      path: "sso",
+      canActivate: [unauthGuardFn(unauthRouteOverrides)],
+      data: {
+        pageIcon: VaultIcon,
+        pageTitle: {
+          key: "enterpriseSingleSignOn",
+        },
+        pageSubtitle: {
+          key: "singleSignOnEnterOrgIdentifierText",
+        },
+        elevation: 1,
+      } satisfies RouteDataProperties & ExtensionAnonLayoutWrapperData,
+      children: [
+        { path: "", component: SsoComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+          data: {
+            overlayPosition: ExtensionDefaultOverlayPosition,
+          } satisfies EnvironmentSelectorRouteData,
+        },
+      ],
+    },
+  ),
   {
     path: "set-password",
     component: SetPasswordComponent,
