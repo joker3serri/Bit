@@ -1,33 +1,42 @@
 <div class="tabbed-content">
-  <h2>{{ "devices" | i18n }}</h2>
-  <h3>test1</h3>
-  <bit-table>
+  <h2>
+    {{ "devices" | i18n }} <i class="bwi bwi-question-circle tw-h-7 tw-w-7" aria-hidden="true"></i>
+  </h2>
+  <p>{{ "deviceListDescription" | i18n }}</p>
+
+  <bit-table [dataSource]="dataSource">
     <ng-container header>
       <tr>
-        <th bitCell>{{ "deviceType" | i18n }}</th>
-        <th bitCell>{{ "deviceName" | i18n }}</th>
-        <th bitCell>{{ "lastActive" | i18n }}</th>
-        <th bitCell class="text-right">{{ "action" | i18n }}</th>
+        <th
+          *ngFor="let col of columnConfig"
+          [class]="col.headerClass"
+          bitCell
+          scope="col"
+          role="columnheader"
+        >
+          {{ col.title }}
+        </th>
       </tr>
     </ng-container>
     <ng-template body>
-      <tr bitRow>
-        <td bitCell>
-          <i class="bwi bwi-desktop" aria-hidden="true"></i>
-          {{ "desktop" | i18n }}
+      <tr bitRow *ngFor="let device of dataSource.data">
+        <td bitCell class="tw-flex tw-gap-2">
+          <div class="tw-flex tw-items-center tw-justify-center tw-w-10">
+            <i [class]="getDeviceIcon(device.type)" class="bwi-lg" aria-hidden="true"></i>
+          </div>
+
+          <div>
+            {{ device.deviceName }}
+            <span *ngIf="device.trusted" class="tw-text-sm tw-text-muted tw-block">
+              {{ "trusted" | i18n }}
+            </span>
+          </div>
         </td>
-        <td bitCell>Windows 10 Chrome</td>
-        <td bitCell>{{ "now" | i18n }}</td>
-        <td bitCell class="text-right">
-          <button type="button" bitButton buttonType="danger" [bitMenuTriggerFor]="deviceMenu">
-            <i class="bwi bwi-ellipsis-v" aria-hidden="true"></i>
-          </button>
-          <bit-menu #deviceMenu>
-            <button type="button" bitMenuItem (click)="revokeDevice()">
-              <span class="tw-text-danger">{{ "revokeAccess" | i18n }}</span>
-            </button>
-          </bit-menu>
+        <td *ngIf="device.loginStatus !== 'Current session'" bitCell>{{ device.loginStatus }}</td>
+        <td *ngIf="device.loginStatus === 'Current session'" bitCell>
+          <span bitBadge variant="primary">{{ device.loginStatus }} test</span>
         </td>
+        <td bitCell>{{ device.firstLogin | date }}</td>
       </tr>
     </ng-template>
   </bit-table>

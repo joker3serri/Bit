@@ -3783,6 +3783,15 @@
   "device": {
     "message": "Device"
   },
+  "loginStatus": {
+    "message": "Login status"
+  },
+  "firstLogin": {
+    "message": "First login"
+  },
+  "trusted": {
+    "message": "Trusted"
+  },
   "creatingAccountOn": {
     "message": "Creating account on"
   },
