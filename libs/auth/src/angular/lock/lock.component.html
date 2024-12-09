@@ -98,9 +98,6 @@
           >
             <span> {{ biometricUnlockBtnText | i18n }}</span>
           </button>
-          <p class="tw-text-center tw-text-secondary-300">
-            {{ biometricUnavailabilityReason }}
-          </p>
         </ng-container>
 
         <ng-container *ngIf="unlockOptions.masterPassword.enabled">
@@ -172,9 +169,6 @@
           >
             <span> {{ biometricUnlockBtnText | i18n }}</span>
           </button>
-          <p class="tw-text-center tw-text-secondary-300">
-            {{ biometricUnavailabilityReason }}
-          </p>
         </ng-container>
 
         <ng-container *ngIf="unlockOptions.pin.enabled">

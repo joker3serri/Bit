@@ -86,9 +86,6 @@
             {{ "unlockWithBiometrics" | i18n }}
           </button>
         </div>
-        <div id="biometricsHelp" class="box-footer" *ngIf="biometricUnavailabilityReason">
-          {{ biometricUnavailabilityReason }}
-        </div>
       </div>
       <p class="text-center" *ngIf="!fido2Data.isFido2Session">
         <button type="button" appStopClick (click)="logOut()">{{ "logOut" | i18n }}</button>
