@@ -123,9 +123,33 @@ const routes: Routes = [
   },
   { path: "accessibility-cookie", component: AccessibilityCookieComponent },
   { path: "set-password", component: SetPasswordComponent },
-  ...unauthUiRefreshSwap(SsoComponentV1, SsoComponent, {
-    path: "sso",
-  }),
+  ...unauthUiRefreshSwap(
+    SsoComponentV1,
+    AnonLayoutWrapperComponent,
+    {
+      path: "sso",
+    },
+    {
+      path: "sso",
+      data: {
+        pageIcon: VaultIcon,
+        pageTitle: {
+          key: "enterpriseSingleSignOn",
+        },
+        pageSubtitle: {
+          key: "singleSignOnEnterOrgIdentifierText",
+        },
+      } satisfies AnonLayoutWrapperData,
+      children: [
+        { path: "", component: SsoComponent },
+        {
+          path: "",
+          component: EnvironmentSelectorComponent,
+          outlet: "environment-selector",
+        },
+      ],
+    },
+  ),
   {
     path: "send",
     component: SendComponent,
