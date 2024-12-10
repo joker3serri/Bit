@@ -51,7 +51,7 @@ export class UsernameRandomizer implements CredentialGenerator<EffUsernameGenera
   async generate(_request: GenerationRequest, settings: EffUsernameGenerationOptions) {
     if (isEffUsernameGenerationOptions(settings)) {
       const username = await this.randomWords({
-        digits: settings.wordIncludeNumber ? 1 : 0,
+        digits: settings.wordIncludeNumber ? 4 : 0,
         casing: settings.wordCapitalize ? "TitleCase" : "lowercase",
       });
 
