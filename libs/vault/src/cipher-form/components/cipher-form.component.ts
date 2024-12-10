@@ -17,7 +17,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { Subject } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherType, SecureNoteType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -229,7 +228,6 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
     private toastService: ToastService,
     private i18nService: I18nService,
     private changeDetectorRef: ChangeDetectorRef,
-    private organizationService: OrganizationService,
   ) {}
 
   /**
