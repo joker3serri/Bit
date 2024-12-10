@@ -13,14 +13,10 @@ export class TextDragDirective {
     alias: "appTextDrag",
     required: true,
   })
-  data: string | null = "";
+  data: string = "";
 
   @HostListener("dragstart", ["$event"])
   onDragStart(event: DragEvent) {
-    if (this.data === null || this.data === undefined) {
-      this.data = "";
-    }
-
     event.dataTransfer?.setData("text", this.data);
   }
 }
