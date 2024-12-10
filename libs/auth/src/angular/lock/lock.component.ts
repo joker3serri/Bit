@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
@@ -228,6 +230,7 @@ export class LockV2Component implements OnInit, OnDestroy {
     this.unlockOptions = null;
     this.activeUnlockOption = null;
     this.formGroup = null; // new form group will be created based on new active unlock option
+    this.isInitialLockScreen = true;
 
     // Desktop properties:
     this.biometricAsked = false;

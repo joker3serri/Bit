@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { DatePipe } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { firstValueFrom } from "rxjs";
@@ -100,6 +102,14 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   async ngOnInit() {
     await super.ngOnInit();
     await this.load();
+
+    // https://bitwarden.atlassian.net/browse/PM-10413
+    // cannot generate ssh keys so block creation
+    if (this.type === CipherType.SshKey && this.cipherId == null) {
+      this.type = CipherType.Login;
+      this.cipher.type = CipherType.Login;
+    }
+
     this.viewOnly = !this.cipher.edit && this.editMode;
     // remove when all the title for all clients are updated to New Item
     if (this.cloneMode || !this.editMode) {
