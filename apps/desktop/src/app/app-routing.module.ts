@@ -10,6 +10,7 @@ import { unauthUiRefreshSwap } from "@bitwarden/angular/auth/functions/unauth-ui
 import {
   authGuard,
   lockGuard,
+  NewDeviceVerificationNoticeGuard,
   redirectGuard,
   tdeDecryptionRequiredGuard,
   unauthGuardFn,
@@ -39,6 +40,11 @@ import {
   TwoFactorTimeoutIcon,
 } from "@bitwarden/auth/angular";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import {
+  NewDeviceVerificationNoticePageOneComponent,
+  NewDeviceVerificationNoticePageTwoComponent,
+  VaultIcons,
+} from "@bitwarden/vault";
 
 import { twofactorRefactorSwap } from "../../../../libs/angular/src/utils/two-factor-component-refactor-route-swap";
 import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
@@ -116,9 +122,36 @@ const routes: Routes = [
   },
   { path: "register", component: RegisterComponent },
   {
+    path: "new-device-notice",
+    component: AnonLayoutWrapperComponent,
+    canActivate: [],
+    children: [
+      {
+        path: "",
+        component: NewDeviceVerificationNoticePageOneComponent,
+        data: {
+          pageIcon: VaultIcons.ExclamationTriangle,
+          pageTitle: {
+            key: "importantNotice",
+          },
+        },
+      },
+      {
+        path: "setup",
+        component: NewDeviceVerificationNoticePageTwoComponent,
+        data: {
+          pageIcon: VaultIcons.UserLock,
+          pageTitle: {
+            key: "setupTwoStepLogin",
+          },
+        },
+      },
+    ],
+  },
+  {
     path: "vault",
     component: VaultComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, NewDeviceVerificationNoticeGuard],
   },
   { path: "accessibility-cookie", component: AccessibilityCookieComponent },
   { path: "set-password", component: SetPasswordComponent },
