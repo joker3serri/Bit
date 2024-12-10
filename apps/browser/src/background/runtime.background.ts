@@ -71,7 +71,7 @@ export default class RuntimeBackground {
         "biometricUnlockAvailable",
         "getUseTreeWalkerApiForPageDetailsCollectionFeatureFlag",
         "getInlineMenuFieldQualificationFeatureFlag",
-        "getInlineMenuTotpFlag",
+        "getInlineMenuTotpFeatureFlag",
       ];
 
       if (messagesWithResponse.includes(msg.command)) {

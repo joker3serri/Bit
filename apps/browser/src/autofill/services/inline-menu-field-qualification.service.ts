@@ -171,9 +171,13 @@ export class InlineMenuFieldQualificationService
       return this.isFieldForLoginFormFallback(field);
     }
 
-    const isTotpField = this.isTotpField(field);
+    /**
+     * Autofill does not fill password type totp input fields
+     */
     if (this.inlineMenuTotpFeatureFlag) {
-      if (isTotpField) {
+      const isTotpField = this.isTotpField(field);
+      const passwordType = field.type === "password";
+      if (isTotpField && !passwordType) {
         return true;
       }
     }
