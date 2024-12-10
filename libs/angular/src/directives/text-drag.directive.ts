@@ -13,7 +13,7 @@ export class TextDragDirective {
     alias: "appTextDrag",
     required: true,
   })
-  data: string = "";
+  data = "";
 
   @HostListener("dragstart", ["$event"])
   onDragStart(event: DragEvent) {
