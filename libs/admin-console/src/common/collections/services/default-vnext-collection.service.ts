@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { combineLatest, firstValueFrom, map, Observable, of, switchMap } from "rxjs";
+import { combineLatest, firstValueFrom, map, of, switchMap } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -30,9 +30,8 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
     protected stateProvider: StateProvider,
   ) {}
 
-  encryptedCollections$(userId$: Observable<UserId>) {
-    return userId$.pipe(
-      switchMap((userId) => this.encryptedState(userId).state$),
+  encryptedCollections$(userId: UserId) {
+    return this.encryptedState(userId).state$.pipe(
       map((collections) => {
         if (collections == null) {
           return [];
@@ -43,11 +42,8 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
     );
   }
 
-  decryptedCollections$(userId$: Observable<UserId>) {
-    return userId$.pipe(
-      switchMap((userId) => this.decryptedState(userId).state$),
-      map((collections) => collections ?? []),
-    );
+  decryptedCollections$(userId: UserId) {
+    return this.decryptedState(userId).state$.pipe(map((collections) => collections ?? []));
   }
 
   async upsert(toUpdate: CollectionData | CollectionData[], userId: UserId): Promise<void> {

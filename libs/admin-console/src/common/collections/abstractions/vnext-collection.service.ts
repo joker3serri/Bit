@@ -9,8 +9,8 @@ import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 import { CollectionData, Collection, CollectionView } from "../models";
 
 export abstract class vNextCollectionService {
-  encryptedCollections$: (userId$: Observable<UserId>) => Observable<Collection[]>;
-  decryptedCollections$: (userId$: Observable<UserId>) => Observable<CollectionView[]>;
+  encryptedCollections$: (userId: UserId) => Observable<Collection[]>;
+  decryptedCollections$: (userId: UserId) => Observable<CollectionView[]>;
   upsert: (collection: CollectionData | CollectionData[], userId: UserId) => Promise<any>;
   replace: (collections: { [id: string]: CollectionData }, userId: UserId) => Promise<any>;
   /**
