@@ -56,10 +56,11 @@ describe("ExtensionSsoComponentService", () => {
   });
 
   describe("closeWindow", () => {
-    it("closes window", async () => {
+    it("closes window", () => {
       const windowSpy = jest.spyOn(window, "close").mockImplementation();
 
-      await service.closeWindow();
+      service.closeWindow?.();
+
       expect(windowSpy).toHaveBeenCalled();
     });
   });

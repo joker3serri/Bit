@@ -249,7 +249,7 @@ export class SsoComponent implements OnInit {
 
     this.identifier = this.identifierFormControl.value;
     await this.ssoLoginService.setOrganizationSsoIdentifier(this.identifier);
-    this.ssoComponentService.setDocumentCookies();
+    this.ssoComponentService.setDocumentCookies?.();
     try {
       await this.submitSso();
     } catch (error) {
@@ -465,7 +465,7 @@ export class SsoComponent implements OnInit {
       this.logService.error("Error syncing after TDE SSO login:", error);
     }
 
-    await this.navigateViaCallbackOrRoute(this.ssoComponentService.closeWindow, [
+    await this.navigateViaCallbackOrRoute(this.ssoComponentService?.closeWindow, [
       "login-initiated",
     ]);
   }
@@ -501,8 +501,6 @@ export class SsoComponent implements OnInit {
     } catch (error) {
       this.logService.error("Error syncing after TDE SSO login:", error);
     }
-
-    await this.ssoComponentService.preventClearingKeys?.();
 
     await this.navigateViaCallbackOrRoute(async () => {}, ["lock"]);
   }

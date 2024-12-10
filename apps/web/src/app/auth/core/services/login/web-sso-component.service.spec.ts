@@ -27,7 +27,7 @@ describe("WebSsoComponentService", () => {
       const mockMessage = "Test SSO Message";
       i18nService.t.mockReturnValue(mockMessage);
 
-      service.setDocumentCookies();
+      service.setDocumentCookies?.();
 
       expect(document.cookie).toContain(`ssoHandOffMessage=${mockMessage}`);
       expect(i18nService.t).toHaveBeenCalledWith("ssoHandOff");

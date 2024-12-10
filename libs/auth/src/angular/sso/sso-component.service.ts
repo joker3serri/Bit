@@ -7,11 +7,6 @@ export type SsoClientType = ClientType.Web | ClientType.Browser | ClientType.Des
  */
 export abstract class SsoComponentService {
   /**
-   * The client ID for the SSO component service. Either "browser", "extension", or "desktop".
-   */
-  clientId: SsoClientType;
-
-  /**
    * Sets the cookies for the SSO component service.
    */
   setDocumentCookies?(): void;
@@ -20,9 +15,4 @@ export abstract class SsoComponentService {
    * Closes the window.
    */
   closeWindow?(): Promise<void>;
-
-  /**
-   * Prevents clearing keys from memory.
-   */
-  preventClearingKeys?(): Promise<void>;
 }
