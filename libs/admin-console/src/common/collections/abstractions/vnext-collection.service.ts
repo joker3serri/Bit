@@ -30,7 +30,7 @@ export abstract class vNextCollectionService {
    */
   decryptMany: (
     collections: Collection[],
-    orgKeys?: Record<OrganizationId, OrgKey>,
+    orgKeys?: Record<OrganizationId, OrgKey> | null,
   ) => Promise<CollectionView[]>;
   /**
    * Transforms the input CollectionViews into TreeNodes

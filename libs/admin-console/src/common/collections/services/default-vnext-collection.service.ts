@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { combineLatest, firstValueFrom, map, of, switchMap } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -79,7 +81,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
     await this.encryptedState(userId).update(() => null);
     // This will propagate from the encrypted state update, but by doing it explicitly
     // the promise doesn't resolve until the update is complete.
-    await this.decryptedState(userId).forceValue(null);
+    await this.decryptedState(userId).forceValue([]);
   }
 
   async delete(id: CollectionId | CollectionId[], userId: UserId): Promise<any> {
@@ -119,7 +121,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
   // See https://bitwarden.atlassian.net/browse/PM-12375
   async decryptMany(
     collections: Collection[],
-    orgKeys?: Record<OrganizationId, OrgKey>,
+    orgKeys?: Record<OrganizationId, OrgKey> | null,
   ): Promise<CollectionView[]> {
     if (collections == null || collections.length === 0) {
       return [];
