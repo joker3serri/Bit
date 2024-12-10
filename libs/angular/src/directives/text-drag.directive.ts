@@ -21,6 +21,7 @@ export class TextDragDirective {
     if (this.data === null || this.data === undefined) {
       this.data = "";
     }
-    event.dataTransfer.setData("text", this.data);
+
+    event.dataTransfer?.setData("text", this.data);
   }
 }
