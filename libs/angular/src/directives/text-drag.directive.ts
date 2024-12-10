@@ -13,6 +13,7 @@ export class TextDragDirective {
     alias: "appTextDrag",
     required: true,
   })
+
   @Input()
   data: string | null = "";
 

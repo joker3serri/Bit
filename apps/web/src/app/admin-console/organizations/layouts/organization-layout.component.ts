@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
@@ -69,10 +71,6 @@ export class OrganizationLayoutComponent implements OnInit {
 
   async ngOnInit() {
     document.body.classList.remove("layout_frontend");
-
-    this.isAccessIntelligenceFeatureEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.AccessIntelligence,
-    );
 
     this.organization$ = this.route.params.pipe(
       map((p) => p.organizationId),
