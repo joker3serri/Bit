@@ -132,11 +132,14 @@ export class SsoComponent implements OnInit {
   async ngOnInit() {
     const qParams: QueryParams = await firstValueFrom(this.route.queryParams);
 
+    // This if statement will pass on the second portion of the SSO flow
+    // where the user has already authenticated with the identity provider
     if (this.hasCodeOrStateParams(qParams)) {
       await this.handleCodeAndStateParams(qParams);
       return;
     }
 
+    // This if statement will pass on the first portion of the SSO flow
     if (this.hasRequiredSsoParams(qParams)) {
       this.setRequiredSsoVariables(qParams);
       return;
