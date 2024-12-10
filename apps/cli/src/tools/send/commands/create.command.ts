@@ -86,13 +86,11 @@ export class SendCreateCommand {
           );
         }
 
-        if (
-          !(await firstValueFrom(
-            this.accountProfileService.hasPremiumFromAnySource$(
-              (await firstValueFrom(this.accountService.activeAccount$)).id,
-            ),
-          ))
-        ) {
+        const hasPremium$ = this.accountService.activeAccount$.pipe(
+          switchMap(({id}) => this.accountProfileService.hasPremiumFromAnySource(id)
+          )
+        );
+        if (!(await firstValueFrom(hasPremium$))) {
           return Response.error("Premium status is required to use this feature.");
         }
 
