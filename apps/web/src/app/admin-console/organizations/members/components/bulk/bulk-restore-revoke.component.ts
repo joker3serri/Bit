@@ -55,14 +55,8 @@ export class BulkRestoreRevokeComponent {
       FeatureFlag.AccountDeprovisioning,
     );
 
-    this.users.forEach((user) => {
-      this.hasManagedUsers = this.hasManagedUsers
-        ? this.hasManagedUsers
-        : user.managedByOrganization;
-      this.hasUnmanagedUsers = this.hasUnmanagedUsers
-        ? this.hasUnmanagedUsers
-        : !user.managedByOrganization;
-    });
+    this.hasManagedUsers = this.users.some((user) => user.managedByOrganization);
+    this.hasUnmanagedUsers = this.users.some((user) => !user.managedByOrganization);
   }
 
   get bulkTitle() {
