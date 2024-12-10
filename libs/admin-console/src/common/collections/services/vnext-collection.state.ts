@@ -21,7 +21,7 @@ export const ENCRYPTED_COLLECTION_DATA_KEY = UserKeyDefinition.record<Collection
 );
 
 export const DECRYPTED_COLLECTION_DATA_KEY = new DeriveDefinition<
-  [Record<CollectionId, CollectionData>, Record<OrganizationId, OrgKey>],
+  [Record<CollectionId, CollectionData>, Record<OrganizationId, OrgKey> | null],
   CollectionView[],
   { collectionService: vNextCollectionService }
 >(COLLECTION_DATA, "decryptedCollections", {

@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { Observable } from "rxjs";
 
-import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
+import { CollectionId, OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { OrgKey } from "@bitwarden/common/types/key";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
 
@@ -22,8 +22,8 @@ export abstract class vNextCollectionService {
    * Clear decrypted and encrypted state.
    * Used for logging out.
    */
-  clear: (userId: string) => Promise<void>;
-  delete: (id: string | string[], userId: UserId) => Promise<any>;
+  clear: (userId: UserId) => Promise<void>;
+  delete: (id: CollectionId | CollectionId[], userId: UserId) => Promise<any>;
   encrypt: (model: CollectionView) => Promise<Collection>;
   /**
    * @deprecated This method will soon be made private, use `decryptedCollections$` instead.

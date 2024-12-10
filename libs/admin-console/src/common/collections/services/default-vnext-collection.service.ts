@@ -1,5 +1,3 @@
-// FIXME: Update this file to be type safe and remove this and next line
-// @ts-strict-ignore
 import { combineLatest, firstValueFrom, map, of, switchMap } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -74,7 +72,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
       throw new Error("User ID is required.");
     }
 
-    await this.decryptedState(userId).forceValue(null);
+    await this.decryptedState(userId).forceValue([]);
   }
 
   async clear(userId: UserId): Promise<void> {
@@ -149,7 +147,7 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
       collectionCopy.id = c.id;
       collectionCopy.organizationId = c.organizationId;
       const parts = c.name != null ? c.name.replace(/^\/+|\/+$/g, "").split(NestingDelimiter) : [];
-      ServiceUtils.nestedTraverse(nodes, 0, parts, collectionCopy, null, NestingDelimiter);
+      ServiceUtils.nestedTraverse(nodes, 0, parts, collectionCopy, undefined, NestingDelimiter);
     });
     return nodes;
   }
