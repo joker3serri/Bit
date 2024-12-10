@@ -88,6 +88,7 @@ export class SsoComponent implements OnInit {
   protected identifier: string;
   protected state: string;
   protected codeChallenge: string;
+  protected clientId: SsoClientType;
 
   formPromise: Promise<AuthResult>;
   initiateSsoFormPromise: Promise<SsoPreValidateResponse>;
@@ -121,6 +122,11 @@ export class SsoComponent implements OnInit {
     environmentService.environment$.pipe(takeUntilDestroyed()).subscribe((env) => {
       this.redirectUri = env.getWebVaultUrl() + "/sso-connector.html";
     });
+
+    const clientType = this.platformUtilsService.getClientType();
+    if (this.isValidSsoClientType(clientType)) {
+      this.clientId = clientType as SsoClientType;
+    }
   }
 
   async ngOnInit() {
@@ -156,7 +162,7 @@ export class SsoComponent implements OnInit {
     this.state = qParams.state;
     this.codeChallenge = qParams.codeChallenge;
     if (this.isValidSsoClientType(qParams.clientId)) {
-      this.ssoComponentService.clientId = qParams.clientId;
+      this.clientId = qParams.clientId;
     } else {
       throw new Error(`Invalid SSO client type: ${qParams.clientId}`);
     }
@@ -319,7 +325,7 @@ export class SsoComponent implements OnInit {
       env.getIdentityUrl() +
       "/connect/authorize?" +
       "client_id=" +
-      this.ssoComponentService.clientId +
+      this.clientId +
       "&redirect_uri=" +
       encodeURIComponent(this.redirectUri) +
       "&" +

@@ -1,12 +1,7 @@
 import { Injectable } from "@angular/core";
 
-import {
-  DefaultSsoComponentService,
-  SsoClientType,
-  SsoComponentService,
-} from "@bitwarden/auth/angular";
+import { DefaultSsoComponentService, SsoComponentService } from "@bitwarden/auth/angular";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { ClientType } from "@bitwarden/common/enums";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -20,8 +15,6 @@ export class ExtensionSsoComponentService
   extends DefaultSsoComponentService
   implements SsoComponentService
 {
-  clientId: SsoClientType;
-
   constructor(
     protected syncService: SyncService,
     protected authService: AuthService,
@@ -30,7 +23,6 @@ export class ExtensionSsoComponentService
     protected logService: LogService,
   ) {
     super();
-    this.clientId = ClientType.Browser;
 
     /**
      * Closes the popup window after a successful login.

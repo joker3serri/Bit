@@ -3,7 +3,6 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { ClientType } from "@bitwarden/common/enums";
 import {
   EnvironmentService,
   Environment,
@@ -19,7 +18,6 @@ import { ExtensionSsoComponentService } from "./extension-sso-component.service"
 describe("ExtensionSsoComponentService", () => {
   let service: ExtensionSsoComponentService;
   const baseUrl = "https://vault.bitwarden.com";
-  let originalWindow: Window & typeof globalThis;
 
   let syncService: MockProxy<SyncService>;
   let authService: MockProxy<AuthService>;
@@ -28,12 +26,6 @@ describe("ExtensionSsoComponentService", () => {
   let logService: MockProxy<LogService>;
 
   beforeEach(() => {
-    originalWindow = global.window;
-    Object.defineProperty(global, "window", {
-      value: { close: jest.fn() },
-      writable: true,
-    });
-
     syncService = mock<SyncService>();
     authService = mock<AuthService>();
     environmentService = mock<EnvironmentService>();
@@ -59,22 +51,16 @@ describe("ExtensionSsoComponentService", () => {
     jest.spyOn(BrowserApi, "reloadOpenWindows").mockImplementation();
   });
 
-  afterEach(() => {
-    // Restore original window
-    Object.defineProperty(global, "window", {
-      value: originalWindow,
-      writable: true,
-    });
-  });
-
-  it("sets clientId to browser", () => {
-    expect(service.clientId).toBe(ClientType.Browser);
+  it("creates the service", () => {
+    expect(service).toBeTruthy();
   });
 
   describe("closeWindow", () => {
     it("closes window", async () => {
+      const windowSpy = jest.spyOn(window, "close").mockImplementation();
+
       await service.closeWindow();
-      expect(window.close).toHaveBeenCalled();
+      expect(windowSpy).toHaveBeenCalled();
     });
   });
 });
