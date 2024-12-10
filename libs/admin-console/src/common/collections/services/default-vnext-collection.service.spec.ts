@@ -148,6 +148,7 @@ describe("DefaultvNextCollectionService", () => {
 
       // Arrange dependencies
       void setEncryptedState([collection1, collection2]).then(() => {
+        // Act: emit undefined
         cryptoKeys.next(undefined);
         keyService.activeUserOrgKeys$ = of(undefined);
       });
