@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { combineLatest, firstValueFrom, map, of, switchMap } from "rxjs";
+import { combineLatest, filter, firstValueFrom, map } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -177,14 +177,14 @@ export class DefaultvNextCollectionService implements vNextCollectionService {
    * @returns a SingleUserState for decrypted collection data.
    */
   private decryptedState(userId: UserId): DerivedState<CollectionView[]> {
-    const encryptedCollectionsWithKeys = this.encryptedState(userId).combinedState$.pipe(
-      switchMap(([userId, collectionData]) =>
-        combineLatest([of(collectionData), this.keyService.orgKeys$(userId)]),
-      ),
-    );
+    const encryptedCollectionsWithKeys$ = combineLatest([
+      this.encryptedCollections$(userId),
+      // orgKeys$ can emit null during brief moments on unlock and lock/logout, we want to ignore those intermediate states
+      this.keyService.orgKeys$(userId).pipe(filter((orgKeys) => orgKeys != null)),
+    ]);
 
     return this.stateProvider.getDerived(
-      encryptedCollectionsWithKeys,
+      encryptedCollectionsWithKeys$,
       DECRYPTED_COLLECTION_DATA_KEY,
       {
         collectionService: this,

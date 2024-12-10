@@ -1,5 +1,5 @@
 import { mock, MockProxy } from "jest-mock-extended";
-import { firstValueFrom, of, ReplaySubject } from "rxjs";
+import { first, firstValueFrom, of, ReplaySubject, takeWhile } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -127,7 +127,7 @@ describe("DefaultvNextCollectionService", () => {
       expect(encryptedCollections.length).toBe(0);
     });
 
-    it("handles undefined orgKeys", async () => {
+    it("handles undefined orgKeys", (done) => {
       // Arrange test data
       const org1 = Utils.newGuid() as OrganizationId;
       const collection1 = collectionDataFactory(org1);
@@ -135,13 +135,22 @@ describe("DefaultvNextCollectionService", () => {
       const org2 = Utils.newGuid() as OrganizationId;
       const collection2 = collectionDataFactory(org2);
 
-      // Arrange dependencies
-      await setEncryptedState([collection1, collection2]);
-      // KeyService emits undefined when the vault is locked (and even when it's unlocked in some edge cases)
-      cryptoKeys.next(undefined);
-      keyService.activeUserOrgKeys$ = of(undefined);
+      // Emit a non-null value after the first undefined value has propagated
+      // This will cause the collections to emit, calling done()
+      cryptoKeys.pipe(first()).subscribe((val) => {
+        cryptoKeys.next({});
+      });
 
-      await firstValueFrom(collectionService.decryptedCollections$(userId));
+      collectionService
+        .decryptedCollections$(userId)
+        .pipe(takeWhile((val) => val.length != 2))
+        .subscribe({ complete: () => done() });
+
+      // Arrange dependencies
+      void setEncryptedState([collection1, collection2]).then(() => {
+        cryptoKeys.next(undefined);
+        keyService.activeUserOrgKeys$ = of(undefined);
+      });
     });
   });
 
