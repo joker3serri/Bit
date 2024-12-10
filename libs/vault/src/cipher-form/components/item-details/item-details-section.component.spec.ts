@@ -491,6 +491,7 @@ describe("ItemDetailsSectionComponent", () => {
     });
 
     it("should not show collections as readonly when `config.admin` is true", async () => {
+      component.config.isAdminConsole = true;
       await component.ngOnInit();
       fixture.detectChanges();
 
@@ -502,8 +503,7 @@ describe("ItemDetailsSectionComponent", () => {
 
       await component.ngOnInit();
       fixture.detectChanges();
-
-      expect(component["readOnlyCollections"]).toEqual(["Collection 1", "Collection 3"]);
+      expect(component["readOnlyCollectionsNames"]).toEqual(["Collection 1", "Collection 3"]);
     });
   });
 });
