@@ -17,7 +17,7 @@ import { CipherService } from "../../abstractions/cipher.service";
 import { FolderData } from "../../models/data/folder.data";
 import { FolderView } from "../../models/view/folder.view";
 import { FolderService } from "../../services/folder/folder.service";
-import { FOLDER_ENCRYPTED_FOLDERS } from "../key-state/folder.state";
+import { FOLDER_DECRYPTED_FOLDERS, FOLDER_ENCRYPTED_FOLDERS } from "../key-state/folder.state";
 
 describe("Folder Service", () => {
   let folderService: FolderService;
@@ -186,7 +186,10 @@ describe("Folder Service", () => {
       await folderService.clearDecryptedFolderState(mockUserId);
 
       expect((await firstValueFrom(folderService.folders$(mockUserId))).length).toBe(1);
-      expect((await firstValueFrom(folderService.folderViews$(mockUserId))).length).toBe(0);
+      expect(
+        (await firstValueFrom(stateProvider.getUserState$(FOLDER_DECRYPTED_FOLDERS, mockUserId)))
+          .length,
+      ).toBe(0);
     });
   });
 

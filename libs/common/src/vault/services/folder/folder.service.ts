@@ -213,7 +213,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
       return decrypted;
     }
 
-    if (!folderData) {
+    if (!folderData || Object.keys(folderData).length === 0) {
       return [];
     }
 
