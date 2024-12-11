@@ -125,7 +125,9 @@ export class WeakPasswordsReportComponent extends CipherReportComponent implemen
       const aValue = a[field as keyof ReportResult];
       const bValue = b[field as keyof ReportResult];
 
-      if (aValue === bValue) {return 0;}
+      if (aValue === bValue) {
+        return 0;
+      }
       const comparison = aValue > bValue ? 1 : -1;
       return ascending ? comparison : -comparison;
     });
