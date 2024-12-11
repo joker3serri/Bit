@@ -335,7 +335,7 @@ export class SsoComponent implements OnInit {
       "client_id=" +
       this.clientId +
       "&redirect_uri=" +
-      encodeURIComponent(this.redirectUri) +
+      encodeURIComponent(this.redirectUri ?? "") +
       "&" +
       "response_type=code&scope=api offline_access&" +
       "state=" +
@@ -345,7 +345,7 @@ export class SsoComponent implements OnInit {
       "&" +
       "code_challenge_method=S256&response_mode=query&" +
       "domain_hint=" +
-      encodeURIComponent(this.identifier) +
+      encodeURIComponent(this.identifier ?? "") +
       "&ssoToken=" +
       encodeURIComponent(token ?? "");
 
@@ -361,11 +361,11 @@ export class SsoComponent implements OnInit {
     this.loggingIn = true;
     try {
       const email = await this.ssoLoginService.getSsoEmail();
-
+      const redirectUri = this.redirectUri ?? "";
       const credentials = new SsoLoginCredentials(
         code,
         codeVerifier,
-        this.redirectUri,
+        redirectUri,
         orgSsoIdentifier,
         email,
       );
