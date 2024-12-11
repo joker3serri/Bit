@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { DatePipe, formatDate } from "@angular/common";
+import { formatDate } from "@angular/common";
 import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
 import { firstValueFrom, map, Observable } from "rxjs";
 
@@ -38,7 +38,6 @@ export class SponsoringOrgRowComponent implements OnInit {
     private toastService: ToastService,
     private configService: ConfigService,
     private policyService: PolicyService,
-    private datePipe: DatePipe,
   ) {}
 
   async ngOnInit() {
@@ -87,14 +86,19 @@ export class SponsoringOrgRowComponent implements OnInit {
   }
 
   private async doRevokeSponsorship() {
-    const content = this.i18nService.t(
-      "updatedRevokeSponsorshipConfirmation",
-      this.sponsoringOrg.familySponsorshipFriendlyName,
-      this.datePipe.transform(this.sponsoringOrg.familySponsorshipValidUntil, "mediumDate"),
-    );
+    const content = this.sponsoringOrg.familySponsorshipValidUntil
+      ? this.i18nService.t(
+          "updatedRevokeSponsorshipConfirmationForAcceptedSponsorship",
+          this.sponsoringOrg.familySponsorshipFriendlyName,
+          formatDate(this.sponsoringOrg.familySponsorshipValidUntil, "MM/dd/yyyy", this.locale),
+        )
+      : this.i18nService.t(
+          "updatedRevokeSponsorshipConfirmationForSentSponsorship",
+          this.sponsoringOrg.familySponsorshipFriendlyName,
+        );
 
     const confirmed = await this.dialogService.openSimpleDialog({
-      title: `${this.i18nService.t("remove")} ${this.sponsoringOrg.familySponsorshipFriendlyName}?`,
+      title: `${this.i18nService.t("removeSponsorship")}?`,
       content,
       acceptButtonText: { key: "remove" },
       type: "warning",
