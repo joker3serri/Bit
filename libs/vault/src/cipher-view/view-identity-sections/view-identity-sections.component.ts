@@ -4,7 +4,6 @@ import { Component, Input, OnInit } from "@angular/core";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
-  CardComponent,
   FormFieldModule,
   IconButtonModule,
   SectionComponent,
@@ -21,7 +20,6 @@ import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-
   imports: [
     NgIf,
     JslibModule,
-    CardComponent,
     SectionComponent,
     SectionHeaderComponent,
     TypographyModule,
