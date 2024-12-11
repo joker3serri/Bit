@@ -80,18 +80,18 @@ interface QueryParams {
 })
 export class SsoComponent implements OnInit {
   protected formGroup = new FormGroup({
-    identifier: new FormControl(null, [Validators.required]),
+    identifier: new FormControl<string | null>(null, [Validators.required]),
   });
 
-  protected redirectUri: string;
+  protected redirectUri: string | undefined;
   protected loggingIn = false;
-  protected identifier: string;
-  protected state: string;
-  protected codeChallenge: string;
-  protected clientId: SsoClientType;
+  protected identifier: string | undefined;
+  protected state: string | undefined;
+  protected codeChallenge: string | undefined;
+  protected clientId: SsoClientType | undefined;
 
-  formPromise: Promise<AuthResult>;
-  initiateSsoFormPromise: Promise<SsoPreValidateResponse>;
+  formPromise: Promise<AuthResult> | undefined;
+  initiateSsoFormPromise: Promise<SsoPreValidateResponse> | undefined;
 
   get identifierFormControl() {
     return this.formGroup.controls.identifier;
@@ -161,11 +161,12 @@ export class SsoComponent implements OnInit {
    * @param qParams - The query params
    */
   private setRequiredSsoVariables(qParams: QueryParams): void {
-    this.redirectUri = qParams.redirectUri;
-    this.state = qParams.state;
-    this.codeChallenge = qParams.codeChallenge;
-    if (this.isValidSsoClientType(qParams.clientId)) {
-      this.clientId = qParams.clientId;
+    this.redirectUri = qParams.redirectUri ?? "";
+    this.state = qParams.state ?? "";
+    this.codeChallenge = qParams.codeChallenge ?? "";
+    const clientId = qParams.clientId ?? "";
+    if (this.isValidSsoClientType(clientId)) {
+      this.clientId = clientId;
     } else {
       throw new Error(`Invalid SSO client type: ${qParams.clientId}`);
     }
@@ -201,8 +202,8 @@ export class SsoComponent implements OnInit {
   private async handleCodeAndStateParams(qParams: QueryParams): Promise<void> {
     const codeVerifier = await this.ssoLoginService.getCodeVerifier();
     const state = await this.ssoLoginService.getSsoState();
-    await this.ssoLoginService.setCodeVerifier(null);
-    await this.ssoLoginService.setSsoState(null);
+    await this.ssoLoginService.setCodeVerifier("");
+    await this.ssoLoginService.setSsoState("");
 
     if (qParams.redirectUri != null) {
       this.redirectUri = qParams.redirectUri;
@@ -212,9 +213,9 @@ export class SsoComponent implements OnInit {
       qParams.code != null &&
       codeVerifier != null &&
       state != null &&
-      this.checkState(state, qParams.state)
+      this.checkState(state, qParams.state ?? "")
     ) {
-      const ssoOrganizationIdentifier = this.getOrgIdentifierFromState(qParams.state);
+      const ssoOrganizationIdentifier = this.getOrgIdentifierFromState(qParams.state ?? "");
       await this.logIn(qParams.code, codeVerifier, ssoOrganizationIdentifier);
     }
   }
@@ -243,14 +244,14 @@ export class SsoComponent implements OnInit {
     }
   }
 
-  submit = async () => {
+  submit = async (): Promise<void> => {
     if (this.formGroup.invalid) {
       return;
     }
 
     const autoSubmit = (await firstValueFrom(this.route.queryParams)).identifier != null;
 
-    this.identifier = this.identifierFormControl.value;
+    this.identifier = this.identifierFormControl.value ?? "";
     await this.ssoLoginService.setOrganizationSsoIdentifier(this.identifier);
     this.ssoComponentService.setDocumentCookies?.();
     try {
@@ -272,6 +273,10 @@ export class SsoComponent implements OnInit {
         message: this.i18nService.t("ssoIdentifierRequired"),
       });
       return;
+    }
+
+    if (this.clientId == null) {
+      throw new Error("Client ID is required");
     }
 
     this.initiateSsoFormPromise = this.apiService.preValidateSso(this.identifier);
@@ -342,7 +347,7 @@ export class SsoComponent implements OnInit {
       "domain_hint=" +
       encodeURIComponent(this.identifier) +
       "&ssoToken=" +
-      encodeURIComponent(token);
+      encodeURIComponent(token ?? "");
 
     if (includeUserIdentifier) {
       const userIdentifier = await this.apiService.getSsoUserIdentifier();
@@ -394,9 +399,9 @@ export class SsoComponent implements OnInit {
         this.userDecryptionOptionsService.userDecryptionOptions$,
       );
 
-      const tdeEnabled = await this.isTrustedDeviceEncEnabled(
-        userDecryptionOpts.trustedDeviceOption,
-      );
+      const tdeEnabled = userDecryptionOpts.trustedDeviceOption
+        ? await this.isTrustedDeviceEncEnabled(userDecryptionOpts.trustedDeviceOption)
+        : false;
 
       if (tdeEnabled) {
         return await this.handleTrustedDeviceEncryptionEnabled(userDecryptionOpts);
@@ -439,12 +444,17 @@ export class SsoComponent implements OnInit {
   private async handleTrustedDeviceEncryptionEnabled(
     userDecryptionOpts: UserDecryptionOptions,
   ): Promise<void> {
+    const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
+
+    if (!userId) {
+      return;
+    }
+
     // Tde offboarding takes precedence
     if (
       !userDecryptionOpts.hasMasterPassword &&
-      userDecryptionOpts.trustedDeviceOption.isTdeOffboarding
+      userDecryptionOpts.trustedDeviceOption?.isTdeOffboarding
     ) {
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       await this.masterPasswordService.setForceSetPasswordReason(
         ForceSetPasswordReason.TdeOffboarding,
         userId,
@@ -452,12 +462,11 @@ export class SsoComponent implements OnInit {
     } else if (
       // If user doesn't have a MP, but has reset password permission, they must set a MP
       !userDecryptionOpts.hasMasterPassword &&
-      userDecryptionOpts.trustedDeviceOption.hasManageResetPasswordPermission
+      userDecryptionOpts.trustedDeviceOption?.hasManageResetPasswordPermission
     ) {
       // Set flag so that auth guard can redirect to set password screen after decryption (trusted or untrusted device)
       // Note: we cannot directly navigate in this scenario as we are in a pre-decryption state, and
       // if you try to set a new MP before decrypting, you will invalidate the user's data by making a new user key.
-      const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
       await this.masterPasswordService.setForceSetPasswordReason(
         ForceSetPasswordReason.TdeUserWithoutPasswordHasPasswordResetPermission,
         userId,
@@ -508,7 +517,7 @@ export class SsoComponent implements OnInit {
     if (e instanceof Error && e.message === "Key Connector error") {
       this.toastService.showToast({
         variant: "error",
-        title: null,
+        title: "",
         message: this.i18nService.t("ssoKeyConnectorError"),
       });
     }
@@ -516,11 +525,11 @@ export class SsoComponent implements OnInit {
 
   private getOrgIdentifierFromState(state: string): string {
     if (state === null || state === undefined) {
-      return null;
+      return "";
     }
 
     const stateSplit = state.split("_identifier=");
-    return stateSplit.length > 1 ? stateSplit[1] : null;
+    return stateSplit.length > 1 ? stateSplit[1] : "";
   }
 
   private checkState(state: string, checkState: string): boolean {
