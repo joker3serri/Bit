@@ -15,7 +15,7 @@ export const FOLDER_ENCRYPTED_FOLDERS = UserKeyDefinition.record<FolderData>(
 
 export const FOLDER_DECRYPTED_FOLDERS = new UserKeyDefinition<FolderView[]>(
   FOLDER_MEMORY,
-  "folder",
+  "decryptedFolders",
   {
     deserializer: (obj: Jsonify<FolderView[]>) => obj?.map((f) => FolderView.fromJSON(f)) ?? [],
     clearOn: ["logout", "lock"],
