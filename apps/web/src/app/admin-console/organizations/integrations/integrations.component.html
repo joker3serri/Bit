@@ -1,10 +1,7 @@
 <app-header> </app-header>
 
-<bit-tab-group [(selectedIndex)]="tabIndex" *ngIf="{ type: organizationPlanType$ | async } as plan">
-  <bit-tab
-    [label]="'singleSignOn' | i18n"
-    *ngIf="IntegrationType.SSO | integrationAccess: plan.type : integrationAccessList"
-  >
+<bit-tab-group [(selectedIndex)]="tabIndex" *ngIf="organization$ | async as organization">
+  <bit-tab [label]="'singleSignOn' | i18n" *ngIf="organization.useSso">
     <section class="tw-mb-9">
       <h2 bitTypography="h2">{{ "singleSignOn" | i18n }}</h2>
       <p bitTypography="body1">
@@ -20,15 +17,9 @@
 
   <bit-tab
     [label]="'userProvisioning' | i18n"
-    *ngIf="
-      (IntegrationType.BWDC | integrationAccess: plan.type : integrationAccessList) ||
-      (IntegrationType.SCIM | integrationAccess: plan.type : integrationAccessList)
-    "
+    *ngIf="organization.useScim || organization.useDirectory"
   >
-    <section
-      class="tw-mb-9"
-      *ngIf="IntegrationType.SCIM | integrationAccess: plan.type : integrationAccessList"
-    >
+    <section class="tw-mb-9" *ngIf="organization.useScim">
       <h2 bitTypography="h2">
         {{ "scimIntegration" | i18n }}
       </h2>
@@ -41,10 +32,7 @@
         [integrations]="integrationsList | filterIntegrations: IntegrationType.SCIM"
       ></app-integration-grid>
     </section>
-    <section
-      class="tw-mb-9"
-      *ngIf="IntegrationType.BWDC | integrationAccess: plan.type : integrationAccessList"
-    >
+    <section class="tw-mb-9" *ngIf="organization.useDirectory">
       <h2 bitTypography="h2">
         {{ "bwdc" | i18n }}
       </h2>
@@ -55,10 +43,7 @@
     </section>
   </bit-tab>
 
-  <bit-tab
-    [label]="'eventManagement' | i18n"
-    *ngIf="IntegrationType.EVENT | integrationAccess: plan.type : integrationAccessList"
-  >
+  <bit-tab [label]="'eventManagement' | i18n" *ngIf="organization.useEvents">
     <section class="tw-mb-9">
       <h2 bitTypography="h2">
         {{ "eventManagement" | i18n }}
@@ -70,10 +55,7 @@
     </section>
   </bit-tab>
 
-  <bit-tab
-    [label]="'deviceManagement' | i18n"
-    *ngIf="IntegrationType.DEVICE | integrationAccess: plan.type : integrationAccessList"
-  >
+  <bit-tab [label]="'deviceManagement' | i18n">
     <section class="tw-mb-9">
       <h2 bitTypography="h2">
         {{ "deviceManagement" | i18n }}

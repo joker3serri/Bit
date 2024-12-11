@@ -118,19 +118,21 @@ export class OrganizationLayoutComponent implements OnInit {
       PlanType.FamiliesAnnually2019,
     ];
 
-    this.integrationPageEnabled$ = combineLatest(
+    this.integrationPageEnabled$ = combineLatest([
       this.organization$,
       this.configService.getFeatureFlag$(FeatureFlag.PM14505AdminConsoleIntegrationPage),
-    ).pipe(
+    ]).pipe(
       switchMap(([org, featureFlagEnabled]) =>
-        of(org.productTierType === ProductTierType.Enterprise && featureFlagEnabled).pipe(
+        of(
+          (org.productTierType === ProductTierType.Enterprise ||
+            org.productTierType === ProductTierType.Teams) &&
+            featureFlagEnabled,
+        ).pipe(
           filter(
             (enabled) =>
               enabled &&
-              (org.isAdmin ||
-                org.isOwner ||
-                org.userIsManagedByOrganization ||
-                org.canAccessEventLogs),
+              org.isAdmin &&
+              (org.useSso || org.useScim || org.useDirectory || org.useEvents),
           ),
           switchMap(() => this.organizationApiService.getPlanType(org.id)),
           map((planType) => !excludedPlans.includes(planType)),

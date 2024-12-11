@@ -1,4 +1,3 @@
-import { PlanType } from "@bitwarden/common/billing/enums";
 import { IntegrationType } from "@bitwarden/common/enums";
 
 /** Integration or SDK */
@@ -18,10 +17,4 @@ export type Integration = {
    * @example "2024-12-31"
    */
   newBadgeExpiration?: string;
-};
-
-/** Organization Plan access to varying integration page tabs */
-export type IntegrationAccess = {
-  type: IntegrationType;
-  canAccess: PlanType[];
 };
