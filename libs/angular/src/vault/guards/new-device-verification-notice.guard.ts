@@ -29,7 +29,7 @@ export const NewDeviceVerificationNoticeGuard: CanActivateFn = async () => {
 
   if (
     userItems?.last_dismissal == null &&
-    userItems?.permanent_dismissal == null &&
+    (userItems?.permanent_dismissal == null || !userItems?.permanent_dismissal) &&
     (tempNoticeFlag || permNoticeFlag)
   ) {
     return router.createUrlTree(["/new-device-notice"]);

@@ -38,14 +38,14 @@ import { NewDeviceVerificationNoticeService } from "./../../services/new-device-
   ],
 })
 export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
-  formMessage: string;
+  formMessage: string = "";
   protected formGroup = this.formBuilder.group({
     hasEmailAccess: new FormControl(0),
   });
   protected isDesktop: boolean;
   readonly currentAcct$ = this.accountService.activeAccount$.pipe(map((acct) => acct));
-  private currentEmail: string;
-  private currentUserId: UserId;
+  private currentEmail: string = "";
+  private currentUserId: UserId = null;
 
   constructor(
     private i18nService: I18nService,
@@ -59,8 +59,8 @@ export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.currentEmail = (await firstValueFrom(this.currentAcct$)).email;
-    this.currentUserId = (await firstValueFrom(this.currentAcct$)).id;
+    this.currentEmail = (await firstValueFrom(this.currentAcct$))?.email;
+    this.currentUserId = (await firstValueFrom(this.currentAcct$))?.id;
     this.formMessage = this.i18nService.t(
       "newDeviceVerificationNoticePageOneFormContent",
       this.currentEmail,
@@ -75,7 +75,7 @@ export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
         this.currentUserId,
         {
           last_dismissal: new Date(),
-          permanent_dismissal: null,
+          permanent_dismissal: false,
         },
       );
 
