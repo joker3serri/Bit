@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
-import { ActivatedRoute, Router, RouterModule, NavigationExtras } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -428,7 +428,7 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleTwoFactorRequired(orgIdentifier: string) {
-    await this.navigateViaCallbackOrRoute(async () => {}, ["2fa"], {
+    await this.router.navigate(["2fa"], {
       queryParams: {
         identifier: orgIdentifier,
         sso: "true",
@@ -464,9 +464,11 @@ export class SsoComponent implements OnInit {
       );
     }
 
-    await this.navigateViaCallbackOrRoute(this.ssoComponentService?.closeWindow, [
-      "login-initiated",
-    ]);
+    if (this.ssoComponentService?.closeWindow) {
+      await this.ssoComponentService.closeWindow();
+    } else {
+      await this.router.navigate(["login-initiated"]);
+    }
   }
 
   private async handleChangePasswordRequired(orgIdentifier: string) {
@@ -479,7 +481,7 @@ export class SsoComponent implements OnInit {
       route = "set-password-jit";
     }
 
-    await this.navigateViaCallbackOrRoute(async () => {}, [route], {
+    await this.router.navigate([route], {
       queryParams: {
         identifier: orgIdentifier,
       },
@@ -487,7 +489,7 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleForcePasswordReset(orgIdentifier: string) {
-    await this.navigateViaCallbackOrRoute(async () => {}, ["update-temp-password"], {
+    await this.router.navigate(["update-temp-password"], {
       queryParams: {
         identifier: orgIdentifier,
       },
@@ -496,7 +498,7 @@ export class SsoComponent implements OnInit {
 
   private async handleSuccessfulLogin() {
     await this.ssoComponentService.reloadOpenWindowsWhenNotUnlocked?.();
-    await this.navigateViaCallbackOrRoute(async () => {}, ["lock"]);
+    await this.router.navigate(["lock"]);
   }
 
   private async handleLoginError(e: unknown) {
@@ -509,18 +511,6 @@ export class SsoComponent implements OnInit {
         title: null,
         message: this.i18nService.t("ssoKeyConnectorError"),
       });
-    }
-  }
-
-  private async navigateViaCallbackOrRoute(
-    callback: () => Promise<unknown>,
-    commands: unknown[],
-    extras?: NavigationExtras,
-  ): Promise<void> {
-    if (callback) {
-      await callback();
-    } else {
-      await this.router.navigate(commands, extras);
     }
   }
 
