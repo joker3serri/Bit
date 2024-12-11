@@ -1,3 +1,4 @@
+import { FieldRect } from "../background/abstractions/overlay.background";
 import { AutofillFieldQualifierType } from "../enums/autofill-field.enums";
 import {
   InlineMenuAccountCreationFieldTypes,
@@ -122,4 +123,9 @@ export default class AutofillField {
   fieldQualifier?: AutofillFieldQualifierType;
 
   accountCreationFieldType?: InlineMenuAccountCreationFieldTypes;
+
+  /**
+   * used for totp multiline calculations
+   */
+  fieldRect?: FieldRect;
 }

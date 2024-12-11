@@ -2888,6 +2888,71 @@ describe("OverlayBackground", () => {
         );
       });
     });
+    describe("handles menu position when input is focused", () => {
+      it("sets button and menu width and position when non-multi-input totp field is focused", async () => {
+        const subframe = {
+          top: 0,
+          left: 0,
+          url: "",
+          frameId: 0,
+        };
+
+        overlayBackground["focusedFieldData"] = createFocusedFieldDataMock();
+
+        const buttonPostion = overlayBackground.getInlineMenuButtonPosition(subframe);
+        const menuPostion = overlayBackground.getInlineMenuListPosition(subframe);
+
+        expect(menuPostion).toEqual({
+          width: "49px",
+          top: "366px",
+          left: "1271px",
+        });
+        expect(buttonPostion).toEqual({
+          width: "34px",
+          height: "34px",
+          top: "317px",
+          left: "1271px",
+        });
+      });
+      it("sets button and menu width and position when multi-input totp field is focused", async () => {
+        const subframe = {
+          top: 0,
+          left: 0,
+          url: "",
+          frameId: 0,
+        };
+
+        const totpFields = [createAutofillFieldMock({ autoCompleteType: "one-time-code" })];
+        overlayBackground["focusedFieldData"] = createFocusedFieldDataMock();
+        jest
+          .spyOn(overlayBackground as any, "isTotpFieldForCurrentField")
+          .mockReturnValueOnce(true);
+        jest.spyOn(overlayBackground as any, "getTotpFields").mockReturnValueOnce(totpFields);
+        jest
+          .spyOn(overlayBackground as any, "calculateTotpMultiInputButtonBounds")
+          .mockReturnValueOnce({ left: 1358.26875, top: 277.211875 });
+
+        jest
+          .spyOn(overlayBackground as any, "calculateTotpMultiInputMenuBounds")
+          .mockReturnValueOnce({ left: 1041.5, width: 335.96875 });
+
+        const buttonPostion = overlayBackground.getInlineMenuButtonPosition(subframe);
+        const menuPostion = overlayBackground.getInlineMenuListPosition(subframe);
+
+        expect(menuPostion).toEqual({
+          width: "49px",
+          top: "366px",
+          left: "1271px",
+        });
+
+        expect(buttonPostion).not.toEqual({
+          width: "34px",
+          height: "34px",
+          top: "317px",
+          left: "1271px",
+        });
+      });
+    });
 
     describe("triggerDelayedAutofillInlineMenuClosure message handler", () => {
       it("skips triggering the delayed closure of the inline menu if a field is currently focused", async () => {
