@@ -17,4 +17,10 @@ export abstract class SsoComponentService {
    * Closes the window.
    */
   closeWindow?(): Promise<void>;
+
+  /**
+   * Reloads open windows when the vault is not unlocked.
+   * Used to prevent clearing keys from memory after a successful login for the browser extension.
+   */
+  reloadOpenWindowsWhenNotUnlocked?(): Promise<void>;
 }
