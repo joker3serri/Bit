@@ -9959,5 +9959,8 @@
         "example": "bitwarden.com"
       }
     }
+  },
+  "domainClaimed": {
+    "message": "Domain claimed"
   }
 }
