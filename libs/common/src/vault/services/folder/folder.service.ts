@@ -1,6 +1,7 @@
+import { merge } from "rxjs";
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Observable, firstValueFrom, map, shareReplay, switchMap } from "rxjs";
+import { Observable, Subject, firstValueFrom, map, shareReplay, switchMap } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -21,6 +22,19 @@ import { FolderWithIdRequest } from "../../models/request/folder-with-id.request
 import { FOLDER_DECRYPTED_FOLDERS, FOLDER_ENCRYPTED_FOLDERS } from "../key-state/folder.state";
 
 export class FolderService implements InternalFolderServiceAbstraction {
+  /**
+   * Ensures we reuse the same observable stream for each userId rather than
+   * creating a new one on each folderViews$ call.
+   */
+  private folderViewCache = new Map<UserId, Observable<FolderView[]>>();
+
+  /**
+   * Used to force the folderviews$ Observable to re-emit with a provided value.
+   * Required because shareReplay with refCount: false maintains last emission.
+   * Used during cleanup to force emit empty arrays, ensuring stale data isn't retained.
+   */
+  private forceFolderViews: Record<UserId, Subject<FolderView[]>> = {};
+
   constructor(
     private keyService: KeyService,
     private encryptService: EncryptService,
@@ -41,12 +55,30 @@ export class FolderService implements InternalFolderServiceAbstraction {
     );
   }
 
+  /**
+   * Returns an Observable of decrypted folder views for the given userId.
+   * Uses folderViewCache to maintain a single Observable instance per user,
+   * combining normal folder state updates with forced updates.
+   */
   folderViews$(userId: UserId): Observable<FolderView[]> {
-    return this.encryptedFoldersState(userId).state$.pipe(
-      switchMap((folderData) => {
-        return this.decryptFolders(userId, folderData);
-      }),
-    );
+    if (!this.folderViewCache.has(userId)) {
+      if (!this.forceFolderViews[userId]) {
+        this.forceFolderViews[userId] = new Subject<FolderView[]>();
+      }
+
+      const observable = merge(
+        this.forceFolderViews[userId],
+        this.encryptedFoldersState(userId).state$.pipe(
+          switchMap((folderData) => {
+            return this.decryptFolders(userId, folderData);
+          }),
+        ),
+      ).pipe(shareReplay({ refCount: false, bufferSize: 1 }));
+
+      this.folderViewCache.set(userId, observable);
+    }
+
+    return this.folderViewCache.get(userId);
   }
 
   // TODO: This should be moved to EncryptService or something
@@ -134,6 +166,8 @@ export class FolderService implements InternalFolderServiceAbstraction {
   }
 
   async clear(userId: UserId): Promise<void> {
+    this.forceFolderViews[userId]?.next([]);
+
     await this.encryptedFoldersState(userId).update(() => ({}));
     await this.clearDecryptedFolderState(userId);
   }
