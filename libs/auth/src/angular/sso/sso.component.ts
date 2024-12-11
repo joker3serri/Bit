@@ -367,6 +367,8 @@ export class SsoComponent implements OnInit {
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const authResult = await this.formPromise;
 
+      await this.syncService.fullSync(true);
+
       if (authResult.requiresTwoFactor) {
         return await this.handleTwoFactorRequired(orgSsoIdentifier);
       }
@@ -462,12 +464,6 @@ export class SsoComponent implements OnInit {
       );
     }
 
-    try {
-      await this.syncService.fullSync(true, true);
-    } catch (error) {
-      this.logService.error("Error syncing after TDE SSO login:", error);
-    }
-
     await this.navigateViaCallbackOrRoute(this.ssoComponentService?.closeWindow, [
       "login-initiated",
     ]);
@@ -499,12 +495,6 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleSuccessfulLogin() {
-    try {
-      await this.syncService.fullSync(true, true);
-    } catch (error) {
-      this.logService.error("Error syncing after TDE SSO login:", error);
-    }
-
     await this.navigateViaCallbackOrRoute(async () => {}, ["lock"]);
   }
 
