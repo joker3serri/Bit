@@ -87,6 +87,7 @@ export class AdjustPaymentDialogComponent implements OnInit {
       request.paymentMethodType = result[1];
       request.postalCode = this.taxInformation?.postalCode;
       request.country = this.taxInformation?.country;
+      request.taxId = this.taxInformation?.taxId;
       if (this.organizationId == null) {
         return this.apiService.postAccountPayment(request);
       } else {
