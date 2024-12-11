@@ -159,6 +159,7 @@ export class PremiumV2Component {
     formData.append("additionalStorageGb", this.addOnFormGroup.value.additionalStorage.toString());
     formData.append("country", this.taxInfoComponent.country);
     formData.append("postalCode", this.taxInfoComponent.postalCode);
+    formData.append("taxId", this.taxInfoComponent.taxId);
 
     await this.apiService.postPremium(formData);
     await this.finalizeUpgrade();
