@@ -372,14 +372,14 @@ export class SsoComponent implements OnInit {
       this.formPromise = this.loginStrategyService.logIn(credentials);
       const authResult = await this.formPromise;
 
-      await this.syncService.fullSync(true);
-
       if (authResult.requiresTwoFactor) {
         return await this.handleTwoFactorRequired(orgSsoIdentifier);
       }
 
       // Everything after the 2FA check is considered a successful login
       // Just have to figure out where to send the user
+
+      await this.syncService.fullSync(true);
 
       // Save off the OrgSsoIdentifier for use in the TDE flows (or elsewhere)
       // - TDE login decryption options component
