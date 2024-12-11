@@ -1,5 +1,3 @@
-// FIXME: Update this file to be type safe and remove this and next line
-// @ts-strict-ignore
 import { NgIf } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 
@@ -33,11 +31,11 @@ import { ReadOnlyCipherCardComponent } from "../read-only-cipher-card/read-only-
   ],
 })
 export class ViewIdentitySectionsComponent implements OnInit {
-  @Input() cipher: CipherView;
+  @Input({ required: true }) cipher: CipherView | null = null;
 
-  showPersonalDetails: boolean;
-  showIdentificationDetails: boolean;
-  showContactDetails: boolean;
+  showPersonalDetails: boolean = false;
+  showIdentificationDetails: boolean = false;
+  showContactDetails: boolean = false;
 
   ngOnInit(): void {
     this.showPersonalDetails = this.hasPersonalDetails();
@@ -47,6 +45,10 @@ export class ViewIdentitySectionsComponent implements OnInit {
 
   /** Returns all populated address fields */
   get addressFields(): string {
+    if (!this.cipher) {
+      return "";
+    }
+
     const { address1, address2, address3, fullAddressPart2, country } = this.cipher.identity;
     return [address1, address2, address3, fullAddressPart2, country].filter(Boolean).join("\n");
   }
@@ -58,18 +60,30 @@ export class ViewIdentitySectionsComponent implements OnInit {
 
   /** Returns true when any of the "personal detail" attributes are populated */
   private hasPersonalDetails(): boolean {
+    if (!this.cipher) {
+      return false;
+    }
+
     const { username, company, fullName } = this.cipher.identity;
     return Boolean(fullName || username || company);
   }
 
   /** Returns true when any of the "identification detail" attributes are populated */
   private hasIdentificationDetails(): boolean {
+    if (!this.cipher) {
+      return false;
+    }
+
     const { ssn, passportNumber, licenseNumber } = this.cipher.identity;
     return Boolean(ssn || passportNumber || licenseNumber);
   }
 
   /** Returns true when any of the "contact detail" attributes are populated */
   private hasContactDetails(): boolean {
+    if (!this.cipher) {
+      return false;
+    }
+
     const { email, phone } = this.cipher.identity;
 
     return Boolean(email || phone || this.addressFields);
