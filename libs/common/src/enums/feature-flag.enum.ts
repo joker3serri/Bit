@@ -40,6 +40,7 @@ export enum FeatureFlag {
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
   MacOsNativeCredentialSync = "macos-native-credential-sync",
   PM11360RemoveProviderExportPermission = "pm-11360-remove-provider-export-permission",
+  PM12443RemovePagingLogic = "pm-12443-remove-paging-logic",
   PrivateKeyRegeneration = "pm-12241-private-key-regeneration",
 }
 
@@ -91,6 +92,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
   [FeatureFlag.MacOsNativeCredentialSync]: FALSE,
   [FeatureFlag.PM11360RemoveProviderExportPermission]: FALSE,
+  [FeatureFlag.PM12443RemovePagingLogic]: FALSE,
   [FeatureFlag.PrivateKeyRegeneration]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
