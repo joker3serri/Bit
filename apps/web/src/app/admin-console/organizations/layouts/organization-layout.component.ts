@@ -3,7 +3,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { combineLatest, filter, map, Observable, switchMap } from "rxjs";
+import { combineLatest, filter, map, Observable, of, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -20,10 +20,10 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { PolicyType, ProviderStatusType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
+import { OrganizationApiService } from "@bitwarden/common/admin-console/services/organization/organization-api.service";
+import { PlanType, ProductTierType } from "@bitwarden/common/billing/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { getById } from "@bitwarden/common/platform/misc";
 import { BannerModule, IconModule } from "@bitwarden/components";
@@ -69,7 +69,7 @@ export class OrganizationLayoutComponent implements OnInit {
     private configService: ConfigService,
     private policyService: PolicyService,
     private providerService: ProviderService,
-    private i18nService: I18nService,
+    private organizationApiService: OrganizationApiService,
   ) {}
 
   async ngOnInit() {
@@ -110,13 +110,34 @@ export class OrganizationLayoutComponent implements OnInit {
       ),
     );
 
+    const excludedPlans = [
+      PlanType.Free,
+      PlanType.Custom,
+      PlanType.TeamsStarter,
+      PlanType.TeamsStarter2023,
+      PlanType.FamiliesAnnually,
+      PlanType.FamiliesAnnually2019,
+    ];
+
     this.integrationPageEnabled$ = combineLatest(
       this.organization$,
       this.configService.getFeatureFlag$(FeatureFlag.PM14505AdminConsoleIntegrationPage),
     ).pipe(
-      map(
-        ([org, featureFlagEnabled]) =>
-          org.productTierType === ProductTierType.Enterprise && featureFlagEnabled,
+      switchMap(([org, featureFlagEnabled]) =>
+        of(
+          (org.productTierType === ProductTierType.Enterprise ||
+            org.productTierType === ProductTierType.Teams) &&
+            featureFlagEnabled,
+        ).pipe(
+          filter(
+            (enabled) =>
+              enabled &&
+              org.isAdmin &&
+              (org.useSso || org.useDirectory || org.useScim || org.useEvents),
+          ),
+          switchMap(() => this.organizationApiService.getPlanType(org.id)),
+          map((planType) => !excludedPlans.includes(planType)),
+        ),
       ),
     );
 
