@@ -22,7 +22,6 @@ export type ApplicationHealthReportDetail = {
   passwordCount: number;
   atRiskPasswordCount: number;
   memberCount: number;
-  atRiskMemberCount: number;
 
   memberDetails: MemberDetailsFlat[];
   atRiskMemberDetails: MemberDetailsFlat[];
@@ -61,7 +60,7 @@ export type CipherHealthReportDetail = CipherView & {
 export type WeakPasswordDetail = {
   score: number;
   detailValue: WeakPasswordScore;
-};
+} | null;
 
 /**
  * Weak password details containing the badge and
@@ -70,14 +69,14 @@ export type WeakPasswordDetail = {
 export type WeakPasswordScore = {
   label: string;
   badgeVariant: BadgeVariant;
-};
+} | null;
 
 /**
  * How many times a password has been exposed
  */
 export type ExposedPasswordDetail = {
   exposedXTimes: number;
-};
+} | null;
 
 /**
  * Flattened member details that associates an
