@@ -4,11 +4,20 @@
 
 <button bitButton type="submit" buttonType="primary" class="tw-w-full tw-mt-4">
   {{ "turnOnTwoStepLogin" | i18n }}
-  <i class="bwi bwi-external-link bwi-lg bwi-fw md:tw-hidden" aria-hidden="true"></i>
+  <i
+    class="bwi bwi-external-link bwi-lg bwi-fw"
+    aria-hidden="true"
+    [ngClass]="{ 'md:tw-hidden': !isDesktop }"
+  >
+  </i>
 </button>
 <button bitButton type="submit" buttonType="secondary" class="tw-w-full tw-mt-4">
   {{ "changeAcctEmail" | i18n }}
-  <i class="bwi bwi-external-link bwi-lg bwi-fw md:tw-hidden" aria-hidden="true"></i>
+  <i
+    class="bwi bwi-external-link bwi-lg bwi-fw"
+    aria-hidden="true"
+    [ngClass]="{ 'md:tw-hidden': !isDesktop }"
+  ></i>
 </button>
 
 <div class="tw-flex tw-justify-center tw-mt-6">

@@ -5,7 +5,9 @@ import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { ClientType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ButtonModule, LinkModule, TypographyModule } from "@bitwarden/components";
 
@@ -19,6 +21,7 @@ import { NewDeviceVerificationNoticeService } from "../../services/new-device-ve
 })
 export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
   formMessage: string;
+  protected isDesktop: boolean;
   readonly currentAcct$ = this.accountService.activeAccount$.pipe(map((acct) => acct));
   private currentUserId: UserId;
 
@@ -27,7 +30,10 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
     private newDeviceVerificationNoticeService: NewDeviceVerificationNoticeService,
     private router: Router,
     private accountService: AccountService,
-  ) {}
+    private platformUtilsService: PlatformUtilsService,
+  ) {
+    this.isDesktop = this.platformUtilsService.getClientType() === ClientType.Desktop;
+  }
 
   async ngOnInit() {
     this.currentUserId = (await firstValueFrom(this.currentAcct$)).id;

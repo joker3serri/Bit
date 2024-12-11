@@ -6,7 +6,9 @@ import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { ClientType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import {
   AsyncActionsModule,
@@ -40,6 +42,7 @@ export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
   protected formGroup = this.formBuilder.group({
     hasEmailAccess: new FormControl(0),
   });
+  protected isDesktop: boolean;
   readonly currentAcct$ = this.accountService.activeAccount$.pipe(map((acct) => acct));
   private currentEmail: string;
   private currentUserId: UserId;
@@ -50,7 +53,10 @@ export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
     private router: Router,
     private accountService: AccountService,
     private newDeviceVerificationNoticeService: NewDeviceVerificationNoticeService,
-  ) {}
+    private platformUtilsService: PlatformUtilsService,
+  ) {
+    this.isDesktop = this.platformUtilsService.getClientType() === ClientType.Desktop;
+  }
 
   async ngOnInit() {
     this.currentEmail = (await firstValueFrom(this.currentAcct$)).email;

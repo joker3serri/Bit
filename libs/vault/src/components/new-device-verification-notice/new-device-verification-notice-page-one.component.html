@@ -3,7 +3,13 @@
     {{ "newDeviceVerificationNoticeContentPage1" | i18n }}
   </p>
 
-  <bit-card class="tw-pb-0 md:tw-flex md:tw-flex-col md:tw-items-center md:!tw-rounded-b-none">
+  <bit-card
+    class="tw-pb-0"
+    [ngClass]="{
+      'tw-flex tw-flex-col tw-items-center !tw-rounded-b-none': isDesktop,
+      'md:tw-flex md:tw-flex-col md:tw-items-center md:!tw-rounded-b-none': !isDesktop,
+    }"
+  >
     <p bitTypography="body2" class="text-muted md:tw-w-9/12">{{ formMessage }}</p>
 
     <bit-radio-group formControlName="hasEmailAccess" class="md:tw-w-9/12">
