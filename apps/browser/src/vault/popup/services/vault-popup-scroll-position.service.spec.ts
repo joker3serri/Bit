@@ -25,7 +25,6 @@ describe("VaultPopupScrollPositionService", () => {
     // set up dummy values
     service["scrollPosition"] = 234;
     service["scrollSubscription"] = { unsubscribe } as unknown as Subscription;
-    service["viewedCipherId"] = "cipher-1";
   });
 
   describe("router events", () => {
@@ -37,7 +36,6 @@ describe("VaultPopupScrollPositionService", () => {
 
       expect(service["scrollPosition"]).toBe(234);
       expect(service["scrollSubscription"]).not.toBeNull();
-      expect(service["viewedCipherId"]).toBe("cipher-1");
     }));
 
     it("resets values when navigating to other tab pages", fakeAsync(() => {
@@ -49,29 +47,6 @@ describe("VaultPopupScrollPositionService", () => {
       expect(service["scrollPosition"]).toBeNull();
       expect(unsubscribe).toHaveBeenCalled();
       expect(service["scrollSubscription"]).toBeNull();
-      expect(service["viewedCipherId"]).toBeNull();
-    }));
-
-    it("stores the viewed cipher when navigating to the `/view-cipher` route", fakeAsync(() => {
-      const event = new NavigationEnd(
-        24,
-        "/view-cipher?cipherId=cipher-23&type=2#included-hash",
-        "",
-      );
-      events$.next(event);
-
-      tick();
-
-      expect(service["viewedCipherId"]).toBe("cipher-23");
-    }));
-
-    it("clears the viewed cipher when navigating to a page other than the vault", fakeAsync(() => {
-      const event = new NavigationEnd(25, "/tabs/settings", "");
-      events$.next(event);
-
-      tick();
-
-      expect(service["viewedCipherId"]).toBeNull();
     }));
   });
 
@@ -87,7 +62,6 @@ describe("VaultPopupScrollPositionService", () => {
       service.stop(true);
 
       expect(service["scrollPosition"]).toBeNull();
-      expect(service["viewedCipherId"]).toBeNull();
     });
   });
 
@@ -114,7 +88,6 @@ describe("VaultPopupScrollPositionService", () => {
       beforeEach(() => {
         (virtualElement.scrollTo as jest.Mock).mockClear();
         nativeElement.querySelector.mockClear();
-        service["viewedCipherId"] = null;
       });
 
       it("does not scroll when `scrollPosition` is null", () => {
@@ -127,32 +100,12 @@ describe("VaultPopupScrollPositionService", () => {
 
       it("scrolls the virtual element to `scrollPosition`", fakeAsync(() => {
         service["scrollPosition"] = 500;
-
-        service.start(virtualElement);
-
         nativeElement.scrollTop = 500;
-        tick(100);
-
-        expect(virtualElement.scrollTo).toHaveBeenCalledWith({ behavior: "instant", top: 500 });
-      }));
-
-      it("focuses on the `viewedCipherId`", fakeAsync(() => {
-        service["viewedCipherId"] = "cipher-23";
-        service["scrollPosition"] = 500;
-        nativeElement.scrollTop = 0;
 
         service.start(virtualElement);
-
         tick();
 
-        const eventListener = nativeElement.addEventListener.mock.calls[1][1];
-
-        eventListener();
-
-        tick(50);
-
-        expect(nativeElement.querySelector).toHaveBeenCalledWith('[data-id="cipher-23"]');
-        expect(focus).toHaveBeenCalled();
+        expect(virtualElement.scrollTo).toHaveBeenCalledWith({ behavior: "instant", top: 500 });
       }));
     });
 

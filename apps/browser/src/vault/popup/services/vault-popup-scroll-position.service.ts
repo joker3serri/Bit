@@ -19,9 +19,6 @@ export class VaultPopupScrollPositionService {
   /** Subscription associated with the virtual scroll element. */
   private scrollSubscription: Subscription | null = null;
 
-  /** Stored cipher id when the `/view-cipher`*/
-  private viewedCipherId: string | null = null;
-
   constructor() {
     this.router.events
       .pipe(
@@ -29,7 +26,6 @@ export class VaultPopupScrollPositionService {
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       )
       .subscribe((event) => {
-        this.storeViewedCipher(event);
         this.resetListenerForNavigation(event);
       });
   }
@@ -41,19 +37,6 @@ export class VaultPopupScrollPositionService {
       setTimeout(async () => {
         // `?? 0` is only to make typescript happy. It shouldn't happen with the above truthy check for `this.scrollPosition`.
         virtualScrollElement.scrollTo({ top: this.scrollPosition ?? 0, behavior: "instant" });
-
-        // wait for scrolling to be complete so the virtual item is rendered
-        await this.waitForScroll(virtualScrollElement);
-
-        // Move the users focus to the previous item when available
-        if (this.viewedCipherId) {
-          const virtualNativeElement = virtualScrollElement.getElementRef().nativeElement;
-          const viewedCipherEle: HTMLElement | null = virtualNativeElement.querySelector(
-            `[data-id="${this.viewedCipherId}"]`,
-          );
-          viewedCipherEle?.focus();
-          this.viewedCipherId = null;
-        }
       });
     }
 
@@ -71,7 +54,6 @@ export class VaultPopupScrollPositionService {
     this.scrollSubscription = null;
 
     if (reset) {
-      this.viewedCipherId = null;
       this.scrollPosition = null;
     }
   }
@@ -87,52 +69,5 @@ export class VaultPopupScrollPositionService {
     if (event.url.startsWith("/tabs/")) {
       this.stop(true);
     }
-  }
-
-  /** Save the cipher id from the URL */
-  private storeViewedCipher(event: NavigationEnd): void {
-    const urlWithoutHash = event.url.split("#")[0];
-    const splitUrl = urlWithoutHash.split("?");
-    const queryParams = splitUrl.pop();
-    const searchParams = new URLSearchParams(queryParams);
-
-    if (event.url.includes("/view-cipher") && searchParams.has("cipherId")) {
-      this.viewedCipherId = searchParams.get("cipherId");
-    } else if (!event.url.includes(this.vaultPath)) {
-      this.viewedCipherId = null;
-    }
-  }
-
-  /** Returns a promise that resolves when the provided element is finished scrolling */
-  private waitForScroll(virtualScrollElement: CdkVirtualScrollableElement): Promise<void> {
-    const abortController = new AbortController();
-    const scrollElement = virtualScrollElement.getElementRef().nativeElement;
-
-    return new Promise<void>((resolve) => {
-      let prevScrollPos = scrollElement.scrollTop;
-      let scrollTimeout = 0;
-
-      /** Check if the scroll has ended. */
-      const checkScrollEnd = () => {
-        if (scrollElement.scrollTop === prevScrollPos) {
-          clearTimeout(scrollTimeout);
-          abortController.abort(); // Remove the event listener
-          resolve();
-        } else {
-          prevScrollPos = scrollElement.scrollTop;
-          scrollTimeout = window.setTimeout(checkScrollEnd, 100); // Check again after 50ms
-        }
-      };
-
-      // Attach a scroll event listener to the element
-      scrollElement.addEventListener(
-        "scroll",
-        () => {
-          clearTimeout(scrollTimeout); // Clear previous timeout
-          scrollTimeout = window.setTimeout(checkScrollEnd, 50); // Check after 50ms
-        },
-        { signal: abortController.signal },
-      );
-    });
   }
 }
