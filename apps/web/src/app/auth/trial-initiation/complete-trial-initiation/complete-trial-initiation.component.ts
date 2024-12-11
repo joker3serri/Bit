@@ -74,6 +74,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   /** Token from the backend associated with the email verification */
   emailVerificationToken: string;
   loading = false;
+  productTierValue: number;
 
   orgInfoFormGroup = this.formBuilder.group({
     name: ["", { validators: [Validators.required, Validators.maxLength(50)], updateOn: "change" }],
@@ -132,6 +133,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
       this.product = this.validProducts.includes(product) ? product : ProductType.PasswordManager;
 
       const productTierParam = parseInt(qParams.productTier) as ProductTierType;
+      this.productTierValue = productTierParam;
 
       /** Only show the trial stepper for a subset of types */
       const showPasswordManagerStepper = this.stepperProductTypes.includes(productTierParam);
@@ -220,7 +222,7 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
     this.loading = true;
     let trialInitiationPath: InitiationPath = "Password Manager trial from marketing website";
     let plan: PlanInformation = {
-      type: PlanType.EnterpriseAnnually,
+      type: this.getPlanType(),
       passwordManagerSeats: 1,
     };
 
@@ -254,6 +256,19 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
   /** Move the user to the previous step */
   previousStep() {
     this.verticalStepper.previous();
+  }
+
+  getPlanType() {
+    switch (this.productTier) {
+      case ProductTierType.Teams:
+        return PlanType.TeamsAnnually;
+      case ProductTierType.Enterprise:
+        return PlanType.EnterpriseAnnually;
+      case ProductTierType.Families:
+        return PlanType.FamiliesAnnually;
+      default:
+        return PlanType.EnterpriseAnnually;
+    }
   }
 
   get isSecretsManagerFree() {
