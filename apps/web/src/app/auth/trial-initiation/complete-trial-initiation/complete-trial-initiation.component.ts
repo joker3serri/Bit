@@ -268,6 +268,8 @@ export class CompleteTrialInitiationComponent implements OnInit, OnDestroy {
         return PlanType.EnterpriseAnnually;
       case ProductTierType.Families:
         return PlanType.FamiliesAnnually;
+      case ProductTierType.Free:
+        return PlanType.Free;
       default:
         return PlanType.EnterpriseAnnually;
     }
