@@ -5,11 +5,11 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-const POPUP_CIPHER_CACHE_KEY = "popup-cipher-cache";
+const CIPHER_FORM_CACHE_KEY = "cipher-form-cache";
 
 @Injectable()
 export class CipherFormCacheService {
-  private popupViewCacheService: ViewCacheService = inject(ViewCacheService);
+  private viewCacheService: ViewCacheService = inject(ViewCacheService);
   private configService: ConfigService = inject(ConfigService);
 
   /** True when the `PM9111ExtensionPersistAddEditForm` flag is enabled */
@@ -23,8 +23,8 @@ export class CipherFormCacheService {
    */
   initializedWithValue: boolean;
 
-  private cipherCache = this.popupViewCacheService.signal<CipherView | null>({
-    key: POPUP_CIPHER_CACHE_KEY,
+  private cipherCache = this.viewCacheService.signal<CipherView | null>({
+    key: CIPHER_FORM_CACHE_KEY,
     initialValue: null,
     deserializer: CipherView.fromJSON,
   });
