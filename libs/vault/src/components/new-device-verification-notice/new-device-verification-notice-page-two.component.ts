@@ -35,7 +35,11 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.currentUserId = (await firstValueFrom(this.currentAcct$)).id;
+    const currentAcct = await firstValueFrom(this.currentAcct$);
+    if (!currentAcct) {
+      return;
+    }
+    this.currentUserId = currentAcct.id;
   }
   async remindMeLaterSelect() {
     await this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(

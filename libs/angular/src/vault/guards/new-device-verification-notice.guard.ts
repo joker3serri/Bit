@@ -1,11 +1,10 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
-import { firstValueFrom, map } from "rxjs";
+import { Observable, firstValueFrom, map } from "rxjs";
 
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { UserId } from "@bitwarden/common/types/guid";
 
 import { NewDeviceVerificationNoticeService } from "../../../../vault/src/services/new-device-verification-notice.service";
 
@@ -22,10 +21,16 @@ export const NewDeviceVerificationNoticeGuard: CanActivateFn = async () => {
     FeatureFlag.NewDeviceVerificationPermanentDismiss,
   );
 
-  const currentAcctId: UserId = await firstValueFrom(
-    accountService.activeAccount$.pipe(map((acct) => acct?.id)),
+  const currentAcct$: Observable<Account | null> = accountService.activeAccount$.pipe(
+    map((acct) => acct),
   );
-  const userItems$ = newDeviceVerificationNoticeService.noticeState$(currentAcctId);
+  const currentAcct = await firstValueFrom(currentAcct$);
+
+  if (!currentAcct) {
+    return false;
+  }
+
+  const userItems$ = newDeviceVerificationNoticeService.noticeState$(currentAcct.id);
   const userItems = await firstValueFrom(userItems$);
 
   if (

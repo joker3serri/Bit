@@ -61,8 +61,12 @@ export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.currentEmail = (await firstValueFrom(this.currentAcct$)).email;
-    this.currentUserId = (await firstValueFrom(this.currentAcct$)).id;
+    const currentAcct = await firstValueFrom(this.currentAcct$);
+    if (!currentAcct) {
+      return;
+    }
+    this.currentEmail = currentAcct.email;
+    this.currentUserId = currentAcct.id;
     this.formMessage = this.i18nService.t(
       "newDeviceVerificationNoticePageOneFormContent",
       this.currentEmail,
