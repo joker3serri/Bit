@@ -6,5 +6,5 @@ export abstract class UserAsymmetricKeysRegenerationService {
    * Requires the PrivateKeyRegeneration feature flag to be enabled if not the method will do nothing.
    * @param userId The user id.
    */
-  abstract regenerateIfNeeded: (userId: UserId) => Promise<void>;
+  abstract regenerateIfNeeded(userId: UserId): Promise<void>;
 }
