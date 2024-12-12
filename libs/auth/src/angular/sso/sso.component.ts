@@ -506,7 +506,6 @@ export class SsoComponent implements OnInit {
   }
 
   private async handleSuccessfulLogin() {
-    await this.ssoComponentService.reloadOpenWindowsWhenNotUnlocked?.();
     await this.router.navigate(["lock"]);
   }
 
