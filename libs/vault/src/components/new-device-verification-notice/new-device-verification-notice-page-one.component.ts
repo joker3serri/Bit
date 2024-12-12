@@ -38,14 +38,14 @@ import { NewDeviceVerificationNoticeService } from "./../../services/new-device-
   ],
 })
 export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
-  formMessage: string = "";
+  protected formMessage: string | null = "";
   protected formGroup = this.formBuilder.group({
     hasEmailAccess: new FormControl(0),
   });
   protected isDesktop: boolean;
   readonly currentAcct$ = this.accountService.activeAccount$.pipe(map((acct) => acct));
-  private currentEmail: string = "";
-  private currentUserId: UserId = null;
+  private currentEmail: string | null = "";
+  private currentUserId: UserId | null = null;
 
   constructor(
     private i18nService: I18nService,
