@@ -1,4 +1,4 @@
-import { firstValueFrom, map } from "rxjs";
+import { combineLatest, firstValueFrom, map } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
@@ -49,11 +49,13 @@ export class DefaultUserAsymmetricKeysRegenerationService
   }
 
   private async shouldRegenerate(userId: UserId): Promise<boolean> {
-    const [userKey, userKeyEncryptedPrivateKey, publicKeyResponse] = await Promise.all([
-      firstValueFrom(this.keyService.userKey$(userId)),
-      firstValueFrom(this.keyService.userEncryptedPrivateKey$(userId)),
-      this.apiService.getUserPublicKey(userId),
-    ]);
+    const [userKey, userKeyEncryptedPrivateKey, publicKeyResponse] = await firstValueFrom(
+      combineLatest([
+        this.keyService.userKey$(userId),
+        this.keyService.userEncryptedPrivateKey$(userId),
+        this.apiService.getUserPublicKey(userId),
+      ]),
+    );
 
     const verificationResponse = await firstValueFrom(
       this.sdkService.client$.pipe(
