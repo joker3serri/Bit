@@ -536,6 +536,7 @@ export class LockV2Component implements OnInit, OnDestroy {
       const previousUrl = this.lockComponentService.getPreviousUrl();
       if (previousUrl) {
         await this.router.navigateByUrl(previousUrl);
+        return;
       }
     }
 

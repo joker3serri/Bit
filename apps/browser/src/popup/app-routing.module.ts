@@ -630,7 +630,9 @@ const routes: Routes = [
           },
           showReadonlyHostname: true,
           showAcctSwitcher: true,
-        } satisfies ExtensionAnonLayoutWrapperData,
+          elevation: 1,
+          doNotSaveUrl: true,
+        } satisfies ExtensionAnonLayoutWrapperData & RouteDataProperties,
         children: [
           {
             path: "",
