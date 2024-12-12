@@ -117,7 +117,7 @@ export class OrganizationLayoutComponent implements OnInit {
           (org.productTierType === ProductTierType.Enterprise ||
             org.productTierType === ProductTierType.Teams) &&
             featureFlagEnabled,
-        ).pipe(filter((enabled) => enabled && org.isAdmin && org.canAccessIntegrations)),
+        ).pipe(filter((enabled) => enabled && org.canAccessIntegrations)),
       ),
     );
 
