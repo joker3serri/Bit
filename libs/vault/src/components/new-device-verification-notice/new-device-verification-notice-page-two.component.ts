@@ -6,7 +6,6 @@ import { firstValueFrom, map } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ClientType } from "@bitwarden/common/enums";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ButtonModule, LinkModule, TypographyModule } from "@bitwarden/components";
@@ -20,13 +19,11 @@ import { NewDeviceVerificationNoticeService } from "../../services/new-device-ve
   imports: [CommonModule, JslibModule, TypographyModule, ButtonModule, LinkModule],
 })
 export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
-  formMessage: string;
   protected isDesktop: boolean;
   readonly currentAcct$ = this.accountService.activeAccount$.pipe(map((acct) => acct));
-  private currentUserId: UserId;
+  private currentUserId: UserId | null = null;
 
   constructor(
-    private i18nService: I18nService,
     private newDeviceVerificationNoticeService: NewDeviceVerificationNoticeService,
     private router: Router,
     private accountService: AccountService,
@@ -36,18 +33,14 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.currentUserId = (await firstValueFrom(this.currentAcct$)).id;
-    this.formMessage = this.i18nService.t(
-      "newDeviceVerificationNoticePageOneFormContent",
-      "peter.parker@daily.com",
-    );
+    this.currentUserId = (await firstValueFrom(this.currentAcct$)).id || null;
   }
   async remindMeLaterSelect() {
     await this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(
       this.currentUserId,
       {
         last_dismissal: new Date(),
-        permanent_dismissal: null,
+        permanent_dismissal: false,
       },
     );
 

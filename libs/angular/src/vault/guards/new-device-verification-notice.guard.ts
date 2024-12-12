@@ -22,7 +22,7 @@ export const NewDeviceVerificationNoticeGuard: CanActivateFn = async () => {
   );
 
   const currentAcctId = await firstValueFrom(
-    accountService.activeAccount$.pipe(map((acct) => acct.id)),
+    accountService.activeAccount$.pipe(map((acct) => acct?.id)),
   );
   const userItems$ = newDeviceVerificationNoticeService.noticeState$(currentAcctId);
   const userItems = await firstValueFrom(userItems$);
