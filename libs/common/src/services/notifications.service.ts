@@ -219,8 +219,6 @@ export class NotificationsService implements NotificationsServiceAbstraction {
       case NotificationType.SyncOrganizationStatusChanged:
         if (isAuthenticated) {
           await this.syncService.fullSync(true);
-          // Stop so a reconnect can be made
-          await this.signalrConnection.stop();
         }
         break;
       default:
