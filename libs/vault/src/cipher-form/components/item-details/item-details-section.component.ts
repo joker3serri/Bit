@@ -213,13 +213,13 @@ export class ItemDetailsSectionComponent implements OnInit {
   }
 
   private async initFromExistingCipher(prefillCipher: CipherView) {
-    const { name, folderId } = prefillCipher;
+    const { name, folderId, collectionIds } = prefillCipher;
 
     this.itemDetailsForm.setValue({
       name: name ? name : (this.initialValues?.name ?? ""),
       organizationId: prefillCipher.organizationId, // We do not allow changing ownership of an existing cipher.
       folderId: folderId ? folderId : (this.initialValues?.folderId ?? null),
-      collectionIds: prefillCipher.collectionIds,
+      collectionIds: [],
       favorite: prefillCipher.favorite,
     });
 
@@ -238,8 +238,8 @@ export class ItemDetailsSectionComponent implements OnInit {
       }
     }
 
-    const prefillCollections = prefillCipher.collectionIds?.length
-      ? (prefillCipher.collectionIds as CollectionId[])
+    const prefillCollections = collectionIds?.length
+      ? (collectionIds as CollectionId[])
       : (this.initialValues?.collectionIds ?? []);
 
     await this.updateCollectionOptions(prefillCollections);
