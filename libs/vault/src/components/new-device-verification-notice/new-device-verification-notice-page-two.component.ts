@@ -6,6 +6,10 @@ import { firstValueFrom, map, Observable } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ClientType } from "@bitwarden/common/enums";
+import {
+  Environment,
+  EnvironmentService,
+} from "@bitwarden/common/platform/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import { ButtonModule, LinkModule, TypographyModule } from "@bitwarden/components";
@@ -19,18 +23,22 @@ import { NewDeviceVerificationNoticeService } from "../../services/new-device-ve
   imports: [CommonModule, JslibModule, TypographyModule, ButtonModule, LinkModule],
 })
 export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
+  protected isWeb: boolean;
   protected isDesktop: boolean;
   readonly currentAcct$: Observable<Account | null> = this.accountService.activeAccount$.pipe(
     map((acct) => acct),
   );
   private currentUserId: UserId | null = null;
+  private env$: Observable<Environment> = this.environmentService.environment$;
 
   constructor(
     private newDeviceVerificationNoticeService: NewDeviceVerificationNoticeService,
     private router: Router,
     private accountService: AccountService,
     private platformUtilsService: PlatformUtilsService,
+    private environmentService: EnvironmentService,
   ) {
+    this.isWeb = this.platformUtilsService.getClientType() === ClientType.Web;
     this.isDesktop = this.platformUtilsService.getClientType() === ClientType.Desktop;
   }
 
@@ -41,6 +49,36 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
     }
     this.currentUserId = currentAcct.id;
   }
+
+  async navigateToTwoStepLogin() {
+    const env = await firstValueFrom(this.env$);
+    const url = env.getWebVaultUrl();
+
+    if (this.isWeb) {
+      await this.router.navigate(["/settings/security/two-factor"], {
+        queryParams: { fromNewDeviceVerification: true },
+      });
+    } else {
+      this.platformUtilsService.launchUri(
+        url + "/#/settings/security/two-factor/?fromNewDeviceVerification=true",
+      );
+    }
+  }
+
+  async navigateToChangeAcctEmail() {
+    const env = await firstValueFrom(this.env$);
+    const url = env.getWebVaultUrl();
+    if (this.isWeb) {
+      await this.router.navigate(["/settings/account"], {
+        queryParams: { fromNewDeviceVerification: true },
+      });
+    } else {
+      this.platformUtilsService.launchUri(
+        url + "/#/settings/account/?fromNewDeviceVerification=true",
+      );
+    }
+  }
+
   async remindMeLaterSelect() {
     await this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(
       this.currentUserId,

@@ -1,5 +1,5 @@
 import { inject } from "@angular/core";
-import { CanActivateFn, Router } from "@angular/router";
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from "@angular/router";
 import { Observable, firstValueFrom, map } from "rxjs";
 
 import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -8,11 +8,17 @@ import { ConfigService } from "@bitwarden/common/platform/abstractions/config/co
 
 import { NewDeviceVerificationNoticeService } from "../../../../vault/src/services/new-device-verification-notice.service";
 
-export const NewDeviceVerificationNoticeGuard: CanActivateFn = async () => {
+export const NewDeviceVerificationNoticeGuard: CanActivateFn = async (
+  route: ActivatedRouteSnapshot,
+) => {
   const router = inject(Router);
   const configService = inject(ConfigService);
   const newDeviceVerificationNoticeService = inject(NewDeviceVerificationNoticeService);
   const accountService = inject(AccountService);
+
+  if (route.queryParams["fromNewDeviceVerification"]) {
+    return true;
+  }
 
   const tempNoticeFlag = await configService.getFeatureFlag(
     FeatureFlag.NewDeviceVerificationTemporaryDismiss,
@@ -27,7 +33,7 @@ export const NewDeviceVerificationNoticeGuard: CanActivateFn = async () => {
   const currentAcct = await firstValueFrom(currentAcct$);
 
   if (!currentAcct) {
-    return false;
+    return router.createUrlTree(["/login"]);
   }
 
   const userItems$ = newDeviceVerificationNoticeService.noticeState$(currentAcct.id);
