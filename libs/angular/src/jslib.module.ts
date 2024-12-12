@@ -2,6 +2,8 @@ import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
+// Just making a change to trigger the CI builds
+
 import {
   AddAccountCreditDialogComponent,
   InvoicesComponent,
