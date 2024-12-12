@@ -10,7 +10,7 @@ import { CipherFormCacheService } from "./default-cipher-form-cache.service";
 describe("CipherFormCacheService", () => {
   let service: CipherFormCacheService;
   let testBed: TestBed;
-  const cacheSignal = signal(null);
+  const cacheSignal = signal<CipherView | null>(null);
   const getCacheSignal = jest.fn().mockReturnValue(cacheSignal);
   const getFeatureFlag = jest.fn().mockResolvedValue(false);
   const cacheSetMock = jest.spyOn(cacheSignal, "set");
@@ -35,7 +35,7 @@ describe("CipherFormCacheService", () => {
     });
 
     it("`getCachedCipherView` returns the cipher", async () => {
-      cacheSignal.set({ id: "cipher-4" });
+      cacheSignal.set({ id: "cipher-4" } as CipherView);
       service = testBed.inject(CipherFormCacheService);
       await service.init();
 
@@ -53,7 +53,7 @@ describe("CipherFormCacheService", () => {
 
     describe("initializedWithValue", () => {
       it("sets `initializedWithValue` to true when there is a cached cipher", async () => {
-        cacheSignal.set({ id: "cipher-3" });
+        cacheSignal.set({ id: "cipher-3" } as CipherView);
         service = testBed.inject(CipherFormCacheService);
         await service.init();
 
@@ -72,7 +72,7 @@ describe("CipherFormCacheService", () => {
 
   describe("featured disabled", () => {
     beforeEach(async () => {
-      cacheSignal.set({ id: "cipher-1" });
+      cacheSignal.set({ id: "cipher-1" } as CipherView);
       getFeatureFlag.mockResolvedValue(false);
       cacheSetMock.mockClear();
 

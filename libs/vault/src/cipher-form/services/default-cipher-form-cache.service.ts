@@ -13,7 +13,7 @@ export class CipherFormCacheService {
   private configService: ConfigService = inject(ConfigService);
 
   /** True when the `PM9111ExtensionPersistAddEditForm` flag is enabled */
-  private featureEnabled: boolean;
+  private featureEnabled: boolean = false;
 
   /**
    * When true the `CipherFormCacheService` a cipher was stored in cache when the service was initialized.
@@ -26,7 +26,7 @@ export class CipherFormCacheService {
   private cipherCache = this.popupViewCacheService.signal<CipherView | null>({
     key: POPUP_CIPHER_CACHE_KEY,
     initialValue: null,
-    deserializer: (obj) => (obj ? CipherView.fromJSON(obj) : null),
+    deserializer: CipherView.fromJSON,
   });
 
   constructor() {
