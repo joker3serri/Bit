@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 // Just making a change to trigger the CI builds
+// making a change as acoroiu-contributor
 
 import {
   AddAccountCreditDialogComponent,
