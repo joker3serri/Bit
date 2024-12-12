@@ -362,6 +362,11 @@ export class Organization {
   }
 
   get canAccessIntegrations() {
-    return this.isAdmin || this.userIsManagedByOrganization || this.canAccessEventLogs;
+    return (
+      this.isAdmin ||
+      this.permissions.manageUsers ||
+      this.permissions.manageGroups ||
+      this.permissions.accessEventLogs
+    );
   }
 }

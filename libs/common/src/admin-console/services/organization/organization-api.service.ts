@@ -1,6 +1,5 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { PlanType } from "@bitwarden/common/billing/enums";
 import { BillingHistoryResponse } from "@bitwarden/common/billing/models/response/billing-history.response";
 
 import { ApiService } from "../../../abstractions/api.service";
@@ -91,10 +90,6 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
       true,
       true,
     );
-  }
-
-  async getPlanType(id: string): Promise<PlanType> {
-    return this.apiService.send("GET", "/organizations/" + id + "/plan-type", null, true, true);
   }
 
   async getAutoEnrollStatus(identifier: string): Promise<OrganizationAutoEnrollStatusResponse> {
