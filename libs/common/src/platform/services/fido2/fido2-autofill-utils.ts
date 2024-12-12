@@ -5,7 +5,7 @@ import { CipherView } from "../../../vault/models/view/cipher.view";
 import { Fido2CredentialAutofillView } from "../../../vault/models/view/fido2-credential-autofill.view";
 import { Utils } from "../../misc/utils";
 
-import { guidToRawFormat } from "./guid-utils";
+import { parseCredentialId } from "./credential-id-utils";
 
 // TODO: Move into Fido2AuthenticatorService
 export async function getCredentialsForAutofill(
@@ -19,8 +19,9 @@ export async function getCredentialsForAutofill(
     .map((cipher) => {
       const credential = cipher.login.fido2Credentials[0];
 
-      // TODO: Credentials are sent as a GUID, but we need to convert to a URL-safe base64 string
-      const credId = Utils.fromBufferToUrlB64(guidToRawFormat(credential.credentialId));
+      // Credentials are stored as a GUID or b64 string with `b64.` prepended,
+      // but we need to return them as a URL-safe base64 string
+      const credId = Utils.fromBufferToUrlB64(parseCredentialId(credential.credentialId));
 
       return {
         cipherId: cipher.id,
