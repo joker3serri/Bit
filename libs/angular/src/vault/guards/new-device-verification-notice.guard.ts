@@ -5,6 +5,7 @@ import { firstValueFrom, map } from "rxjs";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
+import { UserId } from "@bitwarden/common/types/guid";
 
 import { NewDeviceVerificationNoticeService } from "../../../../vault/src/services/new-device-verification-notice.service";
 
@@ -21,7 +22,7 @@ export const NewDeviceVerificationNoticeGuard: CanActivateFn = async () => {
     FeatureFlag.NewDeviceVerificationPermanentDismiss,
   );
 
-  const currentAcctId = await firstValueFrom(
+  const currentAcctId: UserId = await firstValueFrom(
     accountService.activeAccount$.pipe(map((acct) => acct?.id)),
   );
   const userItems$ = newDeviceVerificationNoticeService.noticeState$(currentAcctId);

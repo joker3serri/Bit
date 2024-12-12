@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom, map, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { ClientType } from "@bitwarden/common/enums";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -20,7 +20,9 @@ import { NewDeviceVerificationNoticeService } from "../../services/new-device-ve
 })
 export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
   protected isDesktop: boolean;
-  readonly currentAcct$ = this.accountService.activeAccount$.pipe(map((acct) => acct));
+  readonly currentAcct$: Observable<Account | null> = this.accountService.activeAccount$.pipe(
+    map((acct) => acct),
+  );
   private currentUserId: UserId | null = null;
 
   constructor(
@@ -33,7 +35,7 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.currentUserId = (await firstValueFrom(this.currentAcct$)).id || null;
+    this.currentUserId = (await firstValueFrom(this.currentAcct$)).id;
   }
   async remindMeLaterSelect() {
     await this.newDeviceVerificationNoticeService.updateNewDeviceVerificationNoticeState(
