@@ -1319,6 +1319,12 @@
   "enterVerificationCodeApp": {
     "message": "Въведете шестцифрения код за потвърждение от приложението за удостоверяване."
   },
+  "authenticationTimeout": {
+    "message": "Време на давност за удостоверяването"
+  },
+  "authenticationSessionTimedOut": {
+    "message": "Сесията за удостоверяване е изтекла. Моля, започнете отначало процеса по вписване."
+  },
   "enterVerificationCodeEmail": {
     "message": "Въведете шестцифрения код за потвърждение, който е бил изпратен на $EMAIL$.",
     "placeholders": {
@@ -3167,8 +3173,8 @@
   "viewAllLogInOptions": {
     "message": "Вижте всички възможности за вписване"
   },
-  "viewAllLoginOptions": {
-    "message": "Вижте всички възможности за вписване"
+  "viewAllLoginOptionsV1": {
+    "message": "View all log in options"
   },
   "notificationSentDevice": {
     "message": "Към устройството Ви е изпратено известие."
