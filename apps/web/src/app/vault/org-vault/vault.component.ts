@@ -105,7 +105,6 @@ import {
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";
 import { VaultItemsModule } from "../components/vault-items/vault-items.module";
 import {
-  AttachmentDialogCloseResult,
   AttachmentDialogResult,
   AttachmentsV2Component,
 } from "../individual-vault/attachments-v2.component";
@@ -766,8 +765,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     const dialogRef = AttachmentsV2Component.open(this.dialogService, {
-        cipherId: cipher.id as CipherId,
-      });
+      cipherId: cipher.id as CipherId,
+    });
 
     const result = await firstValueFrom(dialogRef.closed);
 
