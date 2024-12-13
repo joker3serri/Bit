@@ -21,7 +21,12 @@ import {
   CLIENT_TYPE,
 } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
-import { LoginComponentService, SetPasswordJitService } from "@bitwarden/auth/angular";
+import {
+  LoginComponentService,
+  SetPasswordJitService,
+  SsoComponentService,
+  DefaultSsoComponentService,
+} from "@bitwarden/auth/angular";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
   LoginApprovalComponentServiceAbstraction,
@@ -357,6 +362,11 @@ const safeProviders: SafeProvider[] = [
     provide: LoginEmailService,
     useClass: LoginEmailService,
     deps: [AccountService, AuthService, StateProvider],
+  }),
+  safeProvider({
+    provide: SsoComponentService,
+    useClass: DefaultSsoComponentService,
+    deps: [],
   }),
   safeProvider({
     provide: LoginApprovalComponentServiceAbstraction,
