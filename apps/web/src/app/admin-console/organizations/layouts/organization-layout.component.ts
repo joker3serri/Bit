@@ -3,7 +3,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { combineLatest, filter, map, Observable, of, switchMap } from "rxjs";
+import { combineLatest, filter, map, Observable, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -20,7 +20,6 @@ import { PolicyService } from "@bitwarden/common/admin-console/abstractions/poli
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { PolicyType, ProviderStatusType } from "@bitwarden/common/admin-console/enums";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductTierType } from "@bitwarden/common/billing/enums";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -111,15 +110,7 @@ export class OrganizationLayoutComponent implements OnInit {
     this.integrationPageEnabled$ = combineLatest(
       this.organization$,
       this.configService.getFeatureFlag$(FeatureFlag.PM14505AdminConsoleIntegrationPage),
-    ).pipe(
-      switchMap(([org, featureFlagEnabled]) =>
-        of(
-          (org.productTierType === ProductTierType.Enterprise ||
-            org.productTierType === ProductTierType.Teams) &&
-            featureFlagEnabled,
-        ).pipe(filter((enabled) => enabled && org.canAccessIntegrations)),
-      ),
-    );
+    ).pipe(map(([org, featureFlagEnabled]) => featureFlagEnabled && org.canAccessIntegrations));
 
     this.domainVerificationNavigationTextKey = (await this.configService.getFeatureFlag(
       FeatureFlag.AccountDeprovisioning,
