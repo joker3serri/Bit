@@ -142,6 +142,7 @@ describe("AutofillInlineMenuList", () => {
 
       it("renders correctly when there are multiple TOTP elements with username displayed", async () => {
         const totpCipher1 = createAutofillOverlayCipherDataMock(1, {
+          type: CipherType.Login,
           login: {
             totp: "123456",
             totpField: true,
@@ -150,6 +151,7 @@ describe("AutofillInlineMenuList", () => {
         });
 
         const totpCipher2 = createAutofillOverlayCipherDataMock(2, {
+          type: CipherType.Login,
           login: {
             totp: "654321",
             totpField: true,
@@ -159,9 +161,8 @@ describe("AutofillInlineMenuList", () => {
 
         postWindowMessage(
           createInitAutofillInlineMenuListMessageMock({
-            authStatus: AuthenticationStatus.Unlocked,
+            inlineMenuFillType: CipherType.Login,
             ciphers: [totpCipher1, totpCipher2],
-            portKey,
           }),
         );
 
