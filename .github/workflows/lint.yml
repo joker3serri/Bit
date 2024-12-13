@@ -69,3 +69,5 @@ jobs:
       - name: Run Clippy
         working-directory: ./apps/desktop/desktop_native
         run: cargo clippy --all-features --tests
+        env:
+          RUSTFLAGS: "-D warnings"
