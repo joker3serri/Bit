@@ -1319,6 +1319,12 @@
   "enterVerificationCodeApp": {
     "message": "Zadejte 6místný kód z ověřovací aplikace."
   },
+  "authenticationTimeout": {
+    "message": "Časový limit ověření"
+  },
+  "authenticationSessionTimedOut": {
+    "message": "Vypršel časový limit relace ověřování. Restartujte proces přihlášení."
+  },
   "enterVerificationCodeEmail": {
     "message": "Zadejte 6místný kód z e-mailu, který byl zaslán na $EMAIL$.",
     "placeholders": {
@@ -3167,8 +3173,8 @@
   "viewAllLogInOptions": {
     "message": "Zobrazit všechny volby přihlášení"
   },
-  "viewAllLoginOptions": {
-    "message": "Zobrazit všechny volby přihlášení"
+  "viewAllLoginOptionsV1": {
+    "message": "View all log in options"
   },
   "notificationSentDevice": {
     "message": "Na Vaše zařízení bylo odesláno oznámení."
