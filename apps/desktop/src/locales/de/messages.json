@@ -26,6 +26,9 @@
   "typeSecureNote": {
     "message": "Sichere Notiz"
   },
+  "typeSshKey": {
+    "message": "SSH-Schlüssel"
+  },
   "folders": {
     "message": "Ordner"
   },
@@ -59,6 +62,9 @@
         "example": "Company Name"
       }
     }
+  },
+  "welcomeBack": {
+    "message": "Willkommen zurück"
   },
   "moveToOrgDesc": {
     "message": "Wähle eine Organisation aus, in die du diesen Eintrag verschieben möchtest. Das Verschieben in eine Organisation überträgt das Eigentum an diese Organisation. Du bist nicht mehr der direkte Eigentümer dieses Eintrags, sobald er verschoben wurde."
@@ -174,6 +180,63 @@
   "address": {
     "message": "Adresse"
   },
+  "sshPrivateKey": {
+    "message": "Privater Schlüssel"
+  },
+  "sshPublicKey": {
+    "message": "Öffentlicher Schlüssel"
+  },
+  "sshFingerprint": {
+    "message": "Fingerabdruck"
+  },
+  "sshKeyAlgorithm": {
+    "message": "Schlüsseltyp"
+  },
+  "sshKeyAlgorithmED25519": {
+    "message": "ED25519"
+  },
+  "sshKeyAlgorithmRSA2048": {
+    "message": "RSA 2048-Bit"
+  },
+  "sshKeyAlgorithmRSA3072": {
+    "message": "RSA 3072-Bit"
+  },
+  "sshKeyAlgorithmRSA4096": {
+    "message": "RSA 4096-Bit"
+  },
+  "sshKeyGenerated": {
+    "message": "Ein neuer SSH-Schlüssel wurde generiert"
+  },
+  "sshKeyWrongPassword": {
+    "message": "Dein eingegebenes Passwort ist falsch."
+  },
+  "importSshKey": {
+    "message": "Import"
+  },
+  "confirmSshKeyPassword": {
+    "message": "Passwort bestätigen"
+  },
+  "enterSshKeyPasswordDesc": {
+    "message": "Gib das Passwort für den SSH-Schlüssel ein."
+  },
+  "enterSshKeyPassword": {
+    "message": "Passwort eingeben"
+  },
+  "sshAgentUnlockRequired": {
+    "message": "Bitte entsperre deinen Tresor, um die SSH-Schlüsselanfrage zu genehmigen."
+  },
+  "sshAgentUnlockTimeout": {
+    "message": "Zeitüberschreitung bei der SSH-Schlüsselanfrage."
+  },
+  "enableSshAgent": {
+    "message": "SSH-Agent aktivieren"
+  },
+  "enableSshAgentDesc": {
+    "message": "Aktiviere den SSH-Agenten, um SSH-Anfragen direkt aus deinem Bitwarden-Tresor aus zu signieren."
+  },
+  "enableSshAgentHelp": {
+    "message": "Der SSH-Agent ist ein Dienst, der sich an Entwickler richtet, mit dem du SSH-Anfragen direkt aus deinem Bitwarden-Tresor aus signieren kannst."
+  },
   "premiumRequired": {
     "message": "Premium notwendig"
   },
@@ -258,6 +321,9 @@
   },
   "generatePassword": {
     "message": "Passwort generieren"
+  },
+  "generatePassphrase": {
+    "message": "Passphrase generieren"
   },
   "type": {
     "message": "Typ"
@@ -393,6 +459,16 @@
   },
   "copyPassword": {
     "message": "Passwort kopieren"
+  },
+  "regenerateSshKey": {
+    "message": "SSH-Schlüssel neu generieren"
+  },
+  "copySshPrivateKey": {
+    "message": "Privaten SSH-Schlüssel kopieren"
+  },
+  "copyPassphrase": {
+    "message": "Passphrase kopieren",
+    "description": "Copy passphrase to clipboard"
   },
   "copyUri": {
     "message": "URI kopieren"
@@ -547,6 +623,9 @@
   "createAccount": {
     "message": "Konto erstellen"
   },
+  "newToBitwarden": {
+    "message": "Neu bei Bitwarden?"
+  },
   "setAStrongPassword": {
     "message": "Lege ein starkes Passwort fest"
   },
@@ -555,6 +634,18 @@
   },
   "logIn": {
     "message": "Anmelden"
+  },
+  "logInToBitwarden": {
+    "message": "Bei Bitwarden anmelden"
+  },
+  "logInWithPasskey": {
+    "message": "Mit Passkey anmelden"
+  },
+  "loginWithDevice": {
+    "message": "Anmelden mit einem anderen Gerät"
+  },
+  "useSingleSignOn": {
+    "message": "Single Sign-on verwenden"
   },
   "submit": {
     "message": "Absenden"
@@ -601,6 +692,15 @@
   },
   "joinOrganization": {
     "message": "Organisation beitreten"
+  },
+  "joinOrganizationName": {
+    "message": "$ORGANIZATIONNAME$ beitreten",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
   },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "Schließe den Beitritt zu dieser Organisation ab, indem du ein Master-Passwort festlegst."
@@ -818,6 +918,10 @@
   },
   "baseUrl": {
     "message": "Server-URL"
+  },
+  "selfHostBaseUrl": {
+    "message": "Selbst gehostete Server-URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
   },
   "apiUrl": {
     "message": "API Server-URL"
@@ -1209,6 +1313,9 @@
     "message": "Nummer kopieren",
     "description": "Copy credit card number"
   },
+  "copyEmail": {
+    "message": "E-Mail-Adresse kopieren"
+  },
   "copySecurityCode": {
     "message": "Sicherheitscode kopieren",
     "description": "Copy credit card security code (CVV)"
@@ -1279,12 +1386,30 @@
   "passwordHistory": {
     "message": "Passwortverlauf"
   },
+  "generatorHistory": {
+    "message": "Generator-Verlauf"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Generator-Verlauf löschen"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "Wenn du fortfährst, werden alle Einträge dauerhaft aus dem Generator-Verlauf gelöscht. Bist du sicher, dass du fortfahren möchtest?"
+  },
   "clear": {
     "message": "Leeren",
     "description": "To clear something out. example: To clear browser history."
   },
   "noPasswordsInList": {
     "message": "Keine Einträge zum Anzeigen vorhanden."
+  },
+  "clearHistory": {
+    "message": "Verlauf löschen"
+  },
+  "nothingToShow": {
+    "message": "Nichts anzuzeigen"
+  },
+  "nothingGeneratedRecently": {
+    "message": "Du hast in letzter Zeit nichts generiert"
   },
   "undo": {
     "message": "Rückgängig"
@@ -1642,6 +1767,12 @@
   "deleteAccountWarning": {
     "message": "Die Kontolöschung ist dauerhaft. Sie kann nicht rückgängig gemacht werden."
   },
+  "cannotDeleteAccount": {
+    "message": "Konto kann nicht gelöscht werden"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "Diese Aktion kann nicht abgeschlossen werden, da dein Konto im Besitz einer Organisation ist. Kontaktiere deinen Organisationsadministrator für weitere Details."
+  },
   "accountDeleted": {
     "message": "Konto gelöscht"
   },
@@ -1751,6 +1882,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "Deine Organisation verlangt, dass du ein Master-Passwort festlegen musst.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": "von $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "Verifizierung erforderlich",
@@ -2334,6 +2474,43 @@
   "generateUsername": {
     "message": "Benutzername generieren"
   },
+  "generateEmail": {
+    "message": "E-Mail generieren"
+  },
+  "spinboxBoundariesHint": {
+    "message": "Wert muss zwischen $MIN$ und $MAX$ liegen.",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
+  "passwordLengthRecommendationHint": {
+    "message": " Verwende $RECOMMENDED$ oder mehr Zeichen, um ein starkes Passwort zu generieren.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "passphraseNumWordsRecommendationHint": {
+    "message": " Verwende $RECOMMENDED$ oder mehr Wörter, um eine starke Passphrase zu generieren.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "6"
+      }
+    }
+  },
   "usernameType": {
     "message": "Benutzernamentyp"
   },
@@ -2376,6 +2553,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Erzeuge ein E-Mail-Alias mit einem externen Weiterleitungsdienst."
+  },
+  "forwarderDomainName": {
+    "message": "E-Mail-Domain",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Wähle eine Domain aus, die vom ausgewählten Dienst unterstützt wird",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ Fehler: $ERRORMESSAGE$",
@@ -2537,14 +2722,29 @@
   "notificationSentDevice": {
     "message": "Eine Benachrichtigung wurde an dein Gerät gesendet."
   },
+  "aNotificationWasSentToYourDevice": {
+    "message": "Eine Benachrichtigung wurde an dein Gerät gesendet"
+  },
+  "makeSureYourAccountIsUnlockedAndTheFingerprintEtc": {
+    "message": "Stelle sicher, dass dein Konto entsperrt ist und die Fingerabdruck-Phrase mit der vom anderen Gerät übereinstimmt"
+  },
+  "needAnotherOptionV1": {
+    "message": "Brauchst du eine andere Option?"
+  },
   "fingerprintMatchInfo": {
     "message": "Bitte stelle sicher, dass dein Tresor entsperrt ist und die Fingerabdruck-Phrase mit dem anderen Gerät übereinstimmt."
   },
   "fingerprintPhraseHeader": {
     "message": "Fingerabdruck-Phrase"
   },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "Du wirst benachrichtigt, sobald die Anfrage genehmigt wurde"
+  },
   "needAnotherOption": {
     "message": "Die Anmeldung über ein Gerät muss in den Einstellungen der Bitwarden App eingerichtet werden. Benötigst du eine andere Option?"
+  },
+  "viewAllLogInOptions": {
+    "message": "Alle Anmeldeoptionen anzeigen"
   },
   "viewAllLoginOptions": {
     "message": "Alle Anmeldeoptionen anzeigen"
@@ -2665,6 +2865,9 @@
   "checkForBreaches": {
     "message": "Bekannte Datendiebstähle auf dieses Passwort überprüfen"
   },
+  "loggedInExclamation": {
+    "message": "Angemeldet!"
+  },
   "important": {
     "message": "Wichtig:"
   },
@@ -2695,8 +2898,17 @@
   "windowsBiometricUpdateWarningTitle": {
     "message": "Empfohlene Aktualisierung der Einstellungen"
   },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "Dieses Gerät merken, um zukünftige Anmeldungen reibungslos zu gestalten"
+  },
   "deviceApprovalRequired": {
     "message": "Geräte-Genehmigung erforderlich. Wähle unten eine Genehmigungsoption aus:"
+  },
+  "deviceApprovalRequiredV2": {
+    "message": "Geräte-Genehmigung erforderlich"
+  },
+  "selectAnApprovalOptionBelow": {
+    "message": "Wähle unten eine Genehmigungsoption aus"
   },
   "rememberThisDevice": {
     "message": "Dieses Gerät merken"
@@ -2722,9 +2934,6 @@
   "eu": {
     "message": "EU",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Anmelden bei"
   },
   "selfHostedServer": {
     "message": "selbst gehostet"
@@ -2752,6 +2961,9 @@
   },
   "userEmailMissing": {
     "message": "E-Mail-Adresse des Benutzers fehlt"
+  },
+  "activeUserEmailNotFoundLoggingYouOut": {
+    "message": "Aktive Benutzer-E-Mail-Adresse nicht gefunden. Du wirst abgemeldet."
   },
   "deviceTrusted": {
     "message": "Gerät wird vertraut"
@@ -3144,14 +3356,38 @@
   "textSends": {
     "message": "Text-Sends"
   },
-  "allowScreenshots": {
-    "message": "Bildschirmaufnahme erlauben"
-  },
-  "allowScreenshotsDesc": {
-    "message": "Bildschirmaufnahme der Bitwarden Desktop-Anwendung erlauben."
-  },
   "ssoError": {
     "message": "Es konnten keine freien Ports für die SSO-Anmeldung gefunden werden."
+  },
+  "authorize": {
+    "message": "Autorisieren"
+  },
+  "deny": {
+    "message": "Ablehnen"
+  },
+  "sshkeyApprovalTitle": {
+    "message": "Verwendung des SSH-Schlüssels bestätigen"
+  },
+  "sshkeyApprovalMessageInfix": {
+    "message": "fragt den Zugriff an für"
+  },
+  "unknownApplication": {
+    "message": "Eine Anwendung"
+  },
+  "sshKeyPasswordUnsupported": {
+    "message": "Das Importieren passwortgeschützter SSH-Schlüssel wird noch nicht unterstützt"
+  },
+  "invalidSshKey": {
+    "message": "Der SSH-Schlüssel ist ungültig"
+  },
+  "sshKeyTypeUnsupported": {
+    "message": "Der SSH-Schlüsseltyp wird nicht unterstützt"
+  },
+  "importSshKeyFromClipboard": {
+    "message": "Schlüssel aus Zwischenablage importieren"
+  },
+  "sshKeyPasted": {
+    "message": "SSH-Schlüssel erfolgreich importiert"
   },
   "fileSavedToDevice": {
     "message": "Datei auf Gerät gespeichert. Greife darauf über die Downloads deines Geräts zu."

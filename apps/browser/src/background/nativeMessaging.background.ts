@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { firstValueFrom, map } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -5,7 +7,6 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { AppIdService } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { CryptoFunctionService } from "@bitwarden/common/platform/abstractions/crypto-function.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -14,7 +15,7 @@ import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { UserKey } from "@bitwarden/common/types/key";
-import { BiometricStateService } from "@bitwarden/key-management";
+import { KeyService, BiometricStateService } from "@bitwarden/key-management";
 
 import { BrowserApi } from "../platform/browser/browser-api";
 
@@ -73,7 +74,7 @@ export class NativeMessagingBackground {
   private validatingFingerprint: boolean;
 
   constructor(
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private cryptoFunctionService: CryptoFunctionService,
     private runtimeBackground: RuntimeBackground,
@@ -275,7 +276,11 @@ export class NativeMessagingBackground {
     let message = rawMessage as ReceiveMessage;
     if (!this.platformUtilsService.isSafari()) {
       message = JSON.parse(
-        await this.encryptService.decryptToUtf8(rawMessage as EncString, this.sharedSecret),
+        await this.encryptService.decryptToUtf8(
+          rawMessage as EncString,
+          this.sharedSecret,
+          "ipc-desktop-ipc-channel-key",
+        ),
       );
     }
 
@@ -318,15 +323,12 @@ export class NativeMessagingBackground {
               const activeUserId = await firstValueFrom(
                 this.accountService.activeAccount$.pipe(map((a) => a?.id)),
               );
-              const isUserKeyValid = await this.cryptoService.validateUserKey(
-                userKey,
-                activeUserId,
-              );
+              const isUserKeyValid = await this.keyService.validateUserKey(userKey, activeUserId);
               if (isUserKeyValid) {
-                await this.cryptoService.setUserKey(userKey, activeUserId);
+                await this.keyService.setUserKey(userKey, activeUserId);
               } else {
                 this.logService.error("Unable to verify biometric unlocked userkey");
-                await this.cryptoService.clearKeys(activeUserId);
+                await this.keyService.clearKeys(activeUserId);
                 this.rejecter("userkey wrong");
                 return;
               }
@@ -342,10 +344,10 @@ export class NativeMessagingBackground {
           // Verify key is correct by attempting to decrypt a secret
           try {
             const userId = (await firstValueFrom(this.accountService.activeAccount$))?.id;
-            await this.cryptoService.getFingerprint(userId);
+            await this.keyService.getFingerprint(userId);
           } catch (e) {
             this.logService.error("Unable to verify key: " + e);
-            await this.cryptoService.clearKeys();
+            await this.keyService.clearKeys();
             this.rejecter("userkey wrong");
             return;
           }
@@ -398,7 +400,7 @@ export class NativeMessagingBackground {
   }
 
   private async showFingerprintDialog() {
-    const fingerprint = await this.cryptoService.getFingerprint(
+    const fingerprint = await this.keyService.getFingerprint(
       (await firstValueFrom(this.accountService.activeAccount$))?.id,
       this.publicKey,
     );

@@ -19,6 +19,18 @@
   "createAccount": {
     "message": "Criar Conta"
   },
+  "newToBitwarden": {
+    "message": "Novo no Bitwarden?"
+  },
+  "logInWithPasskey": {
+    "message": "Iniciar sessão com a chave de acesso"
+  },
+  "useSingleSignOn": {
+    "message": "Usar login único"
+  },
+  "welcomeBack": {
+    "message": "Bem vindo de volta"
+  },
   "setAStrongPassword": {
     "message": "Defina uma senha forte"
   },
@@ -71,6 +83,15 @@
   "joinOrganization": {
     "message": "Juntar-se à organização"
   },
+  "joinOrganizationName": {
+    "message": "Entrar em $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "Termine de juntar-se nessa organização definindo uma senha mestra."
   },
@@ -97,6 +118,9 @@
   },
   "copyPassword": {
     "message": "Copiar Senha"
+  },
+  "copyPassphrase": {
+    "message": "Copiar senha"
   },
   "copyNote": {
     "message": "Copiar Nota"
@@ -128,6 +152,15 @@
   "copyLicenseNumber": {
     "message": "Copiar número da CNH"
   },
+  "copyPrivateKey": {
+    "message": "Copiar chave privada"
+  },
+  "copyPublicKey": {
+    "message": "Copiar chave pública"
+  },
+  "copyFingerprint": {
+    "message": "Copiar impressão digital"
+  },
   "copyCustomField": {
     "message": "Copiar $FIELD$",
     "placeholders": {
@@ -142,6 +175,10 @@
   },
   "copyNotes": {
     "message": "Copiar Notas"
+  },
+  "fill": {
+    "message": "Preencher",
+    "description": "This string is used on the vault page to indicate autofilling. Horizontal space is limited in the interface here so try and keep translations as concise as possible."
   },
   "autoFill": {
     "message": "Autopreencher"
@@ -398,6 +435,9 @@
   "generatePassword": {
     "message": "Gerar Senha"
   },
+  "generatePassphrase": {
+    "message": "Gerar frase secreta"
+  },
   "regeneratePassword": {
     "message": "Gerar Nova Senha"
   },
@@ -559,6 +599,15 @@
   "launchWebsite": {
     "message": "Abrir site"
   },
+  "launchWebsiteName": {
+    "message": "Iniciar site $ITEMNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret item"
+      }
+    }
+  },
   "website": {
     "message": "Site"
   },
@@ -605,13 +654,13 @@
     "message": "Seu cofre está trancado. Verifique sua identidade para continuar."
   },
   "yourVaultIsLockedV2": {
-    "message": "Your vault is locked"
+    "message": "Seu cofre está bloqueado"
   },
   "yourAccountIsLocked": {
-    "message": "Your account is locked"
+    "message": "Sua conta está bloqueada"
   },
   "or": {
-    "message": "or"
+    "message": "ou"
   },
   "unlock": {
     "message": "Desbloquear"
@@ -804,6 +853,9 @@
   },
   "logIn": {
     "message": "Fazer login"
+  },
+  "logInToBitwarden": {
+    "message": "Inicie a sessão no Bitwarden"
   },
   "restartRegistration": {
     "message": "Reiniciar registro"
@@ -1073,6 +1125,10 @@
     "message": "AVISO",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
+  "warningCapitalized": {
+    "message": "Warning",
+    "description": "Warning (should maintain locale-relevant capitalization)"
+  },
   "confirmVaultExport": {
     "message": "Confirmar Exportação do Cofre"
   },
@@ -1263,6 +1319,12 @@
   "enterVerificationCodeApp": {
     "message": "Insira o código de verificação de 6 dígitos do seu aplicativo de autenticação."
   },
+  "authenticationTimeout": {
+    "message": "Authentication timeout"
+  },
+  "authenticationSessionTimedOut": {
+    "message": "The authentication session timed out. Please restart the login process."
+  },
   "enterVerificationCodeEmail": {
     "message": "Insira o código de verificação de 6 dígitos que foi enviado por e-mail para $EMAIL$.",
     "placeholders": {
@@ -1380,6 +1442,10 @@
   "baseUrl": {
     "message": "URL do Servidor"
   },
+  "selfHostBaseUrl": {
+    "message": "URL do servidor auto-host",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "apiUrl": {
     "message": "URL do Servidor da API"
   },
@@ -1407,6 +1473,12 @@
   },
   "showInlineMenuLabel": {
     "message": "Mostrar sugestões de preenchimento automático nos campos de formulários"
+  },
+  "showInlineMenuIdentitiesLabel": {
+    "message": "Exibir identidades como sugestões"
+  },
+  "showInlineMenuCardsLabel": {
+    "message": "Exibir cards como sugestões"
   },
   "showInlineMenuOnIconSelectionLabel": {
     "message": "Exibir sugestões quando o ícone for selecionado"
@@ -1440,19 +1512,6 @@
   },
   "enableAutoFillOnPageLoadDesc": {
     "message": "Se um formulário de login for detectado, realizar automaticamente um auto-preenchimento quando a página web carregar."
-  },
-  "autofillOnPageLoadWarning": {
-    "message": "$OPENTAG$Aviso:$CLOSETAG$ Comprometido ou sites não confiáveis podem explorar o autopreenchimento ao carregar a página.",
-    "placeholders": {
-      "openTag": {
-        "content": "$1",
-        "example": "<b>"
-      },
-      "closeTag": {
-        "content": "$2",
-        "example": "</b>"
-      }
-    }
   },
   "experimentalFeature": {
     "message": "Sites comprometidos ou não confiáveis podem tomar vantagem do autopreenchimento ao carregar a página."
@@ -1711,6 +1770,9 @@
   "typeIdentity": {
     "message": "Identidade"
   },
+  "typeSshKey": {
+    "message": "Chave SSH"
+  },
   "newItemHeader": {
     "message": "Nova $TYPE$",
     "placeholders": {
@@ -1740,6 +1802,15 @@
   },
   "passwordHistory": {
     "message": "Histórico de Senha"
+  },
+  "generatorHistory": {
+    "message": "Histórico do gerador"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Limpar histórico do gerador"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "Se continuar, todas as entradas serão permanentemente excluídas do histórico do gerador. Tem certeza que deseja continuar?"
   },
   "back": {
     "message": "Voltar"
@@ -1776,6 +1847,9 @@
   },
   "secureNotes": {
     "message": "Notas seguras"
+  },
+  "sshKeys": {
+    "message": "SSH Keys"
   },
   "clear": {
     "message": "Limpar",
@@ -1857,11 +1931,11 @@
   "clearHistory": {
     "message": "Limpar histórico"
   },
-  "noPasswordsToShow": {
-    "message": "Nenhuma senha para mostrar"
+  "nothingToShow": {
+    "message": "Nada para mostrar"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "Você não gerou uma senha recentemente"
+  "nothingGeneratedRecently": {
+    "message": "Você não gerou nada recentemente"
   },
   "remove": {
     "message": "Remover"
@@ -1946,7 +2020,7 @@
     "message": "Desbloquear com a biometria"
   },
   "unlockWithMasterPassword": {
-    "message": "Unlock with master password"
+    "message": "Desbloquear com a senha mestra"
   },
   "awaitDesktop": {
     "message": "Aguardando confirmação do desktop"
@@ -2449,8 +2523,8 @@
     "message": "Exigir opcionalmente uma senha para os usuários acessarem este Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendPasswordDescV2": {
-    "message": "Exigir essa senha para visualizar o Envio.",
+  "sendPasswordDescV3": {
+    "message": "Adicione uma senha opcional para os destinatários para acessar este Envio.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
@@ -2499,11 +2573,11 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendExpiresInHoursSingle": {
-    "message": "The Send will be available to anyone with the link for the next 1 hour.",
+    "message": "O envio estará disponível para qualquer pessoa com o link para a próxima 1 hora.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendExpiresInHours": {
-    "message": "The Send will be available to anyone with the link for the next $HOURS$ hours.",
+    "message": "O envio estará disponível para qualquer pessoa com o link para as próximas $HOURS$ horas.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
     "placeholders": {
       "hours": {
@@ -2513,11 +2587,11 @@
     }
   },
   "sendExpiresInDaysSingle": {
-    "message": "The Send will be available to anyone with the link for the next 1 day.",
+    "message": "O envio estará disponível para qualquer pessoa com o link para o próximo 1 dia.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendExpiresInDays": {
-    "message": "The Send will be available to anyone with the link for the next $DAYS$ days.",
+    "message": "O envio estará disponível para qualquer pessoa com o link para os próximos $DAYS$ dias.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
     "placeholders": {
       "days": {
@@ -2646,6 +2720,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "Sua organização requer que você defina uma senha mestra.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": "fora do $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "Verificação necessária",
@@ -2803,6 +2886,43 @@
   "generateUsername": {
     "message": "Gerar Usuário"
   },
+  "generateEmail": {
+    "message": "Gerar e-mail"
+  },
+  "spinboxBoundariesHint": {
+    "message": "Valor deve ser entre $MIN$ e $MAX$.",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
+  "passwordLengthRecommendationHint": {
+    "message": " Use $RECOMMENDED$ caracteres ou mais para gerar uma senha forte.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "passphraseNumWordsRecommendationHint": {
+    "message": " Use palavras $RECOMMENDED$ ou mais para gerar uma frase secreta forte.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "6"
+      }
+    }
+  },
   "usernameType": {
     "message": "Tipo de usuário"
   },
@@ -2842,6 +2962,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Gere um apelido de e-mail com um serviço de encaminhamento externo."
+  },
+  "forwarderDomainName": {
+    "message": "Domínio de e-mail",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Escolha um domínio que seja suportado pelo serviço selecionado",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "Erro $SERVICENAME$: $ERRORMESSAGE$",
@@ -3042,11 +3170,26 @@
   "resendNotification": {
     "message": "Reenviar notificação"
   },
-  "viewAllLoginOptions": {
-    "message": "Ver todas as opções de login"
+  "viewAllLogInOptions": {
+    "message": "View all log in options"
+  },
+  "viewAllLoginOptionsV1": {
+    "message": "View all log in options"
   },
   "notificationSentDevice": {
     "message": "Uma notificação foi enviada para seu dispositivo."
+  },
+  "aNotificationWasSentToYourDevice": {
+    "message": "A notification was sent to your device"
+  },
+  "makeSureYourAccountIsUnlockedAndTheFingerprintEtc": {
+    "message": "Make sure your account is unlocked and the fingerprint phrase matches on the other device"
+  },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "You will be notified once the request is approved"
+  },
+  "needAnotherOptionV1": {
+    "message": "Need another option?"
   },
   "loginInitiated": {
     "message": "Login iniciado"
@@ -3138,14 +3281,20 @@
       }
     }
   },
-  "loggingInOn": {
-    "message": "Entrando em"
-  },
   "opensInANewWindow": {
     "message": "Abrir em uma nova janela"
   },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "Remember this device to make future logins seamless"
+  },
   "deviceApprovalRequired": {
     "message": "Aprovação do dispositivo necessária. Selecione uma opção de aprovação abaixo:"
+  },
+  "deviceApprovalRequiredV2": {
+    "message": "Device approval required"
+  },
+  "selectAnApprovalOptionBelow": {
+    "message": "Select an approval option below"
   },
   "rememberThisDevice": {
     "message": "Lembrar deste dispositivo"
@@ -3219,6 +3368,9 @@
   },
   "userEmailMissing": {
     "message": "E-mail do usuário ausente"
+  },
+  "activeUserEmailNotFoundLoggingYouOut": {
+    "message": "Active user email not found. Logging you out."
   },
   "deviceTrusted": {
     "message": "Dispositivo confiável"
@@ -3654,7 +3806,10 @@
     "message": "Chave de acesso"
   },
   "accessing": {
-    "message": "Accessing"
+    "message": "Acessando"
+  },
+  "loggedInExclamation": {
+    "message": "Logged in!"
   },
   "passkeyNotCopied": {
     "message": "A chave de acesso não será copiada"
@@ -3681,7 +3836,7 @@
     "message": "Sem credenciais correspondentes para este site"
   },
   "searchSavePasskeyNewLogin": {
-    "message": "Search or save passkey as new login"
+    "message": "Pesquisar ou salvar senha como novo login"
   },
   "confirm": {
     "message": "Confirmar"
@@ -4147,6 +4302,21 @@
   "filters": {
     "message": "Filtros"
   },
+  "filterVault": {
+    "message": "Filter vault"
+  },
+  "filterApplied": {
+    "message": "One filter applied"
+  },
+  "filterAppliedPlural": {
+    "message": "$COUNT$ filters applied",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "personalDetails": {
     "message": "Detalhes pessoais"
   },
@@ -4470,8 +4640,14 @@
   "itemLocation": {
     "message": "Localização do Item"
   },
+  "fileSend": {
+    "message": "Arquivo enviado"
+  },
   "fileSends": {
     "message": "Arquivos enviados"
+  },
+  "textSend": {
+    "message": "Enviar texto"
   },
   "textSends": {
     "message": "Texto enviado"
@@ -4493,6 +4669,30 @@
   },
   "enterprisePolicyRequirementsApplied": {
     "message": "Os requisitos de política empresarial foram aplicados nesta configuração"
+  },
+  "sshPrivateKey": {
+    "message": "Chave privada"
+  },
+  "sshPublicKey": {
+    "message": "Chave pública"
+  },
+  "sshFingerprint": {
+    "message": "Impressão digital"
+  },
+  "sshKeyAlgorithm": {
+    "message": "Tipo de chave"
+  },
+  "sshKeyAlgorithmED25519": {
+    "message": "ED25519"
+  },
+  "sshKeyAlgorithmRSA2048": {
+    "message": "RSA 2048-Bit"
+  },
+  "sshKeyAlgorithmRSA3072": {
+    "message": "RSA 3072-Bit"
+  },
+  "sshKeyAlgorithmRSA4096": {
+    "message": "RSA 4096-Bit"
   },
   "retry": {
     "message": "Tente novamente"
@@ -4535,5 +4735,173 @@
   },
   "authenticating": {
     "message": "Autenticando"
+  },
+  "fillGeneratedPassword": {
+    "message": "Preencher a senha gerada",
+    "description": "Heading for the password generator within the inline menu"
+  },
+  "passwordRegenerated": {
+    "message": "Senha regenerada",
+    "description": "Notification message for when a password has been regenerated"
+  },
+  "saveLoginToBitwarden": {
+    "message": "Salvar login no Bitwarden?",
+    "description": "Confirmation message for saving a login to Bitwarden"
+  },
+  "spaceCharacterDescriptor": {
+    "message": "Espaço",
+    "description": "Represents the space key in screen reader content as a readable word"
+  },
+  "tildeCharacterDescriptor": {
+    "message": "Linear",
+    "description": "Represents the ~ key in screen reader content as a readable word"
+  },
+  "backtickCharacterDescriptor": {
+    "message": "Bastão",
+    "description": "Represents the ` key in screen reader content as a readable word"
+  },
+  "exclamationCharacterDescriptor": {
+    "message": "Ponto de exclamação",
+    "description": "Represents the ! key in screen reader content as a readable word"
+  },
+  "atSignCharacterDescriptor": {
+    "message": "Arroba",
+    "description": "Represents the @ key in screen reader content as a readable word"
+  },
+  "hashSignCharacterDescriptor": {
+    "message": "Jogo da velha",
+    "description": "Represents the # key in screen reader content as a readable word"
+  },
+  "dollarSignCharacterDescriptor": {
+    "message": "cifrão",
+    "description": "Represents the $ key in screen reader content as a readable word"
+  },
+  "percentSignCharacterDescriptor": {
+    "message": "Porcentagem",
+    "description": "Represents the % key in screen reader content as a readable word"
+  },
+  "caretCharacterDescriptor": {
+    "message": "Circunflexo",
+    "description": "Represents the ^ key in screen reader content as a readable word"
+  },
+  "ampersandCharacterDescriptor": {
+    "message": "E Comercial",
+    "description": "Represents the & key in screen reader content as a readable word"
+  },
+  "asteriskCharacterDescriptor": {
+    "message": "Asterísco",
+    "description": "Represents the * key in screen reader content as a readable word"
+  },
+  "parenLeftCharacterDescriptor": {
+    "message": "Parêntese esquerdo",
+    "description": "Represents the ( key in screen reader content as a readable word"
+  },
+  "parenRightCharacterDescriptor": {
+    "message": "Parênteses direito",
+    "description": "Represents the ) key in screen reader content as a readable word"
+  },
+  "hyphenCharacterDescriptor": {
+    "message": "Sublinhado",
+    "description": "Represents the _ key in screen reader content as a readable word"
+  },
+  "underscoreCharacterDescriptor": {
+    "message": "Hífen",
+    "description": "Represents the - key in screen reader content as a readable word"
+  },
+  "plusCharacterDescriptor": {
+    "message": "Mais",
+    "description": "Represents the + key in screen reader content as a readable word"
+  },
+  "equalsCharacterDescriptor": {
+    "message": "iguais",
+    "description": "Represents the = key in screen reader content as a readable word"
+  },
+  "braceLeftCharacterDescriptor": {
+    "message": "Abre chaves",
+    "description": "Represents the { key in screen reader content as a readable word"
+  },
+  "braceRightCharacterDescriptor": {
+    "message": "Fecha chaves",
+    "description": "Represents the } key in screen reader content as a readable word"
+  },
+  "bracketLeftCharacterDescriptor": {
+    "message": "Abre colchetes",
+    "description": "Represents the [ key in screen reader content as a readable word"
+  },
+  "bracketRightCharacterDescriptor": {
+    "message": "Fecha colchetes",
+    "description": "Represents the ] key in screen reader content as a readable word"
+  },
+  "pipeCharacterDescriptor": {
+    "message": "Pipe",
+    "description": "Represents the | key in screen reader content as a readable word"
+  },
+  "backSlashCharacterDescriptor": {
+    "message": "Barra Invertida",
+    "description": "Represents the back slash key in screen reader content as a readable word"
+  },
+  "colonCharacterDescriptor": {
+    "message": "Dois Pontos",
+    "description": "Represents the : key in screen reader content as a readable word"
+  },
+  "semicolonCharacterDescriptor": {
+    "message": "Ponto e vírgula",
+    "description": "Represents the ; key in screen reader content as a readable word"
+  },
+  "doubleQuoteCharacterDescriptor": {
+    "message": "Aspas duplas",
+    "description": "Represents the double quote key in screen reader content as a readable word"
+  },
+  "singleQuoteCharacterDescriptor": {
+    "message": "Aspas simples",
+    "description": "Represents the ' key in screen reader content as a readable word"
+  },
+  "lessThanCharacterDescriptor": {
+    "message": "Menor que",
+    "description": "Represents the < key in screen reader content as a readable word"
+  },
+  "greaterThanCharacterDescriptor": {
+    "message": "Maior que",
+    "description": "Represents the > key in screen reader content as a readable word"
+  },
+  "commaCharacterDescriptor": {
+    "message": "Virgula",
+    "description": "Represents the , key in screen reader content as a readable word"
+  },
+  "periodCharacterDescriptor": {
+    "message": "Ponto",
+    "description": "Represents the . key in screen reader content as a readable word"
+  },
+  "questionCharacterDescriptor": {
+    "message": "Ponto de interrogação",
+    "description": "Represents the ? key in screen reader content as a readable word"
+  },
+  "forwardSlashCharacterDescriptor": {
+    "message": "Barra",
+    "description": "Represents the / key in screen reader content as a readable word"
+  },
+  "lowercaseAriaLabel": {
+    "message": "Letras minúsculas"
+  },
+  "uppercaseAriaLabel": {
+    "message": "Letras maiúsculas"
+  },
+  "generatedPassword": {
+    "message": "Senha gerada"
+  },
+  "compactMode": {
+    "message": "Modo compacto"
+  },
+  "beta": {
+    "message": "Beta"
+  },
+  "extensionWidth": {
+    "message": "Extension width"
+  },
+  "wide": {
+    "message": "Wide"
+  },
+  "extraWide": {
+    "message": "Extra wide"
   }
 }

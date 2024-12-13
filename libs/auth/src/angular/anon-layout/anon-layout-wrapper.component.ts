@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Data, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { Subject, filter, switchMap, takeUntil, tap } from "rxjs";
@@ -14,17 +16,17 @@ export interface AnonLayoutWrapperData {
    * If a string is provided, it will be presented as is (ex: Organization name)
    * If a Translation object (supports placeholders) is provided, it will be translated
    */
-  pageTitle?: string | Translation;
+  pageTitle?: string | Translation | null;
   /**
    * The optional subtitle of the page.
    * If a string is provided, it will be presented as is (ex: user's email)
    * If a Translation object (supports placeholders) is provided, it will be translated
    */
-  pageSubtitle?: string | Translation;
+  pageSubtitle?: string | Translation | null;
   /**
    * The optional icon to display on the page.
    */
-  pageIcon?: Icon;
+  pageIcon?: Icon | null;
   /**
    * Optional flag to either show the optional environment selector (false) or just a readonly hostname (true).
    */
@@ -33,6 +35,10 @@ export interface AnonLayoutWrapperData {
    * Optional flag to set the max-width of the page. Defaults to 'md' if not provided.
    */
   maxWidth?: "md" | "3xl";
+  /**
+   * Optional flag to set the max-width of the title area. Defaults to null if not provided.
+   */
+  titleAreaMaxWidth?: "md";
 }
 
 @Component({
@@ -48,6 +54,7 @@ export class AnonLayoutWrapperComponent implements OnInit, OnDestroy {
   protected pageIcon: Icon;
   protected showReadonlyHostname: boolean;
   protected maxWidth: "md" | "3xl";
+  protected titleAreaMaxWidth: "md";
 
   constructor(
     private router: Router,
@@ -98,6 +105,7 @@ export class AnonLayoutWrapperComponent implements OnInit, OnDestroy {
 
     this.showReadonlyHostname = Boolean(firstChildRouteData["showReadonlyHostname"]);
     this.maxWidth = firstChildRouteData["maxWidth"];
+    this.titleAreaMaxWidth = firstChildRouteData["titleAreaMaxWidth"];
   }
 
   private listenForServiceDataChanges() {
@@ -114,19 +122,23 @@ export class AnonLayoutWrapperComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (data.pageTitle) {
-      this.pageTitle = this.handleStringOrTranslation(data.pageTitle);
+    // Null emissions are used to reset the page data as all fields are optional.
+
+    if (data.pageTitle !== undefined) {
+      this.pageTitle =
+        data.pageTitle !== null ? this.handleStringOrTranslation(data.pageTitle) : null;
     }
 
-    if (data.pageSubtitle) {
-      this.pageSubtitle = this.handleStringOrTranslation(data.pageSubtitle);
+    if (data.pageSubtitle !== undefined) {
+      this.pageSubtitle =
+        data.pageSubtitle !== null ? this.handleStringOrTranslation(data.pageSubtitle) : null;
     }
 
-    if (data.pageIcon) {
-      this.pageIcon = data.pageIcon;
+    if (data.pageIcon !== undefined) {
+      this.pageIcon = data.pageIcon !== null ? data.pageIcon : null;
     }
 
-    if (data.showReadonlyHostname != null) {
+    if (data.showReadonlyHostname !== undefined) {
       this.showReadonlyHostname = data.showReadonlyHostname;
     }
 
@@ -151,6 +163,7 @@ export class AnonLayoutWrapperComponent implements OnInit, OnDestroy {
     this.pageIcon = null;
     this.showReadonlyHostname = null;
     this.maxWidth = null;
+    this.titleAreaMaxWidth = null;
   }
 
   ngOnDestroy() {

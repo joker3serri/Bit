@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -65,11 +67,11 @@ export class SendCreatedComponent {
     if (this.hoursAvailable < 24) {
       return this.hoursAvailable === 1
         ? this.i18nService.t("sendExpiresInHoursSingle")
-        : this.i18nService.t("sendExpiresInHours", this.hoursAvailable);
+        : this.i18nService.t("sendExpiresInHours", String(this.hoursAvailable));
     }
     return this.daysAvailable === 1
       ? this.i18nService.t("sendExpiresInDaysSingle")
-      : this.i18nService.t("sendExpiresInDays", this.daysAvailable);
+      : this.i18nService.t("sendExpiresInDays", String(this.daysAvailable));
   }
 
   getHoursAvailable(send: SendView): number {
@@ -77,7 +79,13 @@ export class SendCreatedComponent {
     return Math.max(0, Math.ceil((send.deletionDate.getTime() - now) / (1000 * 60 * 60)));
   }
 
-  async close() {
+  async goToEditSend() {
+    await this.router.navigate([`/edit-send`], {
+      queryParams: { sendId: this.send.id, type: this.send.type },
+    });
+  }
+
+  async goBack() {
     await this.router.navigate(["/tabs/send"]);
   }
 

@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom, map, switchMap } from "rxjs";
@@ -12,12 +14,10 @@ import { InternalPolicyService } from "@bitwarden/common/admin-console/abstracti
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
-import { KdfConfigService } from "@bitwarden/common/auth/abstractions/kdf-config.service";
 import { InternalMasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { DeviceType } from "@bitwarden/common/enums";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
@@ -27,7 +27,12 @@ import { StateService } from "@bitwarden/common/platform/abstractions/state.serv
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService, ToastService } from "@bitwarden/components";
-import { BiometricsService, BiometricStateService } from "@bitwarden/key-management";
+import {
+  KdfConfigService,
+  KeyService,
+  BiometricsService,
+  BiometricStateService,
+} from "@bitwarden/key-management";
 
 const BroadcasterSubscriptionId = "LockComponent";
 
@@ -48,7 +53,7 @@ export class LockComponent extends BaseLockComponent implements OnInit, OnDestro
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
     messagingService: MessagingService,
-    cryptoService: CryptoService,
+    keyService: KeyService,
     vaultTimeoutService: VaultTimeoutService,
     vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     environmentService: EnvironmentService,
@@ -79,7 +84,7 @@ export class LockComponent extends BaseLockComponent implements OnInit, OnDestro
       i18nService,
       platformUtilsService,
       messagingService,
-      cryptoService,
+      keyService,
       vaultTimeoutService,
       vaultTimeoutSettingsService,
       environmentService,

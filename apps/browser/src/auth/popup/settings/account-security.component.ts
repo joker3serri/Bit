@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
@@ -27,7 +29,6 @@ import { PolicyType } from "@bitwarden/common/admin-console/enums";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserVerificationService } from "@bitwarden/common/auth/abstractions/user-verification/user-verification.service.abstraction";
 import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
@@ -52,7 +53,7 @@ import {
   TypographyModule,
   ToastService,
 } from "@bitwarden/components";
-import { BiometricsService, BiometricStateService } from "@bitwarden/key-management";
+import { KeyService, BiometricsService, BiometricStateService } from "@bitwarden/key-management";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../../models/biometricErrors";
 import { BrowserApi } from "../../../platform/browser/browser-api";
@@ -127,7 +128,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     public messagingService: MessagingService,
     private environmentService: EnvironmentService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private stateService: StateService,
     private userVerificationService: UserVerificationService,
     private dialogService: DialogService,
@@ -216,7 +217,6 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
 
     this.form.controls.vaultTimeoutAction.valueChanges
       .pipe(
-        startWith(initialValues.vaultTimeoutAction), // emit to init pairwise
         map(async (value) => {
           await this.saveVaultTimeoutAction(value);
         }),
@@ -436,14 +436,17 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
         return;
       }
 
-      await this.cryptoService.refreshAdditionalKeys();
+      await this.keyService.refreshAdditionalKeys();
 
       const successful = await this.trySetupBiometrics();
       this.form.controls.biometric.setValue(successful);
+      await this.biometricStateService.setBiometricUnlockEnabled(successful);
       if (!successful) {
-        await this.biometricStateService.setBiometricUnlockEnabled(false);
         await this.biometricStateService.setFingerprintValidated(false);
       }
+    } else {
+      await this.biometricStateService.setBiometricUnlockEnabled(false);
+      await this.biometricStateService.setFingerprintValidated(false);
     }
   }
 
@@ -562,8 +565,8 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     const activeUserId = await firstValueFrom(
       this.accountService.activeAccount$.pipe(map((a) => a?.id)),
     );
-    const publicKey = await firstValueFrom(this.cryptoService.userPublicKey$(activeUserId));
-    const fingerprint = await this.cryptoService.getFingerprint(activeUserId, publicKey);
+    const publicKey = await firstValueFrom(this.keyService.userPublicKey$(activeUserId));
+    const fingerprint = await this.keyService.getFingerprint(activeUserId, publicKey);
 
     const dialogRef = FingerprintDialogComponent.open(this.dialogService, {
       fingerprint,

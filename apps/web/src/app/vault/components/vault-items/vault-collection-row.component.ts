@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { CollectionAdminView, Unassigned, CollectionView } from "@bitwarden/admin-console/common";
@@ -103,6 +105,10 @@ export class VaultCollectionRowComponent {
   }
 
   protected get showCheckbox() {
-    return this.collection?.id !== Unassigned;
+    if (this.collection?.id === Unassigned) {
+      return false; // Never show checkbox for Unassigned
+    }
+
+    return this.canEditCollection || this.canDeleteCollection;
   }
 }

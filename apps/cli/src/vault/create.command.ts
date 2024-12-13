@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import * as fs from "fs";
 import * as path from "path";
 
@@ -12,12 +14,12 @@ import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abs
 import { CipherExport } from "@bitwarden/common/models/export/cipher.export";
 import { CollectionExport } from "@bitwarden/common/models/export/collection.export";
 import { FolderExport } from "@bitwarden/common/models/export/folder.export";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { KeyService } from "@bitwarden/key-management";
 
 import { OrganizationCollectionRequest } from "../admin-console/models/request/organization-collection.request";
 import { OrganizationCollectionResponse } from "../admin-console/models/response/organization-collection.response";
@@ -31,7 +33,7 @@ export class CreateCommand {
   constructor(
     private cipherService: CipherService,
     private folderService: FolderService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private apiService: ApiService,
     private folderApiService: FolderApiServiceAbstraction,
@@ -141,7 +143,7 @@ export class CreateCommand {
       return Response.error("Premium status is required to use this feature.");
     }
 
-    const userKey = await this.cryptoService.getUserKey();
+    const userKey = await this.keyService.getUserKey();
     if (userKey == null) {
       return Response.error(
         "You must update your encryption key before you can use this feature. " +
@@ -170,7 +172,7 @@ export class CreateCommand {
 
   private async createFolder(req: FolderExport) {
     const activeAccountId = await firstValueFrom(this.accountService.activeAccount$);
-    const userKey = await this.cryptoService.getUserKeyWithLegacySupport(activeAccountId.id);
+    const userKey = await this.keyService.getUserKeyWithLegacySupport(activeAccountId.id);
     const folder = await this.folderService.encrypt(FolderExport.toView(req), userKey);
     try {
       await this.folderApiService.save(folder);
@@ -194,7 +196,7 @@ export class CreateCommand {
       return Response.badRequest("`organizationid` option does not match request object.");
     }
     try {
-      const orgKey = await this.cryptoService.getOrgKey(req.organizationId);
+      const orgKey = await this.keyService.getOrgKey(req.organizationId);
       if (orgKey == null) {
         throw new Error("No encryption key for this organization.");
       }

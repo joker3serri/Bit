@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 
@@ -46,6 +48,14 @@ export class ItemCopyActionsComponent {
 
   get hasSecureNoteValue() {
     return !!this.cipher.notes;
+  }
+
+  get hasSshKeyValues() {
+    return (
+      !!this.cipher.sshKey.privateKey ||
+      !!this.cipher.sshKey.publicKey ||
+      !!this.cipher.sshKey.keyFingerprint
+    );
   }
 
   constructor() {}

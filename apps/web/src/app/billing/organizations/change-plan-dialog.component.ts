@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import {
   Component,
@@ -36,11 +38,11 @@ import { PaymentSourceResponse } from "@bitwarden/common/billing/models/response
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService, ToastService } from "@bitwarden/components";
+import { KeyService } from "@bitwarden/key-management";
 
 import { PaymentV2Component } from "../shared/payment/payment-v2.component";
 import { PaymentComponent } from "../shared/payment/payment.component";
@@ -177,7 +179,7 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private apiService: ApiService,
     private i18nService: I18nService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private router: Router,
     private syncService: SyncService,
     private policyService: PolicyService,
@@ -282,6 +284,12 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
       : this.discountPercentageFromSub + this.discountPercentage;
   }
 
+  isPaymentSourceEmpty() {
+    return this.deprecateStripeSourcesAPI
+      ? this.paymentSource === null || this.paymentSource === undefined
+      : this.billing?.paymentSource === null || this.billing?.paymentSource === undefined;
+  }
+
   isSecretsManagerTrial(): boolean {
     return (
       this.sub?.subscription?.items?.some((item) =>
@@ -342,7 +350,6 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
     switch (cardState) {
       case PlanCardState.Selected: {
         return [
-          "tw-group",
           "tw-cursor-pointer",
           "tw-block",
           "tw-rounded",
@@ -723,7 +730,7 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
     // Secrets Manager
     this.buildSecretsManagerRequest(request);
 
-    if (this.upgradeRequiresPaymentMethod || this.showPayment) {
+    if (this.upgradeRequiresPaymentMethod || this.showPayment || this.isPaymentSourceEmpty()) {
       if (this.deprecateStripeSourcesAPI) {
         const tokenizedPaymentSource = await this.paymentV2Component.tokenize();
         const updatePaymentMethodRequest = new UpdatePaymentMethodRequest();
@@ -755,8 +762,8 @@ export class ChangePlanDialogComponent implements OnInit, OnDestroy {
 
     // Backfill pub/priv key if necessary
     if (!this.organization.hasPublicAndPrivateKeys) {
-      const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
-      const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
+      const orgShareKey = await this.keyService.getOrgKey(this.organizationId);
+      const orgKeys = await this.keyService.makeKeyPair(orgShareKey);
       request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
     }
 

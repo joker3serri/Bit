@@ -26,6 +26,9 @@
   "typeSecureNote": {
     "message": "Бяспечныя нататкі"
   },
+  "typeSshKey": {
+    "message": "SSH key"
+  },
   "folders": {
     "message": "Папкі"
   },
@@ -59,6 +62,9 @@
         "example": "Company Name"
       }
     }
+  },
+  "welcomeBack": {
+    "message": "Welcome back"
   },
   "moveToOrgDesc": {
     "message": "Выберыце арганізацыю, у якую вы хочаце перамясціць гэты элемент. Пры перамяшчэнні ў арганізацыю ўсе правы ўласнасці на дадзены элемент пяройдуць да гэтай арганізацыі. Вы больш не будзеце адзіным уласнікам гэтага элемента пасля яго перамяшчэння."
@@ -174,6 +180,63 @@
   "address": {
     "message": "Адрас"
   },
+  "sshPrivateKey": {
+    "message": "Private key"
+  },
+  "sshPublicKey": {
+    "message": "Public key"
+  },
+  "sshFingerprint": {
+    "message": "Fingerprint"
+  },
+  "sshKeyAlgorithm": {
+    "message": "Key type"
+  },
+  "sshKeyAlgorithmED25519": {
+    "message": "ED25519"
+  },
+  "sshKeyAlgorithmRSA2048": {
+    "message": "RSA 2048-Bit"
+  },
+  "sshKeyAlgorithmRSA3072": {
+    "message": "RSA 3072-Bit"
+  },
+  "sshKeyAlgorithmRSA4096": {
+    "message": "RSA 4096-Bit"
+  },
+  "sshKeyGenerated": {
+    "message": "A new SSH key was generated"
+  },
+  "sshKeyWrongPassword": {
+    "message": "The password you entered is incorrect."
+  },
+  "importSshKey": {
+    "message": "Import"
+  },
+  "confirmSshKeyPassword": {
+    "message": "Confirm password"
+  },
+  "enterSshKeyPasswordDesc": {
+    "message": "Enter the password for the SSH key."
+  },
+  "enterSshKeyPassword": {
+    "message": "Enter password"
+  },
+  "sshAgentUnlockRequired": {
+    "message": "Please unlock your vault to approve the SSH key request."
+  },
+  "sshAgentUnlockTimeout": {
+    "message": "SSH key request timed out."
+  },
+  "enableSshAgent": {
+    "message": "Enable SSH agent"
+  },
+  "enableSshAgentDesc": {
+    "message": "Enable the SSH agent to sign SSH requests right from your Bitwarden vault."
+  },
+  "enableSshAgentHelp": {
+    "message": "The SSH agent is a service targeted at developers that allows you to sign SSH requests directly from your Bitwarden vault."
+  },
   "premiumRequired": {
     "message": "Патрабуецца прэміяльны статус"
   },
@@ -258,6 +321,9 @@
   },
   "generatePassword": {
     "message": "Генерыраваць пароль"
+  },
+  "generatePassphrase": {
+    "message": "Generate passphrase"
   },
   "type": {
     "message": "Тып"
@@ -393,6 +459,16 @@
   },
   "copyPassword": {
     "message": "Скапіяваць пароль"
+  },
+  "regenerateSshKey": {
+    "message": "Regenerate SSH key"
+  },
+  "copySshPrivateKey": {
+    "message": "Copy SSH private key"
+  },
+  "copyPassphrase": {
+    "message": "Copy passphrase",
+    "description": "Copy passphrase to clipboard"
   },
   "copyUri": {
     "message": "Скапіяваць URI"
@@ -547,6 +623,9 @@
   "createAccount": {
     "message": "Стварыць уліковы запіс"
   },
+  "newToBitwarden": {
+    "message": "New to Bitwarden?"
+  },
   "setAStrongPassword": {
     "message": "Set a strong password"
   },
@@ -555,6 +634,18 @@
   },
   "logIn": {
     "message": "Увайсці"
+  },
+  "logInToBitwarden": {
+    "message": "Log in to Bitwarden"
+  },
+  "logInWithPasskey": {
+    "message": "Log in with passkey"
+  },
+  "loginWithDevice": {
+    "message": "Log in with device"
+  },
+  "useSingleSignOn": {
+    "message": "Use single sign-on"
   },
   "submit": {
     "message": "Адправіць"
@@ -601,6 +692,15 @@
   },
   "joinOrganization": {
     "message": "Join organization"
+  },
+  "joinOrganizationName": {
+    "message": "Join $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
   },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "Finish joining this organization by setting a master password."
@@ -818,6 +918,10 @@
   },
   "baseUrl": {
     "message": "URL-адрас сервера"
+  },
+  "selfHostBaseUrl": {
+    "message": "Self-host server URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
   },
   "apiUrl": {
     "message": "Сервер URL-адраса API"
@@ -1209,6 +1313,9 @@
     "message": "Скапіяваць нумар",
     "description": "Copy credit card number"
   },
+  "copyEmail": {
+    "message": "Copy email"
+  },
   "copySecurityCode": {
     "message": "Скапіяваць код бяспекі",
     "description": "Copy credit card security code (CVV)"
@@ -1279,12 +1386,30 @@
   "passwordHistory": {
     "message": "Гісторыя пароляў"
   },
+  "generatorHistory": {
+    "message": "Generator history"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "Clear generator history"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "If you continue, all entries will be permanently deleted from generator's history. Are you sure you want to continue?"
+  },
   "clear": {
     "message": "Ачысціць",
     "description": "To clear something out. example: To clear browser history."
   },
   "noPasswordsInList": {
     "message": "У спісе адсутнічаюць паролі."
+  },
+  "clearHistory": {
+    "message": "Clear history"
+  },
+  "nothingToShow": {
+    "message": "Nothing to show"
+  },
+  "nothingGeneratedRecently": {
+    "message": "You haven't generated anything recently"
   },
   "undo": {
     "message": "Адрабіць"
@@ -1642,6 +1767,12 @@
   "deleteAccountWarning": {
     "message": "Выдаленне вашага ўліковага запісу з'яўляецца незваротным дзеяннем. Яго нельга будзе адрабіць."
   },
+  "cannotDeleteAccount": {
+    "message": "Cannot delete account"
+  },
+  "cannotDeleteAccountDesc": {
+    "message": "This action cannot be completed because your account is owned by an organization. Contact your organization administrator for additional details."
+  },
   "accountDeleted": {
     "message": "Уліковы запіс выдалены"
   },
@@ -1751,6 +1882,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "Your organization requires you to set a master password.",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": "out of $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "Verification required",
@@ -2334,6 +2474,43 @@
   "generateUsername": {
     "message": "Генерыраваць імя карыстальніка"
   },
+  "generateEmail": {
+    "message": "Generate email"
+  },
+  "spinboxBoundariesHint": {
+    "message": "Value must be between $MIN$ and $MAX$.",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
+  "passwordLengthRecommendationHint": {
+    "message": " Use $RECOMMENDED$ characters or more to generate a strong password.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "passphraseNumWordsRecommendationHint": {
+    "message": " Use $RECOMMENDED$ words or more to generate a strong passphrase.",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "6"
+      }
+    }
+  },
   "usernameType": {
     "message": "Тып імя карыстальніка"
   },
@@ -2376,6 +2553,14 @@
   },
   "forwardedEmailDesc": {
     "message": "Генерыраваць псеўданім электроннай пошты са знешнім сэрвісам перасылкі."
+  },
+  "forwarderDomainName": {
+    "message": "Email domain",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "Choose a domain that is supported by the selected service",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ error: $ERRORMESSAGE$",
@@ -2537,14 +2722,29 @@
   "notificationSentDevice": {
     "message": "Апавяшчэнне было адпраўлена на вашу прыладу."
   },
+  "aNotificationWasSentToYourDevice": {
+    "message": "A notification was sent to your device"
+  },
+  "makeSureYourAccountIsUnlockedAndTheFingerprintEtc": {
+    "message": "Make sure your account is unlocked and the fingerprint phrase matches on the other device"
+  },
+  "needAnotherOptionV1": {
+    "message": "Need another option?"
+  },
   "fingerprintMatchInfo": {
     "message": "Пераканайцеся, што ваша сховішча разблакіравана, а фраза адбітка пальца супадае з іншай прыладай."
   },
   "fingerprintPhraseHeader": {
     "message": "Фраза адбітка пальца"
   },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "You will be notified once the request is approved"
+  },
   "needAnotherOption": {
     "message": "Неабходна наладзіць уваход з прыладай у наладах мабільнай праграмы Bitwarden. Патрабуецца іншы варыянт?"
+  },
+  "viewAllLogInOptions": {
+    "message": "View all log in options"
   },
   "viewAllLoginOptions": {
     "message": "Паглядзець усе параметры ўваходу"
@@ -2665,6 +2865,9 @@
   "checkForBreaches": {
     "message": "Праверыць у вядомых уцечках даных для гэтага пароля"
   },
+  "loggedInExclamation": {
+    "message": "Logged in!"
+  },
   "important": {
     "message": "Важна:"
   },
@@ -2695,8 +2898,17 @@
   "windowsBiometricUpdateWarningTitle": {
     "message": "Рэкамендаваныя налады абнаўлення"
   },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "Remember this device to make future logins seamless"
+  },
   "deviceApprovalRequired": {
     "message": "Патрабуецца ўхваленне прылады. Выберыце параметры ўхвалення ніжэй:"
+  },
+  "deviceApprovalRequiredV2": {
+    "message": "Device approval required"
+  },
+  "selectAnApprovalOptionBelow": {
+    "message": "Select an approval option below"
   },
   "rememberThisDevice": {
     "message": "Запомніць гэту прыладу"
@@ -2722,9 +2934,6 @@
   "eu": {
     "message": "ЕС",
     "description": "European Union"
-  },
-  "loggingInOn": {
-    "message": "Увайсці на"
   },
   "selfHostedServer": {
     "message": "self-hosted"
@@ -2752,6 +2961,9 @@
   },
   "userEmailMissing": {
     "message": "Адсутнічае электронная пошта карыстальніка"
+  },
+  "activeUserEmailNotFoundLoggingYouOut": {
+    "message": "Active user email not found. Logging you out."
   },
   "deviceTrusted": {
     "message": "Давераная прылада"
@@ -3144,14 +3356,38 @@
   "textSends": {
     "message": "Text Sends"
   },
-  "allowScreenshots": {
-    "message": "Allow screen capture"
-  },
-  "allowScreenshotsDesc": {
-    "message": "Allow screen capture of the Bitwarden desktop application."
-  },
   "ssoError": {
     "message": "No free ports could be found for the sso login."
+  },
+  "authorize": {
+    "message": "Authorize"
+  },
+  "deny": {
+    "message": "Deny"
+  },
+  "sshkeyApprovalTitle": {
+    "message": "Confirm SSH key usage"
+  },
+  "sshkeyApprovalMessageInfix": {
+    "message": "is requesting access to"
+  },
+  "unknownApplication": {
+    "message": "An application"
+  },
+  "sshKeyPasswordUnsupported": {
+    "message": "Importing password protected SSH keys is not yet supported"
+  },
+  "invalidSshKey": {
+    "message": "The SSH key is invalid"
+  },
+  "sshKeyTypeUnsupported": {
+    "message": "The SSH key type is not supported"
+  },
+  "importSshKeyFromClipboard": {
+    "message": "Import key from clipboard"
+  },
+  "sshKeyPasted": {
+    "message": "SSH key imported successfully"
   },
   "fileSavedToDevice": {
     "message": "File saved to device. Manage from your device downloads."

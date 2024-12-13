@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { isDataSource } from "@angular/cdk/collections";
 import {
   AfterContentChecked,
@@ -30,7 +32,7 @@ export class TableComponent implements OnDestroy, AfterContentChecked {
 
   @ContentChild(TableBodyDirective) templateVariable: TableBodyDirective;
 
-  protected rows: Observable<readonly any[]>;
+  protected rows$: Observable<any[]>;
 
   private _initialized = false;
 
@@ -50,7 +52,7 @@ export class TableComponent implements OnDestroy, AfterContentChecked {
       this._initialized = true;
 
       const dataStream = this.dataSource.connect();
-      this.rows = dataStream;
+      this.rows$ = dataStream;
     }
   }
 

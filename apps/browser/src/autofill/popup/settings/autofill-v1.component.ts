@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Component, OnInit } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
@@ -8,10 +10,12 @@ import {
   InlineMenuVisibilitySetting,
   ClearClipboardDelaySetting,
 } from "@bitwarden/common/autofill/types";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import {
   UriMatchStrategy,
   UriMatchStrategySetting,
 } from "@bitwarden/common/models/domain/domain-service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -20,7 +24,6 @@ import { DialogService } from "@bitwarden/components";
 
 import { BrowserApi } from "../../../platform/browser/browser-api";
 import { enableAccountSwitching } from "../../../platform/flags";
-import { AutofillService } from "../../services/abstractions/autofill.service";
 
 @Component({
   selector: "app-autofill-v1",
@@ -32,6 +35,10 @@ export class AutofillV1Component implements OnInit {
   protected autoFillOverlayVisibility: InlineMenuVisibilitySetting;
   protected autoFillOverlayVisibilityOptions: any[];
   protected disablePasswordManagerLink: string;
+  protected inlineMenuPositioningImprovementsEnabled: boolean = false;
+  protected showInlineMenuIdentities: boolean = true;
+  protected showInlineMenuCards: boolean = true;
+  inlineMenuIsEnabled: boolean = false;
   enableAutoFillOnPageLoad = false;
   autoFillOnPageLoadDefault = false;
   autoFillOnPageLoadOptions: any[];
@@ -50,7 +57,7 @@ export class AutofillV1Component implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private domainSettingsService: DomainSettingsService,
-    private autofillService: AutofillService,
+    private configService: ConfigService,
     private dialogService: DialogService,
     private autofillSettingsService: AutofillSettingsServiceAbstraction,
     private messagingService: MessagingService,
@@ -109,6 +116,20 @@ export class AutofillV1Component implements OnInit {
       this.autofillSettingsService.inlineMenuVisibility$,
     );
 
+    this.inlineMenuPositioningImprovementsEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.InlineMenuPositioningImprovements,
+    );
+
+    this.inlineMenuIsEnabled = this.isInlineMenuEnabled();
+
+    this.showInlineMenuIdentities =
+      this.inlineMenuPositioningImprovementsEnabled &&
+      (await firstValueFrom(this.autofillSettingsService.showInlineMenuIdentities$));
+
+    this.showInlineMenuCards =
+      this.inlineMenuPositioningImprovementsEnabled &&
+      (await firstValueFrom(this.autofillSettingsService.showInlineMenuCards$));
+
     this.enableAutoFillOnPageLoad = await firstValueFrom(
       this.autofillSettingsService.autofillOnPageLoad$,
     );
@@ -140,9 +161,18 @@ export class AutofillV1Component implements OnInit {
     );
   }
 
+  isInlineMenuEnabled() {
+    return (
+      this.autoFillOverlayVisibility === AutofillOverlayVisibility.OnFieldFocus ||
+      this.autoFillOverlayVisibility === AutofillOverlayVisibility.OnButtonClick
+    );
+  }
+
   async updateAutoFillOverlayVisibility() {
     await this.autofillSettingsService.setInlineMenuVisibility(this.autoFillOverlayVisibility);
     await this.requestPrivacyPermission();
+
+    this.inlineMenuIsEnabled = this.isInlineMenuEnabled();
   }
 
   async updateAutoFillOnPageLoad() {
@@ -297,5 +327,13 @@ export class AutofillV1Component implements OnInit {
 
   async updateShowIdentitiesCurrentTab() {
     await this.vaultSettingsService.setShowIdentitiesCurrentTab(this.showIdentitiesCurrentTab);
+  }
+
+  async updateShowInlineMenuCards() {
+    await this.autofillSettingsService.setShowInlineMenuCards(this.showInlineMenuCards);
+  }
+
+  async updateShowInlineMenuIdentities() {
+    await this.autofillSettingsService.setShowInlineMenuIdentities(this.showInlineMenuIdentities);
   }
 }

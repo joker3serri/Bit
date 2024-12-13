@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 
 type BannerTypes = "premium" | "info" | "warning" | "danger";
@@ -28,13 +30,13 @@ export class BannerComponent implements OnInit {
   get bannerClass() {
     switch (this.bannerType) {
       case "danger":
-        return "tw-bg-danger-600";
+        return "tw-bg-danger-100 tw-border-b-danger-700";
       case "info":
-        return "tw-bg-info-600";
+        return "tw-bg-info-100 tw-border-b-info-700";
       case "premium":
-        return "tw-bg-success-600";
+        return "tw-bg-success-100 tw-border-b-success-700";
       case "warning":
-        return "tw-bg-warning-600";
+        return "tw-bg-warning-100 tw-border-b-warning-700";
     }
   }
 }

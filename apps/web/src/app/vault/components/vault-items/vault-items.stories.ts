@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from "@storybook/angular";
@@ -288,6 +290,7 @@ function createCollectionView(i: number): CollectionAdminView {
   view.id = `collection-${i}`;
   view.name = `Collection ${i}`;
   view.organizationId = organization?.id;
+  view.manage = true;
 
   if (group !== undefined) {
     view.groups = [

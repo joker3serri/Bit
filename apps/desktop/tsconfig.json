@@ -32,8 +32,14 @@
       "@bitwarden/node/*": ["../../libs/node/src/*"],
       "@bitwarden/platform": ["../../libs/platform/src"],
       "@bitwarden/send-ui": ["../../libs/tools/send/send-ui/src"],
+      "@bitwarden/tools-card": ["../../libs/tools/card/src"],
       "@bitwarden/vault": ["../../libs/vault/src"]
     },
+    "plugins": [
+      {
+        "name": "typescript-strict-plugin"
+      }
+    ],
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

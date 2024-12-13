@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { NgForOf, NgIf } from "@angular/common";
 import {
   Component,
@@ -84,7 +86,7 @@ export class UriOptionComponent implements ControlValueAccessor {
   @Input({ required: true })
   set defaultMatchDetection(value: UriMatchStrategySetting) {
     // The default selection has a value of `null` avoid showing "Default (Default)"
-    if (!value) {
+    if (value === null) {
       return;
     }
 

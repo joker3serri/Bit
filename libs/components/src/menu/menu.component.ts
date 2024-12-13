@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { FocusKeyManager } from "@angular/cdk/a11y";
 import {
   Component,
@@ -31,7 +33,9 @@ export class MenuComponent implements AfterContentInit {
 
   ngAfterContentInit() {
     if (this.ariaRole === "menu") {
-      this.keyManager = new FocusKeyManager(this.menuItems).withWrap();
+      this.keyManager = new FocusKeyManager(this.menuItems)
+        .withWrap()
+        .skipPredicate((item) => item.disabled);
     }
   }
 }

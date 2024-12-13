@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { program, Command } from "commander";
 
 import { ConfirmCommand } from "./admin-console/commands/confirm.command";
@@ -177,9 +179,8 @@ export class VaultProgram extends BaseProgram {
           this.serviceContainer.collectionService,
           this.serviceContainer.totpService,
           this.serviceContainer.auditService,
-          this.serviceContainer.cryptoService,
+          this.serviceContainer.keyService,
           this.serviceContainer.encryptService,
-          this.serviceContainer.stateService,
           this.serviceContainer.searchService,
           this.serviceContainer.apiService,
           this.serviceContainer.organizationService,
@@ -224,7 +225,7 @@ export class VaultProgram extends BaseProgram {
         const command = new CreateCommand(
           this.serviceContainer.cipherService,
           this.serviceContainer.folderService,
-          this.serviceContainer.cryptoService,
+          this.serviceContainer.keyService,
           this.serviceContainer.encryptService,
           this.serviceContainer.apiService,
           this.serviceContainer.folderApiService,
@@ -273,7 +274,7 @@ export class VaultProgram extends BaseProgram {
         const command = new EditCommand(
           this.serviceContainer.cipherService,
           this.serviceContainer.folderService,
-          this.serviceContainer.cryptoService,
+          this.serviceContainer.keyService,
           this.serviceContainer.encryptService,
           this.serviceContainer.apiService,
           this.serviceContainer.folderApiService,
@@ -319,6 +320,7 @@ export class VaultProgram extends BaseProgram {
           this.serviceContainer.apiService,
           this.serviceContainer.folderApiService,
           this.serviceContainer.billingAccountProfileStateService,
+          this.serviceContainer.cipherAuthorizationService,
         );
         const response = await command.run(object, id, cmd);
         this.processResponse(response);
@@ -414,7 +416,7 @@ export class VaultProgram extends BaseProgram {
         await this.exitIfLocked();
         const command = new ConfirmCommand(
           this.serviceContainer.apiService,
-          this.serviceContainer.cryptoService,
+          this.serviceContainer.keyService,
           this.serviceContainer.encryptService,
           this.serviceContainer.organizationUserApiService,
         );

@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { EVENTS, MAX_DEEP_QUERY_RECURSION_DEPTH } from "@bitwarden/common/autofill/constants";
 
 import { nodeIsElement, sendExtensionMessage } from "../utils";
@@ -192,6 +194,10 @@ export class DomQueryService implements DomQueryServiceInterface {
     root: Document | ShadowRoot | Element,
     returnSingleShadowRoot = false,
   ): ShadowRoot[] {
+    if (!root) {
+      return [];
+    }
+
     const shadowRoots: ShadowRoot[] = [];
     const potentialShadowRoots = root.querySelectorAll(":defined");
     for (let index = 0; index < potentialShadowRoots.length; index++) {
