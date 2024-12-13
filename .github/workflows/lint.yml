@@ -47,6 +47,9 @@ jobs:
           NODE_VERSION=${NODE_NVMRC/v/''}
           echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
 
+      - name: Check Rust version
+        run: rustup --version
+
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
@@ -58,3 +61,11 @@ jobs:
         run: |
           npm ci
           npm run lint
+      
+      - name: Run cargo fmt
+        working-directory: ./apps/desktop/desktop_native
+        run: cargo fmt --check
+
+      - name: Run Clippy
+        working-directory: ./apps/desktop/desktop_native
+        run: cargo clippy --all-features --tests
