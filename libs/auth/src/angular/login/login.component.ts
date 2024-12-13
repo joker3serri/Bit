@@ -137,7 +137,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    // Add popstate listener
+    // Add popstate listener to listen for browser back button clicks
     window.addEventListener("popstate", this.handlePopState);
 
     // TODO: remove this when the UnauthenticatedExtensionUIRefresh feature flag is removed.
