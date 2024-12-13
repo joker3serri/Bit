@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -33,10 +35,10 @@ import { PasswordGenerationServiceAbstraction } from "@bitwarden/generator-legac
 
 @Component({
   selector: "app-sso",
-  templateUrl: "sso.component.html",
+  templateUrl: "sso-v1.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class SsoComponent extends BaseSsoComponent implements OnInit {
+export class SsoComponentV1 extends BaseSsoComponent implements OnInit {
   protected formGroup = new FormGroup({
     identifier: new FormControl(null, [Validators.required]),
   });
