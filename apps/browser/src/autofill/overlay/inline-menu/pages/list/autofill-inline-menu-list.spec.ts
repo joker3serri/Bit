@@ -140,6 +140,46 @@ describe("AutofillInlineMenuList", () => {
         expect(autofillInlineMenuList["inlineMenuListContainer"]).toMatchSnapshot();
       });
 
+      it("renders correctly when there are multiple TOTP elements with username displayed", async () => {
+        const totpCipher1 = createAutofillOverlayCipherDataMock(1, {
+          login: {
+            totp: "123456",
+            totpField: true,
+            username: "user1",
+          },
+        });
+
+        const totpCipher2 = createAutofillOverlayCipherDataMock(2, {
+          login: {
+            totp: "654321",
+            totpField: true,
+            username: "user2",
+          },
+        });
+
+        postWindowMessage(
+          createInitAutofillInlineMenuListMessageMock({
+            authStatus: AuthenticationStatus.Unlocked,
+            ciphers: [totpCipher1, totpCipher2],
+            portKey,
+          }),
+        );
+
+        await flushPromises();
+        const checkSubtitleElement = (username: string) => {
+          const subtitleElement = autofillInlineMenuList["inlineMenuListContainer"].querySelector(
+            `span.cipher-subtitle[title="${username}"]`,
+          );
+          expect(subtitleElement).not.toBeNull();
+          expect(subtitleElement.textContent).toBe(username);
+        };
+
+        checkSubtitleElement("user1");
+        checkSubtitleElement("user2");
+
+        expect(autofillInlineMenuList["inlineMenuListContainer"]).toMatchSnapshot();
+      });
+
       it("creates the view for a totp field", () => {
         postWindowMessage(
           createInitAutofillInlineMenuListMessageMock({
