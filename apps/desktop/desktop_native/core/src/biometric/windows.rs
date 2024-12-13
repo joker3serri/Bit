@@ -276,7 +276,7 @@ mod tests {
 
         match secret {
             CipherString::AesCbc256_B64 { iv, data: _ } => {
-                assert_eq!(iv_b64, base64_engine.encode(&iv));
+                assert_eq!(iv_b64, base64_engine.encode(iv));
             }
             _ => panic!("Invalid cipher string"),
         }
