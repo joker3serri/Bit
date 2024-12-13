@@ -765,14 +765,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const dialogRef = this.dialogService.open<AttachmentDialogCloseResult, { cipherId: CipherId }>(
-      AttachmentsV2Component,
-      {
-        data: {
-          cipherId: cipher.id as CipherId,
-        },
-      },
-    );
+    const dialogRef = AttachmentsV2Component.open(this.dialogService, {
+        cipherId: cipher.id as CipherId,
+      });
 
     const result = await firstValueFrom(dialogRef.closed);
 
