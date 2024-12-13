@@ -55,6 +55,8 @@ export class CipherFormCacheService {
     }
 
     // Create a new shallow reference to force the signal to update
+    // By default, signals use `Object.is` to determine equality
+    // Docs: https://angular.dev/guide/signals#signal-equality-functions
     this.cipherCache.set({ ...cipherView } as CipherView);
   }
 
