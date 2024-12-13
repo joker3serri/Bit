@@ -25,7 +25,7 @@ import { NgSelectComponent, NgSelectModule } from "@ng-select/ng-select";
 
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 
-import { BadgeDirective } from "../badge/badge.directive";
+import { BadgeModule } from "../badge";
 import { BitFormFieldControl } from "../form-field/form-field-control";
 import { I18nPipe } from "../shared/i18n.pipe";
 
@@ -39,7 +39,7 @@ let nextId = 0;
   templateUrl: "./multi-select.component.html",
   providers: [{ provide: BitFormFieldControl, useExisting: MultiSelectComponent }],
   standalone: true,
-  imports: [NgSelectModule, ReactiveFormsModule, FormsModule, BadgeDirective, NgIf, I18nPipe],
+  imports: [NgSelectModule, ReactiveFormsModule, FormsModule, BadgeModule, NgIf, I18nPipe],
 })
 /**
  * This component has been implemented to only support Multi-select list events
