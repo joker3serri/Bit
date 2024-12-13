@@ -245,9 +245,9 @@ mod tests {
         assert_eq!(iv.len(), 16);
     }
 
-    #[test]
+    #[tokio::test]
     #[cfg(feature = "manual_test")]
-    fn test_prompt() {
+    async fn test_prompt() {
         <Biometric as BiometricTrait>::prompt(
             vec![0, 0, 0, 0, 0, 0, 0, 0],
             String::from("Hello from Rust"),
@@ -256,9 +256,9 @@ mod tests {
         .unwrap();
     }
 
-    #[test]
+    #[tokio::test]
     #[cfg(feature = "manual_test")]
-    fn test_available() {
+    async fn test_available() {
         assert!(<Biometric as BiometricTrait>::available().await.unwrap())
     }
 
