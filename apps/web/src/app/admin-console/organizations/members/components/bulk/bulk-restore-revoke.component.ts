@@ -2,7 +2,7 @@
 // @ts-strict-ignore
 import { DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 
 import { OrganizationUserApiService } from "@bitwarden/admin-console/common";
 import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums";
@@ -52,6 +52,7 @@ export class BulkRestoreRevokeComponent {
     this.accountDeprovisioningEnabled$ = this.configService.getFeatureFlag$(
       FeatureFlag.AccountDeprovisioning,
     );
+    this.accountDeprovisioningEnabled$ = of(true);
   }
 
   get bulkTitle() {
