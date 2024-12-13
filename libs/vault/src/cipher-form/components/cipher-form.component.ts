@@ -182,7 +182,7 @@ export class CipherFormComponent implements AfterViewInit, OnInit, OnChanges, Ci
       return cachedCipherView;
     }
 
-    return this.updatedCipherView;
+    return this.originalCipherView;
   }
 
   /** */
