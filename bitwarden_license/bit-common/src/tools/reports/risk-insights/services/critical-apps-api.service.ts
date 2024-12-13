@@ -1,17 +1,40 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import {
+  BehaviorSubject,
+  first,
+  firstValueFrom,
+  forkJoin,
+  from,
+  map,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  zip,
+} from "rxjs";
+import { Opaque } from "type-fest";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
-import { Guid } from "@bitwarden/common/types/guid";
+import { OrganizationId } from "@bitwarden/common/types/guid";
+import { OrgKey } from "@bitwarden/common/types/key";
 import { KeyService } from "@bitwarden/key-management";
 
-@Injectable({
-  providedIn: "root",
-})
+/* Retrieves and decrypts critical apps for a given organization
+ *  Encrypts and saves data for a given organization
+ */
 export class CriticalAppsApiService {
+  private orgId = new BehaviorSubject<OrganizationId | null>(null);
   private criticalAppsList = new BehaviorSubject<PasswordHealthReportApplicationsResponse[]>([]);
+  private teardown = new Subject<void>();
+
+  private fetchOrg$ = this.orgId
+    .pipe(
+      switchMap((orgId) => this.retrieveCriticalApps(orgId)),
+      takeUntil(this.teardown),
+    )
+    .subscribe((apps) => this.criticalAppsList.next(apps));
 
   constructor(
     private apiService: ApiService,
@@ -19,22 +42,109 @@ export class CriticalAppsApiService {
     private encryptService: EncryptService,
   ) {}
 
-  get criticalApps$(): Observable<PasswordHealthReportApplicationsResponse[]> {
-    return this.criticalAppsList.asObservable();
+  // Get a list of critical apps for a given organization
+  getAppsListForOrg(orgId: string): Observable<PasswordHealthReportApplicationsResponse[]> {
+    return this.criticalAppsList
+      .asObservable()
+      .pipe(map((apps) => apps.filter((app) => app.organizationId === orgId)));
   }
 
-  set criticalApps(value: PasswordHealthReportApplicationsResponse[]) {
-    this.criticalAppsList.next(value);
+  // Reset the critical apps list
+  setAppsInListForOrg(apps: PasswordHealthReportApplicationsResponse[]) {
+    this.criticalAppsList.next(apps);
   }
 
+  // Save the selected critical apps for a given organization
   async setCriticalApps(orgId: string, selectedUrls: string[]) {
     const key = await this.keyService.getOrgKey(orgId);
 
     // only save records that are not already in the database
-    const newEntries = Array.from(selectedUrls).filter((url) => {
-      return !this.criticalAppsList.value.some((r) => r.uri === url);
-    });
+    const newEntries = await this.filterNewEntries(orgId as OrganizationId, selectedUrls);
+    const criticalAppsRequests = await this.encryptNewEntries(
+      orgId as OrganizationId,
+      key,
+      newEntries,
+    );
 
+    // save the new entries to the database
+    const dbResponse = await this.apiService.send(
+      "POST",
+      "/reports/password-health-report-applications/",
+      criticalAppsRequests,
+      true,
+      true,
+    );
+
+    // add the new entries to the criticalAppsList
+    const updatedList = [...this.criticalAppsList.value];
+    for (const responseItem of dbResponse) {
+      const decryptedUrl = await this.encryptService.decryptToUtf8(
+        new EncString(responseItem.uri),
+        key,
+      );
+      if (!updatedList.some((f) => f.uri === decryptedUrl)) {
+        updatedList.push({
+          id: responseItem.id,
+          organizationId: responseItem.organizationId,
+          uri: decryptedUrl,
+        } as PasswordHealthReportApplicationsResponse);
+      }
+    }
+    this.criticalAppsList.next(updatedList);
+  }
+
+  // Get the critical apps for a given organization
+  setOrganizationId(orgId: OrganizationId) {
+    this.orgId.next(orgId);
+  }
+
+  private retrieveCriticalApps(
+    orgId: OrganizationId | null,
+  ): Observable<PasswordHealthReportApplicationsResponse[]> {
+    if (orgId === null) {
+      return of([]);
+    }
+
+    const result$ = zip(
+      from(
+        this.apiService.send(
+          "GET",
+          `/reports/password-health-report-applications/${orgId.toString()}`,
+          null,
+          true,
+          true,
+        ),
+      ),
+      from(this.keyService.getOrgKey(orgId)),
+    ).pipe(
+      switchMap(([response, key]) => {
+        const results = response.map(async (r: PasswordHealthReportApplicationsResponse) => {
+          const encrypted = new EncString(r.uri);
+          const uri = await this.encryptService.decryptToUtf8(encrypted, key);
+          return { id: r.id, organizationId: r.organizationId, uri: uri };
+        });
+        return forkJoin(results);
+      }),
+      first(),
+    );
+
+    return result$ as Observable<PasswordHealthReportApplicationsResponse[]>;
+  }
+
+  private async filterNewEntries(orgId: OrganizationId, selectedUrls: string[]): Promise<string[]> {
+    return await firstValueFrom(this.criticalAppsList).then((criticalApps) => {
+      const criticalAppsUri = criticalApps
+        .filter((f) => f.organizationId === orgId)
+        .map((f) => f.uri);
+      return selectedUrls.filter((url) => !criticalAppsUri.includes(url));
+    });
+  }
+
+  private async encryptNewEntries(
+    orgId: OrganizationId,
+    key: OrgKey,
+    newEntries: string[],
+  ): Promise<PasswordHealthReportApplicationsRequest[]> {
     const criticalAppsPromises = newEntries.map(async (url) => {
       const encryptedUrlName = await this.encryptService.encrypt(url, key);
       return {
@@ -43,64 +153,19 @@ export class CriticalAppsApiService {
       } as PasswordHealthReportApplicationsRequest;
     });
 
-    const criticalAppsRequests = await Promise.all(criticalAppsPromises);
-
-    await this.apiService
-      .send(
-        "POST",
-        "/reports/password-health-report-applications/",
-        criticalAppsRequests,
-        true,
-        true,
-      )
-      .then((result: PasswordHealthReportApplicationsResponse[]) => {
-        result.forEach(async (r) => {
-          const decryptedUrl = await this.encryptService.decryptToUtf8(new EncString(r.uri), key);
-          if (!this.criticalAppsList.value.some((f) => f.uri === decryptedUrl)) {
-            this.criticalAppsList.value.push({
-              id: r.id,
-              organizationId: r.organizationId,
-              uri: decryptedUrl,
-            } as PasswordHealthReportApplicationsResponse);
-          }
-        });
-      });
-  }
-
-  async getCriticalApps(orgId: string): Promise<PasswordHealthReportApplicationsResponse[]> {
-    const response = await this.apiService.send(
-      "GET",
-      `/reports/password-health-report-applications/${orgId}`,
-      null,
-      true,
-      true,
-    );
-
-    this.criticalAppsList.next([]);
-    const key = await this.keyService.getOrgKey(orgId);
-
-    await Promise.all(
-      response.map(async (r: { id: any; organizationId: any; uri: any }) => {
-        const decryptedUrl = await this.encryptService.decryptToUtf8(new EncString(r.uri), key);
-        this.criticalAppsList.value.push({
-          id: r.id,
-          organizationId: r.organizationId,
-          uri: decryptedUrl,
-        } as PasswordHealthReportApplicationsResponse);
-      }),
-    );
-
-    return this.criticalAppsList.value;
+    return await Promise.all(criticalAppsPromises);
   }
 }
 
 export interface PasswordHealthReportApplicationsRequest {
-  organizationId: Guid;
+  organizationId: OrganizationId;
   url: string;
 }
 
 export interface PasswordHealthReportApplicationsResponse {
-  id: Guid;
-  organizationId: Guid;
+  id: PasswordHealthReportApplicationId;
+  organizationId: OrganizationId;
   uri: string;
 }
+
+export type PasswordHealthReportApplicationId = Opaque<string, "PasswordHealthReportApplicationId">;

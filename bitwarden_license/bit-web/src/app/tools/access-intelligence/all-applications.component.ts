@@ -6,7 +6,7 @@ import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { debounceTime, firstValueFrom, map, switchMap } from "rxjs";
 
-// eslint-disable-next-line no-restricted-imports
+// eslint-disable-next-line no-restricted-imports  -- used for dependency injection
 import { CriticalAppsApiService } from "@bitwarden/bit-common/tools/reports/risk-insights";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -15,6 +15,7 @@ import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { PasswordStrengthServiceAbstraction } from "@bitwarden/common/tools/password-strength";
+import { OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
@@ -66,16 +67,11 @@ export class AllApplicationsComponent implements OnInit {
           return params;
           // TODO: use organizationId to fetch data
         }),
-        switchMap(async (params) => {
-          const organizationId = (await params).get("organizationId");
-          return await this.criticalAppsService.getCriticalApps(organizationId);
-        }),
+        switchMap(async (params) => await params),
       )
-      .subscribe((dbCriticalAppRecords) => {
-        applicationTableMockData.forEach((data) => {
-          data.isMarkedAsCritical = dbCriticalAppRecords.some((app) => app.uri === data.name);
-        });
-        this.dataSource.data = applicationTableMockData;
+      .subscribe((params) => {
+        const orgId = params.get("organizationId");
+        this.criticalAppsService.setOrganizationId(orgId as OrganizationId);
       });
 
     this.isCritialAppsFeatureEnabled = await this.configService.getFeatureFlag(
@@ -94,7 +90,7 @@ export class AllApplicationsComponent implements OnInit {
     protected configService: ConfigService,
     protected criticalAppsService: CriticalAppsApiService,
   ) {
-    // this.dataSource.data = applicationTableMockData;
+    this.dataSource.data = applicationTableMockData;
     this.searchControl.valueChanges
       .pipe(debounceTime(200), takeUntilDestroyed())
       .subscribe((v) => (this.dataSource.filter = v));
@@ -112,25 +108,21 @@ export class AllApplicationsComponent implements OnInit {
   markAppsAsCritical = async () => {
     this.markingAsCritical = true;
 
-    await this.criticalAppsService
-      .setCriticalApps(this.organization.id, Array.from(this.selectedUrls))
-      .then(() => {
-        this.dataSource.data.forEach((data) => {
-          if (this.selectedUrls.has(data.name)) {
-            data.isMarkedAsCritical = true;
-          }
-        });
+    try {
+      await this.criticalAppsService.setCriticalApps(
+        this.organization.id,
+        Array.from(this.selectedUrls),
+      );
 
-        this.toastService.showToast({
-          variant: "success",
-          title: null,
-          message: this.i18nService.t("appsMarkedAsCritical"),
-        });
-      })
-      .finally(() => {
-        this.selectedUrls.clear();
-        this.markingAsCritical = false;
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("appsMarkedAsCritical"),
       });
+    } finally {
+      this.selectedUrls.clear();
+      this.markingAsCritical = false;
+    }
   };
 
   trackByFunction(_: number, item: CipherView) {
