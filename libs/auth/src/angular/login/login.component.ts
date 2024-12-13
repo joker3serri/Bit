@@ -3,8 +3,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ActivatedRoute, Router, RouterModule, NavigationEnd } from "@angular/router";
-import { firstValueFrom, Subject, take, takeUntil, tap, filter } from "rxjs";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { firstValueFrom, Subject, take, takeUntil, tap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
@@ -139,19 +139,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     // Add popstate listener
     window.addEventListener("popstate", this.handlePopState);
-
-    // Add router event subscription
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(() => {
-        if (this.loginUiState === LoginUiState.MASTER_PASSWORD_ENTRY) {
-          // console.log("browser back button clicked");
-          void this.toggleLoginUiState(LoginUiState.EMAIL_ENTRY);
-        }
-      });
 
     // TODO: remove this when the UnauthenticatedExtensionUIRefresh feature flag is removed.
     this.listenForUnauthUiRefreshFlagChanges();
@@ -377,18 +364,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   protected async toggleLoginUiState(value: LoginUiState): Promise<void> {
-    // console.log("toggleLoginUiState", value);
-    // console.log("this.emailFormControl", this.emailFormControl);
-    // console.log("this.formGroup.controls.email", this.formGroup.controls.email);
     this.loginUiState = value;
 
     if (this.loginUiState === LoginUiState.EMAIL_ENTRY) {
       this.loginComponentService.showBackButton(false);
-
-      // Store the current email value before resetting
-      // const currentEmail = this.emailFormControl.value;
-
-      // console.log("currentEmail", currentEmail);
 
       this.anonLayoutWrapperDataService.setAnonLayoutWrapperData({
         pageTitle: { key: "logInToBitwarden" },
@@ -398,9 +377,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       // Reset master password only when going from validated to not validated so that autofill can work properly
       this.formGroup.controls.masterPassword.reset();
-
-      // Restore the email value after reset
-      // this.emailFormControl.setValue(currentEmail);
 
       // Reset known device state when going back to email entry if it is supported
       this.isKnownDevice = false;
@@ -590,6 +566,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Handle the back button click to transition back to the email entry state.
+   */
+  protected async backButtonClicked() {
+    history.replaceState(null, "", window.location.pathname);
+    await this.toggleLoginUiState(LoginUiState.EMAIL_ENTRY);
+  }
+
+  /**
+   * Handle the popstate event to transition back to the email entry state when the back button is clicked.
+   * @param event - The popstate event.
+   */
   private handlePopState = (event: PopStateEvent) => {
     if (this.loginUiState === LoginUiState.MASTER_PASSWORD_ENTRY) {
       // Prevent default navigation
