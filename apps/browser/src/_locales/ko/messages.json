@@ -3010,7 +3010,7 @@
     }
   },
   "forwaderInvalidTokenWithMessage": {
-    "message": "잘못된 $ServiceNAME$ API 토큰: $ERRORMESSAGE$",
+    "message": "잘못된 $SERVICENAME$ API 토큰: $ERRORMESSAGE$",
     "description": "Displayed when the user's API token is rejected by the forwarding service with an error message.",
     "placeholders": {
       "servicename": {
@@ -3024,7 +3024,7 @@
     }
   },
   "forwarderNoAccountId": {
-    "message": "$SERVICNAME$ 마스크된 이메일 계정 ID를 얻을 수 없습니다.",
+    "message": "$SERVICENAME$ 마스크된 이메일 계정 ID를 얻을 수 없습니다.",
     "description": "Displayed when the forwarding service fails to return an account ID.",
     "placeholders": {
       "servicename": {
@@ -3034,7 +3034,7 @@
     }
   },
   "forwarderNoDomain": {
-    "message": "잘못된 $SERVICNAME$ 도메인.",
+    "message": "잘못된 $SERVICENAME$ 도메인.",
     "description": "Displayed when the domain is empty or domain authorization failed at the forwarding service.",
     "placeholders": {
       "servicename": {
@@ -3044,7 +3044,7 @@
     }
   },
   "forwarderNoUrl": {
-    "message": "잘못된 $SERVICNAME$ URL",
+    "message": "잘못된 $SERVICENAME$ URL",
     "description": "Displayed when the url of the forwarding service wasn't supplied.",
     "placeholders": {
       "servicename": {
@@ -3054,7 +3054,7 @@
     }
   },
   "forwarderUnknownError": {
-    "message": "알 수 없는 $SERVICNAME$ 오류가 발생했습니다.",
+    "message": "알 수 없는 $SERVICENAME$ 오류가 발생했습니다.",
     "description": "Displayed when the forwarding service failed due to an unknown error.",
     "placeholders": {
       "servicename": {
@@ -3064,7 +3064,7 @@
     }
   },
   "forwarderUnknownForwarder": {
-    "message": "알 수 없는 포워더: '$SERVICNAME$'.",
+    "message": "알 수 없는 포워더: '$SERVICENAME$'.",
     "description": "Displayed when the forwarding service is not supported.",
     "placeholders": {
       "servicename": {
