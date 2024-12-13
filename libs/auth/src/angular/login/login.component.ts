@@ -570,7 +570,8 @@ export class LoginComponent implements OnInit, OnDestroy {
    * Handle the back button click to transition back to the email entry state.
    */
   protected async backButtonClicked() {
-    history.replaceState(null, "", window.location.pathname);
+    // Replace the history so the "forward" button doesn't show (which wouldn't do anything)
+    history.pushState(null, "", window.location.pathname);
     await this.toggleLoginUiState(LoginUiState.EMAIL_ENTRY);
   }
 
@@ -582,8 +583,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.loginUiState === LoginUiState.MASTER_PASSWORD_ENTRY) {
       // Prevent default navigation
       event.preventDefault();
-      // Replace the current history entry
-      history.replaceState(null, "", window.location.pathname);
+      // Replace the history so the "forward" button doesn't show (which wouldn't do anything)
+      history.pushState(null, "", window.location.pathname);
       // Transition back to email entry state
       void this.toggleLoginUiState(LoginUiState.EMAIL_ENTRY);
     }
