@@ -1,14 +1,24 @@
+import { CommonModule } from "@angular/common";
 import { Component, HostListener, Input, Optional } from "@angular/core";
+import { RouterLinkActive, RouterLink } from "@angular/router";
 import { BehaviorSubject, map } from "rxjs";
 
+import { BitIconButtonComponent } from "../icon-button/icon-button.component";
+
 import { NavBaseComponent } from "./nav-base.component";
-import { NavGroupComponent } from "./nav-group.component";
 import { SideNavService } from "./side-nav.service";
+
+// Resolves a circular dependency between `NavItemComponent` and `NavItemGroup` when using standalone components.
+export abstract class NavGroupAbstraction {
+  abstract setOpen(open: boolean): void;
+}
 
 @Component({
   selector: "bit-nav-item",
   templateUrl: "./nav-item.component.html",
   providers: [{ provide: NavBaseComponent, useExisting: NavItemComponent }],
+  standalone: true,
+  imports: [CommonModule, BitIconButtonComponent, RouterLinkActive, RouterLink],
 })
 export class NavItemComponent extends NavBaseComponent {
   /** Forces active styles to be shown, regardless of the `routerLinkActiveOptions` */
@@ -52,7 +62,7 @@ export class NavItemComponent extends NavBaseComponent {
 
   constructor(
     protected sideNavService: SideNavService,
-    @Optional() private parentNavGroup: NavGroupComponent,
+    @Optional() private parentNavGroup: NavGroupAbstraction,
   ) {
     super();
   }
