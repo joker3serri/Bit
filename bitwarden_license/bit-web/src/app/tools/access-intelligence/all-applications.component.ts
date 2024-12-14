@@ -141,8 +141,9 @@ export class AllApplicationsComponent implements OnInit, OnDestroy {
 
   showAtRiskMemberDetails = async (applicationName: string) => {
     openAtRiskMemberDetailsDialog(this.dialogService, {
-      members: this.dataSource.data.find((app) => app.applicationName === applicationName)
-        ?.atRiskMemberDetails,
+      members:
+        this.dataSource.data.find((app) => app.applicationName === applicationName)
+          ?.atRiskMemberDetails ?? [],
       applicationName,
     });
   };
