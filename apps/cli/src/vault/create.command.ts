@@ -136,9 +136,12 @@ export class CreateCommand {
       return Response.notFound();
     }
 
-    const account = await firstValueFrom(this.accountService.activeAccount$);
+    const activeUserId = await firstValueFrom(
+      this.accountService.activeAccount$.pipe(map((a) => a?.id)),
+    );
+
     const canAccessPremium = await firstValueFrom(
-      this.accountProfileService.hasPremiumFromAnySource$(account.id),
+      this.accountProfileService.hasPremiumFromAnySource$(activeUserId),
     );
 
     if (cipher.organizationId == null && !canAccessPremium) {
@@ -154,9 +157,6 @@ export class CreateCommand {
     }
 
     try {
-      const activeUserId = await firstValueFrom(
-        this.accountService.activeAccount$.pipe(map((a) => a?.id)),
-      );
       const updatedCipher = await this.cipherService.saveAttachmentRawWithServer(
         cipher,
         fileName,
