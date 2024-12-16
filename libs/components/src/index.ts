@@ -32,7 +32,6 @@ export * from "./search";
 export * from "./section";
 export * from "./select";
 export * from "./shared/compact-mode.service";
-export * from "./shared/copy-buttons.service";
 export * from "./table";
 export * from "./tabs";
 export * from "./toast";

@@ -58,7 +58,7 @@ export class AppearanceV2Component implements OnInit {
     theme: ThemeType.System,
     enableAnimations: true,
     enableCompactMode: false,
-    enableCopyButtons: false,
+    showQuickCopyActions: false,
     width: "default" as PopupWidthOption,
   });
 
@@ -100,7 +100,9 @@ export class AppearanceV2Component implements OnInit {
       this.animationControlService.enableRoutingAnimation$,
     );
     const enableCompactMode = await firstValueFrom(this.compactModeService.enabled$);
-    const enableCopyButtons = await firstValueFrom(this.copyButtonsService.enabled$);
+    const showQuickCopyActions = await firstValueFrom(
+      this.copyButtonsService.showQuickCopyActions$,
+    );
     const width = await firstValueFrom(this.popupWidthService.width$);
 
     // Set initial values for the form
@@ -110,7 +112,7 @@ export class AppearanceV2Component implements OnInit {
       theme,
       enableAnimations,
       enableCompactMode,
-      enableCopyButtons,
+      showQuickCopyActions,
       width,
     });
 
@@ -146,10 +148,10 @@ export class AppearanceV2Component implements OnInit {
         void this.updateCompactMode(enableCompactMode);
       });
 
-    this.appearanceForm.controls.enableCopyButtons.valueChanges
+    this.appearanceForm.controls.showQuickCopyActions.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((enableCopyButtons) => {
-        void this.updateCopyButtons(enableCopyButtons);
+      .subscribe((showQuickCopyActions) => {
+        void this.updateQuickCopyActions(showQuickCopyActions);
       });
 
     this.appearanceForm.controls.width.valueChanges
@@ -180,8 +182,8 @@ export class AppearanceV2Component implements OnInit {
     await this.compactModeService.setEnabled(enableCompactMode);
   }
 
-  async updateCopyButtons(enableCopyButtons: boolean) {
-    await this.copyButtonsService.setEnabled(enableCopyButtons);
+  async updateQuickCopyActions(showQuickCopyActions: boolean) {
+    await this.copyButtonsService.setShowQuickCopyActions(showQuickCopyActions);
   }
 
   async updateWidth(width: PopupWidthOption) {

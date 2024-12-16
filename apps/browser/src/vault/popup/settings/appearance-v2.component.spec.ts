@@ -47,13 +47,13 @@ describe("AppearanceV2Component", () => {
   const selectedTheme$ = new BehaviorSubject<ThemeType>(ThemeType.Nord);
   const enableRoutingAnimation$ = new BehaviorSubject<boolean>(true);
   const enableCompactMode$ = new BehaviorSubject<boolean>(false);
-  const enableCopyButtons$ = new BehaviorSubject<boolean>(false);
+  const showQuickCopyActions$ = new BehaviorSubject<boolean>(false);
   const setSelectedTheme = jest.fn().mockResolvedValue(undefined);
   const setShowFavicons = jest.fn().mockResolvedValue(undefined);
   const setEnableBadgeCounter = jest.fn().mockResolvedValue(undefined);
   const setEnableRoutingAnimation = jest.fn().mockResolvedValue(undefined);
   const setEnableCompactMode = jest.fn().mockResolvedValue(undefined);
-  const setEnableCopyButtons = jest.fn().mockResolvedValue(undefined);
+  const setShowQuickCopyActions = jest.fn().mockResolvedValue(undefined);
 
   const mockWidthService: Partial<PopupWidthService> = {
     width$: new BehaviorSubject("default"),
@@ -89,7 +89,10 @@ describe("AppearanceV2Component", () => {
         },
         {
           provide: PopupCopyButtonsService,
-          useValue: { enabled$: enableCopyButtons$, setEnabled: setEnableCopyButtons },
+          useValue: {
+            showQuickCopyActions$,
+            setShowQuickCopyActions,
+          } as Partial<PopupCopyButtonsService>,
         },
         {
           provide: PopupWidthService,
@@ -119,7 +122,7 @@ describe("AppearanceV2Component", () => {
       enableBadgeCounter: true,
       theme: ThemeType.Nord,
       enableCompactMode: false,
-      enableCopyButtons: false,
+      showQuickCopyActions: false,
       width: "default",
     });
   });

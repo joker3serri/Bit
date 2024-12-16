@@ -1,31 +1,39 @@
 import { inject, Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 
-import { GlobalStateProvider, KeyDefinition, THEMING_DISK } from "@bitwarden/common/platform/state";
-import { CopyButtonsService } from "@bitwarden/components";
+import {
+  GlobalStateProvider,
+  KeyDefinition,
+  VAULT_APPEARANCE,
+} from "@bitwarden/common/platform/state";
 
-const COPY_BUTTON = new KeyDefinition<boolean>(THEMING_DISK, "copyButtons", {
+export type CopyButtonDisplayMode = "combined" | "quick";
+
+const COPY_BUTTON = new KeyDefinition<CopyButtonDisplayMode>(VAULT_APPEARANCE, "copyButtons", {
   deserializer: (s) => s,
 });
 
 /**
- * Service to persist Copy Buttons to state / user settings.
+ * Settings service for vault copy button settings
  **/
 @Injectable({ providedIn: "root" })
-export class PopupCopyButtonsService implements CopyButtonsService {
+export class PopupCopyButtonsService {
+  private readonly DEFAULT_DISPLAY_MODE = "combined";
   private state = inject(GlobalStateProvider).get(COPY_BUTTON);
 
-  enabled$: Observable<boolean> = this.state.state$.pipe(map((state) => state ?? false));
+  displayMode$: Observable<CopyButtonDisplayMode> = this.state.state$.pipe(
+    map((state) => state ?? this.DEFAULT_DISPLAY_MODE),
+  );
 
-  init() {
-    this.enabled$.subscribe((enabled) => {
-      enabled
-        ? document.body.classList.add("tw-bit-copy-buttons")
-        : document.body.classList.remove("tw-bit-copy-buttons");
-    });
+  async setDisplayMode(displayMode: CopyButtonDisplayMode) {
+    await this.state.update(() => displayMode);
   }
 
-  async setEnabled(enabled: boolean) {
-    await this.state.update(() => enabled);
+  showQuickCopyActions$: Observable<boolean> = this.displayMode$.pipe(
+    map((displayMode) => displayMode === "quick"),
+  );
+
+  async setShowQuickCopyActions(value: boolean) {
+    await this.setDisplayMode(value ? "quick" : "combined");
   }
 }

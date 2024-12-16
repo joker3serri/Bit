@@ -1,13 +1,16 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
 import { CopyCipherFieldDirective } from "@bitwarden/vault";
+
+import { TableModule } from "../../../../../../../../libs/components/src/table/table.module";
+import { PopupCopyButtonsService } from "../../../../../platform/popup/layout/popup-copy-buttons.service";
 
 @Component({
   standalone: true,
@@ -20,9 +23,12 @@ import { CopyCipherFieldDirective } from "@bitwarden/vault";
     MenuModule,
     CommonModule,
     CopyCipherFieldDirective,
+    TableModule,
   ],
 })
 export class ItemCopyActionsComponent {
+  protected showQuickCopyActions$ = inject(PopupCopyButtonsService).showQuickCopyActions$;
+
   @Input() cipher: CipherView;
 
   protected CipherType = CipherType;
