@@ -66,7 +66,7 @@ export class SignalRConnectionService {
         .build();
 
       connection.on("ReceiveMessage", (data: any) => {
-        subsciber.next({ type: "ReceiveMessage", message: data });
+        subsciber.next({ type: "ReceiveMessage", message: new NotificationResponse(data) });
       });
 
       connection.on("Heartbeat", () => {
