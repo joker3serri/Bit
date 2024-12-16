@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { Subject, merge } from "rxjs";
 
@@ -23,6 +25,8 @@ import {
   LoginComponentService,
   SetPasswordJitService,
   LockComponentService,
+  SsoComponentService,
+  DefaultSsoComponentService,
 } from "@bitwarden/auth/angular";
 import {
   InternalUserDecryptionOptionsServiceAbstraction,
@@ -358,6 +362,11 @@ const safeProviders: SafeProvider[] = [
     provide: LoginEmailService,
     useClass: LoginEmailService,
     deps: [AccountService, AuthService, StateProvider],
+  }),
+  safeProvider({
+    provide: SsoComponentService,
+    useClass: DefaultSsoComponentService,
+    deps: [],
   }),
   safeProvider({
     provide: LoginApprovalComponentServiceAbstraction,

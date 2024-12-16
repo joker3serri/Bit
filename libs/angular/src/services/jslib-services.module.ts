@@ -1,4 +1,6 @@
-import { ErrorHandler, LOCALE_ID, NgModule, NgZone } from "@angular/core";
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
+import { ErrorHandler, LOCALE_ID, NgModule } from "@angular/core";
 import { Subject } from "rxjs";
 
 import {
@@ -35,6 +37,8 @@ import {
   RegisterRouteService,
   AuthRequestApiService,
   DefaultAuthRequestApiService,
+  DefaultLoginSuccessHandlerService,
+  LoginSuccessHandlerService,
 } from "@bitwarden/auth/common";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -279,6 +283,10 @@ import {
   DefaultBiometricStateService,
   KdfConfigService,
   DefaultKdfConfigService,
+  UserAsymmetricKeysRegenerationService,
+  DefaultUserAsymmetricKeysRegenerationService,
+  UserAsymmetricKeysRegenerationApiService,
+  DefaultUserAsymmetricKeysRegenerationApiService,
 } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 import {
@@ -319,7 +327,6 @@ import {
   CLIENT_TYPE,
   REFRESH_ACCESS_TOKEN_ERROR_CALLBACK,
   ENV_ADDITIONAL_REGIONS,
-  AUTHN_SESSION_TIMEOUT_EXECUTOR,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
 
@@ -413,11 +420,6 @@ const safeProviders: SafeProvider[] = [
     ],
   }),
   safeProvider({
-    provide: AUTHN_SESSION_TIMEOUT_EXECUTOR,
-    useFactory: (ngZone: NgZone) => (fn: () => void) => ngZone.run(fn),
-    deps: [NgZone],
-  }),
-  safeProvider({
     provide: LoginStrategyServiceAbstraction,
     useClass: LoginStrategyService,
     deps: [
@@ -446,13 +448,12 @@ const safeProviders: SafeProvider[] = [
       VaultTimeoutSettingsServiceAbstraction,
       KdfConfigService,
       TaskSchedulerService,
-      AUTHN_SESSION_TIMEOUT_EXECUTOR,
     ],
   }),
   safeProvider({
     provide: FileUploadServiceAbstraction,
     useClass: FileUploadService,
-    deps: [LogService],
+    deps: [LogService, ApiServiceAbstraction],
   }),
   safeProvider({
     provide: CipherFileUploadServiceAbstraction,
@@ -1399,6 +1400,29 @@ const safeProviders: SafeProvider[] = [
     provide: LoginDecryptionOptionsService,
     useClass: DefaultLoginDecryptionOptionsService,
     deps: [MessagingServiceAbstraction],
+  }),
+  safeProvider({
+    provide: UserAsymmetricKeysRegenerationApiService,
+    useClass: DefaultUserAsymmetricKeysRegenerationApiService,
+    deps: [ApiServiceAbstraction],
+  }),
+  safeProvider({
+    provide: UserAsymmetricKeysRegenerationService,
+    useClass: DefaultUserAsymmetricKeysRegenerationService,
+    deps: [
+      KeyServiceAbstraction,
+      CipherServiceAbstraction,
+      UserAsymmetricKeysRegenerationApiService,
+      LogService,
+      SdkService,
+      ApiServiceAbstraction,
+      ConfigService,
+    ],
+  }),
+  safeProvider({
+    provide: LoginSuccessHandlerService,
+    useClass: DefaultLoginSuccessHandlerService,
+    deps: [SyncService, UserAsymmetricKeysRegenerationService],
   }),
 ];
 

@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Directive, Inject, OnInit, OnDestroy } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
@@ -102,20 +104,10 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
     super(environmentService, i18nService, platformUtilsService, toastService);
     this.webAuthnSupported = this.platformUtilsService.supportsWebAuthn(win);
 
-    this.logService.info(
-      "Subscribing to timeout on LoginStrategyService with service id: " +
-        this.loginStrategyService.id,
-    );
-
     // Add subscription to twoFactorTimeout$ and navigate to twoFactorTimeoutRoute if expired
     this.loginStrategyService.twoFactorTimeout$
       .pipe(takeUntilDestroyed())
       .subscribe(async (expired) => {
-        this.logService.info(
-          "Received emission from  LoginStrategyService.twoFactorTimeout$ with service id: " +
-            this.loginStrategyService.id,
-        );
-
         if (!expired) {
           return;
         }

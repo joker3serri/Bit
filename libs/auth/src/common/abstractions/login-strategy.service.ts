@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Observable } from "rxjs";
 
 import { AuthenticationType } from "@bitwarden/common/auth/enums/authentication-type";
@@ -14,8 +16,6 @@ import {
 } from "../models/domain/login-credentials";
 
 export abstract class LoginStrategyServiceAbstraction {
-  id: string;
-
   /**
    * The current strategy being used to authenticate.
    * Emits null if the session has timed out.
