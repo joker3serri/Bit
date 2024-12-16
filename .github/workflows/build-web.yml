@@ -66,11 +66,23 @@ jobs:
     if: ${{ needs.check-secrets.outputs.has_secrets == 'true' }}
     uses: bitwarden/gh-actions/.github/workflows/check-run.yml@main
 
+  allowed-to-run:
+    name: Stop job if not allowed to run
+    needs:
+      - check-secrets
+      - check-run
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Fail
+        if: ${{ needs.check-run.result == 'failure' }}
+        run: exit 1
+
   setup:
     name: Setup
     runs-on: ubuntu-22.04
     needs:
-      - check-run
+      - allowed-to-run
     outputs:
       version: ${{ steps.version.outputs.value }}
       node_version: ${{ steps.retrieve-node-version.outputs.node_version }}
