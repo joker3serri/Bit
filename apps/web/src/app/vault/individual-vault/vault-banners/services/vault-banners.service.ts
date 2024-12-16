@@ -1,14 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  Subject,
-  Observable,
-  combineLatest,
-  firstValueFrom,
-  map,
-  mergeMap,
-  take,
-  switchMap,
-} from "rxjs";
+import { Subject, Observable, combineLatest, firstValueFrom, map, mergeMap, take } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -22,6 +13,7 @@ import {
   BANNERS_DISMISSED_DISK,
   UserKeyDefinition,
 } from "@bitwarden/common/platform/state";
+import { UserId } from "@bitwarden/common/types/guid";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { PBKDF2KdfConfig, KdfConfigService, KdfType } from "@bitwarden/key-management";
 
@@ -65,6 +57,7 @@ export class VaultBannersService {
 
   private premiumBannerState: ActiveUserState<PremiumBannerReprompt>;
   private sessionBannerState: ActiveUserState<SessionBanners[]>;
+  private activeUserId: UserId;
 
   /**
    * Emits when the sync service has completed a sync
@@ -89,12 +82,12 @@ export class VaultBannersService {
     this.premiumBannerState = this.stateProvider.getActive(PREMIUM_BANNER_REPROMPT_KEY);
     this.sessionBannerState = this.stateProvider.getActive(BANNERS_DISMISSED_DISK_KEY);
 
+    this.accountService.activeAccount$.pipe(take(1)).subscribe((account) => {
+      this.activeUserId = account?.id;
+    });
+
     const premiumSources$ = combineLatest([
-      this.accountService.activeAccount$.pipe(
-        switchMap((account) =>
-          this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
-        ),
-      ),
+      this.billingAccountProfileStateService.hasPremiumFromAnySource$(this.activeUserId),
       this.premiumBannerState.state$,
     ]);
 

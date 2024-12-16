@@ -467,11 +467,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         switchMap(() =>
           combineLatest([
             filter$,
-            this.accountService.activeAccount$.pipe(
-              switchMap((account) =>
-                this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
-              ),
-            ),
+            this.billingAccountProfileStateService.hasPremiumFromAnySource$(this.activeUserId),
             allCollections$,
             this.organizationService.organizations$,
             ciphers$,

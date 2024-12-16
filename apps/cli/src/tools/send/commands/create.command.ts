@@ -3,7 +3,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, switchMap } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
@@ -80,6 +80,10 @@ export class SendCreateCommand {
     req.key = null;
     req.maxAccessCount = maxAccessCount;
 
+    const hasPremium$ = this.accountService.activeAccount$.pipe(
+      switchMap(({ id }) => this.accountProfileService.hasPremiumFromAnySource$(id)),
+    );
+
     switch (req.type) {
       case SendType.File:
         if (process.env.BW_SERVE === "true") {
@@ -88,10 +92,6 @@ export class SendCreateCommand {
           );
         }
 
-        const hasPremium$ = this.accountService.activeAccount$.pipe(
-          switchMap(({id}) => this.accountProfileService.hasPremiumFromAnySource(id)
-          )
-        );
         if (!(await firstValueFrom(hasPremium$))) {
           return Response.error("Premium status is required to use this feature.");
         }
