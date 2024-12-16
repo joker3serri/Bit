@@ -76,7 +76,7 @@ export class WorkerWebPushConnectionService implements WebPushConnectionService 
     // FIXME: get config of server for the specified userId, once ConfigService supports it
     return this.configService.serverConfig$.pipe(
       map((config) =>
-        config.push?.pushTechnology === PushTechnology.WebPush ? config.push.vapidPublicKey : null,
+        config?.push?.pushTechnology === PushTechnology.WebPush ? config.push.vapidPublicKey : null,
       ),
       // No need to re-emit when there is new server config if the vapidPublicKey is still there and the exact same
       distinctUntilChanged(),
