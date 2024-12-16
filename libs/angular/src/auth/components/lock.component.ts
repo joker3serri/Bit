@@ -3,7 +3,7 @@
 import { Directive, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom, interval, merge, Subject } from "rxjs";
-import { concatMap, map, take, takeUntil } from "rxjs/operators";
+import { concatMap, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 import { PinServiceAbstraction, PinLockType } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -110,24 +110,20 @@ export class LockComponent implements OnInit, OnDestroy {
 
     this.biometricStatus = BiometricsStatus.NotEnabledLocally;
     merge(interval(1000), this.accountService.activeAccount$)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        (async () => {
-          if (this.activeUserId) {
-            if (!(await this.vaultTimeoutSettingsService.isBiometricLockSet(this.activeUserId))) {
-              this.biometricStatus = BiometricsStatus.NotEnabledLocally;
-            } else {
-              this.biometricStatus = await this.biometricsService.getBiometricsStatusForUser(
-                this.activeUserId,
-              );
-            }
+      .pipe(
+        filter(() => this.activeUserId != null),
+        switchMap(async () => {
+          if (!(await this.vaultTimeoutSettingsService.isBiometricLockSet(this.activeUserId))) {
+            this.biometricStatus = BiometricsStatus.NotEnabledLocally;
+          } else {
+            this.biometricStatus = await this.biometricsService.getBiometricsStatusForUser(
+              this.activeUserId,
+            );
           }
-        })()
-          .then(() => {})
-          .catch((e) => {
-            this.logService.error("Error checking biometrics status", e);
-          });
-      });
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {
