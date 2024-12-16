@@ -1,7 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Component, EventEmitter, Input, Output, signal } from "@angular/core";
-import { Toast } from "ngx-toastr";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { IconButtonModule } from "../icon-button";
 import { SharedModule } from "../shared";
@@ -51,7 +50,7 @@ export class ToastComponent {
   /**
    * The percent width of the progress bar, from 0-100
    **/
-  @Input() progressWidth: Toast["width"] = signal(0);
+  @Input() progressWidth = 0;
 
   /** Emits when the user presses the close button */
   @Output() onClose = new EventEmitter<void>();
