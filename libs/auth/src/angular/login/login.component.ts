@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
@@ -135,6 +137,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
+    // Add popstate listener to listen for browser back button clicks
+    window.addEventListener("popstate", this.handlePopState);
+
     // TODO: remove this when the UnauthenticatedExtensionUIRefresh feature flag is removed.
     this.listenForUnauthUiRefreshFlagChanges();
 
@@ -146,6 +151,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // Remove popstate listener
+    window.removeEventListener("popstate", this.handlePopState);
+
     if (this.clientType === ClientType.Desktop) {
       // TODO: refactor to not use deprecated broadcaster service.
       this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
@@ -226,11 +234,14 @@ export class LoginComponent implements OnInit, OnDestroy {
                 message: this.i18nService.t("invalidMasterPassword"),
               },
             });
+          } else {
+            // Allow other 400 responses to be handled by toast
+            this.validationService.showError(error);
           }
           break;
         }
         default: {
-          // Allow all other errors to be handled by toast
+          // Allow all other error codes to be handled by toast
           this.validationService.showError(error);
         }
       }
@@ -557,4 +568,28 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.clientType !== ClientType.Browser
     );
   }
+
+  /**
+   * Handle the back button click to transition back to the email entry state.
+   */
+  protected async backButtonClicked() {
+    // Replace the history so the "forward" button doesn't show (which wouldn't do anything)
+    history.pushState(null, "", window.location.pathname);
+    await this.toggleLoginUiState(LoginUiState.EMAIL_ENTRY);
+  }
+
+  /**
+   * Handle the popstate event to transition back to the email entry state when the back button is clicked.
+   * @param event - The popstate event.
+   */
+  private handlePopState = (event: PopStateEvent) => {
+    if (this.loginUiState === LoginUiState.MASTER_PASSWORD_ENTRY) {
+      // Prevent default navigation
+      event.preventDefault();
+      // Replace the history so the "forward" button doesn't show (which wouldn't do anything)
+      history.pushState(null, "", window.location.pathname);
+      // Transition back to email entry state
+      void this.toggleLoginUiState(LoginUiState.EMAIL_ENTRY);
+    }
+  };
 }
