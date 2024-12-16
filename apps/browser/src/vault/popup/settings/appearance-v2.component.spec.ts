@@ -14,6 +14,7 @@ import { ThemeType } from "@bitwarden/common/platform/enums";
 import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-state.service";
 
 import { PopupCompactModeService } from "../../../platform/popup/layout/popup-compact-mode.service";
+import { PopupCopyButtonsService } from "../../../platform/popup/layout/popup-copy-buttons.service";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import { PopupWidthService } from "../../../platform/popup/layout/popup-width.service";
@@ -46,11 +47,13 @@ describe("AppearanceV2Component", () => {
   const selectedTheme$ = new BehaviorSubject<ThemeType>(ThemeType.Nord);
   const enableRoutingAnimation$ = new BehaviorSubject<boolean>(true);
   const enableCompactMode$ = new BehaviorSubject<boolean>(false);
+  const enableCopyButtons$ = new BehaviorSubject<boolean>(false);
   const setSelectedTheme = jest.fn().mockResolvedValue(undefined);
   const setShowFavicons = jest.fn().mockResolvedValue(undefined);
   const setEnableBadgeCounter = jest.fn().mockResolvedValue(undefined);
   const setEnableRoutingAnimation = jest.fn().mockResolvedValue(undefined);
   const setEnableCompactMode = jest.fn().mockResolvedValue(undefined);
+  const setEnableCopyButtons = jest.fn().mockResolvedValue(undefined);
 
   const mockWidthService: Partial<PopupWidthService> = {
     width$: new BehaviorSubject("default"),
@@ -85,6 +88,10 @@ describe("AppearanceV2Component", () => {
           useValue: { enabled$: enableCompactMode$, setEnabled: setEnableCompactMode },
         },
         {
+          provide: PopupCopyButtonsService,
+          useValue: { enabled$: enableCopyButtons$, setEnabled: setEnableCopyButtons },
+        },
+        {
           provide: PopupWidthService,
           useValue: mockWidthService,
         },
@@ -112,6 +119,7 @@ describe("AppearanceV2Component", () => {
       enableBadgeCounter: true,
       theme: ThemeType.Nord,
       enableCompactMode: false,
+      enableCopyButtons: false,
       width: "default",
     });
   });
