@@ -6,29 +6,29 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { MemberDetailsFlat } from "@bitwarden/bit-common/tools/reports/risk-insights/models/password-health";
 import { ButtonModule, DialogModule, DialogService } from "@bitwarden/components";
 
-type AtRiskMemberDetailsDialogParams = {
+type AppAtRiskMembersDialogParams = {
   members: MemberDetailsFlat[];
   applicationName: string;
 };
 
-export const openAtRiskMemberDetailsDialog = (
+export const openAppAtRiskMembersDialog = (
   dialogService: DialogService,
-  dialogConfig: AtRiskMemberDetailsDialogParams,
+  dialogConfig: AppAtRiskMembersDialogParams,
 ) =>
-  dialogService.open<boolean, AtRiskMemberDetailsDialogParams>(AtRiskMemberDetailsDialogComponent, {
+  dialogService.open<boolean, AppAtRiskMembersDialogParams>(AppAtRiskMembersDialogComponent, {
     data: dialogConfig,
   });
 
 @Component({
   standalone: true,
-  templateUrl: "./at-risk-member-details-dialog.component.html",
+  templateUrl: "./app-at-risk-members-dialog.component.html",
   imports: [ButtonModule, CommonModule, JslibModule, DialogModule],
 })
-export class AtRiskMemberDetailsDialogComponent {
+export class AppAtRiskMembersDialogComponent {
   protected members: MemberDetailsFlat[];
   protected applicationName: string;
 
-  constructor(@Inject(DIALOG_DATA) private params: AtRiskMemberDetailsDialogParams) {
+  constructor(@Inject(DIALOG_DATA) private params: AppAtRiskMembersDialogParams) {
     this.members = params.members;
     this.applicationName = params.applicationName;
   }
