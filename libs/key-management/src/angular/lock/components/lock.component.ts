@@ -39,7 +39,11 @@ import {
   IconButtonModule,
   ToastService,
 } from "@bitwarden/components";
-import { KeyService, BiometricStateService } from "@bitwarden/key-management";
+import {
+  KeyService,
+  BiometricStateService,
+  UserAsymmetricKeysRegenerationService,
+} from "@bitwarden/key-management";
 
 import {
   UnlockOption,
@@ -138,6 +142,7 @@ export class LockV2Component implements OnInit, OnDestroy {
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private formBuilder: FormBuilder,
     private toastService: ToastService,
+    private userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
 
     private lockComponentService: LockComponentService,
     private anonLayoutWrapperDataService: AnonLayoutWrapperDataService,
@@ -530,6 +535,8 @@ export class LockV2Component implements OnInit, OnDestroy {
 
     // Vault can be de-synced since notifications get ignored while locked. Need to check whether sync is required using the sync service.
     await this.syncService.fullSync(false);
+
+    await this.userAsymmetricKeysRegenerationService.regenerateIfNeeded(this.activeAccount.id);
 
     if (this.clientType === "browser") {
       const previousUrl = this.lockComponentService.getPreviousUrl();
