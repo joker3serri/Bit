@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Subject, filter, firstValueFrom, map, merge, timeout } from "rxjs";
 
 import { CollectionService, DefaultCollectionService } from "@bitwarden/admin-console/common";
@@ -694,7 +696,7 @@ export default class MainBackground {
     );
 
     this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
-    this.fileUploadService = new FileUploadService(this.logService);
+    this.fileUploadService = new FileUploadService(this.logService, this.apiService);
     this.cipherFileUploadService = new CipherFileUploadService(
       this.apiService,
       this.fileUploadService,
@@ -728,7 +730,7 @@ export default class MainBackground {
     );
 
     const sdkClientFactory = flagEnabled("sdk")
-      ? new BrowserSdkClientFactory()
+      ? new BrowserSdkClientFactory(this.logService)
       : new NoopSdkClientFactory();
     this.sdkService = new DefaultSdkService(
       sdkClientFactory,
@@ -1064,14 +1066,6 @@ export default class MainBackground {
 
     const systemUtilsServiceReloadCallback = async () => {
       await this.taskSchedulerService.clearAllScheduledTasks();
-      if (this.platformUtilsService.isSafari()) {
-        // If we do `chrome.runtime.reload` on safari they will send an onInstalled reason of install
-        // and that prompts us to show a new tab, this apparently doesn't happen on sideloaded
-        // extensions and only shows itself production scenarios. See: https://bitwarden.atlassian.net/browse/PM-12298
-        self.location.reload();
-        return;
-      }
-
       BrowserApi.reloadExtension();
     };
 
