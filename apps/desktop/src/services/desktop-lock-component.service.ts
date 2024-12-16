@@ -47,7 +47,7 @@ export class DesktopLockComponentService implements LockComponentService {
   getAvailableUnlockOptions$(userId: UserId): Observable<UnlockOptions> {
     return combineLatest([
       // Note: defer is preferable b/c it delays the execution of the function until the observable is subscribed to
-      defer(async () => await this.biometricsService.getBiometricsStatusForUser(userId)),
+      defer(() => this.biometricsService.getBiometricsStatusForUser(userId)),
       this.userDecryptionOptionsService.userDecryptionOptionsById$(userId),
       defer(() => this.pinService.isPinDecryptionAvailable(userId)),
     ]).pipe(

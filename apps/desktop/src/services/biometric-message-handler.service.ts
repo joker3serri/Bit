@@ -153,6 +153,7 @@ export class BiometricMessageHandlerService {
             appId,
           );
         } catch (e) {
+          this.logService.error("[Native Messaging IPC] Biometric authentication failed", e);
           await this.send(
             { command: BiometricsCommands.AuthenticateWithBiometrics, messageId, response: false },
             appId,
