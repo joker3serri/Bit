@@ -27,6 +27,7 @@ import {
   PopupWidthOption,
   PopupSizeService,
 } from "../../../platform/popup/layout/popup-size.service";
+import { VaultPopupCopyButtonsService } from "../services/vault-popup-copy-buttons.service";
 
 @Component({
   standalone: true,
@@ -47,6 +48,7 @@ import {
 })
 export class AppearanceV2Component implements OnInit {
   private compactModeService = inject(PopupCompactModeService);
+  private copyButtonsService = inject(VaultPopupCopyButtonsService);
   private popupSizeService = inject(PopupSizeService);
   private i18nService = inject(I18nService);
 
@@ -56,6 +58,7 @@ export class AppearanceV2Component implements OnInit {
     theme: ThemeType.System,
     enableAnimations: true,
     enableCompactMode: false,
+    showQuickCopyActions: false,
     width: "default" as PopupWidthOption,
   });
 
@@ -97,6 +100,9 @@ export class AppearanceV2Component implements OnInit {
       this.animationControlService.enableRoutingAnimation$,
     );
     const enableCompactMode = await firstValueFrom(this.compactModeService.enabled$);
+    const showQuickCopyActions = await firstValueFrom(
+      this.copyButtonsService.showQuickCopyActions$,
+    );
     const width = await firstValueFrom(this.popupSizeService.width$);
 
     // Set initial values for the form
@@ -106,6 +112,7 @@ export class AppearanceV2Component implements OnInit {
       theme,
       enableAnimations,
       enableCompactMode,
+      showQuickCopyActions,
       width,
     });
 
@@ -141,6 +148,12 @@ export class AppearanceV2Component implements OnInit {
         void this.updateCompactMode(enableCompactMode);
       });
 
+    this.appearanceForm.controls.showQuickCopyActions.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((showQuickCopyActions) => {
+        void this.updateQuickCopyActions(showQuickCopyActions);
+      });
+
     this.appearanceForm.controls.width.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((width) => {
@@ -167,6 +180,10 @@ export class AppearanceV2Component implements OnInit {
 
   async updateCompactMode(enableCompactMode: boolean) {
     await this.compactModeService.setEnabled(enableCompactMode);
+  }
+
+  async updateQuickCopyActions(showQuickCopyActions: boolean) {
+    await this.copyButtonsService.setShowQuickCopyActions(showQuickCopyActions);
   }
 
   async updateWidth(width: PopupWidthOption) {
