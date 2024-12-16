@@ -55,7 +55,6 @@ tokio-stream = { version = "=0.1.15", features = ["net"] }
 tokio-util = { version = "=0.7.12", features = ["codec"] }
 thiserror = "=1.0.69"
 typenum = "=1.17.0"
-rand_chacha = "=0.3.1"
 pkcs8 = { version = "=0.10.2", features = ["alloc", "encryption", "pem"] }
 rsa = "=0.9.6"
 ed25519 = { version = "=2.2.3", features = ["pkcs8"] }
