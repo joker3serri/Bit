@@ -9,7 +9,6 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
 import { CopyCipherFieldDirective } from "@bitwarden/vault";
 
-import { TableModule } from "../../../../../../../../libs/components/src/table/table.module";
 import { PopupCopyButtonsService } from "../../../../../platform/popup/layout/popup-copy-buttons.service";
 
 @Component({
@@ -23,7 +22,6 @@ import { PopupCopyButtonsService } from "../../../../../platform/popup/layout/po
     MenuModule,
     CommonModule,
     CopyCipherFieldDirective,
-    TableModule,
   ],
 })
 export class ItemCopyActionsComponent {
