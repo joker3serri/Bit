@@ -165,6 +165,18 @@ export class BrowserApi {
     });
   }
 
+  static async getCurrentTab(): Promise<chrome.tabs.Tab> | null {
+    if (BrowserApi.isManifestVersion(3)) {
+      return await chrome.tabs.getCurrent();
+    }
+
+    return new Promise((resolve) =>
+      chrome.tabs.getCurrent((tab) => {
+        resolve(tab);
+      }),
+    );
+  }
+
   static async tabsQuery(options: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]> {
     return new Promise((resolve) => {
       chrome.tabs.query(options, (tabs) => {

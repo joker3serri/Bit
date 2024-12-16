@@ -3,7 +3,7 @@
 import { BrowserApi } from "../browser/browser-api";
 
 import { ScrollOptions } from "./abstractions/browser-popup-utils.abstractions";
-import { PopupWidthOptions } from "./layout/popup-width.service";
+import { PopupWidthOptions } from "./layout/popup-size.service";
 
 class BrowserPopupUtils {
   /**
@@ -22,6 +22,18 @@ class BrowserPopupUtils {
    */
   static inPopout(win: Window): boolean {
     return BrowserPopupUtils.urlContainsSearchParams(win, "uilocation", "popout");
+  }
+
+  static async isInTab() {
+    const tabId = (await BrowserApi.getCurrentTab())?.id;
+
+    if (tabId) {
+      const result = BrowserApi.getExtensionViews({ tabId, type: "tab" });
+
+      return result.length > 0;
+    }
+
+    return false;
   }
 
   /**
