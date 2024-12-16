@@ -25,8 +25,8 @@ import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-heade
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import {
   PopupWidthOption,
-  PopupWidthService,
-} from "../../../platform/popup/layout/popup-width.service";
+  PopupSizeService,
+} from "../../../platform/popup/layout/popup-size.service";
 
 @Component({
   standalone: true,
@@ -47,7 +47,7 @@ import {
 })
 export class AppearanceV2Component implements OnInit {
   private compactModeService = inject(PopupCompactModeService);
-  private popupWidthService = inject(PopupWidthService);
+  private popupSizeService = inject(PopupSizeService);
   private i18nService = inject(I18nService);
 
   appearanceForm = this.formBuilder.group({
@@ -97,7 +97,7 @@ export class AppearanceV2Component implements OnInit {
       this.animationControlService.enableRoutingAnimation$,
     );
     const enableCompactMode = await firstValueFrom(this.compactModeService.enabled$);
-    const width = await firstValueFrom(this.popupWidthService.width$);
+    const width = await firstValueFrom(this.popupSizeService.width$);
 
     // Set initial values for the form
     this.appearanceForm.setValue({
@@ -170,6 +170,6 @@ export class AppearanceV2Component implements OnInit {
   }
 
   async updateWidth(width: PopupWidthOption) {
-    await this.popupWidthService.setWidth(width);
+    await this.popupSizeService.setWidth(width);
   }
 }

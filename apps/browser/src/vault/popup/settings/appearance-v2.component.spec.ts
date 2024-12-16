@@ -16,7 +16,7 @@ import { ThemeStateService } from "@bitwarden/common/platform/theming/theme-stat
 import { PopupCompactModeService } from "../../../platform/popup/layout/popup-compact-mode.service";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
-import { PopupWidthService } from "../../../platform/popup/layout/popup-width.service";
+import { PopupSizeService } from "../../../platform/popup/layout/popup-size.service";
 
 import { AppearanceV2Component } from "./appearance-v2.component";
 
@@ -52,7 +52,7 @@ describe("AppearanceV2Component", () => {
   const setEnableRoutingAnimation = jest.fn().mockResolvedValue(undefined);
   const setEnableCompactMode = jest.fn().mockResolvedValue(undefined);
 
-  const mockWidthService: Partial<PopupWidthService> = {
+  const mockWidthService: Partial<PopupSizeService> = {
     width$: new BehaviorSubject("default"),
     setWidth: jest.fn().mockResolvedValue(undefined),
   };
@@ -85,7 +85,7 @@ describe("AppearanceV2Component", () => {
           useValue: { enabled$: enableCompactMode$, setEnabled: setEnableCompactMode },
         },
         {
-          provide: PopupWidthService,
+          provide: PopupSizeService,
           useValue: mockWidthService,
         },
       ],
