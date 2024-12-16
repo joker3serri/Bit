@@ -4679,6 +4679,9 @@
   "showNumberOfAutofillSuggestions": {
     "message": "Show number of login autofill suggestions on extension icon"
   },
+  "showInlineCopyButtons": {
+    "message": "Show inline copy buttons for items on vault listing"
+  },
   "systemDefault": {
     "message": "System default"
   },

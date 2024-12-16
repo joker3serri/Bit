@@ -21,6 +21,7 @@ import { FormFieldModule } from "../../../../../../libs/components/src/form-fiel
 import { SelectModule } from "../../../../../../libs/components/src/select/select.module";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupCompactModeService } from "../../../platform/popup/layout/popup-compact-mode.service";
+import { PopupCopyButtonsService } from "../../../platform/popup/layout/popup-copy-buttons.service";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import {
@@ -47,6 +48,7 @@ import {
 })
 export class AppearanceV2Component implements OnInit {
   private compactModeService = inject(PopupCompactModeService);
+  private copyButtonsService = inject(PopupCopyButtonsService);
   private popupWidthService = inject(PopupWidthService);
   private i18nService = inject(I18nService);
 
@@ -56,6 +58,7 @@ export class AppearanceV2Component implements OnInit {
     theme: ThemeType.System,
     enableAnimations: true,
     enableCompactMode: false,
+    enableCopyButtons: false,
     width: "default" as PopupWidthOption,
   });
 
@@ -97,6 +100,7 @@ export class AppearanceV2Component implements OnInit {
       this.animationControlService.enableRoutingAnimation$,
     );
     const enableCompactMode = await firstValueFrom(this.compactModeService.enabled$);
+    const enableCopyButtons = await firstValueFrom(this.copyButtonsService.enabled$);
     const width = await firstValueFrom(this.popupWidthService.width$);
 
     // Set initial values for the form
@@ -106,6 +110,7 @@ export class AppearanceV2Component implements OnInit {
       theme,
       enableAnimations,
       enableCompactMode,
+      enableCopyButtons,
       width,
     });
 
@@ -141,6 +146,12 @@ export class AppearanceV2Component implements OnInit {
         void this.updateCompactMode(enableCompactMode);
       });
 
+    this.appearanceForm.controls.enableCopyButtons.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((enableCopyButtons) => {
+        void this.updateCopyButtons(enableCopyButtons);
+      });
+
     this.appearanceForm.controls.width.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((width) => {
@@ -167,6 +178,10 @@ export class AppearanceV2Component implements OnInit {
 
   async updateCompactMode(enableCompactMode: boolean) {
     await this.compactModeService.setEnabled(enableCompactMode);
+  }
+
+  async updateCopyButtons(enableCopyButtons: boolean) {
+    await this.copyButtonsService.setEnabled(enableCopyButtons);
   }
 
   async updateWidth(width: PopupWidthOption) {
