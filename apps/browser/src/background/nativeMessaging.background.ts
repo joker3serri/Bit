@@ -180,7 +180,7 @@ export class NativeMessagingBackground {
             if (message.appId !== this.appId) {
               return;
             }
-            this.logService.info(
+            this.logService.warning(
               "[Native Messaging IPC] Secure channel encountered an error; disconnecting and wiping keys...",
             );
 
@@ -258,7 +258,7 @@ export class NativeMessagingBackground {
         race(
           from([false]).pipe(delay(5000)),
           timer(0, 100).pipe(
-            filter(() => this.callbacks.keys().next().done),
+            filter(() => this.callbacks.size === 0),
             map(() => true),
           ),
         ),
@@ -281,8 +281,9 @@ export class NativeMessagingBackground {
       this.logService.info(
         `[Native Messaging IPC] Error sending message of type ${message.command} to Bitwarden Desktop app. Error: ${e}`,
       );
+      const callback = this.callbacks.get(messageId);
       this.callbacks.delete(messageId);
-      this.callbacks.get(messageId).rejecter("errorConnecting");
+      callback.rejecter("errorConnecting");
     }
 
     setTimeout(() => {

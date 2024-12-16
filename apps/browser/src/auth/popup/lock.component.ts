@@ -160,10 +160,9 @@ export class LockComponent extends BaseLockComponent implements OnInit {
     }
 
     this.biometricError = null;
-    let success;
     try {
       this.pendingBiometric = true;
-      success = await super.unlockBiometric();
+      return await super.unlockBiometric();
     } catch (e) {
       const error = BiometricErrors[e?.message as BiometricErrorTypes];
       this.logService.info("Unlocking with biometrics error: " + e);
@@ -177,8 +176,6 @@ export class LockComponent extends BaseLockComponent implements OnInit {
     } finally {
       this.pendingBiometric = false;
     }
-
-    return success;
   }
 
   get canUseBiometric() {

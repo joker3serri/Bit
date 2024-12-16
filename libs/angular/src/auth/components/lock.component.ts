@@ -185,7 +185,7 @@ export class LockComponent implements OnInit, OnDestroy {
       case BiometricsStatus.NotEnabledInConnectedDesktopApp:
         return this.i18nService.t("biometricsStatusHelptextNotEnabledInDesktop", this.email);
       case BiometricsStatus.NotEnabledLocally:
-        return this.i18nService.t("biometricsStatusHelptextNotEnabledInDesktop");
+        return this.i18nService.t("biometricsStatusHelptextNotEnabledInDesktop", this.email);
       case BiometricsStatus.DesktopDisconnected:
         return this.i18nService.t("biometricsStatusHelptextDesktopDisconnected");
       default:

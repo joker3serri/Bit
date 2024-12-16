@@ -631,6 +631,7 @@ export default class MainBackground {
 
     this.biometricsService = new BackgroundBrowserBiometricsService(
       runtimeNativeMessagingBackground,
+      this.logService,
     );
 
     this.kdfConfigService = new DefaultKdfConfigService(this.stateProvider);

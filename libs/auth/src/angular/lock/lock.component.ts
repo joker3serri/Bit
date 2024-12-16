@@ -702,7 +702,10 @@ export class LockV2Component implements OnInit, OnDestroy {
           this.activeAccount.email,
         );
       case BiometricsStatus.NotEnabledLocally:
-        return this.i18nService.t("biometricsStatusHelptextNotEnabledInDesktop");
+        return this.i18nService.t(
+          "biometricsStatusHelptextNotEnabledInDesktop",
+          this.activeAccount.email,
+        );
       case BiometricsStatus.DesktopDisconnected:
         return this.i18nService.t("biometricsStatusHelptextDesktopDisconnected");
       default:

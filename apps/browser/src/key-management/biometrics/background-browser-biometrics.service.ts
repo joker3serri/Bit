@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import { BiometricsService, BiometricsCommands, BiometricsStatus } from "@bitwarden/key-management";
@@ -8,7 +9,10 @@ import { NativeMessagingBackground } from "../../background/nativeMessaging.back
 
 @Injectable()
 export class BackgroundBrowserBiometricsService extends BiometricsService {
-  constructor(private nativeMessagingBackground: () => NativeMessagingBackground) {
+  constructor(
+    private nativeMessagingBackground: () => NativeMessagingBackground,
+    private logService: LogService,
+  ) {
     super();
   }
 
@@ -28,6 +32,7 @@ export class BackgroundBrowserBiometricsService extends BiometricsService {
         return response.response;
       }
     } catch (e) {
+      this.logService.info("Biometric authentication failed", e);
       return false;
     }
   }
@@ -85,6 +90,7 @@ export class BackgroundBrowserBiometricsService extends BiometricsService {
         }
       }
     } catch (e) {
+      this.logService.info("Biometric unlock for user failed", e);
       throw new Error("Biometric unlock failed");
     }
   }
