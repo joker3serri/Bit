@@ -21,13 +21,13 @@ import { FormFieldModule } from "../../../../../../libs/components/src/form-fiel
 import { SelectModule } from "../../../../../../libs/components/src/select/select.module";
 import { PopOutComponent } from "../../../platform/popup/components/pop-out.component";
 import { PopupCompactModeService } from "../../../platform/popup/layout/popup-compact-mode.service";
-import { PopupCopyButtonsService } from "../../../platform/popup/layout/popup-copy-buttons.service";
 import { PopupHeaderComponent } from "../../../platform/popup/layout/popup-header.component";
 import { PopupPageComponent } from "../../../platform/popup/layout/popup-page.component";
 import {
   PopupWidthOption,
   PopupWidthService,
 } from "../../../platform/popup/layout/popup-width.service";
+import { VaultPopupCopyButtonsService } from "../services/vault-popup-copy-buttons.service";
 
 @Component({
   standalone: true,
@@ -48,7 +48,7 @@ import {
 })
 export class AppearanceV2Component implements OnInit {
   private compactModeService = inject(PopupCompactModeService);
-  private copyButtonsService = inject(PopupCopyButtonsService);
+  private copyButtonsService = inject(VaultPopupCopyButtonsService);
   private popupWidthService = inject(PopupWidthService);
   private i18nService = inject(I18nService);
 

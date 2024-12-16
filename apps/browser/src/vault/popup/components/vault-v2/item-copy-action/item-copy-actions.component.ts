@@ -9,7 +9,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IconButtonModule, ItemModule, MenuModule } from "@bitwarden/components";
 import { CopyCipherFieldDirective } from "@bitwarden/vault";
 
-import { PopupCopyButtonsService } from "../../../../../platform/popup/layout/popup-copy-buttons.service";
+import { VaultPopupCopyButtonsService } from "../../../services/vault-popup-copy-buttons.service";
 
 @Component({
   standalone: true,
@@ -25,7 +25,7 @@ import { PopupCopyButtonsService } from "../../../../../platform/popup/layout/po
   ],
 })
 export class ItemCopyActionsComponent {
-  protected showQuickCopyActions$ = inject(PopupCopyButtonsService).showQuickCopyActions$;
+  protected showQuickCopyActions$ = inject(VaultPopupCopyButtonsService).showQuickCopyActions$;
 
   @Input() cipher: CipherView;
 
