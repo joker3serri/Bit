@@ -94,10 +94,10 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       this.stateProvider.getUserState$(SHOULD_TRUST_DEVICE, userId),
     );
 
-    return shouldTrustDevice;
+    return shouldTrustDevice ?? false;
   }
 
-  async setShouldTrustDevice(userId: UserId, value: boolean): Promise<void> {
+  async setShouldTrustDevice(userId: UserId, value: boolean | null): Promise<void> {
     if (!userId) {
       throw new Error("UserId is required. Cannot set should trust device.");
     }

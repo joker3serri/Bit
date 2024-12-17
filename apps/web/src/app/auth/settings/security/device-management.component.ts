@@ -209,7 +209,7 @@ export class DeviceManagementComponent {
 
       this.toastService.showToast({
         title: "",
-        message: this.i18nService.t("deviceApproved"),
+        message: this.i18nService.t("loggedOut"),
         variant: "success",
       });
     } catch (e) {
