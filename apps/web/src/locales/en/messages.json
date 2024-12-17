@@ -9903,6 +9903,9 @@
   "devices": {
     "message": "Devices"
   },
+  "deviceListDescription": {
+    "message": "Your account was logged in to each of the devices below. If you do not recognize a device, remove it now."
+  },
   "claimedDomains": {
     "message": "Claimed domains"
   },

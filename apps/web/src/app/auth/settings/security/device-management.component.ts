@@ -66,19 +66,22 @@ export class DeviceManagementComponent implements OnInit {
 
   protected readonly columnConfig = [
     {
-      name: "deviceName",
+      name: "displayName",
       title: this.i18nService.t("device"),
       headerClass: "tw-w-1/3",
+      sortable: true,
     },
     {
       name: "loginStatus",
       title: this.i18nService.t("loginStatus"),
       headerClass: "tw-w-1/3",
+      sortable: true,
     },
     {
       name: "firstLogin",
       title: this.i18nService.t("firstLogin"),
       headerClass: "tw-w-1/4",
+      sortable: true,
     },
   ];
 

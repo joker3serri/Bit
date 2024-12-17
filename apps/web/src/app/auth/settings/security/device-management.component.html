@@ -12,9 +12,10 @@
           *ngFor="let col of columnConfig"
           [class]="col.headerClass"
           bitCell
+          [bitSortable]="col.sortable ? col.name : null"
+          [default]="col.name === 'displayName' ? 'asc' : null"
           scope="col"
           role="columnheader"
-          default
         >
           {{ col.title }}
         </th>
