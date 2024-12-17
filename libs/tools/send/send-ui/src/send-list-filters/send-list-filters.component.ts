@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { Observable, switchMap } from "rxjs";
+import { Observable, of, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -28,7 +28,9 @@ export class SendListFiltersComponent implements OnDestroy {
   ) {
     this.canAccessPremium$ = accountService.activeAccount$.pipe(
       switchMap((account) =>
-        billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
+        account
+          ? billingAccountProfileStateService.hasPremiumFromAnySource$(account.id)
+          : of(false),
       ),
     );
   }

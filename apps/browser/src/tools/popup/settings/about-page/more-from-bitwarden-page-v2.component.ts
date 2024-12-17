@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { Observable, firstValueFrom, switchMap } from "rxjs";
+import { Observable, firstValueFrom, of, switchMap } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -45,7 +45,9 @@ export class MoreFromBitwardenPageV2Component {
   ) {
     this.canAccessPremium$ = this.accountService.activeAccount$.pipe(
       switchMap((account) =>
-        this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
+        account
+          ? this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id)
+          : of(false),
       ),
     );
     this.familySponsorshipAvailable$ = this.organizationService.familySponsorshipAvailable$;

@@ -6,7 +6,7 @@ import {
   CanActivateFn,
   UrlTree,
 } from "@angular/router";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { switchMap, tap } from "rxjs/operators";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -29,7 +29,9 @@ export function hasPremiumGuard(): CanActivateFn {
 
     return accountService.activeAccount$.pipe(
       switchMap((account) =>
-        billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
+        account
+          ? billingAccountProfileStateService.hasPremiumFromAnySource$(account.id)
+          : of(false),
       ),
       tap((userHasPremium: boolean) => {
         if (!userHasPremium) {

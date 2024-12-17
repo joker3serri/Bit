@@ -20,6 +20,12 @@ export class NotPremiumDirective implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const account = await firstValueFrom(this.accountService.activeAccount$);
+
+    if (!account) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+      return;
+    }
+
     const premium = await firstValueFrom(
       this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
     );

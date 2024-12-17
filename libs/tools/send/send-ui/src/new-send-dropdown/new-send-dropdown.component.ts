@@ -30,6 +30,11 @@ export class NewSendDropdownComponent implements OnInit {
 
   async ngOnInit() {
     const account = await firstValueFrom(this.accountService.activeAccount$);
+    if (!account) {
+      this.hasNoPremium = true;
+      return;
+    }
+
     this.hasNoPremium = !(await firstValueFrom(
       this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
     ));

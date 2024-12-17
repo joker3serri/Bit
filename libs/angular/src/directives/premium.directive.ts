@@ -1,5 +1,5 @@
 import { Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { of, Subject, switchMap, takeUntil } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
@@ -24,7 +24,9 @@ export class PremiumDirective implements OnInit, OnDestroy {
     this.accountService.activeAccount$
       .pipe(
         switchMap((account) =>
-          this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id),
+          account
+            ? this.billingAccountProfileStateService.hasPremiumFromAnySource$(account.id)
+            : of(false),
         ),
         takeUntil(this.directiveIsDestroyed$),
       )
