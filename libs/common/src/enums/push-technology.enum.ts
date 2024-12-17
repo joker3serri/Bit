@@ -7,7 +7,7 @@ export enum PushTechnology {
    */
   SignalR = 0,
   /**
-   * Indicatates that we should
+   * Indicatates that we should use WebPush to receive push notifications from the server.
    */
   WebPush = 1,
 }
