@@ -1262,7 +1262,7 @@ export default class MainBackground {
   }
 
   async bootstrap() {
-    if ("start" in this.webPushConnectionService) {
+    if (this.webPushConnectionService instanceof WorkerWebPushConnectionService) {
       this.webPushConnectionService.start();
     }
     this.containerService.attachToGlobal(self);
