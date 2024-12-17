@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Directive, ElementRef, HostBinding, Input } from "@angular/core";
+import { Component, ElementRef, HostBinding, Input } from "@angular/core";
 
 import { FocusableElement } from "../shared/focusable-element";
 
@@ -28,11 +28,12 @@ const hoverStyles: Record<BadgeVariant, string[]> = {
   info: ["hover:tw-bg-info-600", "hover:tw-border-info-600", "hover:!tw-text-black"],
 };
 
-@Directive({
+@Component({
   selector: "span[bitBadge], a[bitBadge], button[bitBadge]",
-  providers: [{ provide: FocusableElement, useExisting: BadgeDirective }],
+  providers: [{ provide: FocusableElement, useExisting: BadgeComponent }],
+  templateUrl: "badge.component.html",
 })
-export class BadgeDirective implements FocusableElement {
+export class BadgeComponent implements FocusableElement {
   @HostBinding("class") get classList() {
     return [
       "tw-inline-block",
@@ -62,7 +63,7 @@ export class BadgeDirective implements FocusableElement {
     ]
       .concat(styles[this.variant])
       .concat(this.hasHoverEffects ? hoverStyles[this.variant] : [])
-      .concat(this.truncate ? ["tw-truncate", this.maxWidthClass] : []);
+      .concat(this.truncate ? this.maxWidthClass : []);
   }
   @HostBinding("attr.title") get titleAttr() {
     if (this.title !== undefined) {
