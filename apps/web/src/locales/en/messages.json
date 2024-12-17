@@ -1715,6 +1715,9 @@
   "logBackIn": {
     "message": "Please log back in."
   },
+  "currentSession": {
+    "message": "Current session"
+  },
   "logBackInOthersToo": {
     "message": "Please log back in. If you are using other Bitwarden applications log out and back in to those as well."
   },

@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { firstValueFrom, map, Observable } from "rxjs";
+import { firstValueFrom, map, Observable, defer } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
@@ -355,5 +355,12 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       useSecureStorage: true,
       userId: userId,
     };
+  }
+
+  getCurrentDevice$(): Observable<DeviceResponse> {
+    return defer(async () => {
+      const deviceIdentifier = await this.appIdService.getAppId();
+      return this.devicesApiService.getDeviceByIdentifier(deviceIdentifier);
+    });
   }
 }

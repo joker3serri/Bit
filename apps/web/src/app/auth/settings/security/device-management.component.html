@@ -14,7 +14,6 @@
           bitCell
           scope="col"
           role="columnheader"
-          [bitSortable]="col.name"
           default
         >
           {{ col.title }}
@@ -28,19 +27,18 @@
           <div class="tw-flex tw-items-center tw-justify-center tw-w-10">
             <i [class]="getDeviceIcon(device.type)" class="bwi-lg" aria-hidden="true"></i>
           </div>
-
           <div>
-            {{ device.deviceName }}
+            {{ device.displayName }}
             <span *ngIf="device.trusted" class="tw-text-sm tw-text-muted tw-block">
               {{ "trusted" | i18n }}
             </span>
           </div>
         </td>
-        <td *ngIf="device.loginStatus !== 'Current session'" bitCell>{{ device.loginStatus }}</td>
-        <td *ngIf="device.loginStatus === 'Current session'" bitCell>
-          <span bitBadge variant="primary">{{ device.loginStatus }} test</span>
+        <td *ngIf="!isCurrentDevice(device)" bitCell>{{ device.loginStatus }}</td>
+        <td *ngIf="isCurrentDevice(device)" bitCell>
+          <span bitBadge variant="primary">{{ "currentSession" | i18n }}</span>
         </td>
-        <td bitCell>{{ device.firstLogin | date }}</td>
+        <td bitCell>{{ device.firstLogin | date: "medium" }}</td>
         <td bitCell>
           <button
             type="button"
