@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { firstValueFrom } from "rxjs";
 
@@ -30,7 +30,7 @@ interface DeviceTableData {
   standalone: true,
   imports: [CommonModule, SharedModule, TableModule],
 })
-export class DeviceManagementComponent implements OnInit {
+export class DeviceManagementComponent {
   protected readonly tableId = "device-management-table";
   protected dataSource = new TableDataSource<DeviceTableData>();
   protected currentDevice: DeviceView | undefined;
@@ -68,8 +68,9 @@ export class DeviceManagementComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {}
-
+  /**
+   * Column configuration for the table
+   */
   protected readonly columnConfig = [
     {
       name: "displayName",
@@ -97,21 +98,18 @@ export class DeviceManagementComponent implements OnInit {
    * @returns The icon for the device type
    */
   getDeviceIcon(type: DeviceType): string {
-    const metadata = DeviceTypeMetadata[type];
-    if (!metadata) {
-      return "bwi bwi-device"; // fallback icon
-    }
-    // Map device categories to their corresponding icons
-    const categoryIconMap: { [key: string]: string } = {
+    const defaultIcon = "bwi bwi-desktop";
+    const categoryIconMap: Record<string, string> = {
       webVault: "bwi bwi-browser",
       desktop: "bwi bwi-desktop",
       mobile: "bwi bwi-mobile",
       cli: "bwi bwi-cli",
       extension: "bwi bwi-puzzle",
-      sdk: "bwi bwi-device",
+      sdk: "bwi bwi-desktop",
     };
 
-    return categoryIconMap[metadata.category] || "bwi bwi-device";
+    const metadata = DeviceTypeMetadata[type];
+    return metadata ? (categoryIconMap[metadata.category] ?? defaultIcon) : defaultIcon;
   }
 
   /**
@@ -159,6 +157,10 @@ export class DeviceManagementComponent implements OnInit {
       : device.id === this.currentDevice?.id;
   }
 
+  /**
+   * Remove a device
+   * @param device - The device
+   */
   protected async removeDevice(device: DeviceTableData) {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "removeDevice" },
