@@ -181,4 +181,5 @@ export const NEW_DEVICE_VERIFICATION_NOTICE = new StateDefinition(
   "newDeviceVerificationNotice",
   "disk",
 );
+export const VAULT_APPEARANCE = new StateDefinition("vaultAppearance", "disk");
 export const SECURITY_TASKS_DISK = new StateDefinition("securityTasks", "disk");
