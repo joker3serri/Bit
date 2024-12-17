@@ -4,7 +4,7 @@ import { CommonModule } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute } from "@angular/router";
-import { map } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { RiskInsightsReportService } from "@bitwarden/bit-common/tools/reports/risk-insights";
@@ -62,9 +62,9 @@ export class PasswordHealthComponent implements OnInit {
   }
 
   async setCiphers(organizationId: string) {
-    this.dataSource.data =
-      await this.riskInsightsReportService.generateRawDataReport(organizationId);
-    this.passwordUseMap = this.riskInsightsReportService.passwordUseMap;
+    this.dataSource.data = await firstValueFrom(
+      this.riskInsightsReportService.generateRawDataReport$(organizationId),
+    );
     this.loading = false;
   }
 }
