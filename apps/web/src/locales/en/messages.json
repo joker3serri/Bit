@@ -8245,6 +8245,15 @@
   "approveRequest": {
     "message": "Approve request"
   },
+  "deviceApproved": {
+    "message": "Device approved"
+  },
+  "deviceRemoved": {
+    "message": "Device removed"
+  },
+  "removeDeviceConfirmation": {
+    "message": "Are you sure you want to remove this device?"
+  },
   "noDeviceRequests": {
     "message": "No device requests"
   },

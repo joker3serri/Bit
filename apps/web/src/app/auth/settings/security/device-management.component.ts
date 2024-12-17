@@ -7,7 +7,7 @@ import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/d
 import { DeviceView } from "@bitwarden/common/auth/abstractions/devices/views/device.view";
 import { DeviceType, DeviceTypeMetadata } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { TableDataSource, TableModule } from "@bitwarden/components";
+import { DialogService , ToastService , TableDataSource, TableModule } from "@bitwarden/components";
 
 import { SharedModule } from "../../../shared";
 
@@ -35,6 +35,8 @@ export class DeviceManagementComponent implements OnInit {
     private i18nService: I18nService,
     private devicesService: DevicesServiceAbstraction,
     private deviceTrustService: DeviceTrustServiceAbstraction,
+    private dialogService: DialogService,
+    private toastService: ToastService,
   ) {
     // Get current device
     this.deviceTrustService
@@ -151,5 +153,89 @@ export class DeviceManagementComponent implements OnInit {
     return "response" in device
       ? device.id === this.currentDevice?.id
       : device.id === this.currentDevice?.id;
+  }
+
+  protected async removeDevice(device: DeviceTableData) {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "removeDevice" },
+      content: { key: "removeDeviceConfirmation" },
+      type: "warning",
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      // TODO: Implement actual device removal - https://bitwarden.atlassian.net/browse/PM-2133
+      // await this.devicesService.removeDevice(device.id);
+
+      this.toastService.showToast({
+        title: "",
+        message: this.i18nService.t("deviceRemoved"),
+        variant: "success",
+      });
+    } catch (e) {
+      this.toastService.showToast({
+        title: "",
+        message: this.i18nService.t("errorOccurred"),
+        variant: "warning",
+      });
+    }
+  }
+
+  /**
+   * Log out a device
+   * @param device - The device
+   */
+  protected async logOutDevice(device: DeviceTableData) {
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "logOut" },
+      content: { key: "logOutConfirmation" },
+      type: "warning",
+    });
+
+    if (!confirmed) {
+      return;
+    }
+    try {
+      // TODO: Implement actual device approval
+      // await this.devicesService.approveDevice(device.id);
+
+      this.toastService.showToast({
+        title: "",
+        message: this.i18nService.t("deviceApproved"),
+        variant: "success",
+      });
+    } catch (e) {
+      this.toastService.showToast({
+        title: "",
+        message: this.i18nService.t("errorOccurred"),
+        variant: "warning",
+      });
+    }
+  }
+
+  /**
+   * Approve a device
+   * @param device - The device
+   */
+  protected async approveDevice(device: DeviceTableData) {
+    try {
+      // TODO: Implement actual device approval
+      // await this.devicesService.approveDevice(device.id);
+
+      this.toastService.showToast({
+        title: "",
+        message: this.i18nService.t("deviceApproved"),
+        variant: "success",
+      });
+    } catch (e) {
+      this.toastService.showToast({
+        title: "",
+        message: this.i18nService.t("errorOccurred"),
+        variant: "warning",
+      });
+    }
   }
 }
