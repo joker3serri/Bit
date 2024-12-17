@@ -117,7 +117,12 @@ class MyWebPushConnector implements WebPushConnector {
   ) {
     this.notifications$ = this.getOrCreateSubscription$(this.vapidPublicKey).pipe(
       concatMap((subscription) => {
-        return defer(() => this.webPushApiService.putSubscription(subscription.toJSON())).pipe(
+        return defer(() => {
+          if (subscription == null) {
+            throw new Error("Expected a non-null subscription.");
+          }
+          return this.webPushApiService.putSubscription(subscription.toJSON());
+        }).pipe(
           switchMap(() => this.pushEvent$),
           map((e) => new NotificationResponse(e.data.json().data)),
         );
@@ -143,7 +148,10 @@ class MyWebPushConnector implements WebPushConnector {
         }
 
         const subscriptionKey = Utils.fromBufferToUrlB64(
-          existingSubscription.options?.applicationServerKey,
+          // REASON: `Utils.fromBufferToUrlB64` handles null by returning null back to it.
+          // its annotation should be updated and then this assertion can be removed.
+          // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+          existingSubscription.options?.applicationServerKey!,
         );
 
         if (subscriptionKey !== key) {

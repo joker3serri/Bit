@@ -95,7 +95,7 @@ export class SignalRConnectionService {
             });
         }, randomTime);
 
-        reconnectSubscription = new Subscription(() => clearTimeout(timeoutHandler));
+        return new Subscription(() => clearTimeout(timeoutHandler));
       };
 
       connection.onclose((error) => {
