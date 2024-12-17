@@ -15,6 +15,7 @@ import { ContainerService } from "@bitwarden/common/platform/services/container.
 import { UserAutoUnlockKeyService } from "@bitwarden/common/platform/services/user-auto-unlock-key.service";
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vault-timeout/vault-timeout.service";
+import { IpcService } from "@bitwarden/common/src/platform/ipc";
 import { KeyService as KeyServiceAbstraction } from "@bitwarden/key-management";
 
 import { VersionService } from "../platform/version.service";
@@ -35,6 +36,7 @@ export class InitService {
     private userAutoUnlockKeyService: UserAutoUnlockKeyService,
     private accountService: AccountService,
     private versionService: VersionService,
+    private ipcService: IpcService,
     @Inject(DOCUMENT) private document: Document,
   ) {}
 
@@ -58,6 +60,7 @@ export class InitService {
       htmlEl.classList.add("locale_" + this.i18nService.translationLocale);
       this.themingService.applyThemeChangesTo(this.document);
       this.versionService.applyVersionToWindow();
+      void this.ipcService.init();
 
       const containerService = new ContainerService(this.keyService, this.encryptService);
       containerService.attachToGlobal(this.win);
