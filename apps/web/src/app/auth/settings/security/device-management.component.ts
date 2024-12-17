@@ -1,13 +1,14 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { firstValueFrom } from "rxjs";
 
 import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DeviceView } from "@bitwarden/common/auth/abstractions/devices/views/device.view";
 import { DeviceType, DeviceTypeMetadata } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { DialogService , ToastService , TableDataSource, TableModule } from "@bitwarden/components";
+import { DialogService, ToastService, TableDataSource, TableModule } from "@bitwarden/components";
 
 import { SharedModule } from "../../../shared";
 
@@ -20,6 +21,9 @@ interface DeviceTableData {
   trusted: boolean;
 }
 
+/**
+ * Provides a table of devices and allows the user to log out, approve or remove a device
+ */
 @Component({
   selector: "app-device-management",
   templateUrl: "./device-management.component.html",
@@ -46,7 +50,7 @@ export class DeviceManagementComponent implements OnInit {
         this.currentDevice = new DeviceView(device);
       });
 
-    // Get all devices and map them
+    // Get all devices and map them for the table
     this.devicesService
       .getDevices$()
       .pipe(takeUntilDestroyed())
@@ -167,8 +171,7 @@ export class DeviceManagementComponent implements OnInit {
     }
 
     try {
-      // TODO: Implement actual device removal - https://bitwarden.atlassian.net/browse/PM-2133
-      // await this.devicesService.removeDevice(device.id);
+      await firstValueFrom(this.devicesService.deactivateDevice$(device.id));
 
       this.toastService.showToast({
         title: "",
@@ -199,8 +202,8 @@ export class DeviceManagementComponent implements OnInit {
       return;
     }
     try {
-      // TODO: Implement actual device approval
-      // await this.devicesService.approveDevice(device.id);
+      // TODO: Implement actual device log out
+      // await this.devicesService.logOutDevice(device.id);
 
       this.toastService.showToast({
         title: "",
