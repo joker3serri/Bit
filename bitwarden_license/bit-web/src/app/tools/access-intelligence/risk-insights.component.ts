@@ -1,11 +1,17 @@
-// FIXME: Update this file to be type safe and remove this and next line
-// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, DestroyRef, OnInit, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Observable, EMPTY } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import {
+  MemberCipherDetailsApiService,
+  RiskInsightsDataService,
+  RiskInsightsReportService,
+} from "@bitwarden/bit-common/tools/reports/risk-insights";
+import { ApplicationHealthReportDetail } from "@bitwarden/bit-common/tools/reports/risk-insights/models/password-health";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { AsyncActionsModule, ButtonModule, TabsModule } from "@bitwarden/components";
@@ -14,9 +20,6 @@ import { HeaderModule } from "@bitwarden/web-vault/app/layouts/header/header.mod
 import { AllApplicationsComponent } from "./all-applications.component";
 import { CriticalApplicationsComponent } from "./critical-applications.component";
 import { NotifiedMembersTableComponent } from "./notified-members-table.component";
-import { PasswordHealthMembersURIComponent } from "./password-health-members-uri.component";
-import { PasswordHealthMembersComponent } from "./password-health-members.component";
-import { PasswordHealthComponent } from "./password-health.component";
 
 export enum RiskInsightsTabType {
   AllApps = 0,
@@ -35,53 +38,86 @@ export enum RiskInsightsTabType {
     CriticalApplicationsComponent,
     JslibModule,
     HeaderModule,
-    PasswordHealthComponent,
-    PasswordHealthMembersComponent,
-    PasswordHealthMembersURIComponent,
     NotifiedMembersTableComponent,
     TabsModule,
   ],
+  providers: [RiskInsightsReportService, MemberCipherDetailsApiService, RiskInsightsDataService],
 })
 export class RiskInsightsComponent implements OnInit {
-  tabIndex: RiskInsightsTabType;
-  dataLastUpdated = new Date();
-  isCritialAppsFeatureEnabled = false;
+  tabIndex: RiskInsightsTabType = RiskInsightsTabType.AllApps;
 
-  apps: any[] = [];
-  criticalApps: any[] = [];
-  notifiedMembers: any[] = [];
+  dataLastUpdated: Date = new Date();
 
-  async refreshData() {
-    // TODO: Implement
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        this.dataLastUpdated = new Date();
-        resolve(true);
-      }, 1000),
-    );
+  isCriticalAppsFeatureEnabled: boolean = false;
+
+  appsCount: number = 0;
+  criticalAppsCount: number = 0;
+  notifiedMembersCount: number = 0;
+
+  private organizationId: string | null = null;
+  private destroyRef = inject(DestroyRef);
+  isLoading$: Observable<boolean> = new Observable<boolean>();
+  isRefreshing$: Observable<boolean> = new Observable<boolean>();
+  dataLastUpdated$: Observable<Date | null> = new Observable<Date | null>();
+  refetching: boolean = false;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private configService: ConfigService,
+    private dataService: RiskInsightsDataService,
+  ) {
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(({ tabIndex }) => {
+      this.tabIndex = !isNaN(Number(tabIndex)) ? Number(tabIndex) : RiskInsightsTabType.AllApps;
+    });
   }
 
-  onTabChange = async (newIndex: number) => {
+  async ngOnInit() {
+    this.isCriticalAppsFeatureEnabled = await this.configService.getFeatureFlag(
+      FeatureFlag.CriticalApps,
+    );
+
+    this.route.paramMap
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        map((params) => params.get("organizationId")),
+        switchMap((orgId: string | null) => {
+          if (orgId) {
+            this.organizationId = orgId;
+            this.dataService.fetchApplicationsReport(orgId);
+            this.isLoading$ = this.dataService.isLoading$;
+            this.isRefreshing$ = this.dataService.isRefreshing$;
+            this.dataLastUpdated$ = this.dataService.dataLastUpdated$;
+            return this.dataService.applications$;
+          } else {
+            return EMPTY;
+          }
+        }),
+      )
+      .subscribe({
+        next: (applications: ApplicationHealthReportDetail[] | null) => {
+          if (applications) {
+            this.appsCount = applications.length;
+          }
+        },
+      });
+  }
+
+  /**
+   * Refreshes the data by re-fetching the applications report.
+   * This will automatically notify child components subscribed to the RiskInsightsDataService observables.
+   */
+  refreshData(): void {
+    if (this.organizationId) {
+      this.dataService.refreshApplicationsReport(this.organizationId);
+    }
+  }
+
+  async onTabChange(newIndex: number): Promise<void> {
     await this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tabIndex: newIndex },
       queryParamsHandling: "merge",
-    });
-  };
-
-  async ngOnInit() {
-    this.isCritialAppsFeatureEnabled = await this.configService.getFeatureFlag(
-      FeatureFlag.CriticalApps,
-    );
-  }
-
-  constructor(
-    protected route: ActivatedRoute,
-    private router: Router,
-    private configService: ConfigService,
-  ) {
-    route.queryParams.pipe(takeUntilDestroyed()).subscribe(({ tabIndex }) => {
-      this.tabIndex = !isNaN(tabIndex) ? tabIndex : RiskInsightsTabType.AllApps;
     });
   }
 }
