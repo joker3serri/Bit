@@ -89,7 +89,7 @@ export class DeviceManagementComponent {
     {
       name: "firstLogin",
       title: this.i18nService.t("firstLogin"),
-      headerClass: "tw-w-1/4",
+      headerClass: "tw-w-1/3",
       sortable: true,
     },
   ];

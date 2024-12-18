@@ -75,7 +75,7 @@
               (click)="removeDevice(device)"
               [disabled]="isCurrentDevice(device)"
             >
-              <span class="tw-text-danger">
+              <span [class]="isCurrentDevice(device) ? 'tw-text-muted' : 'tw-text-danger'">
                 <i class="bwi bwi-trash" aria-hidden="true"></i>
                 {{ "remove" | i18n }}
               </span>
