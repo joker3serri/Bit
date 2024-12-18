@@ -35,9 +35,13 @@
             </span>
           </div>
         </td>
-        <td *ngIf="!isCurrentDevice(device)" bitCell>{{ device.loginStatus }}</td>
-        <td *ngIf="isCurrentDevice(device)" bitCell>
-          <span bitBadge variant="primary">{{ "currentSession" | i18n }}</span>
+        <td bitCell>
+          <span *ngIf="isCurrentDevice(device)" bitBadge variant="primary">{{
+            "currentSession" | i18n
+          }}</span>
+          <span *ngIf="hasPendingAuthRequest(device)" bitBadge variant="warning">{{
+            "requestPending" | i18n
+          }}</span>
         </td>
         <td bitCell>{{ device.firstLogin | date: "medium" }}</td>
         <td bitCell>

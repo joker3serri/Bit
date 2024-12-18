@@ -19,6 +19,7 @@ interface DeviceTableData {
   loginStatus: string;
   firstLogin: Date;
   trusted: boolean;
+  devicePendingAuthRequest: object | null;
 }
 
 /**
@@ -61,6 +62,7 @@ export class DeviceManagementComponent {
             type: device.type,
             displayName: this.getHumanReadableDeviceType(device.type),
             loginStatus: this.getLoginStatus(device),
+            devicePendingAuthRequest: device.response.devicePendingAuthRequest,
             firstLogin: new Date(device.creationDate),
             trusted: device.response.isTrusted,
           };
@@ -125,7 +127,7 @@ export class DeviceManagementComponent {
     }
 
     if (device.response.devicePendingAuthRequest?.creationDate) {
-      return new Date(device.response.devicePendingAuthRequest.creationDate).toLocaleDateString();
+      return this.i18nService.t("requestPending");
     }
 
     return "";
@@ -155,6 +157,17 @@ export class DeviceManagementComponent {
     return "response" in device
       ? device.id === this.currentDevice?.id
       : device.id === this.currentDevice?.id;
+  }
+
+  /**
+   * Check if a device has a pending auth request
+   * @param device - The device
+   * @returns True if the device has a pending auth request, false otherwise
+   */
+  protected hasPendingAuthRequest(device: DeviceTableData): boolean {
+    return (
+      device.devicePendingAuthRequest !== undefined && device.devicePendingAuthRequest !== null
+    );
   }
 
   /**
