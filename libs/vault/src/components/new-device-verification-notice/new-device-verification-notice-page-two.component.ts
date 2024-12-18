@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, map, Observable } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -25,9 +25,7 @@ import { NewDeviceVerificationNoticeService } from "../../services/new-device-ve
 export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
   protected isWeb: boolean;
   protected isDesktop: boolean;
-  readonly currentAcct$: Observable<Account | null> = this.accountService.activeAccount$.pipe(
-    map((acct) => acct),
-  );
+  readonly currentAcct$: Observable<Account | null> = this.accountService.activeAccount$;
   private currentUserId: UserId | null = null;
   private env$: Observable<Environment> = this.environmentService.environment$;
 

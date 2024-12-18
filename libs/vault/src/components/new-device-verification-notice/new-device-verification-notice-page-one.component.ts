@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { firstValueFrom, map, Observable } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { Account, AccountService } from "@bitwarden/common/auth/abstractions/account.service";
@@ -43,9 +43,7 @@ export class NewDeviceVerificationNoticePageOneComponent implements OnInit {
     hasEmailAccess: new FormControl(0),
   });
   protected isDesktop: boolean;
-  readonly currentAcct$: Observable<Account | null> = this.accountService.activeAccount$.pipe(
-    map((acct) => acct),
-  );
+  readonly currentAcct$: Observable<Account | null> = this.accountService.activeAccount$;
   private currentEmail: string = "";
   private currentUserId: UserId | null = null;
 
