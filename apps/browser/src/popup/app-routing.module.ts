@@ -656,7 +656,7 @@ const routes: Routes = [
            *
            * Also, this prevents a routing loop when using biometrics to unlock the vault in MV2 (Firefox),
            * locking up the browser (https://bitwarden.atlassian.net/browse/PM-16116). This involves the
-           * `popup-router-cache.service` pushing the `lockV2` route to the history.
+           * `popup-router-cache.service` pushing the `lock` route to the history.
            */
           doNotSaveUrl: true,
         } satisfies ExtensionAnonLayoutWrapperData & RouteDataProperties,
