@@ -1,5 +1,6 @@
 import {
   BehaviorSubject,
+  catchError,
   distinctUntilChanged,
   EMPTY,
   filter,
@@ -103,13 +104,22 @@ export class DefaultNotificationsService implements NotificationsServiceAbstract
         return this.webPushConnectionService.supportStatus$(userId);
       }),
       supportSwitch({
-        supported: (service) => service.notifications$,
-        notSupported: () =>
-          this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
-            filter((n) => n.type === "ReceiveMessage"),
-            map((n) => (n as ReceiveMessage).message),
+        supported: (service) =>
+          service.notifications$.pipe(
+            catchError((err: unknown) => {
+              this.logService.warning("Issue with web push, falling back to SignalR", err);
+              return this.connectSignalR$(userId, notificationsUrl);
+            }),
           ),
+        notSupported: () => this.connectSignalR$(userId, notificationsUrl),
       }),
+    );
+  }
+
+  private connectSignalR$(userId: UserId, notificationsUrl: string) {
+    return this.signalRConnectionService.connect$(userId, notificationsUrl).pipe(
+      filter((n) => n.type === "ReceiveMessage"),
+      map((n) => (n as ReceiveMessage).message),
     );
   }
 
