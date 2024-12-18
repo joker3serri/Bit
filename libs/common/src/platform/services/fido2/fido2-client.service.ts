@@ -381,6 +381,9 @@ export class Fido2ClientService<ParentWindowReference>
         `[Fido2Client] started mediated request, available credentials: ${availableCredentials.length}`,
       );
       const requestResult = await this.requestManager.newActiveRequest(
+        // TODO: This isn't correct, but this.requestManager.newActiveRequest expects a number,
+        // while this class is currently generic over ParentWindowReference.
+        // Consider moving requestManager into browser and adding support for ParentWindowReference => tab.id
         (tab as any).id,
         availableCredentials,
         abortController,
