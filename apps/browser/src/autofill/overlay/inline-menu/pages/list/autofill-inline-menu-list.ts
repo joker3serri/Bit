@@ -1191,7 +1191,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
    * @param totp - The TOTP code to display.
    */
 
-  private buildTotpElement(totpCode: string, username: string): HTMLDivElement | null {
+  private buildTotpElement(totpCode: string, username?: string): HTMLDivElement | null {
     if (!totpCode) {
       return null;
     }
