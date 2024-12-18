@@ -1,4 +1,3 @@
-import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { finalize } from "rxjs/operators";
 
@@ -6,7 +5,6 @@ import { ApplicationHealthReportDetail } from "../models/password-health";
 
 import { RiskInsightsReportService } from "./risk-insights-report.service";
 
-@Injectable()
 export class RiskInsightsDataService {
   private applicationsSubject = new BehaviorSubject<ApplicationHealthReportDetail[] | null>(null);
 

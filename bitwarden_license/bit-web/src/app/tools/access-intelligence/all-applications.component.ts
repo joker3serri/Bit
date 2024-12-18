@@ -45,7 +45,6 @@ import { ApplicationsLoadingComponent } from "./risk-insights-loading.component"
     NoItemsModule,
     SharedModule,
   ],
-  providers: [RiskInsightsReportService],
 })
 export class AllApplicationsComponent implements OnInit, OnDestroy {
   protected dataSource = new TableDataSource<ApplicationHealthReportDetail>();

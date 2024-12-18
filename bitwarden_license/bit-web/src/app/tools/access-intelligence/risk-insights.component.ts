@@ -6,11 +6,7 @@ import { Observable, EMPTY } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import {
-  MemberCipherDetailsApiService,
-  RiskInsightsDataService,
-  RiskInsightsReportService,
-} from "@bitwarden/bit-common/tools/reports/risk-insights";
+import { RiskInsightsDataService } from "@bitwarden/bit-common/tools/reports/risk-insights";
 import { ApplicationHealthReportDetail } from "@bitwarden/bit-common/tools/reports/risk-insights/models/password-health";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
@@ -47,7 +43,6 @@ export enum RiskInsightsTabType {
     NotifiedMembersTableComponent,
     TabsModule,
   ],
-  providers: [RiskInsightsReportService, MemberCipherDetailsApiService, RiskInsightsDataService],
 })
 export class RiskInsightsComponent implements OnInit {
   tabIndex: RiskInsightsTabType = RiskInsightsTabType.AllApps;
