@@ -1022,11 +1022,18 @@ export default class MainBackground {
     );
 
     if (BrowserApi.isManifestVersion(3)) {
-      this.webPushConnectionService = new WorkerWebPushConnectionService(
-        this.configService,
-        new WebPushNotificationsApiService(this.apiService, this.appIdService),
-        (self as unknown as { registration: ServiceWorkerRegistration }).registration,
-      );
+      const registration = (self as unknown as { registration: ServiceWorkerRegistration })
+        ?.registration;
+
+      if (registration != null) {
+        this.webPushConnectionService = new WorkerWebPushConnectionService(
+          this.configService,
+          new WebPushNotificationsApiService(this.apiService, this.appIdService),
+          registration,
+        );
+      } else {
+        this.webPushConnectionService = new UnsupportedWebPushConnectionService();
+      }
     } else {
       this.webPushConnectionService = new UnsupportedWebPushConnectionService();
     }
