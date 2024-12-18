@@ -8,7 +8,9 @@
   <div bitDialogContent>
     <p>
       {{ "couldNotDecryptVaultItemsBelow" | i18n }}
-      <strong class="tw-text-primary-600">{{ "contactCSToAvoidDataLossPart1" | i18n }}</strong>
+      <a bitLink href="#" (click)="openContactSupport($event)">{{
+        "contactCSToAvoidDataLossPart1" | i18n
+      }}</a>
       {{ "contactCSToAvoidDataLossPart2" | i18n }}
     </p>
     <ul class="tw-list-none tw-pl-0">
