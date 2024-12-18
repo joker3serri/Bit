@@ -73,6 +73,7 @@ import {
   MemberDialogTab,
   openUserAddEditDialog,
 } from "./components/member-dialog";
+import { isFixedSeatPlan } from "./components/member-dialog/validators/org-seat-limit-reached.validator";
 import {
   ResetPasswordComponent,
   ResetPasswordDialogResult,
@@ -105,6 +106,10 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   // Fixed sizes used for cdkVirtualScroll
   protected rowHeight = 69;
   protected rowHeightClass = `tw-h-[69px]`;
+
+  get occupiedSeatCount(): number {
+    return this.dataSource.activeUserCount;
+  }
 
   constructor(
     apiService: ApiService,
@@ -467,15 +472,11 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   private async handleInviteDialog() {
     const dialog = openUserAddEditDialog(this.dialogService, {
       data: {
-        name: null,
+        kind: "Add",
         organizationId: this.organization.id,
-        organizationUserId: null,
         allOrganizationUserEmails: this.dataSource.data?.map((user) => user.email) ?? [],
-        usesKeyConnector: null,
+        occupiedSeatCount: this.occupiedSeatCount,
         isOnSecretsManagerStandalone: this.orgIsOnSecretsManagerStandalone,
-        initialTab: MemberDialogTab.Role,
-        numConfirmedMembers: this.dataSource.confirmedUserCount,
-        managedByOrganization: null,
       },
     });
 
@@ -508,10 +509,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   }
 
   async invite() {
-    if (
-      this.organization.hasReseller &&
-      this.organization.seats === this.dataSource.confirmedUserCount
-    ) {
+    if (this.organization.hasReseller && this.organization.seats === this.occupiedSeatCount) {
       this.toastService.showToast({
         variant: "error",
         title: this.i18nService.t("seatLimitReached"),
@@ -522,10 +520,8 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     }
 
     if (
-      this.dataSource.data.length === this.organization.seats &&
-      (this.organization.productTierType === ProductTierType.Free ||
-        this.organization.productTierType === ProductTierType.TeamsStarter ||
-        this.organization.productTierType === ProductTierType.Families)
+      this.occupiedSeatCount === this.organization.seats &&
+      isFixedSeatPlan(this.organization.productTierType)
     ) {
       await this.handleSeatLimitForFixedTiers();
 
@@ -538,14 +534,13 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
   async edit(user: OrganizationUserView, initialTab: MemberDialogTab = MemberDialogTab.Role) {
     const dialog = openUserAddEditDialog(this.dialogService, {
       data: {
+        kind: "Edit",
         name: this.userNamePipe.transform(user),
         organizationId: this.organization.id,
         organizationUserId: user.id,
-        allOrganizationUserEmails: this.dataSource.data?.map((user) => user.email) ?? [],
         usesKeyConnector: user.usesKeyConnector,
         isOnSecretsManagerStandalone: this.orgIsOnSecretsManagerStandalone,
         initialTab: initialTab,
-        numConfirmedMembers: this.dataSource.confirmedUserCount,
         managedByOrganization: user.managedByOrganization,
       },
     });

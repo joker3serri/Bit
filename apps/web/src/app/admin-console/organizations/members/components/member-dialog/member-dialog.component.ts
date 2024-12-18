@@ -61,17 +61,27 @@ export enum MemberDialogTab {
   Collections = 2,
 }
 
-export interface MemberDialogParams {
-  name: string;
-  organizationId: string;
-  organizationUserId: string;
-  allOrganizationUserEmails: string[];
-  usesKeyConnector: boolean;
+interface CommonMemberDialogParams {
   isOnSecretsManagerStandalone: boolean;
-  initialTab?: MemberDialogTab;
-  numConfirmedMembers: number;
-  managedByOrganization?: boolean;
+  organizationId: string;
 }
+
+export interface AddMemberDialogParams extends CommonMemberDialogParams {
+  kind: "Add";
+  occupiedSeatCount: number;
+  allOrganizationUserEmails: string[];
+}
+
+export interface EditMemberDialogParams extends CommonMemberDialogParams {
+  kind: "Edit";
+  name: string;
+  organizationUserId: string;
+  usesKeyConnector: boolean;
+  managedByOrganization?: boolean;
+  initialTab: MemberDialogTab;
+}
+
+export type MemberDialogParams = EditMemberDialogParams | AddMemberDialogParams;
 
 export enum MemberDialogResult {
   Saved = "saved",
@@ -140,6 +150,12 @@ export class MemberDialogComponent implements OnDestroy {
     return this.formGroup.value.type === OrganizationUserType.Custom;
   }
 
+  isEditDialogParams(
+    params: EditMemberDialogParams | AddMemberDialogParams,
+  ): params is EditMemberDialogParams {
+    return params.kind === "Edit";
+  }
+
   constructor(
     @Inject(DIALOG_DATA) protected params: MemberDialogParams,
     private dialogRef: DialogRef<MemberDialogResult>,
@@ -160,21 +176,21 @@ export class MemberDialogComponent implements OnDestroy {
       .get$(this.params.organizationId)
       .pipe(shareReplay({ refCount: true, bufferSize: 1 }));
 
-    this.editMode = this.params.organizationUserId != null;
-
     let userDetails$;
-    if (this.editMode) {
+    if (this.isEditDialogParams(this.params)) {
+      this.editMode = true;
       this.title = this.i18nService.t("editMember");
       userDetails$ = this.userService.get(
         this.params.organizationId,
         this.params.organizationUserId,
       );
+      this.tabIndex = this.params.initialTab;
     } else {
+      this.editMode = false;
       this.title = this.i18nService.t("inviteMember");
       userDetails$ = of(null);
+      this.tabIndex = MemberDialogTab.Role;
     }
-
-    this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
 
     this.isOnSecretsManagerStandalone = this.params.isOnSecretsManagerStandalone;
 
@@ -273,6 +289,10 @@ export class MemberDialogComponent implements OnDestroy {
   }
 
   private setFormValidators(organization: Organization) {
+    if (this.isEditDialogParams(this.params)) {
+      return;
+    }
+
     const emailsControlValidators = [
       Validators.required,
       commaSeparatedEmails,
@@ -283,6 +303,7 @@ export class MemberDialogComponent implements OnDestroy {
         organization,
         this.params.allOrganizationUserEmails,
         this.i18nService.t("subscriptionUpgrade", organization.seats),
+        this.params.occupiedSeatCount,
       ),
     ];
 
@@ -435,8 +456,8 @@ export class MemberDialogComponent implements OnDestroy {
 
     const userView = await this.getUserView();
 
-    if (this.editMode) {
-      await this.handleEditUser(userView);
+    if (this.isEditDialogParams(this.params)) {
+      await this.handleEditUser(userView, this.params);
     } else {
       await this.handleInviteUsers(userView, organization);
     }
@@ -465,14 +486,17 @@ export class MemberDialogComponent implements OnDestroy {
     return userView;
   }
 
-  private async handleEditUser(userView: OrganizationUserAdminView) {
-    userView.id = this.params.organizationUserId;
+  private async handleEditUser(
+    userView: OrganizationUserAdminView,
+    params: EditMemberDialogParams,
+  ) {
+    userView.id = params.organizationUserId;
     await this.userService.save(userView);
 
     this.toastService.showToast({
       variant: "success",
       title: null,
-      message: this.i18nService.t("editedUserId", this.params.name),
+      message: this.i18nService.t("editedUserId", params.name),
     });
 
     this.close(MemberDialogResult.Saved);
@@ -492,7 +516,7 @@ export class MemberDialogComponent implements OnDestroy {
   }
 
   remove = async () => {
-    if (!this.editMode) {
+    if (!this.isEditDialogParams(this.params)) {
       return;
     }
 
@@ -511,7 +535,7 @@ export class MemberDialogComponent implements OnDestroy {
     }
 
     if (this.showNoMasterPasswordWarning) {
-      confirmed = await this.noMasterPasswordConfirmationDialog();
+      confirmed = await this.noMasterPasswordConfirmationDialog(this.params.name);
 
       if (!confirmed) {
         return false;
@@ -532,7 +556,7 @@ export class MemberDialogComponent implements OnDestroy {
   };
 
   revoke = async () => {
-    if (!this.editMode) {
+    if (!this.isEditDialogParams(this.params)) {
       return;
     }
 
@@ -548,7 +572,7 @@ export class MemberDialogComponent implements OnDestroy {
     }
 
     if (this.showNoMasterPasswordWarning) {
-      confirmed = await this.noMasterPasswordConfirmationDialog();
+      confirmed = await this.noMasterPasswordConfirmationDialog(this.params.name);
 
       if (!confirmed) {
         return false;
@@ -570,7 +594,7 @@ export class MemberDialogComponent implements OnDestroy {
   };
 
   restore = async () => {
-    if (!this.editMode) {
+    if (!this.isEditDialogParams(this.params)) {
       return;
     }
 
@@ -589,7 +613,7 @@ export class MemberDialogComponent implements OnDestroy {
   };
 
   delete = async () => {
-    if (!this.editMode) {
+    if (!this.isEditDialogParams(this.params)) {
       return;
     }
 
@@ -637,14 +661,14 @@ export class MemberDialogComponent implements OnDestroy {
     this.dialogRef.close(result);
   }
 
-  private noMasterPasswordConfirmationDialog() {
+  private noMasterPasswordConfirmationDialog(username: string) {
     return this.dialogService.openSimpleDialog({
       title: {
         key: "removeOrgUserNoMasterPasswordTitle",
       },
       content: {
         key: "removeOrgUserNoMasterPasswordDesc",
-        placeholders: [this.params.name],
+        placeholders: [username],
       },
       type: "warning",
     });
