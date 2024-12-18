@@ -1,5 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
+import { CommonModule } from "@angular/common";
 import { Component, ElementRef, HostBinding, Input } from "@angular/core";
 
 import { FocusableElement } from "../shared/focusable-element";
@@ -31,7 +32,9 @@ const hoverStyles: Record<BadgeVariant, string[]> = {
 @Component({
   selector: "span[bitBadge], a[bitBadge], button[bitBadge]",
   providers: [{ provide: FocusableElement, useExisting: BadgeComponent }],
+  imports: [CommonModule],
   templateUrl: "badge.component.html",
+  standalone: true,
 })
 export class BadgeComponent implements FocusableElement {
   @HostBinding("class") get classList() {

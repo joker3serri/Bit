@@ -8,8 +8,7 @@ export default {
   component: BadgeComponent,
   decorators: [
     moduleMetadata({
-      imports: [CommonModule],
-      declarations: [BadgeComponent],
+      imports: [CommonModule, BadgeComponent],
     }),
   ],
   args: {
