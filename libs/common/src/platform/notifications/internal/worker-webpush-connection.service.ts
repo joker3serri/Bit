@@ -162,10 +162,7 @@ class MyWebPushConnector implements WebPushConnector {
 
         return existingSubscription;
       }),
-      this.pushChangeEvent$.pipe(
-        // TODO: Is this enough, do I need to do something with oldSubscription?
-        map((event) => event.newSubscription),
-      ),
+      this.pushChangeEvent$.pipe(map((event) => event.newSubscription)),
     );
   }
 }
