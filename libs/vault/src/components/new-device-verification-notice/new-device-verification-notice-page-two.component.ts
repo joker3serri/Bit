@@ -48,7 +48,9 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
     this.currentUserId = currentAcct.id;
   }
 
-  async navigateToTwoStepLogin() {
+  async navigateToTwoStepLogin(event: Event) {
+    event.preventDefault();
+
     const env = await firstValueFrom(this.env$);
     const url = env.getWebVaultUrl();
 
@@ -63,7 +65,9 @@ export class NewDeviceVerificationNoticePageTwoComponent implements OnInit {
     }
   }
 
-  async navigateToChangeAcctEmail() {
+  async navigateToChangeAcctEmail(event: Event) {
+    event.preventDefault();
+
     const env = await firstValueFrom(this.env$);
     const url = env.getWebVaultUrl();
     if (this.isWeb) {

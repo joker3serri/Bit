@@ -2,10 +2,10 @@
   {{ "newDeviceVerificationNoticeContentPage2" | i18n }}
 </p>
 
-<button
+<a
+  href="#"
   bitButton
-  type="button"
-  (click)="navigateToTwoStepLogin()"
+  (click)="navigateToTwoStepLogin($event)"
   buttonType="primary"
   class="tw-w-full tw-mt-4"
 >
@@ -16,11 +16,11 @@
     [ngClass]="{ 'md:tw-hidden': !isDesktop }"
   >
   </i>
-</button>
-<button
+</a>
+<a
+  href="#"
   bitButton
-  type="button"
-  (click)="navigateToChangeAcctEmail()"
+  (click)="navigateToChangeAcctEmail($event)"
   buttonType="secondary"
   class="tw-w-full tw-mt-4"
 >
@@ -30,7 +30,7 @@
     aria-hidden="true"
     [ngClass]="{ 'md:tw-hidden': !isDesktop }"
   ></i>
-</button>
+</a>
 
 <div class="tw-flex tw-justify-center tw-mt-6">
   <a bitLink linkType="primary" (click)="remindMeLaterSelect()">
