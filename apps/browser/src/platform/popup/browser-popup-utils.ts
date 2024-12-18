@@ -24,16 +24,20 @@ class BrowserPopupUtils {
     return BrowserPopupUtils.urlContainsSearchParams(win, "uilocation", "popout");
   }
 
+  /**
+   * Check if the current popup view is open inside of the current browser tab
+   * (it is possible in Chrome to open the extension in a tab)
+   */
   static async isInTab() {
     const tabId = (await BrowserApi.getCurrentTab())?.id;
 
-    if (tabId) {
-      const result = BrowserApi.getExtensionViews({ tabId, type: "tab" });
-
-      return result.length > 0;
+    if (tabId === undefined || tabId === null) {
+      return false;
     }
 
-    return false;
+    const result = BrowserApi.getExtensionViews({ tabId, type: "tab" });
+
+    return result.length > 0;
   }
 
   /**

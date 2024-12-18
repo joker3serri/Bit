@@ -165,6 +165,9 @@ export class BrowserApi {
     });
   }
 
+  /**
+   * Fetch the currently open browser tab
+   */
   static async getCurrentTab(): Promise<chrome.tabs.Tab> | null {
     if (BrowserApi.isManifestVersion(3)) {
       return await chrome.tabs.getCurrent();
