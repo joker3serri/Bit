@@ -62,10 +62,14 @@ export class ManageTaxInformationComponent implements OnInit, OnDestroy {
     this.taxInformationUpdated.emit();
   };
 
-  validate = (): boolean => {
-    this.formGroup.markAllAsTouched();
-    return this.formGroup.valid;
-  };
+  validate(): boolean {
+    if (this.formGroup.dirty) {
+      this.formGroup.markAllAsTouched();
+      return this.formGroup.valid;
+    } else {
+      return this.formGroup.valid;
+    }
+  }
 
   async ngOnInit() {
     if (this.startWith) {
