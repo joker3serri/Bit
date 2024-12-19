@@ -35,6 +35,10 @@ import {
 } from "@bitwarden/components";
 import { KeyService } from "@bitwarden/key-management";
 
+export enum AddEditFolderDialogResult {
+  Deleted = "deleted",
+}
+
 export type AddEditFolderDialogData = {
   /** When provided, dialog will display edit folder variant */
   editFolderConfig?: { folder: FolderView };
@@ -79,7 +83,7 @@ export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
     private i18nService: I18nService,
     private logService: LogService,
     private dialogService: DialogService,
-    private dialogRef: DialogRef,
+    private dialogRef: DialogRef<AddEditFolderDialogResult>,
     @Inject(DIALOG_DATA) private data?: AddEditFolderDialogData,
   ) {}
 
@@ -154,11 +158,11 @@ export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
       this.logService.error(e);
     }
 
-    this.close();
+    this.close(AddEditFolderDialogResult.Deleted);
   };
 
   /** Close the dialog */
-  private close() {
-    this.dialogRef.close();
+  private close(result?: AddEditFolderDialogResult) {
+    this.dialogRef.close(result);
   }
 }
