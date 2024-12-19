@@ -1383,7 +1383,6 @@ const safeProviders: SafeProvider[] = [
       AccountServiceAbstraction,
       KdfConfigService,
       KeyServiceAbstraction,
-      ApiServiceAbstraction,
     ],
   }),
   safeProvider({
