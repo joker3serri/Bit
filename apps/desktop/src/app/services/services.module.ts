@@ -90,8 +90,8 @@ import {
   KeyService as KeyServiceAbstraction,
   BiometricStateService,
   BiometricsService,
-  LockComponentService,
 } from "@bitwarden/key-management";
+import { LockComponentService } from "@bitwarden/key-management/angular";
 
 import { DesktopLoginApprovalComponentService } from "../../auth/login/desktop-login-approval-component.service";
 import { DesktopLoginComponentService } from "../../auth/login/desktop-login-component.service";

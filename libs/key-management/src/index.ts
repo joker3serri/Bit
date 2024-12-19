@@ -19,13 +19,3 @@ export { DefaultKdfConfigService } from "./kdf-config.service";
 export { KdfType } from "./enums/kdf-type.enum";
 
 export * from "./user-asymmetric-key-regeneration";
-
-export { LockV2Component } from "./lock/components/lock.component";
-export {
-  LockComponentService,
-  BiometricsDisableReason,
-  UnlockOptions,
-} from "./lock/services/lock-component.service";
-
-export { FingerprintPipe } from "./pipes/fingerprint.pipe";
-export { KeyManagementPipesModule } from "./pipes/key-management-pipes.module";

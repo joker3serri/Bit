@@ -90,8 +90,8 @@ import {
   KdfConfigService,
   KeyService as KeyServiceAbstraction,
   BiometricsService,
-  LockComponentService,
 } from "@bitwarden/key-management";
+import { LockComponentService } from "@bitwarden/key-management/angular";
 
 import { flagEnabled } from "../../utils/flags";
 import { PolicyListService } from "../admin-console/core/policy-list.service";

@@ -1,8 +1,7 @@
 import { Pipe } from "@angular/core";
 
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-
-import { KeyService } from "../abstractions/key.service";
+import { KeyService } from "@bitwarden/key-management";
 
 @Pipe({
   name: "fingerprint",
