@@ -7,7 +7,7 @@ import { combineLatest, Observable, shareReplay, switchMap } from "rxjs";
 import { filter, take } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
+import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { ButtonModule, DialogService, Icons, NoItemsModule } from "@bitwarden/components";
@@ -123,12 +123,14 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
     this.cipherService.failedToDecryptCiphers$
       .pipe(
-        filter((ciphers) => ciphers != null),
+        filter((ciphers) => ciphers.filter((c) => !c.isDeleted).length > 0),
         take(1),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((cipherIds) => {
-        DecryptionFailureDialogComponent.open(this.dialogService, { cipherIds: cipherIds! });
+      .subscribe((ciphers) => {
+        DecryptionFailureDialogComponent.open(this.dialogService, {
+          cipherIds: ciphers.map((c) => c.id as CipherId),
+        });
       });
   }
 

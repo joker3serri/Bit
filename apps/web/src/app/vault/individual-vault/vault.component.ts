@@ -475,16 +475,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     firstSetup$
       .pipe(
         switchMap(() => this.cipherService.failedToDecryptCiphers$),
-        filter((ciphers) => ciphers != null),
+        filter((ciphers) => ciphers.filter((c) => !c.isDeleted).length > 0),
         take(1),
         takeUntil(this.destroy$),
       )
-      .subscribe((cipherIds) => {
-        if (cipherIds.length > 0) {
-          this.dialogService.open(DecryptionFailureDialogComponent, {
-            data: { cipherIds },
-          });
-        }
+      .subscribe((ciphers) => {
+        DecryptionFailureDialogComponent.open(this.dialogService, {
+          cipherIds: ciphers.map((c) => c.id as CipherId),
+        });
       });
 
     this.unpaidSubscriptionDialog$.pipe(takeUntil(this.destroy$)).subscribe();

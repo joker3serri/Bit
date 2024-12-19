@@ -110,12 +110,11 @@ export class CipherService implements CipherServiceAbstraction {
   addEditCipherInfo$: Observable<AddEditCipherInfo>;
 
   /**
-   * Observable that emits an array of cipher IDs that failed to decrypt. A `null` value indicates that
-   * the latest encrypted ciphers have not been decrypted yet and that decryption is in progress.
+   * Observable that emits an array of cipherViews that failed to decrypt. Does not emit until decryption has completed.
    *
    * An empty array indicates that all ciphers were successfully decrypted.
    */
-  failedToDecryptCiphers$: Observable<CipherId[] | null>;
+  failedToDecryptCiphers$: Observable<CipherView[]>;
 
   private localDataState: ActiveUserState<Record<CipherId, LocalData>>;
   private encryptedCiphersState: ActiveUserState<Record<CipherId, CipherData>>;
@@ -154,9 +153,7 @@ export class CipherService implements CipherServiceAbstraction {
 
     this.failedToDecryptCiphers$ = this.cipherViews$.pipe(
       filter((ciphers) => ciphers != null),
-      map((ciphers) =>
-        ciphers.filter((c) => c.decryptionFailure && !c.isDeleted).map((c) => c.id as CipherId),
-      ),
+      map((ciphers) => ciphers.filter((c) => c.decryptionFailure)),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
 

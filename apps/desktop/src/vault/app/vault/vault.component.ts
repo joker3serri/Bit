@@ -25,6 +25,7 @@ import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.servic
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { SyncService } from "@bitwarden/common/platform/sync";
+import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { TotpService } from "@bitwarden/common/vault/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/vault/enums";
@@ -232,12 +233,14 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.cipherService.failedToDecryptCiphers$
       .pipe(
-        filter((ciphers) => ciphers != null && ciphers.length > 0),
+        filter((ciphers) => ciphers.filter((c) => !c.isDeleted).length > 0),
         take(1),
         takeUntil(this.componentIsDestroyed$),
       )
-      .subscribe((cipherIds) => {
-        DecryptionFailureDialogComponent.open(this.dialogService, { cipherIds: cipherIds! });
+      .subscribe((ciphers) => {
+        DecryptionFailureDialogComponent.open(this.dialogService, {
+          cipherIds: ciphers.map((c) => c.id as CipherId),
+        });
       });
   }
 
