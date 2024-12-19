@@ -247,6 +247,10 @@ export class FolderService implements InternalFolderServiceAbstraction {
       return decrypted;
     }
 
+    if (folderData == null) {
+      return [];
+    }
+
     const folders = Object.values(folderData).map((f) => new Folder(f));
     const userKey = await firstValueFrom(this.keyService.userKey$(userId));
     if (!userKey) {
