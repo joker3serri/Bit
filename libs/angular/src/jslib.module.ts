@@ -52,7 +52,6 @@ import { SearchPipe } from "./pipes/search.pipe";
 import { UserNamePipe } from "./pipes/user-name.pipe";
 import { UserTypePipe } from "./pipes/user-type.pipe";
 import { EllipsisPipe } from "./platform/pipes/ellipsis.pipe";
-import { FingerprintPipe } from "./platform/pipes/fingerprint.pipe";
 import { I18nPipe } from "./platform/pipes/i18n.pipe";
 import { PasswordStrengthComponent } from "./tools/password-strength/password-strength.component";
 import { IconComponent } from "./vault/components/icon.component";
@@ -111,7 +110,6 @@ import { IconComponent } from "./vault/components/icon.component";
     PasswordStrengthComponent,
     UserTypePipe,
     IfFeatureDirective,
-    FingerprintPipe,
     AddAccountCreditDialogComponent,
     InvoicesComponent,
     NoInvoicesComponent,
@@ -146,7 +144,6 @@ import { IconComponent } from "./vault/components/icon.component";
     PasswordStrengthComponent,
     UserTypePipe,
     IfFeatureDirective,
-    FingerprintPipe,
     AddAccountCreditDialogComponent,
     InvoicesComponent,
     NoInvoicesComponent,
@@ -161,7 +158,6 @@ import { IconComponent } from "./vault/components/icon.component";
     SearchPipe,
     UserNamePipe,
     UserTypePipe,
-    FingerprintPipe,
     PluralizePipe,
   ],
 })

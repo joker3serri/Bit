@@ -39,12 +39,10 @@ import {
   IconButtonModule,
   ToastService,
 } from "@bitwarden/components";
-import {
-  KeyService,
-  BiometricStateService,
-  UserAsymmetricKeysRegenerationService,
-} from "@bitwarden/key-management";
 
+import { KeyService } from "../../abstractions/key.service";
+import { BiometricStateService } from "../../biometrics/biometric-state.service";
+import { UserAsymmetricKeysRegenerationService } from "../../user-asymmetric-key-regeneration/abstractions/user-asymmetric-key-regeneration.service";
 import {
   UnlockOption,
   LockComponentService,
@@ -66,8 +64,8 @@ const clientTypeToSuccessRouteRecord: Partial<Record<ClientType, string>> = {
   standalone: true,
   imports: [
     CommonModule,
-    JslibModule,
     ReactiveFormsModule,
+    JslibModule,
     ButtonModule,
     FormFieldModule,
     AsyncActionsModule,

@@ -9,8 +9,12 @@ import {
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService, BiometricsService } from "@bitwarden/key-management";
-import { BiometricsDisableReason, UnlockOptions } from "@bitwarden/key-management/angular";
+import {
+  KeyService,
+  BiometricsService,
+  BiometricsDisableReason,
+  UnlockOptions,
+} from "@bitwarden/key-management";
 
 import { BrowserRouterService } from "../../../platform/popup/services/browser-router.service";
 

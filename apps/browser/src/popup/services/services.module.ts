@@ -113,8 +113,8 @@ import {
   KeyService,
   BiometricStateService,
   BiometricsService,
+  LockComponentService,
 } from "@bitwarden/key-management";
-import { LockComponentService } from "@bitwarden/key-management/angular";
 import { PasswordRepromptService } from "@bitwarden/vault";
 
 import { ForegroundLockService } from "../../auth/popup/accounts/foreground-lock.service";

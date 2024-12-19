@@ -6,7 +6,7 @@ import {
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
 import { UserId } from "@bitwarden/common/types/guid";
-import { LockComponentService, UnlockOptions } from "@bitwarden/key-management/angular";
+import { LockComponentService, UnlockOptions } from "@bitwarden/key-management";
 
 export class WebLockComponentService implements LockComponentService {
   private readonly userDecryptionOptionsService = inject(UserDecryptionOptionsServiceAbstraction);

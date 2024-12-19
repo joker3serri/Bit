@@ -11,12 +11,13 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
 import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService, BiometricsService } from "@bitwarden/key-management";
 import {
+  KeyService,
+  BiometricsService,
   LockComponentService,
   BiometricsDisableReason,
   UnlockOptions,
-} from "@bitwarden/key-management/angular";
+} from "@bitwarden/key-management";
 
 import { BiometricErrors, BiometricErrorTypes } from "../../../models/biometricErrors";
 import { BrowserRouterService } from "../../../platform/popup/services/browser-router.service";
