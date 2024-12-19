@@ -161,7 +161,7 @@ describe("AddEditFolderDialogComponent", () => {
 
       expect(encrypt).toHaveBeenCalledWith(
         {
-          ...dialogData.editFolderConfig.folder,
+          ...dialogData.editFolderConfig!.folder,
           name: "Edited Folder",
         },
         "",
