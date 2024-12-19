@@ -8,11 +8,6 @@ import { UserId } from "../../../types/guid";
 
 export abstract class SdkService {
   /**
-   * Check if the SDK is supported in the current environment.
-   */
-  supported$: Observable<boolean>;
-
-  /**
    * Retrieve the version of the SDK.
    */
   version$: Observable<string>;

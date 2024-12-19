@@ -44,12 +44,6 @@ export class DefaultSdkService implements SdkService {
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
-  supported$ = this.client$.pipe(
-    concatMap(async (client) => {
-      return client.echo("bitwarden wasm!") === "bitwarden wasm!";
-    }),
-  );
-
   version$ = this.client$.pipe(
     map((client) => client.version()),
     catchError(() => "Unsupported"),
