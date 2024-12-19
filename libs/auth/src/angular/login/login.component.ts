@@ -432,9 +432,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     // TODO: remove when email verification flag is removed
     const registerRoute = await firstValueFrom(this.registerRoute$);
 
+    // Mark email field as touched to trigger validation
+    this.emailFormControl.markAsTouched();
+
+    // Only pass email if form control is valid
     if (this.emailFormControl.valid) {
       await this.router.navigate([registerRoute], {
-        queryParams: { email: this.emailFormControl.value },
+        queryParams: { email: this.emailFormControl.value?.trim() },
       });
       return;
     }
