@@ -35,6 +35,4 @@ export abstract class SdkService {
    * @param userId
    */
   abstract userClient$(userId: UserId): Observable<BitwardenClient>;
-
-  abstract failedToInitialize(category: string, error?: Error): Promise<void>;
 }
