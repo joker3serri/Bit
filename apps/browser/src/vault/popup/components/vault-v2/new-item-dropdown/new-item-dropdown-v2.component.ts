@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { RouterLink } from "@angular/router";
@@ -27,11 +29,12 @@ export interface NewItemInitialValues {
 })
 export class NewItemDropdownV2Component implements OnInit {
   cipherType = CipherType;
-  private tab: chrome.tabs.Tab | null = null;
+  private tab?: chrome.tabs.Tab;
   /**
    * Optional initial values to pass to the add cipher form
    */
-  @Input() initialValues?: NewItemInitialValues;
+  @Input()
+  initialValues: NewItemInitialValues;
 
   constructor(private dialogService: DialogService) {}
 
@@ -46,7 +49,7 @@ export class NewItemDropdownV2Component implements OnInit {
 
     // When a Login Cipher is created and the extension is not popped out,
     // pass along the uri and name
-    if (!poppedOut && type === CipherType.Login && this.tab?.url) {
+    if (!poppedOut && type === CipherType.Login && this.tab) {
       loginDetails.uri = this.tab.url;
       loginDetails.name = Utils.getHostname(this.tab.url);
     }
