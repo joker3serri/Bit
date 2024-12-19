@@ -38,10 +38,12 @@ export enum FeatureFlag {
   NewDeviceVerificationTemporaryDismiss = "new-device-temporary-dismiss",
   NewDeviceVerificationPermanentDismiss = "new-device-permanent-dismiss",
   DisableFreeFamiliesSponsorship = "PM-12274-disable-free-families-sponsorship",
+  InlineMenuTotp = "inline-menu-totp",
   MacOsNativeCredentialSync = "macos-native-credential-sync",
   PM11360RemoveProviderExportPermission = "pm-11360-remove-provider-export-permission",
   PM9111ExtensionPersistAddEditForm = "pm-9111-extension-persist-add-edit-form",
   PM12443RemovePagingLogic = "pm-12443-remove-paging-logic",
+  PrivateKeyRegeneration = "pm-12241-private-key-regeneration",
 }
 
 export type AllowedFeatureFlagTypes = boolean | number | string;
@@ -90,10 +92,12 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.NewDeviceVerificationTemporaryDismiss]: FALSE,
   [FeatureFlag.NewDeviceVerificationPermanentDismiss]: FALSE,
   [FeatureFlag.DisableFreeFamiliesSponsorship]: FALSE,
+  [FeatureFlag.InlineMenuTotp]: FALSE,
   [FeatureFlag.MacOsNativeCredentialSync]: FALSE,
   [FeatureFlag.PM11360RemoveProviderExportPermission]: FALSE,
   [FeatureFlag.PM9111ExtensionPersistAddEditForm]: FALSE,
   [FeatureFlag.PM12443RemovePagingLogic]: FALSE,
+  [FeatureFlag.PrivateKeyRegeneration]: FALSE,
 } satisfies Record<FeatureFlag, AllowedFeatureFlagTypes>;
 
 export type DefaultFeatureFlagValueType = typeof DefaultFeatureFlagValue;

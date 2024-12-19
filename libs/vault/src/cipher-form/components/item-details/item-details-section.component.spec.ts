@@ -98,7 +98,8 @@ describe("ItemDetailsSectionComponent", () => {
           id: "col1",
           name: "Collection 1",
           organizationId: "org1",
-          canEditItems: (_org) => true,
+          assigned: true,
+          readOnly: false,
         } as CollectionView,
       ];
 
@@ -372,19 +373,22 @@ describe("ItemDetailsSectionComponent", () => {
           id: "col1",
           name: "Collection 1",
           organizationId: "org1",
-          canEditItems: (_org) => true,
+          assigned: true,
+          readOnly: false,
         } as CollectionView,
         {
           id: "col2",
           name: "Collection 2",
           organizationId: "org1",
-          canEditItems: (_org) => true,
+          assigned: true,
+          readOnly: false,
         } as CollectionView,
         {
           id: "col3",
           name: "Collection 3",
           organizationId: "org1",
-          canEditItems: (_org) => true,
+          assigned: true,
+          readOnly: false,
         } as CollectionView,
       ];
 
@@ -407,7 +411,8 @@ describe("ItemDetailsSectionComponent", () => {
           id: "col1",
           name: "Collection 1",
           organizationId: "org1",
-          canEditItems: (_org) => true,
+          assigned: true,
+          readOnly: false,
         } as CollectionView,
       ];
 
@@ -446,20 +451,22 @@ describe("ItemDetailsSectionComponent", () => {
           id: "col1",
           name: "Collection 1",
           organizationId: "org1",
-          canEditItems: (_org) => true,
+          assigned: true,
+          readOnly: false,
         } as CollectionView,
         {
           id: "col2",
           name: "Collection 2",
           organizationId: "org1",
-          canEditItems: (_org) => true,
+          assigned: true,
+          readOnly: false,
         } as CollectionView,
         {
           id: "col3",
           name: "Collection 3",
           organizationId: "org1",
           readOnly: true,
-          canEditItems: (_org) => true,
+          assigned: true,
         } as CollectionView,
       ];
 
@@ -483,21 +490,21 @@ describe("ItemDetailsSectionComponent", () => {
           name: "Collection 1",
           organizationId: "org1",
           readOnly: true,
-          canEditItems: (_org) => false,
+          assigned: false,
         } as CollectionView,
         {
           id: "col2",
           name: "Collection 2",
           organizationId: "org1",
           readOnly: true,
-          canEditItems: (_org) => false,
+          assigned: false,
         } as CollectionView,
         {
           id: "col3",
           name: "Collection 3",
           organizationId: "org1",
           readOnly: false,
-          canEditItems: (_org) => false,
+          assigned: true,
         } as CollectionView,
       ];
 
@@ -520,20 +527,20 @@ describe("ItemDetailsSectionComponent", () => {
           name: "Collection 1",
           organizationId: "org1",
           readOnly: true,
-          canEditItems: (_org) => false,
+          assigned: false,
         } as CollectionView,
         {
           id: "col2",
           name: "Collection 2",
           organizationId: "org1",
-          canEditItems: (_org) => false,
+          assigned: false,
         } as CollectionView,
         {
           id: "col3",
           name: "Collection 3",
           organizationId: "org1",
           readOnly: true,
-          canEditItems: (_org) => false,
+          assigned: false,
         } as CollectionView,
       ];
       component.originalCipherView = {
