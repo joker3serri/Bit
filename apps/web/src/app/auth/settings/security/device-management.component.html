@@ -5,7 +5,7 @@
   </h2>
   <p>{{ "deviceListDescription" | i18n }}</p>
 
-  <bit-table-scroll [dataSource]="dataSource" [rowSize]="1">
+  <bit-table-scroll [dataSource]="dataSource" [rowSize]="50">
     <ng-container header>
       <th
         *ngFor="let col of columnConfig"
