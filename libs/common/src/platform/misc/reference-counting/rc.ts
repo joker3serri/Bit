@@ -18,6 +18,16 @@ export class Rc<T extends Freeable> {
    * Use this function when you want to use it. This will guarantee
    * that you have a reference to the value and it won't be freed until
    * your reference goes out of scope.
+   *
+   * @example
+   * ```typescript
+   * function someFunction(rc: Rc<SomeValue>) {
+   *   using reference = rc.take();
+   *   reference.value.doSomething();
+   *   // reference is automatically disposed here
+   * }
+   * ```
+   *
    * @returns The value.
    */
   take(): Ref<T> {
