@@ -42,6 +42,7 @@ import {
 } from "@bitwarden/admin-console/common";
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { AddEditFolderDialogComponent } from "@bitwarden/angular/vault/components";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
@@ -569,8 +570,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     await this.filterComponent.filters?.organizationFilter?.action(orgNode);
   }
 
-  addFolder = async (): Promise<void> => {
-    openFolderAddEditDialog(this.dialogService);
+  addFolder = (): void => {
+    this.dialogService.open(AddEditFolderDialogComponent);
   };
 
   editFolder = async (folder: FolderFilter): Promise<void> => {
