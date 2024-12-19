@@ -1290,6 +1290,10 @@ export class CipherService implements CipherServiceAbstraction {
       return encryptedCiphers;
     }
 
+    if (ciphers.some((c) => c.decryptionFailure)) {
+      throw new Error("Cannot rotate ciphers with decryption failures");
+    }
+
     const userCiphers = ciphers.filter((c) => c.organizationId == null);
     if (userCiphers.length === 0) {
       return encryptedCiphers;
