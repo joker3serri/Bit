@@ -57,7 +57,10 @@ const iconSize = "15px";
 const dropdownContainerStyles = css`
   display: flex;
 
-  > div,
+  > div {
+    width: 100%;
+  }
+
   > button {
     width: 100%;
   }

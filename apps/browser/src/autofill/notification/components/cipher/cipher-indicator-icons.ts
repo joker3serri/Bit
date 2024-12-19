@@ -10,7 +10,7 @@ import { Business } from "../icons";
 // @TODO support other indicator types (attachments, family orgs, etc)
 export function CipherInfoIndicatorIcons({ cipher, theme }: { cipher: CipherData; theme: Theme }) {
   // @TODO connect data source to icon checks
-  const isBusinessOrg = false;
+  const isBusinessOrg = true;
 
   const indicatorIcons = [
     ...(isBusinessOrg ? [Business({ color: themes[theme].text.muted, theme })] : []),

@@ -1,4 +1,4 @@
-import { css } from "@emotion/css";
+import { css, cache } from "@emotion/css";
 import { html } from "lit";
 
 import { Theme } from "@bitwarden/common/platform/enums";
@@ -11,10 +11,13 @@ import { CipherData } from "../types";
 import { NotificationBody } from "./body";
 import { CipherItem } from "./cipher";
 import { NotificationFooter } from "./footer";
+// import { NotificationHeader } from "./header";
 import { NotificationHeader } from "./header";
+// import "./header";
 import { ActionRow } from "./rows/action-row";
 import { ButtonRow } from "./rows/button-row";
 import { ItemRow } from "./rows/item-row";
+import { define } from "./utils/define";
 
 export function NotificationContainer({
   handleCloseNotification,
@@ -28,8 +31,25 @@ export function NotificationContainer({
   const headerMessage = getHeaderMessage(type, i18n);
   const showBody = true;
 
+  const cipher = {
+    id: "inline-menu-cipher-0",
+    name: "fedex.com/secure-login",
+    type: 1,
+    reprompt: 0,
+    favorite: false,
+    icon: {
+      imageEnabled: true,
+      image: "https://localhost:8443/icons/www.fedex.com/icon.png",
+      icon: "bwi-globe",
+    },
+    accountCreationFieldType: "text",
+    login: {
+      username: "bwplaywright@gmail.com",
+    },
+  } as CipherData;
   // @TODO remove mock ciphers for development
   const ciphers = [
+    cipher,
     createAutofillOverlayCipherDataMock(1),
     { ...createAutofillOverlayCipherDataMock(2), icon: { imageEnabled: false } },
     {
@@ -39,11 +59,18 @@ export function NotificationContainer({
   ] as CipherData[];
   const itemText = type === NotificationTypes.Add ? "Save as new login" : null;
 
+      // <notification-header
+      //   .handleCloseNotification="${handleCloseNotification}"
+      //   .hasBody="${showBody}"
+      //   .isVaultLocked="${isVaultLocked}"
+      //   .message="${headerMessage}"
+      //   .theme="${theme}"
+      // ></notification-header>
   return html`
     <div class=${notificationContainerStyles(theme)}>
       ${NotificationHeader({
         handleCloseNotification,
-        showBottomBorder: showBody,
+        standalone: showBody,
         isVaultLocked,
         message: headerMessage,
         theme,
@@ -80,7 +107,7 @@ export function NotificationContainer({
   `;
 }
 
-// @TODO rethink this
+// @TODO eh, this smells
 const notificationBodyClass = "notification-body";
 
 const notificationContainerStyles = (theme: Theme) => css`
@@ -91,6 +118,10 @@ const notificationContainerStyles = (theme: Theme) => css`
   box-shadow: -2px 4px 6px 0px #0000001a;
   background-color: ${themes[theme].background.alt};
   width: 400px;
+
+  > [class*="notification-header-"] {
+    border-radius: ${spacing["4"]} ${spacing["4"]} 0 0;
+  }
 
   > .${notificationBodyClass} {
     margin: ${spacing["3"]} 0 ${spacing["1.5"]} ${spacing["3"]};
@@ -112,3 +143,5 @@ function getHeaderMessage(type: string, i18n: { [key: string]: string }) {
       return null;
   }
 }
+
+define('notification-container', NotificationContainer);
