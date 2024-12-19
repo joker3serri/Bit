@@ -27,7 +27,13 @@ describe("NewDeviceVerificationNoticeGuard", () => {
   const activeAccount$ = new BehaviorSubject<Account | null>(account);
 
   const createUrlTree = jest.fn();
-  const getFeatureFlag = jest.fn().mockResolvedValue(null);
+  const getFeatureFlag = jest.fn().mockImplementation((key) => {
+    if (key === FeatureFlag.NewDeviceVerificationTemporaryDismiss) {
+      return Promise.resolve(true);
+    }
+
+    return Promise.resolve(false);
+  });
   const isSelfHost = jest.fn().mockResolvedValue(false);
   const getProfileTwoFactorEnabled = jest.fn().mockResolvedValue(false);
   const policyAppliesToActiveUser$ = jest.fn().mockReturnValue(new BehaviorSubject<boolean>(false));
@@ -65,11 +71,6 @@ describe("NewDeviceVerificationNoticeGuard", () => {
       NewDeviceVerificationNoticeGuard(route ?? emptyRoute, _state),
     );
   }
-
-  // Baseline, all defaults should allow the guard to pass
-  it("returns true", async () => {
-    expect(await newDeviceGuard()).toBe(true);
-  });
 
   describe("fromNewDeviceVerification", () => {
     const route = {

@@ -27,6 +27,17 @@ export const NewDeviceVerificationNoticeGuard: CanActivateFn = async (
     return true;
   }
 
+  const tempNoticeFlag = await configService.getFeatureFlag(
+    FeatureFlag.NewDeviceVerificationTemporaryDismiss,
+  );
+  const permNoticeFlag = await configService.getFeatureFlag(
+    FeatureFlag.NewDeviceVerificationPermanentDismiss,
+  );
+
+  if (!tempNoticeFlag && !permNoticeFlag) {
+    return true;
+  }
+
   const currentAcct$: Observable<Account | null> = accountService.activeAccount$;
   const currentAcct = await firstValueFrom(currentAcct$);
 
@@ -47,13 +58,6 @@ export const NewDeviceVerificationNoticeGuard: CanActivateFn = async (
   if (has2FAEnabled || isSelfHosted || requiresSSO || isProfileLessThanWeekOld) {
     return true;
   }
-
-  const tempNoticeFlag = await configService.getFeatureFlag(
-    FeatureFlag.NewDeviceVerificationTemporaryDismiss,
-  );
-  const permNoticeFlag = await configService.getFeatureFlag(
-    FeatureFlag.NewDeviceVerificationPermanentDismiss,
-  );
 
   const userItems$ = newDeviceVerificationNoticeService.noticeState$(currentAcct.id);
   const userItems = await firstValueFrom(userItems$);
