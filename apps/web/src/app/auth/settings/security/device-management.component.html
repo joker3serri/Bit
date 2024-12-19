@@ -51,24 +51,6 @@
           <button
             type="button"
             bitMenuItem
-            (click)="approveDevice(row)"
-            *ngIf="row.loginStatus && !isCurrentDevice(row)"
-          >
-            <i class="bwi bwi-check" aria-hidden="true"></i>
-            {{ "approveRequest" | i18n }}
-          </button>
-          <button
-            type="button"
-            bitMenuItem
-            (click)="logOutDevice(row)"
-            [disabled]="isCurrentDevice(row)"
-          >
-            <i aria-hidden="true" class="bwi bwi-fw bwi-sign-out"></i>
-            {{ "logOut" | i18n }}
-          </button>
-          <button
-            type="button"
-            bitMenuItem
             (click)="removeDevice(row)"
             [disabled]="isCurrentDevice(row)"
           >
