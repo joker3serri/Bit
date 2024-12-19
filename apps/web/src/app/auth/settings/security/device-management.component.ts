@@ -188,6 +188,9 @@ export class DeviceManagementComponent {
     try {
       await firstValueFrom(this.devicesService.deactivateDevice$(device.id));
 
+      // Remove the device from the data source
+      this.dataSource.data = this.dataSource.data.filter((d) => d.id !== device.id);
+
       this.toastService.showToast({
         title: "",
         message: this.i18nService.t("deviceRemoved"),
