@@ -608,4 +608,26 @@ export class LoginComponent implements OnInit, OnDestroy {
       await this.continue();
     }
   };
+
+  /**
+   * Handle the SSO button click.
+   * @param event - The event object.
+   */
+  async handleSsoClick() {
+    const email = this.formGroup.value.email;
+
+    // User's don't necessarily need to enter an email to use SSO, but if they do we should validate it
+    if (!email || (await this.validateEmail())) {
+      await this.saveEmailSettings();
+      if (this.clientType === ClientType.Web) {
+        await this.router.navigate(["/sso"], {
+          queryParams: email ? { email } : {},
+        });
+      } else {
+        await this.launchSsoBrowserWindow(
+          this.clientType === ClientType.Browser ? "browser" : "desktop",
+        );
+      }
+    }
+  }
 }
