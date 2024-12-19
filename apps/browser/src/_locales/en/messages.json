@@ -4918,5 +4918,8 @@
   },
   "extraWide": {
     "message": "Extra wide"
+  },
+  "files": {
+    "message": "Files"
   }
 }
