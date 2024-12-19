@@ -4,7 +4,7 @@ import { Component, DestroyRef, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
 import { combineLatest, Observable, shareReplay, switchMap } from "rxjs";
-import { filter, take } from "rxjs/operators";
+import { filter, map, take } from "rxjs/operators";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { CipherId, CollectionId, OrganizationId } from "@bitwarden/common/types/guid";
@@ -123,7 +123,8 @@ export class VaultV2Component implements OnInit, OnDestroy {
 
     this.cipherService.failedToDecryptCiphers$
       .pipe(
-        filter((ciphers) => ciphers.filter((c) => !c.isDeleted).length > 0),
+        map((ciphers) => ciphers.filter((c) => !c.isDeleted)),
+        filter((ciphers) => ciphers.length > 0),
         take(1),
         takeUntilDestroyed(this.destroyRef),
       )

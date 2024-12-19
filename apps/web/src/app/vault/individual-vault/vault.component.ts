@@ -475,7 +475,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     firstSetup$
       .pipe(
         switchMap(() => this.cipherService.failedToDecryptCiphers$),
-        filter((ciphers) => ciphers.filter((c) => !c.isDeleted).length > 0),
+        map((ciphers) => ciphers.filter((c) => !c.isDeleted)),
+        filter((ciphers) => ciphers.length > 0),
         take(1),
         takeUntil(this.destroy$),
       )

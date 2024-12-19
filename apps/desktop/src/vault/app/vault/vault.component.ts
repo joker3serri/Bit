@@ -11,7 +11,7 @@ import {
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
-import { filter, first, take } from "rxjs/operators";
+import { filter, first, map, take } from "rxjs/operators";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -233,7 +233,8 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.cipherService.failedToDecryptCiphers$
       .pipe(
-        filter((ciphers) => ciphers.filter((c) => !c.isDeleted).length > 0),
+        map((ciphers) => ciphers.filter((c) => !c.isDeleted)),
+        filter((ciphers) => ciphers.length > 0),
         take(1),
         takeUntil(this.componentIsDestroyed$),
       )
