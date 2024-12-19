@@ -1,6 +1,6 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Observable, Subject, firstValueFrom, map, shareReplay, switchMap, merge, tap } from "rxjs";
+import { Observable, Subject, firstValueFrom, map, shareReplay, switchMap, merge } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
@@ -44,7 +44,6 @@ export class FolderService implements InternalFolderServiceAbstraction {
 
   folders$(userId: UserId): Observable<Folder[]> {
     return this.encryptedFoldersState(userId).state$.pipe(
-      tap(() => this.invalidateCache(userId)), // Invalidate cache when encrypted folders change
       map((folders) => {
         if (folders == null) {
           return [];
@@ -162,7 +161,6 @@ export class FolderService implements InternalFolderServiceAbstraction {
       throw new Error("User ID is required.");
     }
 
-    this.invalidateCache(userId);
     await this.setDecryptedFolders([], userId);
   }
 
@@ -283,15 +281,5 @@ export class FolderService implements InternalFolderServiceAbstraction {
    */
   private async setDecryptedFolders(folders: FolderView[], userId: UserId): Promise<void> {
     await this.stateProvider.setUserState(FOLDER_DECRYPTED_FOLDERS, folders, userId);
-  }
-
-  /**
-   * Invalidates the folder view cache for a user.
-   * Forces a complete re-decryption on the next folderViews$ subscription by
-   * removing the cached Observable and force subject.
-   */
-  private invalidateCache(userId: UserId): void {
-    this.folderViewCache.delete(userId);
-    delete this.forceFolderViews[userId];
   }
 }
