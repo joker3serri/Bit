@@ -39,8 +39,4 @@ export abstract class DeviceTrustServiceAbstraction {
    * Note: For debugging purposes only.
    */
   recordDeviceTrustLoss: () => Promise<void>;
-  /**
-   * Retrieves the current device
-   */
-  getCurrentDevice$: () => Observable<DeviceResponse>;
 }

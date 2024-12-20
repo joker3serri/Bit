@@ -2,8 +2,8 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { firstValueFrom } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
-import { DeviceTrustServiceAbstraction } from "@bitwarden/common/auth/abstractions/device-trust.service.abstraction";
 import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/devices/devices.service.abstraction";
 import { DeviceView } from "@bitwarden/common/auth/abstractions/devices/views/device.view";
 import { DeviceType, DeviceTypeMetadata } from "@bitwarden/common/enums";
@@ -39,22 +39,19 @@ export class DeviceManagementComponent {
   constructor(
     private i18nService: I18nService,
     private devicesService: DevicesServiceAbstraction,
-    private deviceTrustService: DeviceTrustServiceAbstraction,
     private dialogService: DialogService,
     private toastService: ToastService,
   ) {
-    // Get current device
-    this.deviceTrustService
-      .getCurrentDevice$()
-      .pipe(takeUntilDestroyed())
-      .subscribe((device) => {
-        this.currentDevice = new DeviceView(device);
-      });
-
-    // Get all devices and map them for the table
+    // Get the current device and then get all devices
     this.devicesService
-      .getDevices$()
-      .pipe(takeUntilDestroyed())
+      .getCurrentDevice$()
+      .pipe(
+        takeUntilDestroyed(),
+        switchMap((currentDevice) => {
+          this.currentDevice = new DeviceView(currentDevice);
+          return this.devicesService.getDevices$();
+        }),
+      )
       .subscribe((devices) => {
         this.dataSource.data = devices.map((device) => {
           return {

@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 
+import { DeviceResponse } from "./responses/device.response";
 import { DeviceView } from "./views/device.view";
 
 export abstract class DevicesServiceAbstraction {
@@ -13,4 +14,5 @@ export abstract class DevicesServiceAbstraction {
     deviceKeyEncryptedDevicePrivateKey: string,
   ): Observable<DeviceView>;
   abstract deactivateDevice$(deviceId: string): Observable<void>;
+  abstract getCurrentDevice$(): Observable<DeviceResponse>;
 }

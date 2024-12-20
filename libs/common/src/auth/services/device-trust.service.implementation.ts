@@ -1,4 +1,6 @@
-import { firstValueFrom, map, Observable, defer } from "rxjs";
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
+import { firstValueFrom, map, Observable } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
@@ -94,10 +96,10 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       this.stateProvider.getUserState$(SHOULD_TRUST_DEVICE, userId),
     );
 
-    return shouldTrustDevice ?? false;
+    return shouldTrustDevice;
   }
 
-  async setShouldTrustDevice(userId: UserId, value: boolean | null): Promise<void> {
+  async setShouldTrustDevice(userId: UserId, value: boolean): Promise<void> {
     if (!userId) {
       throw new Error("UserId is required. Cannot set should trust device.");
     }
@@ -157,15 +159,15 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     const deviceIdentifier = await this.appIdService.getAppId();
     const deviceResponse = await this.devicesApiService.updateTrustedDeviceKeys(
       deviceIdentifier,
-      devicePublicKeyEncryptedUserKey.encryptedString!,
-      userKeyEncryptedDevicePublicKey.encryptedString!,
-      deviceKeyEncryptedDevicePrivateKey.encryptedString!,
+      devicePublicKeyEncryptedUserKey.encryptedString,
+      userKeyEncryptedDevicePublicKey.encryptedString,
+      deviceKeyEncryptedDevicePrivateKey.encryptedString,
     );
 
     // store device key in local/secure storage if enc keys posted to server successfully
     await this.setDeviceKey(userId, deviceKey);
 
-    this.platformUtilsService.showToast("success", "", this.i18nService.t("deviceTrusted"));
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("deviceTrusted"));
 
     return deviceResponse;
   }
@@ -264,8 +266,6 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     } catch (e) {
       this.logService.error("Failed to get device key", e);
     }
-
-    return null;
   }
 
   private async setDeviceKey(userId: UserId, deviceKey: DeviceKey | null): Promise<void> {
@@ -277,7 +277,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       if (this.platformSupportsSecureStorage) {
         await this.secureStorageService.save<DeviceKey>(
           `${userId}${this.deviceKeySecureStorageKey}`,
-          deviceKey as DeviceKey,
+          deviceKey,
           this.getSecureStorageOptions(userId),
         );
         return;
@@ -330,7 +330,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
 
       // Attempt to decrypt encryptedUserDataKey with devicePrivateKey
       const userKey = await this.encryptService.rsaDecrypt(
-        new EncString(encryptedUserKey.encryptedString!),
+        new EncString(encryptedUserKey.encryptedString),
         devicePrivateKey,
       );
 
@@ -355,12 +355,5 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
       useSecureStorage: true,
       userId: userId,
     };
-  }
-
-  getCurrentDevice$(): Observable<DeviceResponse> {
-    return defer(async () => {
-      const deviceIdentifier = await this.appIdService.getAppId();
-      return this.devicesApiService.getDeviceByIdentifier(deviceIdentifier);
-    });
   }
 }
