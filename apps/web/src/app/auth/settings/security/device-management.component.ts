@@ -35,6 +35,8 @@ export class DeviceManagementComponent {
   protected readonly tableId = "device-management-table";
   protected dataSource = new TableDataSource<DeviceTableData>();
   protected currentDevice: DeviceView | undefined;
+  protected loading = true;
+  protected asyncActionLoading = false;
 
   constructor(
     private i18nService: I18nService,
@@ -42,7 +44,6 @@ export class DeviceManagementComponent {
     private dialogService: DialogService,
     private toastService: ToastService,
   ) {
-    // Get the current device and then get all devices
     this.devicesService
       .getCurrentDevice$()
       .pipe(
@@ -52,18 +53,24 @@ export class DeviceManagementComponent {
           return this.devicesService.getDevices$();
         }),
       )
-      .subscribe((devices) => {
-        this.dataSource.data = devices.map((device) => {
-          return {
-            id: device.id,
-            type: device.type,
-            displayName: this.getHumanReadableDeviceType(device.type),
-            loginStatus: this.getLoginStatus(device),
-            devicePendingAuthRequest: device.response.devicePendingAuthRequest,
-            firstLogin: new Date(device.creationDate),
-            trusted: device.response.isTrusted,
-          };
-        });
+      .subscribe({
+        next: (devices) => {
+          this.dataSource.data = devices.map((device) => {
+            return {
+              id: device.id,
+              type: device.type,
+              displayName: this.getHumanReadableDeviceType(device.type),
+              loginStatus: this.getLoginStatus(device),
+              devicePendingAuthRequest: device.response.devicePendingAuthRequest,
+              firstLogin: new Date(device.creationDate),
+              trusted: device.response.isTrusted,
+            };
+          });
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
@@ -183,7 +190,9 @@ export class DeviceManagementComponent {
     }
 
     try {
+      this.asyncActionLoading = true;
       await firstValueFrom(this.devicesService.deactivateDevice$(device.id));
+      this.asyncActionLoading = false;
 
       // Remove the device from the data source
       this.dataSource.data = this.dataSource.data.filter((d) => d.id !== device.id);

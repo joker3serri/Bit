@@ -1,11 +1,24 @@
 <div class="tabbed-content">
-  <h2>
-    {{ "devices" | i18n }}
-    <i class="bwi bwi-question-circle tw-h-5 tw-w-5 bwi-color-primary" aria-hidden="true"></i>
-  </h2>
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <h2 class="tw-m-0">{{ "devices" | i18n }}</h2>
+    <i
+      class="bwi bwi-question-circle tw-flex tw-items-center tw-h-4 tw-w-4 bwi-color-primary"
+      aria-hidden="true"
+    ></i>
+    <i
+      *ngIf="asyncActionLoading"
+      class="bwi bwi-spinner bwi-spin tw-flex tw-items-center tw-h-4 tw-w-4"
+      aria-hidden="true"
+    ></i>
+  </div>
+
   <p>{{ "deviceListDescription" | i18n }}</p>
 
-  <bit-table-scroll [dataSource]="dataSource" [rowSize]="50">
+  <div *ngIf="loading" class="tw-flex tw-justify-center tw-items-center tw-p-4">
+    <i class="bwi bwi-spinner bwi-spin tw-text-2xl" aria-hidden="true"></i>
+  </div>
+
+  <bit-table-scroll *ngIf="!loading" [dataSource]="dataSource" [rowSize]="50">
     <ng-container header>
       <th
         *ngFor="let col of columnConfig"
