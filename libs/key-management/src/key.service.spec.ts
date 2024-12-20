@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { mock } from "jest-mock-extended";
 import { bufferCount, firstValueFrom, lastValueFrom, of, take, tap } from "rxjs";
 
@@ -35,7 +37,6 @@ import { UserKeyDefinition } from "../../common/src/platform/state";
 import { CsprngArray } from "../../common/src/types/csprng";
 import { OrganizationId, UserId } from "../../common/src/types/guid";
 import { UserKey, MasterKey } from "../../common/src/types/key";
-
 
 import { KdfConfigService } from "./abstractions/kdf-config.service";
 import { UserPrivateKeyDecryptionFailedError } from "./abstractions/key.service";
