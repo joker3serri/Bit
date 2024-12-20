@@ -290,6 +290,9 @@ export class DefaultEnvironmentService implements EnvironmentService {
     );
   }
 
+  /**
+   * @deprecated Use getEnvironment$ instead.
+   */
   async getEnvironment(userId?: UserId): Promise<Environment | undefined> {
     return firstValueFrom(this.getEnvironment$(userId));
   }
