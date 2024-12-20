@@ -107,7 +107,7 @@ export class DefaultSdkService implements SdkService {
     );
 
     const client$ = combineLatest([
-      this.environmentService.getEnvironment(userId),
+      this.environmentService.getEnvironment$(userId),
       account$,
       kdfParams$,
       privateKey$,
