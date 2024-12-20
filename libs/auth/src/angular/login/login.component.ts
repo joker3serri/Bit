@@ -12,7 +12,6 @@ import {
   LoginStrategyServiceAbstraction,
   LoginSuccessHandlerService,
   PasswordLoginCredentials,
-  RegisterRouteService,
 } from "@bitwarden/auth/common";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
@@ -81,7 +80,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   clientType: ClientType;
   ClientType = ClientType;
   LoginUiState = LoginUiState;
-  registerRoute$ = this.registerRouteService.registerRoute$(); // TODO: remove when email verification flag is removed
   isKnownDevice = false;
   loginUiState: LoginUiState = LoginUiState.EMAIL_ENTRY;
 
@@ -125,7 +123,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
     private policyService: InternalPolicyService,
-    private registerRouteService: RegisterRouteService,
     private router: Router,
     private toastService: ToastService,
     private logService: LogService,
