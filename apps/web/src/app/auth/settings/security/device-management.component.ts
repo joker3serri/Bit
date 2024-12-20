@@ -8,6 +8,7 @@ import { DevicesServiceAbstraction } from "@bitwarden/common/auth/abstractions/d
 import { DeviceView } from "@bitwarden/common/auth/abstractions/devices/views/device.view";
 import { DeviceType, DeviceTypeMetadata } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
 import { DialogService, ToastService, TableDataSource, TableModule } from "@bitwarden/components";
 
 import { SharedModule } from "../../../shared";
@@ -43,6 +44,7 @@ export class DeviceManagementComponent {
     private devicesService: DevicesServiceAbstraction,
     private dialogService: DialogService,
     private toastService: ToastService,
+    private validationService: ValidationService,
   ) {
     this.devicesService
       .getCurrentDevice$()
@@ -202,12 +204,8 @@ export class DeviceManagementComponent {
         message: this.i18nService.t("deviceRemoved"),
         variant: "success",
       });
-    } catch (e) {
-      this.toastService.showToast({
-        title: "",
-        message: this.i18nService.t("errorOccurred"),
-        variant: "warning",
-      });
+    } catch (error) {
+      this.validationService.showError(error);
     }
   }
 }
