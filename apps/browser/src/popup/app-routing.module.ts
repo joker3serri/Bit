@@ -17,7 +17,6 @@ import {
   unauthGuardFn,
 } from "@bitwarden/angular/auth/guards";
 import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
-import { extensionRefreshRedirect } from "@bitwarden/angular/utils/extension-refresh-redirect";
 import { extensionRefreshSwap } from "@bitwarden/angular/utils/extension-refresh-swap";
 import { NewDeviceVerificationNoticeGuard } from "@bitwarden/angular/vault/guards";
 import {
@@ -26,7 +25,7 @@ import {
   LoginComponent,
   LoginSecondaryContentComponent,
   LockIcon,
-  LockV2Component,
+  LockComponent,
   LoginViaAuthRequestComponent,
   PasswordHintComponent,
   RegistrationFinishComponent,
@@ -60,7 +59,6 @@ import {
 } from "../auth/popup/extension-anon-layout-wrapper/extension-anon-layout-wrapper.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
-import { LockComponent } from "../auth/popup/lock.component";
 import { LoginDecryptionOptionsComponentV1 } from "../auth/popup/login-decryption-options/login-decryption-options-v1.component";
 import { LoginComponentV1 } from "../auth/popup/login-v1.component";
 import { LoginViaAuthRequestComponentV1 } from "../auth/popup/login-via-auth-request-v1.component";
@@ -88,8 +86,6 @@ import BrowserPopupUtils from "../platform/popup/browser-popup-utils";
 import { popupRouterCacheGuard } from "../platform/popup/view-cache/popup-router-cache.service";
 import { CredentialGeneratorHistoryComponent } from "../tools/popup/generator/credential-generator-history.component";
 import { CredentialGeneratorComponent } from "../tools/popup/generator/credential-generator.component";
-import { GeneratorComponent } from "../tools/popup/generator/generator.component";
-import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
 import { SendAddEditComponent as SendAddEditV2Component } from "../tools/popup/send-v2/add-edit/send-add-edit.component";
 import { SendCreatedComponent } from "../tools/popup/send-v2/send-created/send-created.component";
 import { SendV2Component } from "../tools/popup/send-v2/send-v2.component";
@@ -170,13 +166,6 @@ const routes: Routes = [
     canActivate: [fido2AuthGuard],
     data: { elevation: 1 } satisfies RouteDataProperties,
   }),
-  {
-    path: "lock",
-    component: LockComponent,
-    canActivate: [lockGuard()],
-    canMatch: [extensionRefreshRedirect("/lockV2")],
-    data: { elevation: 1, doNotSaveUrl: true } satisfies RouteDataProperties,
-  },
   ...twofactorRefactorSwap(
     TwoFactorComponent,
     AnonLayoutWrapperComponent,
@@ -336,15 +325,16 @@ const routes: Routes = [
   }),
   {
     path: "generator",
-    component: GeneratorComponent,
+    component: CredentialGeneratorComponent,
     canActivate: [authGuard],
     data: { elevation: 0 } satisfies RouteDataProperties,
   },
-  ...extensionRefreshSwap(PasswordGeneratorHistoryComponent, CredentialGeneratorHistoryComponent, {
+  {
     path: "generator-history",
+    component: CredentialGeneratorHistoryComponent,
     canActivate: [authGuard],
     data: { elevation: 1 } satisfies RouteDataProperties,
-  }),
+  },
   {
     path: "import",
     component: ImportBrowserV2Component,
@@ -643,8 +633,8 @@ const routes: Routes = [
         ],
       },
       {
-        path: "lockV2",
-        canActivate: [canAccessFeature(FeatureFlag.ExtensionRefresh), lockGuard()],
+        path: "lock",
+        canActivate: [lockGuard()],
         data: {
           pageIcon: LockIcon,
           pageTitle: {
@@ -655,19 +645,19 @@ const routes: Routes = [
           elevation: 1,
           /**
            * This ensures that in a passkey flow the `/fido2?<queryParams>` URL does not get
-           * overwritten in the `BrowserRouterService` by the `/lockV2` route. This way, after
+           * overwritten in the `BrowserRouterService` by the `/lock` route. This way, after
            * unlocking, the user can be redirected back to the `/fido2?<queryParams>` URL.
            *
            * Also, this prevents a routing loop when using biometrics to unlock the vault in MV2 (Firefox),
            * locking up the browser (https://bitwarden.atlassian.net/browse/PM-16116). This involves the
-           * `popup-router-cache.service` pushing the `lockV2` route to the history.
+           * `popup-router-cache.service` pushing the `lock` route to the history.
            */
           doNotSaveUrl: true,
         } satisfies ExtensionAnonLayoutWrapperData & RouteDataProperties,
         children: [
           {
             path: "",
-            component: LockV2Component,
+            component: LockComponent,
           },
         ],
       },
@@ -759,11 +749,12 @@ const routes: Routes = [
         canDeactivate: [clearVaultStateGuard],
         data: { elevation: 0 } satisfies RouteDataProperties,
       },
-      ...extensionRefreshSwap(GeneratorComponent, CredentialGeneratorComponent, {
+      {
         path: "generator",
+        component: CredentialGeneratorComponent,
         canActivate: [authGuard],
         data: { elevation: 0 } satisfies RouteDataProperties,
-      }),
+      },
       {
         path: "settings",
         component: SettingsV2Component,
