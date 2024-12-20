@@ -126,7 +126,7 @@ describe("AddEditFolderDialogComponent", () => {
 
       await component.submit();
 
-      expect(close).toHaveBeenCalled();
+      expect(close).toHaveBeenCalledWith(AddEditFolderDialogResult.Created);
     });
 
     it("logs error if saving fails", async () => {

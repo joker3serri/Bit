@@ -34,6 +34,7 @@ import {
 import { KeyService } from "@bitwarden/key-management";
 
 export enum AddEditFolderDialogResult {
+  Created = "created",
   Deleted = "deleted",
 }
 
@@ -126,7 +127,7 @@ export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
         message: this.i18nService.t("editedFolder"),
       });
 
-      this.close();
+      this.close(AddEditFolderDialogResult.Created);
     } catch (e) {
       this.logService.error(e);
     }
@@ -159,7 +160,7 @@ export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
   };
 
   /** Close the dialog */
-  private close(result?: AddEditFolderDialogResult) {
+  private close(result: AddEditFolderDialogResult) {
     this.dialogRef.close(result);
   }
 }
