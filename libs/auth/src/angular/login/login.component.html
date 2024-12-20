@@ -54,18 +54,10 @@
       </ng-container>
 
       <!-- Button to Login with SSO -->
-      <ng-container *ngIf="clientType === ClientType.Web">
-        <button type="button" bitButton block buttonType="secondary" (click)="handleSsoClick()">
-          <i class="bwi bwi-provider tw-mr-1"></i>
-          {{ "useSingleSignOn" | i18n }}
-        </button>
-      </ng-container>
-      <ng-container *ngIf="clientType === ClientType.Browser || clientType === ClientType.Desktop">
-        <button type="button" bitButton block buttonType="secondary" (click)="handleSsoClick()">
-          <i class="bwi bwi-provider tw-mr-1"></i>
-          {{ "useSingleSignOn" | i18n }}
-        </button>
-      </ng-container>
+      <button type="button" bitButton block buttonType="secondary" (click)="handleSsoClick()">
+        <i class="bwi bwi-provider tw-mr-1"></i>
+        {{ "useSingleSignOn" | i18n }}
+      </button>
     </div>
   </div>
 
