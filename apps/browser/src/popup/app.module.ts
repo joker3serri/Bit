@@ -33,7 +33,7 @@ import { SetPasswordComponent } from "../auth/popup/set-password.component";
 import { AccountSecurityComponent as AccountSecurityComponentV1 } from "../auth/popup/settings/account-security-v1.component";
 import { AccountSecurityComponent } from "../auth/popup/settings/account-security.component";
 import { VaultTimeoutInputComponent } from "../auth/popup/settings/vault-timeout-input.component";
-import { SsoComponent } from "../auth/popup/sso.component";
+import { SsoComponentV1 } from "../auth/popup/sso-v1.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
@@ -59,7 +59,6 @@ import { PopupTabNavigationComponent } from "../platform/popup/layout/popup-tab-
 import { FilePopoutCalloutComponent } from "../tools/popup/components/file-popout-callout.component";
 import { GeneratorComponent } from "../tools/popup/generator/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
-import { SettingsComponent } from "../tools/popup/settings/settings.component";
 import { ActionButtonsComponent } from "../vault/popup/components/action-buttons.component";
 import { CipherRowComponent } from "../vault/popup/components/cipher-row.component";
 import { AddEditCustomFieldsComponent } from "../vault/popup/components/vault/add-edit-custom-fields.component";
@@ -85,7 +84,6 @@ import { AppComponent } from "./app.component";
 import { UserVerificationComponent } from "./components/user-verification.component";
 import { ServicesModule } from "./services/services.module";
 import { TabsV2Component } from "./tabs-v2.component";
-import { TabsComponent } from "./tabs.component";
 
 // Register the locales for the application
 import "../platform/popup/locales";
@@ -166,12 +164,10 @@ import "../platform/popup/locales";
     PremiumComponent,
     RegisterComponent,
     SetPasswordComponent,
-    SettingsComponent,
     VaultSettingsComponent,
     ShareComponent,
-    SsoComponent,
+    SsoComponentV1,
     SyncComponent,
-    TabsComponent,
     TabsV2Component,
     TwoFactorComponent,
     TwoFactorOptionsComponent,
