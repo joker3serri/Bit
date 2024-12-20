@@ -196,10 +196,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     const credentials = new PasswordLoginCredentials(
-      email,
-      masterPassword,
-      null, // captcha no longer used in new login / registration scenarios
-      null,
+      email ?? "",
+      masterPassword ?? "",
+      undefined, // captcha no longer used in new login / registration scenarios
     );
 
     try {
