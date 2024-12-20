@@ -8257,6 +8257,9 @@
   "deviceRemoved": {
     "message": "Device removed"
   },
+  "removeDevice": {
+    "message": "Remove device"
+  },
   "removeDeviceConfirmation": {
     "message": "Are you sure you want to remove this device?"
   },
