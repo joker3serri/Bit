@@ -64,6 +64,6 @@ export class NewItemDropdownV2Component implements OnInit {
   }
 
   openFolderDialog() {
-    this.dialogService.open(AddEditFolderDialogComponent);
+    AddEditFolderDialogComponent.open(this.dialogService);
   }
 }

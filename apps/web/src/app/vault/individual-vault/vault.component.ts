@@ -74,7 +74,6 @@ import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { DialogService, Icons, ToastService } from "@bitwarden/components";
 import {
   AddEditFolderDialogComponent,
-  AddEditFolderDialogData,
   AddEditFolderDialogResult,
   CipherFormConfig,
   CollectionAssignmentResult,
@@ -572,16 +571,13 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   addFolder = (): void => {
-    this.dialogService.open(AddEditFolderDialogComponent);
+    AddEditFolderDialogComponent.open(this.dialogService);
   };
 
   editFolder = async (folder: FolderFilter): Promise<void> => {
-    const dialogRef = this.dialogService.open<AddEditFolderDialogResult, AddEditFolderDialogData>(
-      AddEditFolderDialogComponent,
-      {
-        data: { editFolderConfig: { folder } },
-      },
-    );
+    const dialogRef = AddEditFolderDialogComponent.open(this.dialogService, {
+      editFolderConfig: { folder },
+    });
 
     const result = await lastValueFrom(dialogRef.closed);
 

@@ -41,7 +41,8 @@ describe("FoldersV2Component", () => {
   let component: FoldersV2Component;
   let fixture: ComponentFixture<FoldersV2Component>;
   const folderViews$ = new BehaviorSubject<FolderView[]>([]);
-  const open = jest.fn();
+  const open = jest.spyOn(AddEditFolderDialogComponent, "open");
+  const mockDialogService = { open: jest.fn() };
 
   beforeEach(async () => {
     open.mockClear();
@@ -64,7 +65,7 @@ describe("FoldersV2Component", () => {
           imports: [MockPopupHeaderComponent, MockPopupFooterComponent],
         },
       })
-      .overrideProvider(DialogService, { useValue: { open } })
+      .overrideProvider(DialogService, { useValue: mockDialogService })
       .compileComponents();
 
     fixture = TestBed.createComponent(FoldersV2Component);
@@ -97,9 +98,7 @@ describe("FoldersV2Component", () => {
 
     editButton.triggerEventHandler("click");
 
-    expect(open).toHaveBeenCalledWith(AddEditFolderDialogComponent, {
-      data: { editFolderConfig: { folder } },
-    });
+    expect(open).toHaveBeenCalledWith(mockDialogService, { editFolderConfig: { folder } });
   });
 
   it("opens add dialog for new folder when there are no folders", () => {
@@ -110,6 +109,6 @@ describe("FoldersV2Component", () => {
 
     addButton.triggerEventHandler("click");
 
-    expect(open).toHaveBeenCalledWith(AddEditFolderDialogComponent, { data: {} });
+    expect(open).toHaveBeenCalledWith(mockDialogService, {});
   });
 });

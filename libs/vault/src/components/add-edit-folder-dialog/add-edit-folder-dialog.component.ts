@@ -163,4 +163,11 @@ export class AddEditFolderDialogComponent implements AfterViewInit, OnInit {
   private close(result: AddEditFolderDialogResult) {
     this.dialogRef.close(result);
   }
+
+  static open(dialogService: DialogService, data?: AddEditFolderDialogData) {
+    return dialogService.open<AddEditFolderDialogResult, AddEditFolderDialogData>(
+      AddEditFolderDialogComponent,
+      { data },
+    );
+  }
 }

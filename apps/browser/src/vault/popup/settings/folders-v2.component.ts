@@ -11,11 +11,7 @@ import {
   DialogService,
   IconButtonModule,
 } from "@bitwarden/components";
-import {
-  AddEditFolderDialogComponent,
-  AddEditFolderDialogData,
-  VaultIcons,
-} from "@bitwarden/vault";
+import { AddEditFolderDialogComponent, VaultIcons } from "@bitwarden/vault";
 
 import { ItemGroupComponent } from "../../../../../../libs/components/src/item/item-group.component";
 import { ItemModule } from "../../../../../../libs/components/src/item/item.module";
@@ -67,8 +63,6 @@ export class FoldersV2Component {
     // If a folder is provided, the edit variant should be shown
     const editFolderConfig = folder ? { folder } : undefined;
 
-    this.dialogService.open<unknown, AddEditFolderDialogData>(AddEditFolderDialogComponent, {
-      data: { editFolderConfig },
-    });
+    AddEditFolderDialogComponent.open(this.dialogService, { editFolderConfig });
   }
 }
