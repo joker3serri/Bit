@@ -222,6 +222,11 @@ export class NotificationsService implements NotificationsServiceAbstraction {
           });
         }
         break;
+      case NotificationType.SyncOrganizationStatusChanged:
+        if (isAuthenticated) {
+          await this.syncService.fullSync(true);
+        }
+        break;
       default:
         break;
     }
