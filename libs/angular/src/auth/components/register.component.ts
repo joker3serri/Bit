@@ -1,10 +1,13 @@
-// FIXME: Update this file to be type safe and remove this and next line
-// @ts-strict-ignore
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
-import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
+import {
+  LoginEmailServiceAbstraction,
+  LoginStrategyServiceAbstraction,
+  PasswordLoginCredentials,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
@@ -99,6 +102,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     protected auditService: AuditService,
     protected dialogService: DialogService,
     protected toastService: ToastService,
+    protected loginEmailService: LoginEmailServiceAbstraction,
   ) {
     super(environmentService, i18nService, platformUtilsService, toastService);
     this.showTerms = !platformUtilsService.isSelfHost();
@@ -106,6 +110,13 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
   }
 
   async ngOnInit() {
+    // Set initial email from loginEmailService using loginEmail$ observable
+    const loginEmail = await firstValueFrom(this.loginEmailService.loginEmail$);
+    if (loginEmail) {
+      this.formGroup.get("email").setValue(loginEmail);
+      this.formGroup.get("email").markAsTouched();
+    }
+
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.setupCaptcha();

@@ -6,7 +6,10 @@ import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/auth/components/register.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
-import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
+import {
+  LoginEmailServiceAbstraction,
+  LoginStrategyServiceAbstraction,
+} from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -55,6 +58,7 @@ export class RegisterFormComponent extends BaseRegisterComponent implements OnIn
     dialogService: DialogService,
     acceptOrgInviteService: AcceptOrganizationInviteService,
     toastService: ToastService,
+    loginEmailService: LoginEmailServiceAbstraction,
   ) {
     super(
       formValidationErrorService,
@@ -72,6 +76,7 @@ export class RegisterFormComponent extends BaseRegisterComponent implements OnIn
       auditService,
       dialogService,
       toastService,
+      loginEmailService,
     );
     this.modifyRegisterRequest = async (request: RegisterRequest) => {
       // Org invites are deep linked. Non-existent accounts are redirected to the register page.
