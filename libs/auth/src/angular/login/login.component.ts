@@ -1,5 +1,3 @@
-// FIXME: Update this file to be type safe and remove this and next line
-// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
@@ -71,10 +69,10 @@ export enum LoginUiState {
   ],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  @ViewChild("masterPasswordInputRef") masterPasswordInputRef: ElementRef;
+  @ViewChild("masterPasswordInputRef") masterPasswordInputRef: ElementRef | undefined;
 
   private destroy$ = new Subject<void>();
-  private enforcedMasterPasswordOptions: MasterPasswordPolicyOptions = undefined;
+  private enforcedMasterPasswordOptions: MasterPasswordPolicyOptions | undefined = undefined;
   readonly Icons = { WaveIcon, VaultIcon };
 
   clientType: ClientType;
@@ -95,13 +93,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     { updateOn: "submit" },
   );
 
-  get emailFormControl(): FormControl<string> {
+  get emailFormControl(): FormControl<string | null> {
     return this.formGroup.controls.email;
   }
 
   // Web properties
-  enforcedPasswordPolicyOptions: MasterPasswordPolicyOptions;
-  policies: Policy[];
+  enforcedPasswordPolicyOptions: MasterPasswordPolicyOptions | undefined;
+  policies: Policy[] | undefined;
   showResetPasswordAutoEnrollWarning = false;
 
   // Desktop properties
@@ -298,7 +296,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   protected async launchSsoBrowserWindow(clientId: "browser" | "desktop"): Promise<void> {
-    await this.loginComponentService.launchSsoBrowserWindow(this.emailFormControl.value, clientId);
+    await this.loginComponentService.launchSsoBrowserWindow(
+      this.emailFormControl.value ?? "",
+      clientId,
+    );
   }
 
   protected async evaluatePassword(): Promise<void> {
@@ -335,13 +336,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     const masterPassword = this.formGroup.controls.masterPassword.value;
 
     const passwordStrength = this.passwordStrengthService.getPasswordStrength(
-      masterPassword,
-      this.formGroup.value.email,
+      masterPassword ?? "",
+      this.formGroup.value.email ?? "",
     )?.score;
 
     return !this.policyService.evaluateMasterPassword(
       passwordStrength,
-      masterPassword,
+      masterPassword ?? "",
       this.enforcedMasterPasswordOptions,
     );
   }
@@ -402,7 +403,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
 
       // Check to see if the device is known so we can show the Login with Device option
-      await this.getKnownDevice(this.emailFormControl.value);
+      await this.getKnownDevice(this.emailFormControl.value ?? "");
     }
   }
 
@@ -426,8 +427,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   protected async saveEmailSettings(): Promise<void> {
-    await this.loginEmailService.setLoginEmail(this.formGroup.value.email);
-    this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail);
+    await this.loginEmailService.setLoginEmail(this.formGroup.value.email ?? "");
+    this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail ?? false);
     await this.loginEmailService.saveEmailSettings();
   }
 
@@ -500,7 +501,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const orgPolicies = await this.loginComponentService.getOrgPolicies();
 
     this.policies = orgPolicies?.policies;
-    this.showResetPasswordAutoEnrollWarning = orgPolicies?.isPolicyAndAutoEnrollEnabled;
+    this.showResetPasswordAutoEnrollWarning = orgPolicies?.isPolicyAndAutoEnrollEnabled ?? false;
 
     let paramEmailIsSet = false;
 
@@ -522,7 +523,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     // Check to see if the device is known so that we can show the Login with Device option
-    await this.getKnownDevice(this.emailFormControl.value);
+    await this.getKnownDevice(this.emailFormControl.value ?? "");
 
     // Backup check to handle unknown case where activatedRoute is not available
     // This shouldn't happen under normal circumstances
