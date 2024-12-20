@@ -3,10 +3,6 @@ import { Component } from "@angular/core";
 import { map, Observable } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import {
-  AddEditFolderDialogComponent,
-  AddEditFolderDialogData,
-} from "@bitwarden/angular/vault/components";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import {
@@ -15,7 +11,11 @@ import {
   DialogService,
   IconButtonModule,
 } from "@bitwarden/components";
-import { VaultIcons } from "@bitwarden/vault";
+import {
+  AddEditFolderDialogComponent,
+  AddEditFolderDialogData,
+  VaultIcons,
+} from "@bitwarden/vault";
 
 import { ItemGroupComponent } from "../../../../../../libs/components/src/item/item-group.component";
 import { ItemModule } from "../../../../../../libs/components/src/item/item.module";

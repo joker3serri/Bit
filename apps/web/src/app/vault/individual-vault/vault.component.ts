@@ -42,11 +42,6 @@ import {
 } from "@bitwarden/admin-console/common";
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import {
-  AddEditFolderDialogComponent,
-  AddEditFolderDialogData,
-  AddEditFolderDialogResult,
-} from "@bitwarden/angular/vault/components";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
@@ -78,6 +73,9 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { DialogService, Icons, ToastService } from "@bitwarden/components";
 import {
+  AddEditFolderDialogComponent,
+  AddEditFolderDialogData,
+  AddEditFolderDialogResult,
   CipherFormConfig,
   CollectionAssignmentResult,
   DefaultCipherFormConfigService,
