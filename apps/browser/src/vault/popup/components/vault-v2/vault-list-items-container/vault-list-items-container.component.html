@@ -55,7 +55,11 @@
               bitBadge
               variant="primary"
               (click)="doAutofill(cipher)"
-              [title]="'autofillTitle' | i18n: cipher.name"
+              [title]="
+                autofillShortcutTooltip()
+                  ? autofillShortcutTooltip()
+                  : ('autofillTitle' | i18n: cipher.name)
+              "
               [attr.aria-label]="'autofillTitle' | i18n: cipher.name"
             >
               {{ "fill" | i18n }}
