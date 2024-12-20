@@ -1219,7 +1219,7 @@ export class AutofillInlineMenuList extends AutofillInlineMenuPageElement {
     const totpCodeSpan = document.createElement("span");
     totpCodeSpan.classList.toggle("cipher-subtitle");
     totpCodeSpan.classList.toggle("masked-totp", !!reprompt);
-    totpCodeSpan.textContent = reprompt ? "●".repeat(totpCode.length) : formattedTotpCode;
+    totpCodeSpan.textContent = reprompt ? "●●●●●●" : formattedTotpCode;
     totpCodeSpan.setAttribute("aria-label", this.getTranslation("totpCodeAria"));
     totpCodeSpan.setAttribute("data-testid", "totp-code");
     containerElement.appendChild(totpCodeSpan);
