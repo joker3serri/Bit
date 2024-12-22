@@ -3,10 +3,13 @@
 import { firstValueFrom, map } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { KdfConfigService, KeyService } from "@bitwarden/key-management";
+import {
+  KdfConfigService,
+  KeyService,
+  VaultTimeoutSettingsService,
+} from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../../../../auth/src/common/abstractions/pin.service.abstraction";
-import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../../../../key-management/src/vault-timeout/abstractions/vault-timeout-settings.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";
@@ -48,7 +51,7 @@ export class UserVerificationService implements UserVerificationServiceAbstracti
     private userDecryptionOptionsService: UserDecryptionOptionsServiceAbstraction,
     private pinService: PinServiceAbstraction,
     private logService: LogService,
-    private vaultTimeoutSettingsService: VaultTimeoutSettingsServiceAbstraction,
+    private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private platformUtilsService: PlatformUtilsService,
     private kdfConfigService: KdfConfigService,
   ) {}
