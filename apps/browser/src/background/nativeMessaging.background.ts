@@ -143,6 +143,11 @@ export class NativeMessagingBackground {
             }
             this.connected = false;
             this.port.disconnect();
+            // reject all
+            for (const callback of this.callbacks.values()) {
+              callback.rejecter("disconnected");
+            }
+            this.callbacks.clear();
             break;
           case "setupEncryption": {
             // Ignore since it belongs to another device
