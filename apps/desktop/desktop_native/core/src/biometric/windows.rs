@@ -84,14 +84,14 @@ impl super::BiometricTrait for Biometric {
         let bitwarden = h!("Bitwarden");
 
         let result = KeyCredentialManager::RequestCreateAsync(
-            &bitwarden,
+            bitwarden,
             KeyCredentialCreationOption::FailIfExists,
         )?
         .get()?;
 
         let result = match result.Status()? {
             KeyCredentialStatus::CredentialAlreadyExists => {
-                KeyCredentialManager::OpenAsync(&bitwarden)?.get()?
+                KeyCredentialManager::OpenAsync(bitwarden)?.get()?
             }
             KeyCredentialStatus::Success => result,
             _ => return Err(anyhow!("Failed to create key credential")),
@@ -126,8 +126,8 @@ impl super::BiometricTrait for Biometric {
         CryptographicBuffer::CopyToByteArray(&signature_buffer, &mut signature_value)?;
 
         let key = Sha256::digest(&*signature_value);
-        let key_b64 = base64_engine.encode(&key);
-        let iv_b64 = base64_engine.encode(&challenge);
+        let key_b64 = base64_engine.encode(key);
+        let iv_b64 = base64_engine.encode(challenge);
         Ok(OsDerivedKey { key_b64, iv_b64 })
     }
 
@@ -161,12 +161,12 @@ impl super::BiometricTrait for Biometric {
             Ok(secret) => {
                 // If the secret is a CipherString, it is encrypted and we need to decrypt it.
                 let secret = decrypt(&secret, &key_material)?;
-                return Ok(secret);
+                Ok(secret)
             }
             Err(_) => {
                 // If the secret is not a CipherString, it is not encrypted and we can return it
                 //  directly.
-                return Ok(encrypted_secret);
+                Ok(encrypted_secret)
             }
         }
     }
@@ -177,7 +177,6 @@ fn random_challenge() -> [u8; 16] {
     rand::thread_rng().fill_bytes(&mut challenge);
     challenge
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -205,20 +204,21 @@ mod tests {
         assert_eq!(iv.len(), 16);
     }
 
-    #[test]
+    #[tokio::test]
     #[cfg(feature = "manual_test")]
-    fn test_prompt() {
+    async fn test_prompt() {
         <Biometric as BiometricTrait>::prompt(
             vec![0, 0, 0, 0, 0, 0, 0, 0],
             String::from("Hello from Rust"),
         )
+        .await
         .unwrap();
     }
 
-    #[test]
+    #[tokio::test]
     #[cfg(feature = "manual_test")]
-    fn test_available() {
-        assert!(<Biometric as BiometricTrait>::available().unwrap())
+    async fn test_available() {
+        assert!(<Biometric as BiometricTrait>::available().await.unwrap())
     }
 
     #[test]
@@ -235,7 +235,7 @@ mod tests {
 
         match secret {
             CipherString::AesCbc256_B64 { iv, data: _ } => {
-                assert_eq!(iv_b64, base64_engine.encode(&iv));
+                assert_eq!(iv_b64, base64_engine.encode(iv));
             }
             _ => panic!("Invalid cipher string"),
         }
