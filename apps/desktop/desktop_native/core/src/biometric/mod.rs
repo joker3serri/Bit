@@ -31,7 +31,7 @@ pub struct OsDerivedKey {
 pub trait BiometricTrait {
     async fn prompt(hwnd: Vec<u8>, message: String) -> Result<bool>;
     async fn available() -> Result<bool>;
-    async fn derive_key_material(secret: Option<&str>) -> Result<OsDerivedKey>;
+    fn derive_key_material(secret: Option<&str>) -> Result<OsDerivedKey>;
     async fn set_biometric_secret(
         service: &str,
         account: &str,
