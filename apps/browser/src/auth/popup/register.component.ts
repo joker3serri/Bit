@@ -4,10 +4,7 @@ import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/auth/components/register.component";
 import { FormValidationErrorsService } from "@bitwarden/angular/platform/abstractions/form-validation-errors.service";
-import {
-  LoginEmailServiceAbstraction,
-  LoginStrategyServiceAbstraction,
-} from "@bitwarden/auth/common";
+import { LoginStrategyServiceAbstraction } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
@@ -43,7 +40,6 @@ export class RegisterComponent extends BaseRegisterComponent {
     auditService: AuditService,
     dialogService: DialogService,
     toastService: ToastService,
-    loginEmailService: LoginEmailServiceAbstraction,
   ) {
     super(
       formValidationErrorService,
@@ -61,7 +57,6 @@ export class RegisterComponent extends BaseRegisterComponent {
       auditService,
       dialogService,
       toastService,
-      loginEmailService,
     );
   }
 }

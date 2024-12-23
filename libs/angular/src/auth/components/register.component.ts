@@ -1,13 +1,10 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { firstValueFrom } from "rxjs";
 
-import {
-  LoginEmailServiceAbstraction,
-  LoginStrategyServiceAbstraction,
-  PasswordLoginCredentials,
-} from "@bitwarden/auth/common";
+import { LoginStrategyServiceAbstraction, PasswordLoginCredentials } from "@bitwarden/auth/common";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
@@ -39,15 +36,15 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
   @Output() createdAccount = new EventEmitter<string>();
 
   showPassword = false;
-  formPromise: Promise<RegisterResponse> | undefined;
-  referenceData: ReferenceEventRequest | undefined;
+  formPromise: Promise<RegisterResponse>;
+  referenceData: ReferenceEventRequest;
   showTerms = true;
   showErrorSummary = false;
   passwordStrengthResult: any;
   characterMinimumMessage: string;
   minimumLength = Utils.minimumPasswordLength;
-  color: string | undefined;
-  text: string | undefined;
+  color: string;
+  text: string;
 
   formGroup = this.formBuilder.group(
     {
@@ -80,11 +77,11 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
 
   protected accountCreated = false;
 
-  protected captchaBypassToken: string | null = null;
+  protected captchaBypassToken: string = null;
 
   // allows for extending classes to modify the register request before sending
   // currently used by web to add organization invitation details
-  protected modifyRegisterRequest: ((request: RegisterRequest) => Promise<void>) | undefined;
+  protected modifyRegisterRequest: (request: RegisterRequest) => Promise<void>;
 
   constructor(
     protected formValidationErrorService: FormValidationErrorsService,
@@ -102,7 +99,6 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     protected auditService: AuditService,
     protected dialogService: DialogService,
     protected toastService: ToastService,
-    protected loginEmailService: LoginEmailServiceAbstraction,
   ) {
     super(environmentService, i18nService, platformUtilsService, toastService);
     this.showTerms = !platformUtilsService.isSelfHost();
@@ -110,13 +106,6 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
   }
 
   async ngOnInit() {
-    // Set initial email from loginEmailService using loginEmail$ observable
-    const loginEmail = await firstValueFrom(this.loginEmailService.loginEmail$);
-    if (loginEmail) {
-      this.formGroup.get("email")?.setValue(loginEmail);
-      this.formGroup.get("email")?.markAsTouched();
-    }
-
     // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.setupCaptcha();
@@ -137,22 +126,18 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
         if (!registerResponse.successful) {
           return;
         }
-        this.captchaBypassToken = registerResponse.captchaBypassToken ?? null;
+        this.captchaBypassToken = registerResponse.captchaBypassToken;
         this.accountCreated = true;
       }
       if (this.isInTrialFlow) {
         if (!this.accountCreated) {
           this.toastService.showToast({
             variant: "success",
-            title: "",
+            title: null,
             message: this.i18nService.t("trialAccountCreated"),
           });
         }
-        const loginResponse = await this.logIn(
-          email,
-          masterPassword,
-          this.captchaBypassToken ?? "",
-        );
+        const loginResponse = await this.logIn(email, masterPassword, this.captchaBypassToken);
         if (loginResponse.captchaRequired) {
           return;
         }
@@ -160,7 +145,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       } else {
         this.toastService.showToast({
           variant: "success",
-          title: "",
+          title: null,
           message: this.i18nService.t("newAccountCreated"),
         });
         // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
@@ -186,26 +171,26 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
   }
 
   private getErrorToastMessage() {
-    const error: AllValidationErrors | undefined = this.formValidationErrorService
+    const error: AllValidationErrors = this.formValidationErrorService
       .getFormValidationErrors(this.formGroup.controls)
       .shift();
 
-    if (!error) {
-      return;
+    if (error) {
+      switch (error.errorName) {
+        case "email":
+          return this.i18nService.t("invalidEmail");
+        case "inputsDoesntMatchError":
+          return this.i18nService.t("masterPassDoesntMatch");
+        case "inputsMatchError":
+          return this.i18nService.t("hintEqualsPassword");
+        case "minlength":
+          return this.i18nService.t("masterPasswordMinlength", Utils.minimumPasswordLength);
+        default:
+          return this.i18nService.t(this.errorTag(error));
+      }
     }
 
-    switch (error.errorName) {
-      case "email":
-        return this.i18nService.t("invalidEmail");
-      case "inputsDoesntMatchError":
-        return this.i18nService.t("masterPassDoesntMatch");
-      case "inputsMatchError":
-        return this.i18nService.t("hintEqualsPassword");
-      case "minlength":
-        return this.i18nService.t("masterPasswordMinlength", Utils.minimumPasswordLength);
-      default:
-        return this.i18nService.t(this.errorTag(error));
-    }
+    return;
   }
 
   private errorTag(error: AllValidationErrors): string {
@@ -226,7 +211,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     this.formGroup.markAllAsTouched();
     this.showErrorSummary = true;
 
-    if (this.formGroup.get("acceptPolicies")?.hasError("required")) {
+    if (this.formGroup.get("acceptPolicies").hasError("required")) {
       this.toastService.showToast({
         variant: "error",
         title: this.i18nService.t("errorOccurred"),
@@ -246,7 +231,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       this.toastService.showToast({
         variant: "error",
         title: this.i18nService.t("errorOccurred"),
-        message: errorText ?? this.i18nService.t("errorOccurred"),
+        message: errorText,
       });
       return { isValid: false };
     }
@@ -308,13 +293,13 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       name,
       masterKeyHash,
       hint,
-      newUserKey[1].encryptedString ?? "",
-      this.referenceData ?? ({} as ReferenceEventRequest),
+      newUserKey[1].encryptedString,
+      this.referenceData,
       this.captchaToken,
       kdfConfig.kdfType,
       kdfConfig.iterations,
     );
-    request.keys = new KeysRequest(keys[0], keys[1].encryptedString ?? "");
+    request.keys = new KeysRequest(keys[0], keys[1].encryptedString);
     if (this.modifyRegisterRequest) {
       await this.modifyRegisterRequest(request);
     }
@@ -333,7 +318,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       const response = await this.formPromise;
       return { successful: true, captchaBypassToken: response.captchaBypassToken };
     } catch (e) {
-      if (this.handleCaptchaRequired(e as { captchaSiteKey: string })) {
+      if (this.handleCaptchaRequired(e)) {
         return { successful: false };
       } else {
         throw e;
@@ -346,7 +331,12 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     masterPassword: string,
     captchaBypassToken: string,
   ): Promise<{ captchaRequired: boolean }> {
-    const credentials = new PasswordLoginCredentials(email, masterPassword, captchaBypassToken);
+    const credentials = new PasswordLoginCredentials(
+      email,
+      masterPassword,
+      captchaBypassToken,
+      null,
+    );
     const loginResponse = await this.loginStrategyService.logIn(credentials);
     if (this.handleCaptchaRequired(loginResponse)) {
       return { captchaRequired: true };
