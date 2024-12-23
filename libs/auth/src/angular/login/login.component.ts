@@ -404,7 +404,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
 
       // Check to see if the device is known so we can show the Login with Device option
-      await this.getKnownDevice(this.emailFormControl.value ?? "");
+      const email = this.emailFormControl.value;
+      if (email) {
+        await this.getKnownDevice(email);
+      }
     }
   }
 
@@ -465,6 +468,11 @@ export class LoginComponent implements OnInit, OnDestroy {
    * @param email - The user's email
    */
   private async getKnownDevice(email: string): Promise<void> {
+    if (!email) {
+      this.isKnownDevice = false;
+      return;
+    }
+
     try {
       const deviceIdentifier = await this.appIdService.getAppId();
       this.isKnownDevice = await this.devicesApiService.getKnownDevice(email, deviceIdentifier);
@@ -530,7 +538,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     // Check to see if the device is known so that we can show the Login with Device option
-    await this.getKnownDevice(this.emailFormControl.value ?? "");
+    if (this.emailFormControl.value) {
+      await this.getKnownDevice(this.emailFormControl.value);
+    }
 
     // Backup check to handle unknown case where activatedRoute is not available
     // This shouldn't happen under normal circumstances
