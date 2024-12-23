@@ -150,8 +150,11 @@ export class DeviceManagementComponent {
       return this.i18nService.t("unknownDevice");
     }
 
+    // If the platform is "Unknown" translate it since it is not a proper noun
+    const platform =
+      metadata.platform === "Unknown" ? this.i18nService.t("unknown") : metadata.platform;
     const category = this.i18nService.t(metadata.category);
-    return metadata.platform ? `${category} - ${metadata.platform}` : category;
+    return platform ? `${category} - ${platform}` : category;
   }
 
   /**
