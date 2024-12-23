@@ -4,6 +4,7 @@ import { CommonModule } from "@angular/common";
 import { Component, importProvidersFrom } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
+import { expect, waitFor, within } from "@storybook/test";
 
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
@@ -41,7 +42,7 @@ class ExtensionContainerComponent {}
 
 @Component({
   selector: "vault-placeholder",
-  template: `
+  template: /*html*/ `
     <bit-section>
       <bit-item-group aria-label="Mock Vault Items">
         <bit-item *ngFor="let item of data; index as i">
@@ -464,6 +465,20 @@ export const CompactMode: Story = {
     };
     updateLabel("compact-example");
     updateLabel("regular-example");
+
+    await waitFor(async () => {
+      const canvas = within(canvasEl);
+      const allBadges = canvas.getAllByTitle("Auto-fill");
+
+      // Chromatic has been reporting diffs on this story where the item rows are not all fully loaded.
+      // Trying this out to test the theory that it's taking a screenshot too quickly.
+
+      // Ensure that all bit-items have rendered before chromatic screenshot by awaiting
+      // all the "auto-fill" badges rendering. There are 20 rows in each vault "view" and 2 "views"
+      // rendered per story (relaxed and compact). There may be double the amount if light & dark
+      // mode are rendered together.
+      await expect(allBadges.length).toBeGreaterThanOrEqual(40);
+    });
   },
 };
 
