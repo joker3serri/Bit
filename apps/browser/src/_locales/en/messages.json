@@ -4569,6 +4569,9 @@
   "showQuickCopyActions": {
     "message": "Show quick copy actions on Vault"
   },
+  "performAutofillAsPrimaryClick": {
+    "message": "Perform autofill action as primary click on vault autofill suggestions."
+  },
   "systemDefault": {
     "message": "System default"
   },
