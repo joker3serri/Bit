@@ -226,6 +226,9 @@ export class ItemDetailsSectionComponent implements OnInit {
       favorite: this.originalCipherView.favorite,
     });
 
+    const orgId = this.itemDetailsForm.controls.organizationId.value as OrganizationId;
+    const organization = this.organizations.find((o) => o.id === orgId);
+
     // Configure form for clone mode.
     if (this.config.mode === "clone") {
       this.itemDetailsForm.controls.name.setValue(
@@ -242,7 +245,11 @@ export class ItemDetailsSectionComponent implements OnInit {
         (this.originalCipherView.collectionIds as CollectionId[]),
     );
 
-    if (!(this.originalCipherView?.edit && this.originalCipherView?.viewPassword)) {
+    if (
+      organization != null &&
+      !organization.canEditAllCiphers &&
+      !(this.originalCipherView?.edit && this.originalCipherView?.viewPassword)
+    ) {
       this.itemDetailsForm.controls.collectionIds.disable();
     }
 
@@ -251,15 +258,12 @@ export class ItemDetailsSectionComponent implements OnInit {
       this.itemDetailsForm.controls.favorite.enable();
       this.itemDetailsForm.controls.folderId.enable();
     } else if (this.config.mode === "edit") {
-      const orgId = this.itemDetailsForm.controls.organizationId.value as OrganizationId;
-      const organization = this.organizations.find((o) => o.id === orgId);
-
       if (!this.config.isAdminConsole || !this.config.admin) {
         this.readOnlyCollections = this.collections.filter(
           // When the configuration is set up for admins, they can alter read only collections
           (c) =>
             c.organizationId === orgId &&
-            !c.canEditItems(organization) &&
+            c.readOnly &&
             this.originalCipherView.collectionIds.includes(c.id as CollectionId),
         );
       }
@@ -305,7 +309,7 @@ export class ItemDetailsSectionComponent implements OnInit {
         }
 
         // Non-admins can only select assigned collections that are not read only. (Non-AC)
-        return c.assigned && !c.readOnly && !c.hidePasswords;
+        return c.assigned && !c.readOnly;
       })
       .map((c) => ({
         id: c.id,

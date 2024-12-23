@@ -241,7 +241,9 @@ export class VaultItemsComponent {
       return true;
     }
     const organization = this.allOrganizations.find((o) => o.id === cipher.organizationId);
-    return (organization.canEditAllCiphers && this.viewingOrgVault) || cipher.canEditWithPassword;
+    return (
+      (organization.canEditAllCiphers && this.viewingOrgVault) || cipher.canAssignToCollections
+    );
   }
 
   protected canManageCollection(cipher: CipherView) {

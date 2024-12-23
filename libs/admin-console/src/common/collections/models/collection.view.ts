@@ -41,21 +41,14 @@ export class CollectionView implements View, ITreeNodeObject {
     }
   }
 
-  // Setting editPassword=false will determine what types of permissions are returned
-  // if editPassword is true only return permissions manage / edit
-  // if editPassword is false return permissions manage / edit / edit except pw
-  canEditItems(org: Organization, editPassword = true): boolean {
+  canEditItems(org: Organization): boolean {
     if (org != null && org.id !== this.organizationId) {
       throw new Error(
         "Id of the organization provided does not match the org id of the collection.",
       );
     }
 
-    return (
-      org?.canEditAllCiphers ||
-      this.manage ||
-      (this.assigned && !this.readOnly && (!editPassword || !this.hidePasswords))
-    );
+    return org?.canEditAllCiphers || this.manage || (this.assigned && !this.readOnly);
   }
 
   /**
