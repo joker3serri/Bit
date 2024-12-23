@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   formGroup = this.formBuilder.group(
     {
-      email: ["", [Validators.required, Validators.email]],
+      email: new FormControl<string>("", [Validators.required, Validators.email]),
       masterPassword: [
         "",
         [Validators.required, Validators.minLength(Utils.originalMinimumPasswordLength)],
@@ -336,14 +336,19 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     const masterPassword = this.formGroup.controls.masterPassword.value;
 
+    // Return false if masterPassword is null/undefined since this is only evaluated after successful login
+    if (!masterPassword) {
+      return false;
+    }
+
     const passwordStrength = this.passwordStrengthService.getPasswordStrength(
-      masterPassword ?? "",
-      this.formGroup.value.email ?? "",
+      masterPassword,
+      this.formGroup.value.email,
     )?.score;
 
     return !this.policyService.evaluateMasterPassword(
       passwordStrength,
-      masterPassword ?? "",
+      masterPassword,
       this.enforcedMasterPasswordOptions,
     );
   }
