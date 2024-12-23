@@ -76,6 +76,7 @@ export default class RuntimeBackground {
         BiometricsCommands.GetBiometricsStatusForUser,
         "getUseTreeWalkerApiForPageDetailsCollectionFeatureFlag",
         "getInlineMenuFieldQualificationFeatureFlag",
+        "getInlineMenuTotpFeatureFlag",
       ];
 
       if (messagesWithResponse.includes(msg.command)) {
@@ -184,16 +185,16 @@ export default class RuntimeBackground {
             break;
         }
         break;
-      case "authenticateWithBiometrics": {
+      case BiometricsCommands.AuthenticateWithBiometrics: {
         return await this.main.biometricsService.authenticateWithBiometrics();
       }
-      case "getBiometricsStatus": {
+      case BiometricsCommands.GetBiometricsStatus: {
         return await this.main.biometricsService.getBiometricsStatus();
       }
-      case "unlockWithBiometricsForUser": {
+      case BiometricsCommands.UnlockWithBiometricsForUser: {
         return await this.main.biometricsService.unlockWithBiometricsForUser(msg.userId);
       }
-      case "getBiometricsStatusForUser": {
+      case BiometricsCommands.GetBiometricsStatusForUser: {
         return await this.main.biometricsService.getBiometricsStatusForUser(msg.userId);
       }
       case "getUseTreeWalkerApiForPageDetailsCollectionFeatureFlag": {
@@ -203,6 +204,9 @@ export default class RuntimeBackground {
       }
       case "getInlineMenuFieldQualificationFeatureFlag": {
         return await this.configService.getFeatureFlag(FeatureFlag.InlineMenuFieldQualification);
+      }
+      case "getInlineMenuTotpFeatureFlag": {
+        return await this.configService.getFeatureFlag(FeatureFlag.InlineMenuTotp);
       }
     }
   }

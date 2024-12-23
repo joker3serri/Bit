@@ -9,7 +9,7 @@ export enum BiometricsStatus {
   AutoSetupNeeded,
   /** Only relevant for linux, this means that polkit policies need to be set up but that needs to be done manually */
   ManualSetupNeeded,
-  /** Biometrics was is implemented for this platform (i.e web) */
+  /** Biometrics is not implemented for this platform (i.e web) */
   PlatformUnsupported,
   /** Browser extension cannot connect to the desktop app to use biometrics */
   DesktopDisconnected,
@@ -17,4 +17,6 @@ export enum BiometricsStatus {
   NotEnabledLocally,
   /** Only on browser extension; Biometrics is not enabled in the desktop app */
   NotEnabledInConnectedDesktopApp,
+  /** Browser extension does not have the permission to talk to the desktop app */
+  NativeMessagingPermissionMissing,
 }

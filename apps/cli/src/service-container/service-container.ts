@@ -486,7 +486,7 @@ export class ServiceContainer {
 
     this.domainSettingsService = new DefaultDomainSettingsService(this.stateProvider);
 
-    this.fileUploadService = new FileUploadService(this.logService);
+    this.fileUploadService = new FileUploadService(this.logService, this.apiService);
 
     this.sendStateProvider = new SendStateProvider(this.stateProvider);
 
@@ -551,7 +551,6 @@ export class ServiceContainer {
       this.accountService,
       this.kdfConfigService,
       this.keyService,
-      this.apiService,
       customUserAgent,
     );
 
@@ -866,19 +865,5 @@ export class ServiceContainer {
     }
 
     this.inited = true;
-
-    if (flagEnabled("sdk")) {
-      // Warn if the SDK for some reason can't be initialized
-      let supported = false;
-      try {
-        supported = await firstValueFrom(this.sdkService.supported$);
-      } catch (e) {
-        // Do nothing.
-      }
-
-      if (!supported) {
-        this.sdkService.failedToInitialize("cli").catch((e) => this.logService.error(e));
-      }
-    }
   }
 }
