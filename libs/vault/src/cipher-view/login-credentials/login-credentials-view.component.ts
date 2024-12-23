@@ -12,7 +12,6 @@ import { EventType } from "@bitwarden/common/enums";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
-  CardComponent,
   FormFieldModule,
   SectionComponent,
   SectionHeaderComponent,
@@ -38,7 +37,6 @@ type TotpCodeValues = {
   imports: [
     CommonModule,
     JslibModule,
-    CardComponent,
     SectionComponent,
     SectionHeaderComponent,
     TypographyModule,
