@@ -104,9 +104,9 @@ pub mod biometrics {
     #[napi]
     pub async fn derive_key_material(iv: Option<String>) -> napi::Result<OsDerivedKey> {
         Biometric::derive_key_material(iv.as_deref())
+            .await
             .map(|k| k.into())
             .map_err(|e| napi::Error::from_reason(e.to_string()))
-            .await
     }
 
     #[napi(object)]
