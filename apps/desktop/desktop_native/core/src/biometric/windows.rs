@@ -17,10 +17,7 @@ use windows::{
         },
         Cryptography::CryptographicBuffer,
     },
-    Win32::{
-        Foundation::HWND,
-        System::WinRT::IUserConsentVerifierInterop,
-    },
+    Win32::{Foundation::HWND, System::WinRT::IUserConsentVerifierInterop},
 };
 
 use crate::{
@@ -28,7 +25,10 @@ use crate::{
     crypto::CipherString,
 };
 
-use super::{decrypt, encrypt, windows_focus::{focus_security_prompt, set_focus}};
+use super::{
+    decrypt, encrypt,
+    windows_focus::{focus_security_prompt, set_focus},
+};
 
 /// The Windows OS implementation of the biometric trait.
 pub struct Biometric {}

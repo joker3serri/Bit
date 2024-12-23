@@ -1,4 +1,13 @@
-use windows::{core::s, Win32::{Foundation::HWND, UI::{Input::KeyboardAndMouse::SetFocus, WindowsAndMessaging::{FindWindowA, SetForegroundWindow}}}};
+use windows::{
+    core::s,
+    Win32::{
+        Foundation::HWND,
+        UI::{
+            Input::KeyboardAndMouse::SetFocus,
+            WindowsAndMessaging::{FindWindowA, SetForegroundWindow},
+        },
+    },
+};
 
 /// Searches for a window that looks like a security prompt and set it as focused.
 /// Only works when the process has permission to foreground, either by being in foreground
