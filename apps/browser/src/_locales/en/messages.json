@@ -4569,8 +4569,8 @@
   "showNumberOfAutofillSuggestions": {
     "message": "Show number of login autofill suggestions on extension icon"
   },
-  "performAutofillAsPrimaryClick": {
-    "message": "Perform autofill action as primary click on vault autofill suggestions."
+  "showQuickCopyActions": {
+    "message": "Show quick copy actions on Vault"
   },
   "systemDefault": {
     "message": "System default"
