@@ -15,7 +15,7 @@ import {
 } from "@bitwarden/key-management";
 import { BiometricsDisableReason, UnlockOptions } from "@bitwarden/key-management/angular";
 
-import { BrowserRouterService } from "src/platform/popup/services/browser-router.service";
+import { BrowserRouterService } from "../../../../src/platform/popup/services/browser-router.service";
 
 import { ExtensionLockComponentService } from "./extension-lock-component.service";
 

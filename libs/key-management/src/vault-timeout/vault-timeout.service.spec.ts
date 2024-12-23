@@ -5,25 +5,22 @@ import { BehaviorSubject, from, of } from "rxjs";
 
 import { CollectionService } from "@bitwarden/admin-console/common";
 import { LogoutReason } from "@bitwarden/auth/common";
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { AccountInfo } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { TaskSchedulerService } from "@bitwarden/common/platform/scheduling";
-import {
-  FakeAccountService,
-  mockAccountServiceWith,
-} from "@bitwarden/common/spec/fake-account-service";
-import { SearchService } from "@bitwarden/common/src/abstractions/search.service";
-import { AccountInfo } from "@bitwarden/common/src/auth/abstractions/account.service";
-import { AuthService } from "@bitwarden/common/src/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/src/auth/enums/authentication-status";
-import { FakeMasterPasswordService } from "@bitwarden/common/src/auth/services/master-password/fake-master-password.service";
-import { MessagingService } from "@bitwarden/common/src/platform/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/platform/abstractions/platform-utils.service";
-import { StateService } from "@bitwarden/common/src/platform/abstractions/state.service";
-import { Utils } from "@bitwarden/common/src/platform/misc/utils";
-import { StateEventRunnerService } from "@bitwarden/common/src/platform/state";
-import { UserId } from "@bitwarden/common/src/types/guid";
-import { CipherService } from "@bitwarden/common/src/vault/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/src/vault/abstractions/folder/folder.service.abstraction";
+import { StateEventRunnerService } from "@bitwarden/common/platform/state";
+import { FakeAccountService, mockAccountServiceWith } from "@bitwarden/common/spec";
+import { UserId } from "@bitwarden/common/types/guid";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { VaultTimeout, VaultTimeoutStringType } from "@bitwarden/key-management";
 
 import { VaultTimeoutSettingsService } from "./abstractions/vault-timeout-settings.service";
