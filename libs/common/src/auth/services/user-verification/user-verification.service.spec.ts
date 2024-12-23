@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
@@ -7,11 +9,14 @@ import {
   UserDecryptionOptions,
   UserDecryptionOptionsServiceAbstraction,
 } from "@bitwarden/auth/common";
-import { KdfConfig, KeyService } from "@bitwarden/key-management";
+import {
+  KdfConfig,
+  KdfConfigService,
+  KeyService,
+  VaultTimeoutSettingsService,
+} from "@bitwarden/key-management";
 
-import { KdfConfigService } from "../../../../../key-management/src/abstractions/kdf-config.service";
 import { FakeAccountService, mockAccountServiceWith } from "../../../../spec";
-import { VaultTimeoutSettingsService } from "../../../abstractions/vault-timeout/vault-timeout-settings.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";
