@@ -73,7 +73,7 @@ impl super::BiometricTrait for Biometric {
     ///
     /// Windows will only sign the challenge if the user has successfully authenticated with Windows,
     /// ensuring user presence.
-    fn derive_key_material(challenge_str: Option<&str>) -> Result<OsDerivedKey> {
+    async fn derive_key_material(challenge_str: Option<&str>) -> Result<OsDerivedKey> {
         let challenge: [u8; 16] = match challenge_str {
             Some(challenge_str) => base64_engine
                 .decode(challenge_str)?
@@ -103,7 +103,7 @@ impl super::BiometricTrait for Biometric {
 
         let done = Arc::new(AtomicBool::new(false));
         let done_clone = done.clone();
-        let _ = tokio::task::spawn_blocking(move || loop {
+        let focus_future = tokio::task::spawn_blocking(move || loop {
             if !done_clone.load(std::sync::atomic::Ordering::Relaxed) {
                 focus_security_prompt();
                 std::thread::sleep(std::time::Duration::from_millis(500));
@@ -114,6 +114,7 @@ impl super::BiometricTrait for Biometric {
 
         let signature = async_operation.get();
         done.store(true, std::sync::atomic::Ordering::Relaxed);
+        focus_future.await?;
         let signature = signature?;
 
         if signature.Status()? != KeyCredentialStatus::Success {

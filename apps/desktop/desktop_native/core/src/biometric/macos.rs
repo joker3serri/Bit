@@ -14,7 +14,7 @@ impl super::BiometricTrait for Biometric {
         bail!("platform not supported");
     }
 
-    fn derive_key_material(_iv_str: Option<&str>) -> Result<OsDerivedKey> {
+    async fn derive_key_material(_iv_str: Option<&str>) -> Result<OsDerivedKey> {
         bail!("platform not supported");
     }
 

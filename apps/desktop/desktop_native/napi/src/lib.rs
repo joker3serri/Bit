@@ -106,6 +106,7 @@ pub mod biometrics {
         Biometric::derive_key_material(iv.as_deref())
             .map(|k| k.into())
             .map_err(|e| napi::Error::from_reason(e.to_string()))
+            .await
     }
 
     #[napi(object)]

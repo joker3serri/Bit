@@ -53,7 +53,7 @@ impl super::BiometricTrait for Biometric {
         Ok(false)
     }
 
-    fn derive_key_material(challenge_str: Option<&str>) -> Result<OsDerivedKey> {
+    async fn derive_key_material(challenge_str: Option<&str>) -> Result<OsDerivedKey> {
         let challenge: [u8; 16] = match challenge_str {
             Some(challenge_str) => base64_engine
                 .decode(challenge_str)?
