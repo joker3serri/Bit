@@ -41,7 +41,9 @@ export class CollectionView implements View, ITreeNodeObject {
     }
   }
 
-  // Applying editPassword=false will include items with Can Edit Except Password Permissions
+  // Setting editPassword=false will determine what types of permissions are returned
+  // if editPassword is true only return permissions manage / edit
+  // if editPassword is false return permissions manage / edit / edit except pw
   canEditItems(org: Organization, editPassword = true): boolean {
     if (org != null && org.id !== this.organizationId) {
       throw new Error(
