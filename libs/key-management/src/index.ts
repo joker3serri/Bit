@@ -19,3 +19,5 @@ export {
 export { KdfConfigService } from "./abstractions/kdf-config.service";
 export { DefaultKdfConfigService } from "./kdf-config.service";
 export { KdfType } from "./enums/kdf-type.enum";
+
+export * from "./user-asymmetric-key-regeneration";
