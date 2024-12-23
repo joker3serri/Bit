@@ -82,6 +82,10 @@ export class TaxInfoComponent implements OnInit, OnDestroy {
     return this.taxFormGroup.controls.state.value;
   }
 
+  get showTaxIdField(): boolean {
+    return !!this.organizationId;
+  }
+
   async ngOnInit() {
     // Provider setup
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe

@@ -123,6 +123,10 @@ export class AdjustPaymentDialogComponent implements OnInit {
       }
     }
   }
+
+  protected get showTaxIdField(): boolean {
+    return !!this.organizationId;
+  }
 }
 
 /**

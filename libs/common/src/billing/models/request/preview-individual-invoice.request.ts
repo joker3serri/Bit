@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class PreviewIndividualInvoiceRequest {
   passwordManager: PasswordManager;
   taxInformation: TaxInformation;
@@ -10,5 +11,4 @@ class PasswordManager {
 class TaxInformation {
   postalCode: string;
   country: string;
-  taxId: string;
 }

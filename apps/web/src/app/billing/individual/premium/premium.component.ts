@@ -186,7 +186,6 @@ export class PremiumComponent implements OnInit {
       taxInformation: {
         postalCode: this.taxInfoComponent.postalCode,
         country: this.taxInfoComponent.country,
-        taxId: this.taxInfoComponent.taxId,
       },
     };
 

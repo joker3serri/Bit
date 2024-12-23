@@ -1,13 +1,13 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { forwardRef, Component, Inject, ViewChild, OnInit } from "@angular/core";
+import { Component, forwardRef, Inject, OnInit, ViewChild } from "@angular/core";
 
 import { ManageTaxInformationComponent } from "@bitwarden/angular/billing/components";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions";
-import { PaymentMethodType } from "@bitwarden/common/billing/enums";
+import { PaymentMethodType, ProductTierType } from "@bitwarden/common/billing/enums";
 import { TaxInformation } from "@bitwarden/common/billing/models/domain";
 import { ExpandedTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/expanded-tax-info-update.request";
 import { PaymentRequest } from "@bitwarden/common/billing/models/request/payment.request";
@@ -21,6 +21,7 @@ import { PaymentV2Component } from "../payment/payment-v2.component";
 export interface AdjustPaymentDialogV2Params {
   initialPaymentMethod?: PaymentMethodType;
   organizationId?: string;
+  productTier?: ProductTierType;
 }
 
 export enum AdjustPaymentDialogV2ResultType {
@@ -42,6 +43,7 @@ export class AdjustPaymentDialogV2Component implements OnInit {
   protected dialogHeader: string;
   protected initialPaymentMethod: PaymentMethodType;
   protected organizationId?: string;
+  protected productTier?: ProductTierType;
 
   protected taxInformation: TaxInformation;
 
@@ -123,6 +125,20 @@ export class AdjustPaymentDialogV2Component implements OnInit {
 
     await this.billingApiService.updateOrganizationPaymentMethod(this.organizationId, request);
   };
+
+  protected get showTaxIdField(): boolean {
+    if (!this.organizationId) {
+      return false;
+    }
+
+    switch (this.productTier) {
+      case ProductTierType.Free:
+      case ProductTierType.Families:
+        return false;
+      default:
+        return true;
+    }
+  }
 
   private updatePremiumUserPaymentMethod = async () => {
     const { type, token } = await this.paymentComponent.tokenize();

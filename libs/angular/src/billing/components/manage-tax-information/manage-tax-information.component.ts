@@ -15,6 +15,7 @@ import { CountryListItem, TaxInformation } from "@bitwarden/common/billing/model
 export class ManageTaxInformationComponent implements OnInit, OnDestroy {
   @Input() startWith: TaxInformation;
   @Input() onSubmit?: (taxInformation: TaxInformation) => Promise<void>;
+  @Input() showTaxIdField: boolean = true;
 
   /**
    * Emits when the tax information has changed.

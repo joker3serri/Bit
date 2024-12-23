@@ -667,6 +667,16 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     this.messagingService.send("organizationCreated", { organizationId });
   };
 
+  protected get showTaxIdField(): boolean {
+    switch (this.formGroup.controls.productTier.value) {
+      case ProductTierType.Free:
+      case ProductTierType.Families:
+        return false;
+      default:
+        return true;
+    }
+  }
+
   private refreshSalesTax(): void {
     if (this.formGroup.controls.plan.value == PlanType.Free) {
       this.estimatedTax = 0;

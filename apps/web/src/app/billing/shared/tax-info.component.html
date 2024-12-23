@@ -43,7 +43,7 @@
         <input bitInput type="text" formControlName="state" autocomplete="address-level1" />
       </bit-form-field>
     </div>
-    <div class="tw-col-span-6" *ngIf="isTaxSupported">
+    <div class="tw-col-span-6" *ngIf="isTaxSupported && showTaxIdField">
       <bit-form-field>
         <bit-label>{{ "taxIdNumber" | i18n }}</bit-label>
         <input bitInput type="text" formControlName="taxId" />

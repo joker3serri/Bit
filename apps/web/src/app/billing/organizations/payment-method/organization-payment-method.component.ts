@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 import { Location } from "@angular/common";
-import { Component, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, lastValueFrom, switchMap } from "rxjs";
@@ -21,7 +21,6 @@ import { DialogService, ToastService } from "@bitwarden/components";
 
 import { FreeTrial } from "../../../core/types/free-trial";
 import { TrialFlowService } from "../../services/trial-flow.service";
-import { TaxInfoComponent } from "../../shared";
 import {
   AddCreditDialogResult,
   openAddCreditDialog,
@@ -35,8 +34,6 @@ import {
   templateUrl: "./organization-payment-method.component.html",
 })
 export class OrganizationPaymentMethodComponent implements OnDestroy {
-  @ViewChild(TaxInfoComponent) taxInfoComponent: TaxInfoComponent;
-
   organizationId: string;
   isUnpaid = false;
   accountCredit: number;
@@ -154,6 +151,7 @@ export class OrganizationPaymentMethodComponent implements OnDestroy {
       data: {
         initialPaymentMethod: this.paymentSource?.type,
         organizationId: this.organizationId,
+        productTier: this.organization?.productTierType,
       },
     });
 
@@ -169,6 +167,7 @@ export class OrganizationPaymentMethodComponent implements OnDestroy {
       data: {
         initialPaymentMethod: this.paymentSource?.type,
         organizationId: this.organizationId,
+        productTier: this.organization?.productTierType,
       },
     });
     const result = await lastValueFrom(dialogRef.closed);

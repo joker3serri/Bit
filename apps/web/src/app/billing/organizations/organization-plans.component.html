@@ -442,6 +442,7 @@
     ></app-payment-v2>
     <app-manage-tax-information
       class="tw-my-4"
+      [showTaxIdField]="showTaxIdField"
       [startWith]="taxInformation"
       (taxInformationChanged)="onTaxInformationChanged($event)"
     />
