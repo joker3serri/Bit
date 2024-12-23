@@ -599,7 +599,7 @@ export class ApiService implements ApiServiceAbstraction {
 
   postPurgeCiphers(
     request: SecretVerificationRequest,
-    organizationId: string = null,
+    organizationId: string | null = null,
   ): Promise<any> {
     let path = "/ciphers/purge";
     if (organizationId != null) {
@@ -1587,6 +1587,9 @@ export class ApiService implements ApiServiceAbstraction {
     if (await this.tokenService.tokenNeedsRefresh()) {
       accessToken = await this.refreshToken();
     }
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
     return accessToken;
   }
 
@@ -1736,7 +1739,10 @@ export class ApiService implements ApiServiceAbstraction {
 
     const clientId = await this.tokenService.getClientId();
     const clientSecret = await this.tokenService.getClientSecret();
-    if (!Utils.isNullOrWhitespace(clientId) && !Utils.isNullOrWhitespace(clientSecret)) {
+    if (
+      !Utils.isNullOrWhitespace(clientId as string) &&
+      !Utils.isNullOrWhitespace(clientSecret as string)
+    ) {
       return this.refreshApiToken();
     }
 
@@ -1785,10 +1791,10 @@ export class ApiService implements ApiServiceAbstraction {
       const userId = newDecodedAccessToken.sub;
 
       const vaultTimeoutAction = await firstValueFrom(
-        this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(userId),
+        this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(userId as string),
       );
       const vaultTimeout = await firstValueFrom(
-        this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
+        this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId as string),
       );
 
       const refreshedTokens = await this.tokenService.setTokens(
@@ -1808,6 +1814,10 @@ export class ApiService implements ApiServiceAbstraction {
     const clientId = await this.tokenService.getClientId();
     const clientSecret = await this.tokenService.getClientSecret();
 
+    if (!clientId || !clientSecret) {
+      throw new Error("Client credentials are undefined");
+    }
+
     const appId = await this.appIdService.getAppId();
     const deviceRequest = new DeviceRequest(appId, this.platformUtilsService);
     const tokenRequest = new UserApiTokenRequest(
@@ -1826,10 +1836,10 @@ export class ApiService implements ApiServiceAbstraction {
     const userId = newDecodedAccessToken.sub;
 
     const vaultTimeoutAction = await firstValueFrom(
-      this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(userId),
+      this.vaultTimeoutSettingsService.getVaultTimeoutActionByUserId$(userId as string),
     );
     const vaultTimeout = await firstValueFrom(
-      this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId),
+      this.vaultTimeoutSettingsService.getVaultTimeoutByUserId$(userId as string),
     );
 
     const refreshedToken = await this.tokenService.setAccessToken(
@@ -1850,7 +1860,7 @@ export class ApiService implements ApiServiceAbstraction {
     alterHeaders?: (headers: Headers) => void,
   ): Promise<any> {
     const env = await firstValueFrom(this.environmentService.environment$);
-    apiUrl = Utils.isNullOrWhitespace(apiUrl) ? env.getApiUrl() : apiUrl;
+    apiUrl = Utils.isNullOrWhitespace(apiUrl as string) ? env.getApiUrl() : apiUrl;
 
     // Prevent directory traversal from malicious paths
     const pathParts = path.split("?");
@@ -1861,7 +1871,7 @@ export class ApiService implements ApiServiceAbstraction {
       authed,
       hasResponse,
       body,
-      alterHeaders,
+      alterHeaders ?? ((headers: Headers) => {}),
     );
 
     const requestInit: RequestInit = {
@@ -1968,7 +1978,7 @@ export class ApiService implements ApiServiceAbstraction {
       .join("&");
   }
 
-  private async getCredentials(): Promise<RequestCredentials> {
+  private async getCredentials(): Promise<RequestCredentials | undefined> {
     const env = await firstValueFrom(this.environmentService.environment$);
     if (!this.isWebClient || env.hasBaseUrl()) {
       return "include";
