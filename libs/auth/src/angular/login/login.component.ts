@@ -295,10 +295,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   protected async launchSsoBrowserWindow(clientId: "browser" | "desktop"): Promise<void> {
-    await this.loginComponentService.launchSsoBrowserWindow(
-      this.emailFormControl.value ?? "",
-      clientId,
-    );
+    const email = this.emailFormControl.value;
+    if (!email) {
+      this.logService.error("Email is required for SSO login");
+      return;
+    }
+    await this.loginComponentService.launchSsoBrowserWindow(email, clientId);
   }
 
   protected async evaluatePassword(): Promise<void> {
@@ -426,7 +428,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   protected async saveEmailSettings(): Promise<void> {
-    await this.loginEmailService.setLoginEmail(this.formGroup.value.email ?? "");
+    const email = this.formGroup.value.email;
+    if (!email) {
+      this.logService.error("Email is required to save email settings.");
+      return;
+    }
+
+    await this.loginEmailService.setLoginEmail(email);
     this.loginEmailService.setRememberEmail(this.formGroup.value.rememberEmail ?? false);
     await this.loginEmailService.saveEmailSettings();
   }
