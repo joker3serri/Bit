@@ -34,7 +34,7 @@ export class RegisterFormComponent extends BaseRegisterComponent implements OnIn
 
   showErrorSummary = false;
   characterMinimumMessage: string = "";
-  referenceData: ReferenceEventRequest | undefined;
+  referenceData!: ReferenceEventRequest;
 
   constructor(
     formValidationErrorService: FormValidationErrorsService,
@@ -86,7 +86,7 @@ export class RegisterFormComponent extends BaseRegisterComponent implements OnIn
 
   async ngOnInit() {
     await super.ngOnInit();
-    this.referenceData = this.referenceDataValue ?? undefined;
+    this.referenceData = this.referenceDataValue ?? new ReferenceEventRequest();
     if (this.queryParamEmail) {
       this.formGroup.get("email")?.setValue(this.queryParamEmail);
     }

@@ -21,8 +21,8 @@ import { KeyService } from "@bitwarden/key-management";
   templateUrl: "register.component.html",
 })
 export class RegisterComponent extends BaseRegisterComponent {
-  color: string | undefined;
-  text: string | undefined;
+  color!: string;
+  text!: string;
 
   constructor(
     formValidationErrorService: FormValidationErrorsService,
