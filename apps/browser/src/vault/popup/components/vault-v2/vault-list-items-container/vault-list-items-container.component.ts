@@ -2,12 +2,22 @@
 // @ts-strict-ignore
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CommonModule } from "@angular/common";
-import { booleanAttribute, Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import {
+  AfterViewInit,
+  booleanAttribute,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  signal,
+} from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { map } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { CipherId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -57,7 +67,7 @@ import { ItemMoreOptionsComponent } from "../item-more-options/item-more-options
   templateUrl: "vault-list-items-container.component.html",
   standalone: true,
 })
-export class VaultListItemsContainerComponent {
+export class VaultListItemsContainerComponent implements AfterViewInit {
   private compactModeService = inject(CompactModeService);
 
   /**
@@ -140,14 +150,29 @@ export class VaultListItemsContainerComponent {
     return cipher.collections[0]?.name;
   }
 
+  protected autofillShortcutTooltip = signal<string | undefined>(undefined);
+
   constructor(
     private i18nService: I18nService,
     private vaultPopupAutofillService: VaultPopupAutofillService,
     private passwordRepromptService: PasswordRepromptService,
     private cipherService: CipherService,
     private router: Router,
+    private platformUtilsService: PlatformUtilsService,
     private dialogService: DialogService,
   ) {}
+
+  async ngAfterViewInit() {
+    const autofillShortcut = await this.platformUtilsService.getAutofillKeyboardShortcut();
+
+    if (autofillShortcut === "") {
+      this.autofillShortcutTooltip.set(undefined);
+    } else {
+      const autofillTitle = this.i18nService.t("autoFill");
+
+      this.autofillShortcutTooltip.set(`${autofillTitle} ${autofillShortcut}`);
+    }
+  }
 
   /**
    * Launches the login cipher in a new browser tab.
