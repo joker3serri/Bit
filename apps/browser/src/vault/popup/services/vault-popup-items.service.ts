@@ -192,11 +192,6 @@ export class VaultPopupItemsService {
         (cipher) => !autoFillCiphers.includes(cipher) && !favoriteCiphers.includes(cipher),
       ),
     ),
-    withLatestFrom(this._hasSearchText$),
-    map(([ciphers, hasSearchText]) =>
-      // Do not sort alphabetically when there is search text, default to the search service scoring
-      hasSearchText ? ciphers : ciphers.sort(this.cipherService.getLocaleSortingFunction()),
-    ),
     shareReplay({ refCount: false, bufferSize: 1 }),
   );
 
