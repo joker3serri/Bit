@@ -50,6 +50,7 @@ import {
   BiometricStateService,
   BiometricsService,
   BiometricsStatus,
+  UserAsymmetricKeysRegenerationService,
 } from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../common/abstractions";
@@ -87,7 +88,7 @@ const AUTOPROMPT_BIOMETRICS_PROCESS_RELOAD_DELAY = 5000;
     IconButtonModule,
   ],
 })
-export class LockV2Component implements OnInit, OnDestroy {
+export class LockComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   activeAccount: Account | null;
@@ -152,6 +153,7 @@ export class LockV2Component implements OnInit, OnDestroy {
     private passwordStrengthService: PasswordStrengthServiceAbstraction,
     private formBuilder: FormBuilder,
     private toastService: ToastService,
+    private userAsymmetricKeysRegenerationService: UserAsymmetricKeysRegenerationService,
 
     private biometricService: BiometricsService,
 
@@ -569,10 +571,18 @@ export class LockV2Component implements OnInit, OnDestroy {
     // Vault can be de-synced since notifications get ignored while locked. Need to check whether sync is required using the sync service.
     await this.syncService.fullSync(false);
 
+    await this.userAsymmetricKeysRegenerationService.regenerateIfNeeded(this.activeAccount.id);
+
     if (this.clientType === "browser") {
       const previousUrl = this.lockComponentService.getPreviousUrl();
+      /**
+       * In a passkey flow, the `previousUrl` will still be `/fido2?<queryParams>` at this point
+       * because the `/lock` route doesn't save the URL in the `BrowserRouterService`. This is
+       * handled by the `doNotSaveUrl` property on the `/lock` route in `app-routing.module.ts`.
+       */
       if (previousUrl) {
         await this.router.navigateByUrl(previousUrl);
+        return;
       }
     }
 
@@ -711,7 +721,10 @@ export class LockV2Component implements OnInit, OnDestroy {
           this.activeAccount.email,
         );
       case BiometricsStatus.NotEnabledLocally:
-        return this.i18nService.t("biometricsStatusHelptextNotEnabledInDesktop");
+        return this.i18nService.t(
+          "biometricsStatusHelptextNotEnabledInDesktop",
+          this.activeAccount.email,
+        );
       case BiometricsStatus.DesktopDisconnected:
         return this.i18nService.t("biometricsStatusHelptextDesktopDisconnected");
       default:

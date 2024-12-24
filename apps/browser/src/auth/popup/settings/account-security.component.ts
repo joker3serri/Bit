@@ -17,6 +17,7 @@ import {
   Subject,
   switchMap,
   takeUntil,
+  timer,
 } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
@@ -106,7 +107,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
   availableVaultTimeoutActions: VaultTimeoutAction[] = [];
   vaultTimeoutOptions: VaultTimeoutOption[] = [];
   hasVaultTimeoutPolicy = false;
-  supportsBiometric: boolean;
+  biometricUnavailabilityReason: string;
   showChangeMasterPass = true;
   accountSwitcherEnabled = false;
 
@@ -206,8 +207,36 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     };
     this.form.patchValue(initialValues, { emitEvent: false });
 
-    this.supportsBiometric =
-      (await this.biometricsService.getBiometricsStatus()) === BiometricsStatus.Available;
+    timer(0, 1000)
+      .pipe(
+        switchMap(async () => {
+          const status = await this.biometricsService.getBiometricsStatusForUser(activeAccount.id);
+          const biometricSettingAvailable =
+            status !== BiometricsStatus.DesktopDisconnected &&
+            status !== BiometricsStatus.NotEnabledInConnectedDesktopApp;
+          if (!biometricSettingAvailable) {
+            this.form.controls.biometric.disable({ emitEvent: false });
+          } else {
+            this.form.controls.biometric.enable({ emitEvent: false });
+          }
+
+          if (status === BiometricsStatus.DesktopDisconnected) {
+            this.biometricUnavailabilityReason = this.i18nService.t(
+              "biometricsStatusHelptextDesktopDisconnected",
+            );
+          } else if (status === BiometricsStatus.NotEnabledInConnectedDesktopApp) {
+            this.biometricUnavailabilityReason = this.i18nService.t(
+              "biometricsStatusHelptextNotEnabledInDesktop",
+              activeAccount.email,
+            );
+          } else {
+            this.biometricUnavailabilityReason = "";
+          }
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
+
     this.showChangeMasterPass = await this.userVerificationService.hasMasterPassword();
 
     this.form.controls.vaultTimeout.valueChanges
@@ -407,7 +436,7 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
   }
 
   async updateBiometric(enabled: boolean) {
-    if (enabled && this.supportsBiometric) {
+    if (enabled) {
       let granted;
       try {
         granted = await BrowserApi.requestPermission({ permissions: ["nativeMessaging"] });
