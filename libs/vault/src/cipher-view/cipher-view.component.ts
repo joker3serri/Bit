@@ -1,5 +1,3 @@
-// FIXME: Update this file to be type safe and remove this and next line
-// @ts-strict-ignore
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnChanges, OnDestroy } from "@angular/core";
 import { firstValueFrom, map, Observable, Subject, takeUntil } from "rxjs";
@@ -49,7 +47,7 @@ import { ViewIdentitySectionsComponent } from "./view-identity-sections/view-ide
   ],
 })
 export class CipherViewComponent implements OnChanges, OnDestroy {
-  @Input({ required: true }) cipher: CipherView;
+  @Input({ required: true }) cipher!: CipherView;
 
   private activeUserId$ = this.accountService.activeAccount$.pipe(map((a) => a?.id));
 
@@ -57,13 +55,13 @@ export class CipherViewComponent implements OnChanges, OnDestroy {
    * Optional list of collections the cipher is assigned to. If none are provided, they will be fetched using the
    * `CipherService` and the `collectionIds` property of the cipher.
    */
-  @Input() collections: CollectionView[];
+  @Input() collections: CollectionView[] | undefined;
 
   /** Should be set to true when the component is used within the Admin Console */
   @Input() isAdminConsole?: boolean = false;
 
-  organization$: Observable<Organization>;
-  folder$: Observable<FolderView>;
+  organization$!: Observable<Organization | undefined>;
+  folder$!: Observable<FolderView | undefined>;
   private destroyed$: Subject<void> = new Subject();
   cardIsExpired: boolean = false;
 
@@ -129,6 +127,11 @@ export class CipherViewComponent implements OnChanges, OnDestroy {
 
     if (this.cipher.folderId) {
       const activeUserId = await firstValueFrom(this.activeUserId$);
+
+      if (!activeUserId) {
+        return;
+      }
+
       this.folder$ = this.folderService
         .getDecrypted$(this.cipher.folderId, activeUserId)
         .pipe(takeUntil(this.destroyed$));
