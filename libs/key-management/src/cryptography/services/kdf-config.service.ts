@@ -4,11 +4,14 @@ import { firstValueFrom, Observable } from "rxjs";
 
 import { UserId } from "@bitwarden/common/src/types/guid";
 
-import { KDF_CONFIG_DISK, StateProvider, UserKeyDefinition } from "../../common/src/platform/state";
-
-import { KdfConfigService } from "./abstractions/kdf-config.service";
-import { KdfType } from "./enums/kdf-type.enum";
-import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig } from "./models/kdf-config";
+import {
+  KDF_CONFIG_DISK,
+  StateProvider,
+  UserKeyDefinition,
+} from "../../../../common/src/platform/state";
+import { KdfConfigService } from "../abstractions/kdf-config.service";
+import { KdfType } from "../enums/kdf-type.enum";
+import { Argon2KdfConfig, KdfConfig, PBKDF2KdfConfig } from "../models/kdf-config";
 
 export const KDF_CONFIG = new UserKeyDefinition<KdfConfig>(KDF_CONFIG_DISK, "kdfConfig", {
   deserializer: (kdfConfig: KdfConfig) => {
