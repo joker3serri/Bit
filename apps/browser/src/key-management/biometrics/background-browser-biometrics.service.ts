@@ -5,9 +5,8 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import { BiometricsService, BiometricsCommands, BiometricsStatus } from "@bitwarden/key-management";
 
-import { BrowserApi } from "src/platform/browser/browser-api";
-
 import { NativeMessagingBackground } from "../../background/nativeMessaging.background";
+import { BrowserApi } from "../../platform/browser/browser-api";
 
 @Injectable()
 export class BackgroundBrowserBiometricsService extends BiometricsService {
@@ -40,7 +39,7 @@ export class BackgroundBrowserBiometricsService extends BiometricsService {
   }
 
   async getBiometricsStatus(): Promise<BiometricsStatus> {
-    if (!BrowserApi.permissionsGranted(["nativeMessaging"])) {
+    if (!(await BrowserApi.permissionsGranted(["nativeMessaging"]))) {
       return BiometricsStatus.NativeMessagingPermissionMissing;
     }
 
