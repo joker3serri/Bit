@@ -21,6 +21,7 @@ import {
   ToastOptions,
   ToastService,
 } from "@bitwarden/components";
+import { BiometricStateService } from "@bitwarden/key-management";
 
 import { PopupCompactModeService } from "../platform/popup/layout/popup-compact-mode.service";
 import { PopupWidthService } from "../platform/popup/layout/popup-width.service";
@@ -66,6 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private accountService: AccountService,
     private animationControlService: AnimationControlService,
+    private biometricStateService: BiometricStateService,
   ) {}
 
   async ngOnInit() {
@@ -137,6 +139,7 @@ export class AppComponent implements OnInit, OnDestroy {
           } else if (msg.command === "reloadProcess") {
             if (this.platformUtilsService.isSafari()) {
               window.setTimeout(() => {
+                this.biometricStateService.updateLastProcessReload();
                 window.location.reload();
               }, 2000);
             }
