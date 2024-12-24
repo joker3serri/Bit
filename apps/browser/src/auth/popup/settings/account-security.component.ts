@@ -108,7 +108,6 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
   vaultTimeoutOptions: VaultTimeoutOption[] = [];
   hasVaultTimeoutPolicy = false;
   biometricUnavailabilityReason: string;
-  biometricAvailable = true;
   showChangeMasterPass = true;
   accountSwitcherEnabled = false;
 
@@ -208,15 +207,14 @@ export class AccountSecurityComponent implements OnInit, OnDestroy {
     };
     this.form.patchValue(initialValues, { emitEvent: false });
 
-    // timer
     timer(0, 1000)
       .pipe(
         switchMap(async () => {
           const status = await this.biometricsService.getBiometricsStatusForUser(activeAccount.id);
-          this.biometricAvailable =
+          const biometricSettingAvailable =
             status !== BiometricsStatus.DesktopDisconnected &&
             status !== BiometricsStatus.NotEnabledInConnectedDesktopApp;
-          if (!this.biometricAvailable) {
+          if (!biometricSettingAvailable) {
             this.form.controls.biometric.disable({ emitEvent: false });
           } else {
             this.form.controls.biometric.enable({ emitEvent: false });
