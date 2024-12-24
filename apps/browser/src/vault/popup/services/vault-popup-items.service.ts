@@ -90,6 +90,8 @@ export class VaultPopupItemsService {
     tap(() => this._ciphersLoading$.next()),
     waitUntilSync(this.syncService),
     switchMap(() => Utils.asyncToObservable(() => this.cipherService.getAllDecrypted())),
+    withLatestFrom(this.cipherService.failedToDecryptCiphers$),
+    map(([ciphers, failedToDecryptCiphers]) => [...failedToDecryptCiphers, ...ciphers]),
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
