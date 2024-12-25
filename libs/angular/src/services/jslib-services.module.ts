@@ -143,11 +143,13 @@ import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/bill
 import { BillingApiService } from "@bitwarden/common/billing/services/billing-api.service";
 import { OrganizationBillingApiService } from "@bitwarden/common/billing/services/organization/organization-billing-api.service";
 import { OrganizationBillingService } from "@bitwarden/common/billing/services/organization-billing.service";
+import { BulkEncryptService } from "@bitwarden/common/key-management/abstractions/bulk-encrypt.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
+import { BulkEncryptServiceImplementation } from "@bitwarden/common/key-management/services/bulk-encrypt.service.implementation";
+import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/key-management/services/multithread-encrypt.service.implementation";
 import { WebCryptoFunctionService } from "@bitwarden/common/key-management/services/web-crypto-function.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/platform/abstractions/app-id.service";
 import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broadcaster.service";
-import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import {
@@ -179,8 +181,6 @@ import { AppIdService } from "@bitwarden/common/platform/services/app-id.service
 import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
 import { DefaultConfigService } from "@bitwarden/common/platform/services/config/default-config.service";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
-import { BulkEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/bulk-encrypt.service.implementation";
-import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/multithread-encrypt.service.implementation";
 import { DefaultBroadcasterService } from "@bitwarden/common/platform/services/default-broadcaster.service";
 import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { DefaultServerSettingsService } from "@bitwarden/common/platform/services/default-server-settings.service";

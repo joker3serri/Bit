@@ -3,15 +3,15 @@
 import { firstValueFrom, fromEvent, filter, map, takeUntil, defaultIfEmpty, Subject } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
-import { CryptoFunctionService } from "../../../key-management/abstractions/crypto-function.service";
-import { BulkEncryptService } from "../../abstractions/bulk-encrypt.service";
-import { LogService } from "../../abstractions/log.service";
-import { Decryptable } from "../../interfaces/decryptable.interface";
-import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
-import { Utils } from "../../misc/utils";
+import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { Decryptable } from "@bitwarden/common/platform/interfaces/decryptable.interface";
+import { InitializerMetadata } from "@bitwarden/common/platform/interfaces/initializer-metadata.interface";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { getClassInitializer } from "@bitwarden/common/platform/services/cryptography/get-class-initializer";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 
-import { getClassInitializer } from "./get-class-initializer";
+import { BulkEncryptService } from "../abstractions/bulk-encrypt.service";
+import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 
 // TTL (time to live) is not strictly required but avoids tying up memory resources if inactive
 const workerTTL = 60000; // 1 minute

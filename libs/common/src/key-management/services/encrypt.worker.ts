@@ -2,14 +2,13 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
+import { Decryptable } from "@bitwarden/common/platform/interfaces/decryptable.interface";
+import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
+import { ContainerService } from "@bitwarden/common/platform/services/container.service";
+import { getClassInitializer } from "@bitwarden/common/platform/services/cryptography/get-class-initializer";
 import { EncryptServiceImplementation, SymmetricCryptoKey } from "@bitwarden/key-management";
 
-import { WebCryptoFunctionService } from "../../../key-management/services/web-crypto-function.service";
-import { Decryptable } from "../../interfaces/decryptable.interface";
-import { ConsoleLogService } from "../console-log.service";
-import { ContainerService } from "../container.service";
-
-import { getClassInitializer } from "./get-class-initializer";
+import { WebCryptoFunctionService } from "./web-crypto-function.service";
 
 const workerApi: Worker = self as any;
 

@@ -1,10 +1,10 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
+import { Decryptable } from "@bitwarden/common/platform/interfaces/decryptable.interface";
+import { InitializerMetadata } from "@bitwarden/common/platform/interfaces/initializer-metadata.interface";
 import { EncryptService, SymmetricCryptoKey } from "@bitwarden/key-management";
 
-import { BulkEncryptService } from "../../abstractions/bulk-encrypt.service";
-import { Decryptable } from "../../interfaces/decryptable.interface";
-import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
+import { BulkEncryptService } from "../abstractions/bulk-encrypt.service";
 
 /**
  * @deprecated For the feature flag from PM-4154, remove once feature is rolled out

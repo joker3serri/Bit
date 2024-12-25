@@ -3,13 +3,11 @@
 import { defaultIfEmpty, filter, firstValueFrom, fromEvent, map, Subject, takeUntil } from "rxjs";
 import { Jsonify } from "type-fest";
 
+import { Decryptable } from "@bitwarden/common/platform/interfaces/decryptable.interface";
+import { InitializerMetadata } from "@bitwarden/common/platform/interfaces/initializer-metadata.interface";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+import { getClassInitializer } from "@bitwarden/common/platform/services/cryptography/get-class-initializer";
 import { EncryptServiceImplementation, SymmetricCryptoKey } from "@bitwarden/key-management";
-
-import { Utils } from "../../../platform/misc/utils";
-import { Decryptable } from "../../interfaces/decryptable.interface";
-import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
-
-import { getClassInitializer } from "./get-class-initializer";
 
 // TTL (time to live) is not strictly required but avoids tying up memory resources if inactive
 const workerTTL = 3 * 60000; // 3 minutes

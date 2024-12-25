@@ -15,7 +15,7 @@ import { SemVer } from "semver";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
-import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
+import { BulkEncryptService } from "@bitwarden/common/key-management/abstractions/bulk-encrypt.service";
 import {
   EncArrayBuffer,
   EncryptService,
