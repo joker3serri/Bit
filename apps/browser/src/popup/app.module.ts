@@ -42,11 +42,7 @@ import { Fido2UseBrowserLinkV1Component } from "../autofill/popup/fido2/fido2-us
 import { Fido2UseBrowserLinkComponent } from "../autofill/popup/fido2/fido2-use-browser-link.component";
 import { Fido2V1Component } from "../autofill/popup/fido2/fido2-v1.component";
 import { Fido2Component } from "../autofill/popup/fido2/fido2.component";
-import { AutofillV1Component } from "../autofill/popup/settings/autofill-v1.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
-import { ExcludedDomainsV1Component } from "../autofill/popup/settings/excluded-domains-v1.component";
-import { ExcludedDomainsComponent } from "../autofill/popup/settings/excluded-domains.component";
-import { NotificationsSettingsV1Component } from "../autofill/popup/settings/notifications-v1.component";
 import { NotificationsSettingsComponent } from "../autofill/popup/settings/notifications.component";
 import { PremiumComponent } from "../billing/popup/settings/premium.component";
 import { PopOutComponent } from "../platform/popup/components/pop-out.component";
@@ -108,7 +104,6 @@ import "../platform/popup/locales";
     ScrollingModule,
     ServicesModule,
     DialogModule,
-    ExcludedDomainsComponent,
     Fido2CipherRowComponent,
     Fido2Component,
     Fido2UseBrowserLinkComponent,
@@ -141,7 +136,6 @@ import "../platform/popup/locales";
     ColorPasswordCountPipe,
     CurrentTabComponent,
     EnvironmentComponent,
-    ExcludedDomainsV1Component,
     Fido2CipherRowV1Component,
     Fido2UseBrowserLinkV1Component,
     FolderAddEditComponent,
@@ -152,7 +146,6 @@ import "../platform/popup/locales";
     LoginViaAuthRequestComponentV1,
     LoginComponentV1,
     LoginDecryptionOptionsComponentV1,
-    NotificationsSettingsV1Component,
     AppearanceComponent,
     PasswordHistoryComponent,
     PremiumComponent,
@@ -174,7 +167,6 @@ import "../platform/popup/locales";
     RemovePasswordComponent,
     VaultSelectComponent,
     Fido2V1Component,
-    AutofillV1Component,
     EnvironmentSelectorComponent,
   ],
   exports: [],
