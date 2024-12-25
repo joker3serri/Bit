@@ -38,7 +38,7 @@ export class MultithreadEncryptServiceImplementation extends EncryptServiceImple
     this.worker ??= new Worker(
       new URL(
         /* webpackChunkName: 'encrypt-worker' */
-        "@bitwarden/common/platform/services/cryptography/encrypt.worker.ts",
+        "@bitwarden/common/key-management/services/encrypt.worker.ts",
         import.meta.url,
       ),
     );
