@@ -12,6 +12,10 @@ import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/pl
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { makeEncString } from "@bitwarden/common/spec";
+import {
+  FakeAccountService,
+  mockAccountServiceWith,
+} from "@bitwarden/common/spec/fake-account-service";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
@@ -20,11 +24,6 @@ import {
   BiometricStateService,
   KeyGenerationService,
 } from "@bitwarden/key-management";
-
-import {
-  FakeAccountService,
-  mockAccountServiceWith,
-} from "../../../../../libs/common/spec/fake-account-service";
 
 import { ElectronKeyService } from "./electron-key.service";
 
