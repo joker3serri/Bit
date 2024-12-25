@@ -104,6 +104,7 @@ import { DesktopAutofillService } from "../../autofill/services/desktop-autofill
 import { DesktopFido2UserInterfaceService } from "../../autofill/services/desktop-fido2-user-interface.service";
 import { ElectronBiometricsService } from "../../key-management/biometrics/electron-biometrics.service";
 import { ElectronKeyService } from "../../key-management/services/electron-key.service";
+import { RendererCryptoFunctionService } from "../../key-management/services/renderer-crypto-function.service";
 import { flagEnabled } from "../../platform/flags";
 import { DesktopSettingsService } from "../../platform/services/desktop-settings.service";
 import { ElectronLogRendererService } from "../../platform/services/electron-log.renderer.service";
@@ -129,7 +130,6 @@ import { DesktopSetPasswordJitService } from "./desktop-set-password-jit.service
 import { DesktopThemeStateService } from "./desktop-theme.service";
 import { InitService } from "./init.service";
 import { NativeMessagingManifestService } from "./native-messaging-manifest.service";
-import { RendererCryptoFunctionService } from "./renderer-crypto-function.service";
 
 const RELOAD_CALLBACK = new SafeInjectionToken<() => any>("RELOAD_CALLBACK");
 
