@@ -1,17 +1,21 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
+import {
+  EncArrayBuffer,
+  EncryptionType,
+  encryptionTypeToString as encryptionTypeName,
+  EncString,
+  SymmetricCryptoKey,
+} from "@bitwarden/key-management";
+
 import { CryptoFunctionService } from "../../../key-management/abstractions/crypto-function.service";
 import { Utils } from "../../../platform/misc/utils";
 import { EncryptService } from "../../abstractions/encrypt.service";
 import { LogService } from "../../abstractions/log.service";
-import { EncryptionType, encryptionTypeToString as encryptionTypeName } from "../../enums";
 import { Decryptable } from "../../interfaces/decryptable.interface";
 import { Encrypted } from "../../interfaces/encrypted";
 import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
-import { EncArrayBuffer } from "../../models/domain/enc-array-buffer";
-import { EncString } from "../../models/domain/enc-string";
 import { EncryptedObject } from "../../models/domain/encrypted-object";
-import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 
 export class EncryptServiceImplementation implements EncryptService {
   constructor(

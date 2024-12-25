@@ -4,7 +4,7 @@ import { firstValueFrom, of } from "rxjs";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { EncString } from "@bitwarden/key-management";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
 import {
   FakeStateProvider,

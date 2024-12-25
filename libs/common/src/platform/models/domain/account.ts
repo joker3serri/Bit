@@ -5,7 +5,7 @@ import { Jsonify } from "type-fest";
 import { DeepJsonify } from "../../../types/deep-jsonify";
 import { Utils } from "../../misc/utils";
 
-import { SymmetricCryptoKey } from "./symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {
   encrypted?: TEncrypted;

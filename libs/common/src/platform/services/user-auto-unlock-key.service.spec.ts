@@ -6,7 +6,7 @@ import { UserId } from "../../types/guid";
 import { UserKey } from "../../types/key";
 import { KeySuffixOptions } from "../enums";
 import { Utils } from "../misc/utils";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 
 import { UserAutoUnlockKeyService } from "./user-auto-unlock-key.service";
 

@@ -12,7 +12,7 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { KeyService } from "@bitwarden/key-management";
 
 import { BulkUserDetails } from "./bulk-status.component";

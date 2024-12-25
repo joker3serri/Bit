@@ -1,6 +1,6 @@
 import { Decryptable } from "../interfaces/decryptable.interface";
 import { InitializerMetadata } from "../interfaces/initializer-metadata.interface";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 
 export abstract class BulkEncryptService {
   abstract decryptItems<T extends InitializerMetadata>(

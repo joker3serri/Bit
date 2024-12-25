@@ -2,11 +2,11 @@
 // @ts-strict-ignore
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { KdfConfig, PBKDF2KdfConfig, Argon2KdfConfig, KdfType } from "@bitwarden/key-management";
 
 import { KeyGenerationService } from "../abstractions/key-generation.service";
+import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 
 export class DefaultKeyGenerationService implements KeyGenerationService {
   constructor(private cryptoFunctionService: CryptoFunctionService) {}

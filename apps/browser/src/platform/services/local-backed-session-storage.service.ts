@@ -12,9 +12,9 @@ import {
 } from "@bitwarden/common/platform/abstractions/storage.service";
 import { compareValues } from "@bitwarden/common/platform/misc/compare-values";
 import { Lazy } from "@bitwarden/common/platform/misc/lazy";
-import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { EncString } from "@bitwarden/key-management";
 import { StorageOptions } from "@bitwarden/common/platform/models/domain/storage-options";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 
 import { BrowserApi } from "../browser/browser-api";
 import { MemoryStoragePortMessage } from "../storage/port-messages";

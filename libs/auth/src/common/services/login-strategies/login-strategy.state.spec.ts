@@ -7,7 +7,7 @@ import { UserApiTokenRequest } from "@bitwarden/common/auth/models/request/ident
 import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/webauthn-login-token.request";
 import { WebAuthnLoginAssertionResponseRequest } from "@bitwarden/common/auth/services/webauthn-login/request/webauthn-login-assertion-response.request";
 import { DeviceType } from "@bitwarden/common/enums";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { MasterKey, PrfKey, UserKey } from "@bitwarden/common/types/key";
 
 import { AuthRequestLoginStrategyData } from "../../login-strategies/auth-request-login.strategy";

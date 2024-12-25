@@ -8,8 +8,6 @@ import { CryptoFunctionService } from "@bitwarden/common/key-management/abstract
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import {
   PIN_DISK,
   PIN_MEMORY,
@@ -20,6 +18,11 @@ import { UserId } from "@bitwarden/common/types/guid";
 import { MasterKey, PinKey, UserKey } from "@bitwarden/common/types/key";
 import { KeyGenerationService, KdfConfig, KdfConfigService } from "@bitwarden/key-management";
 
+import {
+  EncString,
+  EncryptedString,
+} from "../../../../../key-management/src/cryptography/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { PinServiceAbstraction } from "../../abstractions/pin.service.abstraction";
 
 /**

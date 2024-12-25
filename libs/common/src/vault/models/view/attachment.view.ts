@@ -3,7 +3,7 @@
 import { Jsonify } from "type-fest";
 
 import { View } from "../../../models/view/view";
-import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { Attachment } from "../domain/attachment";
 
 export class AttachmentView implements View {

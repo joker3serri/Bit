@@ -7,8 +7,8 @@ import {
 } from "../../abstractions/file-upload/file-upload.service";
 import { LogService } from "../../abstractions/log.service";
 import { FileUploadType } from "../../enums";
-import { EncArrayBuffer } from "../../models/domain/enc-array-buffer";
-import { EncString } from "../../models/domain/enc-string";
+import { EncArrayBuffer } from "../../../../../key-management/src/cryptography/domain/enc-array-buffer";
+import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
 
 import { AzureFileUploadService } from "./azure-file-upload.service";
 import { BitwardenFileUploadService } from "./bitwarden-file-upload.service";

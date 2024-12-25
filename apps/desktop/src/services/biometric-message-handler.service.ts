@@ -10,10 +10,10 @@ import { CryptoFunctionService } from "@bitwarden/common/key-management/abstract
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { KeySuffixOptions } from "@bitwarden/common/platform/enums";
+import { KeySuffixOptions } from "@bitwarden/key-management";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { EncString } from "@bitwarden/key-management";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { UserId } from "@bitwarden/common/types/guid";
 import { DialogService } from "@bitwarden/components";
 import { BiometricStateService, BiometricsService, KeyService } from "@bitwarden/key-management";

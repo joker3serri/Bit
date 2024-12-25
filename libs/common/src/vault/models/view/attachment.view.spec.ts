@@ -1,5 +1,5 @@
 import { mockFromJson } from "../../../../spec";
-import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 
 import { AttachmentView } from "./attachment.view";
 

@@ -3,13 +3,13 @@
 import { firstValueFrom, fromEvent, filter, map, takeUntil, defaultIfEmpty, Subject } from "rxjs";
 import { Jsonify } from "type-fest";
 
+import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { CryptoFunctionService } from "../../../key-management/abstractions/crypto-function.service";
 import { BulkEncryptService } from "../../abstractions/bulk-encrypt.service";
 import { LogService } from "../../abstractions/log.service";
 import { Decryptable } from "../../interfaces/decryptable.interface";
 import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
 import { Utils } from "../../misc/utils";
-import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 
 import { getClassInitializer } from "./get-class-initializer";
 

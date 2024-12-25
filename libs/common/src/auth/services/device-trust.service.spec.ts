@@ -5,6 +5,9 @@ import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common"
 import { KeyService, KeyGenerationService } from "@bitwarden/key-management";
 
 import { UserDecryptionOptions } from "../../../../auth/src/common/models/domain/user-decryption-options";
+import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import { EncryptionType } from "../../../../key-management/src/cryptography/enums/encryption-type.enum";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeActiveUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
@@ -18,11 +21,8 @@ import { LogService } from "../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
 import { AbstractStorageService } from "../../platform/abstractions/storage.service";
 import { StorageLocation } from "../../platform/enums";
-import { EncryptionType } from "../../platform/enums/encryption-type.enum";
 import { Utils } from "../../platform/misc/utils";
-import { EncString } from "../../platform/models/domain/enc-string";
 import { StorageOptions } from "../../platform/models/domain/storage-options";
-import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { DeviceKey, UserKey } from "../../types/key";

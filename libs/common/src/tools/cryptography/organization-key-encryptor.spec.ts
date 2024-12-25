@@ -1,8 +1,8 @@
 import { mock } from "jest-mock-extended";
 
+import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
-import { EncString } from "../../platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
 import { CsprngArray } from "../../types/csprng";
 import { OrganizationId } from "../../types/guid";
 import { OrgKey } from "../../types/key";

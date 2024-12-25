@@ -3,8 +3,8 @@
 import { Jsonify } from "type-fest";
 
 import Domain from "../../../platform/models/domain/domain-base";
-import { EncString } from "../../../platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
+import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { LoginData } from "../data/login.data";
 import { LoginView } from "../view/login.view";
 

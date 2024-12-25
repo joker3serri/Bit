@@ -5,6 +5,8 @@ import { EnvironmentService } from "@bitwarden/common/platform/abstractions/envi
 import { SelfHostedEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
 import { KeyService, KeyGenerationService } from "@bitwarden/key-management";
 
+import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import {
   FakeAccountService,
   FakeActiveUserState,
@@ -15,8 +17,6 @@ import {
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { Utils } from "../../../platform/misc/utils";
-import { EncString } from "../../../platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
 import { ContainerService } from "../../../platform/services/container.service";
 import { UserId } from "../../../types/guid";
 import { UserKey } from "../../../types/key";

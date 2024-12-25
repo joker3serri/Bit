@@ -5,7 +5,7 @@ import { LogService } from "@bitwarden/common/platform/abstractions/log.service"
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Lazy } from "@bitwarden/common/platform/misc/lazy";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { FakeStorageService, makeEncString } from "@bitwarden/common/spec";
 
 import { LocalBackedSessionStorageService } from "./local-backed-session-storage.service";

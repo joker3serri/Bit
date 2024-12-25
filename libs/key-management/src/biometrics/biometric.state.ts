@@ -1,4 +1,4 @@
-import { EncryptedString } from "../../../common/src/platform/models/domain/enc-string";
+import { EncryptedString } from "../cryptography/domain/enc-string";
 import {
   KeyDefinition,
   BIOMETRIC_SETTINGS_DISK,

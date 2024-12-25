@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { UserKey } from "@bitwarden/common/types/key";
 
 import { KeyService } from "../../../../../../key-management/src/abstractions/key.service";

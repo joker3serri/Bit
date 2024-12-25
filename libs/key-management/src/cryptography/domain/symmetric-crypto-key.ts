@@ -2,8 +2,9 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { Utils } from "../../../platform/misc/utils";
-import { EncryptionType } from "../../enums";
+import { Utils } from "@bitwarden/common/platform/misc/utils";
+
+import { EncryptionType } from "../enums/encryption-type.enum";
 
 export class SymmetricCryptoKey {
   key: Uint8Array;

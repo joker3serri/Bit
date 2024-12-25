@@ -9,9 +9,8 @@ import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { DialogService } from "@bitwarden/components";
+import { EncryptedString, EncString, SymmetricCryptoKey } from "@bitwarden/key-management";
 
 import { VerifyNativeMessagingDialogComponent } from "../app/components/verify-native-messaging-dialog.component";
 import { DesktopAutofillSettingsService } from "../autofill/services/desktop-autofill-settings.service";

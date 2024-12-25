@@ -5,7 +5,7 @@ import { EncryptService } from "../../abstractions/encrypt.service";
 import { Utils } from "../../misc/utils";
 
 import Domain from "./domain-base";
-import { EncString } from "./enc-string";
+import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
 
 class TestDomain extends Domain {
   plainText: string;

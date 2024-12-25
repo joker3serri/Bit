@@ -1,15 +1,16 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { KeyService } from "../../../../../key-management/src/abstractions/key.service";
-import { makeEncString, makeStaticByteArray } from "../../../../spec";
-import { EncryptService } from "../../../platform/abstractions/encrypt.service";
-import { SymmetricCryptoKey } from "../../../platform/models/domain/symmetric-crypto-key";
-import { UserKey, OrgKey } from "../../../types/key";
-import { EncryptionType } from "../../enums";
-import { Utils } from "../../misc/utils";
-import { ContainerService } from "../../services/container.service";
+import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
+import { makeEncString, makeStaticByteArray } from "@bitwarden/common/spec";
+import { EncryptionType } from "@bitwarden/common/src/platform/enums";
+import { Utils } from "@bitwarden/common/src/platform/misc/utils";
+import { ContainerService } from "@bitwarden/common/src/platform/services/container.service";
+import { UserKey, OrgKey } from "@bitwarden/common/types/key";
+
+import { KeyService } from "../abstractions/key.service";
 
 import { EncString } from "./enc-string";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 describe("EncString", () => {
   afterEach(() => {

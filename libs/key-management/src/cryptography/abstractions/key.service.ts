@@ -3,17 +3,11 @@
 import { Observable } from "rxjs";
 
 import { EncryptedOrganizationKeyData } from "@bitwarden/common/admin-console/models/data/encrypted-organization-key.data";
-import { KdfConfig } from "@bitwarden/key-management";
+import { KdfConfig, KeySuffixOptions, HashPurpose } from "@bitwarden/key-management";
 
 import { ProfileOrganizationResponse } from "../../../../common/src/admin-console/models/response/profile-organization.response";
 import { ProfileProviderOrganizationResponse } from "../../../../common/src/admin-console/models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../../../../common/src/admin-console/models/response/profile-provider.response";
-import { KeySuffixOptions, HashPurpose } from "../../../../common/src/platform/enums";
-import {
-  EncryptedString,
-  EncString,
-} from "../../../../common/src/platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../common/src/platform/models/domain/symmetric-crypto-key";
 import { OrganizationId, UserId } from "../../../../common/src/types/guid";
 import {
   UserKey,
@@ -24,6 +18,8 @@ import {
   UserPrivateKey,
   UserPublicKey,
 } from "../../../../common/src/types/key";
+import { EncryptedString, EncString } from "../domain/enc-string";
+import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 
 export class UserPrivateKeyDecryptionFailedError extends Error {
   constructor() {

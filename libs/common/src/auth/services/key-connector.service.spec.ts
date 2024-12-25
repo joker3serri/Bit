@@ -9,7 +9,7 @@ import { Organization } from "../../admin-console/models/domain/organization";
 import { ProfileOrganizationResponse } from "../../admin-console/models/response/profile-organization.response";
 import { LogService } from "../../platform/abstractions/log.service";
 import { Utils } from "../../platform/misc/utils";
-import { SymmetricCryptoKey } from "../../platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { KeyGenerationService } from "../../platform/services/key-generation.service";
 import { OrganizationId, UserId } from "../../types/guid";
 import { MasterKey } from "../../types/key";

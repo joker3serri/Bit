@@ -4,8 +4,6 @@ import { bufferCount, firstValueFrom, lastValueFrom, of, take, tap } from "rxjs"
 import { EncryptedOrganizationKeyData } from "@bitwarden/common/admin-console/models/data/encrypted-organization-key.data";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
 import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "@bitwarden/common/platform/services/key-state/org-keys.state";
 import { USER_ENCRYPTED_PROVIDER_KEYS } from "@bitwarden/common/platform/services/key-state/provider-keys.state";
 import {
@@ -40,6 +38,8 @@ import { FakeMasterPasswordService } from "../../../../common/src/auth/services/
 import { KdfConfigService } from "../abstractions/kdf-config.service";
 import { KeyGenerationService } from "../abstractions/key-generation.service";
 import { UserPrivateKeyDecryptionFailedError } from "../abstractions/key.service";
+import { EncryptedString, EncString } from "../domain/enc-string";
+import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 
 import { DefaultKeyService } from "./key.service";
 

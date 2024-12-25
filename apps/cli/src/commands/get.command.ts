@@ -24,7 +24,7 @@ import { SecureNoteExport } from "@bitwarden/common/models/export/secure-note.ex
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { EncString } from "@bitwarden/key-management";
 import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 import { OrganizationId } from "@bitwarden/common/types/guid";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";

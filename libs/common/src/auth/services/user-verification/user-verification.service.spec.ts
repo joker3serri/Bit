@@ -15,7 +15,7 @@ import { VaultTimeoutSettingsService } from "../../../abstractions/vault-timeout
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { LogService } from "../../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../../platform/abstractions/platform-utils.service";
-import { HashPurpose } from "../../../platform/enums";
+import { HashPurpose } from "@bitwarden/key-management";
 import { Utils } from "../../../platform/misc/utils";
 import { UserId } from "../../../types/guid";
 import { MasterKey } from "../../../types/key";

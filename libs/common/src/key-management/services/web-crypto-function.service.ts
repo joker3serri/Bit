@@ -4,7 +4,7 @@ import * as argon2 from "argon2-browser";
 import * as forge from "node-forge";
 
 import { DecryptParameters } from "@bitwarden/common/platform/models/domain/decrypt-parameters";
-import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
 
 import { Utils } from "../../platform/misc/utils";
 import { CsprngArray } from "../../types/csprng";

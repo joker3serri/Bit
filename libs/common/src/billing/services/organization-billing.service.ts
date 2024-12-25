@@ -22,7 +22,7 @@ import { OrganizationKeysRequest } from "../../admin-console/models/request/orga
 import { OrganizationResponse } from "../../admin-console/models/response/organization.response";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
-import { EncString } from "../../platform/models/domain/enc-string";
+import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
 import { OrgKey } from "../../types/key";
 import { PlanType } from "../enums";
 import { OrganizationNoPaymentMethodCreateRequest } from "../models/request/organization-no-payment-method-create-request";

@@ -12,6 +12,8 @@ import {
   switchMap,
 } from "rxjs";
 
+import { KeySuffixOptions, HashPurpose } from "@bitwarden/key-management";
+
 import { PinServiceAbstraction } from "../../../../auth/src/common/abstractions";
 import { EncryptedOrganizationKeyData } from "../../../../common/src/admin-console/models/data/encrypted-organization-key.data";
 import { BaseEncryptedOrganizationKey } from "../../../../common/src/admin-console/models/domain/encrypted-organization-key";
@@ -25,15 +27,9 @@ import { EncryptService } from "../../../../common/src/platform/abstractions/enc
 import { LogService } from "../../../../common/src/platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../../../common/src/platform/abstractions/platform-utils.service";
 import { StateService } from "../../../../common/src/platform/abstractions/state.service";
-import { KeySuffixOptions, HashPurpose } from "../../../../common/src/platform/enums";
 import { convertValues } from "../../../../common/src/platform/misc/convert-values";
 import { Utils } from "../../../../common/src/platform/misc/utils";
 import { EFFLongWordList } from "../../../../common/src/platform/misc/wordlist";
-import {
-  EncString,
-  EncryptedString,
-} from "../../../../common/src/platform/models/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../common/src/platform/models/domain/symmetric-crypto-key";
 import { USER_ENCRYPTED_ORGANIZATION_KEYS } from "../../../../common/src/platform/services/key-state/org-keys.state";
 import { USER_ENCRYPTED_PROVIDER_KEYS } from "../../../../common/src/platform/services/key-state/provider-keys.state";
 import {
@@ -62,6 +58,8 @@ import {
   KeyService as KeyServiceAbstraction,
   UserPrivateKeyDecryptionFailedError,
 } from "../abstractions/key.service";
+import { EncString, EncryptedString } from "../domain/enc-string";
+import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 import { KdfConfig } from "../models/kdf-config";
 
 export class DefaultKeyService implements KeyServiceAbstraction {
