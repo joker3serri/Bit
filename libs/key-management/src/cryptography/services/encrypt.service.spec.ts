@@ -1,9 +1,9 @@
 import { mockReset, mock } from "jest-mock-extended";
 
+import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { makeStaticByteArray } from "@bitwarden/common/spec";
 import { CryptoFunctionService } from "@bitwarden/common/src/key-management/abstractions/crypto-function.service";
 import { LogService } from "@bitwarden/common/src/platform/abstractions/log.service";
-import { Utils } from "@bitwarden/common/src/platform/misc/utils";
 import { CsprngArray } from "@bitwarden/common/src/types/csprng";
 
 import { EncArrayBuffer } from "../domain/enc-array-buffer";
