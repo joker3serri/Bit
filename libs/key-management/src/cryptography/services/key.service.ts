@@ -22,7 +22,6 @@ import { AccountService } from "../../../../common/src/auth/abstractions/account
 import { InternalMasterPasswordServiceAbstraction } from "../../../../common/src/auth/abstractions/master-password.service.abstraction";
 import { CryptoFunctionService } from "../../../../common/src/key-management/abstractions/crypto-function.service";
 import { EncryptService } from "../../../../common/src/platform/abstractions/encrypt.service";
-import { KeyGenerationService } from "../../../../common/src/platform/abstractions/key-generation.service";
 import { LogService } from "../../../../common/src/platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../../../common/src/platform/abstractions/platform-utils.service";
 import { StateService } from "../../../../common/src/platform/abstractions/state.service";
@@ -57,6 +56,7 @@ import {
 } from "../../../../common/src/types/key";
 import { VaultTimeoutStringType } from "../../../../common/src/types/vault-timeout.type";
 import { KdfConfigService } from "../abstractions/kdf-config.service";
+import { KeyGenerationService } from "../abstractions/key-generation.service";
 import {
   CipherDecryptionKeys,
   KeyService as KeyServiceAbstraction,

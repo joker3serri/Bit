@@ -7,7 +7,6 @@ import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -16,7 +15,11 @@ import { makeEncString } from "@bitwarden/common/spec";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
-import { KdfConfigService, BiometricStateService } from "@bitwarden/key-management";
+import {
+  KdfConfigService,
+  BiometricStateService,
+  KeyGenerationService,
+} from "@bitwarden/key-management";
 
 import {
   FakeAccountService,

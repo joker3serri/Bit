@@ -6,7 +6,6 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { MasterPasswordServiceAbstraction } from "@bitwarden/common/auth/abstractions/master-password.service.abstraction";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { EncString, EncryptedString } from "@bitwarden/common/platform/models/domain/enc-string";
@@ -19,7 +18,7 @@ import {
 } from "@bitwarden/common/platform/state";
 import { UserId } from "@bitwarden/common/types/guid";
 import { MasterKey, PinKey, UserKey } from "@bitwarden/common/types/key";
-import { KdfConfig, KdfConfigService } from "@bitwarden/key-management";
+import { KeyGenerationService, KdfConfig, KdfConfigService } from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../abstractions/pin.service.abstraction";
 

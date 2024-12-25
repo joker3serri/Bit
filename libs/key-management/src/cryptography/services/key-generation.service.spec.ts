@@ -1,19 +1,18 @@
 import { mock } from "jest-mock-extended";
 
+import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
+import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { PBKDF2KdfConfig, Argon2KdfConfig } from "@bitwarden/key-management";
 
-import { CryptoFunctionService } from "../../key-management/abstractions/crypto-function.service";
-import { CsprngArray } from "../../types/csprng";
-
-import { KeyGenerationService } from "./key-generation.service";
+import { DefaultKeyGenerationService } from "./key-generation.service";
 
 describe("KeyGenerationService", () => {
-  let sut: KeyGenerationService;
+  let sut: DefaultKeyGenerationService;
 
   const cryptoFunctionService = mock<CryptoFunctionService>();
 
   beforeEach(() => {
-    sut = new KeyGenerationService(cryptoFunctionService);
+    sut = new DefaultKeyGenerationService(cryptoFunctionService);
   });
 
   describe("createKey", () => {

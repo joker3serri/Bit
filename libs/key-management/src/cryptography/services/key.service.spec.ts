@@ -2,6 +2,7 @@ import { mock } from "jest-mock-extended";
 import { bufferCount, firstValueFrom, lastValueFrom, of, take, tap } from "rxjs";
 
 import { EncryptedOrganizationKeyData } from "@bitwarden/common/admin-console/models/data/encrypted-organization-key.data";
+import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptedString, EncString } from "@bitwarden/common/platform/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
@@ -24,9 +25,7 @@ import {
   mockAccountServiceWith,
 } from "@bitwarden/common/spec";
 import { FakeActiveUserState, FakeSingleUserState } from "@bitwarden/common/spec/fake-state";
-import { CryptoFunctionService } from "@bitwarden/common/src/platform/abstractions/crypto-function.service";
 import { EncryptService } from "@bitwarden/common/src/platform/abstractions/encrypt.service";
-import { KeyGenerationService } from "@bitwarden/common/src/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/src/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/src/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/src/platform/abstractions/state.service";
@@ -39,6 +38,7 @@ import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.ty
 import { PinServiceAbstraction } from "../../../../auth/src/common/abstractions";
 import { FakeMasterPasswordService } from "../../../../common/src/auth/services/master-password/fake-master-password.service";
 import { KdfConfigService } from "../abstractions/kdf-config.service";
+import { KeyGenerationService } from "../abstractions/key-generation.service";
 import { UserPrivateKeyDecryptionFailedError } from "../abstractions/key.service";
 
 import { DefaultKeyService } from "./key.service";

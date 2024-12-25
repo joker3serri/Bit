@@ -3,9 +3,9 @@
 import { firstValueFrom, map, Observable } from "rxjs";
 
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
+import { KeyGenerationService } from "@bitwarden/key-management";
 
 import { EncryptService } from "../../../platform/abstractions/encrypt.service";
-import { KeyGenerationService } from "../../../platform/abstractions/key-generation.service";
 import { StateService } from "../../../platform/abstractions/state.service";
 import { EncryptionType } from "../../../platform/enums";
 import { EncryptedString, EncString } from "../../../platform/models/domain/enc-string";

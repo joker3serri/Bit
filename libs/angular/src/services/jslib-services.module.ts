@@ -157,7 +157,6 @@ import {
 } from "@bitwarden/common/platform/abstractions/environment.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/platform/abstractions/file-upload/file-upload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { KeyGenerationService as KeyGenerationServiceAbstraction } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/platform/abstractions/platform-utils.service";
@@ -187,7 +186,6 @@ import { DefaultBroadcasterService } from "@bitwarden/common/platform/services/d
 import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { DefaultServerSettingsService } from "@bitwarden/common/platform/services/default-server-settings.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
-import { KeyGenerationService } from "@bitwarden/common/platform/services/key-generation.service";
 import { MigrationBuilderService } from "@bitwarden/common/platform/services/migration-builder.service";
 import { MigrationRunner } from "@bitwarden/common/platform/services/migration-runner";
 import { NoopNotificationsService } from "@bitwarden/common/platform/services/noop-notifications.service";
@@ -287,6 +285,8 @@ import {
   DefaultUserAsymmetricKeysRegenerationService,
   UserAsymmetricKeysRegenerationApiService,
   DefaultUserAsymmetricKeysRegenerationApiService,
+  DefaultKeyGenerationService,
+  KeyGenerationService,
 } from "@bitwarden/key-management";
 import { PasswordRepromptService } from "@bitwarden/vault";
 import {
@@ -591,15 +591,15 @@ const safeProviders: SafeProvider[] = [
       GlobalStateProvider,
       SUPPORTS_SECURE_STORAGE,
       SECURE_STORAGE,
-      KeyGenerationServiceAbstraction,
+      KeyGenerationService,
       EncryptService,
       LogService,
       LOGOUT_CALLBACK,
     ],
   }),
   safeProvider({
-    provide: KeyGenerationServiceAbstraction,
-    useClass: KeyGenerationService,
+    provide: KeyGenerationService,
+    useClass: DefaultKeyGenerationService,
     deps: [CryptoFunctionServiceAbstraction],
   }),
   safeProvider({
@@ -608,7 +608,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       PinServiceAbstraction,
       InternalMasterPasswordServiceAbstraction,
-      KeyGenerationServiceAbstraction,
+      KeyGenerationService,
       CryptoFunctionServiceAbstraction,
       EncryptService,
       PlatformUtilsServiceAbstraction,
@@ -688,7 +688,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       KeyServiceAbstraction,
       I18nServiceAbstraction,
-      KeyGenerationServiceAbstraction,
+      KeyGenerationService,
       SendStateProviderAbstraction,
       EncryptService,
     ],
@@ -938,7 +938,7 @@ const safeProviders: SafeProvider[] = [
     deps: [
       StateProvider,
       StateServiceAbstraction,
-      KeyGenerationServiceAbstraction,
+      KeyGenerationService,
       EncryptService,
       LogService,
     ],
@@ -958,7 +958,7 @@ const safeProviders: SafeProvider[] = [
       TokenServiceAbstraction,
       LogService,
       OrganizationServiceAbstraction,
-      KeyGenerationServiceAbstraction,
+      KeyGenerationService,
       LOGOUT_CALLBACK,
       StateProvider,
     ],
@@ -1108,7 +1108,7 @@ const safeProviders: SafeProvider[] = [
     provide: DeviceTrustServiceAbstraction,
     useClass: DeviceTrustService,
     deps: [
-      KeyGenerationServiceAbstraction,
+      KeyGenerationService,
       CryptoFunctionServiceAbstraction,
       KeyServiceAbstraction,
       EncryptService,
@@ -1144,7 +1144,7 @@ const safeProviders: SafeProvider[] = [
       CryptoFunctionServiceAbstraction,
       EncryptService,
       KdfConfigService,
-      KeyGenerationServiceAbstraction,
+      KeyGenerationService,
       LogService,
       MasterPasswordServiceAbstraction,
       StateProvider,
