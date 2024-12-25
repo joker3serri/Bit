@@ -1,7 +1,7 @@
 import { MockProxy, mock } from "jest-mock-extended";
 import { Jsonify } from "type-fest";
 
-import { EncryptService } from "@bitwarden/key-management";
+import { EncryptService, EncString } from "@bitwarden/key-management";
 
 import { mockEnc, mockFromJson } from "../../../../spec";
 import { UriMatchStrategy } from "../../../models/domain/domain-service";
