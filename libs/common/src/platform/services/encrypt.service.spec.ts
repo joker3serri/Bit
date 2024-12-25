@@ -1,8 +1,8 @@
 import { mockReset, mock } from "jest-mock-extended";
 
 import { makeStaticByteArray } from "../../../spec";
+import { CryptoFunctionService } from "../../key-management/abstractions/crypto-function.service";
 import { CsprngArray } from "../../types/csprng";
-import { CryptoFunctionService } from "../abstractions/crypto-function.service";
 import { LogService } from "../abstractions/log.service";
 import { EncryptionType } from "../enums";
 import { Utils } from "../misc/utils";

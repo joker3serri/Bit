@@ -3,11 +3,12 @@
 import * as argon2 from "argon2-browser";
 import * as forge from "node-forge";
 
+import { DecryptParameters } from "@bitwarden/common/platform/models/domain/decrypt-parameters";
+import { SymmetricCryptoKey } from "@bitwarden/common/platform/models/domain/symmetric-crypto-key";
+
 import { Utils } from "../../platform/misc/utils";
 import { CsprngArray } from "../../types/csprng";
 import { CryptoFunctionService } from "../abstractions/crypto-function.service";
-import { DecryptParameters } from "../models/domain/decrypt-parameters";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
 export class WebCryptoFunctionService implements CryptoFunctionService {
   private crypto: Crypto;

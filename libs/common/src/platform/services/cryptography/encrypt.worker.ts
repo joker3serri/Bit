@@ -2,11 +2,11 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
+import { WebCryptoFunctionService } from "../../../key-management/services/web-crypto-function.service";
 import { Decryptable } from "../../interfaces/decryptable.interface";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { ConsoleLogService } from "../console-log.service";
 import { ContainerService } from "../container.service";
-import { WebCryptoFunctionService } from "../web-crypto-function.service";
 
 import { EncryptServiceImplementation } from "./encrypt.service.implementation";
 import { getClassInitializer } from "./get-class-initializer";

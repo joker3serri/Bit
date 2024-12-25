@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
+import { CryptoFunctionService } from "../../../key-management/abstractions/crypto-function.service";
 import { Utils } from "../../../platform/misc/utils";
-import { CryptoFunctionService } from "../../abstractions/crypto-function.service";
 import { EncryptService } from "../../abstractions/encrypt.service";
 import { LogService } from "../../abstractions/log.service";
 import { EncryptionType, encryptionTypeToString as encryptionTypeName } from "../../enums";

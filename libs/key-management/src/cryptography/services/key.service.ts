@@ -20,7 +20,7 @@ import { ProfileProviderOrganizationResponse } from "../../../../common/src/admi
 import { ProfileProviderResponse } from "../../../../common/src/admin-console/models/response/profile-provider.response";
 import { AccountService } from "../../../../common/src/auth/abstractions/account.service";
 import { InternalMasterPasswordServiceAbstraction } from "../../../../common/src/auth/abstractions/master-password.service.abstraction";
-import { CryptoFunctionService } from "../../../../common/src/platform/abstractions/crypto-function.service";
+import { CryptoFunctionService } from "../../../../common/src/key-management/abstractions/crypto-function.service";
 import { EncryptService } from "../../../../common/src/platform/abstractions/encrypt.service";
 import { KeyGenerationService } from "../../../../common/src/platform/abstractions/key-generation.service";
 import { LogService } from "../../../../common/src/platform/abstractions/log.service";

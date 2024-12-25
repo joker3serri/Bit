@@ -3,8 +3,8 @@
 import { firstValueFrom, fromEvent, filter, map, takeUntil, defaultIfEmpty, Subject } from "rxjs";
 import { Jsonify } from "type-fest";
 
+import { CryptoFunctionService } from "../../../key-management/abstractions/crypto-function.service";
 import { BulkEncryptService } from "../../abstractions/bulk-encrypt.service";
-import { CryptoFunctionService } from "../../abstractions/crypto-function.service";
 import { LogService } from "../../abstractions/log.service";
 import { Decryptable } from "../../interfaces/decryptable.interface";
 import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";

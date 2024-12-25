@@ -2,16 +2,16 @@ import { matches, mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
+import { KeyService } from "@bitwarden/key-management";
 
 import { UserDecryptionOptions } from "../../../../auth/src/common/models/domain/user-decryption-options";
-import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeActiveUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
 import { DeviceType } from "../../enums";
+import { CryptoFunctionService } from "../../key-management/abstractions/crypto-function.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
-import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
