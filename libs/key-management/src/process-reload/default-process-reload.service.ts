@@ -2,17 +2,18 @@
 // @ts-strict-ignore
 import { firstValueFrom, map, timeout } from "rxjs";
 
+import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
+import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { BiometricStateService } from "@bitwarden/key-management";
+import { UserId } from "@bitwarden/common/types/guid";
 
-import { PinServiceAbstraction } from "../../../../auth/src/common/abstractions";
-import { VaultTimeoutSettingsService } from "../../abstractions/vault-timeout/vault-timeout-settings.service";
-import { AccountService } from "../../auth/abstractions/account.service";
-import { AuthService } from "../../auth/abstractions/auth.service";
-import { AuthenticationStatus } from "../../auth/enums/authentication-status";
-import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
-import { UserId } from "../../types/guid";
-import { ProcessReloadServiceAbstraction } from "../abstractions/process-reload.service";
+import { BiometricStateService } from "..";
+import { PinServiceAbstraction } from "../../../auth/src/common/abstractions";
+
+import { ProcessReloadServiceAbstraction } from "./process-reload.service";
 
 export class DefaultProcessReloadService implements ProcessReloadServiceAbstraction {
   private reloadInterval: any = null;
