@@ -6,8 +6,7 @@ import {
   OrganizationUserApiService,
   OrganizationUserResetPasswordEnrollmentRequest,
 } from "@bitwarden/admin-console/common";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { KeyService } from "@bitwarden/key-management";
+import { EncryptService, KeyService } from "@bitwarden/key-management";
 
 import { OrganizationApiServiceAbstraction } from "../../admin-console/abstractions/organization/organization-api.service.abstraction";
 import { I18nService } from "../../platform/abstractions/i18n.service";

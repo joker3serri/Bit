@@ -1,12 +1,12 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { makeEncString, makeStaticByteArray } from "@bitwarden/common/spec";
-import { EncryptionType } from "@bitwarden/common/src/platform/enums";
 import { Utils } from "@bitwarden/common/src/platform/misc/utils";
 import { ContainerService } from "@bitwarden/common/src/platform/services/container.service";
 import { UserKey, OrgKey } from "@bitwarden/common/types/key";
+import { EncryptionType } from "@bitwarden/key-management";
 
+import { EncryptService } from "../abstractions/encrypt.service";
 import { KeyService } from "../abstractions/key.service";
 
 import { EncString } from "./enc-string";

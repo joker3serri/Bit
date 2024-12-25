@@ -150,7 +150,6 @@ import { BroadcasterService } from "@bitwarden/common/platform/abstractions/broa
 import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import {
   EnvironmentService,
   RegionConfig,
@@ -275,6 +274,7 @@ import {
   ImportServiceAbstraction,
 } from "@bitwarden/importer/core";
 import {
+  EncryptService,
   KeyService as KeyServiceAbstraction,
   DefaultKeyService as KeyService,
   BiometricStateService,

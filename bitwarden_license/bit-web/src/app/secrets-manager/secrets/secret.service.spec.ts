@@ -1,9 +1,7 @@
 import { mock } from "jest-mock-extended";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { EncString } from "@bitwarden/key-management";
-import { KeyService } from "@bitwarden/key-management";
+import { EncryptService, EncString, KeyService } from "@bitwarden/key-management";
 
 import { SecretAccessPoliciesView } from "../models/view/access-policies/secret-access-policies.view";
 import { SecretView } from "../models/view/secret.view";

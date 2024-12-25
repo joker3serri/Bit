@@ -4,10 +4,12 @@ import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { EncString } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
-import { KeyService } from "@bitwarden/key-management";
+import {
+  EncryptService,
+  EncString,
+  SymmetricCryptoKey,
+  KeyService,
+} from "@bitwarden/key-management";
 
 import { SecretAccessPoliciesView } from "../models/view/access-policies/secret-access-policies.view";
 import { SecretListView } from "../models/view/secret-list.view";

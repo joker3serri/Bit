@@ -1,9 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { EncArrayBuffer } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
+import { EncryptService, EncArrayBuffer, SymmetricCryptoKey } from "@bitwarden/key-management";
 
 import { Response } from "../models/response";
 import { FileResponse } from "../models/response/file.response";

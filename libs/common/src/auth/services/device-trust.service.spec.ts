@@ -2,12 +2,16 @@ import { matches, mock } from "jest-mock-extended";
 import { BehaviorSubject, of } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { KeyService, KeyGenerationService } from "@bitwarden/key-management";
+import {
+  KeyService,
+  KeyGenerationService,
+  EncryptService,
+  EncryptionType,
+  EncString,
+  SymmetricCryptoKey,
+} from "@bitwarden/key-management";
 
 import { UserDecryptionOptions } from "../../../../auth/src/common/models/domain/user-decryption-options";
-import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
-import { EncryptionType } from "../../../../key-management/src/cryptography/enums/encryption-type.enum";
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeActiveUserState } from "../../../spec/fake-state";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
@@ -15,7 +19,6 @@ import { DeviceType } from "../../enums";
 import { CryptoFunctionService } from "../../key-management/abstractions/crypto-function.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";

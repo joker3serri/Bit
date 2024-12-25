@@ -7,16 +7,20 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
-import { KeySuffixOptions } from "@bitwarden/key-management";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { UserId } from "@bitwarden/common/types/guid";
 import { DialogService } from "@bitwarden/components";
-import { BiometricStateService, BiometricsService, KeyService } from "@bitwarden/key-management";
+import {
+  KeySuffixOptions,
+  EncString,
+  SymmetricCryptoKey,
+  EncryptService,
+  BiometricStateService,
+  BiometricsService,
+  KeyService,
+} from "@bitwarden/key-management";
 
 import { BrowserSyncVerificationDialogComponent } from "../app/components/browser-sync-verification-dialog.component";
 import { LegacyMessage } from "../models/native-messaging/legacy-message";

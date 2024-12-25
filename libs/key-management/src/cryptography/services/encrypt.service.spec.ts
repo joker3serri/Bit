@@ -1,15 +1,17 @@
 import { mockReset, mock } from "jest-mock-extended";
 
-import { EncArrayBuffer } from "../../../../key-management/src/cryptography/domain/enc-array-buffer";
-import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
-import { makeStaticByteArray } from "../../../spec";
-import { CryptoFunctionService } from "../../key-management/abstractions/crypto-function.service";
-import { CsprngArray } from "../../types/csprng";
-import { LogService } from "../abstractions/log.service";
-import { EncryptionType } from "../enums";
-import { Utils } from "../misc/utils";
-import { EncryptServiceImplementation } from "../services/cryptography/encrypt.service.implementation";
+import { makeStaticByteArray } from "@bitwarden/common/spec";
+import { CryptoFunctionService } from "@bitwarden/common/src/key-management/abstractions/crypto-function.service";
+import { LogService } from "@bitwarden/common/src/platform/abstractions/log.service";
+import { Utils } from "@bitwarden/common/src/platform/misc/utils";
+import { CsprngArray } from "@bitwarden/common/src/types/csprng";
+
+import { EncArrayBuffer } from "../domain/enc-array-buffer";
+import { EncString } from "../domain/enc-string";
+import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
+import { EncryptionType } from "../enums/encryption-type.enum";
+
+import { EncryptServiceImplementation } from "./encrypt.service.implementation";
 
 describe("EncryptService", () => {
   const cryptoFunctionService = mock<CryptoFunctionService>();

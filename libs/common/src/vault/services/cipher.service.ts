@@ -16,7 +16,13 @@ import { SemVer } from "semver";
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
-import { KeyService } from "@bitwarden/key-management";
+import {
+  EncArrayBuffer,
+  EncryptService,
+  EncString,
+  KeyService,
+  SymmetricCryptoKey,
+} from "@bitwarden/key-management";
 
 import { ApiService } from "../../abstractions/api.service";
 import { SearchService } from "../../abstractions/search.service";
@@ -27,15 +33,11 @@ import { ErrorResponse } from "../../models/response/error.response";
 import { ListResponse } from "../../models/response/list.response";
 import { View } from "../../models/view/view";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { sequentialize } from "../../platform/misc/sequentialize";
 import { Utils } from "../../platform/misc/utils";
 import Domain from "../../platform/models/domain/domain-base";
-import { EncArrayBuffer } from "../../../../key-management/src/cryptography/domain/enc-array-buffer";
-import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { ActiveUserState, StateProvider } from "../../platform/state";
 import { CipherId, CollectionId, OrganizationId, UserId } from "../../types/guid";
 import { OrgKey, UserKey } from "../../types/key";

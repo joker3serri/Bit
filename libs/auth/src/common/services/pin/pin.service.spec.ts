@@ -2,13 +2,9 @@ import { mock } from "jest-mock-extended";
 
 import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import {
   FakeAccountService,
   FakeStateProvider,
@@ -16,7 +12,14 @@ import {
 } from "@bitwarden/common/spec";
 import { UserId } from "@bitwarden/common/types/guid";
 import { MasterKey, PinKey, UserKey } from "@bitwarden/common/types/key";
-import { DEFAULT_KDF_CONFIG, KdfConfigService } from "@bitwarden/key-management";
+import {
+  KeyGenerationService,
+  SymmetricCryptoKey,
+  EncString,
+  EncryptService,
+  DEFAULT_KDF_CONFIG,
+  KdfConfigService,
+} from "@bitwarden/key-management";
 
 import {
   PinService,

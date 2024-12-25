@@ -5,12 +5,14 @@ import { Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { KeyGenerationService } from "@bitwarden/common/platform/abstractions/key-generation.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
-import { KeyService } from "@bitwarden/key-management";
+import {
+  KeyGenerationService,
+  EncryptService,
+  EncString,
+  SymmetricCryptoKey,
+  KeyService,
+} from "@bitwarden/key-management";
 
 import { AccessTokenRequest } from "../models/requests/access-token.request";
 import { RevokeAccessTokensRequest } from "../models/requests/revoke-access-tokens.request";

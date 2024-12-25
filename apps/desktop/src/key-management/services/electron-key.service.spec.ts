@@ -6,7 +6,6 @@ import { mock } from "jest-mock-extended";
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { FakeMasterPasswordService } from "@bitwarden/common/auth/services/master-password/fake-master-password.service";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
@@ -19,6 +18,7 @@ import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import {
+  EncryptService,
   SymmetricCryptoKey,
   KdfConfigService,
   BiometricStateService,

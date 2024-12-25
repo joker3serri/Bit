@@ -2,10 +2,11 @@
 // @ts-strict-ignore
 import { Jsonify, Opaque } from "type-fest";
 
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Encrypted } from "@bitwarden/common/platform/interfaces/encrypted";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { EncryptionType, EXPECTED_NUM_PARTS_BY_ENCRYPTION_TYPE } from "@bitwarden/key-management";
+
+import { EncryptService } from "../abstractions/encrypt.service";
 
 import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 

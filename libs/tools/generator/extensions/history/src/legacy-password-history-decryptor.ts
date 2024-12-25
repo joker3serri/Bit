@@ -1,7 +1,5 @@
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { EncString } from "@bitwarden/key-management";
 import { UserId } from "@bitwarden/common/types/guid";
-import { KeyService } from "@bitwarden/key-management";
+import { EncryptService, EncString, KeyService } from "@bitwarden/key-management";
 
 import { GeneratedPasswordHistory } from "./generated-password-history";
 

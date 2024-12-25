@@ -5,12 +5,16 @@ import { firstValueFrom } from "rxjs";
 
 import { NativeMessagingVersion } from "@bitwarden/common/enums";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { MessagingService } from "@bitwarden/common/platform/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { DialogService } from "@bitwarden/components";
-import { EncryptedString, EncString, SymmetricCryptoKey } from "@bitwarden/key-management";
+import {
+  EncryptService,
+  EncryptedString,
+  EncString,
+  SymmetricCryptoKey,
+} from "@bitwarden/key-management";
 
 import { VerifyNativeMessagingDialogComponent } from "../app/components/verify-native-messaging-dialog.component";
 import { DesktopAutofillSettingsService } from "../autofill/services/desktop-autofill-settings.service";

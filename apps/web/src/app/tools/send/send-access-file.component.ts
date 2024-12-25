@@ -2,16 +2,14 @@
 // @ts-strict-ignore
 import { Component, Input } from "@angular/core";
 
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncArrayBuffer } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { SendAccessRequest } from "@bitwarden/common/tools/send/models/request/send-access.request";
 import { SendAccessView } from "@bitwarden/common/tools/send/models/view/send-access.view";
 import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 import { ToastService } from "@bitwarden/components";
+import { SymmetricCryptoKey, EncArrayBuffer, EncryptService } from "@bitwarden/key-management";
 
 import { SharedModule } from "../../shared";
 

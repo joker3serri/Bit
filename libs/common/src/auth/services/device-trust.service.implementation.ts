@@ -3,14 +3,17 @@
 import { firstValueFrom, map, Observable } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
-import { KeyService, KeyGenerationService } from "@bitwarden/key-management";
+import {
+  KeyService,
+  KeyGenerationService,
+  EncryptService,
+  EncString,
+  SymmetricCryptoKey,
+} from "@bitwarden/key-management";
 
-import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { CryptoFunctionService } from "../../key-management/abstractions/crypto-function.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { LogService } from "../../platform/abstractions/log.service";
 import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";

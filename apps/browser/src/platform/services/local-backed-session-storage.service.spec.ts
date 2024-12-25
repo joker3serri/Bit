@@ -1,12 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { Lazy } from "@bitwarden/common/platform/misc/lazy";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { FakeStorageService, makeEncString } from "@bitwarden/common/spec";
+import { SymmetricCryptoKey, EncryptService } from "@bitwarden/key-management";
 
 import { LocalBackedSessionStorageService } from "./local-backed-session-storage.service";
 

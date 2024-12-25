@@ -2,11 +2,10 @@
 // @ts-strict-ignore
 import { PinServiceAbstraction } from "@bitwarden/auth/common";
 import { CryptoFunctionService } from "@bitwarden/common/key-management/abstractions/crypto-function.service";
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { Utils } from "@bitwarden/common/platform/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { KdfConfig, KdfConfigService, KdfType } from "@bitwarden/key-management";
+import { EncryptService, KdfConfig, KdfConfigService, KdfType } from "@bitwarden/key-management";
 
 import { BitwardenCsvExportType, BitwardenPasswordProtectedFileFormat } from "../types";
 export class BaseVaultExportService {

@@ -1,13 +1,15 @@
 import { mock } from "jest-mock-extended";
 import { firstValueFrom, of } from "rxjs";
 
-import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
-import { EncString } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
-import { KeyService } from "@bitwarden/key-management";
+import {
+  EncryptService,
+  EncString,
+  SymmetricCryptoKey,
+  KeyService,
+} from "@bitwarden/key-management";
 
 import { FakeStateProvider, awaitAsync, mockAccountServiceWith } from "../../../../../common/spec";
 

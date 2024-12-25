@@ -3,7 +3,7 @@ import { firstValueFrom, of } from "rxjs";
 
 import { EnvironmentService } from "@bitwarden/common/platform/abstractions/environment.service";
 import { SelfHostedEnvironment } from "@bitwarden/common/platform/services/default-environment.service";
-import { KeyService, KeyGenerationService } from "@bitwarden/key-management";
+import { KeyService, KeyGenerationService, EncryptService } from "@bitwarden/key-management";
 
 import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
@@ -14,7 +14,6 @@ import {
   awaitAsync,
   mockAccountServiceWith,
 } from "../../../../spec";
-import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { Utils } from "../../../platform/misc/utils";
 import { ContainerService } from "../../../platform/services/container.service";

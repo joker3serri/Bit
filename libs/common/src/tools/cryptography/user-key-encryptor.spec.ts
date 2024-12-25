@@ -1,8 +1,7 @@
 import { mock } from "jest-mock-extended";
 
-import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
+import { EncryptService, EncString, SymmetricCryptoKey } from "@bitwarden/key-management";
+
 import { CsprngArray } from "../../types/csprng";
 import { UserId } from "../../types/guid";
 import { UserKey } from "../../types/key";

@@ -3,12 +3,12 @@
 import { defaultIfEmpty, filter, firstValueFrom, fromEvent, map, Subject, takeUntil } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import { EncryptServiceImplementation, SymmetricCryptoKey } from "@bitwarden/key-management";
+
 import { Utils } from "../../../platform/misc/utils";
 import { Decryptable } from "../../interfaces/decryptable.interface";
 import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
 
-import { EncryptServiceImplementation } from "./encrypt.service.implementation";
 import { getClassInitializer } from "./get-class-initializer";
 
 // TTL (time to live) is not strictly required but avoids tying up memory resources if inactive

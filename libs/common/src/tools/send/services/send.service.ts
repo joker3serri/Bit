@@ -2,12 +2,16 @@
 // @ts-strict-ignore
 import { Observable, concatMap, distinctUntilChanged, firstValueFrom, map } from "rxjs";
 
-import { PBKDF2KdfConfig, KeyService, KeyGenerationService } from "@bitwarden/key-management";
+import {
+  PBKDF2KdfConfig,
+  KeyService,
+  KeyGenerationService,
+  EncArrayBuffer,
+  EncString,
+  SymmetricCryptoKey,
+  EncryptService,
+} from "@bitwarden/key-management";
 
-import { EncArrayBuffer } from "../../../../../key-management/src/cryptography/domain/enc-array-buffer";
-import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
-import { EncryptService } from "../../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../../platform/abstractions/i18n.service";
 import { Utils } from "../../../platform/misc/utils";
 import { UserId } from "../../../types/guid";

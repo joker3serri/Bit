@@ -1,11 +1,11 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { makeEncString, makeSymmetricCryptoKey, mockEnc, mockFromJson } from "../../../../spec";
-import { EncryptService } from "../../../platform/abstractions/encrypt.service";
+import { EncryptService } from "../../../../../key-management/src/cryptography/abstractions/encrypt.service";
 import {
   EncryptedString,
   EncString,
 } from "../../../../../key-management/src/cryptography/domain/enc-string";
+import { makeEncString, makeSymmetricCryptoKey, mockEnc, mockFromJson } from "../../../../spec";
 import { FolderData } from "../../models/data/folder.data";
 import { Folder } from "../../models/domain/folder";
 

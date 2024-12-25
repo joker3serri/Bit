@@ -2,11 +2,15 @@ import { mock } from "jest-mock-extended";
 import { BehaviorSubject, map, of } from "rxjs";
 
 import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
-
 import {
   CipherDecryptionKeys,
+  EncArrayBuffer,
+  EncryptService,
+  EncString,
   KeyService,
-} from "../../../../key-management/src/abstractions/key.service";
+  SymmetricCryptoKey,
+} from "@bitwarden/key-management";
+
 import { FakeAccountService, mockAccountServiceWith } from "../../../spec/fake-account-service";
 import { FakeStateProvider } from "../../../spec/fake-state-provider";
 import { makeStaticByteArray } from "../../../spec/utils";
@@ -16,13 +20,9 @@ import { AutofillSettingsService } from "../../autofill/services/autofill-settin
 import { DomainSettingsService } from "../../autofill/services/domain-settings.service";
 import { UriMatchStrategy } from "../../models/domain/domain-service";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
-import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { StateService } from "../../platform/abstractions/state.service";
 import { Utils } from "../../platform/misc/utils";
-import { EncArrayBuffer } from "../../../../key-management/src/cryptography/domain/enc-array-buffer";
-import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
 import { ContainerService } from "../../platform/services/container.service";
 import { CipherId, UserId } from "../../types/guid";
 import { CipherKey, OrgKey, UserKey } from "../../types/key";

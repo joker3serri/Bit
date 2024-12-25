@@ -1,8 +1,8 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import { EncryptService, SymmetricCryptoKey } from "@bitwarden/key-management";
+
 import { BulkEncryptService } from "../../abstractions/bulk-encrypt.service";
-import { EncryptService } from "../../abstractions/encrypt.service";
 import { Decryptable } from "../../interfaces/decryptable.interface";
 import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
 

@@ -1,9 +1,7 @@
-import { Decryptable } from "../interfaces/decryptable.interface";
-import { Encrypted } from "../interfaces/encrypted";
-import { InitializerMetadata } from "../interfaces/initializer-metadata.interface";
-import { EncArrayBuffer } from "../../../../key-management/src/cryptography/domain/enc-array-buffer";
-import { EncString } from "../../../../key-management/src/cryptography/domain/enc-string";
-import { SymmetricCryptoKey } from "../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import { Decryptable } from "@bitwarden/common/platform/interfaces/decryptable.interface";
+import { Encrypted } from "@bitwarden/common/platform/interfaces/encrypted";
+import { InitializerMetadata } from "@bitwarden/common/platform/interfaces/initializer-metadata.interface";
+import { SymmetricCryptoKey, EncString, EncArrayBuffer } from "@bitwarden/key-management";
 
 export abstract class EncryptService {
   abstract encrypt(plainValue: string | Uint8Array, key: SymmetricCryptoKey): Promise<EncString>;
