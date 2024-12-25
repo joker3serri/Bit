@@ -36,12 +36,6 @@ import { SsoComponentV1 } from "../auth/popup/sso-v1.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
-import { Fido2CipherRowV1Component } from "../autofill/popup/fido2/fido2-cipher-row-v1.component";
-import { Fido2CipherRowComponent } from "../autofill/popup/fido2/fido2-cipher-row.component";
-import { Fido2UseBrowserLinkV1Component } from "../autofill/popup/fido2/fido2-use-browser-link-v1.component";
-import { Fido2UseBrowserLinkComponent } from "../autofill/popup/fido2/fido2-use-browser-link.component";
-import { Fido2V1Component } from "../autofill/popup/fido2/fido2-v1.component";
-import { Fido2Component } from "../autofill/popup/fido2/fido2.component";
 import { AutofillComponent } from "../autofill/popup/settings/autofill.component";
 import { NotificationsSettingsComponent } from "../autofill/popup/settings/notifications.component";
 import { PremiumComponent } from "../billing/popup/settings/premium.component";
@@ -104,9 +98,6 @@ import "../platform/popup/locales";
     ScrollingModule,
     ServicesModule,
     DialogModule,
-    Fido2CipherRowComponent,
-    Fido2Component,
-    Fido2UseBrowserLinkComponent,
     FilePopoutCalloutComponent,
     AvatarModule,
     AccountComponent,
@@ -136,8 +127,6 @@ import "../platform/popup/locales";
     ColorPasswordCountPipe,
     CurrentTabComponent,
     EnvironmentComponent,
-    Fido2CipherRowV1Component,
-    Fido2UseBrowserLinkV1Component,
     FolderAddEditComponent,
     FoldersComponent,
     VaultFilterComponent,
@@ -166,7 +155,6 @@ import "../platform/popup/locales";
     ViewCustomFieldsComponent,
     RemovePasswordComponent,
     VaultSelectComponent,
-    Fido2V1Component,
     EnvironmentSelectorComponent,
   ],
   exports: [],
