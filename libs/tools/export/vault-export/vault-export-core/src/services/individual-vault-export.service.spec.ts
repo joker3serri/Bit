@@ -24,6 +24,7 @@ import {
   KdfConfigService,
   KeyService,
   KdfType,
+  EncString,
 } from "@bitwarden/key-management";
 
 import { BuildTestObject, GetUniqueString } from "../../../../../../common/spec";

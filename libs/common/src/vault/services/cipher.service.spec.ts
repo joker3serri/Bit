@@ -1,7 +1,7 @@
 import { mock } from "jest-mock-extended";
 import { BehaviorSubject, map, of } from "rxjs";
 
-import { BulkEncryptService } from "@bitwarden/common/platform/abstractions/bulk-encrypt.service";
+import { BulkEncryptService } from "@bitwarden/common/key-management/abstractions/bulk-encrypt.service";
 import {
   CipherDecryptionKeys,
   EncArrayBuffer,

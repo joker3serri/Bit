@@ -1,4 +1,4 @@
-import { makeStaticByteArray } from "../utils";
+import { makeStaticByteArray } from "@bitwarden/common/spec";
 
 describe("toEqualBuffer custom matcher", () => {
   it("matches identical ArrayBuffers", () => {

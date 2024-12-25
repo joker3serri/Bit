@@ -23,7 +23,6 @@ import {
   mockAccountServiceWith,
 } from "@bitwarden/common/spec";
 import { FakeActiveUserState, FakeSingleUserState } from "@bitwarden/common/spec/fake-state";
-import { EncryptService } from "@bitwarden/common/src/platform/abstractions/encrypt.service";
 import { LogService } from "@bitwarden/common/src/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/src/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/src/platform/abstractions/state.service";
@@ -32,6 +31,7 @@ import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { OrganizationId, UserId } from "@bitwarden/common/types/guid";
 import { UserKey, MasterKey } from "@bitwarden/common/types/key";
 import { VaultTimeoutStringType } from "@bitwarden/common/types/vault-timeout.type";
+import { EncryptService } from "@bitwarden/key-management";
 
 import { PinServiceAbstraction } from "../../../../auth/src/common/abstractions";
 import { FakeMasterPasswordService } from "../../../../common/src/auth/services/master-password/fake-master-password.service";

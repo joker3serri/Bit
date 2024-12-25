@@ -1,9 +1,10 @@
 import { mock } from "jest-mock-extended";
 
+import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
+import { DecryptParameters } from "@bitwarden/common/platform/models/domain/decrypt-parameters";
+import { SymmetricCryptoKey } from "@bitwarden/key-management";
+
 import { Utils } from "../../platform/misc/utils";
-import { PlatformUtilsService } from "../abstractions/platform-utils.service";
-import { DecryptParameters } from "../models/domain/decrypt-parameters";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 
 import { WebCryptoFunctionService } from "./web-crypto-function.service";
 
