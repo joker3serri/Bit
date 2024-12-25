@@ -10,11 +10,14 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/mod
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { AccountApiService } from "@bitwarden/common/auth/abstractions/account-api.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
-import { EncString } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { MasterKey, UserKey } from "@bitwarden/common/types/key";
-import { DEFAULT_KDF_CONFIG, KeyService } from "@bitwarden/key-management";
+import {
+  EncString,
+  SymmetricCryptoKey,
+  DEFAULT_KDF_CONFIG,
+  KeyService,
+} from "@bitwarden/key-management";
 
 import { AcceptOrganizationInviteService } from "../../../organization-invite/accept-organization.service";
 import { OrganizationInvite } from "../../../organization-invite/organization-invite";

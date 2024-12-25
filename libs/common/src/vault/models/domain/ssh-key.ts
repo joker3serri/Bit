@@ -3,9 +3,8 @@
 import { Jsonify } from "type-fest";
 
 import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
-
-import Domain from "../../../platform/models/domain/domain-base";
 import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import Domain from "../../../platform/models/domain/domain-base";
 import { SshKeyData } from "../data/ssh-key.data";
 import { SshKeyView } from "../view/ssh-key.view";
 

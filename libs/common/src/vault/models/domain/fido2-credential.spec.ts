@@ -1,6 +1,7 @@
-import { mockEnc } from "../../../../spec";
 import { EncryptionType } from "@bitwarden/key-management";
+
 import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
+import { mockEnc } from "../../../../spec";
 import { Fido2CredentialData } from "../data/fido2-credential.data";
 
 import { Fido2Credential } from "./fido2-credential";

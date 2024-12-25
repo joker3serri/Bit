@@ -3,10 +3,9 @@ import "module-alias/register";
 import { v4 as uuidv4 } from "uuid";
 
 import { Utils } from "@bitwarden/common/platform/misc/utils";
-import { EncString } from "@bitwarden/key-management";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { ConsoleLogService } from "@bitwarden/common/platform/services/console-log.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/platform/services/cryptography/encrypt.service.implementation";
+import { EncString, SymmetricCryptoKey } from "@bitwarden/key-management";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 
 import { DecryptedCommandData } from "../../src/models/native-messaging/decrypted-command-data";

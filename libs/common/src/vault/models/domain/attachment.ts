@@ -2,10 +2,10 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import { Utils } from "../../../platform/misc/utils";
-import Domain from "../../../platform/models/domain/domain-base";
 import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import { Utils } from "../../../platform/misc/utils";
+import Domain from "../../../platform/models/domain/domain-base";
 import { AttachmentData } from "../data/attachment.data";
 import { AttachmentView } from "../view/attachment.view";
 

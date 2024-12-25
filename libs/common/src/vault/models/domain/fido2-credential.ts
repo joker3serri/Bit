@@ -2,9 +2,9 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import Domain from "../../../platform/models/domain/domain-base";
 import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import Domain from "../../../platform/models/domain/domain-base";
 import { Fido2CredentialData } from "../data/fido2-credential.data";
 import { Fido2CredentialView } from "../view/fido2-credential.view";
 

@@ -2,9 +2,9 @@
 // @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
-import Domain from "../../../platform/models/domain/domain-base";
 import { EncString } from "../../../../../key-management/src/cryptography/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import Domain from "../../../platform/models/domain/domain-base";
 import { PasswordHistoryData } from "../data/password-history.data";
 import { PasswordHistoryView } from "../view/password-history.view";
 

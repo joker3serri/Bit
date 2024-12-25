@@ -1,6 +1,6 @@
-import { UserKey } from "../../../types/key";
 import { EncryptedString } from "../../../../../key-management/src/cryptography/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../../../key-management/src/cryptography/domain/symmetric-crypto-key";
+import { UserKey } from "../../../types/key";
 import { CRYPTO_DISK, CRYPTO_MEMORY, UserKeyDefinition } from "../../state";
 
 export const USER_EVER_HAD_USER_KEY = new UserKeyDefinition<boolean>(

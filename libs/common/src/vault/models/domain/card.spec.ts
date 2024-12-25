@@ -1,8 +1,8 @@
-import { mockEnc, mockFromJson } from "../../../../spec";
 import {
   EncryptedString,
   EncString,
 } from "../../../../../key-management/src/cryptography/domain/enc-string";
+import { mockEnc, mockFromJson } from "../../../../spec";
 import { CardData } from "../../../vault/models/data/card.data";
 import { Card } from "../../models/domain/card";
 

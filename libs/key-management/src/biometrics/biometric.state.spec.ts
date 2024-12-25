@@ -1,5 +1,6 @@
-import { EncryptedString } from "../cryptography/domain/enc-string";
 import { KeyDefinition, UserKeyDefinition } from "@bitwarden/common/platform/state";
+
+import { EncryptedString } from "../cryptography/domain/enc-string";
 
 import {
   BIOMETRIC_UNLOCK_ENABLED,

@@ -1,7 +1,7 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { BaseResponse } from "../../../../models/response/base.response";
 import { EncString } from "../../../../../../key-management/src/cryptography/domain/enc-string";
+import { BaseResponse } from "../../../../models/response/base.response";
 
 export interface IWebAuthnPrfDecryptionOptionServerResponse {
   EncryptedPrivateKey: string;
