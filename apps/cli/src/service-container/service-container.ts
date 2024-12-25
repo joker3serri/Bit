@@ -58,6 +58,7 @@ import {
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
 import { DefaultBillingAccountProfileStateService } from "@bitwarden/common/billing/services/account/billing-account-profile-state.service";
 import { ClientType } from "@bitwarden/common/enums";
+import { FallbackBulkEncryptService } from "@bitwarden/common/key-management/services/fallback-bulk-encrypt.service";
 import { ConfigApiServiceAbstraction } from "@bitwarden/common/platform/abstractions/config/config-api.service.abstraction";
 import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import {
@@ -78,7 +79,6 @@ import { AppIdService } from "@bitwarden/common/platform/services/app-id.service
 import { ConfigApiService } from "@bitwarden/common/platform/services/config/config-api.service";
 import { DefaultConfigService } from "@bitwarden/common/platform/services/config/default-config.service";
 import { ContainerService } from "@bitwarden/common/platform/services/container.service";
-import { FallbackBulkEncryptService } from "@bitwarden/common/platform/services/cryptography/fallback-bulk-encrypt.service";
 import { DefaultEnvironmentService } from "@bitwarden/common/platform/services/default-environment.service";
 import { FileUploadService } from "@bitwarden/common/platform/services/file-upload/file-upload.service";
 import { MemoryStorageService } from "@bitwarden/common/platform/services/memory-storage.service";
