@@ -10,7 +10,6 @@ import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import { StateService } from "@bitwarden/common/platform/abstractions/state.service";
-import { SymmetricCryptoKey } from "@bitwarden/key-management";
 import { makeEncString } from "@bitwarden/common/spec";
 import {
   FakeAccountService,
@@ -20,6 +19,7 @@ import { CsprngArray } from "@bitwarden/common/types/csprng";
 import { UserId } from "@bitwarden/common/types/guid";
 import { UserKey } from "@bitwarden/common/types/key";
 import {
+  SymmetricCryptoKey,
   KdfConfigService,
   BiometricStateService,
   KeyGenerationService,
