@@ -289,6 +289,7 @@ describe("LoginStrategy", () => {
       expect(result).toEqual({
         userId: userId,
         forcePasswordReset: ForceSetPasswordReason.AdminForcePasswordReset,
+        requiresDeviceVerification: false,
         resetMasterPassword: true,
         twoFactorProviders: null,
         captchaSiteKey: "",

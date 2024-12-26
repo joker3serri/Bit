@@ -10,6 +10,7 @@ import { ForceSetPasswordReason } from "@bitwarden/common/auth/models/domain/for
 import { PasswordTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { IdentityCaptchaResponse } from "@bitwarden/common/auth/models/response/identity-captcha.response";
+import { IdentityDeviceVerificationResponse } from "@bitwarden/common/auth/models/response/identity-device-verification.response";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { HashPurpose } from "@bitwarden/common/platform/enums";
@@ -105,6 +106,11 @@ export class PasswordLoginStrategy extends LoginStrategy {
     const [authResult, identityResponse] = await this.startLogIn();
 
     if (identityResponse instanceof IdentityCaptchaResponse) {
+      return authResult;
+    }
+
+    if (identityResponse instanceof IdentityDeviceVerificationResponse) {
+      authResult.requiresDeviceVerification = true;
       return authResult;
     }
 

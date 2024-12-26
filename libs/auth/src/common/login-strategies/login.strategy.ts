@@ -1,5 +1,3 @@
-// FIXME: Update this file to be type safe and remove this and next line
-// @ts-strict-ignore
 import { BehaviorSubject, filter, firstValueFrom, timeout } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -18,6 +16,7 @@ import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/ide
 import { UserApiTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/user-api-token.request";
 import { WebAuthnLoginTokenRequest } from "@bitwarden/common/auth/models/request/identity-token/webauthn-login-token.request";
 import { IdentityCaptchaResponse } from "@bitwarden/common/auth/models/response/identity-captcha.response";
+import { IdentityDeviceVerificationResponse } from "@bitwarden/common/auth/models/response/identity-device-verification.response";
 import { IdentityTokenResponse } from "@bitwarden/common/auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/auth/models/response/identity-two-factor.response";
 import { BillingAccountProfileStateService } from "@bitwarden/common/billing/abstractions/account/billing-account-profile-state.service";
@@ -51,10 +50,14 @@ import {
 import { UserDecryptionOptions } from "../models/domain/user-decryption-options";
 import { CacheData } from "../services/login-strategies/login-strategy.state";
 
-type IdentityResponse = IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse;
+type IdentityResponse =
+  | IdentityTokenResponse
+  | IdentityTwoFactorResponse
+  | IdentityCaptchaResponse
+  | IdentityDeviceVerificationResponse;
 
 export abstract class LoginStrategyData {
-  tokenRequest:
+  tokenRequest!:
     | UserApiTokenRequest
     | PasswordTokenRequest
     | SsoTokenRequest
@@ -100,7 +103,7 @@ export abstract class LoginStrategy {
 
   async logInTwoFactor(
     twoFactor: TokenTwoFactorRequest,
-    captchaResponse: string = null,
+    captchaResponse?: string,
   ): Promise<AuthResult> {
     const data = this.cache.value;
     data.tokenRequest.setTwoFactor(twoFactor);
@@ -121,6 +124,8 @@ export abstract class LoginStrategy {
       return [await this.processCaptchaResponse(response), response];
     } else if (response instanceof IdentityTokenResponse) {
       return [await this.processTokenResponse(response), response];
+    } else if (response instanceof IdentityDeviceVerificationResponse) {
+      return [await this.processDeviceVerificationResponse(response), response];
     }
 
     throw new Error("Invalid response object.");
@@ -175,9 +180,9 @@ export abstract class LoginStrategy {
     const userId = accountInformation.sub as UserId;
 
     await this.accountService.addAccount(userId, {
-      name: accountInformation.name,
-      email: accountInformation.email,
-      emailVerified: accountInformation.email_verified,
+      name: accountInformation.name as string,
+      email: accountInformation.email as string,
+      emailVerified: accountInformation.email_verified ?? false,
     });
 
     await this.accountService.switchAccount(userId);
@@ -230,7 +235,7 @@ export abstract class LoginStrategy {
     );
 
     await this.billingAccountProfileStateService.setHasPremium(
-      accountInformation.premium,
+      accountInformation.premium ?? false,
       false,
       userId,
     );
@@ -291,8 +296,10 @@ export abstract class LoginStrategy {
     try {
       const userKey = await this.keyService.getUserKeyWithLegacySupport(userId);
       const [publicKey, privateKey] = await this.keyService.makeKeyPair(userKey);
-      await this.apiService.postAccountKeys(new KeysRequest(publicKey, privateKey.encryptedString));
-      return privateKey.encryptedString;
+      await this.apiService.postAccountKeys(
+        new KeysRequest(publicKey, privateKey.encryptedString!),
+      );
+      return privateKey.encryptedString!;
     } catch (e) {
       this.logService.error(e);
     }
@@ -316,7 +323,7 @@ export abstract class LoginStrategy {
     await this.twoFactorService.setProviders(response);
     this.cache.next({ ...this.cache.value, captchaBypassToken: response.captchaToken ?? null });
     result.ssoEmail2FaSessionToken = response.ssoEmail2faSessionToken;
-    result.email = response.email;
+    result.email = response.email as string;
     return result;
   }
 
@@ -333,6 +340,14 @@ export abstract class LoginStrategy {
   private async processCaptchaResponse(response: IdentityCaptchaResponse): Promise<AuthResult> {
     const result = new AuthResult();
     result.captchaSiteKey = response.siteKey;
+    return result;
+  }
+
+  private async processDeviceVerificationResponse(
+    response: IdentityDeviceVerificationResponse,
+  ): Promise<AuthResult> {
+    const result = new AuthResult();
+    result.requiresDeviceVerification = !response.deviceVerified;
     return result;
   }
 
