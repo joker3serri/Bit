@@ -304,7 +304,7 @@ export default {
   parameters: {
     // Chromatic has been reporting diffs on these stories where the item rows are not all fully loaded.
     // Trying this out to test the theory that it's taking a screenshot too quickly.
-    chromatic: { delay: 1000 },
+    chromatic: { delay: 3000 },
   },
   decorators: [
     moduleMetadata({
