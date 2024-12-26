@@ -1,6 +1,9 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
+import { canAccessFeature } from "@bitwarden/angular/platform/guard/feature-flag.guard";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+
 import { ChangePasswordComponent } from "../change-password.component";
 import { TwoFactorSetupComponent } from "../two-factor/two-factor-setup.component";
 
@@ -34,6 +37,7 @@ const routes: Routes = [
         path: "device-management",
         component: DeviceManagementComponent,
         data: { titleId: "devices" },
+        canActivate: [canAccessFeature(FeatureFlag.DeviceManagement)],
       },
     ],
   },
