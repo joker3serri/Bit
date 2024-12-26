@@ -21,7 +21,23 @@ describe("InlineMenuFieldQualificationService", () => {
   });
 
   describe("isFieldForLoginForm", () => {
-    it("disqualifies totp fields", () => {
+    it("does not disqualify totp fields with flag set to true", () => {
+      inlineMenuFieldQualificationService["inlineMenuTotpFeatureFlag"] = true;
+      const field = mock<AutofillField>({
+        type: "text",
+        autoCompleteType: "one-time-code",
+        htmlName: "totp",
+        htmlID: "totp",
+        placeholder: "totp",
+      });
+
+      expect(inlineMenuFieldQualificationService.isFieldForLoginForm(field, pageDetails)).toBe(
+        true,
+      );
+    });
+
+    it("disqualify totp fields with flag set to false", () => {
+      inlineMenuFieldQualificationService["inlineMenuTotpFeatureFlag"] = false;
       const field = mock<AutofillField>({
         type: "text",
         autoCompleteType: "one-time-code",
@@ -408,7 +424,7 @@ describe("InlineMenuFieldQualificationService", () => {
               autoCompleteType: "new-password",
               htmlID: "user-password",
               htmlName: "user-password",
-              placeholder: "user-password",
+              placeholder: "new password",
             });
             pageDetails.fields = [field, passwordField];
 

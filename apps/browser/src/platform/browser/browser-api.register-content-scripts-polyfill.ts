@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 /**
  * MIT License
  *
@@ -43,23 +45,17 @@ function buildRegisterContentScriptsPolyfill() {
   function NestedProxy<T extends object>(target: T): T {
     return new Proxy(target, {
       get(target, prop) {
-        const propertyValue = target[prop as keyof T];
-
-        if (!propertyValue) {
+        if (!target[prop as keyof T]) {
           return;
         }
 
-        if (typeof propertyValue === "object") {
-          return NestedProxy<typeof propertyValue>(propertyValue);
-        }
-
-        if (typeof propertyValue !== "function") {
-          return propertyValue;
+        if (typeof target[prop as keyof T] !== "function") {
+          return NestedProxy(target[prop as keyof T] as object);
         }
 
         return (...arguments_: any[]) =>
           new Promise((resolve, reject) => {
-            propertyValue(...arguments_, (result: any) => {
+            (target[prop as keyof T] as CallableFunction)(...arguments_, (result: any) => {
               if (chrome.runtime.lastError) {
                 reject(new Error(chrome.runtime.lastError.message));
               } else {

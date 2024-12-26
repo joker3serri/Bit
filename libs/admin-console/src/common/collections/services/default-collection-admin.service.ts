@@ -1,19 +1,18 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
-import { CollectionData } from "@bitwarden/common/vault/models/data/collection.data";
-import { CollectionRequest } from "@bitwarden/common/vault/models/request/collection.request";
+import { KeyService } from "@bitwarden/key-management";
+
+import { CollectionAdminService, CollectionService } from "../abstractions";
 import {
+  CollectionData,
+  CollectionRequest,
   CollectionAccessDetailsResponse,
   CollectionDetailsResponse,
   CollectionResponse,
-} from "@bitwarden/common/vault/models/response/collection.response";
-
-import { CollectionAdminService } from "../abstractions";
-import {
   BulkCollectionAccessRequest,
   CollectionAccessSelectionView,
   CollectionAdminView,
@@ -22,7 +21,7 @@ import {
 export class DefaultCollectionAdminService implements CollectionAdminService {
   constructor(
     private apiService: ApiService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private collectionService: CollectionService,
   ) {}
@@ -112,7 +111,7 @@ export class DefaultCollectionAdminService implements CollectionAdminService {
     organizationId: string,
     collections: CollectionResponse[] | CollectionAccessDetailsResponse[],
   ): Promise<CollectionAdminView[]> {
-    const orgKey = await this.cryptoService.getOrgKey(organizationId);
+    const orgKey = await this.keyService.getOrgKey(organizationId);
 
     const promises = collections.map(async (c) => {
       const view = new CollectionAdminView();
@@ -141,7 +140,7 @@ export class DefaultCollectionAdminService implements CollectionAdminService {
     if (model.organizationId == null) {
       throw new Error("Collection has no organization id.");
     }
-    const key = await this.cryptoService.getOrgKey(model.organizationId);
+    const key = await this.keyService.getOrgKey(model.organizationId);
     if (key == null) {
       throw new Error("No key for this collection's organization.");
     }

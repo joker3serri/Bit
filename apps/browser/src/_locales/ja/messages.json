@@ -19,6 +19,18 @@
   "createAccount": {
     "message": "アカウントの作成"
   },
+  "newToBitwarden": {
+    "message": "Bitwarden は初めてですか？"
+  },
+  "logInWithPasskey": {
+    "message": "パスキーでログイン"
+  },
+  "useSingleSignOn": {
+    "message": "シングルサインオンを使用する"
+  },
+  "welcomeBack": {
+    "message": "ようこそ"
+  },
   "setAStrongPassword": {
     "message": "強力なパスワードを設定する"
   },
@@ -71,6 +83,15 @@
   "joinOrganization": {
     "message": "組織に参加"
   },
+  "joinOrganizationName": {
+    "message": "$ORGANIZATIONNAME$ に参加",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "マスターパスワードを設定して、この組織への参加を完了します。"
   },
@@ -97,6 +118,9 @@
   },
   "copyPassword": {
     "message": "パスワードをコピー"
+  },
+  "copyPassphrase": {
+    "message": "パスフレーズをコピー"
   },
   "copyNote": {
     "message": "メモをコピー"
@@ -128,6 +152,15 @@
   "copyLicenseNumber": {
     "message": "免許証番号をコピー"
   },
+  "copyPrivateKey": {
+    "message": "秘密鍵をコピー"
+  },
+  "copyPublicKey": {
+    "message": "公開鍵をコピー"
+  },
+  "copyFingerprint": {
+    "message": "フィンガープリントをコピー"
+  },
   "copyCustomField": {
     "message": "$FIELD$ をコピー",
     "placeholders": {
@@ -143,6 +176,10 @@
   "copyNotes": {
     "message": "メモをコピー"
   },
+  "fill": {
+    "message": "入力",
+    "description": "This string is used on the vault page to indicate autofilling. Horizontal space is limited in the interface here so try and keep translations as concise as possible."
+  },
   "autoFill": {
     "message": "自動入力"
   },
@@ -154,6 +191,13 @@
   },
   "autoFillIdentity": {
     "message": "自動入力 ID"
+  },
+  "fillVerificationCode": {
+    "message": "認証コードを入力"
+  },
+  "fillVerificationCodeAria": {
+    "message": "認証コードを入力",
+    "description": "Aria label for the heading displayed the inline menu for totp code autofill"
   },
   "generatePasswordCopied": {
     "message": "パスワードを生成 (コピー)"
@@ -381,7 +425,7 @@
   },
   "generator": {
     "message": "パス生成",
-    "description": "Short for 'Password Generator'."
+    "description": "Short for 'credential generator'."
   },
   "passGenInfo": {
     "message": "ログインのために強固なユニークパスワードを自動的に生成します。"
@@ -397,6 +441,9 @@
   },
   "generatePassword": {
     "message": "パスワードの自動生成"
+  },
+  "generatePassphrase": {
+    "message": "パスフレーズを生成"
   },
   "regeneratePassword": {
     "message": "パスワードの再生成"
@@ -559,6 +606,15 @@
   "launchWebsite": {
     "message": "ウェブサイトを開く"
   },
+  "launchWebsiteName": {
+    "message": "ウェブサイト $ITEMNAME$ を開く",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret item"
+      }
+    }
+  },
   "website": {
     "message": "ウェブサイト"
   },
@@ -591,9 +647,6 @@
   },
   "rateExtension": {
     "message": "拡張機能の評価"
-  },
-  "rateExtensionDesc": {
-    "message": "良いレビューで私たちを助けてください！"
   },
   "browserNotSupportClipboard": {
     "message": "お使いのブラウザはクリップボードへのコピーに対応していません。手動でコピーしてください"
@@ -804,6 +857,9 @@
   },
   "logIn": {
     "message": "ログイン"
+  },
+  "logInToBitwarden": {
+    "message": "Bitwarden にログイン"
   },
   "restartRegistration": {
     "message": "登録を再度始める"
@@ -1073,6 +1129,10 @@
     "message": "警告",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
+  "warningCapitalized": {
+    "message": "注意",
+    "description": "Warning (should maintain locale-relevant capitalization)"
+  },
   "confirmVaultExport": {
     "message": "保管庫のエクスポートの確認"
   },
@@ -1263,6 +1323,12 @@
   "enterVerificationCodeApp": {
     "message": "認証アプリに表示された6桁の認証コードを入力してください。"
   },
+  "authenticationTimeout": {
+    "message": "認証のタイムアウト"
+  },
+  "authenticationSessionTimedOut": {
+    "message": "認証セッションの有効期限が切れました。ログインプロセスを再開してください。"
+  },
   "enterVerificationCodeEmail": {
     "message": "$EMAIL$に送信された6桁の認証コードを入力してください。",
     "placeholders": {
@@ -1380,6 +1446,10 @@
   "baseUrl": {
     "message": "サーバー URL"
   },
+  "selfHostBaseUrl": {
+    "message": "自己ホスト型サーバー URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "apiUrl": {
     "message": "API サーバー URL"
   },
@@ -1407,6 +1477,12 @@
   },
   "showInlineMenuLabel": {
     "message": "フォームフィールドに自動入力の候補を表示する"
+  },
+  "showInlineMenuIdentitiesLabel": {
+    "message": "ID を候補として表示する"
+  },
+  "showInlineMenuCardsLabel": {
+    "message": "カードを候補として表示する"
   },
   "showInlineMenuOnIconSelectionLabel": {
     "message": "アイコンが選択されているときに候補を表示する"
@@ -1440,19 +1516,6 @@
   },
   "enableAutoFillOnPageLoadDesc": {
     "message": "ページ読み込み時にログインフォームを検出したとき、ログイン情報を自動入力します。"
-  },
-  "autofillOnPageLoadWarning": {
-    "message": "$OPENTAG$警告:$CLOSETAG$ 侵害された、または信頼できないウェブサイトは、ページ読み込み時の自動入力を悪用する可能性があります。",
-    "placeholders": {
-      "openTag": {
-        "content": "$1",
-        "example": "<b>"
-      },
-      "closeTag": {
-        "content": "$2",
-        "example": "</b>"
-      }
-    }
   },
   "experimentalFeature": {
     "message": "ウイルス感染したり信頼できないウェブサイトは、ページの読み込み時の自動入力を悪用できてしまいます。"
@@ -1711,6 +1774,9 @@
   "typeIdentity": {
     "message": "ID"
   },
+  "typeSshKey": {
+    "message": "SSH 鍵"
+  },
   "newItemHeader": {
     "message": "$TYPE$ を新規作成",
     "placeholders": {
@@ -1740,6 +1806,15 @@
   },
   "passwordHistory": {
     "message": "パスワードの履歴"
+  },
+  "generatorHistory": {
+    "message": "生成履歴"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "生成履歴を消去"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "続行すると、すべてのエントリは生成履歴から完全に削除されます。続行してもよろしいですか？"
   },
   "back": {
     "message": "戻る"
@@ -1776,6 +1851,9 @@
   },
   "secureNotes": {
     "message": "セキュアメモ"
+  },
+  "sshKeys": {
+    "message": "SSH 鍵"
   },
   "clear": {
     "message": "消去する",
@@ -1857,11 +1935,11 @@
   "clearHistory": {
     "message": "履歴を消去"
   },
-  "noPasswordsToShow": {
-    "message": "パスワードがありません"
+  "nothingToShow": {
+    "message": "表示するものがありません"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "最近パスワードを生成していません"
+  "nothingGeneratedRecently": {
+    "message": "最近生成したものはありません"
   },
   "remove": {
     "message": "削除"
@@ -2449,8 +2527,8 @@
     "message": "必要に応じて、ユーザーがこの Send にアクセスするためのパスワードを要求します。",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendPasswordDescV2": {
-    "message": "Send を表示するにはこのパスワードが必要になります。",
+  "sendPasswordDescV3": {
+    "message": "受信者がこの Send にアクセスするための任意のパスワードを追加します。",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
@@ -2498,8 +2576,26 @@
     "message": "Send を作成しました！",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendAvailability": {
-    "message": "Send は、次の $DAYS$ 日間はリンクを知っている人全員が利用できます。",
+  "sendExpiresInHoursSingle": {
+    "message": "Send は、次の1時間はリンクを知っている全員が利用できます。",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInHours": {
+    "message": "Send は、次の$HOURS$時間はリンクを知っている人全員が利用できます。",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "sendExpiresInDaysSingle": {
+    "message": "Send は、次の1日間はリンクを知っている全員が利用できます。",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInDays": {
+    "message": "Send は、次の$DAYS$日間はリンクを知っている人全員が利用できます。",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
     "placeholders": {
       "days": {
@@ -2628,6 +2724,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "あなたの組織では、マスターパスワードの設定を義務付けています。",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": " / $TOTAL$",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "認証が必要です",
@@ -2785,6 +2890,43 @@
   "generateUsername": {
     "message": "ユーザー名を生成"
   },
+  "generateEmail": {
+    "message": "メールアドレスを生成"
+  },
+  "spinboxBoundariesHint": {
+    "message": "値は $MIN$ から $MAX$ の間でなければなりません。",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
+  "passwordLengthRecommendationHint": {
+    "message": " 強力なパスワードを生成するには、 $RECOMMENDED$ 文字以上を使用してください。",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "passphraseNumWordsRecommendationHint": {
+    "message": " 強力なパスフレーズを生成するには、 $RECOMMENDED$ 単語以上を使用してください。",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "6"
+      }
+    }
+  },
   "usernameType": {
     "message": "ユーザー名の種類"
   },
@@ -2824,6 +2966,14 @@
   },
   "forwardedEmailDesc": {
     "message": "外部転送サービスを使用してメールエイリアスを生成します。"
+  },
+  "forwarderDomainName": {
+    "message": "メールアドレスのドメイン",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "選択したサービスでサポートされているドメインを選択してください",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ エラー: $ERRORMESSAGE$",
@@ -3024,11 +3174,26 @@
   "resendNotification": {
     "message": "通知を再送信する"
   },
-  "viewAllLoginOptions": {
+  "viewAllLogInOptions": {
+    "message": "すべてのログインオプションを表示"
+  },
+  "viewAllLoginOptionsV1": {
     "message": "すべてのログインオプションを表示"
   },
   "notificationSentDevice": {
     "message": "デバイスに通知を送信しました。"
+  },
+  "aNotificationWasSentToYourDevice": {
+    "message": "お使いのデバイスに通知が送信されました"
+  },
+  "makeSureYourAccountIsUnlockedAndTheFingerprintEtc": {
+    "message": "アカウントがロック解除されていることと、フィンガープリントフレーズが他の端末で一致していることを確認してください"
+  },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "リクエストが承認されると通知されます"
+  },
+  "needAnotherOptionV1": {
+    "message": "別の選択肢が必要ですか？"
   },
   "loginInitiated": {
     "message": "ログイン開始"
@@ -3120,14 +3285,20 @@
       }
     }
   },
-  "loggingInOn": {
-    "message": "ログイン先"
-  },
   "opensInANewWindow": {
     "message": "新しいウィンドウで開く"
   },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "このデバイスを記憶して今後のログインをシームレスにする"
+  },
   "deviceApprovalRequired": {
     "message": "デバイスの承認が必要です。以下から承認オプションを選択してください:"
+  },
+  "deviceApprovalRequiredV2": {
+    "message": "デバイスの承認が必要です"
+  },
+  "selectAnApprovalOptionBelow": {
+    "message": "以下の承認オプションを選択してください"
   },
   "rememberThisDevice": {
     "message": "このデバイスを記憶する"
@@ -3201,6 +3372,9 @@
   },
   "userEmailMissing": {
     "message": "ユーザーのメールアドレスがありません"
+  },
+  "activeUserEmailNotFoundLoggingYouOut": {
+    "message": "アクティブなユーザーメールアドレスが見つかりません。ログアウトします。"
   },
   "deviceTrusted": {
     "message": "信頼されたデバイス"
@@ -3409,6 +3583,14 @@
   "unlockAccountAria": {
     "message": "アカウントのロックを解除し、新しいウィンドウで開く",
     "description": "Screen reader text (aria-label) for unlock account button in overlay"
+  },
+  "totpCodeAria": {
+    "message": "時間ベースのワンタイムパスワード認証コード",
+    "description": "Aria label for the totp code displayed in the inline menu for autofill"
+  },
+  "totpSecondsSpanAria": {
+    "message": "現在の TOTP 有効期限が切れるまでの残り時間",
+    "description": "Aria label for the totp seconds displayed in the inline menu for autofill"
   },
   "fillCredentialsFor": {
     "message": "資格情報を入力：",
@@ -3638,6 +3820,9 @@
   "accessing": {
     "message": "アクセス中"
   },
+  "loggedInExclamation": {
+    "message": "ログインしました!"
+  },
   "passkeyNotCopied": {
     "message": "パスキーはコピーされません"
   },
@@ -3661,6 +3846,9 @@
   },
   "noMatchingLoginsForSite": {
     "message": "このサイトに一致するログイン情報がありません"
+  },
+  "searchSavePasskeyNewLogin": {
+    "message": "パスキーを検索または新しいログインとして保存"
   },
   "confirm": {
     "message": "確認"
@@ -4126,6 +4314,21 @@
   "filters": {
     "message": "フィルター"
   },
+  "filterVault": {
+    "message": "保管庫をフィルター"
+  },
+  "filterApplied": {
+    "message": "1 個のフィルタを適用しました"
+  },
+  "filterAppliedPlural": {
+    "message": "$COUNT$ 個のフィルタを適用しました",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "personalDetails": {
     "message": "個人情報"
   },
@@ -4449,8 +4652,14 @@
   "itemLocation": {
     "message": "アイテムの場所"
   },
+  "fileSend": {
+    "message": "ファイル Send"
+  },
   "fileSends": {
     "message": "ファイル Send"
+  },
+  "textSend": {
+    "message": "テキスト Send"
   },
   "textSends": {
     "message": "テキスト Send"
@@ -4467,11 +4676,38 @@
   "showNumberOfAutofillSuggestions": {
     "message": "拡張機能アイコンにログイン自動入力の候補の数を表示する"
   },
+  "showQuickCopyActions": {
+    "message": "保管庫にクイックコピー操作を表示する"
+  },
   "systemDefault": {
     "message": "システムのデフォルト"
   },
   "enterprisePolicyRequirementsApplied": {
     "message": "エンタープライズポリシー要件がこの設定に適用されました"
+  },
+  "sshPrivateKey": {
+    "message": "秘密鍵"
+  },
+  "sshPublicKey": {
+    "message": "公開鍵"
+  },
+  "sshFingerprint": {
+    "message": "フィンガープリント"
+  },
+  "sshKeyAlgorithm": {
+    "message": "鍵の種類"
+  },
+  "sshKeyAlgorithmED25519": {
+    "message": "ED25519"
+  },
+  "sshKeyAlgorithmRSA2048": {
+    "message": "RSA 2048-Bit"
+  },
+  "sshKeyAlgorithmRSA3072": {
+    "message": "RSA 3072-Bit"
+  },
+  "sshKeyAlgorithmRSA4096": {
+    "message": "RSA 4096-Bit"
   },
   "retry": {
     "message": "再試行"
@@ -4514,5 +4750,209 @@
   },
   "authenticating": {
     "message": "認証中"
+  },
+  "fillGeneratedPassword": {
+    "message": "生成したパスワードを入力",
+    "description": "Heading for the password generator within the inline menu"
+  },
+  "passwordRegenerated": {
+    "message": "パスワードを再生成しました",
+    "description": "Notification message for when a password has been regenerated"
+  },
+  "saveLoginToBitwarden": {
+    "message": "Bitwarden にログイン情報を保存しますか？",
+    "description": "Confirmation message for saving a login to Bitwarden"
+  },
+  "spaceCharacterDescriptor": {
+    "message": "スペース",
+    "description": "Represents the space key in screen reader content as a readable word"
+  },
+  "tildeCharacterDescriptor": {
+    "message": "チルダ",
+    "description": "Represents the ~ key in screen reader content as a readable word"
+  },
+  "backtickCharacterDescriptor": {
+    "message": "バッククォート",
+    "description": "Represents the ` key in screen reader content as a readable word"
+  },
+  "exclamationCharacterDescriptor": {
+    "message": "エクスクラメーションマーク",
+    "description": "Represents the ! key in screen reader content as a readable word"
+  },
+  "atSignCharacterDescriptor": {
+    "message": "アットマーク",
+    "description": "Represents the @ key in screen reader content as a readable word"
+  },
+  "hashSignCharacterDescriptor": {
+    "message": "ハッシュ記号",
+    "description": "Represents the # key in screen reader content as a readable word"
+  },
+  "dollarSignCharacterDescriptor": {
+    "message": "ドル記号",
+    "description": "Represents the $ key in screen reader content as a readable word"
+  },
+  "percentSignCharacterDescriptor": {
+    "message": "パーセント記号",
+    "description": "Represents the % key in screen reader content as a readable word"
+  },
+  "caretCharacterDescriptor": {
+    "message": "キャレット",
+    "description": "Represents the ^ key in screen reader content as a readable word"
+  },
+  "ampersandCharacterDescriptor": {
+    "message": "アンパサンド",
+    "description": "Represents the & key in screen reader content as a readable word"
+  },
+  "asteriskCharacterDescriptor": {
+    "message": "アスタリスク",
+    "description": "Represents the * key in screen reader content as a readable word"
+  },
+  "parenLeftCharacterDescriptor": {
+    "message": "左かっこ",
+    "description": "Represents the ( key in screen reader content as a readable word"
+  },
+  "parenRightCharacterDescriptor": {
+    "message": "右かっこ",
+    "description": "Represents the ) key in screen reader content as a readable word"
+  },
+  "hyphenCharacterDescriptor": {
+    "message": "アンダースコア",
+    "description": "Represents the _ key in screen reader content as a readable word"
+  },
+  "underscoreCharacterDescriptor": {
+    "message": "ハイフン",
+    "description": "Represents the - key in screen reader content as a readable word"
+  },
+  "plusCharacterDescriptor": {
+    "message": "プラス",
+    "description": "Represents the + key in screen reader content as a readable word"
+  },
+  "equalsCharacterDescriptor": {
+    "message": "イコール",
+    "description": "Represents the = key in screen reader content as a readable word"
+  },
+  "braceLeftCharacterDescriptor": {
+    "message": "左中かっこ",
+    "description": "Represents the { key in screen reader content as a readable word"
+  },
+  "braceRightCharacterDescriptor": {
+    "message": "右中かっこ",
+    "description": "Represents the } key in screen reader content as a readable word"
+  },
+  "bracketLeftCharacterDescriptor": {
+    "message": "左大かっこ",
+    "description": "Represents the [ key in screen reader content as a readable word"
+  },
+  "bracketRightCharacterDescriptor": {
+    "message": "右大かっこ",
+    "description": "Represents the ] key in screen reader content as a readable word"
+  },
+  "pipeCharacterDescriptor": {
+    "message": "パイプ",
+    "description": "Represents the | key in screen reader content as a readable word"
+  },
+  "backSlashCharacterDescriptor": {
+    "message": "バックスラッシュ",
+    "description": "Represents the back slash key in screen reader content as a readable word"
+  },
+  "colonCharacterDescriptor": {
+    "message": "コロン",
+    "description": "Represents the : key in screen reader content as a readable word"
+  },
+  "semicolonCharacterDescriptor": {
+    "message": "セミコロン",
+    "description": "Represents the ; key in screen reader content as a readable word"
+  },
+  "doubleQuoteCharacterDescriptor": {
+    "message": "ダブルクォート",
+    "description": "Represents the double quote key in screen reader content as a readable word"
+  },
+  "singleQuoteCharacterDescriptor": {
+    "message": "シングルクォート",
+    "description": "Represents the ' key in screen reader content as a readable word"
+  },
+  "lessThanCharacterDescriptor": {
+    "message": "小なり",
+    "description": "Represents the < key in screen reader content as a readable word"
+  },
+  "greaterThanCharacterDescriptor": {
+    "message": "大なり",
+    "description": "Represents the > key in screen reader content as a readable word"
+  },
+  "commaCharacterDescriptor": {
+    "message": "コンマ",
+    "description": "Represents the , key in screen reader content as a readable word"
+  },
+  "periodCharacterDescriptor": {
+    "message": "ピリオド",
+    "description": "Represents the . key in screen reader content as a readable word"
+  },
+  "questionCharacterDescriptor": {
+    "message": "クエスチョンマーク",
+    "description": "Represents the ? key in screen reader content as a readable word"
+  },
+  "forwardSlashCharacterDescriptor": {
+    "message": "スラッシュ",
+    "description": "Represents the / key in screen reader content as a readable word"
+  },
+  "lowercaseAriaLabel": {
+    "message": "小文字"
+  },
+  "uppercaseAriaLabel": {
+    "message": "大文字"
+  },
+  "generatedPassword": {
+    "message": "生成したパスワード"
+  },
+  "compactMode": {
+    "message": "コンパクトモード"
+  },
+  "beta": {
+    "message": "ベータ"
+  },
+  "importantNotice": {
+    "message": "Important notice"
+  },
+  "setupTwoStepLogin": {
+    "message": "Set up two-step login"
+  },
+  "newDeviceVerificationNoticeContentPage1": {
+    "message": "Bitwarden will send a code to your account email to verify logins from new devices starting in February 2025."
+  },
+  "newDeviceVerificationNoticeContentPage2": {
+    "message": "You can set up two-step login as an alternative way to protect your account or change your email to one you can access."
+  },
+  "remindMeLater": {
+    "message": "Remind me later"
+  },
+  "newDeviceVerificationNoticePageOneFormContent": {
+    "message": "Do you have reliable access to your email, $EMAIL$?",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "your_name@email.com"
+      }
+    }
+  },
+  "newDeviceVerificationNoticePageOneEmailAccessNo": {
+    "message": "No, I do not"
+  },
+  "newDeviceVerificationNoticePageOneEmailAccessYes": {
+    "message": "Yes, I can reliably access my email"
+  },
+  "turnOnTwoStepLogin": {
+    "message": "Turn on two-step login"
+  },
+  "changeAcctEmail": {
+    "message": "Change account email"
+  },
+  "extensionWidth": {
+    "message": "拡張機能の幅"
+  },
+  "wide": {
+    "message": "ワイド"
+  },
+  "extraWide": {
+    "message": "エクストラワイド"
   }
 }

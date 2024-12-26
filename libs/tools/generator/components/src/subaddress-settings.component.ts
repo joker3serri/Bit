@@ -1,6 +1,8 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BehaviorSubject, skip, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, map, skip, Subject, takeUntil, withLatestFrom } from "rxjs";
 
 import { AccountService } from "@bitwarden/common/auth/abstractions/account.service";
 import { UserId } from "@bitwarden/common/types/guid";
@@ -10,15 +12,12 @@ import {
   SubaddressGenerationOptions,
 } from "@bitwarden/generator-core";
 
-import { DependenciesModule } from "./dependencies";
 import { completeOnAccountSwitch } from "./util";
 
 /** Options group for plus-addressed emails */
 @Component({
-  standalone: true,
   selector: "tools-subaddress-settings",
   templateUrl: "subaddress-settings.component.html",
-  imports: [DependenciesModule],
 })
 export class SubaddressSettingsComponent implements OnInit, OnDestroy {
   /** Instantiates the component
@@ -63,7 +62,18 @@ export class SubaddressSettingsComponent implements OnInit, OnDestroy {
     // the first emission is the current value; subsequent emissions are updates
     settings.pipe(skip(1), takeUntil(this.destroyed$)).subscribe(this.onUpdated);
 
-    this.settings.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(settings);
+    this.saveSettings
+      .pipe(
+        withLatestFrom(this.settings.valueChanges),
+        map(([, settings]) => settings),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe(settings);
+  }
+
+  private saveSettings = new Subject<string>();
+  save(site: string = "component api call") {
+    this.saveSettings.next(site);
   }
 
   private singleUserId$() {
@@ -81,6 +91,7 @@ export class SubaddressSettingsComponent implements OnInit, OnDestroy {
 
   private readonly destroyed$ = new Subject<void>();
   ngOnDestroy(): void {
+    this.destroyed$.next();
     this.destroyed$.complete();
   }
 }

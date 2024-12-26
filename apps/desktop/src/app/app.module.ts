@@ -13,15 +13,15 @@ import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.compo
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { EnvironmentComponent } from "../auth/environment.component";
 import { HintComponent } from "../auth/hint.component";
-import { LockComponent } from "../auth/lock.component";
 import { LoginModule } from "../auth/login/login.module";
 import { RegisterComponent } from "../auth/register.component";
 import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
-import { SsoComponent } from "../auth/sso.component";
+import { SsoComponentV1 } from "../auth/sso-v1.component";
 import { TwoFactorOptionsComponent } from "../auth/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
+import { SshAgentService } from "../platform/services/ssh-agent.service";
 import { PremiumComponent } from "../vault/app/accounts/premium.component";
 import { AddEditCustomFieldsComponent } from "../vault/app/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/app/vault/add-edit.component";
@@ -77,7 +77,6 @@ import { SendComponent } from "./tools/send/send.component";
     FolderAddEditComponent,
     HeaderComponent,
     HintComponent,
-    LockComponent,
     NavComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
@@ -91,7 +90,7 @@ import { SendComponent } from "./tools/send/send.component";
     SetPasswordComponent,
     SettingsComponent,
     ShareComponent,
-    SsoComponent,
+    SsoComponentV1,
     TwoFactorComponent,
     TwoFactorOptionsComponent,
     UpdateTempPasswordComponent,
@@ -100,6 +99,7 @@ import { SendComponent } from "./tools/send/send.component";
     ViewComponent,
     ViewCustomFieldsComponent,
   ],
+  providers: [SshAgentService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,11 +1,13 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { firstValueFrom, map, Observable } from "rxjs";
 
 import { UserDecryptionOptionsServiceAbstraction } from "@bitwarden/auth/common";
 
+import { KeyService } from "../../../../key-management/src/abstractions/key.service";
 import { AppIdService } from "../../platform/abstractions/app-id.service";
 import { ConfigService } from "../../platform/abstractions/config/config.service";
 import { CryptoFunctionService } from "../../platform/abstractions/crypto-function.service";
-import { CryptoService } from "../../platform/abstractions/crypto.service";
 import { EncryptService } from "../../platform/abstractions/encrypt.service";
 import { I18nService } from "../../platform/abstractions/i18n.service";
 import { KeyGenerationService } from "../../platform/abstractions/key-generation.service";
@@ -64,7 +66,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
   constructor(
     private keyGenerationService: KeyGenerationService,
     private cryptoFunctionService: CryptoFunctionService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
     private encryptService: EncryptService,
     private appIdService: AppIdService,
     private devicesApiService: DevicesApiServiceAbstraction,
@@ -124,7 +126,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     }
 
     // Attempt to get user key
-    const userKey: UserKey = await this.cryptoService.getUserKey(userId);
+    const userKey: UserKey = await this.keyService.getUserKey(userId);
 
     // If user key is not found, throw error
     if (!userKey) {
@@ -175,6 +177,7 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     newUserKey: UserKey,
     masterPasswordHash: string,
   ): Promise<void> {
+    this.logService.info("[Device trust rotation] Rotating device trust...");
     if (!userId) {
       throw new Error("UserId is required. Cannot rotate device's trust.");
     }
@@ -183,11 +186,15 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     if (currentDeviceKey == null) {
       // If the current device doesn't have a device key available to it, then we can't
       // rotate any trust at all, so early return.
+      this.logService.info("[Device trust rotation] No device key available to rotate trust!");
       return;
     }
 
     // At this point of rotating their keys, they should still have their old user key in state
-    const oldUserKey = await firstValueFrom(this.cryptoService.userKey$(userId));
+    const oldUserKey = await firstValueFrom(this.keyService.userKey$(userId));
+    if (oldUserKey == newUserKey) {
+      this.logService.info("[Device trust rotation] Old user key is the same as the new user key.");
+    }
 
     const deviceIdentifier = await this.appIdService.getAppId();
     const secretVerificationRequest = new SecretVerificationRequest();
@@ -229,7 +236,12 @@ export class DeviceTrustService implements DeviceTrustServiceAbstraction {
     trustRequest.currentDevice = currentDeviceUpdateRequest;
     trustRequest.otherDevices = [];
 
+    this.logService.info(
+      "[Device trust rotation] Posting device trust update with current device:",
+      deviceIdentifier,
+    );
     await this.devicesApiService.updateTrust(trustRequest, deviceIdentifier);
+    this.logService.info("[Device trust rotation] Device trust update posted successfully.");
   }
 
   async getDeviceKey(userId: UserId): Promise<DeviceKey | null> {

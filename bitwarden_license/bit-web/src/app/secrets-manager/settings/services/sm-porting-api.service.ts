@@ -1,11 +1,13 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { CryptoService } from "@bitwarden/common/platform/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
 import { EncString } from "@bitwarden/common/platform/models/domain/enc-string";
+import { KeyService } from "@bitwarden/key-management";
 
 import { SecretsManagerImportError } from "../models/error/sm-import-error";
 import { SecretsManagerImportRequest } from "../models/requests/sm-import.request";
@@ -28,7 +30,7 @@ export class SecretsManagerPortingApiService {
   constructor(
     private apiService: ApiService,
     private encryptService: EncryptService,
-    private cryptoService: CryptoService,
+    private keyService: KeyService,
   ) {}
 
   async export(organizationId: string): Promise<string> {
@@ -76,7 +78,7 @@ export class SecretsManagerPortingApiService {
     const encryptedImport = new SecretsManagerImportRequest();
 
     try {
-      const orgKey = await this.cryptoService.getOrgKey(organizationId);
+      const orgKey = await this.keyService.getOrgKey(organizationId);
       encryptedImport.projects = [];
       encryptedImport.secrets = [];
 
@@ -116,7 +118,7 @@ export class SecretsManagerPortingApiService {
     organizationId: string,
     exportData: SecretsManagerExportResponse,
   ): Promise<SecretsManagerExport> {
-    const orgKey = await this.cryptoService.getOrgKey(organizationId);
+    const orgKey = await this.keyService.getOrgKey(organizationId);
     const decryptedExport = new SecretsManagerExport();
     decryptedExport.projects = [];
     decryptedExport.secrets = [];

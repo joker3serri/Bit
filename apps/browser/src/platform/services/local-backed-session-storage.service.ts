@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Subject } from "rxjs";
 
 import { EncryptService } from "@bitwarden/common/platform/abstractions/encrypt.service";
@@ -117,7 +119,11 @@ export class LocalBackedSessionStorageService
       return null;
     }
 
-    const valueJson = await this.encryptService.decryptToUtf8(new EncString(local), encKey);
+    const valueJson = await this.encryptService.decryptToUtf8(
+      new EncString(local),
+      encKey,
+      "browser-session-key",
+    );
     if (valueJson == null) {
       // error with decryption, value is lost, delete state and start over
       await this.localStorage.remove(this.sessionStorageKey(key));

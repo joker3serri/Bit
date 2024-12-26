@@ -1,3 +1,5 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Injectable } from "@angular/core";
 import {
   BehaviorSubject,
@@ -10,7 +12,11 @@ import {
   switchMap,
 } from "rxjs";
 
-import { CollectionAdminView } from "@bitwarden/admin-console/common";
+import {
+  CollectionAdminView,
+  CollectionService,
+  CollectionView,
+} from "@bitwarden/admin-console/common";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { PolicyType } from "@bitwarden/common/admin-console/enums";
@@ -18,11 +24,10 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { ActiveUserState, StateProvider } from "@bitwarden/common/platform/state";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/vault/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums";
 import { TreeNode } from "@bitwarden/common/vault/models/domain/tree-node";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { ServiceUtils } from "@bitwarden/common/vault/service-utils";
 import { COLLAPSED_GROUPINGS } from "@bitwarden/common/vault/services/key-state/collapsed-groupings.state";
@@ -53,9 +58,9 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
   protected _organizationFilter = new BehaviorSubject<Organization>(null);
 
   filteredFolders$: Observable<FolderView[]> = this.folderService.folderViews$.pipe(
-    combineLatestWith(this._organizationFilter),
-    switchMap(([folders, org]) => {
-      return this.filterFolders(folders, org);
+    combineLatestWith(this.cipherService.cipherViews$, this._organizationFilter),
+    switchMap(([folders, ciphers, org]) => {
+      return this.filterFolders(folders, ciphers, org);
     }),
   );
   folderTree$: Observable<TreeNode<FolderFilter>> = this.filteredFolders$.pipe(
@@ -229,6 +234,7 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
 
   protected async filterFolders(
     storedFolders: FolderView[],
+    ciphers: CipherView[],
     org?: Organization,
   ): Promise<FolderView[]> {
     // If no org or "My Vault" is selected, show all folders
@@ -237,7 +243,6 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     }
 
     // Otherwise, show only folders that have ciphers from the selected org and the "no folder" folder
-    const ciphers = await this.cipherService.getAllDecrypted();
     const orgCiphers = ciphers.filter((c) => c.organizationId == org?.id);
     return storedFolders.filter(
       (f) => orgCiphers.some((oc) => oc.folderId == f.id) || f.id == null,
@@ -302,6 +307,12 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
         name: this.i18nService.t("typeSecureNote"),
         type: CipherType.SecureNote,
         icon: "bwi-sticky-note",
+      },
+      {
+        id: "sshKey",
+        name: this.i18nService.t("typeSshKey"),
+        type: CipherType.SshKey,
+        icon: "bwi-key",
       },
     ];
 

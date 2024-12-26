@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": false,
     "pretty": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -34,6 +35,7 @@
       "@bitwarden/key-management": ["./libs/key-management/src"],
       "@bitwarden/platform": ["./libs/platform/src"],
       "@bitwarden/send-ui": ["./libs/tools/send/send-ui/src"],
+      "@bitwarden/tools-card": ["./libs/tools/card/src"],
       "@bitwarden/node/*": ["./libs/node/src/*"],
       "@bitwarden/web-vault/*": ["./apps/web/src/*"],
       "@bitwarden/vault": ["./libs/vault/src"],
@@ -42,6 +44,9 @@
     "plugins": [
       {
         "transform": "typescript-transform-paths"
+      },
+      {
+        "name": "typescript-strict-plugin"
       }
     ],
     "useDefineForClassFields": false
@@ -51,6 +56,7 @@
     "apps/browser/src/**/*",
     "libs/*/src/**/*",
     "libs/tools/send/**/src/**/*",
+    "libs/tools/card/src/**/*",
     "bitwarden_license/bit-web/src/**/*",
     "bitwarden_license/bit-common/src/**/*"
   ],

@@ -1,8 +1,10 @@
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { CollectionAccessDetailsResponse } from "@bitwarden/common/src/vault/models/response/collection.response";
-import { CollectionView } from "@bitwarden/common/vault/models/view/collection.view";
 
-import { CollectionAccessSelectionView } from "../models";
+import { CollectionAccessSelectionView } from "./collection-access-selection.view";
+import { CollectionAccessDetailsResponse } from "./collection.response";
+import { CollectionView } from "./collection.view";
 
 export const Unassigned = "unassigned";
 

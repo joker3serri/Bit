@@ -1,6 +1,10 @@
-import { CipherType } from "@bitwarden/common/vault/enums";
-
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
 import { AutofillFieldQualifierType } from "../enums/autofill-field.enums";
+import {
+  InlineMenuAccountCreationFieldTypes,
+  InlineMenuFillTypes,
+} from "../enums/autofill-overlay.enum";
 
 /**
  * Represents a single field that is collected from the page source and is potentially autofilled.
@@ -107,15 +111,17 @@ export default class AutofillField {
    */
   maxLength?: number | null;
 
+  dataSetValues?: string;
+
   rel?: string | null;
 
   checked?: boolean;
 
-  filledByCipherType?: CipherType;
-
-  showInlineMenuAccountCreation?: boolean;
+  inlineMenuFillType?: InlineMenuFillTypes;
 
   showPasskeys?: boolean;
 
   fieldQualifier?: AutofillFieldQualifierType;
+
+  accountCreationFieldType?: InlineMenuAccountCreationFieldTypes;
 }

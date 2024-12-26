@@ -1,4 +1,6 @@
-import { CollectionDetailsResponse } from "@bitwarden/common/vault/models/response/collection.response";
+// FIXME: Update this file to be type safe and remove this and next line
+// @ts-strict-ignore
+import { CollectionDetailsResponse } from "@bitwarden/admin-console/common";
 
 import { CollectionAccessSelectionView, CollectionAdminView } from "../models";
 

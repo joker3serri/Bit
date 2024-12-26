@@ -19,6 +19,18 @@
   "createAccount": {
     "message": "创建账户"
   },
+  "newToBitwarden": {
+    "message": "Bitwarden 新手吗？"
+  },
+  "logInWithPasskey": {
+    "message": "使用通行密钥登录"
+  },
+  "useSingleSignOn": {
+    "message": "使用单点登录"
+  },
+  "welcomeBack": {
+    "message": "欢迎回来"
+  },
   "setAStrongPassword": {
     "message": "设置强密码"
   },
@@ -71,6 +83,15 @@
   "joinOrganization": {
     "message": "加入组织"
   },
+  "joinOrganizationName": {
+    "message": "加入 $ORGANIZATIONNAME$",
+    "placeholders": {
+      "organizationName": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
   "finishJoiningThisOrganizationBySettingAMasterPassword": {
     "message": "通过设置主密码完成加入此组织。"
   },
@@ -97,6 +118,9 @@
   },
   "copyPassword": {
     "message": "复制密码"
+  },
+  "copyPassphrase": {
+    "message": "复制密码短语"
   },
   "copyNote": {
     "message": "复制备注"
@@ -128,6 +152,15 @@
   "copyLicenseNumber": {
     "message": "复制许可证号码"
   },
+  "copyPrivateKey": {
+    "message": "复制私钥"
+  },
+  "copyPublicKey": {
+    "message": "复制公钥"
+  },
+  "copyFingerprint": {
+    "message": "复制指纹"
+  },
   "copyCustomField": {
     "message": "复制 $FIELD$",
     "placeholders": {
@@ -143,6 +176,10 @@
   "copyNotes": {
     "message": "复制备注"
   },
+  "fill": {
+    "message": "填充",
+    "description": "This string is used on the vault page to indicate autofilling. Horizontal space is limited in the interface here so try and keep translations as concise as possible."
+  },
   "autoFill": {
     "message": "自动填充"
   },
@@ -154,6 +191,13 @@
   },
   "autoFillIdentity": {
     "message": "自动填充身份"
+  },
+  "fillVerificationCode": {
+    "message": "填写验证码"
+  },
+  "fillVerificationCodeAria": {
+    "message": "填写验证码",
+    "description": "Aria label for the heading displayed the inline menu for totp code autofill"
   },
   "generatePasswordCopied": {
     "message": "生成密码（并复制）"
@@ -308,7 +352,7 @@
     "message": "免费 Bitwarden 家庭"
   },
   "freeBitwardenFamiliesPageDesc": {
-    "message": "您有资格获得免费的 Bitwarden 家庭。立即在网页应用中兑换此优惠。"
+    "message": "您有资格获得免费的 Bitwarden 家庭。立即在网页 App 中兑换此优惠。"
   },
   "version": {
     "message": "版本"
@@ -381,7 +425,7 @@
   },
   "generator": {
     "message": "生成器",
-    "description": "Short for 'Password Generator'."
+    "description": "Short for 'credential generator'."
   },
   "passGenInfo": {
     "message": "自动生成安全可靠唯一的登录密码。"
@@ -397,6 +441,9 @@
   },
   "generatePassword": {
     "message": "生成密码"
+  },
+  "generatePassphrase": {
+    "message": "生成密码短语"
   },
   "regeneratePassword": {
     "message": "重新生成密码"
@@ -559,6 +606,15 @@
   "launchWebsite": {
     "message": "启动网站"
   },
+  "launchWebsiteName": {
+    "message": "前往 $ITEMNAME$ 的网站",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret item"
+      }
+    }
+  },
   "website": {
     "message": "网站"
   },
@@ -591,9 +647,6 @@
   },
   "rateExtension": {
     "message": "为本扩展打分"
-  },
-  "rateExtensionDesc": {
-    "message": "请给我们好评！"
   },
   "browserNotSupportClipboard": {
     "message": "您的浏览器不支持剪贴板简单复制，请手动复制。"
@@ -804,6 +857,9 @@
   },
   "logIn": {
     "message": "登录"
+  },
+  "logInToBitwarden": {
+    "message": "登录到 Bitwarden"
   },
   "restartRegistration": {
     "message": "重新开始注册"
@@ -1073,6 +1129,10 @@
     "message": "警告",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
+  "warningCapitalized": {
+    "message": "警告",
+    "description": "Warning (should maintain locale-relevant capitalization)"
+  },
   "confirmVaultExport": {
     "message": "确认密码库导出"
   },
@@ -1263,6 +1323,12 @@
   "enterVerificationCodeApp": {
     "message": "请输入您的验证器 App 中的 6 位数验证码。"
   },
+  "authenticationTimeout": {
+    "message": "身份验证超时"
+  },
+  "authenticationSessionTimedOut": {
+    "message": "身份验证会话超时。请重新启动登录过程。"
+  },
   "enterVerificationCodeEmail": {
     "message": "请输入发送给电子邮件 $EMAIL$ 的 6 位数验证码。",
     "placeholders": {
@@ -1380,6 +1446,10 @@
   "baseUrl": {
     "message": "服务器 URL"
   },
+  "selfHostBaseUrl": {
+    "message": "自托管服务器 URL",
+    "description": "Label for field requesting a self-hosted integration service URL"
+  },
   "apiUrl": {
     "message": "API 服务器 URL"
   },
@@ -1407,6 +1477,12 @@
   },
   "showInlineMenuLabel": {
     "message": "在表单字段中显示自动填充建议"
+  },
+  "showInlineMenuIdentitiesLabel": {
+    "message": "将身份显示为建议"
+  },
+  "showInlineMenuCardsLabel": {
+    "message": "将支付卡显示为建议"
   },
   "showInlineMenuOnIconSelectionLabel": {
     "message": "选择图标时显示建议"
@@ -1440,19 +1516,6 @@
   },
   "enableAutoFillOnPageLoadDesc": {
     "message": "网页加载时如果检测到登录表单，则执行自动填充。"
-  },
-  "autofillOnPageLoadWarning": {
-    "message": "$OPENTAG$警告：$CLOSETAG$不完整或不信任的网站可以利用页面加载时的自动填充功能。",
-    "placeholders": {
-      "openTag": {
-        "content": "$1",
-        "example": "<b>"
-      },
-      "closeTag": {
-        "content": "$2",
-        "example": "</b>"
-      }
-    }
   },
   "experimentalFeature": {
     "message": "不完整或不信任的网站可以利用页面加载时的自动填充功能。"
@@ -1711,6 +1774,9 @@
   "typeIdentity": {
     "message": "身份"
   },
+  "typeSshKey": {
+    "message": "SSH 密钥"
+  },
   "newItemHeader": {
     "message": "新增 $TYPE$",
     "placeholders": {
@@ -1740,6 +1806,15 @@
   },
   "passwordHistory": {
     "message": "密码历史记录"
+  },
+  "generatorHistory": {
+    "message": "生成器历史记录"
+  },
+  "clearGeneratorHistoryTitle": {
+    "message": "清除生成器历史记录"
+  },
+  "cleargGeneratorHistoryDescription": {
+    "message": "若继续，所有条目将从生成器历史记录中永久删除。确定要继续吗？"
   },
   "back": {
     "message": "后退"
@@ -1776,6 +1851,9 @@
   },
   "secureNotes": {
     "message": "安全笔记"
+  },
+  "sshKeys": {
+    "message": "SSH 密钥"
   },
   "clear": {
     "message": "清除",
@@ -1857,11 +1935,11 @@
   "clearHistory": {
     "message": "清除历史记录"
   },
-  "noPasswordsToShow": {
-    "message": "没有可显示的密码"
+  "nothingToShow": {
+    "message": "没有可显示的内容"
   },
-  "noRecentlyGeneratedPassword": {
-    "message": "您最近还没有生成过密码"
+  "nothingGeneratedRecently": {
+    "message": "您最近没有生成任何内容"
   },
   "remove": {
     "message": "移除"
@@ -2290,7 +2368,7 @@
     "message": "限制查看"
   },
   "limitSendViewsHint": {
-    "message": "在达到限额后，任何人无法查看此 Send。",
+    "message": "达到限额后，任何人无法查看此 Send。",
     "description": "Displayed under the limit views field on Send"
   },
   "limitSendViewsCount": {
@@ -2449,8 +2527,8 @@
     "message": "可选，用户需要提供密码才能访问此 Send。",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendPasswordDescV2": {
-    "message": "需要此密码才能查看此 Send。",
+  "sendPasswordDescV3": {
+    "message": "添加一个用于收件人访问此 Send 的可选密码。",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
@@ -2498,8 +2576,26 @@
     "message": "Send 创建成功！",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendAvailability": {
-    "message": "在接下来的 $DAYS$ 天内，任何拥有链接的人都可以访问此 Send。",
+  "sendExpiresInHoursSingle": {
+    "message": "在接下来的 1 小时内，任何人都可以通过链接访问此 Send。",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInHours": {
+    "message": "在接下来的 $HOURS$ 小时内，任何人都可以通过链接访问此 Send。",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "sendExpiresInDaysSingle": {
+    "message": "在接下来的 1 天内，任何人都可以通过链接访问此 Send。",
+    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendExpiresInDays": {
+    "message": "在接下来的 $DAYS$ 天内，任何人都可以通过链接访问此 Send。",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated.",
     "placeholders": {
       "days": {
@@ -2628,6 +2724,15 @@
   "orgRequiresYouToSetPassword": {
     "message": "您的组织要求您设置主密码。",
     "description": "Used as a card title description on the set password page to explain why the user is there"
+  },
+  "cardMetrics": {
+    "message": "$TOTAL$ 不足",
+    "placeholders": {
+      "total": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "verificationRequired": {
     "message": "需要验证",
@@ -2785,6 +2890,43 @@
   "generateUsername": {
     "message": "生成用户名"
   },
+  "generateEmail": {
+    "message": "生成电子邮件地址"
+  },
+  "spinboxBoundariesHint": {
+    "message": "值必须在 $MIN$ 和 $MAX$ 之间。",
+    "description": "Explains spin box minimum and maximum values to the user",
+    "placeholders": {
+      "min": {
+        "content": "$1",
+        "example": "8"
+      },
+      "max": {
+        "content": "$2",
+        "example": "128"
+      }
+    }
+  },
+  "passwordLengthRecommendationHint": {
+    "message": " 使用 $RECOMMENDED$ 或更多个字符生成强大的密码。",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "passphraseNumWordsRecommendationHint": {
+    "message": " 使用 $RECOMMENDED$ 或更多个单词生成强大的密码短语。",
+    "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
+    "placeholders": {
+      "recommended": {
+        "content": "$1",
+        "example": "6"
+      }
+    }
+  },
   "usernameType": {
     "message": "用户名类型"
   },
@@ -2824,6 +2966,14 @@
   },
   "forwardedEmailDesc": {
     "message": "使用外部转发服务生成一个电子邮件别名。"
+  },
+  "forwarderDomainName": {
+    "message": "电子邮件域名",
+    "description": "Labels the domain name email forwarder service option"
+  },
+  "forwarderDomainNameHint": {
+    "message": "选择一个所选服务支持的域名",
+    "description": "Guidance provided for email forwarding services that support multiple email domains."
   },
   "forwarderError": {
     "message": "$SERVICENAME$ 错误：$ERRORMESSAGE$",
@@ -3024,11 +3174,26 @@
   "resendNotification": {
     "message": "重新发送通知"
   },
-  "viewAllLoginOptions": {
+  "viewAllLogInOptions": {
+    "message": "查看所有登录选项"
+  },
+  "viewAllLoginOptionsV1": {
     "message": "查看所有登录选项"
   },
   "notificationSentDevice": {
     "message": "通知已发送到您的设备。"
+  },
+  "aNotificationWasSentToYourDevice": {
+    "message": "通知已发送到您的设备"
+  },
+  "makeSureYourAccountIsUnlockedAndTheFingerprintEtc": {
+    "message": "确保您的账户已解锁，并且指纹短语与其他设备上的相匹配。"
+  },
+  "youWillBeNotifiedOnceTheRequestIsApproved": {
+    "message": "请求获得批准后，您将收到通知"
+  },
+  "needAnotherOptionV1": {
+    "message": "需要其他选项吗？"
   },
   "loginInitiated": {
     "message": "登录已发起"
@@ -3120,14 +3285,20 @@
       }
     }
   },
-  "loggingInOn": {
-    "message": "登录到"
-  },
   "opensInANewWindow": {
     "message": "在新窗口中打开"
   },
+  "rememberThisDeviceToMakeFutureLoginsSeamless": {
+    "message": "记住此设备以便将来无缝登录"
+  },
   "deviceApprovalRequired": {
     "message": "需要设备批准。请在下面选择一个批准选项："
+  },
+  "deviceApprovalRequiredV2": {
+    "message": "需要设备批准"
+  },
+  "selectAnApprovalOptionBelow": {
+    "message": "在下方选择一个批准选项"
   },
   "rememberThisDevice": {
     "message": "记住此设备"
@@ -3201,6 +3372,9 @@
   },
   "userEmailMissing": {
     "message": "缺少用户电子邮件"
+  },
+  "activeUserEmailNotFoundLoggingYouOut": {
+    "message": "未找到活动的用户电子邮件。您将被注销。"
   },
   "deviceTrusted": {
     "message": "设备已信任"
@@ -3314,7 +3488,7 @@
     "message": "清除全部"
   },
   "plusNMore": {
-    "message": "+ $QUANTITY$ more",
+    "message": "还有 $QUANTITY$ 个",
     "placeholders": {
       "quantity": {
         "content": "$1",
@@ -3380,7 +3554,7 @@
     "message": "切换侧边导航"
   },
   "skipToContent": {
-    "message": "跳转到正文"
+    "message": "跳转到内容"
   },
   "bitwardenOverlayButton": {
     "message": "Bitwarden 自动填充菜单按钮",
@@ -3409,6 +3583,14 @@
   "unlockAccountAria": {
     "message": "解锁您的账户（在新窗口中打开）",
     "description": "Screen reader text (aria-label) for unlock account button in overlay"
+  },
+  "totpCodeAria": {
+    "message": "基于时间的一次性密码验证码",
+    "description": "Aria label for the totp code displayed in the inline menu for autofill"
+  },
+  "totpSecondsSpanAria": {
+    "message": "TOTP 到期前剩余时间",
+    "description": "Aria label for the totp seconds displayed in the inline menu for autofill"
   },
   "fillCredentialsFor": {
     "message": "为其填写凭据",
@@ -3541,7 +3723,7 @@
     }
   },
   "duoHealthCheckResultsInNullAuthUrlError": {
-    "message": "与 Duo 服务连接时出错。请使用不同的两步登录方式或联系 Duo 寻求帮助。"
+    "message": "与 Duo 服务连接时出错。请使用不同的两步登录方式或联系 Duo 获取协助。"
   },
   "launchDuoAndFollowStepsToFinishLoggingIn": {
     "message": "启动 DUO 并按照步骤完成登录。"
@@ -3636,7 +3818,10 @@
     "message": "通行密钥"
   },
   "accessing": {
-    "message": "Accessing"
+    "message": "正在访问"
+  },
+  "loggedInExclamation": {
+    "message": "已登录！"
   },
   "passkeyNotCopied": {
     "message": "通行密钥不会被复制"
@@ -3661,6 +3846,9 @@
   },
   "noMatchingLoginsForSite": {
     "message": "此站点没有匹配的登录项目"
+  },
+  "searchSavePasskeyNewLogin": {
+    "message": "搜索或将通行密钥保存为一个新的登录"
   },
   "confirm": {
     "message": "确认"
@@ -4126,6 +4314,21 @@
   "filters": {
     "message": "筛选"
   },
+  "filterVault": {
+    "message": "密码库筛选"
+  },
+  "filterApplied": {
+    "message": "已应用一个筛选"
+  },
+  "filterAppliedPlural": {
+    "message": "已应用 $COUNT$ 个筛选",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "personalDetails": {
     "message": "个人详细信息"
   },
@@ -4295,7 +4498,7 @@
     "message": "对于如密码之类的敏感数据，请使用隐藏型字段"
   },
   "checkBoxHelpText": {
-    "message": "如果您想自动勾选表单复选框（例如记住电子邮件地址），请使用复选框"
+    "message": "如果您想自动勾选表单复选框（例如记住电子邮件地址），请使用复选框型"
   },
   "linkedHelpText": {
     "message": "当您处理特定网站的自动填充问题时，请使用链接型字段。"
@@ -4449,8 +4652,14 @@
   "itemLocation": {
     "message": "项目位置"
   },
+  "fileSend": {
+    "message": "文件 Send"
+  },
   "fileSends": {
     "message": "文件 Send"
+  },
+  "textSend": {
+    "message": "文本 Send"
   },
   "textSends": {
     "message": "文本 Send"
@@ -4467,11 +4676,38 @@
   "showNumberOfAutofillSuggestions": {
     "message": "在扩展图标上显示自动填充建议的登录的数量"
   },
+  "showQuickCopyActions": {
+    "message": "在密码库上显示快速复制操作"
+  },
   "systemDefault": {
     "message": "跟随系统"
   },
   "enterprisePolicyRequirementsApplied": {
     "message": "企业策略要求已应用于此设置"
+  },
+  "sshPrivateKey": {
+    "message": "私钥"
+  },
+  "sshPublicKey": {
+    "message": "公钥"
+  },
+  "sshFingerprint": {
+    "message": "指纹"
+  },
+  "sshKeyAlgorithm": {
+    "message": "密钥类型"
+  },
+  "sshKeyAlgorithmED25519": {
+    "message": "ED25519"
+  },
+  "sshKeyAlgorithmRSA2048": {
+    "message": "RSA 2048-Bit"
+  },
+  "sshKeyAlgorithmRSA3072": {
+    "message": "RSA 3072-Bit"
+  },
+  "sshKeyAlgorithmRSA4096": {
+    "message": "RSA 4096-Bit"
   },
   "retry": {
     "message": "重试"
@@ -4514,5 +4750,209 @@
   },
   "authenticating": {
     "message": "正在验证"
+  },
+  "fillGeneratedPassword": {
+    "message": "填充已生成的密码",
+    "description": "Heading for the password generator within the inline menu"
+  },
+  "passwordRegenerated": {
+    "message": "密码已重新生成",
+    "description": "Notification message for when a password has been regenerated"
+  },
+  "saveLoginToBitwarden": {
+    "message": "将登录保存到 Bitwarden 吗？",
+    "description": "Confirmation message for saving a login to Bitwarden"
+  },
+  "spaceCharacterDescriptor": {
+    "message": "空格",
+    "description": "Represents the space key in screen reader content as a readable word"
+  },
+  "tildeCharacterDescriptor": {
+    "message": "波浪号",
+    "description": "Represents the ~ key in screen reader content as a readable word"
+  },
+  "backtickCharacterDescriptor": {
+    "message": "反引号",
+    "description": "Represents the ` key in screen reader content as a readable word"
+  },
+  "exclamationCharacterDescriptor": {
+    "message": "感叹号",
+    "description": "Represents the ! key in screen reader content as a readable word"
+  },
+  "atSignCharacterDescriptor": {
+    "message": "艾特号",
+    "description": "Represents the @ key in screen reader content as a readable word"
+  },
+  "hashSignCharacterDescriptor": {
+    "message": "井号",
+    "description": "Represents the # key in screen reader content as a readable word"
+  },
+  "dollarSignCharacterDescriptor": {
+    "message": "美元符号",
+    "description": "Represents the $ key in screen reader content as a readable word"
+  },
+  "percentSignCharacterDescriptor": {
+    "message": "百分号",
+    "description": "Represents the % key in screen reader content as a readable word"
+  },
+  "caretCharacterDescriptor": {
+    "message": "插入符",
+    "description": "Represents the ^ key in screen reader content as a readable word"
+  },
+  "ampersandCharacterDescriptor": {
+    "message": "与和符",
+    "description": "Represents the & key in screen reader content as a readable word"
+  },
+  "asteriskCharacterDescriptor": {
+    "message": "星号",
+    "description": "Represents the * key in screen reader content as a readable word"
+  },
+  "parenLeftCharacterDescriptor": {
+    "message": "左括号",
+    "description": "Represents the ( key in screen reader content as a readable word"
+  },
+  "parenRightCharacterDescriptor": {
+    "message": "右括号",
+    "description": "Represents the ) key in screen reader content as a readable word"
+  },
+  "hyphenCharacterDescriptor": {
+    "message": "下划线",
+    "description": "Represents the _ key in screen reader content as a readable word"
+  },
+  "underscoreCharacterDescriptor": {
+    "message": "连字符",
+    "description": "Represents the - key in screen reader content as a readable word"
+  },
+  "plusCharacterDescriptor": {
+    "message": "加号",
+    "description": "Represents the + key in screen reader content as a readable word"
+  },
+  "equalsCharacterDescriptor": {
+    "message": "等号",
+    "description": "Represents the = key in screen reader content as a readable word"
+  },
+  "braceLeftCharacterDescriptor": {
+    "message": "左大括号",
+    "description": "Represents the { key in screen reader content as a readable word"
+  },
+  "braceRightCharacterDescriptor": {
+    "message": "右大括号",
+    "description": "Represents the } key in screen reader content as a readable word"
+  },
+  "bracketLeftCharacterDescriptor": {
+    "message": "左中括号",
+    "description": "Represents the [ key in screen reader content as a readable word"
+  },
+  "bracketRightCharacterDescriptor": {
+    "message": "右中括号",
+    "description": "Represents the ] key in screen reader content as a readable word"
+  },
+  "pipeCharacterDescriptor": {
+    "message": "竖线",
+    "description": "Represents the | key in screen reader content as a readable word"
+  },
+  "backSlashCharacterDescriptor": {
+    "message": "反斜杠",
+    "description": "Represents the back slash key in screen reader content as a readable word"
+  },
+  "colonCharacterDescriptor": {
+    "message": "冒号",
+    "description": "Represents the : key in screen reader content as a readable word"
+  },
+  "semicolonCharacterDescriptor": {
+    "message": "分号",
+    "description": "Represents the ; key in screen reader content as a readable word"
+  },
+  "doubleQuoteCharacterDescriptor": {
+    "message": "双引号",
+    "description": "Represents the double quote key in screen reader content as a readable word"
+  },
+  "singleQuoteCharacterDescriptor": {
+    "message": "单引号",
+    "description": "Represents the ' key in screen reader content as a readable word"
+  },
+  "lessThanCharacterDescriptor": {
+    "message": "小于号",
+    "description": "Represents the < key in screen reader content as a readable word"
+  },
+  "greaterThanCharacterDescriptor": {
+    "message": "大于号",
+    "description": "Represents the > key in screen reader content as a readable word"
+  },
+  "commaCharacterDescriptor": {
+    "message": "逗号",
+    "description": "Represents the , key in screen reader content as a readable word"
+  },
+  "periodCharacterDescriptor": {
+    "message": "句号",
+    "description": "Represents the . key in screen reader content as a readable word"
+  },
+  "questionCharacterDescriptor": {
+    "message": "问号",
+    "description": "Represents the ? key in screen reader content as a readable word"
+  },
+  "forwardSlashCharacterDescriptor": {
+    "message": "正斜杠",
+    "description": "Represents the / key in screen reader content as a readable word"
+  },
+  "lowercaseAriaLabel": {
+    "message": "小写"
+  },
+  "uppercaseAriaLabel": {
+    "message": "大写"
+  },
+  "generatedPassword": {
+    "message": "生成了密码"
+  },
+  "compactMode": {
+    "message": "紧凑模式"
+  },
+  "beta": {
+    "message": "Beta 版"
+  },
+  "importantNotice": {
+    "message": "重要通知"
+  },
+  "setupTwoStepLogin": {
+    "message": "设置两步登录"
+  },
+  "newDeviceVerificationNoticeContentPage1": {
+    "message": "从 2025 年 02 月开始，Bitwarden 将向您的账户电子邮件地址发送一个代码，以验证从新设备上的登录。"
+  },
+  "newDeviceVerificationNoticeContentPage2": {
+    "message": "您可以设置两步登录作为保护账户的替代方法，或将您的电子邮件地址更改为您可以访问的电子邮件地址。"
+  },
+  "remindMeLater": {
+    "message": "稍后提醒我"
+  },
+  "newDeviceVerificationNoticePageOneFormContent": {
+    "message": "您可以可靠地访问您的电子邮件地址 $EMAIL$ 吗？",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "your_name@email.com"
+      }
+    }
+  },
+  "newDeviceVerificationNoticePageOneEmailAccessNo": {
+    "message": "不，我不能"
+  },
+  "newDeviceVerificationNoticePageOneEmailAccessYes": {
+    "message": "是的，我可以可靠地访问我的电子邮件地址"
+  },
+  "turnOnTwoStepLogin": {
+    "message": "开启两步登录"
+  },
+  "changeAcctEmail": {
+    "message": "更改账户电子邮件"
+  },
+  "extensionWidth": {
+    "message": "扩展宽度"
+  },
+  "wide": {
+    "message": "宽"
+  },
+  "extraWide": {
+    "message": "超宽"
   }
 }
