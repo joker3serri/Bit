@@ -60,6 +60,7 @@ export class AdjustPaymentDialogV2Component implements OnInit {
     this.dialogHeader = this.i18nService.t(key);
     this.initialPaymentMethod = this.dialogParams.initialPaymentMethod ?? PaymentMethodType.Card;
     this.organizationId = this.dialogParams.organizationId;
+    this.productTier = this.dialogParams.productTier;
   }
 
   ngOnInit(): void {
