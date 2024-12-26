@@ -32,7 +32,7 @@ export abstract class BaseClientsComponent implements OnInit, OnDestroy {
 
   private searching = false;
   protected scrolled = false;
-  protected pageSize = 10;
+  protected pageSize = 100;
   private pagedClientsCount = 0;
   protected selection = new SelectionModel<string>(true, []);
 
