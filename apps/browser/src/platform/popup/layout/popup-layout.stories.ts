@@ -54,7 +54,7 @@ class ExtensionContainerComponent {}
 
           <ng-container slot="end">
             <bit-item-action>
-              <button type="button" bitBadge variant="primary">Auto-fill</button>
+              <button type="button" bitBadge variant="primary">Fill</button>
             </bit-item-action>
             <bit-item-action>
               <button type="button" bitIconButton="bwi-clone" aria-label="Copy item"></button>
@@ -468,13 +468,13 @@ export const CompactMode: Story = {
 
     await waitFor(async () => {
       const canvas = within(canvasEl);
-      const allBadges = canvas.getAllByTitle("Auto-fill");
+      const allBadges = canvas.getAllByTitle("Fill");
 
       // Chromatic has been reporting diffs on this story where the item rows are not all fully loaded.
       // Trying this out to test the theory that it's taking a screenshot too quickly.
 
       // Ensure that all bit-items have rendered before chromatic screenshot by awaiting
-      // all the "auto-fill" badges rendering. There are 20 rows in each vault "view" and 2 "views"
+      // all the "Fill" badges rendering. There are 20 rows in each vault "view" and 2 "views"
       // rendered per story (relaxed and compact). There may be double the amount if light & dark
       // mode are rendered together.
       await expect(allBadges.length).toBeGreaterThanOrEqual(40);
@@ -583,4 +583,21 @@ export const WidthOptions: Story = {
       </div>
     `,
   }),
+  play: async (context) => {
+    const canvasEl = context.canvasElement;
+
+    await waitFor(async () => {
+      const canvas = within(canvasEl);
+      const allBadges = canvas.getAllByTitle("Fill");
+
+      // Chromatic has been reporting diffs on this story where the item rows are not all fully loaded.
+      // Trying this out to test the theory that it's taking a screenshot too quickly.
+
+      // Ensure that all bit-items have rendered before chromatic screenshot by awaiting
+      // all the "Fill" badges rendering. There are 20 rows in each vault "view" and 3 "views"
+      // rendered per story (default, wide, exra wide). There may be double the amount if light & dark
+      // mode are rendered together.
+      await expect(allBadges.length).toBeGreaterThanOrEqual(60);
+    });
+  },
 };
