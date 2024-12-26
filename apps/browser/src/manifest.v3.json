@@ -84,8 +84,7 @@
     "unlimitedStorage",
     "webNavigation",
     "webRequest",
-    "webRequestAuthProvider",
-    "notifications"
+    "webRequestAuthProvider"
   ],
   "optional_permissions": ["nativeMessaging", "privacy"],
   "__firefox__optional_permissions": ["nativeMessaging"],

@@ -62,8 +62,7 @@
     "unlimitedStorage",
     "webNavigation",
     "webRequest",
-    "webRequestBlocking",
-    "permissions"
+    "webRequestBlocking"
   ],
   "__safari__permissions": [
     "<all_urls>",
@@ -80,8 +79,7 @@
     "webNavigation",
     "webRequest",
     "webRequestBlocking",
-    "webNavigation",
-    "notifications"
+    "webNavigation"
   ],
   "optional_permissions": ["nativeMessaging", "privacy"],
   "__firefox__optional_permissions": ["nativeMessaging"],
