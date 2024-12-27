@@ -102,19 +102,27 @@ export class AdjustPaymentDialogV2Component implements OnInit {
       return;
     }
 
-    if (!this.organizationId) {
-      await this.updatePremiumUserPaymentMethod();
-    } else {
-      await this.updateOrganizationPaymentMethod();
+    try {
+      if (!this.organizationId) {
+        await this.updatePremiumUserPaymentMethod();
+      } else {
+        await this.updateOrganizationPaymentMethod();
+      }
+
+      this.toastService.showToast({
+        variant: "success",
+        title: null,
+        message: this.i18nService.t("updatedPaymentMethod"),
+      });
+
+      this.dialogRef.close(AdjustPaymentDialogV2ResultType.Submitted);
+    } catch (error) {
+      this.toastService.showToast({
+        variant: "error",
+        title: null,
+        message: this.i18nService.t(error.message) || error.message,
+      });
     }
-
-    this.toastService.showToast({
-      variant: "success",
-      title: null,
-      message: this.i18nService.t("updatedPaymentMethod"),
-    });
-
-    this.dialogRef.close(AdjustPaymentDialogV2ResultType.Submitted);
   };
 
   private updateOrganizationPaymentMethod = async () => {
