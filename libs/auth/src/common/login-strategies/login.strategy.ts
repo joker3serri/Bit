@@ -1,4 +1,4 @@
-import { BehaviorSubject, filter, firstValueFrom, timeout } from "rxjs";
+import { BehaviorSubject, filter, firstValueFrom, timeout, Observable } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vault-timeout/vault-timeout-settings.service";
@@ -68,8 +68,20 @@ export abstract class LoginStrategyData {
   abstract userEnteredEmail?: string;
 }
 
+/**
+ * Tracks the session state and reason for timeout, allowing UI components to adapt their behavior.
+ * - Regular timeouts (type: 'timeout') require vault unlock
+ * - Two-factor timeouts (type: 'twoFactor') require 2FA code entry
+ */
+export interface SessionState {
+  isTimedOut: boolean;
+  type?: "timeout" | "twoFactor";
+}
+
 export abstract class LoginStrategy {
   protected abstract cache: BehaviorSubject<LoginStrategyData>;
+  // Add new session state subject
+  private sessionState = new BehaviorSubject<SessionState>({ isTimedOut: false });
 
   constructor(
     protected accountService: AccountService,
@@ -317,6 +329,8 @@ export abstract class LoginStrategy {
     // just in case as it is no longer valid.
     await this.clearTwoFactorToken();
 
+    this.updateSessionState({ isTimedOut: true, type: "twoFactor" });
+
     const result = new AuthResult();
     result.twoFactorProviders = response.twoFactorProviders2;
 
@@ -369,5 +383,15 @@ export abstract class LoginStrategy {
         }),
       ),
     );
+  }
+
+  // Add new public method to expose session state
+  getSessionState(): Observable<SessionState> {
+    return this.sessionState.asObservable();
+  }
+
+  // Add protected method to update session state
+  protected updateSessionState(state: SessionState) {
+    this.sessionState.next(state);
   }
 }
