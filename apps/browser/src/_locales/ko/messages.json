@@ -192,6 +192,13 @@
   "autoFillIdentity": {
     "message": "신원 자동 완성"
   },
+  "fillVerificationCode": {
+    "message": "인증 코드를 입력하세요"
+  },
+  "fillVerificationCodeAria": {
+    "message": "인증 코드를 입력하세요",
+    "description": "Aria label for the heading displayed the inline menu for totp code autofill"
+  },
   "generatePasswordCopied": {
     "message": "비밀번호 생성 및 클립보드에 복사"
   },
@@ -336,10 +343,10 @@
     "message": "Bitwarden 보안 매니저를 이용하여, 개발자의 기밀을 안전하게 저장하고, 관리하고, 공유하세요. 자세한 내용은 bitwarden.com 사이트에서 확인해주요."
   },
   "passwordlessDotDev": {
-    "message": "Passwardless.dev"
+    "message": "Passwordless.dev"
   },
   "continueToPasswordlessDotDevPageDesc": {
-    "message": "Passwardless.dev와 함께, 기존의 비밀번호 로그인 방식으로 부터 벗어나, 매끄럽고 안전한 로그인 경험을 만들어보세요. 자세한 내용은 bitwarden.com 사이트에서 확인해주요"
+    "message": "Passwordless.dev와 함께, 기존의 비밀번호 로그인 방식으로 부터 벗어나, 매끄럽고 안전한 로그인 경험을 만들어보세요. 자세한 내용은 bitwarden.com 사이트에서 확인해주요"
   },
   "freeBitwardenFamilies": {
     "message": "무료 bitwarden 가족 플랜"
@@ -640,9 +647,6 @@
   },
   "rateExtension": {
     "message": "확장 프로그램 평가"
-  },
-  "rateExtensionDesc": {
-    "message": "좋은 리뷰를 남겨 저희를 도와주세요!"
   },
   "browserNotSupportClipboard": {
     "message": "사용하고 있는 웹 브라우저가 쉬운 클립보드 복사를 지원하지 않습니다. 직접 복사하세요."
@@ -2062,11 +2066,11 @@
     "message": "보안 비밀번호가 생성되었습니다! 웹사이트에서 비밀번호를 업데이트하는 것도 잊지 마세요."
   },
   "useGeneratorHelpTextPartOne": {
-    "message": "생성기를 사용하세요",
+    "message": "생성기를 사용하여",
     "description": "This will be used as part of a larger sentence, broken up to include the generator icon. The full sentence will read 'Use the generator [GENERATOR_ICON] to create a strong unique password'"
   },
   "useGeneratorHelpTextPartTwo": {
-    "message": "강력한 고유 비밀번호를 만들기 위해서는",
+    "message": "강력한 고유 비밀번호를 만드세요",
     "description": "This will be used as part of a larger sentence, broken up to include the generator icon. The full sentence will read 'Use the generator [GENERATOR_ICON] to create a strong unique password'"
   },
   "vaultTimeoutAction": {
@@ -2132,7 +2136,7 @@
     "message": "양식은 저장된 로그인의 URI가 아닌 다른 도메인에서 호스팅됩니다. 그래도 자동 완성을 사용하시려면 OK, 아니라면 취소 버튼을 선택해주세요."
   },
   "autofillIframeWarningTip": {
-    "message": "향후 이 경고를 방지하려면 이 URI인 $HOSTname$(을)를 Bitwarden로그인 항목에 저장하세요.",
+    "message": "향후 이 경고를 방지하려면 이 URI인 $HOSTNAME$(을)를 Bitwarden로그인 항목에 저장하세요.",
     "placeholders": {
       "hostname": {
         "content": "$1",
@@ -2722,7 +2726,7 @@
     "description": "Used as a card title description on the set password page to explain why the user is there"
   },
   "cardMetrics": {
-    "message": "&TOTAL% 중에서",
+    "message": "$TOTAL$ 중에서",
     "placeholders": {
       "total": {
         "content": "$1",
@@ -2869,7 +2873,7 @@
     "message": "조직 보관함을 내보내는 중"
   },
   "exportingOrganizationVaultDesc": {
-    "message": "$Organization$와 관련된 조직 보관함만 내보냅니다. 개별 보관함이나 다른 조직의 항목은 포함되지 않습니다",
+    "message": "$ORGANIZATION$ 조직과 연관된 조직 보관함만 내보내기됩니다. 개인 보관함이나 다른 조직의 항목은 포함되지 않습니다.",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -2904,7 +2908,7 @@
     }
   },
   "passwordLengthRecommendationHint": {
-    "message": "강력한 비밀번호를 생성하려면 $RECORDENED$ 문자 이상을 사용하세요",
+    "message": " 강력한 비밀번호를 생성하려면 $RECOMMENDED$ 문자 이상을 사용하세요",
     "description": "Appended to `spinboxBoundariesHint` to recommend a length to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
     "placeholders": {
       "recommended": {
@@ -2914,7 +2918,7 @@
     }
   },
   "passphraseNumWordsRecommendationHint": {
-    "message": "강력한 암호를 생성하려면 $RECORDENED$ 단어 이상을 사용하세요.",
+    "message": " 강력한 암호를 생성하려면 $RECOMMENDED$ 단어 이상을 사용하세요.",
     "description": "Appended to `spinboxBoundariesHint` to recommend a number of words to the user. This must include any language-specific 'sentence' separator characters (e.g. a space in english).",
     "placeholders": {
       "recommended": {
@@ -3010,7 +3014,7 @@
     }
   },
   "forwaderInvalidTokenWithMessage": {
-    "message": "잘못된 $ServiceNAME$ API 토큰: $ERRORMESSAGE$",
+    "message": "잘못된 $SERVICENAME$ API 토큰: $ERRORMESSAGE$",
     "description": "Displayed when the user's API token is rejected by the forwarding service with an error message.",
     "placeholders": {
       "servicename": {
@@ -3024,7 +3028,7 @@
     }
   },
   "forwarderNoAccountId": {
-    "message": "$SERVICNAME$ 마스크된 이메일 계정 ID를 얻을 수 없습니다.",
+    "message": "$SERVICENAME$ 마스크된 이메일 계정 ID를 얻을 수 없습니다.",
     "description": "Displayed when the forwarding service fails to return an account ID.",
     "placeholders": {
       "servicename": {
@@ -3034,7 +3038,7 @@
     }
   },
   "forwarderNoDomain": {
-    "message": "잘못된 $SERVICNAME$ 도메인.",
+    "message": "잘못된 $SERVICENAME$ 도메인.",
     "description": "Displayed when the domain is empty or domain authorization failed at the forwarding service.",
     "placeholders": {
       "servicename": {
@@ -3044,7 +3048,7 @@
     }
   },
   "forwarderNoUrl": {
-    "message": "잘못된 $SERVICNAME$ URL",
+    "message": "잘못된 $SERVICENAME$ URL",
     "description": "Displayed when the url of the forwarding service wasn't supplied.",
     "placeholders": {
       "servicename": {
@@ -3054,7 +3058,7 @@
     }
   },
   "forwarderUnknownError": {
-    "message": "알 수 없는 $SERVICNAME$ 오류가 발생했습니다.",
+    "message": "알 수 없는 $SERVICENAME$ 오류가 발생했습니다.",
     "description": "Displayed when the forwarding service failed due to an unknown error.",
     "placeholders": {
       "servicename": {
@@ -3064,7 +3068,7 @@
     }
   },
   "forwarderUnknownForwarder": {
-    "message": "알 수 없는 포워더: '$SERVICNAME$'.",
+    "message": "알 수 없는 포워더: '$SERVICENAME$'.",
     "description": "Displayed when the forwarding service is not supported.",
     "placeholders": {
       "servicename": {
@@ -3174,7 +3178,7 @@
     "message": "모든 로그인 방식 보기"
   },
   "viewAllLoginOptionsV1": {
-    "message": "View all log in options"
+    "message": "모든 로그인 옵션 보기"
   },
   "notificationSentDevice": {
     "message": "기기에 알림이 전송되었습니다."
@@ -3411,7 +3415,7 @@
     }
   },
   "inputForbiddenCharacters": {
-    "message": "다음 문자는 허용되지 않습니다: $CHARACTRS$",
+    "message": "다음 문자는 허용되지 않습니다: $CHARACTERS$",
     "placeholders": {
       "characters": {
         "content": "$1",
@@ -3484,7 +3488,7 @@
     "message": "모두 지우기"
   },
   "plusNMore": {
-    "message": "+ $QUANITY$개 더보기",
+    "message": "+ $QUANTITY$개 더보기",
     "placeholders": {
       "quantity": {
         "content": "$1",
@@ -3580,6 +3584,14 @@
     "message": "계정 잠금을 해제하기, 새 창에서 열립니다",
     "description": "Screen reader text (aria-label) for unlock account button in overlay"
   },
+  "totpCodeAria": {
+    "message": "TOTP 인증 코드",
+    "description": "Aria label for the totp code displayed in the inline menu for autofill"
+  },
+  "totpSecondsSpanAria": {
+    "message": "TOTP 만료까지 남은 시간",
+    "description": "Aria label for the totp seconds displayed in the inline menu for autofill"
+  },
   "fillCredentialsFor": {
     "message": "자격 증명 채우기",
     "description": "Screen reader text for when overlay item is in focused"
@@ -3654,7 +3666,7 @@
     "message": "데이터 가져오기 성공"
   },
   "importSuccessNumberOfItems": {
-    "message": "가져온 항목의 총 개수",
+    "message": "총 $AMOUNT$개의 항목을 가져왔습니다.",
     "placeholders": {
       "amount": {
         "content": "$1",
@@ -3702,7 +3714,7 @@
     "message": "합계"
   },
   "importWarning": {
-    "message": "데이터를 $ORganization$로 가져오고 있습니다. 데이터를 이 조직의 구성원들과 공유할 수 있습니다. 계속 진행하시겠습니까?",
+    "message": "데이터를 $ORGANIZATION$로 가져오고 있습니다. 데이터를 이 조직의 구성원들과 공유할 수 있습니다. 계속 진행하시겠습니까?",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -4664,6 +4676,9 @@
   "showNumberOfAutofillSuggestions": {
     "message": "확장 아이콘에 로그인 자동 완성 제안 수 표시"
   },
+  "showQuickCopyActions": {
+    "message": "보관함에서 빠른 복사 기능 표시"
+  },
   "systemDefault": {
     "message": "시스템 기본 설정"
   },
@@ -4894,6 +4909,42 @@
   },
   "beta": {
     "message": "베타"
+  },
+  "importantNotice": {
+    "message": "Important notice"
+  },
+  "setupTwoStepLogin": {
+    "message": "Set up two-step login"
+  },
+  "newDeviceVerificationNoticeContentPage1": {
+    "message": "Bitwarden will send a code to your account email to verify logins from new devices starting in February 2025."
+  },
+  "newDeviceVerificationNoticeContentPage2": {
+    "message": "You can set up two-step login as an alternative way to protect your account or change your email to one you can access."
+  },
+  "remindMeLater": {
+    "message": "Remind me later"
+  },
+  "newDeviceVerificationNoticePageOneFormContent": {
+    "message": "Do you have reliable access to your email, $EMAIL$?",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "your_name@email.com"
+      }
+    }
+  },
+  "newDeviceVerificationNoticePageOneEmailAccessNo": {
+    "message": "No, I do not"
+  },
+  "newDeviceVerificationNoticePageOneEmailAccessYes": {
+    "message": "Yes, I can reliably access my email"
+  },
+  "turnOnTwoStepLogin": {
+    "message": "Turn on two-step login"
+  },
+  "changeAcctEmail": {
+    "message": "Change account email"
   },
   "extensionWidth": {
     "message": "확장 폭"
