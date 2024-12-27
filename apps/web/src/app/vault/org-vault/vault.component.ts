@@ -86,6 +86,10 @@ import {
 
 import { GroupApiService, GroupView } from "../../admin-console/organizations/core";
 import { openEntityEventsDialog } from "../../admin-console/organizations/manage/entity-events.component";
+import {
+  ResellerWarning,
+  ResellerWarningService,
+} from "../../billing/services/reseller-warning.service";
 import { TrialFlowService } from "../../billing/services/trial-flow.service";
 import { FreeTrial } from "../../core/types/free-trial";
 import { SharedModule } from "../../shared";
@@ -187,6 +191,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   private hasSubscription$ = new BehaviorSubject<boolean>(false);
   protected currentSearchText$: Observable<string>;
   protected freeTrial$: Observable<FreeTrial>;
+  protected resellerWarning$: Observable<ResellerWarning | null>;
+  protected resellerWarning: ResellerWarning;
   /**
    * A list of collections that the user can assign items to and edit those items within.
    * @protected
@@ -259,6 +265,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private trialFlowService: TrialFlowService,
     protected billingApiService: BillingApiServiceAbstraction,
     private organizationBillingService: OrganizationBillingServiceAbstraction,
+    private resellerWarningService: ResellerWarningService,
   ) {}
 
   async ngOnInit() {
@@ -592,6 +599,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this.unpaidSubscriptionDialog$.pipe(takeUntil(this.destroy$)).subscribe();
+    //this.resellerWarning1$.pipe(takeUntil(this.destroy$)).subscribe();
 
     this.freeTrial$ = combineLatest([
       organization$,
@@ -609,6 +617,16 @@ export class VaultComponent implements OnInit, OnDestroy {
       ),
       map(([org, sub, paymentSource]) => {
         return this.trialFlowService.checkForOrgsWithUpcomingPaymentIssues(org, sub, paymentSource);
+      }),
+    );
+
+    this.resellerWarning$ = combineLatest([organization$]).pipe(
+      filter(([org]) => org.isOwner),
+      switchMap(([org]) =>
+        combineLatest([of(org), this.billingApiService.getOrganizationBillingMetadata(org.id)]),
+      ),
+      map(([org, organizationMetaData]) => {
+        return this.resellerWarningService.getWarning(org, organizationMetaData);
       }),
     );
 
