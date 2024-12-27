@@ -454,9 +454,6 @@
   "length": {
     "message": "Comprimento"
   },
-  "passwordMinLength": {
-    "message": "Tamanho mínimo da senha"
-  },
   "uppercase": {
     "message": "Maiúsculas (A-Z)",
     "description": "deprecated. Use uppercaseLabel instead."
@@ -527,10 +524,6 @@
   },
   "minSpecial": {
     "message": "Especiais Mínimos"
-  },
-  "avoidAmbChar": {
-    "message": "Evitar Caracteres Ambíguos",
-    "description": "deprecated. Use avoidAmbiguous instead."
   },
   "avoidAmbiguous": {
     "message": "Evitar Caracteres Ambíguos",
@@ -1156,9 +1149,6 @@
   },
   "moveToOrganization": {
     "message": "Mover para a Organização"
-  },
-  "share": {
-    "message": "Compartilhar"
   },
   "movedItemToOrg": {
     "message": "$ITEMNAME$ movido para $ORGNAME$",
@@ -2047,9 +2037,6 @@
   "clone": {
     "message": "Clonar"
   },
-  "passwordGeneratorPolicyInEffect": {
-    "message": "Uma ou mais políticas da organização estão afetando as suas configurações do gerador."
-  },
   "passwordGenerator": {
     "message": "Gerador de Senha"
   },
@@ -2389,14 +2376,6 @@
     "message": "Enviar detalhes",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "searchSends": {
-    "message": "Pesquisar Sends",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "addSend": {
-    "message": "Adicionar Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
   "sendTypeText": {
     "message": "Texto"
   },
@@ -2413,15 +2392,8 @@
   "hideTextByDefault": {
     "message": "Ocultar texto por padrão"
   },
-  "maxAccessCountReached": {
-    "message": "Número máximo de acessos atingido",
-    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
-  },
   "expired": {
     "message": "Expirado"
-  },
-  "pendingDeletion": {
-    "message": "Exclusão pendente"
   },
   "passwordProtected": {
     "message": "Protegido por senha"
@@ -2472,23 +2444,8 @@
     "message": "Editar Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "sendTypeHeader": {
-    "message": "Que tipo de Send é este?",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "sendNameDesc": {
-    "message": "Um nome amigável para descrever este Send.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "sendFileDesc": {
-    "message": "O arquivo que você deseja enviar."
-  },
   "deletionDate": {
     "message": "Data de Exclusão"
-  },
-  "deletionDateDesc": {
-    "message": "O Send será eliminado permanentemente na data e hora especificadas.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "deletionDateDescV2": {
     "message": "O envio será eliminado permanentemente na data e hora especificadas.",
@@ -2496,10 +2453,6 @@
   },
   "expirationDate": {
     "message": "Data de Validade"
-  },
-  "expirationDateDesc": {
-    "message": "Se definido, o acesso a este Send expirará na data e hora especificadas.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "oneDay": {
     "message": "1 dia"
@@ -2516,42 +2469,9 @@
   "custom": {
     "message": "Personalizado"
   },
-  "maximumAccessCount": {
-    "message": "Contagem Máxima de Acessos"
-  },
-  "maximumAccessCountDesc": {
-    "message": "Se atribuído, usuários não poderão mais acessar este Send assim que o número máximo de acessos for atingido.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "sendPasswordDesc": {
-    "message": "Exigir opcionalmente uma senha para os usuários acessarem este Send.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
   "sendPasswordDescV3": {
     "message": "Adicione uma senha opcional para os destinatários para acessar este Envio.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "sendNotesDesc": {
-    "message": "Notas privadas sobre esse Send.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "sendDisableDesc": {
-    "message": "Desative este Send para que ninguém possa acessá-lo.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "sendShareDesc": {
-    "message": "Copiar o link deste Send para área de transferência após salvar.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "sendTextDesc": {
-    "message": "O texto que você deseja enviar."
-  },
-  "sendHideText": {
-    "message": "Ocultar o texto deste Send por padrão.",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
-  },
-  "currentAccessCount": {
-    "message": "Contagem Atual de Acessos"
   },
   "createSend": {
     "message": "Criar Novo Send",
@@ -2635,18 +2555,6 @@
   "sendFileCalloutHeader": {
     "message": "Antes de começar"
   },
-  "sendFirefoxCustomDatePopoutMessage1": {
-    "message": "Para usar um seletor de data no estilo calendário",
-    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read '**To use a calendar style date picker ** click here to pop out your window.'"
-  },
-  "sendFirefoxCustomDatePopoutMessage2": {
-    "message": "clique aqui",
-    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To use a calendar style date picker **click here** to pop out your window.'"
-  },
-  "sendFirefoxCustomDatePopoutMessage3": {
-    "message": "para abrir a sua janela.",
-    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To use a calendar style date picker click here **to pop out your window.**'"
-  },
   "expirationDateIsInvalid": {
     "message": "A data de validade fornecida não é válida."
   },
@@ -2662,14 +2570,8 @@
   "dateParsingError": {
     "message": "Ocorreu um erro ao salvar as suas datas de exclusão e validade."
   },
-  "hideEmail": {
-    "message": "Ocultar meu endereço de e-mail dos destinatários."
-  },
   "hideYourEmail": {
     "message": "Ocultar meu endereço de correio eletrônico dos destinatários."
-  },
-  "sendOptionsPolicyInEffect": {
-    "message": "Uma ou mais políticas da organização estão afetando as suas opções de Send."
   },
   "passwordPrompt": {
     "message": "Solicitação nova de senha mestra"
@@ -2884,9 +2786,6 @@
   "error": {
     "message": "Erro"
   },
-  "regenerateUsername": {
-    "message": "Recriar Usuário"
-  },
   "generateUsername": {
     "message": "Gerar Usuário"
   },
@@ -2927,9 +2826,6 @@
       }
     }
   },
-  "usernameType": {
-    "message": "Tipo de usuário"
-  },
   "plusAddressedEmail": {
     "message": "E-mail alternativo (com um +)",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
@@ -2951,12 +2847,6 @@
   },
   "websiteName": {
     "message": "Nome do Site"
-  },
-  "whatWouldYouLikeToGenerate": {
-    "message": "O que você gostaria de gerar?"
-  },
-  "passwordType": {
-    "message": "Categoria de Senha"
   },
   "service": {
     "message": "Serviço"
